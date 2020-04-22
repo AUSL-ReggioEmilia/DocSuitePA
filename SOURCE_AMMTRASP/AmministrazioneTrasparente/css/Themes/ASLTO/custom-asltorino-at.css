@@ -1,0 +1,95 @@
+﻿
+/* STRUTTURA */
+.container-principale  {padding:50px 0;}
+
+/* Bootstrap 3 */
+.col-xs-1, .col-xs-2, .col-xs-3, .col-xs-41, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {position: relative; width: 100% !important; min-height: 1px; padding-right: 15px; padding-left: 15px;}
+.col-xs-3 {-ms-flex: 0 0 25%; flex: 0 0 25%; max-width: 25%;}
+.col-xs-4 {-ms-flex: 0 0 33.333333%; flex: 0 0 33.333333%; max-width: 33.333333%;}
+.col-sm-8 {-ms-flex: 0 0 66.666667%; flex: 0 0 66.666667%;max-width: 66.666667%;}
+.col-xs-9 { -ms-flex: 0 0 75%; flex: 0 0 75%;  max-width: 75%;}
+.col-xs-12 {-ms-flex: 0 0 100%; flex: 0 0 100%; max-width: 100%;}
+@media (max-width: 991px){
+	#menu.col-xs-3, #mainCol.col-xs-9 {-ms-flex: 0 0 100%; flex: 0 0 100%; max-width: 100%;}
+}
+
+/* Menu */
+#menu {margin-bottom:50px;background-color:inherit  !important}
+.nav.nav-pills li {background: #F4F4F2 !important; border-bottom: 1px solid #fff; padding: 0;  margin: 0; display: block; width: 100%;}
+.nav.nav-pills li:hover {background: #fff !important;}
+.nav.nav-pills li a {font-size:18px; padding: 25px 20px !important; color: #084D95; font-weight: 600; line-height: 100%; display: block;}
+.nav.nav-pills li.active, .nav.nav-pills li.active a {background:#084D95!important; color:#fff!important;}
+.nav > li > a:hover {
+    text-decoration: none;
+    background-color: #fff;
+}
+
+
+/* Pagine */
+h1, h2, h3, h4, h5, h6 {font-weight:700; margin-bottom:15px;}
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {text-decoration:none!important;}
+.h1, h1 {
+    font-size: 2.5rem !important;
+}
+.h2, h2 {
+    font-size: 2rem !important;
+}
+.well h1 {margin-bottom:30px;}
+.well {
+	margin-bottom:30px; padding-bottom:30px; 
+border:unset !important;
+background-color:#fff !important;}
+.well a {text-decoration:underline;}
+
+.well .nav {display:block!important;}
+.well .nav li {margin-bottom:15px;padding-bottom:15px; border-bottom: 1px solid #eee; display:block!important; float:none!important;}
+.well .nav li:last-child {border-bottom: none;}
+.well .nav li a {font-size:22px;font-weight:700;}
+
+#submenu a{ padding:unset !important;}
+
+table  {width:100%!important;}
+table td  {padding:10px 15px !important;}
+table.table-search {margin:30px auto; background:#eee;}
+
+table.table-search td.td-label {width:20%; font-weight:700; text-align:right;}
+.btn-info {font-size:18px; font-weight:500;color: #fff; background-color: #084d95; border-color: #084d95;}
+#ctl00_MainPlaceHolder_inDateFrom_popupButton {font-size:13px;}
+
+table.dettaglio {
+	 background-color: unset; 
+}
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+	 background-color: unset; 
+}
+
+
+/*
+#menu {}
+#mainCol {}
+#mainCol .col-xs-4 {}
+#mainCol .col-xs-7 {}
+#mainCol .form-group {}
+table.table-search {}
+table.table-search td {}
+td.td-label {}
+td.td-field {}
+input.btn-cerca {}
+.input-sm {}
+#menu a {}
+#menu li.active a {}
+#submenu a {}
+
+.form-group {}
+.table-striped > tbody > tr:nth-child(odd) > td,
+.table-striped > tbody > tr:nth-child(odd) > th {background-color: rgb(220, 238, 223);}
+table.dettaglio {}
+.container-principale {}
+.colonna-etichetta {}
+.colonna-grassetto {}
+.navbar-brand {}
+div.footer {}
+div.form-ricerca {}
+.navbar-storico {}
+.RadPanelBar_Metro .rpLink {}
+.RadPanelBar_Metro .rpOut {}*/

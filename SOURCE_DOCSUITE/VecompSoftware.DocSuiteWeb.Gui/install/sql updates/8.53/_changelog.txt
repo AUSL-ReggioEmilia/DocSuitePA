@@ -1,0 +1,87 @@
+﻿Feature 5030: [AUSL-RE] Archivia PEC
+
+
+User Story 4963: [AUSL-PC] - Nuova vista “protocolli in evidenza”
+User Story 4965: [AUSL-PC] - Nuova opzione vista Protocolli da leggere "autorizzati da altri"
+User Story 5008: [AUSL-PC] - Nuova vista "Protocolli in evidenza"
+User Story 5032: [AUSL-RE] PEC: nuovo pulsante Archivia in UDS
+User Story 5033: [AUSL-RE] UDS: Invia documento via PEC
+User Story 5034: [AUSL-RE] PEC: segnatura archiviazione in UD
+User Story 5039: [AUSL-RE] Disponibilità data di protocollazione in WS_COLL
+User Story 5164: [DSW] Creazione entità DocumentUnit, DocumentUnitRoles, DocumentUnitChains
+User Story 5202: [AUSL-RE] Fascicoli: Protocollo, CQRS comandi di creazione e modifica protocolli
+User Story 5203: [DSW] CQRS: Invio comandi di creazione e modica di Atti alle WebApi
+User Story 5235: [AUSL-RE] DocSeries implementazione comandi CQRS
+User Story 5286: [AUSL-RE ***REMOVED***] Fascicoli: Refactor ricerca e lettura UD da nuova entità DocumentUnits
+User Story 5640: [AUSL-RE] Gestione delle autorizzazioni UDS in ricerca e visualizzazione
+User Story 5641: [AUSL-RE] Funzionalità di annullamento UDS
+User Story 5642: [AUSL-RE] Rimuovere i pulsanti protocolla e workflow dal sommario di una UDS
+User Story 5661: [AUSL-RE] UDS: Modifica label "Unità Documentarie" con "Archivi"
+User Story 5664: [AUSL-RE] PEC: Modificare la visualizzazione del link al sommario di una UDS
+User Story 5665: [AUSL-RE] UDS: Modificare la descrizione del popup di attesa/errore
+User Story 5666: [AUSL-RE] Ricerca UDS aggiungere Contatti e Autorizzazioni
+User Story 5687: [AUSL-RE] Revisione vista 'I miei documenti autorizzati'
+User Story 5747: [AUSL-RE] Risultati ricerca, gestire la tipologia di icona documenti
+User Story 5750: [AUSL-RE] UDS: Aggiungere inserimento manuale testo contatti in ricerca
+User Story 5751: [AUSL-RE] UDS: Gestire correttamente l' obbligatorietà dei controlli contatti, documenti e autorizzazioni
+User Story 5753: [AUSL-RE] UDS: Rimuovere codice dalla colonna classificatore
+User Story 5754: [AUSL-RE] PEC: Modifica etichetta di selezione Contatto in archivia PEC
+User Story 5755: [AUSL-RE] UDS: Revisione annullamento archivio
+User Story 5779: [AUSL-RE] UDS: Nel sommario delle UDS il pulsante documenti e colore UDS
+User Story 5817: [AUSL-RE] Revisione viste 'I miei documenti autorizzati'
+User Story 5834: [AUSL-RE] Modifica UDS - Allineamento Oggetto con lo stile protocollo
+User Story 5835: [AUSL-RE] Modifica UDS - Allineamento Classificatore con lo stile protocollo
+User Story 5836: [AUSL-RE] Modifica UDS - Allineamento Informazioni coi dati CreatoDa/ModificatoDa
+User Story 5837: [AUSL-RE] Modifica sommario UDS - Ordinamento zone di visualizzazione stile protocollo [Anno/Numero - Oggetto - Contatti - Autorizzazioni - Classificazione - Informazioni - Dati Dinamici
+User Story 5838: [AUSL-RE] Modifica UDS - Aggiungere funzionalità - Invia e Invia settori
+User Story 5839: [AUSL-RE] Modifica UDS - Rendere configurabili i campi ricercabili
+User Story 5840: [AUSL-RE] Modifica UDS - Aggiungere motivazione all'annullamento UDS
+User Story 5847: [AUSL-RE] Modifica UDS - Inserimento blocco estremi di annullamento del documento
+User Story 5848: [AUSL-RE] Modifica UDS - Inserimento "Stato di conservazione presso Parer"
+User Story 5849: [AUSL-RE] Modifica UDS - Allineamento Contatti con lo stile protocollo
+User Story 5850: [AUSL-RE] Modifica UDS - Nella griglia delle PEC rimettere la Label ‘Protocollo’
+User Story 5851: [AUSL-RE] Modifica UDS - In fase di Protocollazione PEC settare archivio di default se unico presente
+User Story 5852: [AUSL-RE] Modifica UDS - Nella pagina Protocolla PEC cambiare etichetta contatti
+User Story 5853: [AUSL-RE] Modifica UDS - In visualizzazione UDS se non ci sono settori autorizzati, nascondere il panel
+User Story 5854: [AUSL-RE] Modifica UDS - Conformità pulsante Invia -> MAIL
+User Story 5855: [AUSL-RE] Modifica UDS - Conformità pulsante 'Invia PEC' -> 'PEC'
+User Story 5856: [AUSL-RE] Modifica UDS - Rendere opzionale il valore di default del classificatore della UDS
+User Story 5857: [AUSL-RE] Modifica UDS - Nella pagina di ricerca UDS agganciare la visibilità dei metadati ricercabili come specificato dal Designer
+User Story 5858: [AUSL-RE] Modifica Protocollo - Nel sommario cambiare la label 'Altro' in 'Informazioni'
+User Story 5859: [AUSL-RE] Modifica UDS - Nella griglia dei risultati UDS cambiare la label 'UDS' in Anno/Numero conforme a DSI
+User Story 5860: [AUSL-RE] Modifica UDS - Introdurre più righe nella pulsantiera delle UDS
+User Story 5861: [AUSL-RE] Modifica UDS - Allineamento Autorizzazioni con lo stile protocollo
+User Story 5921: [AUSL-PC] Bonifica del bottone "Svuota Ricerca" in Ricerca del protocollo
+User Story 5927: [AUSL-RE] Modulo UDS: Introdurre le logiche di logging su standard protocollo.
+User Story 5931: [AUSL-RE] Modulo UDS: Sommario UDS visualizzare panel delle MAIL
+User Story 5959: [AUSL-RE] Nel modulo JeepService AVCP, specificare i metadati mancanti e associare in automatico la serie AVCP all'atto della DocSuite.
+User Story 5960: [DSW] Detach catene biblos se si annullano Serie Documentali
+
+
+
+Bug 4444: [ENPACL] Aggiornamento stato di consegna dei telegrammi
+Bug 4758: [CTT] Template di Protocollo: Messaggio di errore in modifica Autorizzazioni se il settore padre non viene flaggato
+Bug 4794: [AUSL-PC] Problemi nell'utilizzo della funziona Cambia Responsabile
+Bug 5074: [AUSL-PC] In inserimento di Protocollo visualizzando le proprietà del mittente e cliccando sulla “x” per chiudere la finestra si disabilita il tasto “Conferma inserimento”
+Bug 5134: [DSW] Non si riesce a confermare la bozza di serie documentale con gestione multipla degli anni attiva
+Bug 5148: [ASL-TO] Il recupero di contenitore non funziona
+Bug 5195: [AUSL-PC] Nelle PEC in arrivo non è più presente l’opzione ‘Visualizza anche PEC in carico ad altri operatori’
+Bug 5244: [DSW] Fascicolando UD che ha fascicolazione periodica non deve mostrarmi alcun Fascicolo a cui è possibile associarla
+Bug 5245: [DSW] In sommario Atto la descrizione della classificazione non è corretta e fascicolandolo riporta un nodo di classificazione scorretto
+Bug 5246: [AUSL-PC] Rispondi PEC: la funzionalità "Inserisci Firma" non funziona correttamente
+Bug 5360: [ASL-TO] Nella gestione caselle PEC manca la barra di scorrimento
+Bug 5442: [AUSL-RE] Location ODG: Gestire la Location ODG su ParameterEnv con nuova chiave.
+Bug 5729: [AUSL-PC] In Versioning di Collaborazione non compare più la colonna "Utente" valorizzata
+Bug 5744: [ENPACL] Ricerca Protocollo con estensione ai SottoContatti: si ottengono risultati non pertinenti
+Bug 5745: [CTT] Pratiche: Errore filtrando l'elenco dei risultati nel campo Riferimento.
+Bug 5752: [AUSL-RE] UDS: Dimensione della finestra di inserimento contatto manuale non corretta
+Bug 5807: [CTT] Cliccando su Protocollo di una PEC non accade nulla e compaiono icone e diciture sulle diverse colonne
+Bug 5810: [CTT] Errore in modifica oggetto di protocollo
+Bug 5811: [CTT] PEC: abilitare il pulsante Protocolla quando si entra nel sommario della PEC
+Bug 5909: [AUSL-RE] Quando si inserisce un contatto manuale che contiene un apice si ottiene messaggio di errore nella visualizzazione del dettaglio
+Bug 5932: [AUSL-RE] Nel sommario nell'UDS il pulsante PEC non funziona.
+Bug 5941: [AUSL-RE] UDS mancata visualizzazione di records per ricerca per contatto
+
+
+
+Issue 5067: [CTT] Protocollo: dopo cambio contenitore la segnatura riporta il vecchio contenitore - Bloccare cambio Contenitore.

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/StorageArea" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/StorageArea" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/Archive" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd20" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/Storage" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="StorageArea">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/Archive" minOccurs="0" name="Archive" nillable="true" type="q2:Archive" />
+          <xs:element minOccurs="0" name="CurrentFileNumber" nillable="true" type="xs:long" />
+          <xs:element minOccurs="0" name="CurrentSize" type="xs:long" />
+          <xs:element minOccurs="0" name="Enable" type="xs:boolean" />
+          <xs:element minOccurs="0" name="IdStorageArea" type="ser:guid" />
+          <xs:element minOccurs="0" name="MaxFileNumber" type="xs:long" />
+          <xs:element minOccurs="0" name="MaxSize" type="xs:long" />
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Path" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Priority" type="xs:int" />
+          <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" minOccurs="0" name="Status" nillable="true" type="q3:Status" />
+          <xs:element xmlns:q4="http://BiblosDS/2009/10/Storage" minOccurs="0" name="Storage" nillable="true" type="q4:Storage" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StorageArea" nillable="true" type="tns:StorageArea" />
+  <xs:complexType name="ArrayOfStorageArea">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="StorageArea" nillable="true" type="tns:StorageArea" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStorageArea" nillable="true" type="tns:ArrayOfStorageArea" />
+</xs:schema>

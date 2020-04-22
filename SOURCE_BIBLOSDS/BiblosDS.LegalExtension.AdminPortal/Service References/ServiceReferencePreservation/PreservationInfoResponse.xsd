@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/PreservationInfoResponse" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationInfoResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationResponse" />
+  <xs:complexType name="PreservationInfoResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/PreservationResponse" base="q1:PreservationResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DateExpire" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DocumentType" nillable="true" type="xs:string" />
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/Document" minOccurs="0" name="Documents" nillable="true" type="q2:ArrayOfDocument" />
+          <xs:element minOccurs="0" name="EndDocumentDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="HasPendingDocument" type="xs:boolean" />
+          <xs:element minOccurs="0" name="IdPreservation" nillable="true" type="ser:guid" />
+          <xs:element minOccurs="0" name="IdPreservationTaskGroup" nillable="true" type="ser:guid" />
+          <xs:element minOccurs="0" name="SharedPathName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="StartDocumentDate" nillable="true" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PreservationInfoResponse" nillable="true" type="tns:PreservationInfoResponse" />
+</xs:schema>

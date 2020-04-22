@@ -1,0 +1,25 @@
+﻿enum DossierLogType {    
+        Insert = 0,    
+        Modify = 1,    
+        View = Modify * 2,
+        Authorize = View * 2,
+        Delete = Authorize * 2,
+        Close = Delete * 2,
+        Workflow = Close * 2,
+        FolderInsert = Workflow * 2,
+        FolderModify = FolderInsert * 2,
+        FolderAuthorize = FolderModify * 2,
+        FolderFascicleRemove = FolderAuthorize * 2,
+        FolderClose = FolderFascicleRemove * 2,
+        FolderDelete = FolderClose * 2,
+        FolderHystory = FolderDelete * 2,
+        FolderResponsibleChange = FolderHystory * 2,
+        ResponsibleChange = FolderResponsibleChange * 2,
+        FascicleInsert = ResponsibleChange * 2,
+        FascicleView = FascicleInsert * 2,
+        DocumentInsert = FascicleView * 2,
+        DocumentView = DocumentInsert * 2,
+        DocumentDelete = DocumentView * 2,
+        Error = DocumentDelete * 2
+}
+export = DossierLogType;

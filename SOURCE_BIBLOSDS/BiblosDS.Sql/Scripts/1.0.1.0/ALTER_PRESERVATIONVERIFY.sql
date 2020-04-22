@@ -1,0 +1,1 @@
+﻿alter table ext.PreservationVerify add Lock bit null

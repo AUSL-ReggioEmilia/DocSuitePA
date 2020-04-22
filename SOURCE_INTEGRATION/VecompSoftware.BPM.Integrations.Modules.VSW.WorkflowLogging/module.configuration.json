@@ -1,0 +1,8 @@
+﻿{
+  "TopicWorkflowIntegration": "workflow_integration",
+  "WorkflowLoggingNotificationErrorSubscription": "WorkflowLoggingNotificationError",
+  "WorkflowLoggingNotificationInfoSubscription": "WorkflowLoggingNotificationInfo",
+  "WorkflowLoggingNotificationWarningSubscription": "WorkflowLoggingNotificationWarning",
+  "WorkflowLoggingStartRequestDoneSubscription": "WorkflowLoggingStartRequestDone",
+  "WorkflowLoggingStartRequestErrorSubscription": "WorkflowLoggingStartRequestError"
+}

@@ -1,0 +1,126 @@
+﻿@using BiblosDS.LegalExtension.AdminPortal.ViewModel.Home;
+@{
+    ViewBag.Title = "Pacchetto di distribuzione";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section featured {
+    <hgroup class="title">
+        <h1><span class="fas fa-file-archive" style="font-size: 32px; margin-right: 10px;"></span>@ViewBag.Title</h1>
+    </hgroup>
+}
+<br />
+
+@(Html.Kendo().Splitter()
+        .Name("pageSplitter")
+        .HtmlAttributes(new { @style = "height: 550px;" })
+        .Orientation(SplitterOrientation.Horizontal)
+        .Panes(panes =>
+        {
+            panes.Add()
+                .Scrollable(false)
+                .Resizable(true)
+                .Collapsible(false)
+                .Size("30%")
+                .Content(Html.Kendo().Splitter()
+                        .HtmlAttributes(new { @style = "height: 100%;" })
+                        .Name("searchSplitter")
+                        .Orientation(SplitterOrientation.Vertical)
+                        .Panes(searchPanes =>
+                        {
+                            searchPanes.Add()
+                                .Scrollable(true)
+                                .Resizable(false)
+                                .Collapsible(false)
+                                .Size("92%")
+                                .Content(@<div>@searchForm()</div>);
+
+                            searchPanes.Add()
+                                .Scrollable(false)
+                                .Resizable(false)
+                                .Collapsible(false)
+                                .Size("8%")
+                                .Content(@<div style="padding: 5px; text-align: right;">@(Html.Kendo().Button().Name("searchButton").Content("Cerca")
+                                    .Icon("search").Events(e => e.Click("onSearchButtonClick")).Enable(false))</div>);
+                        }).ToHtmlString());
+
+                panes.Add()
+                    .Scrollable(true)
+                    .Resizable(true)
+                    .Collapsible(false)
+                    .Size("70%")
+                    .Content(@<div id="searchGridResult"></div>);
+        })
+)
+
+<script type="text/javascript">
+    function readDynamicFilters() {
+        var dynamicFiltersDictionary = {};
+        $("input.searchable-control").map(function () {
+            dynamicFiltersDictionary[$(this).attr('id')] = $(this).attr('data-role') == 'datepicker' && $(this).data("kendoDatePicker").value() != null ? $(this).data("kendoDatePicker").value().toUTCString() : $(this).val();
+        });
+        return dynamicFiltersDictionary;
+    }
+
+    function onSearchButtonClick(e) {
+        dynamicFiltersDictionary = readDynamicFilters();
+        idArchive = $("#archives").data("kendoDropDownList").value();
+        $("#searchGridResult").data("distributionPackagesGrid").searchData(idArchive, dynamicFiltersDictionary);
+    }
+</script>
+
+@helper searchForm() { 
+    <div id="searchForm" class="k-block block-content k-content">
+        <div>
+            <h4><b>Seleziona un archivio</b></h4>
+            @(Html.Kendo().DropDownList()                  
+                  .Name("archives")
+                  .DataTextField("Name")
+                  .DataValueField("IdArchive")
+                  .Filter("contains")
+                  .DataSource(source =>
+                  {
+                      source.Read(read =>
+                      {
+                          read.Action("GetArchives", "Home");
+                      }).ServerFiltering(true); ;
+                  })
+                  .Events(events =>
+                  {
+                      events.Select("onSelect");
+                  })
+                  .AutoBind(false)
+                  .HtmlAttributes(new { style = "width: 100%" }))
+        </div>
+        <div id="dynamicSearchControls" style="margin-top: 5px;"></div>       
+        <script type="text/javascript">
+            function onSelect(e) {
+                if (e.item) {
+                    var dataItem = this.dataItem(e.item);
+                    kendo.ui.progress($("#searchForm"), true);
+                    
+                    $.when($.get("@Url.Action("DynamicFormFields", "Home")", { id: dataItem.IdArchive })
+                                .done(function (result) {
+                                    $("#dynamicSearchControls").html(result);
+                                    $("#dynamicSearchControls").fadeIn(200);
+                                    $("#searchButton").data("kendoButton").enable(true);
+                                })
+                                .fail(function (err) {
+                                    alert("Errore in lettura dei metadati dell'archivio selezionato.");
+                                    $("#searchButton").data("kendoButton").enable(false);
+                        }),
+                        $.get("@Url.Action("DistributionPackagesGrid", "Home")", { id: dataItem.IdArchive })
+                            .done(function (result) {
+                                $("#searchGridResult").html(result);
+                            }))
+                       .always(function (e) {
+                           kendo.ui.progress($("#searchForm"), false);
+                       });
+                } else {
+                    $("#dynamicSearchControls").fadeOut(200);
+                    $("#searchButton").data("kendoButton").enable(false);
+                }
+            }
+        </script>
+    </div>
+}

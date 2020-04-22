@@ -1,0 +1,135 @@
+﻿<%@ Master Language="VB" AutoEventWireup="false" CodeBehind="Base.master.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.Base" EnableTheming="true" %>
+
+<%@ Import Namespace="VecompSoftware.DocSuiteWeb.Data" %>
+<%@ Import Namespace="System.Web.Optimization" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' runat="server">
+<head runat="server">
+    <title runat="server" id="headTitle"></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <asp:PlaceHolder runat="server">
+        <%: Styles.Render("~/bundles/css")%>
+        <%: Styles.Render("~/bundles/browserConditions")%>
+    </asp:PlaceHolder>
+    <asp:ContentPlaceHolder ID="cphHead" runat="server" />
+</head>
+<body runat="server" id="body">
+    <form id="frm" action="" method="post" runat="server">
+        <%-- Navigazione Griglia --%>
+        <telerik:RadScriptManager EnableHistory="false" EnablePartialRendering="true" EnableSecureHistoryState="false" ID="scmMasterPage" runat="server" SupportsPartialRendering="true">
+            <Scripts>
+                <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.Core.js" />
+                <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQuery.js" />
+                <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQueryInclude.js" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+            </Scripts>
+        </telerik:RadScriptManager>
+        <telerik:RadStyleSheetManager runat="server" EnableStyleSheetCombine="true" OutputCompression="AutoDetect">
+            
+        </telerik:RadStyleSheetManager>
+        <telerik:RadScriptBlock runat="server">
+            <!--[if lte IE 9]>
+                <script type="text/javascript" src="../Scripts/jquery.xdomainrequest.min.js"></script>
+            <![endif]-->
+            <script type="text/javascript" src="../Scripts/dsw.extensions.js"></script>
+        </telerik:RadScriptBlock>
+        <%-- Trucco telerik, lasciare qui --%>
+        <telerik:RadScriptBlock ID="rsbGrid" runat="server">
+            <script type="text/javascript" language="javascript">
+                <%-- Aggiungo al namespace della pagina il simbolo di jQuery preso dalla versione telerik --%>
+                window.$ = $telerik.$;
+
+                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+                function EndRequestHandler(sender, args) {
+                    if (args.get_error() != undefined) {
+                        args.set_errorHandled(true);
+                        alert("Errore caricamento pagina.\n<%=DocSuiteContext.Current.ProtocolEnv.DefaultErrorMessage%>");
+                    }
+                }
+
+                function OpenMailWindow(url, width, height) {
+                    var manager = $find("<%=alertManager.ClientID %>");
+                    var wnd = manager.open(url, "wndMain");
+                    wnd.setSize(width, height);
+                    wnd.set_title("Creazione Mail");
+                    wnd.center();
+                    return false;
+                }
+
+                WindowTypeEnum = {
+                    SMALL: 0,
+                    NORMAL: 1,
+                    MAXIMIZED: 2,
+                    FULLMAX: 3,
+                    DOCUMENTS: 4,
+                    SLENDER: 5
+                };
+
+                function DSWOpenGenericWindow(url, windowType) {
+                    var me = GetRadWindow();
+                    if (me) {
+                        // Sono dentro una finestra che rappresenta l'HOST
+                        return me.BrowserWindow.DSWOpenGenericWindow(url, windowType);
+                    }
+
+                    var width = null, height = null;
+                    switch (windowType) {
+                    case WindowTypeEnum.SMALL:
+                        width = <%= DocSuiteContext.Current.ProtocolEnv.PECSimpleModeWidth%>;
+                        height = <%= DocSuiteContext.Current.ProtocolEnv.PECSimpleModeHeight%>;
+                        break;
+                    case WindowTypeEnum.DOCUMENTS:
+                        width = 600;
+                        height = 160;
+                        break;
+                    case WindowTypeEnum.SLENDER:
+                        width = 330;
+                        height = 440;
+                        break;
+                    case WindowTypeEnum.FULLMAX:
+                        height = me.get_height();
+                        width = me.get_width() - 50;
+                        break;
+                    }
+
+                    var manager = $find("<%=alertManager.ClientID %>");
+                    var wnd = manager.open(url, null, null, width, height);
+
+                    if (windowType === WindowTypeEnum.FULLMAX) {
+                        wnd.maximize();
+                        wnd.set_visibleTitlebar(false);
+                        wnd.set_visibleStatusbar(false);
+                    }
+
+                    wnd.add_pageLoad(function () {
+                        wnd.setActive(true);
+                    });
+
+                    return wnd;
+                }
+
+            </script>
+        </telerik:RadScriptBlock>
+
+        <telerik:RadAjaxManager ID="masterAjaxManager" runat="server" UpdatePanelsRenderMode="Inline" />
+
+        <telerik:RadAjaxLoadingPanel ID="DefaultLoadingPanel" runat="server" />
+        <telerik:RadAjaxLoadingPanel ID="FlatLoadingPanel" runat="server" Transparency="25">
+            <div style="background-color: #fff; height: 100%; width: 100%;">
+                <asp:Image AlternateText="Caricamento" ID="Image1" ImageUrl="~/App_Themes/DocSuite2008/images/loading1.gif" runat="server" />
+            </div>
+        </telerik:RadAjaxLoadingPanel>
+
+        <telerik:RadWindowManager EnableViewState="False" ID="alertManager" runat="server">
+            <Windows>
+                <telerik:RadWindow ID="wndMain" runat="server" />
+            </Windows>
+        </telerik:RadWindowManager>
+        
+        <asp:ContentPlaceHolder ID="cphMain" runat="server" />
+    </form>
+</body>
+</html>

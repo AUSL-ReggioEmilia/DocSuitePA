@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/CryptoType" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/CryptoType" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="CryptoType">
+    <xs:annotation>
+      <xs:appinfo>
+        <ActualType Name="unsignedByte" Namespace="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TYPE_UNKNOWN" />
+      <xs:enumeration value="TYPE_SHA1" />
+      <xs:enumeration value="TYPE_SHA256" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="CryptoType" nillable="true" type="tns:CryptoType" />
+</xs:schema>

@@ -1,0 +1,35 @@
+﻿.idp-button-idp-logo img {
+    background-repeat: no-repeat;
+    margin: 0;    
+    padding: 0;
+}
+
+.spid-dropdown-toggle {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.spid-dropdown-menu {
+    padding: 0 !important;
+    border: 0 !important;
+}
+
+.spid-login-container {
+    max-width: 600px;
+    margin-top: 100px;
+}
+
+.italia-it-button-size-m.federa{
+    width: 270px;
+}
+
+
+.federa-button {
+    color: white !important;
+    background-color: #F36D2A !important;
+}
+
+    .federa-button:hover {
+        color: white !important;
+        background-color: #EF4107 !important;
+    }

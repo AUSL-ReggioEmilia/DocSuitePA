@@ -1,0 +1,26 @@
+﻿
+enum UpdateActionType {
+    FascicleClose = 0,
+    TemplateCollaborationPublish = 1,
+    RoleUserTemplateCollaborationInvalid = 2,
+    ActivityFascicleUpdate = RoleUserTemplateCollaborationInvalid * 2,
+    ActivityFascicleClose = ActivityFascicleUpdate * 2,
+    ProtocolArchivedUpdate = ActivityFascicleClose * 2,
+    HandlingWorkflow = ProtocolArchivedUpdate * 2,
+    RelaseHandlingWorkflow = HandlingWorkflow * 2,
+    RemoveFascicleFromDossierFolder = RelaseHandlingWorkflow * 2,
+    AssociatedFascicleToDossierFolder = RemoveFascicleFromDossierFolder * 2,
+    CompleteDematerialisationWorkflow = AssociatedFascicleToDossierFolder * 2,
+    DossierFolderAuthorizationsPropagation = CompleteDematerialisationWorkflow * 2,
+    CompleteSecureDocumentWorkflow = DossierFolderAuthorizationsPropagation * 2,
+    UpdateCategory = CompleteSecureDocumentWorkflow * 2,
+    PeriodicFascicleClose = UpdateCategory * 2,
+    ActivateProtocol = PeriodicFascicleClose * 2,
+    OpenFascicleClosed = ActivateProtocol * 2,
+    CancelFascicle = OpenFascicleClosed * 2,
+    PECMailManaged = CancelFascicle * 2,
+    PECMailInvoiceTenantCorrection = PECMailManaged * 2,
+    FascicleMoveToFolder = PECMailInvoiceTenantCorrection * 2
+}
+
+export = UpdateActionType;

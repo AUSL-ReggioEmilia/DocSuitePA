@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/PreservationInStorageDevice" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationInStorageDevice" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationStorageDevice" />
+  <xs:import namespace="http://BiblosDS/2009/10/Preservation" />
+  <xs:import namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="ArrayOfPreservationInStorageDevice">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PreservationInStorageDevice" nillable="true" type="tns:PreservationInStorageDevice" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPreservationInStorageDevice" nillable="true" type="tns:ArrayOfPreservationInStorageDevice" />
+  <xs:complexType name="PreservationInStorageDevice">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/PreservationStorageDevice" minOccurs="0" name="Device" nillable="true" type="q2:PreservationStorageDevice" />
+          <xs:element minOccurs="0" name="Path" nillable="true" type="xs:string" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/Preservation" minOccurs="0" name="Preservation" nillable="true" type="q3:Preservation" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PreservationInStorageDevice" nillable="true" type="tns:PreservationInStorageDevice" />
+</xs:schema>

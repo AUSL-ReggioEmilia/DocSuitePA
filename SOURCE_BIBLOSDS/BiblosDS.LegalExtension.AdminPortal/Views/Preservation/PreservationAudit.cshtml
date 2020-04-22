@@ -1,0 +1,74 @@
+﻿@using BiblosDS.LegalExtension.AdminPortal.ViewModel.Preservations
+@model BiblosDS.LegalExtension.AdminPortal.ViewModel.Preservations.PreservationAuditViewModel
+@{
+    ViewBag.Title = "Controllo attività";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section featured{
+    <hgroup class="title">
+        <h1><span class="fab fa-audible" style="font-size: 32px; margin-right: 10px;"></span>@ViewBag.Title</h1>
+    </hgroup>
+}
+
+<div style="padding:10px 0px 15px 0px;"></div>
+
+<script type="text/javascript">
+    function searchGrid(e) {
+        e.preventDefault();
+        $("#grid").data("kendoGrid").dataSource.read();
+    }
+
+    function readData() {
+        var fromDateControl = $("#FromDate").data("kendoDatePicker");
+        var toDateControl = $("#ToDate").data("kendoDatePicker");
+        return {
+            fromDate: fromDateControl.value() != null ? fromDateControl.value().toUTCString() : null,
+            toDate: toDateControl.value() != null ? toDateControl.value().toUTCString() : null
+        }
+    }
+
+    function preservationAuditTypeFilter(e) {
+        $(e.element).kendoDropDownList({
+            dataTextField: "Description",
+            dataValueField: "IdPreservationJournalingActivity",
+            valuePrimitive: true,
+            dataSource: {                
+                transport: {
+                    read: "@Url.Action("GetPreservationAuditType", "Preservation")"
+                }
+            },
+            optionLabel: "--Seleziona una attività--"
+        });
+    }
+</script>
+
+<div class="k-block" style="padding:10px; margin-bottom: 10px;">
+    <div>
+        <span>Data da</span>
+        @Html.Kendo().DatePickerFor(x => x.FromDate).Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 200px" })
+        <span>a</span>
+        @Html.Kendo().DatePickerFor(x => x.ToDate).Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 200px" })
+        @Html.Kendo().Button().Name("gridSearchAuditButton").Events(events => events.Click("searchGrid")).Content("Cerca").Icon("search")
+    </div>
+</div>
+
+@(Html.Kendo().Grid<PreservationAuditGridViewModel>()
+        .Name("grid")
+        .Pageable()
+        .Sortable()
+        .Columns(columns =>
+        {
+            columns.Bound(o => o.ActivityDate).Format("{0:dd/MM/yyyy}").Width(150).Title("Data attività").Filterable(false);
+            columns.Bound(o => o.ActivityUser).Width(200).Sortable(false).Title("Utente").Filterable(false);
+            columns.Bound(o => o.ActivityName).Width(250).Sortable(false).Title("Nome attività").Filterable(filterable => filterable.Cell(cell => cell.ShowOperators(false).Template("preservationAuditTypeFilter")));
+            columns.Bound(o => o.Description).Sortable(false).Title("Descrizione").Filterable(false);
+            columns.Bound(o => o.IdPreservation).Width(150).Sortable(false).Title("").ClientTemplate("<a href='"+Url.Action("PreservationCheck", "Preservation")+"/#=IdPreservation#' class='k-button'>Conservazione</a>").Filterable(false);
+        })
+        .Filterable(ftb => ftb.Mode(GridFilterMode.Row).Extra(false))
+        .DataSource(datasource => datasource.Ajax()
+            .PageSize(10)
+            .Sort(sort => sort.Add("ActivityDate").Descending())
+            .Read(read => read.Action("GetPreservationAudits", "Preservation").Data("readData")))
+        .NoRecords("Nessun log trovato")
+)

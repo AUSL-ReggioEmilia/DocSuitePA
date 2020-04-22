@@ -1,0 +1,58 @@
+<Document>
+<!-- [label se esiste]%MACRO%[se non esiste]    -->
+<!-- Descrizione dei TAG utilizzati: 		-->
+<!-- %NumberSignature% 	Numero di Firme		-->
+<!-- %Signature% 	Firma Attuale		-->
+<!-- Informazioni sul Certificatore: 		-->
+<!-- %I_C%		Nazione			-->
+<!-- %I_O%		Organizzazione		-->
+<!-- %I_OU%		Unita Organizzativa	-->
+<!-- %I_CN%		Nome Completo		-->
+<!-- Informazioni sul Certificato: 		-->
+<!-- %S_O%		Organizzazione		-->
+<!-- %S_C%		Nazione			-->
+<!-- %S_CN%		Cognome/Nome/CF		--> 			
+<!-- %S_NAME%		Nominativo		-->
+<!-- %S_D%		Data di Nascita		-->
+<!-- %S_SN%		Numero Seriale		-->
+<!-- %S_Lease%		Data Rilascio		-->
+<!-- %S_Expire%		Data Scadenza		-->
+<!-- %FileName%		Nome file		-->
+<!-- %Description%	Description		-->
+<!-- Font di Default viene utilizzato se non specificato altrimenti dai vari tag -->
+<!-- Esempio Font: -->
+<!-- Font Face='Times New Roman' Size = '20' Italic = '1' Bold = '1' Underline='1' Strikeout '1' -->
+<Signature NestedSignature = '70' >
+</Signature>
+<Font Face='TIMES' Size = '10' >
+</Font>
+<!-- Titolo univoco -->    
+<Title x='130' y='100'><Font Size = '12'></Font></Title>
+<Title x='130' y='100'>La presente copia e' conforme all'originale depositato<Font Size = '12'></Font></Title>
+<Title x='130' y='100'>presso gli archivi dell'Azienda A.U.S.L. di Reggio Emilia<Font Size = '12'></Font></Title>
+<Title x='130' y='100'><Font Size = '12' Bold = '1' ></Font></Title>
+<Title x='130' y='100'><Font Size = '12' Bold = '1' ></Font></Title>
+<Title x='130' y='100'>Elenco Firme Associate al File<Font Size = '12' Bold = '1' ></Font></Title>
+<Title x='130' y='100'><Font Size = '12'></Font></Title>
+<Title x='130'>Tutte le firme interne ed esterne vengono di seguito elencate:<Font Size = '10' Italic = '1' Bold = '1' ></Font></Title>
+<Title x='130' y='100'><Font Size = '12' Bold = '1' ></Font></Title>
+<!-- Sottotitolo ripetuto ad ogni firma -->
+<SubTitle x='140'>Firma n. %Signature% di %NumberSignature%.<Font Size = '10'></Font></SubTitle>
+<Row><Font Size = '10'></Font></Row>
+<Row x='140'>Numero di Serie: %S_SN%<Font Size = '10'></Font></Row>
+<Row x='140'>Certification Authority: %I_O%<Font Size = '10'></Font></Row>
+<Row x='140'>Organizzazione: %S_O%<Font Size = '10'></Font></Row>
+<Row x='140'>Validita' certificato dal %S_Lease% al %S_Expire%<Font Size = '10' Bold = '1'></Font></Row>
+<Row x='140'>Nominativo: %S_NAME% Codice Fiscale: %S_FC%<Font Size = '10' Bold = '1'></Font></Row>
+<Row x='140'>Completo: %S_CN%<Font Size = '10' Bold = '1'></Font></Row>
+<Row x='140'>[Commento: ]%Description%[Commento: non inserito]<Font Size = '10' Bold = '1'></Font></Row>
+<Row><Font Size = '10'></Font></Row>
+<TimeStamp x='140'>TimeStamp n. %TimeStamp% di %NumberTimeStamp%.<Font Size = '10'></Font></TimeStamp>
+<RowTs><Font Size = '10'></Font></RowTs>
+<RowTs x='140'>Certification Authority: %TS_Issuer%<Font Size = '10'></Font></RowTs>
+<RowTs x='140'>Validita' certificato dal %TS_Lease% al %TS_Expire%<Font Size = '10' Bold = '1'></Font></RowTs>
+<RowTs x='140'>Subject: %TS_Subject% <Font Size = '10' Bold = '1'></Font></RowTs>
+<RowTs><Font Size = '10'></Font></RowTs>
+
+<Row></Row>
+</Document>

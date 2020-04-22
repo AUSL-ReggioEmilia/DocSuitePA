@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/PreservationStorageDevice" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationStorageDevice" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/Archive" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd33" namespace="http://BiblosDS/2009/10/PreservationInStorageDevice" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd34" namespace="http://BiblosDS/2009/10/PreservationStorageDeviceStatus" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd26" namespace="http://BiblosDS/2009/10/PreservationUser" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="ArrayOfPreservationStorageDevice">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PreservationStorageDevice" nillable="true" type="tns:PreservationStorageDevice" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPreservationStorageDevice" nillable="true" type="tns:ArrayOfPreservationStorageDevice" />
+  <xs:complexType name="PreservationStorageDevice">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/Archive" minOccurs="0" name="Archive" nillable="true" type="q2:Archive" />
+          <xs:element minOccurs="0" name="DateCreated" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateStorageDevice" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="IdPreservationStorageDevice" type="ser:guid" />
+          <xs:element minOccurs="0" name="Label" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="LastVerifyDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="Location" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="OriginalPreservationStorageDevice" nillable="true" type="tns:PreservationStorageDevice" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/PreservationInStorageDevice" minOccurs="0" name="PreservationsInDevice" nillable="true" type="q3:ArrayOfPreservationInStorageDevice" />
+          <xs:element xmlns:q4="http://BiblosDS/2009/10/PreservationStorageDeviceStatus" minOccurs="0" name="Status" nillable="true" type="q4:PreservationStorageDeviceStatus" />
+          <xs:element xmlns:q5="http://BiblosDS/2009/10/PreservationUser" minOccurs="0" name="User" nillable="true" type="q5:PreservationUser" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PreservationStorageDevice" nillable="true" type="tns:PreservationStorageDevice" />
+</xs:schema>

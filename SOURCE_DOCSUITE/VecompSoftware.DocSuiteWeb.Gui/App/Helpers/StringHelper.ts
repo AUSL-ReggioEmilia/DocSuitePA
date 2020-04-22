@@ -1,0 +1,7 @@
+﻿
+
+class StringHelper {
+    
+}
+
+export = StringHelper;

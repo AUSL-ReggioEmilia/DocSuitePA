@@ -1,0 +1,11 @@
+﻿{
+	"SearchControls": {
+		"Anno": "",
+		"Numero": "",
+		"Data": "",
+		"Tipo": "",
+		"Contenitore": "",
+		"Oggetto": ""
+	},
+	"Affinity": 7
+}

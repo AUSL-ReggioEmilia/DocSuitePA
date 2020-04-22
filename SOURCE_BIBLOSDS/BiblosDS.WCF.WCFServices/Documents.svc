@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="Documents" CodeBehind="~/App_Code/ServiceDocument.cs" %>

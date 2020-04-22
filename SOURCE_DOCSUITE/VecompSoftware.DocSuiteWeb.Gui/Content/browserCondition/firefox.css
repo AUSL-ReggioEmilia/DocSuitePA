@@ -1,0 +1,16 @@
+﻿.firefox .window-footer-wrapper {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.firefox table.dataform {
+}
+
+    .firefox table.dataform td {
+        padding: 3px 3px !important;
+    }
+
+.firefox .RadInput input.riTextBox {
+    padding: 2px 5px 1px 5px !important;
+}

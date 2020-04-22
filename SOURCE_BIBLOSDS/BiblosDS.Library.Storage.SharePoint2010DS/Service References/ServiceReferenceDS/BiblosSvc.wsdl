@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="BiblosSvc" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="BasicHttpBinding_IBiblosSvc_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <http:NegotiateAuthentication xmlns:http="http://schemas.microsoft.com/ws/06/2004/policy/http" />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="BasicHttpBinding_IBiblosSvc1_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <http:NegotiateAuthentication xmlns:http="http://schemas.microsoft.com/ws/06/2004/policy/http" />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="BasicHttpBinding_IBiblosSvc2_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <http:NtlmAuthentication xmlns:http="http://schemas.microsoft.com/ws/06/2004/policy/http" />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://win-qeagqr8a746/_vti_bin/biblosdsservices/biblosdssvc.svc/mex?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://win-qeagqr8a746/_vti_bin/biblosdsservices/biblosdssvc.svc/mex?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://win-qeagqr8a746/_vti_bin/biblosdsservices/biblosdssvc.svc/mex?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IBiblosSvc_GetCurrentWebUrl_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCurrentWebUrl" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_GetCurrentWebUrl_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCurrentWebUrlResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_ExistsDocumentSet_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExistsDocumentSet" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_ExistsDocumentSet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExistsDocumentSetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_CreateDocumentSet_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateDocumentSet" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_CreateDocumentSet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateDocumentSetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_AddToDocumentSet_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddToDocumentSet" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_AddToDocumentSet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddToDocumentSetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_GetDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocument" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_GetDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_GetFileAttributes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileAttributes" />
+  </wsdl:message>
+  <wsdl:message name="IBiblosSvc_GetFileAttributes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileAttributesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IBiblosSvc">
+    <wsdl:operation name="GetCurrentWebUrl">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBiblosSvc/GetCurrentWebUrl" message="tns:IBiblosSvc_GetCurrentWebUrl_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBiblosSvc/GetCurrentWebUrlResponse" message="tns:IBiblosSvc_GetCurrentWebUrl_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExistsDocumentSet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBiblosSvc/ExistsDocumentSet" message="tns:IBiblosSvc_ExistsDocumentSet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBiblosSvc/ExistsDocumentSetResponse" message="tns:IBiblosSvc_ExistsDocumentSet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateDocumentSet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBiblosSvc/CreateDocumentSet" message="tns:IBiblosSvc_CreateDocumentSet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBiblosSvc/CreateDocumentSetResponse" message="tns:IBiblosSvc_CreateDocumentSet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddToDocumentSet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBiblosSvc/AddToDocumentSet" message="tns:IBiblosSvc_AddToDocumentSet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBiblosSvc/AddToDocumentSetResponse" message="tns:IBiblosSvc_AddToDocumentSet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocument">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBiblosSvc/GetDocument" message="tns:IBiblosSvc_GetDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBiblosSvc/GetDocumentResponse" message="tns:IBiblosSvc_GetDocument_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFileAttributes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBiblosSvc/GetFileAttributes" message="tns:IBiblosSvc_GetFileAttributes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBiblosSvc/GetFileAttributesResponse" message="tns:IBiblosSvc_GetFileAttributes_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IBiblosSvc" type="tns:IBiblosSvc">
+    <wsp:PolicyReference URI="#BasicHttpBinding_IBiblosSvc_policy" />
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetCurrentWebUrl">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/GetCurrentWebUrl" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExistsDocumentSet">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/ExistsDocumentSet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateDocumentSet">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/CreateDocumentSet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddToDocumentSet">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/AddToDocumentSet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocument">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/GetDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileAttributes">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/GetFileAttributes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IBiblosSvc1" type="tns:IBiblosSvc">
+    <wsp:PolicyReference URI="#BasicHttpBinding_IBiblosSvc1_policy" />
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetCurrentWebUrl">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/GetCurrentWebUrl" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExistsDocumentSet">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/ExistsDocumentSet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateDocumentSet">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/CreateDocumentSet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddToDocumentSet">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/AddToDocumentSet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocument">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/GetDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileAttributes">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/GetFileAttributes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IBiblosSvc2" type="tns:IBiblosSvc">
+    <wsp:PolicyReference URI="#BasicHttpBinding_IBiblosSvc2_policy" />
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetCurrentWebUrl">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/GetCurrentWebUrl" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExistsDocumentSet">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/ExistsDocumentSet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateDocumentSet">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/CreateDocumentSet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddToDocumentSet">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/AddToDocumentSet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocument">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/GetDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileAttributes">
+      <soap:operation soapAction="http://tempuri.org/IBiblosSvc/GetFileAttributes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BiblosSvc">
+    <wsdl:port name="BasicHttpBinding_IBiblosSvc" binding="tns:BasicHttpBinding_IBiblosSvc">
+      <soap:address location="http://win-qeagqr8a746/_vti_bin/biblosdsservices/biblosdssvc.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

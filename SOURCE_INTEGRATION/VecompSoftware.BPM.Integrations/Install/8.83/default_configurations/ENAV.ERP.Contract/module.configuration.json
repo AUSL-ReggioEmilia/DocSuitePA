@@ -1,0 +1,16 @@
+﻿{
+  "ConnectionString": "Data Source=srvgeddev9999.cloudapp.net;Initial Catalog=***REMOVED***_eNavigare;User ID=sa;Pwd=Passw0rd;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=True;Max Pool Size=1024",
+  "WorkflowRepositoryId": "03396739-3CBD-461B-B1C8-225C62CB995D",
+  "MetadataRepositoryId": "12EF3085-F816-488D-81F3-4AAE33B65997",
+  "CategoryId": -32666,
+  "ContactFatherId": 15,
+  "FascicleConservation": 10,
+  "FascicleContactId": 2012,
+  "UDSRepositoryName": "Contratto",
+  "WorkflowIntegrationTopic": "workflow_integration",
+  "SecurityTopicSubscription": "SecurityToken",
+  "WorkflowCompletedTopic": "workflow_completed",
+  "WorkflowERPContrattiSubscription": "WorkflowERPContratti",
+  "TenantName": "***REMOVED***",
+  "TenantId": "F916C0BA-69CF-4589-9B13-DBA7E97CFB8F"
+}

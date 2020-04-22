@@ -1,0 +1,42 @@
+﻿namespace VecompSoftware.StampConforme.Models.SecureDocument
+{
+    public enum DOUResponseStatus
+    {
+        Ok = 0,
+        InputParameterError = 10,
+        InvalidDocumentType = 12,
+        CallerVerifyError = 30,
+        NotAuthorized = 32,
+        SaveDataToDbError = 140,
+        SaveDataToDbGenericError = 141,
+        VerifyFromDbError = 142,
+        VerifyFromDbGenericError = 143,
+        DeleteTemporaryDataError = 144,
+        DeleteTemporaryDataGenericError = 145,
+        DOUManagerInitializationError = 150,
+        DOUManagerInitializationGenericError = 151,
+        PDFNotRegistered = 190,
+        ReadArchiveConfigurationFromDbError = 200,
+        ReadArchiveConfigurationFromDbGenericError = 201,
+        ArchiverInitializationError = 210,
+        ArchiverInitializationGenericError = 211,
+        ArchiveDocumentError = 220,
+        ArchiveDocumentGenericError = 221,
+        SaveArchiveDataToDbError = 230,
+        SaveArchiveDataToDbGenericError = 231,
+        ArchiveDataNotSaved = 232,
+        GenerateDocumentHashError = 240,
+        SignDocumentHashError = 250,
+        SignDocumentHashGenericError = 251,
+        VerifyDocumentError = 260,
+        VerifyDocumentGenericError = 261,
+        ArchiveDataNotFound = 262,
+        ReadConfigurationFromDbError = 270,
+        ReadConfigurationFromDbGenericError = 271,
+        IdArchiveMatchError = 280,
+        IdServiceMathcError = 281,
+        TemporaryArchiveError = 300,
+        ConfigurationInitializeError = 400,
+        QRCodeReadError = 500
+    }
+}

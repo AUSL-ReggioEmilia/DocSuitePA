@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="keywords" content="Accesso civico atti, SPID" />
+    <meta name="description" content="Accesso civico atti tramite sistema SPID" />
+    <meta name="author" content="Vecomp Software Srl" />
+    <meta name="copyright" content="&copy; 2017" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewData["Title"] - Accesso civico atti</title>
+    <base href="~/" />
+    <link rel="stylesheet" href="~/styles.css" asp-append-version="true" />
+</head>
+<body>
+    @RenderSection("prescripts", required: false)
+    @RenderBody()
+
+    <script src="~/polyfills.js" asp-append-version="true"></script>
+    <script src="~/runtime.js" asp-append-version="true"></script>
+    <script src="~/vendor.js" asp-append-version="true"></script>
+    <script src="~/scripts.js" asp-append-version="true"></script>
+    <script src="~/main.js" asp-append-version="true"></script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

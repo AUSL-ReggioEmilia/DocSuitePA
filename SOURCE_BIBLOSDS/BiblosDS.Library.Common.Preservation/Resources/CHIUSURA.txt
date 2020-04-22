@@ -1,0 +1,20 @@
+File di chiusura dei documenti elencati nel percorso: <%PERCORSO%>
+Nome File Indice: <%FILE_INDICE%>
+Generato il <%DATA_ORA%>
+Tipo evidenza informatica: <%EVIDENZA_INFORMATICA%>
+Evidenza informatica file indice (formato Hex): <%EVIDENZA_INDICE_TXT%>
+Evidenza informatica file indice XML (formato Hex): <%EVIDENZA_INDICE_XML%>
+Evidenza informatica foglio di stile di visualizzazione (formato Hex): <%EVIDENZA_INDICE_XSL%>
+Riferimento Azienda:<%AZIENDA%>  P.IVA <%PIVA_AZIENDA%>
+Responsabile Conservazione: <%RESPONSABILE%> 
+Nome Archivio: <%ARCHIVIO%>
+Tipo Documenti: <%TIPO_DOCUMENTI%>
+Numero Documenti: <%NUMERO_DOCUMENTI%>
+Data Primo Documento: <%DATA_PRIMO_DOCUMENTO%>
+Data Ultimo Documento: <%DATA_ULTIMO_DOCUMENTO%>
+Identificativo Conservazione Sostitutiva: <%ID_CONSERVAZIONE%>
+Il file indice esplicita i seguenti campi:
+<%ELENCO_CAMPI%>
+<%GRUPPI%>
+<%ECCEZIONI%>
+

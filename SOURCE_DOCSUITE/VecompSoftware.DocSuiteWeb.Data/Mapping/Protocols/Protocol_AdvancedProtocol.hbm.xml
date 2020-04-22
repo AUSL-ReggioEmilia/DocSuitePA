@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="Protocol+AdvancedProtocol" table="AdvancedProtocol">
+    
+    <composite-id class="YearNumberCompositeKey" name="Id" unsaved-value="any">
+      <key-property column="Year" name="Year" />
+      <key-property column="Number" name="Number" />
+    </composite-id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    <property name="Year" column="Year" insert="false" update="false" />
+    <property name="Number" column="Number" insert="false" update="false" />
+    <property name="ServiceCategory" column="ServiceCategory" type="AnsiString" />
+    <property name="Subject" column="Subject" type="AnsiString" />
+    <property name="ServiceField" column="ServiceField" type="AnsiString" />
+    <property name="Note" column="Note" type="AnsiString" />
+    <property name="PackageOrigin" column="Origin" type="AnsiChar" />
+    <property name="Package" column="Package" />
+    <property name="PackageLot" column="Lot" />
+    <property name="PackageIncremental" column="Incremental" />
+    <property name="InvoiceNumber" column="InvoiceNumber" />
+    <property name="InvoiceDate" column="InvoiceDate" />
+    <property name="InvoiceTotal" column="InvoiceTotal" />
+    <property name="AccountingSectional" column="AccountingSectional" type="AnsiString" />
+    <property name="AccountingSectionalNumber" column="AccountingSectionalNumber" />
+    <property name="AccountingYear" column="AccountingYear" />
+    <property name="AccountingDate" column="AccountingDate" />
+    <property name="AccountingNumber" column="AccountingNumber" />
+    <property name="IdentificationSDI" column="IdentificationSDI"/>
+    <property name="IsClaim" column="IsClaim" />
+    <property name="InvoiceYear" column="InvoiceYear" generated="always" insert="false" update="false"/>
+
+    <property name="UniqueId">
+      <column name="UniqueId" not-null="true" unique="true" />
+    </property>
+
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+
+    <property name="UniqueIdProtocol">
+      <column name="UniqueIdProtocol" not-null="true"/>
+    </property>
+
+    <many-to-one name="Status" column="ProtocolStatus" class="ProtocolStatus" />    
+    <many-to-one name="Protocol" class="Protocol" insert="false" update="false">
+      <column name="Year" />
+      <column name="Number" />
+    </many-to-one>
+    
+  </class>
+
+</hibernate-mapping>

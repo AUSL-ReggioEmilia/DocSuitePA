@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ResolutionMessage">
+    
+    <id name="Id" column="idResolutionMessage">
+      <generator class="native" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+
+    <property name="UniqueId" column="UniqueId" unique="true" />
+    <property name="UniqueIdResolution" column="UniqueIdResolution" not-null="true" />
+
+    <many-to-one name="Resolution" class="Resolution" column="IdResolution" cascade="none" insert="true" update="true" not-null="true" />
+    <many-to-one name="Message" column="IdMessage" class="DSWMessage" not-null="true" />
+    
+  </class>
+
+</hibernate-mapping>

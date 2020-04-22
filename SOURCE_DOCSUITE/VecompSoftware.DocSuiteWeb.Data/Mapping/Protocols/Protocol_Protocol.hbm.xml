@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="Protocol" table="Protocol">
+    
+    <composite-id class="YearNumberCompositeKey" name="Id">
+      <key-property column="Year" name="Year" />
+      <key-property column="Number" name="Number" />
+    </composite-id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    <property name="Year" column="Year" insert="false" update="false" />
+    <property name="Number" column="Number" insert="false" update="false" />
+    <property name="ProtocolObject" column="Object" type="AnsiString" />
+    <property name="DocumentDate" column="DocumentDate" />
+    <property name="DocumentProtocol" column="DocumentProtocol" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="DocumentCode" column="DocumentCode" type="AnsiString" />
+    <property name="IdStatus" column="idStatus" />
+    <property name="IdDocument" column="idDocument" />
+    <property name="IdAttachments" column="idAttachments" />
+    <property name="IdAnnexed" column ="idAnnexed" />
+    <property name="LastChangedReason" column="LastChangedReason" type="AnsiString" />
+    <property name="AlternativeRecipient" column="AlternativeRecipient" type="AnsiString" />
+    <property name="_checkPublication" column="CheckPublication" access="field" type="AnsiString" />
+    <property name="IsModified" column="Modified" />
+    <property name="IdHummingbird" column="IdHummingbird" />
+    <property name="ObjectChangeReason" column="ObjectChangeReason" type="AnsiString" />
+    <property name="JournalDate" column="JournalDate" />
+    <property name="CheckDate" column="ProtocolCheckDate" />
+    <property name="ConservationStatus" column="ConservationStatus" type="AnsiChar" />
+    <property name="LastConservationDate" column="LastConservationDate" />
+    <property name="HasConservatedDocs" column="HasConservatedDocs" />
+    <property name="TDIdDocument" column="TdIdDocument" />
+    <property name="TDError" column="TDError" type="AnsiString" />
+    <property name="HandlerDate" column="HandlerDate" />
+    <property name="IdProtocolKind" column="idProtocolKind" />
+    <property name="UniqueId" column="UniqueId" unique="true" />
+    <property name="DematerialisationChainId" column="DematerialisationChainId" />
+    <one-to-one fetch="join" cascade="all-delete-orphan" class="Protocol+AdvancedProtocol" name="AdvanceProtocol" outer-join="false" constrained="false" />
+    
+    <component class="DocAreaImportStatus" name="DocAreaImportStatus">
+      <property name="Code" column="DocAreaStatus" />
+      <property name="Description" column="DocAreaStatusDesc" />
+    </component>
+
+    <many-to-one class="Location" name="Location" column="idLocation" />
+    <many-to-one class="Location" name="AttachLocation" column="idAttachLocation" />
+    <many-to-one class="Container" name="Container" column="idContainer" />
+    <many-to-one class="Category" name="Category" column="IdCategoryAPI" />
+    <many-to-one class="DocumentType" name="DocumentType" column="idDocType" />
+    <many-to-one class="ProtocolType" name="Type" column="idType" />
+    <many-to-one name="JournalLog" class="ProtocolJournalLog" column="IdProtocolJournalLog" />
+    <many-to-one name="ProtocolParer" class="ProtocolParer" insert="false" update="false">
+      <column name="Year" />
+      <column name="Number" />
+    </many-to-one>
+
+    <bag name="RoleUsers" table="ProtocolRoleUser" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="ProtocolRoleUser" />
+    </bag>
+    <bag name="Roles" table="ProtocolRole" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="ProtocolRole" />
+    </bag>
+    <bag name="ProtocolLinked" table="ProtocolLinks" cascade="none" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <many-to-many class="Protocol">
+        <column name="YearSon" />
+        <column name="NumberSon" />
+      </many-to-many>
+    </bag>
+    <bag inverse="true" table="ProtocolContactIssue" cascade="none" name="ContactIssues">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="ProtocolContactIssue" />
+    </bag>
+    <bag name="ProtocolLinkedTo" table="ProtocolLinks" cascade="none" inverse="true">
+      <key>
+        <column name="YearSon" />
+        <column name="NumberSon" />
+      </key>
+      <many-to-many class="Protocol">
+        <column name="Year" />
+        <column name="Number" />
+      </many-to-many>
+    </bag>
+    <bag name="Recipients" table="ProtocolRecipient" cascade="none" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <many-to-many class="Recipient" column="idRecipient">
+      </many-to-many>
+    </bag>
+    <bag name="Contacts" table="ProtocolContact" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="ProtocolContact" />
+      <filter condition=":Type=ComunicationType" name="ContactComType">
+      </filter>
+    </bag>
+    <bag name="ManualContacts" table="ProtocolContactManual" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="ProtocolContactManual" />
+      <filter condition=":Type=ComunicationType" name="ManualContactComType">
+      </filter>
+    </bag>
+    <bag name="PecMails" table="PECMail" where="DocumentUnitType=1" cascade="none" inverse="true" fetch="join">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="PECMail" />
+    </bag>
+    <bag name="ProtocolLogs" table="ProtocolLog" cascade="none" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="ProtocolLog" />
+      <filter condition=":User=SystemUser" name="LogUser" />
+      <filter condition=":Type=LogType" name="LogType" />
+    </bag>
+    <bag name="Messages" table="ProtocolMessage" cascade="none" inverse="true" fetch="select">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="ProtocolMessage" />
+    </bag>
+    <bag name="TaskHeader" table="TaskHeaderProtocol" cascade="none" inverse="true" >
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <many-to-many class="TaskHeader" column="IdTaskHeader" />
+    </bag>
+    <bag name="Users" table="ProtocolUsers" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="ProtocolUser" />
+    </bag>
+    <bag name="RejectedRoles" table="ProtocolRejectedRoles" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="ProtocolRejectedRole" />
+    </bag>
+    <bag name="ProtocolDocumentSeriesItems" table="ProtocolDocumentSeriesItems" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="ProtocolDocumentSeriesItem" />
+    </bag>
+  </class>
+
+  <filter-def name="ContactComType">
+    <filter-param name="Type" type="AnsiString" />
+  </filter-def>
+
+  <filter-def name="ManualContactComType">
+    <filter-param name="Type" type="AnsiString" />
+  </filter-def>
+
+  <filter-def name="LogUser">
+    <filter-param name="User" type="AnsiString" />
+  </filter-def>
+
+  <filter-def name="LogType">
+    <filter-param name="Type" type="AnsiString" />
+  </filter-def>
+  
+</hibernate-mapping>

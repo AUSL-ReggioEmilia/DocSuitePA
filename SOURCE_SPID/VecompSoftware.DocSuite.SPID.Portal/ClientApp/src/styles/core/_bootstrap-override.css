@@ -1,0 +1,38 @@
+﻿.panel-default {
+    border: 1px solid #c5d6d3;
+}
+
+.form-control {
+    border: 1px solid #c5d6d3;
+}
+
+.list-group-item {
+    padding: 12px 15px;
+}
+
+.navbar-default .navbar-brand {
+    color: #536c79;
+}
+
+.alert {
+    padding: 5px;
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: 7px;
+}
+
+.btn-success {
+    background-color: rgb(139, 195, 74);
+    border-color: rgb(104, 159, 56);
+}
+
+    .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active {
+        background-color: rgb(104, 159, 56);
+    }
+
+.dropdown-toggle{
+    padding-top: 11px !important;
+    padding-bottom: 11px !important;
+}

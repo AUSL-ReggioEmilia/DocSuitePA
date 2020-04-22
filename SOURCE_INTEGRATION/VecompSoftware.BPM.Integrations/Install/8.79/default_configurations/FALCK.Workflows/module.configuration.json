@@ -1,0 +1,37 @@
+﻿{
+  "ConnectionString": "Data Source=SRVAZVSDEV.cloudapp.net;Initial Catalog=FALCK_NAVISIO;persist security info=True;MultipleActiveResultSets=True;Max Pool Size=1024;user id=sa;password=Passw0rd;",
+  "UDSTopic": "uds_event",
+  "UDSSubscriptionSuccess": "create_operation",
+  "UDSSubscriptionError": "error_operation",
+  "ArchiveName_RDA": "RDA",
+  "ArchiveName_ODA": "ODA",
+  "ArchiveName_VendorInvoice": "VENDOR INVOICE",
+  "ArchiveName_VendorCreditMemo": "VENDOR CREDIT MEMO",
+  "ArchiveName_CustomerInvoice": "",
+  "ArchiveName_CustomerCreditMemo": "",
+  "Contact_RootId": 1,
+  "TenantName": "FLCK",
+  "TenantId": "DE5FE1FE-74E7-407C-9E18-F5CE0D9D283D",
+  "WorkflowTopic": "workflow_event",
+  "WorkflowSubscriptionSuccess": "workflow_success",
+  "WorkflowStarterName": "AVVIATORE",
+  "AttachmentsPath": "\\\\SRVCOREFS\\CoreAppT2$\\NAV\\Interf\\WfDocSuite",
+  "DropsPath": "\\\\SRVCOREFS\\CoreAppT2$\\NAV\\Interf\\WfDocSuite\\_drops",
+  "GeneralConditionFileName": "\\\\SRVCOREFS\\CoreAppT2$\\NAV\\Interf\\WfDocSuite\\default_ODA\\",
+  "ExternalViewerBaseUrl": "http://localhost/ExternalViewer/",
+  "CollaborationBiblosArchiveName": "Collaborazioni",
+  "LimitPCLCY": 0,
+  "LimitLCY": 8000,
+  "LimitProcurementResponsibleLCY": 300000,
+  "Country": "IT",
+  "ValidWorkflows": [
+    "RDA_EMERGENZA",
+    "RDA_STANDARD",
+    "RDA_NON_STANDARD",
+    "RDA_SOTTO_SOGLIA",
+    "ODA_STANDARD",
+    "FATTURA_PASSIVA",
+    "NOTA_ACCREDITO_PASSIVA"
+  ]
+
+}

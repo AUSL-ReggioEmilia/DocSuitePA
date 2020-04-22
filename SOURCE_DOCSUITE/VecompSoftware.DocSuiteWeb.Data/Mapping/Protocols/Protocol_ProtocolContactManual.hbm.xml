@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolContactManual" table="ProtocolContactManual">
+    
+    <composite-id class="YearNumberIdCompositeKey" name="Id" unsaved-value="any">
+      <key-property column="Year" name="Year" />
+      <key-property column="Number" name="Number" />
+      <key-property column="Incremental" name="Id" />
+    </composite-id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    <property column="ComunicationType" name="ComunicationType" type="AnsiString" />
+    <property name="Type" column="Type" type="AnsiString" />
+    <property name="IdAD" column="idAD" type="AnsiString" />
+
+    <property name="UniqueId">
+      <column name="UniqueId" not-null="true" unique="true" />
+    </property>
+
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+
+    <property name="UniqueIdProtocol">
+      <column name="UniqueIdProtocol" not-null="true"/>
+    </property>
+
+    <property name="SDIIdentification">
+      <column name="SDIIdentification" not-null="false"/>
+    </property>
+
+    <component class="Contact" name="Contact">
+      <many-to-one name="ContactType" column="IdContactType" class="ContactType" />
+      <property name="FullIncrementalPath" column="FullIncrementalPath" />
+      <property name="Description" column="Description" />
+      <property name="BirthDate" column="BirthDate" />
+      <property name="BirthPlace" column="BirthPlace" />
+      <property name="Code" column="Code" />
+      <property name="FiscalCode" column="FiscalCode" />
+      <property name="TelephoneNumber" column="TelephoneNumber" />
+      <property name="FaxNumber" column="FaxNumber" />
+      <property name="EmailAddress" column="EMailAddress" />
+      <property name="CertifiedMail" column="CertifydMail" />
+      <property name="Note" column="Note" />
+      <component class="Address" name="Address">
+        <many-to-one name="PlaceName" column="IdPlaceName" class="ContactPlaceName" lazy="false">
+        </many-to-one>
+        <property name="Address" column="Address" />
+        <property name="CivicNumber" column="CivicNumber" />
+        <property name="ZipCode" column="ZipCode" />
+        <property name="City" column="City" />
+        <property name="CityCode" column="CityCode" />
+        <property name="Nationality" column="Nationality" />
+        <property name="Language" column="Language" />
+      </component>
+      <many-to-one name="StudyTitle" class="ContactTitle" column="idTitle">
+      </many-to-one>
+    </component>
+    
+    <many-to-one name="Protocol" class="Protocol" insert="false" update="false">
+      <column name="Year" />
+      <column name="Number" />
+    </many-to-one>
+    
+  </class>
+
+</hibernate-mapping>

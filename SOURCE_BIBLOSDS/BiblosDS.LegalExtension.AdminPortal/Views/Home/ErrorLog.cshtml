@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Error";
+}
+
+<h2>Error</h2>
+
+
+ @(Html.Kendo().Grid<BiblosDS.LegalExtension.AdminPortal.Models.LogModel>()
+      .Name("Grid")
+      .Columns(columns =>
+      {          
+          columns.Bound(o => o.Timestamp).Width(150);
+          columns.Bound(o => o.Level).Width(50);
+          columns.Bound(o => o.Message).Width(300);
+          columns.Bound(o => o.RoleInstance);
+          columns.Bound(o => o.DeploymentId);           
+          columns.Bound(o => o.LoggerName); 
+          columns.Bound(o => o.Domain);          
+          columns.Bound(o => o.ThreadName); 
+          columns.Bound(o => o.Identity);       
+      })
+      .Resizable(a => a.Columns(true))      
+      .Scrollable()
+      .Filterable()
+      .Pageable(pager => pager.Refresh(true))       
+           .HtmlAttributes(new { style = "height: 600px;" })
+      .DataSource(dataSource => dataSource
+          .Ajax()                  
+          .PageSize(25)                              
+          .Read(read => read.Action("ReadLogs", "Home", new { table = Request.QueryString["table"], tmp = DateTime.Now.Ticks }))
+      )
+)

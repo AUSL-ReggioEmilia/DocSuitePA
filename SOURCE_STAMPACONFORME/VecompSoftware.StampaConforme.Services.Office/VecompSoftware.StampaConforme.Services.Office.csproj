@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E476086D-1095-4711-8359-76B418F6F984}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.StampaConforme.Services.Office</RootNamespace>
+    <AssemblyName>VecompSoftware.StampaConforme.Services.Office</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mail, Version=3.0.18151.1319, Culture=neutral, PublicKeyToken=6dc438ab78a525b3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mail.3.0.18151.1319\lib\net461\Mail.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Commons, Version=8.79.0.0, Culture=neutral, PublicKeyToken=cd4cbb031a2ae285, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.8.79.19078.2\lib\net461\VecompSoftware.Commons.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=8.80.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.8.80.19092.2\lib\net461\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.EnterpriseLogging, Version=8.80.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.EnterpriseLogging.8.80.19092.2\lib\net461\VecompSoftware.DocSuiteWeb.EnterpriseLogging.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.LimilabsMail, Version=8.79.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.LimilabsMail.8.79.19078.2\lib\net461\VecompSoftware.Helpers.LimilabsMail.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Connected Services\StampaConformeWS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="ExcelToPdfService.cs" />
+    <Compile Include="OfficeToPdfService.cs" />
+    <Compile Include="OutlookToPdfService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WordToPdfService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\StampaConformeWS\BiblosDSConv.wsdl" />
+    <None Include="Connected Services\StampaConformeWS\configuration91.svcinfo" />
+    <None Include="Connected Services\StampaConformeWS\configuration.svcinfo" />
+    <None Include="Connected Services\StampaConformeWS\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\BiblosDSConv.disco" />
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.StampaConforme.Interfaces.Common\VecompSoftware.StampaConforme.Interfaces.Common.csproj">
+      <Project>{98096569-326d-452c-97f2-ffd6ff7f4fa2}</Project>
+      <Name>VecompSoftware.StampaConforme.Interfaces.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.StampaConforme.Interfaces.Office\VecompSoftware.StampaConforme.Interfaces.Office.csproj">
+      <Project>{f0deab21-b095-46b7-ae17-12a4384d11f2}</Project>
+      <Name>VecompSoftware.StampaConforme.Interfaces.Office</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.StampaConforme.Models\VecompSoftware.StampaConforme.Models.csproj">
+      <Project>{8263d33b-0bbd-4369-ba90-d08d807bbc0a}</Project>
+      <Name>VecompSoftware.StampaConforme.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.CreateSecureDocumentResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.GetNumberOfPagesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.GetVersionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.PdfToPngThumbnailResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.stDoc.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.ToRasterFormatExBoxResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.ToRasterFormatExParametersResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.ToRasterFormatExResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.ToRasterFormatRgResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.ToRasterFormatRgWatermarkedResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.ToRasterFormatWatermarkedResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.ToRasterXmlWithStylesheetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\StampaConformeWS\VecompSoftware.StampaConforme.Services.Office.StampaConformeWS.UploadSecureDocumentResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\StampaConformeWS\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

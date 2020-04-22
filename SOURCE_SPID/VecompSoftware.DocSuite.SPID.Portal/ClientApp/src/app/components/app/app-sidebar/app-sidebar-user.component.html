@@ -1,0 +1,16 @@
+<li role="separator" class="divider"></li>
+<li>
+    <div class="nav-dropdown" appNavDropdown>
+        <a class="list-group-item" href="#user" aria-hidden="true" data-toggle="collapse" appNavDropdownToggle>
+            <i class="fa fa-user-circle-o"></i>&nbsp;{{userLoggedDescription}}
+            <i class="fa fa-chevron-down nested-icon"></i>
+        </a>
+        <ul class="list-group collapse animated fadeIn" id="user">
+            <li>
+                <a routerLink="" (click)="logOut()" class="list-group-item" aria-hidden="true">
+                    <span class="item-nested"><i class="fa fa-power-off"></i>&nbsp;Esci</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</li>

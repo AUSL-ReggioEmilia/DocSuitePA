@@ -1,0 +1,66 @@
+﻿{
+  "0": {
+    "Position": 0,
+    "Name": "Crea collaborazione",
+    "AuthorizationType": 4,
+    "ActivityOperation": {
+      "Action": "Create",
+      "Area": "Collaboration"
+    },
+    "ActivityType": 6,
+    "InputArguments": [
+      {
+        "Name": "_dsw_p_WorkflowLabel",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Operation",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Model",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_CollaborationManaged",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": [
+      {
+        "Name": "_dsw_e_CollaborationId",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ]
+  }
+}

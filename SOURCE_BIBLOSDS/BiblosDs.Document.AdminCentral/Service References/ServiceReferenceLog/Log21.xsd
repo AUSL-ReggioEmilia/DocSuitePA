@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/LogResponse" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/LogResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/RuleOperator" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/ResponseBase" />
+  <xs:complexType name="LogResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/ResponseBase" base="q1:ResponseBase">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/RuleOperator" minOccurs="0" name="Logs" nillable="true" type="q2:ArrayOfLog" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="LogResponse" nillable="true" type="tns:LogResponse" />
+</xs:schema>

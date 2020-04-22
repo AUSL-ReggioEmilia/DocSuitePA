@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="DocumentSeriesIncremental" table="DocumentSeriesIncremental">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <property name="Year" column="Year" />
+    <property name="LastUsedNumber" column="LastUsedNumber" />
+    <property name="IsOpen" column="IsOpen" />
+  
+    <many-to-one class="DocumentSeries" name="DocumentSeries" column="IdDocumentSeries" cascade="none" />
+  
+  </class>
+  
+</hibernate-mapping>

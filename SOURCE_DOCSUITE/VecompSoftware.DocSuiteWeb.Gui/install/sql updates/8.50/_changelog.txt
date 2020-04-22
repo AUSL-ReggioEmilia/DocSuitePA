@@ -1,0 +1,71 @@
+﻿Epic 3253: [DSW] Modulo Workflow e UDS in DocSuite
+
+Feature 3252: [***REMOVED***] Integrazione modulo contratti ERP Oracle
+Feature 3275: [AUSL-RE] Porting Tavoli da DSW a WebApi
+Feature 3279: [AUSL-RE] Porting Collaborazione da DSW a WebApi
+Feature 3283: [AUSL-RE] Porting Message e Security da DSW a WebApi
+Feature 3383: [AUSL-RE ASMN-RE] Modifiche SQL
+Feature 3389: [AUSL-RE ***REMOVED***] Porting DSW 8.50 nuove Telerik
+Feature 3399: [DSW] Import UDS Designer
+Feature 3482: [DSW] Workflow designer / Workflow studio
+Feature 3487: [DSW] Gestione workflow activity
+Feature 3601: [***REMOVED***] Integrazione UDS in DSW e Web API
+Feature 3699: [DSW] Viste di scivania di Workflow
+Feature 3707: [DSW] UDS inserimento, modifica, ricerca e visualizzazione
+Feature 4028: [DSW] Workflow UI
+
+User Story 2826: [DSW] Spostamento Tabella Tender da Atti a Protocollo
+User Story 3276: [AUSL-RE] Creazione entità e mappatura
+User Story 3277: [AUSL-RE] Creazione Validation
+User Story 3278: [AUSL-RE] Creazione controller e servizi
+User Story 3280: [AUSL-RE] Creazione entità e mappatura
+User Story 3281: [AUSL-RE] Creazione validation
+User Story 3282: [AUSL-RE] Creazione controller e servizi
+User Story 3284: [AUSL-RE] Creazione entità e mappatura
+User Story 3285: [AUSL-RE] Creazione validation
+User Story 3286: [AUSL-RE] Creazione controller e servizi
+User Story 3384: [AUSL-RE] DateTime to DateTimeOffset
+User Story 3387: [AUSL-RE] Modifica RegistrationDate
+User Story 3388: [AUSL-RE] Pulizia tabelle non usate e sistemazione nomi delle colonne "Changed"
+User Story 3390: [DSW] Aggiornare librerie Telerik .Net 4.5
+User Story 3391: [DSW] Modifica Master Page e rimozione compatiblity mode
+User Story 3392: [AUSL-RE ***REMOVED***]Modifica stili pagine e User Control DSW
+User Story 3400: [AUSL-RE] Porting sito e librerie Uds Designer in DSW 8.50
+User Story 3408: [***REMOVED***] UI - Introduzione della scrivania dei Workflow
+User Story 3409: [***REMOVED***] CORE - Introduzione canale comunicativo WebAPI
+User Story 3411: [***REMOVED***] DAL - Predisposizione strutture di persistenza Workflow
+User Story 3488: [DSW] Wrapper Http client
+User Story 3489: [DSW] Workflow base activity
+User Story 3490: [DSW] Webapi PushMessage al Workflow
+User Story 3491: [DSW] Pubblicazione Workflow e activity
+User Story 3512: [DSW] Aggiornare le sql script alter table in docsuite
+User Story 3513: [DSW] Aggiornare entity dell web api per workflow
+User Story 3514: [DSW] Aggiornare Facade/Dao/Entity dsw
+User Story 3515: [DSW] Workflow Studio
+User Story 3602: [***REMOVED***] UDS : Data Layer
+User Story 3603: [***REMOVED***] UDS : Business Layer
+User Story 3604: [***REMOVED***] UDS : Controller
+User Story 3605: [***REMOVED***] UDS : DSW UI
+User Story 3660: [***REMOVED***] UDS: Creazione blocchetti ENUM e Classificatore
+User Story 3700: [DSW] Creazione Facade/Dao base dei Workflow
+User Story 3701: [DSW] Creazione logica di redirect per le WorkflowActivities
+User Story 3702: [DSW] Creazione pagina con griglia per WorkflowActivities
+User Story 3708: [DSW] Pagine di inserimento, visualizzazione e modifica UDS
+User Story 3709: [DSW] Pagine di ricerca e visualizzazione Griglia UDS
+User Story 3764: [DSW] Creazione logica Bottone Eseguito
+User Story 3844: [DSW] Integrazione Workflow per UDS
+User Story 3928: [DSW] Integrazione SignalR e Topic per eventi da ServiceBus
+User Story 3965: [DSW] Inserimento automatico di Protocollo da UDS
+User Story 4029: [DSW] Adeguamento UI scrivania Workflow
+User Story 4030: [DSW] Action UDS
+User Story 4031: [DSW] Revisione WFNotifiy per modellazione dati di interscambio con WFController
+User Story 4284: [***REMOVED***] Predisporre nell'UDS UI la firma obbligatoria dei documenti
+User Story 4292: [***REMOVED***] DSW - Data Layer per integrazione autorizzazioni Workflow
+User Story 4303: [***REMOVED***] Nuova logica di sicurezza Workflow
+User Story 4310: [***REMOVED***] Lettura Token per visualizzazione protocollo da SB
+
+Bug 3419: [ASL-TO] Non viene visualizzata correttamente la finestra della visualizzazione documenti nella richiesta al collegio sindacale
+Bug 4240: [DSW] Errore in invio PEC se il contatto non presenta un indirizzo PEC
+Bug 4241: [DSW] Errore in modifica Protocollo con UDS associata
+
+Issue 3217: [DSW] Aggiornamento DocSuite a Telerik 2016 Q1

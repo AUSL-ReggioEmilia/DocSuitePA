@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://Wide/WebService.nsf/TipoDocService.wsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="TipoDocService" targetNamespace="http://Wide/WebService.nsf/TipoDocService.wsdl">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://Wide/WebService.nsf/TipoDocService.wsdl" xmlns:tns="http://Wide/WebService.nsf/TipoDocService.wsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+		<xsd:element name="TipoDocDocumentoRequest">
+		   <xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="Chiave" type="tns:Obbl_Type">
+<xsd:annotation>
+      				<xsd:documentation>digitare TUTTI oppure il codice desiderato.</xsd:documentation>
+      			</xsd:annotation>
+      			</xsd:element>
+			</xsd:sequence>
+		  </xsd:complexType>
+		</xsd:element>
+			<xsd:element name="TipoDocDocumentoResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="esito" type="tns:Esito_Type" />
+						<xsd:element name="Documento" type="tns:Documento_Type"
+							maxOccurs="unbounded" />
+						<xsd:element name="DescrizioneErrore" minOccurs="0" type="xsd:string" />
+
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>			
+			<xsd:complexType name="Documento_Type">
+				<xsd:sequence>					
+					<xsd:element name="TipoDocumento" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:complexType>
+<xsd:simpleType name="Obbl_Type">
+       <xsd:restriction base="xsd:string">
+	      <xsd:minLength value="1"/>
+	   </xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="Esito_Type">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="0"/>
+			<xsd:enumeration value="1"/>
+		</xsd:restriction>
+</xsd:simpleType>
+</xsd:schema>
+</wsdl:types>
+	<wsdl:message name="TipoDocDocumentoRequest">
+		<wsdl:part name="TipoDocDocumentoRequest" element="tns:TipoDocDocumentoRequest"/>
+	</wsdl:message>
+	<wsdl:message name="TipoDocDocumentoResponse">
+		<wsdl:part name="TipoDocDocumentoResponse" element="tns:TipoDocDocumentoResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="TipoDocServicePortType">
+		<wsdl:operation name="TipoDocDocumento">
+			<wsdl:input message="tns:TipoDocDocumentoRequest"/>
+			<wsdl:output message="tns:TipoDocDocumentoResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="TipoDocServiceBinding" type="tns:TipoDocServicePortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="TipoDocDocumento">
+			<soap:operation />
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="TipoDocService">
+		<wsdl:port name="TipoDocServicePort" binding="tns:TipoDocServiceBinding">
+			<soap:address location="http://urano.sede.enea.it/Wide/WebService.nsf/TipoDocWebService"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

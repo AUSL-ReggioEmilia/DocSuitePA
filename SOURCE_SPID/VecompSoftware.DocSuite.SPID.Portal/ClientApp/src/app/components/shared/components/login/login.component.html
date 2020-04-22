@@ -1,0 +1,12 @@
+<div class="container-fluid spid-login-container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Accesso {{ applicationName }}</h3>
+        </div>
+        <div class="panel-body">
+            <app-login-error-message [hasError]="hasError"></app-login-error-message>
+            <app-login-spid *ngIf="isSPID"></app-login-spid>
+            <app-login-federa *ngIf="isFedERa"></app-login-federa>
+        </div>
+    </div>
+</div>

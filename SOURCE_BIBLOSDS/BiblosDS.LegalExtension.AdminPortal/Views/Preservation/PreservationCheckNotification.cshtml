@@ -1,0 +1,12 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.Preservations.PreservationCheckNotificationViewModel
+@{
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+    string CssClass = Model.Success ? "k-block k-info-colored" : "k-block k-error-colored";
+}
+
+
+<div class="@CssClass">
+    @Html.Partial("_TextFileContent", Model.FileContent)
+</div>
+
+

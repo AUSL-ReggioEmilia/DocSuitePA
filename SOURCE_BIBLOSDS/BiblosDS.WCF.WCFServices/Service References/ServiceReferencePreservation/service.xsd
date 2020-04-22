@@ -1,0 +1,1782 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://BiblosDS/2009/10/Archive" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationUser" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationRole" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationUserRole" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationSchedule" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationTaskType" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationTaskGroup" />
+  <xs:import namespace="http://BiblosDS/2009/10/Preservation" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationHoliday" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationAlertType" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationExpireResponse" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationTaskGroupType" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationStorageDevice" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationInStorageDevice" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationStatus" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationStorageDeviceStatus" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationArchiveInfoResponse" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationInfoResponse" />
+  <xs:import namespace="http://BiblosDS/2009/10/Attribute" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationAlert" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationTask" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationFileInfoResponse" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationJournalingActivity" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationJournaling" />
+  <xs:import namespace="http://BiblosDS/2009/10/CryptoType" />
+  <xs:import namespace="http://BiblosDS/2009/10/ArchiveCompany" />
+  <xs:element name="GetAdministratedArchives">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="onlyPreservedArchives" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAdministratedArchivesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://BiblosDS/2009/10/Archive" minOccurs="0" name="GetAdministratedArchivesResult" nillable="true" type="q1:ArrayOfArchive" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationUsersInArchiveByRole">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idRole" type="q2:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationUsersInArchiveByRoleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://BiblosDS/2009/10/PreservationUser" minOccurs="0" name="GetPreservationUsersInArchiveByRoleResult" nillable="true" type="q3:ArrayOfPreservationUser" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRoles">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idRole" nillable="true" type="q4:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRolesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://BiblosDS/2009/10/PreservationRole" minOccurs="0" name="GetRolesResult" nillable="true" type="q5:ArrayOfPreservationRole" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationUser">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://BiblosDS/2009/10/PreservationUser" minOccurs="0" name="user" nillable="true" type="q6:PreservationUser" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationUserResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationUser">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://BiblosDS/2009/10/PreservationUser" minOccurs="0" name="user" nillable="true" type="q7:PreservationUser" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationUserResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://BiblosDS/2009/10/PreservationUser" minOccurs="0" name="AddPreservationUserResult" nillable="true" type="q8:PreservationUser" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationUserRolesByPreservationUser">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationUser" type="q9:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationUserRolesByPreservationUserResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationUser">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationUser" type="q10:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationUserResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationUserRole">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://BiblosDS/2009/10/PreservationUserRole" minOccurs="0" name="userRole" nillable="true" type="q11:PreservationUserRole" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationUserRoleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://BiblosDS/2009/10/PreservationUserRole" minOccurs="0" name="AddPreservationUserRoleResult" nillable="true" type="q12:PreservationUserRole" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationSchedule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://BiblosDS/2009/10/PreservationSchedule" minOccurs="0" name="sched" nillable="true" type="q13:PreservationSchedule" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationScheduleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q14="http://BiblosDS/2009/10/PreservationSchedule" minOccurs="0" name="AddPreservationScheduleResult" nillable="true" type="q14:PreservationSchedule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationSchedule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://BiblosDS/2009/10/PreservationSchedule" minOccurs="0" name="sched" nillable="true" type="q15:PreservationSchedule" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationScheduleResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationSchedule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q16="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationSchedule" type="q16:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationScheduleResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationSchedule_TaskTypeBySchedule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q17="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationSchedule" type="q17:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationSchedule_TaskTypeByScheduleResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTaskTypesByUserRole">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q18="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationUserRole" nillable="true" type="q18:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTaskTypesByUserRoleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q19="http://BiblosDS/2009/10/PreservationTaskType" minOccurs="0" name="GetTaskTypesByUserRoleResult" nillable="true" type="q19:ArrayOfPreservationTaskType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationTaskType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q20="http://BiblosDS/2009/10/PreservationTaskType" minOccurs="0" name="taskType" nillable="true" type="q20:PreservationTaskType" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationTaskTypeResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationTaskType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q21="http://BiblosDS/2009/10/PreservationTaskType" minOccurs="0" name="taskType" nillable="true" type="q21:PreservationTaskType" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationTaskTypeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q22="http://BiblosDS/2009/10/PreservationTaskType" minOccurs="0" name="AddPreservationTaskTypeResult" nillable="true" type="q22:PreservationTaskType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDetailedPreservationTaskGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q23="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTaskGroup" nillable="true" type="q23:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="maxReturnedValues" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDetailedPreservationTaskGroupResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q24="http://BiblosDS/2009/10/PreservationTaskGroup" minOccurs="0" name="GetDetailedPreservationTaskGroupResult" nillable="true" type="q24:ArrayOfPreservationTaskGroup" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationTaskGroupExpiryByTask">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q25="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationTask" type="q25:guid" />
+        <xs:element minOccurs="0" name="newEstimatedExpiry" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationTaskGroupExpiryByTaskResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsByUserAndTask">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationUser" type="q26:guid" />
+        <xs:element minOccurs="0" name="taskName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsByUserAndTaskResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q27="http://BiblosDS/2009/10/Preservation" minOccurs="0" name="GetPreservationsByUserAndTaskResult" nillable="true" type="q27:ArrayOfPreservation" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationHoliday">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q28="http://BiblosDS/2009/10/PreservationHoliday" minOccurs="0" name="holiday" nillable="true" type="q28:PreservationHoliday" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationHolidayResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q29="http://BiblosDS/2009/10/PreservationHoliday" minOccurs="0" name="AddPreservationHolidayResult" nillable="true" type="q29:PreservationHoliday" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationHoliday">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q30="http://BiblosDS/2009/10/PreservationHoliday" minOccurs="0" name="holiday" nillable="true" type="q30:PreservationHoliday" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationHolidayResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationHoliday">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q31="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationHoliday" type="q31:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationHolidayResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationAlertTypes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q32="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationAlertType" nillable="true" type="q32:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationAlertTypesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q33="http://BiblosDS/2009/10/PreservationAlertType" minOccurs="0" name="GetPreservationAlertTypesResult" nillable="true" type="q33:ArrayOfPreservationAlertType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationAlertType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q34="http://BiblosDS/2009/10/PreservationAlertType" minOccurs="0" name="alertType" nillable="true" type="q34:PreservationAlertType" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationAlertTypeResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationAlertType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q35="http://BiblosDS/2009/10/PreservationAlertType" minOccurs="0" name="alertType" nillable="true" type="q35:PreservationAlertType" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationAlertTypeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q36="http://BiblosDS/2009/10/PreservationAlertType" minOccurs="0" name="AddPreservationAlertTypeResult" nillable="true" type="q36:PreservationAlertType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationAlertType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q37="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationAlertType" type="q37:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationAlertTypeResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationAlertTypesByTaskType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q38="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationAlertType" nillable="true" type="q38:guid" />
+        <xs:element xmlns:q39="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationTaskType" type="q39:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationAlertTypesByTaskTypeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q40="http://BiblosDS/2009/10/PreservationAlertType" minOccurs="0" name="GetPreservationAlertTypesByTaskTypeResult" nillable="true" type="q40:ArrayOfPreservationAlertType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationRole">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q41="http://BiblosDS/2009/10/PreservationRole" minOccurs="0" name="role" nillable="true" type="q41:PreservationRole" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationRoleResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationRole">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q42="http://BiblosDS/2009/10/PreservationRole" minOccurs="0" name="role" nillable="true" type="q42:PreservationRole" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationRoleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q43="http://BiblosDS/2009/10/PreservationRole" minOccurs="0" name="AddPreservationRoleResult" nillable="true" type="q43:PreservationRole" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationParameter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="label" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="value" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationParameterResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationParameter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="label" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="value" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="filterName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationParameterResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationParameter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="label" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationParameterResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationExpire">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q44="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idSchedule" type="q44:guid" />
+        <xs:element xmlns:q45="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTaskGroupType" type="q45:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationExpireResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q46="http://BiblosDS/2009/10/PreservationExpireResponse" minOccurs="0" name="GetPreservationExpireResult" nillable="true" type="q46:PreservationExpireResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationAsSigned">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q47="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q47:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationAsSignedResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationPath">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q48="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q48:guid" />
+        <xs:element minOccurs="0" name="path" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationPathResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationTaskGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q49="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTaskGroup" type="q49:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationTaskGroupResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationTaskGroupTypeDescription">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q50="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTaskGroupType" type="q50:guid" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationTaskGroupTypeDescriptionResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationTaskGroupType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q51="http://BiblosDS/2009/10/PreservationTaskGroupType" minOccurs="0" name="groupType" nillable="true" type="q51:PreservationTaskGroupType" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationTaskGroupTypeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q52="http://BiblosDS/2009/10/PreservationTaskGroupType" minOccurs="0" name="AddPreservationTaskGroupTypeResult" nillable="true" type="q52:PreservationTaskGroupType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationStorageDevices">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q53="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationStorageDevice" nillable="true" type="q53:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationStorageDevicesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q54="http://BiblosDS/2009/10/PreservationStorageDevice" minOccurs="0" name="GetPreservationStorageDevicesResult" nillable="true" type="q54:ArrayOfPreservationStorageDevice" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationStorageDevicesFromDates">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q55="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationStorageDevice" nillable="true" type="q55:guid" />
+        <xs:element minOccurs="0" name="minDate" nillable="true" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="maxDate" nillable="true" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationStorageDevicesFromDatesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q56="http://BiblosDS/2009/10/PreservationStorageDevice" minOccurs="0" name="GetPreservationStorageDevicesFromDatesResult" nillable="true" type="q56:ArrayOfPreservationStorageDevice" />
+        <xs:element minOccurs="0" name="totalItems" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsInStorageDevices">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q57="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" nillable="true" type="q57:guid" />
+        <xs:element xmlns:q58="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationStorageDevice" nillable="true" type="q58:guid" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsInStorageDevicesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q59="http://BiblosDS/2009/10/PreservationInStorageDevice" minOccurs="0" name="GetPreservationsInStorageDevicesResult" nillable="true" type="q59:ArrayOfPreservationInStorageDevice" />
+        <xs:element minOccurs="0" name="totalItems" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationInStorageDevice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q60="http://BiblosDS/2009/10/PreservationInStorageDevice" minOccurs="0" name="toAdd" nillable="true" type="q60:PreservationInStorageDevice" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationInStorageDeviceResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q61="http://BiblosDS/2009/10/PreservationInStorageDevice" minOccurs="0" name="AddPreservationInStorageDeviceResult" nillable="true" type="q61:PreservationInStorageDevice" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationInStorageDevice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q62="http://BiblosDS/2009/10/PreservationInStorageDevice" minOccurs="0" name="preservationInStorageDevice" nillable="true" type="q62:PreservationInStorageDevice" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationInStorageDeviceResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationStorageDevice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q63="http://BiblosDS/2009/10/PreservationStorageDevice" minOccurs="0" name="preservationStorageDevice" nillable="true" type="q63:PreservationStorageDevice" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationStorageDeviceResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationStorageDevice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q64="http://BiblosDS/2009/10/PreservationStorageDevice" minOccurs="0" name="toAdd" nillable="true" type="q64:PreservationStorageDevice" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationStorageDeviceResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q65="http://BiblosDS/2009/10/PreservationStorageDevice" minOccurs="0" name="AddPreservationStorageDeviceResult" nillable="true" type="q65:PreservationStorageDevice" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PreservationStorageDeviceChangeStatus">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q66="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q66:guid" />
+        <xs:element xmlns:q67="http://BiblosDS/2009/10/PreservationStatus" minOccurs="0" name="preservationStatus" type="q67:PreservationStatus" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PreservationStorageDeviceChangeStatusResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q68="http://BiblosDS/2009/10/PreservationStorageDeviceStatus" minOccurs="0" name="PreservationStorageDeviceChangeStatusResult" nillable="true" type="q68:PreservationStorageDeviceStatus" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationJournaling">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q69="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idJournaling" type="q69:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeletePreservationJournalingResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationStorageDeviceFromLabel">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="label" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationStorageDeviceFromLabelResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q70="http://BiblosDS/2009/10/PreservationStorageDevice" minOccurs="0" name="GetPreservationStorageDeviceFromLabelResult" nillable="true" type="q70:ArrayOfPreservationStorageDevice" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationStorageDeviceLastVerifyDate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q71="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idStorageDevice" type="q71:guid" />
+        <xs:element minOccurs="0" name="verifyDate" nillable="true" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationStorageDeviceLastVerifyDateResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateArchivePreservationMark">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q72="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idStorageDevice" type="q72:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateArchivePreservationMarkResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="CreateArchivePreservationMarkResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivePreservationMarkFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q73="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationStorageDevice" type="q73:guid" />
+        <xs:element minOccurs="0" name="skip" type="xs:long" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivePreservationMarkFileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetArchivePreservationMarkFileResult" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="fileSize" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetClosingFilesTimeStampFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q74="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationStorageDevice" type="q74:guid" />
+        <xs:element minOccurs="0" name="skip" type="xs:long" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetClosingFilesTimeStampFileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetClosingFilesTimeStampFileResult" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="fileSize" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TimeStampArchivePreservationMarkFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q75="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationStorageDevice" type="q75:guid" />
+        <xs:element minOccurs="0" name="timeStampedFile" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="isInfoCamere" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TimeStampArchivePreservationMarkFileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="TimeStampArchivePreservationMarkFileResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTimeStampedArchivePreservationMarkFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q76="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationStorageDevice" type="q76:guid" />
+        <xs:element minOccurs="0" name="skip" type="xs:long" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTimeStampedArchivePreservationMarkFileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetTimeStampedArchivePreservationMarkFileResult" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="fileSize" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSHA1Mark">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="content" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSHA1MarkResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetSHA1MarkResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSHA256Mark">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="content" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSHA256MarkResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetSHA256MarkResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDefaultPreservationSchedule">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDefaultPreservationScheduleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q77="http://BiblosDS/2009/10/PreservationSchedule" minOccurs="0" name="GetDefaultPreservationScheduleResult" nillable="true" type="q77:PreservationSchedule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsFromArchiveAndDates">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="minDate" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="maxDate" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsFromArchiveAndDatesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q78="http://BiblosDS/2009/10/Preservation" minOccurs="0" name="GetPreservationsFromArchiveAndDatesResult" nillable="true" type="q78:ArrayOfPreservation" />
+        <xs:element minOccurs="0" name="totalItems" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UploadEntratelFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="clientFileName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q79="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationStorageDevice" type="q79:guid" />
+        <xs:element minOccurs="0" name="fileContent" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UploadEntratelFileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="UploadEntratelFileResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DownloadEntratelFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q80="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationStorageDevice" type="q80:guid" />
+        <xs:element minOccurs="0" name="skip" type="xs:long" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DownloadEntratelFileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="DownloadEntratelFileResult" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="fileLenght" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetCurrentArchivePreservationMarkXmlTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="companyName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetCurrentArchivePreservationMarkXmlTemplateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetCurrentArchivePreservationMarkXmlTemplateResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeCurrentArchivePreservationMarkXmlTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlContent" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="companyName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeCurrentArchivePreservationMarkXmlTemplateResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationArchives">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="domainUserName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationArchivesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q81="http://BiblosDS/2009/10/PreservationArchiveInfoResponse" minOccurs="0" name="GetPreservationArchivesResult" nillable="true" type="q81:ArrayOfPreservationArchiveInfoResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetUserRoleInArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="domainUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetUserRoleInArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q82="http://BiblosDS/2009/10/PreservationUserRole" minOccurs="0" name="GetUserRoleInArchiveResult" nillable="true" type="q82:ArrayOfPreservationUserRole" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationParameter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationParameterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q83="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetPreservationParameterResult" nillable="true" type="q83:ArrayOfKeyValueOfstringstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFirstPreservationParameter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="paramKey" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFirstPreservationParameterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetFirstPreservationParameterResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsUserInRoleOnArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domainUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="roleId" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsUserInRoleOnArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IsUserInRoleOnArchiveResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsUserInRole">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="domainUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="roleId" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsUserInRoleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IsUserInRoleResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationTaskGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationTaskGroupResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q84="http://BiblosDS/2009/10/PreservationTaskGroup" minOccurs="0" name="GetPreservationTaskGroupResult" nillable="true" type="q84:ArrayOfPreservationTaskGroup" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SetTaskGroupClosed">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q85="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTaskGroup" type="q85:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SetTaskGroupClosedResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetScheduleFromTaskGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q86="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTaskGroup" type="q86:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetScheduleFromTaskGroupResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q87="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="GetScheduleFromTaskGroupResult" type="q87:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSchedule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q88="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idSchedule" nillable="true" type="q88:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetScheduleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q89="http://BiblosDS/2009/10/PreservationSchedule" minOccurs="0" name="GetScheduleResult" nillable="true" type="q89:ArrayOfPreservationSchedule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResetPreparedPreservation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q90="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q90:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResetPreparedPreservationResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FindPreparedPreservationObjects">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="dateFrom" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="dateTo" type="xs:dateTime" />
+        <xs:element xmlns:q91="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idArchive" type="q91:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FindPreparedPreservationObjectsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q92="http://BiblosDS/2009/10/Document" minOccurs="0" name="FindPreparedPreservationObjectsResult" nillable="true" type="q92:ArrayOfDocument" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q93="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q93:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationNameResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetPreservationNameResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MarkPreservationAsSigned">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q94="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q94:guid" />
+        <xs:element minOccurs="0" name="signedFile" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="timeStampFile" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MarkPreservationAsSignedResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AbortConservation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q95="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q95:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AbortConservationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q96="http://BiblosDS/2009/10/PreservationInfoResponse" minOccurs="0" name="AbortConservationResult" nillable="true" type="q96:PreservationInfoResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CheckPreservationExceptions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q97="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q97:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CheckPreservationExceptionsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="CheckPreservationExceptionsResult" type="xs:boolean" />
+        <xs:element minOccurs="0" name="exceptions" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreatePreservationIndexFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q98="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q98:guid" />
+        <xs:element minOccurs="0" name="fileName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreatePreservationIndexFileResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationInfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q99="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTaskGroup" nillable="true" type="q99:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationInfoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q100="http://BiblosDS/2009/10/PreservationInfoResponse" minOccurs="0" name="GetPreservationInfoResult" nillable="true" type="q100:PreservationInfoResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationUserForArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domainUser" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationUserForArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q101="http://BiblosDS/2009/10/PreservationUser" minOccurs="0" name="GetPreservationUserForArchiveResult" nillable="true" type="q101:PreservationUser" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSelectedDocumentsNumber">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="startDate" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="endDate" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSelectedDocumentsNumberResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetSelectedDocumentsNumberResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAttributes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAttributesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q102="http://BiblosDS/2009/10/Attribute" minOccurs="0" name="GetAttributesResult" nillable="true" type="q102:ArrayOfAttribute" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CopyCompEDViewerIndexFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q103="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q103:guid" />
+        <xs:element minOccurs="0" name="workingDirectory" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CopyCompEDViewerIndexFileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="CopyCompEDViewerIndexFileResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHolidays">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q104="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationHolidays" nillable="true" type="q104:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHolidaysResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q105="http://BiblosDS/2009/10/PreservationHoliday" minOccurs="0" name="GetHolidaysResult" nillable="true" type="q105:ArrayOfPreservationHoliday" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreatePreservationClosingFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q106="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q106:guid" />
+        <xs:element minOccurs="0" name="workingDir" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="exceptions" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreatePreservationClosingFileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="CreatePreservationClosingFileResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTaskGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q107="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationTaskGroup" nillable="true" type="q107:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTaskGroupResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q108="http://BiblosDS/2009/10/PreservationTaskGroup" minOccurs="0" name="GetTaskGroupResult" nillable="true" type="q108:ArrayOfPreservationTaskGroup" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationAlert">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q109="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idAlert" nillable="true" type="q109:guid" />
+        <xs:element xmlns:q110="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTaskType" nillable="true" type="q110:guid" />
+        <xs:element xmlns:q111="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idAlertType" nillable="true" type="q111:guid" />
+        <xs:element xmlns:q112="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTask" nillable="true" type="q112:guid" />
+        <xs:element minOccurs="0" name="orderByOffset" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationAlertResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q113="http://BiblosDS/2009/10/PreservationAlert" minOccurs="0" name="GetPreservationAlertResult" nillable="true" type="q113:ArrayOfPreservationAlert" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTaskGroupTypes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q114="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTaskGroupType" nillable="true" type="q114:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTaskGroupTypesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q115="http://BiblosDS/2009/10/PreservationTaskGroupType" minOccurs="0" name="GetTaskGroupTypesResult" nillable="true" type="q115:ArrayOfPreservationTaskGroupType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationUser">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q116="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idUser" nillable="true" type="q116:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationUserResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q117="http://BiblosDS/2009/10/PreservationUser" minOccurs="0" name="GetPreservationUserResult" nillable="true" type="q117:ArrayOfPreservationUser" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationTaskTypes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q118="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationTaskType" nillable="true" type="q118:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationTaskTypesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q119="http://BiblosDS/2009/10/PreservationTaskType" minOccurs="0" name="GetPreservationTaskTypesResult" nillable="true" type="q119:ArrayOfPreservationTaskType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTasksFromTaskGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q120="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idTaskGroup" type="q120:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTasksFromTaskGroupResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q121="http://BiblosDS/2009/10/PreservationTask" minOccurs="0" name="GetTasksFromTaskGroupResult" nillable="true" type="q121:ArrayOfPreservationTask" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationTaskGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q122="http://BiblosDS/2009/10/PreservationTaskGroup" minOccurs="0" name="toAdd" nillable="true" type="q122:PreservationTaskGroup" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationTaskGroupResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q123="http://BiblosDS/2009/10/PreservationTaskGroup" minOccurs="0" name="AddPreservationTaskGroupResult" nillable="true" type="q123:PreservationTaskGroup" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationTask">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q124="http://BiblosDS/2009/10/PreservationTask" minOccurs="0" name="toAdd" nillable="true" type="q124:PreservationTask" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationTaskResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q125="http://BiblosDS/2009/10/PreservationTask" minOccurs="0" name="AddPreservationTaskResult" nillable="true" type="q125:PreservationTask" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationAlert">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q126="http://BiblosDS/2009/10/PreservationAlert" minOccurs="0" name="toAdd" nillable="true" type="q126:PreservationAlert" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationAlertResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q127="http://BiblosDS/2009/10/PreservationAlert" minOccurs="0" name="AddPreservationAlertResult" nillable="true" type="q127:PreservationAlert" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q128="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q128:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q129="http://BiblosDS/2009/10/Preservation" minOccurs="0" name="GetPreservationResult" nillable="true" type="q129:Preservation" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationTaskTypesAndPreservationScheduleTaskTypes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q130="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservationSchedule" nillable="true" type="q130:guid" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationTaskTypesAndPreservationScheduleTaskTypesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q131="http://BiblosDS/2009/10/PreservationTaskType" minOccurs="0" name="GetPreservationTaskTypesAndPreservationScheduleTaskTypesResult" nillable="true" type="q131:ArrayOfPreservationTaskType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreatePreservation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domainUser" nillable="true" type="xs:string" />
+        <xs:element xmlns:q132="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idGruppoTask" type="q132:guid" />
+        <xs:element minOccurs="0" name="dataInizio" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="dataFine" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="simulateOnly" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreatePreservationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q133="http://BiblosDS/2009/10/PreservationInfoResponse" minOccurs="0" name="CreatePreservationResult" nillable="true" type="q133:PreservationInfoResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreatePreservationByTask">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q134="http://BiblosDS/2009/10/PreservationTask" minOccurs="0" name="task" nillable="true" type="q134:PreservationTask" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreatePreservationByTaskResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q135="http://BiblosDS/2009/10/PreservationInfoResponse" minOccurs="0" name="CreatePreservationByTaskResult" nillable="true" type="q135:PreservationInfoResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationClosingFileInfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q136="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="preservationId" type="q136:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationClosingFileInfoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q137="http://BiblosDS/2009/10/PreservationFileInfoResponse" minOccurs="0" name="GetPreservationClosingFileInfoResult" nillable="true" type="q137:PreservationFileInfoResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ClosePreservation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q138="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q138:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ClosePreservationResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResetPreservation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q139="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q139:guid" />
+        <xs:element minOccurs="0" name="domainUser" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResetPreservationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q140="http://BiblosDS/2009/10/PreservationInfoResponse" minOccurs="0" name="ResetPreservationResult" nillable="true" type="q140:PreservationInfoResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q141="http://BiblosDS/2009/10/Preservation" minOccurs="0" name="GetPreservationsResult" nillable="true" type="q141:ArrayOfPreservation" />
+        <xs:element minOccurs="0" name="totalPreservations" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsToSign">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsToSignResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q142="http://BiblosDS/2009/10/Preservation" minOccurs="0" name="GetPreservationsToSignResult" nillable="true" type="q142:ArrayOfPreservation" />
+        <xs:element minOccurs="0" name="totalPreservations" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationJournalingActivities">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q143="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idJournalingActivity" nillable="true" type="q143:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationJournalingActivitiesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q144="http://BiblosDS/2009/10/PreservationJournalingActivity" minOccurs="0" name="GetPreservationJournalingActivitiesResult" nillable="true" type="q144:ArrayOfPreservationJournalingActivity" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddVerifyPreservationToJournaling">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q145="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q145:guid" />
+        <xs:element minOccurs="0" name="domainUser" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddVerifyPreservationToJournalingResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationJournaling">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q146="http://BiblosDS/2009/10/PreservationJournaling" minOccurs="0" name="toUpdate" nillable="true" type="q146:PreservationJournaling" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdatePreservationJournalingResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationJournaling">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q147="http://BiblosDS/2009/10/PreservationJournaling" minOccurs="0" name="toAdd" nillable="true" type="q147:PreservationJournaling" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddPreservationJournalingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q148="http://BiblosDS/2009/10/PreservationJournaling" minOccurs="0" name="AddPreservationJournalingResult" nillable="true" type="q148:PreservationJournaling" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationJournalingLastPrintManualActivityDate">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationJournalingLastPrintManualActivityDateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetPreservationJournalingLastPrintManualActivityDateResult" nillable="true" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationStorageDeviceStatus">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q149="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idStatus" nillable="true" type="q149:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationStorageDeviceStatusResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q150="http://BiblosDS/2009/10/PreservationStorageDeviceStatus" minOccurs="0" name="GetPreservationStorageDeviceStatusResult" nillable="true" type="q150:ArrayOfPreservationStorageDeviceStatus" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationJournalings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q151="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" nillable="true" type="q151:guid" />
+        <xs:element minOccurs="0" name="startDate" nillable="true" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="endDate" nillable="true" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationJournalingsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q152="http://BiblosDS/2009/10/PreservationJournaling" minOccurs="0" name="GetPreservationJournalingsResult" nillable="true" type="q152:ArrayOfPreservationJournaling" />
+        <xs:element minOccurs="0" name="journalingsInArchive" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsFromJournaling">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q153="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idJournaling" type="q153:guid" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsFromJournalingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q154="http://BiblosDS/2009/10/Preservation" minOccurs="0" name="GetPreservationsFromJournalingResult" nillable="true" type="q154:ArrayOfPreservation" />
+        <xs:element minOccurs="0" name="preservationsCount" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsFromArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationsFromArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q155="http://BiblosDS/2009/10/Preservation" minOccurs="0" name="GetPreservationsFromArchiveResult" nillable="true" type="q155:ArrayOfPreservation" />
+        <xs:element minOccurs="0" name="totalItems" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservedDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q156="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idPreservation" type="q156:guid" />
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservedDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q157="http://BiblosDS/2009/10/Document" minOccurs="0" name="GetPreservedDocumentResult" nillable="true" type="q157:Document" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetUsedCryptography">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="encryptedBuffer" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetUsedCryptographyResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q158="http://BiblosDS/2009/10/CryptoType" minOccurs="0" name="GetUsedCryptographyResult" type="q158:CryptoType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHashFromFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="filePathName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="useSHA256" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHashFromFileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetHashFromFileResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHashFromBuffer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="buffer" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="useSHA256" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHashFromBufferResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetHashFromBufferResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationStorageDevicesCount">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationStorageDevicesCountResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetPreservationStorageDevicesCountResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveCompany">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q159="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idArchive" nillable="true" type="q159:guid" />
+        <xs:element minOccurs="0" name="companyName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveCompanyResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q160="http://BiblosDS/2009/10/ArchiveCompany" minOccurs="0" name="GetArchiveCompanyResult" nillable="true" type="q160:ArrayOfArchiveCompany" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveCompanyByUser">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q161="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idArchive" nillable="true" type="q161:guid" />
+        <xs:element minOccurs="0" name="companyName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveCompanyByUserResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q162="http://BiblosDS/2009/10/ArchiveCompany" minOccurs="0" name="GetArchiveCompanyByUserResult" nillable="true" type="q162:ArrayOfArchiveCompany" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsAlive">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsAliveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IsAliveResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Pulse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="source" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="progressPercentage" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

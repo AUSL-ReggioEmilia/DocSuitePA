@@ -1,0 +1,104 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.ArchiveCompanyViewModel
+
+@{
+    ViewBag.Title = "Associa Company";
+}
+
+@section featured {
+    <hgroup class="title">
+        <h1>@ViewBag.Title <b>@Model.ArchiveCompany.Archive.Name</b></h1>
+    </hgroup>
+}
+
+@using (Html.BeginForm("ArchiveCompany", "Home", FormMethod.Post))
+{
+    @Html.ValidationSummary(false)
+
+    <input type="hidden" name="ArchiveCompanyIdArchive" value="@Model.ArchiveCompany.IdArchive" />
+
+    <table class="form-table k-block">
+        <tr>
+            <td style="width: 200px;">
+                <label>
+                    Company
+                </label>
+            </td>
+            <td>
+                @(Html.Kendo().DropDownList()
+                .Name("ArchiveCompanySetIdCompany")
+                .DataValueField("IdCompany")
+                .DataTextField("CompanyName")
+                .SelectedIndex(Model.SelectedCompanyIndex)
+                .BindTo(Model.Companies)
+                .HtmlAttributes(new { style = "width:100%" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>
+                    Responsabile conservazione:
+                </label>
+            </td>
+            <td>
+                <b>Andrea Piccoli</b>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 200px;">
+                <label>
+                    WorkingDir
+                </label>
+            </td>
+            <td>
+                @*TODO: verificare che il campo non sia vuoto
+                TODO: fare in modo che visualizzi il percorso file*@
+                @(Html.TextBox("workingDir",string.Empty, new { @class = "k-textbox", @style="width:600px"})
+                )
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 200px;">
+                <label>
+                    XmlFileTemplatePath
+                </label>
+            </td>
+            <td>
+                @(Html.TextBox("XmlFileTemplatePath", string.Empty, new { @class = "k-textbox", @style = "width:600px" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 200px;">
+                <label>
+                    TemplateXSLTFile
+                </label>
+            </td>
+            <td>
+                @(Html.TextBox("TemplateXSLTFile", string.Empty, new { @class = "k-textbox", @style = "width:600px" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 200px;">
+                <label>
+                    AwardBatchXSLTFile
+                </label>
+            </td>
+            <td>
+                @(Html.TextBox("AwardBatchXSLTFile", string.Empty, new { @class = "k-textbox", @style = "width:600px" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="right">
+                <input type="submit" class="k-button" value="Associa" disabled="true"/>
+            </td>
+        </tr>
+
+    </table>
+}
+
+
+

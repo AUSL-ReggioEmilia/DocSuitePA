@@ -1,0 +1,17 @@
+#jasdl-mainnav {float:right;}
+#jasdl-mainnav li{}
+#jasdl-mainnav li a {color:#666; font-weight: normal!important;}
+
+#jasdl-mainnav > ul > li > a {
+}
+
+#jasdl-mainnav li.active a,
+#jasdl-mainnav li.active a:hover,
+#jasdl-mainnav li.active a:active,
+#jasdl-mainnav li.active a:focus {
+	font-weight: bold!important;
+}
+
+
+/* Sub Nav ---*/
+#ja-subnav{display:none;} 

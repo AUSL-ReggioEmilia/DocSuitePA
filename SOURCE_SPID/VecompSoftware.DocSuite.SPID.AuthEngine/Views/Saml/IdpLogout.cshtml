@@ -1,0 +1,38 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Spid</title>
+    <script type="text/javascript">
+        function removeExistingItem(key) {
+            if (localStorage.getItem(key) === null)
+                return false;
+            localStorage.removeItem(key);
+            return true;
+        }
+
+        function initialize() {
+            var referenceCode = localStorage.getItem('reference-token-code');
+            var idpName = localStorage.getItem('idpName');
+
+            removeExistingItem('jwt-application-token');
+            removeExistingItem('reference-token-code');
+            removeExistingItem('idpName');
+
+            if (!referenceCode || !idpName) {
+                window.location.href = "@Html.Raw(ViewData["LogoutCallback"])";
+                return;
+            }
+            window.location.href = "@Url.Action("Logout", "Saml")" + "?ReferenceCode="+referenceCode+"&IdpName="+idpName;
+        }
+    </script>
+</head>
+<body onload="initialize()">
+    
+</body>
+</html>

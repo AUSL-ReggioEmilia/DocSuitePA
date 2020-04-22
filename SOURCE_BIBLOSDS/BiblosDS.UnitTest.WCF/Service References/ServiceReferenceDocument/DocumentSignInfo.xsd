@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/DocumentSignInfo" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/DocumentSignInfo" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfDocumentSignInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DocumentSignInfo" nillable="true" type="tns:DocumentSignInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDocumentSignInfo" nillable="true" type="tns:ArrayOfDocumentSignInfo" />
+  <xs:complexType name="DocumentSignInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ChildSignatures" nillable="true" type="tns:ArrayOfDocumentSignInfo" />
+      <xs:element minOccurs="0" name="DocumentName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IdDocument" type="ser:guid" />
+      <xs:element minOccurs="0" name="SerialNumber" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SignDate" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="SignType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SignUser" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DocumentSignInfo" nillable="true" type="tns:DocumentSignInfo" />
+</xs:schema>

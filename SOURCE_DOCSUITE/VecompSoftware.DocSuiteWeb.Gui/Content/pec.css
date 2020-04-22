@@ -1,0 +1,158 @@
+﻿.pec table.datatable {
+    border: 1px solid #999999;
+    background: #EEEEEE;
+}
+
+    .pec table.datatable th, .pec table.datatable td.head {
+        background-image: none;
+        border-bottom: 1px solid #999999;
+        color: black;
+        background-color: #E0E0E0;
+    }
+
+    .pec table.datatable td {
+        background-color: #EEEEEE;
+        vertical-align: middle;
+    }
+
+        .pec table.datatable td.label {
+        }
+
+        /*Colore Selezionato*/
+        .pec table.datatable td.selected {
+            background-color: Yellow;
+            cursor: hand;
+        }
+
+        .pec table.datatable td.DocumentSeriesLabel {
+            vertical-align: middle;
+            font-size: 11px;
+            text-align: right;
+            width: 200px;
+            font-weight: bold;
+        }
+
+.protocolBox table.datatable td {
+    background-color: #fdca87;
+}
+
+/* Eliminare datataform a favore di datatable */
+.pec table.dataform {
+    background: #EEEEEE;
+}
+
+    .pec table.dataform td {
+        background-color: #EEEEEE;
+        padding: 1px 2px 1px 2px;
+    }
+
+        .pec table.dataform td.label {
+            font-size: 11px;
+        }
+/* Eliminare datataform a favore di datatable */
+
+.pec .titolo {
+    background-color: #E0E0E0;
+    background-image: none;
+    color: black;
+    height: 15pt;
+    padding-top: 3px;
+}
+
+.pec tr.titolo {
+    background-image: url(../App_Themes/DocSuite2008/Images/Prot/ProtTitoloGrad.gif);
+    color: white;
+}
+
+.protocolBox div.titolo {
+    background-color: #fc9b0a !important;
+    background-image: none !important;
+}
+
+/*Tabelle*/
+.pec .Table {
+    border-width: 0;
+    border-collapse: collapse;
+    color: black;
+    width: 100%;
+    height: 15pt;
+}
+
+    .pec .Table td {
+        padding: 2px;
+    }
+
+/*Intestazione Tabelle*/
+.pec tr.tabella {
+    font-weight: bold;
+    color: navy;
+    height: 15pt;
+    background-color: #dae9fe;
+    background-image: none;
+    /*background-image: url(Images/Prot/ProtTabellaGrad.gif);*/
+}
+
+/*Colore Scuro*/
+.pec tr.Scuro, .pec td.SXScuro {
+    background-color: #E0E0E0;
+}
+
+.protocolBox tr.Scuro, .protocolBox td.SXScuro {
+    background-color: #fdca87;
+}
+
+.pec td.SXScuro {
+    font-weight: bold;
+    text-align: right;
+}
+
+/*Colore Chiaro*/
+.pec tr.Chiaro, .pec td.DXChiaro {
+    background-color: #EEEEEE;
+    vertical-align: middle;
+}
+
+.pec tr.ChiaroNoPadding, .pec td.DXChiaroNoPadding {
+    background-color: #FFEF90;
+    vertical-align: middle;
+    padding-bottom: 0px !important;
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+/*Colore Selezionato*/
+.pec tr.Selezionato {
+    background-color: #f1c15f;
+    cursor: hand;
+}
+
+.pec td.label {
+    vertical-align: middle;
+    font-size: 11px;
+    text-align: right;
+}
+
+.pec .dsw-panel .dsw-panel-title {
+    border-bottom: 1px solid #999999;
+    color: black;
+    background-color: #E0E0E0;
+}
+
+.pec .dsw-panel .dsw-panel-content {
+    color: #000;
+}
+
+.pec .arrow-up{
+    background: url('../App_Themes/DocSuite2008/imgset16/up_arrow.png') no-repeat;
+    width:16px;
+    height:16px;
+}
+.pec .arrow-down{
+    background: url('../App_Themes/DocSuite2008/imgset16/down_arrow.png') no-repeat;
+    width:16px;
+    height:16px;
+}
+/*
+    README: Evitare di posizionare a caso o di creare stili non generici. Controllare come funziona la pagina di stile.
+*/

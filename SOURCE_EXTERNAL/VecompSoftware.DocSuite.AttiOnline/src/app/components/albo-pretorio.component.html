@@ -1,0 +1,72 @@
+﻿<div>
+    <loading-spinner></loading-spinner>
+</div>
+<div *ngIf="isAllowedModality">
+    <div class="navbar navbar-fixed-top">
+        <iframe frameborder="0" scrolling="no" class="header-class" [src]="headerUrl"></iframe>
+    </div>
+
+    <div id="header" class="navbar navbar-default navbar-fixed-top">
+        <div class="container container-brand">
+            <div class="navbar-header">
+                <a class="navbar-brand" [title]="tooltipBackHome" (click)="backClicked($event)">Albo Pretorio</a>
+                <a class="logo" [title]="tooltipBackHome" *ngIf="!introductionVisible" (click)="backClicked($event)"><img src="app/images/albo-pretorio-logo.png" height="36" width="80" /></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="well intro-content" *ngIf="introductionVisible">
+            <div>
+                <img id="logo" src="app/images/albo-pretorio-logo.png" />
+            </div>            
+            <p>
+                Le Deliberazioni e gli atti Dirigenziali dell’AUSL di RE in corso di pubblicazione si inseriscono nel presente albo in conformità all’art. 32 legge 69/2009
+                "Disposizioni per lo sviluppo economico, la semplificazione, la competitività nonché in materia di processo civile".
+            </p>
+            <p>
+                Come previsto dalla L.R. n. 50/94 art. 37 e successive modifiche comma 5 e 6, le Deliberazioni e gli Atti Dirigenziali adottati sono pubblicati all’albo per quindici giorni consecutivi.
+                Tali provvedimenti diventano esecutivi dal giorno della loro pubblicazione salvo quanto appresso indicato.
+            </p>
+            <p>
+                I provvedimenti soggetti a controllo preventivo della Regione sono pubblicati contestualmente al loro invio al controllo.
+                Nelle more del controllo regionale ad essi non può essere data esecuzione.
+            </p>
+            <p>
+                E’ fatto salvo il diritto di accesso nei limiti del vigente regolamento.
+            </p>
+            <p style="margin-bottom: 0px">
+                Selezionare l'area di interesse:
+            </p>
+        </div>
+        <div class="panel-body">
+            <div *ngIf="resolutionTypeVisibile">
+                <resolution-type [resolutionType]="resolutionType" (resolutionTypeSelected)="resolutionTypeSelected($event)"></resolution-type>
+            </div>
+        </div>
+
+        <div *ngIf="introductionVisible" class="well intro-content">
+            <p>
+                (*)Nota Bene per quanto riguarda gli Atti Dirigenziali le sigle utilizzate nel codice identificativo devono riferirsi ai Dirigenti (Direttori/Responsabili) delle seguenti strutture organizzative:
+            </p>
+            <div id="grid-services">
+                <kendo-grid [data]="gridServices" [scrollable]="'none'">
+                    <kendo-grid-column field="code" title="Sigle del codice identificativo" width="200"></kendo-grid-column>
+                    <kendo-grid-column field="name" title="Strutture organizzative" width="500"></kendo-grid-column>
+                </kendo-grid>
+            </div>
+            <div style="clear: both">
+                <p>
+                    Pubblicazioni di Albo Pretorio “ex” Azienda Santa Maria Nuova di Reggio Emilia, fino al 30-06-2017, click sul link seguente:
+                    <a [href]="asmnAlboUrl" target="_blank">{{asmnAlboUrlText}}</a>
+                </p>
+            </div>
+        </div>
+
+        <resolution-grid *ngIf="gridData && !introductionVisible" [gridData]="gridData" [serviceNumberVisible]="serviceColumnVisbile" [groupable]="groupable" [groups]="groups" [paginationEnabled]="false" [publicationDateVisible]="true" [proposerColumnVisible]="proposerColumnVisible"></resolution-grid>
+    </div>
+
+    <iframe scrolling="no" class="footer-class" [src]="footerUrl"></iframe>
+</div>
+
+

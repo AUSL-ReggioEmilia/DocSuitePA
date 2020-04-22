@@ -1,0 +1,9 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{titleDescription}}</h3>
+    </div>
+    <div class="panel-body">
+        <app-loading [show]="isBusy"></app-loading>
+        <app-request-grid *ngIf="!isBusy" [requests]="requests"></app-request-grid>
+    </div>
+</div>

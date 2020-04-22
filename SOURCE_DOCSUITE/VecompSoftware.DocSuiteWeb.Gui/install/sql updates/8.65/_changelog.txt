@@ -1,0 +1,127 @@
+Feature 8914: [AUSL-RE AUSL-PC] Creazione entità gruppo Dossier
+Feature 8915: [AUSL-RE AUSL-PC] Creazione pagine del modulo Dossier
+Feature 8916: [AUSL-RE AUSL-PC] Creazione logica riguardante Dossier nelle WebAPI
+Feature 9165: [***REMOVED***] Modifiche applicative DocSuite
+Feature 9366: [AUSL-PC] Introdurre la possibilità di archiviare un protocollo (archivi UDS)
+Feature 9642: [AUSL-RE] Modifiche fascicoli
+		
+User Story 8852: [AUSL-RE]Togliere dalle WebApi la logica di inserimento fascicolo e settare il RoleType in DocSuite
+User Story 8885: [DSW] Nel filtro data degli Archivi,in Ricerca,non funziona il filtro se l'intervallo è sul giorno stesso
+User Story 8917: [AUSL-RE AUSL-PC] Creazione e mappatura entità Dossier
+User Story 8918: [AUSL-RE AUSL-PC] Creazione e mappatura entità DossierComment
+User Story 8919: [AUSL-RE AUSL-PC] Creazione e mappatura entità DossierDocument
+User Story 8920: [AUSL-RE AUSL-PC] Creazione e mappatura entità DossierLog
+User Story 8921: [AUSL-RE AUSL-PC] Creazione e mappatura entità DossierMessage
+User Story 8922: [AUSL-RE AUSL-PC] Creazione e mappatura entità DossierContact
+User Story 8929: [AUSL-RE AUSL-PC] Creare la struttura della pagina base di sommario di Dossier
+User Story 9001: [AUSL-RE AUSL-PC] Implementare la pagina di modifica di un Dossier
+User Story 9003: [AUSL-RE AUSL-PC] Creare validation per modifica di un dossier
+User Story 9004: [AUSL-RE AUSL-PC] Implementare la pagina dei risultati dei Dossier
+User Story 9011: [AUSL-RE AUSL-PC] Creare validation per creazione di un dossier
+User Story 9012: [AUSL-RE AUSL-PC] Creare struttura pagina di visualizzazione del contenuto del Dossier
+User Story 9015: [AUSL-RE AUSL-PC] Creazione e mappatura entità DossierFolder
+User Story 9070: [AUSL-RE AUSL-PC] Creare function che permetta di controllare i diritti di inserimento di un Dossier
+User Story 9112: [AUSL-RE AUSL-PC] Implementare il binding degli user control della pagina di sommario di Dossier
+User Story 9113: [AUSL-RE AUSL-PC] Implementare logica di inserimento nuovo Dossier
+User Story 9126: [AUSL-RE AUSL-PC] Implementare la pagina di ricerca dei Dossier
+User Story 9130: [AUSL-RE AUSL-PC] Implementare l'alberatura delle cartelle contenute dentro il Dossier
+User Story 9163: [AUSL-RE AUSL-PC] Creare la pulsantiera nel sommario del Dossier
+User Story 9198: [AUSL-RE AUSL-PC] Implementare l'associazione di un fascicolo ad una cartella del Dossier
+User Story 9206: [AUSL-RE]Creare funzioni OData per la gestione della logica delle autorizzazioni nel Sommario del Dossier.
+User Story 9342: [AUSL-RE AUSL-PC] Implementare la possibilità di aggiungere inserti nel Dossier in modifica
+User Story 9343: [AUSL-RE AUSL-PC] Implementare pagina di visualizzazione degli inserti in Dossier
+User Story 9344: [AUSL-RE AUSL-PC] Implementare pagina di Log del Dossier
+User Story 9345: [AUSL-RE AUSL-PC] Creare validation la creazione di una cartella del Dossier.
+User Story 9365: [AUSL-RE AUSL-PC]Creare metodo BeforeCreate per DossierFolder
+User Story 9367: [AUSL-PC] Nuovo pulsante "Archivia" in Sommario di Protocollo
+User Story 9368: [AUSL-PC] Nuova pagina "ProtocolToUDS" per archiviazione Protocollo
+User Story 9369: [AUSL-PC] Gestire inserimento archivio (archivi UDS) da Protocollo
+User Story 9380: [AUSL-RE AUSL-PC] Aggiungere proprietà DSWEnvironment in WorkflowRepository
+User Story 9396: [AUSL-RE AUSL-PC] Mappare relazione Dossier WorkflowInstance
+User Story 9513: [***REMOVED***] Gestire nel comando di creazione e modifica SerieDocumentale gli attributi dinamici
+User Story 9524: [AUSL-RE AUSL-PC]Gestire nel BeforeUpdate di fascicolo,la chiusura di una DossierFolder
+User Story 9525: [AUSL-RE AUSL-PC]Creazione nel BeforeUpdate di DossierFolder la gestione delle azioni sulle cartelle di un Dossier
+User Story 9526: [AUSL-RE AUSL-PC]Creare Validation per la Modifica di un DossierFolder
+User Story 9527: [AUSL-RE AUSL-PC]Creare Validation per l'eliminazione di una DossierFolder
+User Story 9528: [AUSL-RE AUSL-PC]Gestione nelle WebApi dell'eliminazione di una cartella in un Dossier
+User Story 9067: [AUSL-RE AUSL-PC] Implementare la logica e il binding della pagina di sommario di Dossier
+User Story 9068: [AUSL-RE AUSL-PC] Creare function che permetta di controllare i diritti di visualizzazione di un Dossier
+User Story 9436: [AUSL-RE AUSL-PC] Metodo GetAuthorizedActiveWorkflowRepositories
+User Story 9447: [AUSL-RE AUSL-PC]Bonifica della Gestione dell'errore nelle WebApi,lato typeScript.
+User Story 9645: [AUSL-RE] In sommario fascicolo nascondere l'indicazione della visibilità del fascicolo
+User Story 9650: [AUSL-RE] In sommario fascicolo togliere i filtri della griglia delle UD presenti nel fascicolo
+User Story 9652: [AUSL-RE] Implementare la pagina di 'Autorizza' fascicolo
+User Story 9688: [AUSL-RE] Reindirizzare l'utente nella pagina di fascicolo quando preme il link dell'attività di workflow in Scrivania Workflow
+User Story 9696: [AUSL-RE] Mappare AcceptanceModel
+User Story 9747: [AUSL-RE] metodo per verificare se l'utente corrente ha preso in carico l'attività
+User Story 9780: [AUSL-RE] metodo per verificare se l'attività è stata presa in carico da qualcuno
+User Story 9655: [AUSL-RE] Implementare la presa in carico di un'attività di workflow
+User Story 9813: [AUSL-RE] Creare metodo per recuperare WrokflowRepositoryByActivityId
+User Story 9826: [DSW] Aggiungere colonna "AssignUser" alla tabella [cqrs.DocumentUnitRoles]
+User Story 9848: [AUSL-RE]Gestione lato WebApi dell'Inserimento di Settori nella pagina di autorizza Fascicolo
+User Story 9868: [AUSL-RE] Implementare pagina griglia UD in Inserisci UD da sommario fascicolo
+User Story 9886: [DSW] Aggiungere colonna "BirthPlace" alle tabelle [Contact],[ProtocolContactManual],[TemplateProtocolContactManual]
+User Story 9945: [AUSL-RE] parametrizzata visibilità ricerca della griglia delle UD associate al fascicolo
+User Story 9964: [AUSL-RE] Parametrizzazione visibilità della proprietà Nome in fascicolo
+User Story 9975: [AUSL-RE] Parametrizzare visibilità campo nome e scaffale nei fascicoli
+User Story 9976: [AUSL-RE] Aggiungere proprietà IsMaster a FascicleRoles
+User Story 9977: [AUSL-RE] In inserimento Fascicolo gestire, se inserito, il settore proponente (isMaster)
+User Story 9978: [AUSL-RE] Nel sommario del fascicolo gestire il settore proponente come label
+User Story 9979: [AUSL-RE] Nella modifica del fascicolo gestire il settore proponente come label
+User Story 9980: [AUSL-RE] In autorizza fascicolo gestire il settore proponente come label
+User Story 9981: [AUSL-RE] Nel completa workflow parere rafforzare la gestioni delle autorizzazioni
+User Story 9982: [AUSL-RE] Nell'avvia workflow parere proporre il settore proponente del fascicolo come settore richiedente
+User Story 9983: [AUSL-RE] Nella ricerca dei fascicoli incrociare i diritti del classificatore con quelli del settore responsible master
+User Story 10113: [DSW]In Sommario di Protocollo,a fronte di un riferimento a un Archivio che ha un blocco di autorizzazioni, togliere l'informazione sui settori autorizzati all'archivio.
+User Story 9902: [AUSL-RE] Aggiornare stato dell'attività quando viene presa in carico o rilasciata
+User Story 9918: [AULS-RE] modifiche alla scrivania di workflow
+User Story 9921: [AUSL-RE] modifica finestre avvia e completa workflow
+User Story 9872: [AUSL-PC] Modificare visibilità pulsante 'Fascicolo' in sommario Protocollo
+User Story 9873: [AUSL-PC] In gestione fascicolo da protocollo, aggiungere pulsante 'Cambia classificatore'
+User Story 9837: [AUSL-RE] Modifiche grafiche alla pagina di visualizzazione dei Workflow
+User Story 9677: [AUSL-RE] Aggiungere colonna indicante la presa in carico alla tabella WorkflowAuthorizations
+User Story 9687: [AUSL-RE] Scrivania di Workflow modificare filtri e label
+User Story 9790: [AUSL-RE] Implementare funzionalità Accetta/Rifiuta dello userControl Accetta Workflow
+User Story 9791: [AUSL-RE] Implementare funzionalità Prendi in carico dello userControl Accetta Workflow
+User Story 9689: [AUSL-RE] implementare presa in carico quando l'utente clicca il link dell'attività di workflow
+User Story 9690: [AUSL-RE] Adattare Sommario di Fascicolo se provengo da Scrivania Workflow
+User Story 9694: [AUSL-RE] Creare UI userControl per funzionalità Accetta Workflow
+User Story 9695: [AUSL-RE] Implementare funzionalità "Da lavorare" dello userControl Accetta Workflow
+User Story 9653: [AUSL-RE] Permettere la fascicolazione di un UD da sommario di fascicolo
+User Story 9654: [AUSL-RE] Spostare la scrivania di workflow dal menu utente al menu collaborazioni
+User Story 9646: [AUSL-RE] Rendere parametrica la gestione degli inserti in fascicolo
+User Story 9647: [AUSL-RE] Mostrare il settore proponente nel pannello 'Informazioni' in sommario di fascicolo
+User Story 9648: [AUSL-RE] Fascicolare unità documentaria corrente quando si crea fascicolo
+User Story 9649: [AUSL-RE] In sommario fascicolo togliere il pannello dei fascicoli collegati
+User Story 9451: [AUSL-RE AUSL-PC] Creazione user control Avvia Workflow
+User Story 9069: [AUSL-RE AUSL-PC] Implementare logica pagina di inserimento di Dossier
+User Story 9529: [AUSL-RE AUSL-PC] Visualizzazione di un fascicolo al click di una cartella contenente un fascicolo
+User Story 9580: [***REMOVED***] Permettere il filtro delle family e delle serie in base alla containerarchive
+User Story 9643: [AUSL-RE] Implementare parametro json per modifiche grafiche pagine fascicoli
+User Story 9644: [AUSL-RE] In inserimento fascicolo spostare scelta visibilità in autorizzazioni
+User Story 9410: [AUSL-RE AUSL-PC] Permette di togliere l'associazione di un fascicolo da cartella di Dossier
+User Story 9411: [AUSL-RE AUSL-PC] Implementare l'eliminazione di una cartella del Dossier
+User Story 9413: [AUSL-RE AUSL-PC] Implementare la visibilità dei pulsanti delle cartelle del Dossier
+User Story 9414: [AUSL-RE AUSL-PC] Implementare l'associazione di un fascicolo ad una cartella del Dossier da sommario di fascicolo
+User Story 9357: [AUSL-RE AUSL-PC] Creazione pagina Avvia Workflow
+User Story 9238: [***REMOVED***] Rendere dinamiche le etichette relative ai documenti
+User Story 9239: [***REMOVED***] Mantenere ordinamento documenti definito in DocSuite
+User Story 9304: [AUSL-RE AUSL-PC]Creazione del BeforeUpdate per la pagina di Modifica di un Dossier.
+User Story 9305: [AUSL-RE AUSL-PC]Creazione di funzione OData per il controllo dei diritti sulla Modifica del Dossier
+User Story 9341: [AUSL-RE AUSL-PC] Implementare la possibilità di aggiungere inserti nel Dossier in inserimento
+User Story 9166: [***REMOVED***] Rendere dinamiche le etichette dei documenti in Serie Documentali
+User Story 9167: [***REMOVED***] Abilitare drag and drop documenti in Serie Documentali
+User Story 9168: [***REMOVED***] Gestire ordinamento documenti in salvataggio Serie Documentale
+User Story 9169: [***REMOVED***] Permettere la modifica del nome documento in fase di inserimento
+User Story 9197: [AUSL-RE AUSL-PC] Implementare la creazione di una cartella del Dossier
+User Story 9053: [***REMOVED***] Creare nuovo Storage SQL 2014
+User Story 9007: [AUSL-RE AUSL-PC] Implementare una gestione centralizzata degli errori derivanti dalle webapi
+User Story 8923: [AUSL-RE AUSL-PC] Creazione e mappatura entità DossierRole
+User Story 8924: [AUSL-RE AUSL-PC] Creazione e mappatura entità DossierFolderRole
+User Story 8928: [AUSL-RE AUSL-PC] Creare struttura pagina di inserimento di Dossier
+		
+Bug 8622: [AUSL-RE] Nel Template di Collaborazione il pulsante "Elimina" deve essere visibile anche nel sommario
+Bug 9060: [AUSL-RE]Nella Ricerca di Serie Documentali,quando sono presenti metadata nella Serie,i filtri non funzionano correttamente
+Bug 9435: [AFOLMB]In tutti i classificatori che hanno almeno un SecurityGroup associato ad un responsabile, vengono visualizzati tutti i Responsabili di Procedimento.
+Bug 9967: [AFOLMB]Nella gestione delle UDS è necessario far vedere sempre e solo l'ultima versione dell'archivio. Ora vengonono mostrate tutte
+Bug 10107: [***REMOVED***]In Modifica Serie Documentali, quando modifico il nome di un Documento allegato alla Serie, dà errore.

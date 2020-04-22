@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="PECMailViewRole" table="PECMailViewRole">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <many-to-one class="Role" name="Role" column="IdRole"/>
+    <many-to-one class="PECMailView" name="PECMailView" column="IdPECMailView"/>
+    
+  </class>
+
+</hibernate-mapping>

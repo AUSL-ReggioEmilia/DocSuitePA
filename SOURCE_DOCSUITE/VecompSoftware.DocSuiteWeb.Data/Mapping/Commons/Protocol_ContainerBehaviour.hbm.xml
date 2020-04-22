@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ContainerBehaviour" table="ContainerBehaviour">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <property name="AttributeName" column="AttributeName" />
+    <property name="AttributeValue" column="AttributeValue" />
+    <property name="KeepValue" column="KeepValue" />
+    <property name="Action" column="Action" />
+    
+    <many-to-one class="Container" name="Container" column="IdContainer" cascade="none" />
+    
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:i0="http://Vecomp.BiblosDs.Administration" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Administration" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:import namespace="http://Vecomp.BiblosDs.Administration" location="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?wsdl=wsdl0" />
+  <wsdl:types />
+  <wsdl:binding name="BasicHttpBinding_IAdministration" type="i0:IAdministration">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="DoWork">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/DoWork" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CloneArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CloneCompanyArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/CloneCompanyArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CheckConnection">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/CheckConnection" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentsInTransito">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInTransito" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentsInStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllStorages">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorages" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllStoragesWithServer">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesWithServer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStoragesFromArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesFromArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageWithServer">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageWithServer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageAreas">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageAreasFromStorageArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasFromStorageArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageArea">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArea" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllStorageAreaStatus">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorageAreaStatus" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageRulesFromStorageAreaArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageAreaArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStoragesNotRelatedToArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesNotRelatedToArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchiveWithServerConfigs">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveWithServerConfigs" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchives">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchives" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchivesById">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesById" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchivesFromStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesFromStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchivesNotRelatedToStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesNotRelatedToStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageArchiveRelationsFromStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsFromStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageArchiveRelationsFromArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsFromArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAttributesFromArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributesFromArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAttribute">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttribute" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAttributeGroup">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeGroup" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageRulesFromStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageRule">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRule" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageRules">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRules" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStoragesType">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesType" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocument">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAttributeModes">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeModes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageAreaRuleFromStorageArea">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreaRuleFromStorageArea" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageAreaRule">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreaRule" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRuleOperators">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetRuleOperators" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationFiscalDocumentsTypes">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetPreservationFiscalDocumentsTypes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetServers">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetServers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetServer">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetServer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateServer">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateServer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddServer">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddServer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteServer">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteServer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddArchiveServerConfig">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveServerConfig" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteArchiveServerConfig">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveServerConfig" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddStorageToArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddStorageToArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="EnableDisableStorageToArchive">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/EnableDisableStorageToArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddStorageRule">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddStorageRule" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateStorageRule">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorageRule" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddStorageArea">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddStorageArea" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateStorageArea">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorageArea" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddStorageAreaRule">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddStorageAreaRule" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateStorageAreaRule">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorageAreaRule" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddAttribute">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddAttribute" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddAttributeGroup">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddAttributeGroup" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateAttributeGroup">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroup" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteAttributeGroup">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroup" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateAttribute">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttribute" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteAttribute">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttribute" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateArchiveStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddArchiveStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteArchiveStorage">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentAttributeGroup">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroup" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDocumentAttributeGroup">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGroup" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddArchiveCertificate">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveCertificate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchiveCertificate">
+      <soap:operation soapAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveCertificate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Administration">
+    <wsdl:port name="BasicHttpBinding_IAdministration" binding="tns:BasicHttpBinding_IAdministration">
+      <soap:address location="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

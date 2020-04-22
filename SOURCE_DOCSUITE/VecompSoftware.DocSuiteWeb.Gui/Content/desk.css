@@ -1,0 +1,185 @@
+﻿.desk .titolo {
+    background-color: #5987d6;
+    background-image: none;
+    height: 15pt;
+    padding-top: 3px;
+}
+
+/* datatable */
+.desk table.datatable {
+    border: 1px solid #999999;
+    background: #F5F5F5;
+}
+
+    .desk table.datatable th, .desk table.datatable td.head {
+        background-image: none;
+        border-bottom: 1px solid #999999;
+        color: navy;
+        background-color: #dae9fe;
+    }
+
+    /*Colore Selezionato*/
+    .desk table.datatable td.selected {
+        background-color: Yellow;
+        cursor: hand;
+    }
+
+    .desk table.datatable td.label {
+        background-color: silver;
+    }
+
+/*Tabelle*/
+.desk .Table.deskGrid {
+    border-width: 0;
+    border-collapse: collapse;
+    color: black;
+    width: 100%;
+    height: 15pt;
+}
+
+    .desk .Table.deskGrid td {
+        padding: 2px;
+    }
+
+    /*Intestazione Tabelle*/
+    .desk .Table.deskGrid tr.tabella {
+        font-weight: bold;
+        color: navy;
+        height: 15pt;
+        background-color: #dae9fe;
+        background-image: none;
+        /*background-image: url(Images/Desk/DeskTabellaGrad.gif);*/
+    }
+
+    /*Colore Scuro*/
+    .desk .Table.deskGrid tr.Scuro, .desk .Table.deskGrid td.SXScuro {
+        background-color: #dcdcdc;
+    }
+
+    .desk .Table.deskGrid td.SXScuro {
+        font-weight: bold;
+        text-align: right;
+    }
+
+    /*Colore Chiaro*/
+    .desk .Table.deskGrid tr.Chiaro, .desk .Table.deskGrid td.DXChiaro {
+        background-color: #F5F5F5;
+        vertical-align: middle;
+    }
+
+    .desk .Table.deskGrid tr.ChiaroNoPadding, .desk .Table.deskGrid td.DXChiaroNoPadding {
+        background-color: #F5F5F5;
+        vertical-align: middle;
+        padding-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /*Colore Selezionato*/
+    .desk .Table.deskGrid tr.Selezionato {
+        background-color: #f1c15f;
+        cursor: hand;
+    }
+
+/* custom label */
+.desk .DeskLabel {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* Icons */
+.desk .DeskIcon {
+    margin-right: 4px;
+}
+
+.desk .DeskPreviewDocument {
+    cursor: pointer;
+}
+
+/* Storyboard */
+.deskStoryBoardContainer {
+    border: 1px solid #dde0e1;
+}
+
+.deskDataGroup {
+    padding-bottom: 5px;
+    padding-left: 20px;
+    position: relative;
+}
+
+    .deskDataGroup fieldset {
+        padding: 20px 0 0;
+        *padding: 0;
+        border: 0 none;
+    }
+
+.deskStoryBoard {
+    width: 100%;
+    border: 1px solid #dde0e1;
+    background: #ffffff;
+}
+
+    .deskStoryBoard .deskComment {
+        padding-left: 12px;
+        line-height: 12px;
+    }
+
+    .deskStoryBoard .deskCommentDocument {
+        padding-left: 12px;
+        color: #000000;
+        font-style: italic;
+        font-size: 12px;
+    }
+
+    .deskStoryBoard .deskCommentAuthor {
+        margin-bottom: 2px;
+        padding-left: 12px;
+        line-height: 22px;
+        color: #000000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+
+    .deskStoryBoard .commentDate {
+        color: #68717f;
+        font-size: 11px;
+    }
+
+.inputCommentText {
+    width: 100% !important;
+}
+
+.deskCheckInOut {
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    background-color: #dae9fe;
+}
+
+.RadGrid_Office2007 .rgRow td, .RadGrid_Office2007 .rgAltRow td, .RadGrid_Office2007 .rgEditRow td, .RadGrid_Office2007 .rgFooter td {
+    border-style: none !important;
+}
+
+.clearfix {
+    clear: both;
+    display: block;
+}
+
+
+.desk .arrow-down {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_down.png);
+    background-position: center;
+    width: 16px;
+    height: 16px;
+}
+
+.desk .arrow-up {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_up.png);
+    width: 16px;
+    height: 16px;
+}
+

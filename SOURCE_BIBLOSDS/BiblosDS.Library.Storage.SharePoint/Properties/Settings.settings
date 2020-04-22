@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BiblosDS.Library.Storage.SharePoint.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="BiblosDS_Library_Storage_SharePoint_lists_Lists" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://pc-tera1:8888/_vti_bin/lists.asmx</Value>
+    </Setting>
+    <Setting Name="BiblosDS_Library_Storage_SharePoint_Dws_Dws" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://pc-tera1:8888/_vti_bin/Dws.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

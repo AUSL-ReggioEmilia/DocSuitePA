@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="0caf0427-85dd-43f2-894d-0b8bd73fcd74" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost/DSW.API/FastMergeService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="FastMergeService.wsdl" MetadataType="Wsdl" ID="3ba7452c-e80c-4c09-9463-e5dc8196c1bb" SourceId="1" SourceUrl="http://localhost/DSW.API/FastMergeService.svc?wsdl" />
+    <MetadataFile FileName="FastMergeService.xsd" MetadataType="Schema" ID="1b3ec90b-074e-4450-b24c-8b15fa7c4fb9" SourceId="1" SourceUrl="http://localhost/DSW.API/FastMergeService.svc?xsd=xsd0" />
+    <MetadataFile FileName="FastMergeService.disco" MetadataType="Disco" ID="6c0a414a-01d3-491e-87ab-80d14f0c48cc" SourceId="1" SourceUrl="http://localhost/DSW.API/FastMergeService.svc?disco" />
+    <MetadataFile FileName="FastMergeService1.xsd" MetadataType="Schema" ID="b97fde56-62be-4665-b277-8be44e039df8" SourceId="1" SourceUrl="http://localhost/DSW.API/FastMergeService.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

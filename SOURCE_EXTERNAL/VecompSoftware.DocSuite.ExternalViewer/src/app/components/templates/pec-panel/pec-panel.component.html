@@ -1,0 +1,9 @@
+﻿<div class="panel panel-info panel-prot">
+    <div class="panel-heading">
+        <b>{{title}}</b>
+        <img class="image-pointer" [src]="collapseUrl" (click)="collapsePecPanel()" />
+    </div>
+    <div class="panel-body" *ngIf="isOpen">
+        <pec-info *ngFor="let pecMail of pecMails" [item]="pecMail"></pec-info>
+    </div>
+</div>

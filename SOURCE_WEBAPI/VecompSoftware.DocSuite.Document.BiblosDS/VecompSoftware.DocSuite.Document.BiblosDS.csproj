@@ -1,0 +1,304 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1EA007B2-B9FE-4A04-AAE4-F86366FB3036}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuite.Document.BiblosDS</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuite.Document.BiblosDS</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DocumentBiblosDS.cs" />
+    <Compile Include="DocumentHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\DocumentService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Service References\DocumentService\Documents2.wsdl" />
+    <None Include="Service References\DocumentService\Documents21.wsdl" />
+    <None Include="Service References\DocumentService\Documents48.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents481.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4810.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4811.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4812.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4813.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4814.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4815.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4816.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4817.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4818.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4819.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents482.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4820.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4821.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4822.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4823.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4824.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4825.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4826.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4827.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4828.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4829.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents483.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4830.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4831.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4832.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4833.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4834.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4835.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4836.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4837.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4838.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4839.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents484.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4840.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4841.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4842.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4843.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4844.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4845.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4846.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents4847.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents485.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents486.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents487.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents488.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\Documents489.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.Archive.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.ArchiveStatistics.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.Attribute.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.Certificate.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.Content.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.Document.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.DocumentAttach.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.DocumentResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.DocumentServer.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.DocumentSignInfo.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.DocumentUnit.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.DocumentUnitAggregate.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.DocumentUnitAggregateExt.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.DocumentUnitChain.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.DocumentUnitExt.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.Storage.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.StorageArea.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="VecompSoftware.DocSuite.Document.BiblosDS.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.Document\VecompSoftware.DocSuite.Document.csproj">
+      <Project>{ea3f23a5-9eb3-4512-a847-083de0efe278}</Project>
+      <Name>VecompSoftware.DocSuite.Document</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Common\VecompSoftware.DocSuiteWeb.Common.csproj">
+      <Project>{58938aa6-b3d6-4256-8c5c-4bcab88517bb}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Model\VecompSoftware.DocSuiteWeb.Model.csproj">
+      <Project>{df5935ca-367b-4124-9840-aafd3c419eba}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\DocumentService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DocumentService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DocumentService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DocumentService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DocumentService\Documents1.disco" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

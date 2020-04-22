@@ -1,0 +1,67 @@
+Epic 17890: [CTT] Modifiche evolutive 8.82
+Epic 18055: [AUSL-RE] Monitoraggio Trasparenza: Miglioramenti alla gestione del monitoraggio
+Epic 18075: [ENPACL] Modifiche evolutive 8.83
+
+
+Feature 14447: [CTT] Scrivania Da leggere per gli archivi 
+Feature 16828: [ENPACL] Protocolli: Modificare la funzione "Esporta Documenti" di protocollo aggiungendo allegati e annessi
+Feature 17873: [AUSL-RE] Ottimizzazione accesso a BiblosDS
+Feature 17891: [CTT] Fascicoli : Inviare da fascicoli documenti coerenti con la selezione fatta e abilitare opzione “creare file compressi (ZIP)”
+Feature 17894: [CTT] Fascicoli : Possibilità di decidere l’ordinamento delle UD nei sommario di fascicoli
+Feature 17897: [CTT] Fascicoli : Migliorare vista di scrivania “UD da fascicolare” con filtro “escludi anche se referenziati”
+Feature 17912: [CTT] Archivi: Creare nuova vista di scrivania "Archivi Da leggere"
+Feature 17989: [CTT] Fatturazione Elettronica: Annullamento/Sposta fattura multiplo
+Feature 17992: [CTT] Protocollo: Escludere dai contatori i contenitori protocollo inerenti la fatturazione elettronica
+Feature 18000: [AUSL-RE] Protocollo: Inserire il nuovo pannello dei collegamento "uscDocumentUnitReferences" nel sommario di protocollo
+Feature 18049: [CTT] Fatturazione Elettronica: Permettere la ricerca "Indirizzo PEC" con l'opzione vuoto
+Feature 18056: [AUSL-RE] Monitoraggio Trasparenza: Obbligatorietà del campo “Valutazione”
+Feature 18058: [AUSL-RE] Monitoraggio Trasparenza: Obbligatorietà del campo “settore di appartenenza”
+Feature 18076: [ENPACL] Collaborazione: Impostare il flag di default solo per il documento principale (mai allegati e annessi)
+Feature 18079: [ENPACL] PECMAIL: Impostare a false il flag “includi PEC in errore” da provenienete da TaskHeader
+Feature 18101: [AUSL-RE] Monitoraggio Trasparenza: Permettere la modifica dell'ultimo monitoraggio 
+Feature 18104: [AUSL-RE] Monitoraggio Trasparenza: Rimuovere funzionalità nelle unità documentali non sviluppate
+
+
+User Story 17892: [CTT] Fascicoli : Modificare lo usercontrol MailSenderControl.ascx con opzione “creare file compressi (ZIP)”
+User Story 17893: [CTT] Fascicoli : Implementare BusinessLogic MailSenderControl.ascx per opzione “creare file compressi (ZIP)”
+User Story 17895: [CTT] Fascicoli : Abilitare "Documenti" o "Data registrazione" come ordinabili nel sommario di fascicolo
+User Story 17896: [CTT] Fascicoli : Modificare getFilterModel per aggancio ordinamento odata in funzione della colonna ordinabile imposto nel sommario di fascicolo
+User Story 17900: [CTT] Fascicoli : Aggiungere blocco filtro “Tipologia di fascicolazione” nella pagina UserFascicle.aspx
+User Story 17903: [CTT] Fascicoli : Modificare la funzione Odata DocumentUnitService.GetFascicolableDocumentUnits
+User Story 17904: [CTT] Fascicoli : Modificare la funzione SQL [webapiprivate].DocumentUnit_FX_FascicolableDocumentUnits
+User Story 17905: [CTT] Fascicoli : Aggiugnere alter SQL funzione [webapiprivate].DocumentUnit_FX_FascicolableDocumentUnits 
+User Story 17915: [CTT] Archivi: Creare nuova pagina "UserUDS.aspx" dentro la cartellina "UDS"
+User Story 17916: [CTT] Archivi: Modificare UserDesktop.aspx per aggancio nodo "Archivio" sulla pagina "UserUDS.aspx"
+User Story 17917: [CTT] Archivi: Aggancio BusinessLogic "Archivio Da leggere"
+User Story 17980: [AUSL-RE] Ottimizzazione libreria Services.Biblos per lettura documenti
+User Story 18001: [AUSL-RE] Protocollo: Modifica componente "uscDocumentUnitReferences"
+User Story 18002: [AUSL-RE] Protocollo: Rimuovere dal sommario di protocollo le tabelle tblDocumentSeriesItem e tblprotocolMessage 
+User Story 18003: [AUSL-RE] Protocollo: Modificare uscProtocollo.ascx aggiungendo "uscDocumentUnitReferences"
+User Story 18004: [AUSL-RE] Private WebAPI: Mappare la relazione ProtocolDocumentSerieItem nelle private WebAPI
+User Story 18005: [AUSL-RE] Protocollo: Aggiungere visualizzazione "Messaggi inviati" nello usercontrol "uscDocumentUnitReferences"
+User Story 18006: [AUSL-RE] Protocollo: Aggiungere visualizzazione "Serie documentali" nello usercontrol "uscDocumentUnitReferences"
+User Story 18007: [CTT] Protocollo: Creare parameter env di protocollo InvoiceProtocolContainars
+User Story 18008: [CTT] Protocollo: Adeguare la ricerca dei contatori di Protocolli da leggere al parametro InvoiceProtocolContainars
+User Story 18009: [CTT] Protocollo: Adeguare la vista di scrivania Protocolli da leggere al parametro InvoiceProtocolContainars
+User Story 18034: [CTT] Fatturazione Elettronica: Abilitare la funzione "selezione multipla" della griglia nella pagina "UDSInvoiceSearch.aspx"
+User Story 18035: [CTT] Fatturazione Elettronica: Adegaure la pagina UDSInvoiceDelete.aspx per la gestione multipla della selezione
+User Story 18036: [CTT] Fatturazione Elettronica: Adegaure la pagina UDSInvoiceMove.aspx per la gestione multipla della selezione
+User Story 18037: [CTT] Fatturazione Elettronica: Adegaure la pagina UDSInvoiceMove.aspx per la gestione multipla della selezione
+User Story 18038: [CTT] Fatturazione Elettronica: Adegaure il modulo VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice
+User Story 18050: [CTT] Fatturazione Elettronica: Modificare pagina UDSInvoiceSearch.aspx aggiungendo checkbox "vuoto" al campo "Indirizzo PEC" 
+User Story 18051: [CTT] Fatturazione Elettronica: Modifica business logic ODATA per ricerca con valore "vuoto" al campo "Indirizzo PEC" 
+User Story 18052: [CTT] WebAPI: Aggiungere funzione odata "GetTenantUDSRepositories"
+User Story 18053: [CTT] Archivi: Aggancio logica multitenat per il radlistbox del campo "filtro per archivio" nella pagina "UserUDS.aspx"
+User Story 18054: [CTT] Archivi: Modificare il service TypeScript UDSRepositoryService  per aggancio nuova funzione odata GetTenantUDSRepositories
+User Story 18057: [AUSL-RE] Monitoraggio Trasparenza: Obbligatorietà del campo “Valutazione”
+User Story 18059: [AUSL-RE] ] Monitoraggio Trasparenza: Obbligatorietà del campo “settore di appartenenza”
+User Story 18060: [AUSL-RE] ] Monitoraggio Trasparenza: Verifica corretto inserimento Serie Documentale
+User Story 18077: [ENPACL] Esporta protocolli: Modificare la funzione "Esporta Documenti" di protocollo aggiungendo allegati e annessi
+User Story 18078: [ENPACL] Collaborazione: Impostare il flag di default solo per il documento principale (mai allegati e annessi)
+User Story 18080: [ENPACL] PECMAIL: Impostare il flag “includi PEC in errore” solo da provenienete da TaskHeader
+User Story 18102: [AUSL-RE] Monitoraggio Trasparenza: Aggiungere icona di modifica al monitoraggio nel sommario della serie documentale
+User Story 18103: [AUSL-RE] Monitoraggio Trasparenza: Sviluppare la logica di caricamento e modifica dell monitoraggio della serie documentale
+User Story 18105: [AUSL-RE] Monitoraggio Trasparenza: Rimuovere funzionalità da UDS/Archivio
+User Story 18106: [AUSL-RE] Monitoraggio Trasparenza: Rimuovere funzionalità da Protocollo
+User Story 18107: [AUSL-RE] Monitoraggio Trasparenza: Rimuovere funzionalità da Atto
+User Story 18174: [DSW] Refactor chiamate GET da controller REST a controller ODATA.

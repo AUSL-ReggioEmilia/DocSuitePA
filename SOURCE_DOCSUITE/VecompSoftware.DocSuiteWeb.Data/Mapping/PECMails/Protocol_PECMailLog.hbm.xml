@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="PECMailLog" table="PECMailLog">
+
+    <id name="Id" column="ID">
+      <generator class="native" />
+    </id>
+    
+    <many-to-one name="Mail" column="IDMail" not-null="true" />
+    <property name="Description" column="Description" type="AnsiString" />
+    <property name="Type" column="Type" type="AnsiString" />
+    <property name="Date" column="Date" />
+    <property name="SystemComputer" column="SystemComputer" />
+    <property name="SystemUser" column="SystemUser" />
+    <property name="Severity" column="Severity" />
+    <property name="Hash" column="Hash" />
+    <property name="UniqueId" column="UniqueId" />
+    
+    <many-to-one name="DestinationMail" column="IdDestinationMail" />
+  </class>
+  
+</hibernate-mapping>

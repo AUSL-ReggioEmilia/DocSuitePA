@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="DocumentSeriesItemLog" table="DocumentSeriesItemLog">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    <property name="LogDate" column="LogDate" />
+    <property name="SystemComputer" column="SystemComputer" />
+    <property name="SystemUser" column="SystemUser" />
+    <property name="Program" column="Program" />
+    <property name="LogType" column="LogType" />
+    <property name="LogDescription" column="LogDescription" />
+    <property name="Severity" column="Severity" />
+    <property name="Hash" column="Hash" />
+    <property name="UniqueId" column="UniqueId" unique="true" />
+    <property name="UniqueIdDocumentSeriesItem" column="UniqueIdDocumentSeriesItem" not-null="true" />
+
+    <many-to-one class="DocumentSeriesItem" name="DocumentSeriesItem" column="IdDocumentSeriesItem" cascade="none" />
+    
+  </class>
+  
+</hibernate-mapping>

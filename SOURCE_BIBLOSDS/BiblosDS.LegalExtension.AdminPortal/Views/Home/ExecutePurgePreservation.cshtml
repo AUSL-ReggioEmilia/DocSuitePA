@@ -1,0 +1,67 @@
+﻿@using BiblosDS.LegalExtension.AdminPortal.ViewModel;
+
+<script src="@Url.Content("~/Scripts/jquery.signalR-2.4.1.min.js")"></script>
+<script src="@Url.Content("~/signalr/hubs")"></script>
+<script>
+    var hub,
+        hubStart;
+
+    $(function () {
+        hub = $.connection.preservationHub;
+        hubStart = $.connection.hub.start();
+        hubStart.done(function () {
+                hub.server.purgePreservation("@ViewData["idPreservation"]");
+            })
+            .fail(function () {
+                alert("E' avvenuto un errore durante la connessione al server. Si prega di riprovare l'attività di pulizia archivio corrente");
+            });
+    });
+</script>
+
+@section featured {
+    <hgroup class="title">
+        <h1><b>Esecuzione processo di pulizia archivio corrente</b></h1>
+    </hgroup>
+    <br />
+}
+
+@(Html.Kendo().Grid<ProgressMessageViewModel>
+    ()
+    .Name("Grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Level).Width(36)
+            .Template(cp =>
+                cp.Level
+            )
+            .ClientTemplate("#if(Level == '" + (int)ProgressMessageLevel.Info + "') {#" +
+            "                   <img src='" + Url.Content("~/Images/info.png") + "' />" +
+            "                #} else if (Level == '" + (int)ProgressMessageLevel.Error + "') {#" +
+            "                   <img src='" + Url.Content("~/Images/error.png") + "' />" +
+            "                #} else if (Level == '" + (int)ProgressMessageLevel.Warning + "') {#" +
+            "                   <img src='" + Url.Content("~/Images/warning.png") + "' />" +
+            "                #} else {#" +
+            "                   <img src='" + Url.Content("~/Images/succeded.png") + "' />" +
+            "                #}#")
+            .Title(" ");
+        columns.Bound(p => p.Date).Width(200).Format("{0:dd/MM/yyyy HH:mm:ss.ffff}").Title("Data");
+        columns.Bound(p => p.Message).Title("Messaggio");
+    })
+    .HtmlAttributes(new { style = "height: 550px; margin-bottom:20px;" })
+    .Sortable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .SignalR()
+        .AutoSync(true)
+        .Sort(s => s.Add("Date").Descending())
+        .Transport(tr => tr
+            .Promise("hubStart")
+            .Hub("hub")
+            .Client(c => c
+                .Create("notify"))
+            .Server(s => s
+                .Read("load")
+            )
+        )
+    )
+)

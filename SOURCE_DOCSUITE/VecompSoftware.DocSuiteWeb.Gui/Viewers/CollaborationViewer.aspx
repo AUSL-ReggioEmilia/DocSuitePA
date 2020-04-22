@@ -1,0 +1,31 @@
+﻿<%@ Page AutoEventWireup="false" CodeBehind="CollaborationViewer.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.Viewers.CollaborationViewer" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" %>
+<%@ Register Src="ViewerLight.ascx" TagName="uscViewerLight" TagPrefix="uc1" %>
+
+<asp:Content ContentPlaceHolderID="cphHeader" runat="server">
+    <telerik:RadCodeBlock ID="RadCodeBlock1" runat="server">
+        <script type="text/javascript">
+            function ShowLoadingPanel() {
+                var currentLoadingPanel = $find("<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>");
+                var currentUpdatedControl = "<%= pnlMainContent.ClientID%>";
+                currentLoadingPanel.show(currentUpdatedControl);
+
+
+                var ajaxFlatLoadingPanel = $find("<%= MasterDocSuite.AjaxFlatLoadingPanel.ClientID%>");
+                var pnlButtons = "<%= btnSend.ClientID%>";
+                ajaxFlatLoadingPanel.show(pnlButtons);
+            }
+        </script>
+    </telerik:RadCodeBlock>
+</asp:Content>
+
+<asp:Content ID="Content1" runat="server" ContentPlaceHolderID="cphContent">
+
+    <asp:Panel runat="server" ID="pnlMainContent" CssClass="viewerWrapper">
+        <uc1:uscViewerLight CheckBoxes="true" DocumentSourcePage="CollaborationDocumentHandler" ID="ViewerLight" runat="server" />
+    </asp:Panel>
+
+</asp:Content>
+
+<asp:Content ID="Content2" runat="server" ContentPlaceHolderID="cphFooter">
+    <asp:Button ID="btnSend" runat="server" Width="120px" Text="Invia Mail" OnClientClick="ShowLoadingPanel();" PostBackUrl="../MailSenders/GenericMailSender.aspx?Type=Prot"/>
+</asp:Content>

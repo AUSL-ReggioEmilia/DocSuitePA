@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/Content" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/Content" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="Content">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element name="Blob" nillable="true" type="xs:base64Binary" />
+          <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Content" nillable="true" type="tns:Content" />
+</xs:schema>

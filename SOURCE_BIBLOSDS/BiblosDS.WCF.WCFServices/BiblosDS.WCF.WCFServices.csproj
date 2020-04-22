@@ -1,0 +1,809 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BiblosDS.WCF.WCFServices</RootNamespace>
+    <AssemblyName>BiblosDS.WCF.WCFServices</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AzureDebug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <CodeAnalysisLogFile>bin\BiblosDS.WCF.WCFServices.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\..\..\Windows\SysWOW64\inetsrv\Microsoft.Web.Administration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=2.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.ServiceRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Services.Client" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Administration.svc" />
+    <Content Include="ClientAccessPolicy.xml" />
+    <Content Include="ContentSearch.svc" />
+    <Content Include="CrossDomain.xml" />
+    <Content Include="DigitalSignature.svc" />
+    <Content Include="Documents.svc" />
+    <Content Include="Draft\8.65\db_migrations.sql" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Install\sql updates\8.65\db_migrations.sql" />
+    <Content Include="Install\sql updates\8.65\_readme.txt" />
+    <Content Include="Install\sql updates\8.70\db_migrations.sql" />
+    <Content Include="Install\sql updates\8.70\_readme.txt" />
+    <Content Include="Install\sql updates\8.73\db_migrations.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.73\_readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.76\db_migrations.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.76\_readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.81\db_postmigrations.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.81\db_migrations.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.81\_readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.82\db_migrations.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.82\_readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="packages.config" />
+    <Content Include="log4net.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="biblosds.connectionstrings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="README.txt" />
+    <Content Include="wcfservices.appsettings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="biblosds.system.servicemodel.bindings.config" />
+    <Content Include="wcfservices.system.servicemodel.client.config" />
+    <Content Include="wcfservices.system.servicemodel.services.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="biblosds.system.servicemodel.behaviors.config" />
+    <Content Include="Install\sql updates\8.73\default_configurations\Web.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.76\default_configurations\Web.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.81\default_configurations\Web.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.82\default_configurations\Web.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.ArchiveStatistics.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentServer.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentStorage.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentStorageArea.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentUnit.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentUnitAggregate.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentUnitAggregateExt.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentUnitChain.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentUnitExt.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.DocumentResponse.datasource" />
+    <None Include="Properties\DataSources\VecompSoftware.DataContract.Documents.DocumentSignInfo.datasource" />
+    <None Include="Properties\PublishProfiles\Filesystem.pubxml" />
+    <None Include="Service References\ServiceReferenceDigitalSign\Arrays1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDigitalSign\ComputeHashType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ArchiveServerConfig.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ArchiveStatistics.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ContentFormat.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentAttach.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentServer.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentSignInfo.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentUnit.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentUnitChain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationTaskTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ResponseBase.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ResponseError.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Server.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ServerRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Vecomp.BiblosDs.Documents.wsdl" />
+    <None Include="Service References\ServiceReferenceDocument\Vecomp.BiblosDs.Documents.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\Company.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web.config.bak">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web.config.AzureDebug.bak">
+      <DependentUpon>Web.config.bak</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web.config.Debug.bak">
+      <DependentUpon>Web.config.bak</DependentUpon>
+    </None>
+    <None Include="Web.config.Release.bak">
+      <DependentUpon>Web.config.bak</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.ArchiveCompany.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.ArchiveCompany1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Document.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Document1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentArchive.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentArchive1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentAttach.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentAttribute.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentAttribute1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentCertificate.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentCertificate1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentContent.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentContent1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Preservation.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Preservation1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationAlert.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationAlert1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationAlertType.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationAlertType1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationHoliday.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationHoliday1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationInStorageDevice.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationInStorageDevice1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationJournaling.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationJournaling1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationJournalingActivity.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationJournalingActivity1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationRole.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationRole1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationSchedule.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationSchedule1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationStorageDevice.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationStorageDevice1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationStorageDeviceStatus.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationStorageDeviceStatus1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTask.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTask1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTaskGroup.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTaskGroup1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTaskGroupType.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTaskGroupType1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTaskType.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTaskType1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationUser.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationUser1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationUserRole.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationUserRole1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationArchiveInfoResponse.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationArchiveInfoResponse1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationExpireResponse.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationExpireResponse1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationFileInfoResponse.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationFileInfoResponse1.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationInfoResponse.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationInfoResponse1.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceDigitalSign\BiblosDS.wsdl" />
+    <None Include="Service References\ServiceReferenceDigitalSign\BiblosDSObject.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDigitalSign\Certificate.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDigitalSign\Content.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDigitalSign\service.wsdl" />
+    <None Include="Service References\ServiceReferenceDigitalSign\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDigitalSign\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Archive.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Attribute.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\AttributeGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\AttributeMode.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\AttributeValue.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDS.Library.Common.Exceptions.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDS.Library.Common.Objects.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDS.wsdl" />
+    <None Include="Service References\ServiceReferenceDocument\BiblosDSObject.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Certificate.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Content.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Document.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\FilterOperator.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Permission.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PermissionMode.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Preservation.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationAlert.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationAlertType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationJournaling.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationJournalingActivity.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationSchedule.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationScheduleTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationTask.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationTaskGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationTaskGroupType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationUser.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationUserRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\service.wsdl" />
+    <None Include="Service References\ServiceReferenceDocument\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Storage.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\StorageArea.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\StorageType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReferenceDocument\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceDocument\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceDigitalSign\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReferenceDigitalSign\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceDigitalSign\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Log.svc" />
+    <Content Include="Preservation.svc" />
+    <None Include="Service References\ServiceReferencePreservation\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReferencePreservation\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferencePreservation\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Transit.svc" />
+    <None Include="Service References\ServiceReferencePreservation\Archive.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\ArchiveCompany.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\ArchiveServerConfig.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\Attribute.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\AttributeGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\AttributeMode.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\AttributeValue.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\BiblosDS.Library.Common.Enums.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\BiblosDS.Library.Common.Objects.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\BiblosDSObject.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\Certificate.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\Content.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\CryptoType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\Document.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\DocumentAttach.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\DocumentServer.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\FilterOperator.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\Permission.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PermissionMode.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\Preservation.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationAlert.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationAlertType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationArchiveInfoResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationError.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationExpireResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationFileInfoResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationHoliday.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationInfoResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationInStorageDevice.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationJournaling.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationJournalingActivity.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationSchedule.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationScheduleTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationStatus.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationStorageDevice.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationStorageDeviceStatus.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationTask.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationTaskGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationTaskGroupType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationTaskTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationUser.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\PreservationUserRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\ResponseBase.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\ResponseError.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\Server.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\ServerRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\service.wsdl" />
+    <None Include="Service References\ServiceReferencePreservation\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\Storage.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\StorageArea.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferencePreservation\StorageType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="startup.cmd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="StartUp\supplier_info.ini.p7m" />
+    <None Include="Web References\BoblosDSConvWs\BiblosDSConv.disco" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Web References\BoblosDSConvWs\BiblosDSConv.wsdl" />
+    <None Include="Web References\BoblosDSConvWs\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\BoblosDSConvWs\stDoc.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <Content Include="Web.Publish.config" />
+    <Content Include="Web.AzureDebug.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Code\Administration.cs" />
+    <Compile Include="App_Code\ContentSearch.cs" />
+    <Compile Include="..\BiblosDS.WCF.Documents\ServiceDocument.cs">
+      <Link>App_Code\ServiceDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\BiblosDS.WCF.DigitalSign\ServiceDigitalSign.cs">
+      <Link>App_Code\ServiceDigitalSign.cs</Link>
+    </Compile>
+    <Compile Include="App_Code\Log.cs" />
+    <Compile Include="App_Code\Preservation.cs" />
+    <Compile Include="App_Code\PreservationServiceInstances.cs" />
+    <Compile Include="App_Code\Transit.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceDigitalSign\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceDocument\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferencePreservation\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\BoblosDSConvWs\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="WebRole.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ServiceReferenceDigitalSign\" />
+    <WCFMetadataStorage Include="Service References\ServiceReferenceDocument\" />
+    <WCFMetadataStorage Include="Service References\ServiceReferencePreservation\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BiblosDS.Library.Common.CompEd\BiblosDS.Library.Common.CompEd.csproj">
+      <Project>{296B2D42-BE61-423F-8525-5CD8C8BF1677}</Project>
+      <Name>BiblosDS.Library.Common.CompEd</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Common.Objects\BiblosDS.Library.Common.Objects.csproj">
+      <Project>{BE2B09F0-D141-41B7-820E-85FE7D9A7360}</Project>
+      <Name>BiblosDS.Library.Common.Objects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Common.Preservation\BiblosDS.Library.Common.Preservation.csproj">
+      <Project>{7A3FC3A4-FD1B-4426-8A05-437279F55CCC}</Project>
+      <Name>BiblosDS.Library.Common.Preservation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Common\BiblosDS.Library.Common.csproj">
+      <Project>{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}</Project>
+      <Name>BiblosDS.Library.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.Commons\VecompSoftware.Common.csproj">
+      <Project>{54ad4b78-46b4-4a62-8ec2-228f29c0ae56}</Project>
+      <Name>VecompSoftware.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.CompEd\VecompSoftware.CompEd.csproj">
+      <Project>{229661d4-d040-4bc4-b4d2-bfd7a6170935}</Project>
+      <Name>VecompSoftware.CompEd</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DataContract\VecompSoftware.DataContract.csproj">
+      <Project>{b1f470ef-081a-4186-b41b-73a5a38a0242}</Project>
+      <Name>VecompSoftware.DataContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.MagicNumber\VecompSoftware.MagicNumber.csproj">
+      <Project>{eb3904a7-f5e9-41cb-ae91-d81dc015cf78}</Project>
+      <Name>VecompSoftware.MagicNumber</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.ServiceContract.BiblosDS\VecompSoftware.ServiceContract.BiblosDS.csproj">
+      <Project>{7b33f200-7e95-4ae7-a993-995f3a4d2ff3}</Project>
+      <Name>VecompSoftware.ServiceContract.BiblosDS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.ServiceContract\VecompSoftware.ServiceContract.csproj">
+      <Project>{c917a52b-467f-4976-88d7-0f5ecce3e6e5}</Project>
+      <Name>VecompSoftware.ServiceContract</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://localhost/StampaConforme/BiblosDSConv.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\BoblosDSConvWs\</RelPath>
+      <UpdateFromURL>http://localhost/StampaConforme/BiblosDSConv.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>BiblosDS_WCF_WCFServices_BoblosDSConvWs_BiblosDSConv</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>1526</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/BiblosDS.WCF</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <Target Name="AfterBuild">
+    <TransformXml Condition="Exists('$(OutDir)\_PublishedWebsites\$(TargetName)')" Source="Web.config" Transform="$(ProjectConfigTransformFileName)" Destination="$(OutDir)\_PublishedWebsites\$(TargetName)\Web.config" />
+  </Target>
+</Project>

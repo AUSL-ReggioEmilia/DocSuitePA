@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ResolutionRecipient" table="ResolutionRecipient">
+    
+    <composite-id class="ResolutionRecipientCompositeKey" name="Id">
+      <key-property column="idResolution" name="IdResolution" />
+      <key-property column="idRecipient" name="IdRecipient" />
+    </composite-id>
+    
+    <many-to-one class="Resolution" name="Resolution" column="idResolution" insert="false" update="false" />
+    <many-to-one class="Recipient" name="Recipient" column="idRecipient" insert="false" update="false" />
+    
+  </class>
+  
+</hibernate-mapping>

@@ -1,0 +1,909 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DA8BC5F1-0BE5-41D0-9CB0-E4A38A8F1242}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BiblosDS.UnitTest.WCF</RootNamespace>
+    <AssemblyName>BiblosDS.UnitTest.WCF</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Itanium'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Itanium\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>Itanium</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDS.UnitTest.WCF.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Itanium'">
+    <OutputPath>bin\Itanium\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>Itanium</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\BiblosDS.UnitTest.WCF.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDS.UnitTest.WCF.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\BiblosDS.UnitTest.WCF.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AzureDebug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AzureDebug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDS.UnitTest.WCF.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AzureDebug|Itanium'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Itanium\AzureDebug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>Itanium</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDS.UnitTest.WCF.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AzureDebug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\AzureDebug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDS.UnitTest.WCF.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArchiveCertificateTest.cs" />
+    <Compile Include="DocumentModify_Test.cs" />
+    <Compile Include="Document_Test.cs" />
+    <Compile Include="Preservation_Test.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\PreservationSvc\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceAdmin\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceDocument\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceStorage\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceTIOCA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Storage_Test.cs" />
+    <Compile Include="Storage_Transito_Test.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AuthoringTests.txt" />
+    <Content Include="favicon.ico" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.ArchiveServerConfig.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.ArchiveStatistics.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentArchiveCertificate.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentArchiveStorage.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentAttach.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentAttributeGroup.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentAttributeMode.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentCertificate.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentRuleOperator.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentServer.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentStorage.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentStorageArea.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentStorageAreaRule.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentStorageRule.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentStorageType.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentUnit.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentUnitAggregate.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentUnitAggregateExt.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentUnitChain.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentUnitExt.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.DocumentResponse.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Server.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Status.datasource" />
+    <None Include="Service References\ServiceReferenceAdmin\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceAdmin\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReferenceAdmin\Administration.disco" />
+    <None Include="Service References\ServiceReferenceAdmin\Administration.wsdl" />
+    <None Include="Service References\ServiceReferenceAdmin\Administration.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration1.wsdl" />
+    <None Include="Service References\ServiceReferenceAdmin\Administration1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration10.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration11.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration12.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration13.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration14.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration15.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration16.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration17.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration18.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration19.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration20.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration21.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration22.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration23.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration24.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration25.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration26.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration27.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration28.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration29.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration30.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration33.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration34.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration35.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration36.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration37.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration38.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration39.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration40.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration41.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration42.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration43.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration44.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration5.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration6.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration7.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration8.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdmin\Administration9.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ArchiveServerConfig.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ArchiveStatistics.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDS.Library.Common.Exceptions.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDS.UnitTest.WCF.ServiceReferenceDocument.DocumentSignInfo.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ContentFormat.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentAttach.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentServer.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentSignInfo.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentUnit.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\DocumentUnitChain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationJournaling.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationJournalingActivity.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationTaskTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ResponseBase.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ResponseError.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Server.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\ServerRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Vecomp.BiblosDs.Documents.wsdl" />
+    <None Include="Service References\ServiceReferenceDocument\Vecomp.BiblosDs.Documents.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\ArchiveServerConfig.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\AttributeGroup1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\BiblosDS.Library.Common.Objects1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\BiblosDS.UnitTest.WCF.ServiceReferenceStorage.DocumentAttach.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\DocumentAttach.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\DocumentServer.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\FilterOperator1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Preservation1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationAlert1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationAlertType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationJournaling.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationJournalingActivity.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationRole1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationSchedule1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationScheduleTaskType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTask1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTaskGroup1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTaskGroupType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTaskType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTaskTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationUser1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationUserRole1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Server.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\ServerRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\StorageArea1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\StorageType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTIOCA\BiblosDS.UnitTest.WCF.ServiceReferenceTIOCA.CertResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceTIOCA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceTIOCA\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceTIOCA\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReferenceTIOCA\ServiceTIOCA.disco" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Preservation.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationAlert.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationHoliday.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationHolidays.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationSchedule.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTask.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTaskGroup.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTaskGroupType.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationTaskType.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationUser.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationUserRole.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationArchiveInfoResponse.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationFileInfoResponse2.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.PreservationInfoResponse.datasource" />
+    <None Include="Service References\PreservationSvc\BiblosDS.Library.Common.Enums.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationError.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationFileInfoResponse2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationHoliday.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationResponse2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\PreservationSvc\configuration.svcinfo" />
+    <None Include="Service References\PreservationSvc\configuration91.svcinfo" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.PreservationEvents.datasource" />
+    <None Include="Service References\PreservationSvc\Archive.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\Attribute.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\AttributeGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\AttributeMode.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\AttributeValue.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\BiblosDS.Library.Common.Objects.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\BiblosDSObject.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\Certificate.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\Content.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\Document.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\FilterOperator.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\Permission.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PermissionMode.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\Preservation.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationAlert.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationAlertType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationArchiveInfoResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationInfoResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationSchedule.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationScheduleTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationTask.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationTaskGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationTaskGroupType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationUser.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\PreservationUserRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\ResponseBase2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\ResponseError2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\service.wsdl" />
+    <None Include="Service References\PreservationSvc\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\Storage.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\StorageArea.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PreservationSvc\StorageType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\AttributeGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDS.Library.Common.Objects.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\FilterOperator.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Preservation.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationAlert.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationAlertType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationSchedule.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationScheduleTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationTask.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationTaskGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationTaskGroupType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationUser.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\PreservationUserRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\StorageArea.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\StorageType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\AttributeGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\BiblosDS.Library.Common.Objects.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\BiblosDS.UnitTest.WCF.ServiceReferenceStorage.Document.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\BiblosDS.wsdl" />
+    <None Include="Service References\ServiceReferenceStorage\BiblosDSObject.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\FilterOperator.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Permission.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PermissionMode.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Preservation.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationAlert.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationAlertType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationSchedule.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationScheduleTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTask.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTaskGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTaskGroupType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationUser.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationUserRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceStorage\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReferenceDocument\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceDocument\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReferenceStorage\StorageArea.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\StorageType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTIOCA\ServiceTIOCA.wsdl" />
+    <None Include="Service References\ServiceReferenceTIOCA\ServiceTIOCA.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTIOCA\ServiceTIOCA1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTIOCA\ServiceTIOCA2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Document.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentArchive.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentAttribute.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentContent.datasource" />
+    <None Include="Properties\DataSources\System.Xml.XmlElement.datasource" />
+    <None Include="Service References\ServiceReferenceDocument\Archive1.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\Attribute.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\AttributeMode.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\AttributeValue.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\BiblosDS.wsdl" />
+    <None Include="Service References\ServiceReferenceDocument\BiblosDSObject.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\Certificate1.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\Content1.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\Document1.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\Permission.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\PermissionMode.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\service.wsdl" />
+    <None Include="Service References\ServiceReferenceDocument\service2.xsd" />
+    <None Include="Service References\ServiceReferenceDocument\Storage1.xsd" />
+    <None Include="Service References\ServiceReferenceStorage\Archive.xsd" />
+    <None Include="Service References\ServiceReferenceStorage\Attribute.xsd" />
+    <None Include="Service References\ServiceReferenceStorage\AttributeMode.xsd" />
+    <None Include="Service References\ServiceReferenceStorage\AttributeValue.xsd" />
+    <None Include="Service References\ServiceReferenceStorage\Certificate.xsd" />
+    <None Include="Service References\ServiceReferenceStorage\Content.xsd" />
+    <None Include="Service References\ServiceReferenceStorage\Document.xsd" />
+    <None Include="Service References\ServiceReferenceStorage\service.wsdl" />
+    <None Include="Service References\ServiceReferenceStorage\service.xsd" />
+    <None Include="Service References\ServiceReferenceStorage\service1.xsd" />
+    <None Include="Service References\ServiceReferenceStorage\Storage.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\PreservationSvc\" />
+    <WCFMetadataStorage Include="Service References\ServiceReferenceAdmin\" />
+    <WCFMetadataStorage Include="Service References\ServiceReferenceDocument\" />
+    <WCFMetadataStorage Include="Service References\ServiceReferenceStorage\" />
+    <WCFMetadataStorage Include="Service References\ServiceReferenceTIOCA\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BiblosDS.Library.Common.Objects\BiblosDS.Library.Common.Objects.csproj">
+      <Project>{BE2B09F0-D141-41B7-820E-85FE7D9A7360}</Project>
+      <Name>BiblosDS.Library.Common.Objects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Common\BiblosDS.Library.Common.csproj">
+      <Project>{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}</Project>
+      <Name>BiblosDS.Library.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

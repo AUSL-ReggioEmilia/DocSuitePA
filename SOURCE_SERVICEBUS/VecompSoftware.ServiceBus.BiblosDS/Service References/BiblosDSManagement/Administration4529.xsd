@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/PermissionMode" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PermissionMode" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:simpleType name="PermissionMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FullControl">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">-1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Read" />
+      <xs:enumeration value="Write" />
+      <xs:enumeration value="Modify" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="PermissionMode" nillable="true" type="tns:PermissionMode" />
+</xs:schema>

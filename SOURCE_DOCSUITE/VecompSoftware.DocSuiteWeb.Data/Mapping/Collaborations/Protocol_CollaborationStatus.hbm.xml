@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="CollaborationStatus" table="CollaborationStatus">
+    
+    <id name="Id" column="IdStatus" type="AnsiString">
+      <generator class="assigned" />
+    </id>
+    
+    <property name="MailEnable" column="MailEnable" />
+    <property name="Description" column="Description" type="AnsiString" />
+    <property name="MailSender" column="MailSender" type="AnsiString" />
+    <property name="MailRecipientsTo" column="MailRecipientsTo" type="AnsiString" />
+    <property name="MailRecipientsCc" column="MailRecipientsCc" type="AnsiString" />
+    <property name="MailRecipientsCcn" column="MailRecipientsCcn" type="AnsiString" />
+    <property name="MailSubject" column="MailSubject" type="AnsiString" />
+    <property name="MailSubjectVars" column="MailSubjectVars" type="AnsiString" />
+    <property name="MailStatus" column="MailStatus" type="AnsiString" />
+    
+  </class>
+
+</hibernate-mapping>

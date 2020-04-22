@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.vecompsoftware.it/BiblosDSConv/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.vecompsoftware.it/BiblosDSConv/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.vecompsoftware.it/BiblosDSConv/">
+      <s:element name="ToRasterFormatRgWatermarked">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="ext" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="watermark" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowPrinting" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowModifyContents" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowCopy" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowModifyAnnotations" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowFillIn" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowScreenReaders" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowAssembly" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowDegradedPrinting" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="stDoc">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="FileExtension" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Blob" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="XmlValues" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="WmfP7m" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ReferenceId" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ToRasterFormatRgWatermarkedResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatRgWatermarkedResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatRg">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="ext" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowPrinting" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowModifyContents" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowCopy" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowModifyAnnotations" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowFillIn" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowScreenReaders" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowAssembly" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowDegradedPrinting" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatRgResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatRgResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatWatermarked">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="watermark" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatWatermarkedResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatWatermarkedResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatEx">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="ext" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatExResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatExResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatExParameters">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="ext" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="parameters" type="tns:ArrayOfStParameter" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfStParameter">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="stParameter" type="tns:stParameter" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="stParameter">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Name" type="tns:stParameterOption" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="stParameterOption">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="AttachMode" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="ToRasterFormatExParametersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatExParametersResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PdfToPngThumbnail">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PdfToPngThumbnailResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="PdfToPngThumbnailResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVersion">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetVersionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVersionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetNumberOfPages">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="document" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="fileName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetNumberOfPagesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetNumberOfPagesResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CreateSecureDocument">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="document" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="filename" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CreateSecureDocumentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CreateSecureDocumentResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadSecureDocument">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="document" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadSecureDocumentResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="ToRasterXmlWithStylesheet">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="toConvertDocument" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="xsl" type="s:base64Binary" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterXmlWithStylesheetResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterXmlWithStylesheetResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="BuildPDF">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="template" type="s:base64Binary" />
+            <s:element minOccurs="0" maxOccurs="1" name="parameters" type="tns:ArrayOfBuildValueModel" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfBuildValueModel">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="BuildValueModel" nillable="true" type="tns:BuildValueModel" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="BuildValueModel">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsHTML" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="BuildPDFResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="BuildPDFResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ToRasterFormatRgWatermarkedSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatRgWatermarked" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatRgWatermarkedSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatRgWatermarkedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatRgSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatRg" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatRgSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatRgResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatWatermarkedSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatWatermarked" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatWatermarkedSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatWatermarkedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatExSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatEx" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatExSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatExResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatExParametersSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatExParameters" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatExParametersSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatExParametersResponse" />
+  </wsdl:message>
+  <wsdl:message name="PdfToPngThumbnailSoapIn">
+    <wsdl:part name="parameters" element="tns:PdfToPngThumbnail" />
+  </wsdl:message>
+  <wsdl:message name="PdfToPngThumbnailSoapOut">
+    <wsdl:part name="parameters" element="tns:PdfToPngThumbnailResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVersionSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVersion" />
+  </wsdl:message>
+  <wsdl:message name="GetVersionSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetNumberOfPagesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetNumberOfPages" />
+  </wsdl:message>
+  <wsdl:message name="GetNumberOfPagesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetNumberOfPagesResponse" />
+  </wsdl:message>
+  <wsdl:message name="CreateSecureDocumentSoapIn">
+    <wsdl:part name="parameters" element="tns:CreateSecureDocument" />
+  </wsdl:message>
+  <wsdl:message name="CreateSecureDocumentSoapOut">
+    <wsdl:part name="parameters" element="tns:CreateSecureDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadSecureDocumentSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadSecureDocument" />
+  </wsdl:message>
+  <wsdl:message name="UploadSecureDocumentSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadSecureDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterXmlWithStylesheetSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterXmlWithStylesheet" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterXmlWithStylesheetSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterXmlWithStylesheetResponse" />
+  </wsdl:message>
+  <wsdl:message name="BuildPDFSoapIn">
+    <wsdl:part name="parameters" element="tns:BuildPDF" />
+  </wsdl:message>
+  <wsdl:message name="BuildPDFSoapOut">
+    <wsdl:part name="parameters" element="tns:BuildPDFResponse" />
+  </wsdl:message>
+  <wsdl:portType name="BiblosDSConvSoap">
+    <wsdl:operation name="ToRasterFormatRgWatermarked">
+      <wsdl:input message="tns:ToRasterFormatRgWatermarkedSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatRgWatermarkedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatRg">
+      <wsdl:input message="tns:ToRasterFormatRgSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatRgSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatWatermarked">
+      <wsdl:input message="tns:ToRasterFormatWatermarkedSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatWatermarkedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatEx">
+      <wsdl:input message="tns:ToRasterFormatExSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatExSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatExParameters">
+      <wsdl:input message="tns:ToRasterFormatExParametersSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatExParametersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PdfToPngThumbnail">
+      <wsdl:input message="tns:PdfToPngThumbnailSoapIn" />
+      <wsdl:output message="tns:PdfToPngThumbnailSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVersion">
+      <wsdl:input message="tns:GetVersionSoapIn" />
+      <wsdl:output message="tns:GetVersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNumberOfPages">
+      <wsdl:input message="tns:GetNumberOfPagesSoapIn" />
+      <wsdl:output message="tns:GetNumberOfPagesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateSecureDocument">
+      <wsdl:input message="tns:CreateSecureDocumentSoapIn" />
+      <wsdl:output message="tns:CreateSecureDocumentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadSecureDocument">
+      <wsdl:input message="tns:UploadSecureDocumentSoapIn" />
+      <wsdl:output message="tns:UploadSecureDocumentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterXmlWithStylesheet">
+      <wsdl:input message="tns:ToRasterXmlWithStylesheetSoapIn" />
+      <wsdl:output message="tns:ToRasterXmlWithStylesheetSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="BuildPDF">
+      <wsdl:input message="tns:BuildPDFSoapIn" />
+      <wsdl:output message="tns:BuildPDFSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BiblosDSConvSoap" type="tns:BiblosDSConvSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ToRasterFormatRgWatermarked">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatRgWatermarked" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatRg">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatRg" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatWatermarked">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatWatermarked" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatEx">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatEx" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatExParameters">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatExParameters" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PdfToPngThumbnail">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/PdfToPngThumbnail" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersion">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/GetVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNumberOfPages">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/GetNumberOfPages" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateSecureDocument">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/CreateSecureDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadSecureDocument">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/UploadSecureDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterXmlWithStylesheet">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterXmlWithStylesheet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BuildPDF">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/BuildPDF" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BiblosDSConvSoap12" type="tns:BiblosDSConvSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ToRasterFormatRgWatermarked">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatRgWatermarked" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatRg">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatRg" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatWatermarked">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatWatermarked" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatEx">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatEx" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatExParameters">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatExParameters" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PdfToPngThumbnail">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/PdfToPngThumbnail" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersion">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/GetVersion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNumberOfPages">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/GetNumberOfPages" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateSecureDocument">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/CreateSecureDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadSecureDocument">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/UploadSecureDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterXmlWithStylesheet">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterXmlWithStylesheet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BuildPDF">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/BuildPDF" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BiblosDSConv">
+    <wsdl:port name="BiblosDSConvSoap" binding="tns:BiblosDSConvSoap">
+      <soap:address location="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx" />
+    </wsdl:port>
+    <wsdl:port name="BiblosDSConvSoap12" binding="tns:BiblosDSConvSoap12">
+      <soap12:address location="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

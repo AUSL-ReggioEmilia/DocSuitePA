@@ -1,0 +1,60 @@
+{
+  "TenantName": "ASL-TO-CITTA",
+  "TenantId": "E5ED27AA-7FEA-432F-91F4-42B9A9250908",
+  "TopicWorkflowIntegration": "workflow_integration",
+  "WorkflowStartReceivableInvoiceSubscription": "WorkflowStartReceivableInvoice",
+  "WorkflowStartReceivableInvoiceAdESubscription": "WorkflowStartReceivableInvoiceAdE",
+  "TopicBuilderEvent": "builder_event",
+  "WorkflowReceivableInvoiceProtocolBuildCompleteSubscription": "WorkflowReceivableInvoiceProtocolBuildComplete",
+  "WorkflowReceivableInvoiceUDSBuildCompleteSubscription": "WorkflowReceivableInvoiceUDSBuildComplete",
+  "InvoiceTenantValidationEnabled": false,
+  "PersistInvoiceFilesystemEnabled": true,
+  "PersistSDIMetadataEnabled": true,
+  "InvoiceAdEEnabled": true,
+  "WorkflowConfigurations": {
+    "": {
+      "InvoicePR_V12": {
+        "WorkflowRepositoryName": "Fatturazione elettronica - Fattura tra privati passiva",
+        "UDSRepositoryName": "Fatture Passive",
+        "ProtocolContainerId": -32527,
+        "ProtocolCategoryId": -32765,
+        "ContactParent": 321,
+        "AuthorizationRoles": [ -32765 ],
+        "InvoicePersistanceConfigurations": {
+          "": {
+            "UDSRepositoryName": "Fatture Passive",
+            "FolderReceivedInvoice": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\Invoices",
+            "FolderMetadataInvoiceLooking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\MetadataLooking",
+            "FolderMetadataInvoiceWorking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\MetadataWorking",
+            "FolderMetadataInvoiceError": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\MetadataError",
+            "FolderMetadataInvoiceBackup": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\MetadataBackup"
+          },
+          "AMMINISTRAZIONE.FATTURE@PEC.IT": {
+            "UDSRepositoryName": "Fatture Passive",
+            "FolderReceivedInvoice": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\FattureAmministrazione"
+          }
+        }
+      }
+    },
+    "AZIENDA.FATTURE@PEC.IT": {
+      "InvoicePR_V12": {
+        "WorkflowRepositoryName": "AZIENDA - Fatturazione elettronica - Fattura tra privati passiva",
+        "UDSRepositoryName": "AZIENDA - Fatture passive",
+        "ProtocolContainerId": -32527,
+        "ProtocolCategoryId": -32765,
+        "ContactParent": 321,
+        "AuthorizationRoles": [ -32765 ],
+        "InvoicePersistanceConfigurations": {
+          "": {
+            "UDSRepositoryName": "AZIENDA - Fatture passive",
+            "FolderReceivedInvoice": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\Invoices",
+            "FolderMetadataInvoiceLooking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataLooking",
+            "FolderMetadataInvoiceWorking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataWorking",
+            "FolderMetadataInvoiceError": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataError",
+            "FolderMetadataInvoiceBackup": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataBackup"
+          }
+        }
+      }
+    }
+  }
+}

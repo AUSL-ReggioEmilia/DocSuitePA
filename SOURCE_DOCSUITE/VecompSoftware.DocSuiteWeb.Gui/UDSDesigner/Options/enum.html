@@ -1,0 +1,101 @@
+﻿
+<div id="EnumOption" class="form-horizontal">
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Etichetta</label>
+        <div class="controls col-sm-9">
+            <input type="text" class="form-control" rv-value="ctrl.label">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Valore di default</label>
+        <div class="controls col-sm-9">
+            <div class="btn-group">
+                <button data-toggle="dropdown" id="selectDefault" class="btn btn-default dropdown-toggle" rv-class-disabled="ctrl.enumOptions | isEmpty">
+                    <i class="icon-edit data-label"></i> {ctrl.defaultValue} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li rv-each-enum="ctrl.enumOptions">
+                        <a rv-on-click="ctrl.selectedItemChanged">{enum}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Inserisci un nuovo valore</label>
+        <div class="controls col-sm-6">
+            <input type="text" id="txtAddElement" class="form-control">
+        </div>
+        <button id="btnAddOption" rv-on-click="ctrl.addNewOption" class="btn btn-info" rv-class-disabled="ctrl.elementName | eq ''"><i class="fa fa-plus fa-lg"></i></button>
+        <div class="controls col-sm-9 col-sm-offset-3">
+            <ol>
+                <li rv-each-enum="ctrl.enumOptions">
+                    <a rv-on-click="ctrl.selectedValue" id="itemEnum" style="cursor: pointer;">{enum}</a> <span class="glyphicon glyphicon-remove" style="cursor: pointer; padding-left:15px;" rv-on-click="ctrl.deleteItem"></span>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="multipleValues">
+                <input id="multipleValues" type="checkbox" rv-checked="ctrl.multipleValues"> Selezione multipla
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="required">
+                <input id="required" type="checkbox" rv-checked="ctrl.required" rv-disabled="ctrl.requiredEnabled"> Richiesto
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="modifyEnable">
+                <input id="modifyEnable" type="checkbox" rv-checked="ctrl.modifyEnable"> Campo modificabile
+            </label>
+        </div>
+
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="readOnly">
+                <input id="readOnly" type="checkbox" rv-checked="ctrl.readOnly" rv-disabled="ctrl.required" rv-on-click="ctrl.changeRequired"> Sola lettura
+            </label>
+        </div>
+
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="required">
+                <input id="searchable" type="checkbox" rv-checked="ctrl.searchable"> Visibile in ricerca
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="hiddenField">
+                <input id="hiddenField" type="checkbox" rv-checked="ctrl.hiddenField" rv-disabled="ctrl.required" rv-on-click="ctrl.changeRequired"> Campo nascosto
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="resultVisibility">
+                <input id="resultVisibility" type="checkbox" rv-checked="ctrl.resultVisibility" rv-on-click="ctrl.changeRequired"> Visualizza tra i risultati di ricerca
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="resultPosition">
+                <input id="resultPosition" type="number" rv-value="ctrl.resultPosition" rv-enabled="ctrl.resultVisibility" style="width:30px"> Indicare la posizione nella griglia dei risultati
+            </label>
+        </div>
+    </div>
+</div>

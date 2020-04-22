@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/DocumentUnit" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/DocumentUnit" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="DocumentUnitAggregate">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AggregationType" type="xs:short" />
+          <xs:element minOccurs="0" name="CloseDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="IdAggregate" type="ser:guid" />
+          <xs:element minOccurs="0" name="PreservationDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="XmlFascicle" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DocumentUnitAggregate" nillable="true" type="tns:DocumentUnitAggregate" />
+  <xs:complexType name="DocumentUnit">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q2="http://BiblosDS/2009/10/BiblosDSObject" base="q2:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Classification" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CloseDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="IdDocumentUnit" type="ser:guid" />
+          <xs:element minOccurs="0" name="Identifier" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="InsertDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="Subject" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="UriFascicle" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="XmlDoc" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DocumentUnit" nillable="true" type="tns:DocumentUnit" />
+  <xs:complexType name="DocumentUnitExt">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="IsPreserved" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsReadOnly" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Unit" nillable="true" type="tns:DocumentUnit" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DocumentUnitExt" nillable="true" type="tns:DocumentUnitExt" />
+  <xs:complexType name="ArrayOfDocumentUnit">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DocumentUnit" nillable="true" type="tns:DocumentUnit" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDocumentUnit" nillable="true" type="tns:ArrayOfDocumentUnit" />
+  <xs:complexType name="DocumentUnitAggregateExt">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Aggregate" nillable="true" type="tns:DocumentUnitAggregate" />
+      <xs:element minOccurs="0" name="IsPreserved" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsReadOnly" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DocumentUnitAggregateExt" nillable="true" type="tns:DocumentUnitAggregateExt" />
+</xs:schema>

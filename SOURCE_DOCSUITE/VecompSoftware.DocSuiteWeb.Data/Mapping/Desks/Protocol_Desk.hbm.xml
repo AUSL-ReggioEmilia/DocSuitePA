@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Desks">
+
+  <class name="Desk" table="Desks" lazy="true" >
+
+    <id name="Id" column="IdDesk" >
+      <generator class="guid.comb" />
+    </id>
+
+    <property name="Name">
+      <column name="Name" not-null="false" />
+    </property>
+    <property name="Description">
+      <column name="Description" not-null="false" />
+    </property>
+    <property name="ExpirationDate">
+      <column name="ExpirationDate" not-null="false" />
+    </property>
+    <property name="Status">
+      <column name="Status" not-null="false" />
+    </property>
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <many-to-one name="Container" class="VecompSoftware.DocSuiteWeb.Data.Container">
+      <column name="IdContainer" not-null="false" />
+    </many-to-one>
+
+    <bag name="DeskDocuments" cascade="save-update">
+      <key column="IdDesk" />
+      <one-to-many class="DeskDocument" />
+    </bag>
+    <bag name="DeskLogs">
+      <key column="IdDesk" />
+      <one-to-many class="DeskLog" />
+    </bag>
+    <bag name="DeskMessages">
+      <key column="IdDesk" />
+      <one-to-many class="DeskMessage" />
+    </bag>
+    <bag name="DeskRoleUsers" cascade="save-update">
+      <key column="IdDesk" />
+      <one-to-many class="DeskRoleUser" />
+    </bag>
+    <bag name="DeskStoryBoards">
+      <key column="IdDesk" />
+      <one-to-many class="DeskStoryBoard" />
+    </bag>
+    <bag name="DeskCollaborations" >
+      <key column="IdDesk" />
+      <one-to-many class="DeskCollaboration" />
+    </bag>
+
+  </class>
+
+</hibernate-mapping>

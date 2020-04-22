@@ -1,0 +1,17 @@
+﻿.chrome .window-footer-wrapper {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.chrome table.dataform {
+}
+
+    .chrome table.dataform td {
+        padding: 3px 3px !important;
+    }
+
+.chrome .datatable {
+    border-collapse: separate;
+    border-spacing: 0;
+}

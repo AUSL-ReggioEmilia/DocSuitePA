@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="VecompSoftware.DocSuiteWeb.Facade.FacadeBase(Of T, IdT, DaoType)" Collapsed="true">
+    <Position X="24" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>FacadeBase.vb</FileName>
+      <HashCode>BAQABIAABAIBAAAAAgEABAAAAAEAAAAAAoAAAACAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VecompSoftware.DocSuiteWeb.Facade.BaseDocumentFacade(Of T, IdT, DaoType)" Collapsed="true">
+    <Position X="24" Y="1.75" Width="2.5" />
+    <TypeIdentifier>
+      <FileName>Document\BaseDocumentFacade.vb</FileName>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentVersioningFacade" Collapsed="true">
+    <Position X="16" Y="3.25" Width="3.25" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentVersioningFacade.vb</FileName>
+      <HashCode>AAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VecompSoftware.DocSuiteWeb.Facade.ContainerExtensionFacade" Collapsed="true">
+    <Position X="26.5" Y="3.25" Width="3.25" />
+    <TypeIdentifier>
+      <FileName>Document\ContainerExtensionFacade.vb</FileName>
+      <HashCode>AgAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentContactFacade" Collapsed="true">
+    <Position X="35.5" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentContactFacade.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentFacade" Collapsed="true">
+    <Position X="5.5" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentFacade.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentFolderFacade" Collapsed="true">
+    <Position X="20" Y="3.25" Width="3" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentFolderFacade.vb</FileName>
+      <HashCode>AAAAgAABAAAAAAAAAAAAAQAAAAAAAgAAAAAAAAAAAIQ=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentLogFacade" Collapsed="true">
+    <Position X="30.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentLogFacade.vb</FileName>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentNoteFacade" Collapsed="true">
+    <Position X="38.25" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentNoteFacade.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentObjectFacade" Collapsed="true">
+    <Position X="8.25" Y="3.25" Width="3" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentObjectFacade.vb</FileName>
+      <HashCode>AAAAgAAAAAAAAAAQAAAgAICAAAAAAAAAAAAAAAAgAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentTabStatusFacade" Collapsed="true">
+    <Position X="23.75" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentTabStatusFacade.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentTabTokenFacade" Collapsed="true">
+    <Position X="32.75" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentTabTokenFacade.vb</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentTokenFacade" Collapsed="true">
+    <Position X="40.75" Y="3.25" Width="3" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentTokenFacade.vb</FileName>
+      <HashCode>BAAAABAQAABAAAIFAEAAGAAAACAAiAAAQAACAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentTokenUserFacade" Collapsed="true">
+    <Position X="12" Y="3.25" Width="3.25" />
+    <TypeIdentifier>
+      <FileName>Document\DocumentTokenUserFacade.vb</FileName>
+      <HashCode>AAAAIAAAAAAAAAIAAAAAAIAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

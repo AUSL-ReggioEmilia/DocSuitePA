@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="WSSeries" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost/DSW.WSSeries/WSSeries.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost/DSW.WSSeries/WSSeries.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IWSSeries_IsAlive_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsAlive" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_IsAlive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsAliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_Insert_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insert" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_Insert_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_Consultation_InputMessage">
+    <wsdl:part name="parameters" element="tns:Consultation" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_Consultation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConsultationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_ConsultationNew_InputMessage">
+    <wsdl:part name="parameters" element="tns:ConsultationNew" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_ConsultationNew_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConsultationNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDocumentSeriesItem_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSeriesItem" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDocumentSeriesItem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSeriesItemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDocumentSeriesItemNew_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSeriesItemNew" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDocumentSeriesItemNew_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSeriesItemNewResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_Update_InputMessage">
+    <wsdl:part name="parameters" element="tns:Update" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_Update_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_AddAnnexed_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddAnnexed" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_AddAnnexed_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddAnnexedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_Search_InputMessage">
+    <wsdl:part name="parameters" element="tns:Search" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_Search_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_SearchRetired_InputMessage">
+    <wsdl:part name="parameters" element="tns:SearchRetired" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_SearchRetired_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchRetiredResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetPublicationEnabledContainers_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPublicationEnabledContainers" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetPublicationEnabledContainers_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPublicationEnabledContainersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetFamilies_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFamilies" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetFamilies_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFamiliesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDynamicData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDynamicData" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDynamicData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDynamicDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetMainDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMainDocument" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetMainDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMainDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetMainDocumentWithSignature_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMainDocumentWithSignature" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetMainDocumentWithSignature_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMainDocumentWithSignatureResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetAnnexed_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAnnexed" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetAnnexed_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAnnexedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetAnnexedWithSignature_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAnnexedWithSignature" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetAnnexedWithSignature_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAnnexedWithSignatureResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDocumentSeriesItemsByResolution_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSeriesItemsByResolution" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDocumentSeriesItemsByResolution_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSeriesItemsByResolutionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetFamily_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFamily" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetFamily_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFamilyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetUnPublished_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUnPublished" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetUnPublished_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUnPublishedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetUnPublishedWithSignature_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUnPublishedWithSignature" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetUnPublishedWithSignature_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUnPublishedWithSignatureResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetLatestDocumentSeriesItemByArchive_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLatestDocumentSeriesItemByArchive" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetLatestDocumentSeriesItemByArchive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLatestDocumentSeriesItemByArchiveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDocumentSeriesByDocumentId_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSeriesByDocumentId" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDocumentSeriesByDocumentId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSeriesByDocumentIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetArchivesNameByContainerArchiveId_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchivesNameByContainerArchiveId" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetArchivesNameByContainerArchiveId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchivesNameByContainerArchiveIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDocumentSeries_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSeries" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetDocumentSeries_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSeriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_SearchCount_InputMessage">
+    <wsdl:part name="parameters" element="tns:SearchCount" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_SearchCount_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchCountResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_SearchCountRetired_InputMessage">
+    <wsdl:part name="parameters" element="tns:SearchCountRetired" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_SearchCountRetired_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchCountRetiredResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetIndex_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetIndex" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_GetIndex_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetIndexResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_SearchConstraints_InputMessage">
+    <wsdl:part name="parameters" element="tns:SearchConstraints" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_SearchConstraints_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchConstraintsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_SearchConstraintsRetired_InputMessage">
+    <wsdl:part name="parameters" element="tns:SearchConstraintsRetired" />
+  </wsdl:message>
+  <wsdl:message name="IWSSeries_SearchConstraintsRetired_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchConstraintsRetiredResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IWSSeries">
+    <wsdl:operation name="IsAlive">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/IsAlive" message="tns:IWSSeries_IsAlive_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/IsAliveResponse" message="tns:IWSSeries_IsAlive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Insert">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/Insert" message="tns:IWSSeries_Insert_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/InsertResponse" message="tns:IWSSeries_Insert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Consultation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/Consultation" message="tns:IWSSeries_Consultation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/ConsultationResponse" message="tns:IWSSeries_Consultation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ConsultationNew">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/ConsultationNew" message="tns:IWSSeries_ConsultationNew_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/ConsultationNewResponse" message="tns:IWSSeries_ConsultationNew_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSeriesItem">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetDocumentSeriesItem" message="tns:IWSSeries_GetDocumentSeriesItem_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetDocumentSeriesItemResponse" message="tns:IWSSeries_GetDocumentSeriesItem_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSeriesItemNew">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetDocumentSeriesItemNew" message="tns:IWSSeries_GetDocumentSeriesItemNew_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetDocumentSeriesItemNewResponse" message="tns:IWSSeries_GetDocumentSeriesItemNew_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/Update" message="tns:IWSSeries_Update_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/UpdateResponse" message="tns:IWSSeries_Update_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddAnnexed">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/AddAnnexed" message="tns:IWSSeries_AddAnnexed_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/AddAnnexedResponse" message="tns:IWSSeries_AddAnnexed_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Search">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/Search" message="tns:IWSSeries_Search_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/SearchResponse" message="tns:IWSSeries_Search_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchRetired">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/SearchRetired" message="tns:IWSSeries_SearchRetired_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/SearchRetiredResponse" message="tns:IWSSeries_SearchRetired_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPublicationEnabledContainers">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetPublicationEnabledContainers" message="tns:IWSSeries_GetPublicationEnabledContainers_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetPublicationEnabledContainersResponse" message="tns:IWSSeries_GetPublicationEnabledContainers_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFamilies">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetFamilies" message="tns:IWSSeries_GetFamilies_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetFamiliesResponse" message="tns:IWSSeries_GetFamilies_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDynamicData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetDynamicData" message="tns:IWSSeries_GetDynamicData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetDynamicDataResponse" message="tns:IWSSeries_GetDynamicData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMainDocument">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetMainDocument" message="tns:IWSSeries_GetMainDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetMainDocumentResponse" message="tns:IWSSeries_GetMainDocument_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMainDocumentWithSignature">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetMainDocumentWithSignature" message="tns:IWSSeries_GetMainDocumentWithSignature_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetMainDocumentWithSignatureResponse" message="tns:IWSSeries_GetMainDocumentWithSignature_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAnnexed">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetAnnexed" message="tns:IWSSeries_GetAnnexed_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetAnnexedResponse" message="tns:IWSSeries_GetAnnexed_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAnnexedWithSignature">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetAnnexedWithSignature" message="tns:IWSSeries_GetAnnexedWithSignature_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetAnnexedWithSignatureResponse" message="tns:IWSSeries_GetAnnexedWithSignature_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSeriesItemsByResolution">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetDocumentSeriesItemsByResolution" message="tns:IWSSeries_GetDocumentSeriesItemsByResolution_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetDocumentSeriesItemsByResolutionResponse" message="tns:IWSSeries_GetDocumentSeriesItemsByResolution_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFamily">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetFamily" message="tns:IWSSeries_GetFamily_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetFamilyResponse" message="tns:IWSSeries_GetFamily_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUnPublished">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetUnPublished" message="tns:IWSSeries_GetUnPublished_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetUnPublishedResponse" message="tns:IWSSeries_GetUnPublished_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUnPublishedWithSignature">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetUnPublishedWithSignature" message="tns:IWSSeries_GetUnPublishedWithSignature_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetUnPublishedWithSignatureResponse" message="tns:IWSSeries_GetUnPublishedWithSignature_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLatestDocumentSeriesItemByArchive">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetLatestDocumentSeriesItemByArchive" message="tns:IWSSeries_GetLatestDocumentSeriesItemByArchive_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetLatestDocumentSeriesItemByArchiveResponse" message="tns:IWSSeries_GetLatestDocumentSeriesItemByArchive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSeriesByDocumentId">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetDocumentSeriesByDocumentId" message="tns:IWSSeries_GetDocumentSeriesByDocumentId_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetDocumentSeriesByDocumentIdResponse" message="tns:IWSSeries_GetDocumentSeriesByDocumentId_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetArchivesNameByContainerArchiveId">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetArchivesNameByContainerArchiveId" message="tns:IWSSeries_GetArchivesNameByContainerArchiveId_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetArchivesNameByContainerArchiveIdResponse" message="tns:IWSSeries_GetArchivesNameByContainerArchiveId_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSeries">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetDocumentSeries" message="tns:IWSSeries_GetDocumentSeries_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetDocumentSeriesResponse" message="tns:IWSSeries_GetDocumentSeries_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchCount">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/SearchCount" message="tns:IWSSeries_SearchCount_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/SearchCountResponse" message="tns:IWSSeries_SearchCount_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchCountRetired">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/SearchCountRetired" message="tns:IWSSeries_SearchCountRetired_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/SearchCountRetiredResponse" message="tns:IWSSeries_SearchCountRetired_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIndex">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/GetIndex" message="tns:IWSSeries_GetIndex_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/GetIndexResponse" message="tns:IWSSeries_GetIndex_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchConstraints">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/SearchConstraints" message="tns:IWSSeries_SearchConstraints_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/SearchConstraintsResponse" message="tns:IWSSeries_SearchConstraints_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchConstraintsRetired">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWSSeries/SearchConstraintsRetired" message="tns:IWSSeries_SearchConstraintsRetired_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWSSeries/SearchConstraintsRetiredResponse" message="tns:IWSSeries_SearchConstraintsRetired_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpEndpoint" type="tns:IWSSeries">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="IsAlive">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/IsAlive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Insert">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/Insert" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consultation">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/Consultation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConsultationNew">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/ConsultationNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSeriesItem">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetDocumentSeriesItem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSeriesItemNew">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetDocumentSeriesItemNew" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/Update" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddAnnexed">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/AddAnnexed" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Search">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/Search" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchRetired">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/SearchRetired" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPublicationEnabledContainers">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetPublicationEnabledContainers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFamilies">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetFamilies" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDynamicData">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetDynamicData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMainDocument">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetMainDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMainDocumentWithSignature">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetMainDocumentWithSignature" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAnnexed">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetAnnexed" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAnnexedWithSignature">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetAnnexedWithSignature" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSeriesItemsByResolution">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetDocumentSeriesItemsByResolution" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFamily">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetFamily" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUnPublished">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetUnPublished" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUnPublishedWithSignature">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetUnPublishedWithSignature" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLatestDocumentSeriesItemByArchive">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetLatestDocumentSeriesItemByArchive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSeriesByDocumentId">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetDocumentSeriesByDocumentId" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchivesNameByContainerArchiveId">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetArchivesNameByContainerArchiveId" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSeries">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetDocumentSeries" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchCount">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/SearchCount" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchCountRetired">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/SearchCountRetired" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIndex">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/GetIndex" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchConstraints">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/SearchConstraints" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchConstraintsRetired">
+      <soap:operation soapAction="http://tempuri.org/IWSSeries/SearchConstraintsRetired" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WSSeries">
+    <wsdl:port name="BasicHttpEndpoint" binding="tns:BasicHttpEndpoint">
+      <soap:address location="http://localhost/DSW.WSSeries/WSSeries.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

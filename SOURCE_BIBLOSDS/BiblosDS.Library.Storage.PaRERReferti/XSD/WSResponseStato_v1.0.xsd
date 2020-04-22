@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:complexType  name="DatiUnitaDocType">
+    <xs:sequence>
+      <xs:element name="Versatore" type="SCVersatoreType" minOccurs="0"/>
+      <xs:element name="Chiave" type="ChiaveType"/>
+      <xs:element name="StatoConservazioneUD" type="TokenNonVuotoType"/>
+      <xs:element name="Volumi" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Volume" type="DatiVolumeType" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType  name="SCVersatoreType">
+    <xs:sequence>
+      <xs:element name="Ambiente" type="xs:string"/>
+      <xs:element name="Ente" type="xs:string"/>
+      <xs:element name="Struttura" type="xs:string"/>
+      <xs:element name="UserID" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="ChiaveType">
+    <xs:sequence>
+      <xs:element name="Numero" type="TokenNonVuotoType"/>
+      <xs:element name="Anno" type="xs:nonNegativeInteger"/>
+      <xs:element name="TipoRegistro" type="TokenNonVuotoType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:simpleType name="TokenNonVuotoType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--  -->
+  <xs:complexType  name="DatiVolumeType">
+    <xs:sequence>
+      <xs:element name="IdVolume" type="xs:string"/>
+      <xs:element name="NomeVolume" type="xs:string"/>
+      <xs:element name="StatoVolume" type="TokenNonVuotoType"/>
+      <xs:element name="DataAperturaVolume" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="DataChiusuraVolume" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="DataFirmaVolume" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="DocumentiContenuti" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="DocumentoContenuto" type="DocumentoContenutoType" minOccurs="1" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType  name="DocumentoContenutoType">
+    <xs:sequence>
+      <xs:element name="URNDocumento" type="xs:string"/>
+      <xs:element name="DataVersamento" type="xs:dateTime"/>
+      <xs:element name="TipoConservazione" type="TipoConservazioneType" minOccurs="0"/>
+      <xs:element name="SistemaDiMigrazione" type="xs:string" maxOccurs="1" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType  name="EsitoGenericoType">
+    <xs:sequence>
+      <xs:element name="CodiceEsito" type="ECEsitoExtType"/>
+      <xs:element name="CodiceErrore" type="xs:string" minOccurs="0"/>
+      <xs:element name="MessaggioErrore" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="ListaEsitiType">
+    <xs:sequence>
+      <xs:element name="Esito" type="EsitoGenericoType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="EsitoChiamataWSType">
+    <xs:sequence>
+      <xs:element name="VersioneWSCorretta" type="ECEsitoPosNegType"/>
+      <xs:element name="CredenzialiOperatore" type="ECEsitoPosNegType"/>
+      <xs:element name="IdentificazioneVersatore" type="xs:string" minOccurs="0"/>
+      <xs:element name="IdentificazioneChiave" type="ECEsitoPosNegType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:simpleType name="ECEsitoExtType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="POSITIVO"/>
+      <xs:enumeration value="NEGATIVO"/>
+      <xs:enumeration value="WARNING"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--  -->
+  <xs:simpleType name="ECEsitoPosNegType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="POSITIVO"/>
+      <xs:enumeration value="NEGATIVO"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--  -->
+  <xs:complexType name="ProfiloArchivisticoType">
+    <xs:sequence>
+      <xs:element name="FascicoloPrincipale" type="CamiciaFascicoloType"/>
+      <xs:element name="FascicoliSecondari"  maxOccurs="1" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="FascicoloSecondario" type="CamiciaFascicoloType" minOccurs="1" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="CamiciaFascicoloType">
+    <xs:sequence>
+      <xs:element name="Classifica" type="xs:token" maxOccurs="1" minOccurs="0"/>
+      <xs:element name="Fascicolo" type="FascicoloType" maxOccurs="1" minOccurs="0"/>
+      <xs:element name="SottoFascicolo" type="FascicoloType" maxOccurs="1" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="FascicoloType">
+    <xs:sequence>
+      <xs:element name="Identificativo"  type="xs:token" nillable="true"/>
+      <xs:element name="Oggetto" type="xs:string" nillable="true"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="ProfiloUnitaDocumentariaType">
+    <xs:sequence>
+      <xs:element name="Oggetto" type="xs:string" nillable="true"/>
+      <xs:element name="Data" type="xs:dateTime" nillable="true"/>
+      <xs:element name="Cartaceo" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="DocumentoCollegatoType">
+    <xs:sequence>
+      <xs:element name="DocumentoCollegato"  minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="ChiaveCollegamento" type="ChiaveType"/>
+            <xs:element name="DescrizioneCollegamento" type="xs:string" nillable="true"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="DocumentoType">
+    <xs:sequence>
+      <xs:element name="ChiaveDoc" type="xs:string"/>
+      <xs:element name="DataVersamentoDoc" type="xs:dateTime"/>
+      <xs:element name="TipoConservazione" type="TipoConservazioneType" minOccurs="0"/>
+      <xs:element name="SistemaDiMigrazione" type="xs:string" maxOccurs="1" minOccurs="0"/>
+      <xs:element name="IDDocumento" type="xs:token"/>
+      <xs:element name="TipoDocumento" type="xs:token"/>
+      <xs:element name="StatoConservazione" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="IN_ATTESA_SCHED"/>
+            <xs:enumeration value="IN_VOLUME_APERTO"/>
+            <xs:enumeration value="IN_VOLUME_CHIUSO"/>
+            <xs:enumeration value="IN_VOLUME_IN_ERRORE"/>
+            <xs:enumeration value="NON_SELEZ_SCHED"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Volumi" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Volume" type="DatiRifVolumeType" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="ProfiloDocumento" type="ProfiloDocumentoType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="DatiSpecifici" type="DatiSpecificiType" maxOccurs="1" minOccurs="0"/>
+      <xs:element name="DatiSpecificiMigrazione" type="DatiSpecificiType" maxOccurs="1" minOccurs="0"/>
+      <xs:element name="DatiFiscali" type="DatiFiscaliType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="StrutturaOriginale" type="StrutturaType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType  name="DatiRifVolumeType">
+    <xs:sequence>
+      <xs:element name="IdVolume" type="xs:string"/>
+      <xs:element name="NomeVolume" type="xs:string"/>
+      <xs:element name="StatoVolume" type="TokenNonVuotoType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="ProfiloDocumentoType">
+    <xs:sequence>
+      <xs:element name="Descrizione" type="xs:string" maxOccurs="1" minOccurs="0"/>
+      <xs:element name="Autore" type="xs:string" maxOccurs="1" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="DatiFiscaliType">
+    <xs:sequence>
+      <xs:element name="Denominazione" type="xs:string"  maxOccurs="1" minOccurs="0"/>
+      <xs:element name="Nome" type="xs:string"  maxOccurs="1" minOccurs="0"/>
+      <xs:element name="Cognome" type="xs:string"  maxOccurs="1" minOccurs="0"/>
+      <xs:element name="CF" maxOccurs="1" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:length value="16"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="PIVA" maxOccurs="1" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:length value="11"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="DataEmissione" type="xs:dateTime"/>
+      <xs:element name="NumeroProgressivo" type="xs:positiveInteger"/>
+      <xs:element name="Registro" type="xs:string"/>
+      <xs:element name="PeriodoFiscale" type="xs:string"/>
+      <xs:element name="DataTermineEmissione" type="xs:dateTime" nillable="true"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="StrutturaType">
+    <xs:sequence>
+      <xs:element name="TipoStruttura" type="xs:token"/>
+      <xs:element name="Componenti">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Componente" type="ComponenteType" minOccurs="1" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="ComponenteType">
+    <xs:sequence>
+      <xs:element name="OrdinePresentazione" type="xs:nonNegativeInteger"/>
+      <xs:element name="TipoComponente" type="xs:token" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="TipoSupportoComponente" type="TipoSupportoType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Riferimento" type="ChiaveType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="TipoRappresentazioneComponente" type="xs:token" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="NomeComponente" type="xs:token" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FormatoRappresentazione" type="xs:string" minOccurs="0"/>
+      <xs:element name="FormatoRappresentazioneEsteso" type="xs:string" minOccurs="0"/>
+      <xs:element name="HashVersato" type="xs:token" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="HashCalcolato" type="xs:token" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="AlgoritmoHashCalcolato" type="xs:token" minOccurs="0"/>
+      <xs:element name="EncodingCalcolato" type="xs:token" minOccurs="0"/>
+      <xs:element name="DimensioneFile" type="xs:nonNegativeInteger" minOccurs="0"/>
+      <xs:element name="UrnVersato" type="TokenNonVuotoType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="UrnCalcolato" type="TokenNonVuotoType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="IDComponenteVersato" type="xs:token" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="DatiSpecifici" type="DatiSpecificiType" maxOccurs="1" minOccurs="0"/>
+      <xs:element name="DatiSpecificiMigrazione" type="DatiSpecificiType" maxOccurs="1" minOccurs="0"/>
+      <xs:element name="UtilizzoDataFirmaPerRifTemp" type="xs:boolean"/>
+      <xs:element name="RiferimentoTemporale" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="DescrizioneRiferimentoTemporale" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="SottoComponenti" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="SottoComponente" type="SottoComponenteType"  minOccurs="1" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="SottoComponenteType">
+    <xs:sequence>
+      <xs:element name="OrdinePresentazione" type="xs:nonNegativeInteger"/>
+      <xs:element name="TipoComponente" type="xs:token" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="TipoSupportoComponente" type="TipoSupportoType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Riferimento" type="ChiaveType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="NomeComponente" type="xs:token" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FormatoRappresentazione" type="xs:string" minOccurs="0"/>
+      <xs:element name="FormatoRappresentazioneEsteso" type="xs:string" minOccurs="0"/>
+      <xs:element name="UrnVersato" type="TokenNonVuotoType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="UrnCalcolato" type="TokenNonVuotoType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="IDComponenteVersato" type="xs:token" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="DatiSpecifici" type="DatiSpecificiType" maxOccurs="1" minOccurs="0"/>
+      <xs:element name="DatiSpecificiMigrazione" type="DatiSpecificiType" maxOccurs="1" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="DatiSpecificiType">
+    <xs:sequence>
+      <xs:element name="VersioneDatiSpecifici" type="xs:string"/>
+      <xs:any minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="PCVolumeType">
+    <xs:sequence>
+      <xs:element name="IdVolume" type="xs:string"/>
+      <xs:element name="NomeVolume" type="xs:string"/>
+      <xs:element name="Directory" type="xs:token"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:simpleType name ="TipoConservazioneType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="SOSTITUTIVA"/>
+      <xs:enumeration value="FISCALE"/>
+      <xs:enumeration value="MIGRAZIONE"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--  -->
+  <xs:simpleType name="TipoSupportoType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="FILE"/>
+      <xs:enumeration value="RIFERIMENTO"/>
+      <xs:enumeration value="METADATI"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <xs:element name="StatoConservazione">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Versione" type="xs:string" minOccurs="0"/>
+        <xs:element name="VersioneXMLChiamata" type="xs:string" minOccurs="0"/>
+        <xs:element name="DataRichiestaStato" type="xs:dateTime"/>
+        <xs:element name="EsitoGenerale" type="EsitoGenericoType"/>
+        <xs:element name="EsitoChiamataWS" type="EsitoChiamataWSType"/>
+        <xs:element name="StatoUnitaDocumentaria" type="DatiUnitaDocType" minOccurs="0"/>
+        <xs:element name="XMLRichiesta" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <xs:element name="UnitaDocumentaria">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Versione" type="xs:string" minOccurs="0"/>
+        <xs:element name="VersioneXMLChiamata" type="xs:string" minOccurs="0"/>
+        <xs:element name="DataRichiestaStato" type="xs:dateTime"/>
+        <xs:element name="EsitoGenerale" type="EsitoGenericoType"/>
+        <xs:element name="EsitoChiamataWS" type="EsitoChiamataWSType"/>
+        <xs:element name="FileInclusiNellaRisposta" type="xs:boolean"/>
+        <xs:element name="Versatore" type="SCVersatoreType" minOccurs="0"/>
+        <xs:element name="Chiave" type="ChiaveType"/>
+        <xs:element name="EsitoVersamento" type="ListaEsitiType" minOccurs="0"/>
+        <xs:element name="TipologiaUnitaDocumentaria" type="xs:token"/>
+        <xs:element name="DataCreazioneUD" type="xs:dateTime"/>
+        <xs:element name="StatoConservazioneUD" type="TokenNonVuotoType"/>
+        <xs:element name="ProfiloArchivistico" type="ProfiloArchivisticoType" maxOccurs="1" minOccurs="0"/>
+        <xs:element name="ProfiloUnitaDocumentaria" type="ProfiloUnitaDocumentariaType" maxOccurs="1" minOccurs="0"/>
+        <xs:element name="DatiSpecifici" type="DatiSpecificiType" maxOccurs="1" minOccurs="0"/>
+        <xs:element name="DatiSpecificiMigrazione" type="DatiSpecificiType" maxOccurs="1" minOccurs="0"/>
+        <xs:element name="DocumentiCollegati" type="DocumentoCollegatoType" maxOccurs="1" minOccurs="0"/>
+        <!--  -->
+        <xs:element name="NumeroAllegati" type="xs:nonNegativeInteger" maxOccurs="1" minOccurs="0"/>
+        <xs:element name="NumeroAnnessi" type="xs:nonNegativeInteger" maxOccurs="1" minOccurs="0"/>
+        <xs:element name="NumeroAnnotazioni" type="xs:nonNegativeInteger" maxOccurs="1" minOccurs="0"/>
+        <!--  -->
+        <xs:element name="DocumentoPrincipale" type="DocumentoType" maxOccurs="1" minOccurs="1"/>
+        <xs:element name="Allegati" maxOccurs="1" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Allegato" type="DocumentoType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Annessi" maxOccurs="1" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Annesso" type="DocumentoType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Annotazioni" maxOccurs="1" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Annotazione" type="DocumentoType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <xs:element name="IndiceProveConservazione">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Versione" type="xs:string" minOccurs="0"/>
+        <xs:element name="VersioneXMLChiamata" type="xs:string" minOccurs="0"/>
+        <xs:element name="DataRichiestaStato" type="xs:dateTime"/>
+        <xs:element name="EsitoGenerale" type="EsitoGenericoType"/>
+        <xs:element name="EsitoChiamataWS" type="EsitoChiamataWSType"/>
+        <xs:element name="Chiave" type="ChiaveType"/>
+        <xs:element name="Nota" type="xs:string" minOccurs="0"/>
+        <xs:element name="Volumi" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Volume" type="PCVolumeType" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

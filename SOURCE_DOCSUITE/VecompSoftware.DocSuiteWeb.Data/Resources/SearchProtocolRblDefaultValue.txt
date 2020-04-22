@@ -1,0 +1,6 @@
+{
+	"rblAtLeastOne": "0",
+	"rblTextMatchMode": "Contains",
+	"rblClaim":  "2",
+	"rblClausola": "AND"
+}

@@ -1,0 +1,169 @@
+﻿.header-class {
+  width: 100%;
+  border: none;
+  overflow: hidden;
+  height: 135px;
+}
+
+#header{
+    margin-top: 132px;
+}
+
+.footer-class {
+  width: 100%;
+  border: none;
+  margin-top: 30px;
+  height: 440px;
+}
+
+.container {
+    padding-left: 20px;
+}
+
+.container-brand {
+    width: 100% !important;
+    min-width: 970px;
+}
+
+.main-content {
+    margin-top: 200px;
+}
+
+@media (min-width: 768px) {
+    #header {
+        margin-top: 163px;
+    }
+}
+
+@media (min-width: 992px) {
+    #header {
+        margin-top: 172px;
+    }
+}
+
+@media (min-width: 1200px) {
+    #header {
+        margin-top: 132px;
+    }
+}
+
+@media (min-width: 768px) {
+  .header-class {
+    height: 163px;
+  }
+}
+
+@media (min-width: 992px) {
+  .header-class {
+    height: 172px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .header-class {
+    height: 132px;
+  }
+}
+
+@media (min-width: 768px) {
+  .footer-class {
+    height: 663px;
+  }
+}
+
+@media (min-width: 992px) {
+  .footer-class {
+    height: 402px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .footer-class {
+    height: 370px;
+  }
+}
+
+
+@media (min-width: 768px) {
+    .main-content {
+        margin-top: 230px;
+    }
+}
+
+@media (min-width: 992px) {
+    .main-content {
+        margin-top: 240px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .main-content {
+        margin-top: 200px;
+    }
+}
+
+#grid-services {
+    float: left;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    max-width: 700px;
+}
+
+#logo {
+    margin-top: 10px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    float: left;
+}
+
+a{
+    cursor:pointer;
+}
+
+div {
+    font-weight: normal;
+    word-spacing: normal;
+    text-transform: none;
+    color: black;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+.navbar-brand {
+    font-size: 30px;
+}
+
+.search-form {
+  padding: 10px;
+}
+
+.panel-body {
+  text-align: center;
+}
+
+.intro-content {
+    margin: 5px 10px 5px 10px;
+}
+
+table {
+  font-family: Tahoma;
+  font-size: small;
+  direction: ltr;
+  unicode-bidi: isolate;
+  width: 573px;
+  border-collapse: separate;
+  border-spacing: 2px;
+  border-color: grey;
+}
+
+td {
+  display: table-cell;
+  vertical-align: top;
+  padding: 3px;
+}
+
+.logo {
+    float: left;
+    height: 50px;
+    padding: 7px 7px;
+}

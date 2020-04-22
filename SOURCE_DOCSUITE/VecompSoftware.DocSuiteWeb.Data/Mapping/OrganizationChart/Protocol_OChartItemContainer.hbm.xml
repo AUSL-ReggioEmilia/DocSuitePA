@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="OChartItemContainer">
+    
+    <id name="Id" column="Id" generator="guid.comb" />
+    
+    <property name="Master" />
+    <property name="Rejection" />
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+    
+    <many-to-one name="Item" column="IdOChartItem" class="OChartItem" cascade="none" />
+    <many-to-one name="Container" column="IdContainer" class="Container" cascade="none" fetch="join" />
+    
+  </class>
+  
+</hibernate-mapping>

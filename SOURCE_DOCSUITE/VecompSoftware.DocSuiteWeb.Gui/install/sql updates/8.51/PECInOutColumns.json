@@ -1,0 +1,45 @@
+﻿[
+  {
+    "ViewName": "PECIncomingMails",
+    "ColumnsVisibility": {
+      "ViewSummary": true,
+      "ViewDocs": true,
+      "AttachmentsCount": true,
+      "cDirection": true,
+      "cPriority": true,
+      "cInterop": true,
+      "cProtocol": true,
+      "cIsPEC": true,
+      "cMoved": true,
+      "Reply": true,
+      "Forward": true,
+      "Handler": false,
+      "cIsCc": false,
+      "Da": true,
+      "colRecipients": false,
+      "colMailBoxName": false,
+      "MailSubject": true,
+      "MailDate": true,
+      "PecSize": true
+    }
+  },
+  {
+    "ViewName": "PECOutgoingMails",
+    "ColumnsVisibility": {
+      "ViewSummary": true,
+      "ViewDocs": true,
+      "AttachmentsCount": true,
+      "cPriority": true,
+      "cInterop": true,
+      "cProtocol": true,
+      "cIsPEC": true,
+      "colRecipients": true,
+      "colRecipientsCc": false,
+      "MailSubject": true,
+      "RegistrationDate": true,
+      "MailDate": true,
+      "colCurrentMailStatus": true,
+      "PecSize": true
+    }
+  }
+]

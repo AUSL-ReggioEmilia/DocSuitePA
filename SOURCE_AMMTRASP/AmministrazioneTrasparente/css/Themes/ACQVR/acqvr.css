@@ -1,0 +1,122 @@
+﻿body {
+    background: #fff;
+    color: #444;
+    font: normal 11px Verdana,"MS Sans Serif", Arial, 'Lucida Grande',sans-serif;
+    padding-bottom: 0;
+}
+
+.navbar-default {
+    border: 2px solid #f0f0f0;
+    background: rgb(240,240,240); /* Old browsers */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIxJSIgc3RvcC1jb2xvcj0iI2YwZjBmMCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-linear-gradient(top, rgba(240,240,240,1) 1%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,rgba(240,240,240,1)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(240,240,240,1) 1%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(240,240,240,1) 1%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(240,240,240,1) 1%,rgba(255,255,255,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(240,240,240,1) 1%,rgba(255,255,255,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f0f0', endColorstr='#ffffff',GradientType=0 ); /* IE6-8 */
+}
+
+#mainCol {
+    width: 679px;
+}
+
+/* menu */
+#menu {
+    padding: 10px 15px 10px 10px;
+    border: 2px solid #f0f0f0;
+    border-radius: 3px;
+    background: rgb(240,240,240); /* Old browsers */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIxJSIgc3RvcC1jb2xvcj0iI2YwZjBmMCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-linear-gradient(top, rgba(240,240,240,1) 1%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,rgba(240,240,240,1)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(240,240,240,1) 1%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(240,240,240,1) 1%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(240,240,240,1) 1%,rgba(255,255,255,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(240,240,240,1) 1%,rgba(255,255,255,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f0f0', endColorstr='#ffffff',GradientType=0 ); /* IE6-8 */
+}
+
+    #menu li {
+        background: url("images/square-icon.png") no-repeat 0px 10px;
+        min-height: 30px;
+        list-style-type: none;
+        font-size: 1.0em;
+        border-bottom: 1px solid #e0e0e0;
+        display: block;
+        margin-left: 4px;
+    }
+
+        #menu li a {
+            padding-left: 20px;
+            display: block;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            color: #444;
+        }
+
+            #menu li a:hover {
+                color: black;
+                text-decoration: underline;
+                background: #d1e8f6 url("images/square-icon.png") no-repeat 0px 10px;
+            }
+
+        #menu li.active a {
+            font-weight: bold;
+            background: url("images/square-icon.png") no-repeat 0px 10px;
+        }
+
+#submenu > li {
+    background: url("images/square-icon-line.png") no-repeat 0px 0px;
+    min-height: 30px;
+    list-style-type: none;
+    font-size: 1.0em;
+    display: block;
+    margin-left: 4px;
+}
+
+    #submenu > li > a {
+        color: #444;
+        padding-left: 20px;
+        display: block;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+        #submenu > li > a:hover {
+            color: black;
+            text-decoration: underline;
+            background: #d1e8f6 url("images/square-icon-line.png") no-repeat 0px 0px;
+        }
+
+/*Well*/
+.well::before {
+    display: table;
+    content: " ";
+}
+
+.well::after {
+    display: table;
+    content: " ";
+}
+
+.well::after {
+    clear: both;
+}
+
+.well h1 {
+    font-weight: bold;
+}
+
+/*Table*/
+table.dettaglio {
+    background-color: #ffffff;
+    border: #e5e5e5;
+}
+
+.table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
+    background-color: #e5e5e5;
+}

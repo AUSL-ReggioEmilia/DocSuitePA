@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="Resolution" table="Resolution">
+    
+    <id name="Id" column="idResolution">
+      <generator class="assigned" />
+    </id>
+    
+    <property name="Year" column="Year" />
+    <property name="Number" column="Number" />
+    <property name="WorkflowType" column="WorkflowType" type="AnsiString" />
+    <property name="AdoptionDate" column="AdoptionDate" />
+    <property name="AdoptionUser" column="AdoptionUser" type="AnsiString" />
+    <property name="PublishingDate" column="PublishingDate" />
+    <property name="PublishingUser" column="PublishingUser" type="AnsiString" />
+    <property name="EffectivenessDate" column="EffectivenessDate" />
+    <property name="EffectivenessUser" column="EffectivenessUser" type="AnsiString" />
+    <property name="LeaveDate" column="LeaveDate" />
+    <property name="Leaveuser" column="Leaveuser" />
+    <property name="WarningDate" column="WarningDate" />
+    <property name="ConfirmDate" column="ConfirmDate" />
+    <property name="ResolutionObject" column="Object" type="AnsiString" />
+    <property name="Note" column="Note" type="AnsiString" />
+    <property name="ServiceNumber" column="ServiceNumber" type="AnsiString" />
+    <property name="IdProposer" column="idProposer" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="IdManager" column="idManager" />
+    <property name="IdAssignee" column="idAssignee" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedReason" column="LastChangedReason" type="AnsiString" />
+    <property name="ControllerOpinion" column="ControllerOpinion" type="AnsiString" />
+    <property name="ConfirmUser" column="ConfirmUser" type="AnsiString" />
+    <property name="WarningUser" column="WarningUser" type="AnsiString" />
+    <property name="AlternativeProposer" column="AlternativeProposer" type="AnsiString" />
+    <property name="AlternativeManager" column="AlternativeManager" type="AnsiString" />
+    <property name="AlternativeAssignee" column="AlternativeAssignee" type="AnsiString" />
+    <property name="AlternativeRecipient" column="AlternativeRecipient" type="AnsiString" />
+    <property name="FrontispieceObject" column="FrontispieceObject" type="AnsiString" />
+    <property name="ProposeDate" column="ProposeDate" />
+    <property name="ProposeUser" column="ProposeUser" type="AnsiString" />
+    <property name="WaitDate" column="WaitDate" />
+    <property name="WaitUser" column="WaitUser" type="AnsiString" />
+    <property name="ResponseProtocol" column="ResponseProtocol" type="AnsiString" />
+    <property name="WarningProtocol" column="WarningProtocol" type="AnsiString" />
+    <property name="ConfirmProtocol" column="ConfirmProtocol" type="AnsiString" />
+    <property name="ResponseDate" column="ResponseDate" />
+    <property name="ResponseUser" column="ResponseUser" type="AnsiString" />
+    <property name="Send" column="Send" />
+    <property name="Position" column="Position" type="AnsiString" />
+    <property name="ValidityDateFrom" column="ValidityDateFrom" />
+    <property name="ValidityDateTo" column="ValidityDateTo" />
+    <property name="SupplierCode" column="SupplierCode" type="AnsiString" />
+    <property name="SupplierDescription" column="SupplierDescription" type="AnsiString" />
+    <property name="_checkPublication" column="CheckPublication" access="field" type="AnsiString" />
+    <property name="ConservationStatus" column="ConservationStatus" type="AnsiChar" />
+    <property name="LastConservationDate" column="LastConservationDate" />
+    <property name="HasConservatedDocs" column="HasConservatedDocs"  />
+    <property name="UltimaPaginaDate" column="UltimaPaginaDate"  />
+    <property name="_webState" column="WebState" access="field" />
+    <property name="WebPublicationDate" column="WebPublicationDate" />
+    <property name="WebRevokeDate" column="WebRevokeDate" />
+    <property name="WebSPGuid" column="WebSPGuid" type="AnsiString"/>
+    <property name="WebPublicatedDocuments" column="WebPublicatedDocuments" type="AnsiString"/>
+    <property name="ImmediatelyExecutive" column="ImmediatelyExecutive" />
+    <property name="OCSupervisoryBoard" column="OCSupervisoryBoard" />
+    <property name="OCRegion" column="OCRegion" />
+    <property name="OCManagement" column="OCManagement" />
+    <property name="OCOther" column="OCOther" />
+    <property name="OCCorteConti" column="OCCorteConti" />
+    <property name="OtherDescription" column="OtherDescription" type="AnsiString" />
+    <property name="ProposerWarningDate" column="ProposerWarningDate" />
+    <property name="ProposerWarningUser" column="ProposerWarningUser" type="AnsiString" />
+    <property name="ProposerProtocolLink" column="ProposerProtocolLink" type="AnsiString" />
+    <property name="PublishingProtocolLink" column="PublishingProtocolLink" type="AnsiString" />
+    <property name="RegionProtocolLink" column="RegionProtocolLink" type="AnsiString" />
+    <property name="EffectivenessProtocolLink" column="EffectivenessProtocolLink" type="AnsiString" />
+    <property name="SupervisoryBoardProtocolLink" column="SupervisoryBoardProtocolLink" type="AnsiString" />
+    <property name="SupervisoryBoardOpinion" column="SupervisoryBoardOpinion" type="AnsiString" />
+    <property name="SupervisoryBoardWarningDate" column="SupervisoryBoardWarningDate" />
+    <property name="SupervisoryBoardWarningUser" column="SupervisoryBoardWarningUser" type="AnsiString" />
+    <property name="CorteDeiContiWarningDate" column="CorteDeiContiWarningDate" />
+    <property name="CorteDeiContiProtocolLink" column="CorteDeiContiProtocolLink" type="AnsiString" />
+    <property name="DGR" column="DGR" type="AnsiString" />
+    <property name="ManagementWarningDate" column="ManagementWarningDate" />
+    <property name="ManagementWarningUser" column="ManagementWarningUser" type="AnsiString" />
+    <property name="ManagementProtocolLink" column="ManagementProtocolLink" type="AnsiString" />
+    <property name="ResolutionObjectPrivacy" column="ObjectPrivacy" type="AnsiString" />
+    <property name="DeclineNote" column="DeclineNote" type="AnsiString" />
+    <property name="ApprovalNote" column="ApprovalNote" type="AnsiString" />
+    <property name="ProposerProtocolCollaboration" column="ProposerProtocolCollaboration" />
+    <property name="SupervisoryBoardProtocolCollaboration" column="SupervisoryBoardProtocolCollaboration" />
+    <property name="AdoptionRoleId" column="AdoptionRoleId" />
+    <property name="InclusiveNumber" column="InclusiveNumber" type="AnsiString" />
+    <property name="IsChecked" column="IsChecked" />
+    <property name="UniqueId" column="UniqueId" unique="true" />
+    
+    <many-to-one name="Type" column="idType" class="ResolutionType" />
+    <many-to-one name="Container" column="idContainer" class="Container" />
+    <many-to-one name="Status" column="idStatus" class="ResolutionStatus" />
+    <many-to-one name="Location" column="idLocation" class="Location" />
+    <many-to-one name="ControllerStatus" column="idControllerStatus" class="ControllerStatusResolution" />
+    <many-to-one name="BidType" column="idBidType" class="BidType" />
+    <many-to-one name="Category" column="idCategory" class="Category" />
+    <many-to-one name="SubCategory" column="idSubCategory" class="Category" />
+    <many-to-one name="ResolutionKind" column="IdResolutionKind" class="ResolutionKind" />
+    <many-to-one name="RoleProposer" column="IdRoleProposer" class="Role" />
+    
+    <one-to-one name="File" class="FileResolution" cascade="all-delete-orphan" fetch="join" outer-join="false" constrained="false"/>
+    <one-to-one name="ResolutionParer" class="ResolutionParer" cascade="all-delete-orphan" fetch="join" />
+    
+    <bag name="ResolutionContacts" table="ResolutionContact" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionContact" />
+    </bag>
+    <bag name="ResolutionContactsRecipients" table="ResolutionContact" cascade="none" inverse="true" where="ComunicationType='D'">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionContact" />
+    </bag>
+    <bag name="ResolutionContactProposers" table="ResolutionContact" cascade="none" inverse="true" where="ComunicationType='P'">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionContact" />
+    </bag>
+    <bag name="ResolutionContactsAssignees" table="ResolutionContact" cascade="none" inverse="true" where="ComunicationType='A'">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionContact" />
+    </bag>
+    <bag name="ResolutionContactsManagers" table="ResolutionContact" cascade="none" inverse="true" where="ComunicationType='R'">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionContact" />
+    </bag>
+    <bag name="ResolutionLogs" table="ResolutionLog" cascade="save-update" inverse="true">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionLog" />
+    </bag>
+    <bag name="ResolutionRoles" table="ResolutionRole" cascade="all-delete-orphan" inverse="true" >
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionRole" />
+    </bag>
+    <bag name="ResolutionWorkflows" table="ResolutionWorkflow" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionWorkflow" />
+    </bag>
+    <bag name="ResolutionRecipients" table="ResolutionRecipient" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionRecipient" />
+    </bag>
+    <bag name="WebPublications" table="WebPublication" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="WebPublication" />
+    </bag>
+    <bag name="Messages" table="ResolutionMessage" cascade="none" inverse="true" fetch="select">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionMessage" />
+    </bag>
+    
+    <bag name="ResolutionActivities" table="ResolutionActivities">
+      <key>
+        <column name="IdResolution" />
+      </key>
+      <one-to-many class="ResolutionActivity" />
+    </bag>
+    
+  </class>
+
+</hibernate-mapping>

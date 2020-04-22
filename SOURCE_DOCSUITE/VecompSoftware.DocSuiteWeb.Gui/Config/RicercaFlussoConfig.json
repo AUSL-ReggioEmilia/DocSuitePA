@@ -1,0 +1,21 @@
+﻿{
+  //Determina
+  "0": {
+    "0": "Adozione",
+    "1": "Lettera di avvenuta Adozione",
+    "9": "Invio Adozione Collegio Sindacale Firma Digitale",
+    "10": "Pubblicazione",
+    "6": "Esecutività",
+    "11": "Ultima Pagina (Dematerializzazione) Firma Digitale"
+  },
+  //Delibera
+  "1": {
+    "12": "Raccolta firme per adozione",
+    "0": "Adozione",
+    "9": "Invio Adozione Collegio Sindacale Firma Digitale",
+    "3": "Collegamento protocollo trasmissione agli Organi di Controllo",
+    "10": "Pubblicazione",
+    "6": "Esecutività",
+    "11": "Ultima Pagina (Dematerializzazione) Firma Digitale"
+  }
+}

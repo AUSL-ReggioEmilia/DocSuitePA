@@ -1,0 +1,1 @@
+lc /target:VecompSoftware.DocSuiteWeb.AVCP.dll /complist:licenses.licx /i:"C:\Program Files (x86)\Devart\dotConnect\Oracle\Devart.Data.Oracle.dll"

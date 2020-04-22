@@ -1,0 +1,25 @@
+﻿{
+  "TextFields": [
+    {
+      "Label": "SPID_ID",
+      "Required": false
+    },
+    {
+      "Label": "Denominazione/Nome cognome",
+      "Required": false
+    },
+    {
+      "Label": "Motivazioni",
+      "Required": false
+    },
+    {
+      "Label": "Stato del fascicolo",
+      "Required": false
+    }
+  ],
+  "NumberFields": [],
+  "DateFields": [],
+  "BoolFields": [],
+  "EnumFields": [],
+  "DiscussionFields": []
+}

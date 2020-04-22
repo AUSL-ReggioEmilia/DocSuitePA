@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolDraft" table="ProtocolDraft">
+    
+    <id name="Id" column="ID">
+      <generator class="identity" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+
+    <property name="UniqueId">
+      <column name="UniqueId" not-null="true" unique="true" />
+    </property>
+    
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="Description" column="Description" type="AnsiString" />
+    <property name="Data" column="Data" type="AnsiString" />
+    <property name="DraftType" column="DraftType" />
+    <property name="IsActive" column="IsActive" />
+
+    <many-to-one class="Collaboration" name="Collaboration" column="IdCollaboration" />
+    <many-to-one name="Protocol" class="Protocol">
+      <column name="Year" />
+      <column name="Number" />
+    </many-to-one>
+   
+  </class>
+
+</hibernate-mapping>

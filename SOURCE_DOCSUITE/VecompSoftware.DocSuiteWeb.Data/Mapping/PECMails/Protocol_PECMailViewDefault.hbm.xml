@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="PECMailViewDefault" table="PECMailViewDefault">
+    
+    <id name="IdRole" column="IdRole">
+    </id>
+
+    <many-to-one class="Role" name="Role" column="IdRole"/>
+    <many-to-one class="PECMailView" name="DefaultView" column="IdDefaultView"/>
+    
+  </class>
+
+</hibernate-mapping>

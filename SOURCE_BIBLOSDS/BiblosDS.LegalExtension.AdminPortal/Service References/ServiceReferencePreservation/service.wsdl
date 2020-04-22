@@ -1,0 +1,2379 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ServicePreservation" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_IServicePreservation_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationAlertType" />
+      <xsd:import namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationAlert" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationTask" />
+      <xsd:import namespace="http://BiblosDS/2009/10/Archive" />
+      <xsd:import namespace="http://BiblosDS/2009/10/ArchiveServerConfig" />
+      <xsd:import namespace="http://BiblosDS/2009/10/Server" />
+      <xsd:import namespace="http://BiblosDS/2009/10/ServerRole" />
+      <xsd:import namespace="http://BiblosDS/2009/10/Storage" />
+      <xsd:import namespace="http://BiblosDS/2009/10/StorageType" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationTaskGroup" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationTaskGroupType" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationSchedule" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationScheduleTaskType" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationTaskType" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationRole" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationUserRole" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationUser" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationTaskTypes" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationExpireResponse" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationStorageDevice" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationInStorageDevice" />
+      <xsd:import namespace="http://BiblosDS/2009/10/Preservation" />
+      <xsd:import namespace="http://BiblosDS/2009/10/Document" />
+      <xsd:import namespace="http://BiblosDS/2009/10/AttributeValue" />
+      <xsd:import namespace="http://BiblosDS/2009/10/Attribute" />
+      <xsd:import namespace="http://BiblosDS/2009/10/AttributeGroup" />
+      <xsd:import namespace="http://BiblosDS/2009/10/FilterOperator" />
+      <xsd:import namespace="http://BiblosDS/2009/10/AttributeMode" />
+      <xsd:import namespace="http://BiblosDS/2009/10/Certificate" />
+      <xsd:import namespace="http://BiblosDS/2009/10/Content" />
+      <xsd:import namespace="http://BiblosDS/2009/10/DocumentServer" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
+      <xsd:import namespace="http://BiblosDS/2009/10/StorageArea" />
+      <xsd:import namespace="http://BiblosDS/2009/10/Permission" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PermissionMode" />
+      <xsd:import namespace="http://BiblosDS/2009/10/DocumentAttach" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationJournaling" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationJournalingActivity" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationStorageDeviceStatus" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationStatus" />
+      <xsd:import namespace="http://BiblosDS/2009/10/CryptoType" />
+      <xsd:import namespace="http://BiblosDS/2009/10/ArchiveCompany" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationHoliday" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationArchiveInfoResponse" />
+      <xsd:import namespace="http://BiblosDS/2009/10/ResponseBase" />
+      <xsd:import namespace="http://BiblosDS/2009/10/ResponseError" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationInfoResponse" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationResponse" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationError" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Enums" />
+      <xsd:import namespace="http://BiblosDS/2009/10/PreservationFileInfoResponse" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServicePreservation_GetPreservationAlertTypesByTaskType_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAlertTypesByTaskType" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationAlertTypesByTaskType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAlertTypesByTaskTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationRole" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationRole" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationParameter_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationParameter" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationParameter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationParameterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationParameter_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationParameter" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationParameter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationParameterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationParameter_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationParameter" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationParameter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationParameterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationExpire_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationExpire" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationExpire_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationExpireResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationAsSigned_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationAsSigned" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationAsSigned_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationAsSignedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationPath_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationPath" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationPath_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationPathResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationTaskGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationTaskGroup" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationTaskGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationTaskGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationTaskGroupTypeDescription_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskGroupTypeDescription" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationTaskGroupTypeDescription_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskGroupTypeDescriptionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationTaskGroupType_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskGroupType" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationTaskGroupType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskGroupTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationStorageDevices_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDevices" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationStorageDevices_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDevicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationStorageDevicesFromDates_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDevicesFromDates" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationStorageDevicesFromDates_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDevicesFromDatesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsInStorageDevices_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsInStorageDevices" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsInStorageDevices_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsInStorageDevicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationInStorageDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationInStorageDevice" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationInStorageDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationInStorageDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationInStorageDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationInStorageDevice" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationInStorageDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationInStorageDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationStorageDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationStorageDevice" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationStorageDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationStorageDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationStorageDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationStorageDevice" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationStorageDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationStorageDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_PreservationStorageDeviceChangeStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:PreservationStorageDeviceChangeStatus" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_PreservationStorageDeviceChangeStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PreservationStorageDeviceChangeStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationJournaling_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationJournaling" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationJournaling_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationJournalingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationStorageDeviceFromLabel_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDeviceFromLabel" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationStorageDeviceFromLabel_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDeviceFromLabelResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationStorageDeviceLastVerifyDate_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationStorageDeviceLastVerifyDate" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationStorageDeviceLastVerifyDate_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationStorageDeviceLastVerifyDateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CreateArchivePreservationMark_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateArchivePreservationMark" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CreateArchivePreservationMark_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateArchivePreservationMarkResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetArchivePreservationMarkFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchivePreservationMarkFile" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetArchivePreservationMarkFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchivePreservationMarkFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetClosingFilesTimeStampFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetClosingFilesTimeStampFile" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetClosingFilesTimeStampFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetClosingFilesTimeStampFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_TimeStampArchivePreservationMarkFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:TimeStampArchivePreservationMarkFile" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_TimeStampArchivePreservationMarkFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:TimeStampArchivePreservationMarkFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetTimeStampedArchivePreservationMarkFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTimeStampedArchivePreservationMarkFile" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetTimeStampedArchivePreservationMarkFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTimeStampedArchivePreservationMarkFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetSHA1Mark_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSHA1Mark" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetSHA1Mark_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSHA1MarkResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetSHA256Mark_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSHA256Mark" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetSHA256Mark_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSHA256MarkResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetDefaultPreservationSchedule_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDefaultPreservationSchedule" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetDefaultPreservationSchedule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDefaultPreservationScheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsFromArchiveAndDates_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsFromArchiveAndDates" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsFromArchiveAndDates_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsFromArchiveAndDatesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UploadEntratelFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:UploadEntratelFile" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UploadEntratelFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UploadEntratelFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DownloadEntratelFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:DownloadEntratelFile" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DownloadEntratelFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DownloadEntratelFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetCurrentArchivePreservationMarkXmlTemplate_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCurrentArchivePreservationMarkXmlTemplate" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetCurrentArchivePreservationMarkXmlTemplate_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCurrentArchivePreservationMarkXmlTemplateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_ChangeCurrentArchivePreservationMarkXmlTemplate_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeCurrentArchivePreservationMarkXmlTemplate" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_ChangeCurrentArchivePreservationMarkXmlTemplate_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeCurrentArchivePreservationMarkXmlTemplateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationJournalingActivities_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationJournalingActivities" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationJournalingActivities_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationJournalingActivitiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddVerifyPreservationToJournaling_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddVerifyPreservationToJournaling" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddVerifyPreservationToJournaling_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddVerifyPreservationToJournalingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationJournaling_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationJournaling" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationJournaling_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationJournalingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationJournaling_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationJournaling" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationJournaling_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationJournalingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationJournalingLastPrintManualActivityDate_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationJournalingLastPrintManualActivityDate" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationJournalingLastPrintManualActivityDate_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationJournalingLastPrintManualActivityDateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationStorageDeviceStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDeviceStatus" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationStorageDeviceStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDeviceStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationJournalings_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationJournalings" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationJournalings_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationJournalingsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsFromJournaling_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsFromJournaling" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsFromJournaling_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsFromJournalingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsFromArchive_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsFromArchive" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsFromArchive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsFromArchiveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservedDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservedDocument" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservedDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservedDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetUsedCryptography_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUsedCryptography" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetUsedCryptography_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUsedCryptographyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetHashFromFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHashFromFile" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetHashFromFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHashFromFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetHashFromBuffer_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHashFromBuffer" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetHashFromBuffer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHashFromBufferResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationStorageDevicesCount_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDevicesCount" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationStorageDevicesCount_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDevicesCountResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetArchiveCompany_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchiveCompany" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetArchiveCompany_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchiveCompanyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetArchiveCompanyByUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchiveCompanyByUser" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetArchiveCompanyByUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchiveCompanyByUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_IsAlive_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsAlive" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_IsAlive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsAliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetAdministratedArchives_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAdministratedArchives" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetAdministratedArchives_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAdministratedArchivesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationUsersInArchiveByRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationUsersInArchiveByRole" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationUsersInArchiveByRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationUsersInArchiveByRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetRoles_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetRoles" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetRoles_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetRolesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationUser" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationUser" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationUserRolesByPreservationUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationUserRolesByPreservationUser" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationUserRolesByPreservationUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationUserRolesByPreservationUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationUser" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationUserRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationUserRole" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationUserRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationUserRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationSchedule_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationSchedule" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationSchedule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationScheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationSchedule_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationSchedule" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationSchedule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationScheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationSchedule_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationSchedule" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationSchedule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationScheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationSchedule_TaskTypeBySchedule_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationSchedule_TaskTypeBySchedule" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationSchedule_TaskTypeBySchedule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationSchedule_TaskTypeByScheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetTaskTypesByUserRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTaskTypesByUserRole" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetTaskTypesByUserRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTaskTypesByUserRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationTaskType_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskType" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationTaskType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationTaskType_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskType" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationTaskType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetDetailedPreservationTaskGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDetailedPreservationTaskGroup" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetDetailedPreservationTaskGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDetailedPreservationTaskGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationTaskGroupExpiryByTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskGroupExpiryByTask" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationTaskGroupExpiryByTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskGroupExpiryByTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsByUserAndTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsByUserAndTask" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsByUserAndTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsByUserAndTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationHoliday_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationHoliday" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationHoliday_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationHolidayResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationHoliday_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationHoliday" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationHoliday_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationHolidayResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationHoliday_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationHoliday" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationHoliday_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationHolidayResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationAlertTypes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAlertTypes" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationAlertTypes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAlertTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationAlertType_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationAlertType" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_UpdatePreservationAlertType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationAlertTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationAlertType_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationAlertType" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationAlertType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationAlertTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationAlertType_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationAlertType" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_DeletePreservationAlertType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationAlertTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationArchives_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationArchives" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationArchives_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationArchivesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetUserRoleInArchive_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUserRoleInArchive" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetUserRoleInArchive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUserRoleInArchiveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationParameter_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationParameter" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationParameter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationParameterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetFirstPreservationParameter_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFirstPreservationParameter" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetFirstPreservationParameter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFirstPreservationParameterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_IsUserInRoleOnArchive_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsUserInRoleOnArchive" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_IsUserInRoleOnArchive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsUserInRoleOnArchiveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_IsUserInRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsUserInRole" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_IsUserInRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsUserInRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationTaskGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationTaskGroup" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationTaskGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationTaskGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_SetTaskGroupClosed_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetTaskGroupClosed" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_SetTaskGroupClosed_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetTaskGroupClosedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetScheduleFromTaskGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetScheduleFromTaskGroup" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetScheduleFromTaskGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetScheduleFromTaskGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetSchedule_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSchedule" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetSchedule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetScheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_ResetPreparedPreservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:ResetPreparedPreservation" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_ResetPreparedPreservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ResetPreparedPreservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_FindPreparedPreservationObjects_InputMessage">
+    <wsdl:part name="parameters" element="tns:FindPreparedPreservationObjects" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_FindPreparedPreservationObjects_OutputMessage">
+    <wsdl:part name="parameters" element="tns:FindPreparedPreservationObjectsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationName" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_MarkPreservationAsSigned_InputMessage">
+    <wsdl:part name="parameters" element="tns:MarkPreservationAsSigned" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_MarkPreservationAsSigned_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MarkPreservationAsSignedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AbortConservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:AbortConservation" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AbortConservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AbortConservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CheckPreservationExceptions_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckPreservationExceptions" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CheckPreservationExceptions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckPreservationExceptionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CreatePreservationIndexFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreatePreservationIndexFile" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CreatePreservationIndexFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreatePreservationIndexFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationInfo" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationUserForArchive_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationUserForArchive" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationUserForArchive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationUserForArchiveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetSelectedDocumentsNumber_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSelectedDocumentsNumber" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetSelectedDocumentsNumber_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSelectedDocumentsNumberResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetAttributes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAttributes" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetAttributes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAttributesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CopyCompEDViewerIndexFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:CopyCompEDViewerIndexFile" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CopyCompEDViewerIndexFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CopyCompEDViewerIndexFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetHolidays_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHolidays" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetHolidays_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHolidaysResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CreatePreservationClosingFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreatePreservationClosingFile" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CreatePreservationClosingFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreatePreservationClosingFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetTaskGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTaskGroup" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetTaskGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTaskGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationAlert_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAlert" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationAlert_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAlertResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetTaskGroupTypes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTaskGroupTypes" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetTaskGroupTypes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTaskGroupTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationUser" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationTaskTypes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationTaskTypes" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationTaskTypes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationTaskTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetTasksFromTaskGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTasksFromTaskGroup" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetTasksFromTaskGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTasksFromTaskGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationTaskGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskGroup" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationTaskGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTask" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationAlert_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationAlert" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_AddPreservationAlert_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationAlertResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservation" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationTaskTypesAndPreservationScheduleTaskTypes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationTaskTypesAndPreservationScheduleTaskTypes" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationTaskTypesAndPreservationScheduleTaskTypes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationTaskTypesAndPreservationScheduleTaskTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CreatePreservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreatePreservation" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CreatePreservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreatePreservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CreatePreservationByTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreatePreservationByTask" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_CreatePreservationByTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreatePreservationByTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPresservationClosingFileInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPresservationClosingFileInfo" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPresservationClosingFileInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPresservationClosingFileInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_ClosePreservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:ClosePreservation" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_ClosePreservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ClosePreservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_ResetPreservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:ResetPreservation" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_ResetPreservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ResetPreservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservations_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservations" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservations_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsToSign_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsToSign" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_GetPreservationsToSign_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsToSignResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePreservation_Pulse_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:Pulse" />
+  </wsdl:message>
+  <wsdl:portType msc:usingSession="true" name="IServicePreservation">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationAlertTypesByTaskType">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationAlertTypesByTaskType" message="tns:IServicePreservation_GetPreservationAlertTypesByTaskType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationAlertTypesByTaskTypeResponse" message="tns:IServicePreservation_GetPreservationAlertTypesByTaskType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationRole">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationRole" message="tns:IServicePreservation_UpdatePreservationRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationRoleResponse" message="tns:IServicePreservation_UpdatePreservationRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationRole">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationRole" message="tns:IServicePreservation_AddPreservationRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationRoleResponse" message="tns:IServicePreservation_AddPreservationRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationParameter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationParameter" message="tns:IServicePreservation_AddPreservationParameter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationParameterResponse" message="tns:IServicePreservation_AddPreservationParameter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationParameter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationParameter" message="tns:IServicePreservation_UpdatePreservationParameter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationParameterResponse" message="tns:IServicePreservation_UpdatePreservationParameter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationParameter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationParameter" message="tns:IServicePreservation_DeletePreservationParameter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationParameterResponse" message="tns:IServicePreservation_DeletePreservationParameter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationExpire">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationExpire" message="tns:IServicePreservation_GetPreservationExpire_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationExpireResponse" message="tns:IServicePreservation_GetPreservationExpire_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationAsSigned">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationAsSigned" message="tns:IServicePreservation_UpdatePreservationAsSigned_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationAsSignedResponse" message="tns:IServicePreservation_UpdatePreservationAsSigned_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationPath">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationPath" message="tns:IServicePreservation_UpdatePreservationPath_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationPathResponse" message="tns:IServicePreservation_UpdatePreservationPath_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationTaskGroup">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationTaskGroup" message="tns:IServicePreservation_DeletePreservationTaskGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationTaskGroupResponse" message="tns:IServicePreservation_DeletePreservationTaskGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationTaskGroupTypeDescription">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationTaskGroupTypeDescription" message="tns:IServicePreservation_UpdatePreservationTaskGroupTypeDescription_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationTaskGroupTypeDescriptionResponse" message="tns:IServicePreservation_UpdatePreservationTaskGroupTypeDescription_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationTaskGroupType">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationTaskGroupType" message="tns:IServicePreservation_AddPreservationTaskGroupType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationTaskGroupTypeResponse" message="tns:IServicePreservation_AddPreservationTaskGroupType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationStorageDevices">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationStorageDevices" message="tns:IServicePreservation_GetPreservationStorageDevices_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationStorageDevicesResponse" message="tns:IServicePreservation_GetPreservationStorageDevices_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationStorageDevicesFromDates">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationStorageDevicesFromDates" message="tns:IServicePreservation_GetPreservationStorageDevicesFromDates_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationStorageDevicesFromDatesResponse" message="tns:IServicePreservation_GetPreservationStorageDevicesFromDates_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationsInStorageDevices">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsInStorageDevices" message="tns:IServicePreservation_GetPreservationsInStorageDevices_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsInStorageDevicesResponse" message="tns:IServicePreservation_GetPreservationsInStorageDevices_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationInStorageDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationInStorageDevice" message="tns:IServicePreservation_AddPreservationInStorageDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationInStorageDeviceResponse" message="tns:IServicePreservation_AddPreservationInStorageDevice_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationInStorageDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationInStorageDevice" message="tns:IServicePreservation_DeletePreservationInStorageDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationInStorageDeviceResponse" message="tns:IServicePreservation_DeletePreservationInStorageDevice_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationStorageDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationStorageDevice" message="tns:IServicePreservation_DeletePreservationStorageDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationStorageDeviceResponse" message="tns:IServicePreservation_DeletePreservationStorageDevice_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationStorageDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationStorageDevice" message="tns:IServicePreservation_AddPreservationStorageDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationStorageDeviceResponse" message="tns:IServicePreservation_AddPreservationStorageDevice_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="PreservationStorageDeviceChangeStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/PreservationStorageDeviceChangeStatus" message="tns:IServicePreservation_PreservationStorageDeviceChangeStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/PreservationStorageDeviceChangeStatusResponse" message="tns:IServicePreservation_PreservationStorageDeviceChangeStatus_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationJournaling">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationJournaling" message="tns:IServicePreservation_DeletePreservationJournaling_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationJournalingResponse" message="tns:IServicePreservation_DeletePreservationJournaling_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationStorageDeviceFromLabel">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationStorageDeviceFromLabel" message="tns:IServicePreservation_GetPreservationStorageDeviceFromLabel_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationStorageDeviceFromLabelResponse" message="tns:IServicePreservation_GetPreservationStorageDeviceFromLabel_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationStorageDeviceLastVerifyDate">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationStorageDeviceLastVerifyDate" message="tns:IServicePreservation_UpdatePreservationStorageDeviceLastVerifyDate_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationStorageDeviceLastVerifyDateResponse" message="tns:IServicePreservation_UpdatePreservationStorageDeviceLastVerifyDate_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CreateArchivePreservationMark">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/CreateArchivePreservationMark" message="tns:IServicePreservation_CreateArchivePreservationMark_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/CreateArchivePreservationMarkResponse" message="tns:IServicePreservation_CreateArchivePreservationMark_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetArchivePreservationMarkFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetArchivePreservationMarkFile" message="tns:IServicePreservation_GetArchivePreservationMarkFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetArchivePreservationMarkFileResponse" message="tns:IServicePreservation_GetArchivePreservationMarkFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetClosingFilesTimeStampFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetClosingFilesTimeStampFile" message="tns:IServicePreservation_GetClosingFilesTimeStampFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetClosingFilesTimeStampFileResponse" message="tns:IServicePreservation_GetClosingFilesTimeStampFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="TimeStampArchivePreservationMarkFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/TimeStampArchivePreservationMarkFile" message="tns:IServicePreservation_TimeStampArchivePreservationMarkFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/TimeStampArchivePreservationMarkFileResponse" message="tns:IServicePreservation_TimeStampArchivePreservationMarkFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTimeStampedArchivePreservationMarkFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetTimeStampedArchivePreservationMarkFile" message="tns:IServicePreservation_GetTimeStampedArchivePreservationMarkFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetTimeStampedArchivePreservationMarkFileResponse" message="tns:IServicePreservation_GetTimeStampedArchivePreservationMarkFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetSHA1Mark">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetSHA1Mark" message="tns:IServicePreservation_GetSHA1Mark_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetSHA1MarkResponse" message="tns:IServicePreservation_GetSHA1Mark_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetSHA256Mark">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetSHA256Mark" message="tns:IServicePreservation_GetSHA256Mark_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetSHA256MarkResponse" message="tns:IServicePreservation_GetSHA256Mark_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetDefaultPreservationSchedule">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetDefaultPreservationSchedule" message="tns:IServicePreservation_GetDefaultPreservationSchedule_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetDefaultPreservationScheduleResponse" message="tns:IServicePreservation_GetDefaultPreservationSchedule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationsFromArchiveAndDates">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsFromArchiveAndDates" message="tns:IServicePreservation_GetPreservationsFromArchiveAndDates_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsFromArchiveAndDatesResponse" message="tns:IServicePreservation_GetPreservationsFromArchiveAndDates_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UploadEntratelFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UploadEntratelFile" message="tns:IServicePreservation_UploadEntratelFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UploadEntratelFileResponse" message="tns:IServicePreservation_UploadEntratelFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DownloadEntratelFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DownloadEntratelFile" message="tns:IServicePreservation_DownloadEntratelFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DownloadEntratelFileResponse" message="tns:IServicePreservation_DownloadEntratelFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetCurrentArchivePreservationMarkXmlTemplate">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetCurrentArchivePreservationMarkXmlTemplate" message="tns:IServicePreservation_GetCurrentArchivePreservationMarkXmlTemplate_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetCurrentArchivePreservationMarkXmlTemplateResponse" message="tns:IServicePreservation_GetCurrentArchivePreservationMarkXmlTemplate_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ChangeCurrentArchivePreservationMarkXmlTemplate">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/ChangeCurrentArchivePreservationMarkXmlTemplate" message="tns:IServicePreservation_ChangeCurrentArchivePreservationMarkXmlTemplate_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/ChangeCurrentArchivePreservationMarkXmlTemplateResponse" message="tns:IServicePreservation_ChangeCurrentArchivePreservationMarkXmlTemplate_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationJournalingActivities">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationJournalingActivities" message="tns:IServicePreservation_GetPreservationJournalingActivities_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationJournalingActivitiesResponse" message="tns:IServicePreservation_GetPreservationJournalingActivities_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddVerifyPreservationToJournaling">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddVerifyPreservationToJournaling" message="tns:IServicePreservation_AddVerifyPreservationToJournaling_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddVerifyPreservationToJournalingResponse" message="tns:IServicePreservation_AddVerifyPreservationToJournaling_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationJournaling">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationJournaling" message="tns:IServicePreservation_UpdatePreservationJournaling_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationJournalingResponse" message="tns:IServicePreservation_UpdatePreservationJournaling_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationJournaling">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationJournaling" message="tns:IServicePreservation_AddPreservationJournaling_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationJournalingResponse" message="tns:IServicePreservation_AddPreservationJournaling_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationJournalingLastPrintManualActivityDate">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationJournalingLastPrintManualActivityDate" message="tns:IServicePreservation_GetPreservationJournalingLastPrintManualActivityDate_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationJournalingLastPrintManualActivityDateResponse" message="tns:IServicePreservation_GetPreservationJournalingLastPrintManualActivityDate_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationStorageDeviceStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationStorageDeviceStatus" message="tns:IServicePreservation_GetPreservationStorageDeviceStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationStorageDeviceStatusResponse" message="tns:IServicePreservation_GetPreservationStorageDeviceStatus_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationJournalings">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationJournalings" message="tns:IServicePreservation_GetPreservationJournalings_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationJournalingsResponse" message="tns:IServicePreservation_GetPreservationJournalings_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationsFromJournaling">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsFromJournaling" message="tns:IServicePreservation_GetPreservationsFromJournaling_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsFromJournalingResponse" message="tns:IServicePreservation_GetPreservationsFromJournaling_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationsFromArchive">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsFromArchive" message="tns:IServicePreservation_GetPreservationsFromArchive_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsFromArchiveResponse" message="tns:IServicePreservation_GetPreservationsFromArchive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservedDocument">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservedDocument" message="tns:IServicePreservation_GetPreservedDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservedDocumentResponse" message="tns:IServicePreservation_GetPreservedDocument_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetUsedCryptography">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetUsedCryptography" message="tns:IServicePreservation_GetUsedCryptography_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetUsedCryptographyResponse" message="tns:IServicePreservation_GetUsedCryptography_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetHashFromFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetHashFromFile" message="tns:IServicePreservation_GetHashFromFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetHashFromFileResponse" message="tns:IServicePreservation_GetHashFromFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetHashFromBuffer">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetHashFromBuffer" message="tns:IServicePreservation_GetHashFromBuffer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetHashFromBufferResponse" message="tns:IServicePreservation_GetHashFromBuffer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationStorageDevicesCount">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationStorageDevicesCount" message="tns:IServicePreservation_GetPreservationStorageDevicesCount_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationStorageDevicesCountResponse" message="tns:IServicePreservation_GetPreservationStorageDevicesCount_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetArchiveCompany">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetArchiveCompany" message="tns:IServicePreservation_GetArchiveCompany_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetArchiveCompanyResponse" message="tns:IServicePreservation_GetArchiveCompany_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetArchiveCompanyByUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetArchiveCompanyByUser" message="tns:IServicePreservation_GetArchiveCompanyByUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetArchiveCompanyByUserResponse" message="tns:IServicePreservation_GetArchiveCompanyByUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="IsAlive">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/IsAlive" message="tns:IServicePreservation_IsAlive_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/IsAliveResponse" message="tns:IServicePreservation_IsAlive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetAdministratedArchives">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetAdministratedArchives" message="tns:IServicePreservation_GetAdministratedArchives_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetAdministratedArchivesResponse" message="tns:IServicePreservation_GetAdministratedArchives_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationUsersInArchiveByRole">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationUsersInArchiveByRole" message="tns:IServicePreservation_GetPreservationUsersInArchiveByRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationUsersInArchiveByRoleResponse" message="tns:IServicePreservation_GetPreservationUsersInArchiveByRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetRoles">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetRoles" message="tns:IServicePreservation_GetRoles_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetRolesResponse" message="tns:IServicePreservation_GetRoles_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationUser" message="tns:IServicePreservation_UpdatePreservationUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationUserResponse" message="tns:IServicePreservation_UpdatePreservationUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationUser" message="tns:IServicePreservation_AddPreservationUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationUserResponse" message="tns:IServicePreservation_AddPreservationUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationUserRolesByPreservationUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationUserRolesByPreservationUser" message="tns:IServicePreservation_DeletePreservationUserRolesByPreservationUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationUserRolesByPreservationUserResponse" message="tns:IServicePreservation_DeletePreservationUserRolesByPreservationUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationUser" message="tns:IServicePreservation_DeletePreservationUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationUserResponse" message="tns:IServicePreservation_DeletePreservationUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationUserRole">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationUserRole" message="tns:IServicePreservation_AddPreservationUserRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationUserRoleResponse" message="tns:IServicePreservation_AddPreservationUserRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationSchedule">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationSchedule" message="tns:IServicePreservation_AddPreservationSchedule_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationScheduleResponse" message="tns:IServicePreservation_AddPreservationSchedule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationSchedule">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationSchedule" message="tns:IServicePreservation_UpdatePreservationSchedule_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationScheduleResponse" message="tns:IServicePreservation_UpdatePreservationSchedule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationSchedule">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationSchedule" message="tns:IServicePreservation_DeletePreservationSchedule_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationScheduleResponse" message="tns:IServicePreservation_DeletePreservationSchedule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationSchedule_TaskTypeBySchedule">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationSchedule_TaskTypeBySchedule" message="tns:IServicePreservation_DeletePreservationSchedule_TaskTypeBySchedule_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationSchedule_TaskTypeByScheduleResponse" message="tns:IServicePreservation_DeletePreservationSchedule_TaskTypeBySchedule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTaskTypesByUserRole">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetTaskTypesByUserRole" message="tns:IServicePreservation_GetTaskTypesByUserRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetTaskTypesByUserRoleResponse" message="tns:IServicePreservation_GetTaskTypesByUserRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationTaskType">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationTaskType" message="tns:IServicePreservation_UpdatePreservationTaskType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationTaskTypeResponse" message="tns:IServicePreservation_UpdatePreservationTaskType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationTaskType">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationTaskType" message="tns:IServicePreservation_AddPreservationTaskType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationTaskTypeResponse" message="tns:IServicePreservation_AddPreservationTaskType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetDetailedPreservationTaskGroup">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetDetailedPreservationTaskGroup" message="tns:IServicePreservation_GetDetailedPreservationTaskGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetDetailedPreservationTaskGroupResponse" message="tns:IServicePreservation_GetDetailedPreservationTaskGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationTaskGroupExpiryByTask">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationTaskGroupExpiryByTask" message="tns:IServicePreservation_UpdatePreservationTaskGroupExpiryByTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationTaskGroupExpiryByTaskResponse" message="tns:IServicePreservation_UpdatePreservationTaskGroupExpiryByTask_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationsByUserAndTask">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsByUserAndTask" message="tns:IServicePreservation_GetPreservationsByUserAndTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsByUserAndTaskResponse" message="tns:IServicePreservation_GetPreservationsByUserAndTask_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationHoliday">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationHoliday" message="tns:IServicePreservation_AddPreservationHoliday_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationHolidayResponse" message="tns:IServicePreservation_AddPreservationHoliday_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationHoliday">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationHoliday" message="tns:IServicePreservation_UpdatePreservationHoliday_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationHolidayResponse" message="tns:IServicePreservation_UpdatePreservationHoliday_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationHoliday">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationHoliday" message="tns:IServicePreservation_DeletePreservationHoliday_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationHolidayResponse" message="tns:IServicePreservation_DeletePreservationHoliday_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationAlertTypes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationAlertTypes" message="tns:IServicePreservation_GetPreservationAlertTypes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationAlertTypesResponse" message="tns:IServicePreservation_GetPreservationAlertTypes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdatePreservationAlertType">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationAlertType" message="tns:IServicePreservation_UpdatePreservationAlertType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/UpdatePreservationAlertTypeResponse" message="tns:IServicePreservation_UpdatePreservationAlertType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationAlertType">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationAlertType" message="tns:IServicePreservation_AddPreservationAlertType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationAlertTypeResponse" message="tns:IServicePreservation_AddPreservationAlertType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeletePreservationAlertType">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationAlertType" message="tns:IServicePreservation_DeletePreservationAlertType_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/DeletePreservationAlertTypeResponse" message="tns:IServicePreservation_DeletePreservationAlertType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationArchives">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationArchives" message="tns:IServicePreservation_GetPreservationArchives_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationArchivesResponse" message="tns:IServicePreservation_GetPreservationArchives_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetUserRoleInArchive">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetUserRoleInArchive" message="tns:IServicePreservation_GetUserRoleInArchive_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetUserRoleInArchiveResponse" message="tns:IServicePreservation_GetUserRoleInArchive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationParameter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationParameter" message="tns:IServicePreservation_GetPreservationParameter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationParameterResponse" message="tns:IServicePreservation_GetPreservationParameter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetFirstPreservationParameter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetFirstPreservationParameter" message="tns:IServicePreservation_GetFirstPreservationParameter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetFirstPreservationParameterResponse" message="tns:IServicePreservation_GetFirstPreservationParameter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="IsUserInRoleOnArchive">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/IsUserInRoleOnArchive" message="tns:IServicePreservation_IsUserInRoleOnArchive_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/IsUserInRoleOnArchiveResponse" message="tns:IServicePreservation_IsUserInRoleOnArchive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="IsUserInRole">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/IsUserInRole" message="tns:IServicePreservation_IsUserInRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/IsUserInRoleResponse" message="tns:IServicePreservation_IsUserInRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationTaskGroup">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationTaskGroup" message="tns:IServicePreservation_GetPreservationTaskGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationTaskGroupResponse" message="tns:IServicePreservation_GetPreservationTaskGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SetTaskGroupClosed">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/SetTaskGroupClosed" message="tns:IServicePreservation_SetTaskGroupClosed_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/SetTaskGroupClosedResponse" message="tns:IServicePreservation_SetTaskGroupClosed_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetScheduleFromTaskGroup">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetScheduleFromTaskGroup" message="tns:IServicePreservation_GetScheduleFromTaskGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetScheduleFromTaskGroupResponse" message="tns:IServicePreservation_GetScheduleFromTaskGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetSchedule">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetSchedule" message="tns:IServicePreservation_GetSchedule_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetScheduleResponse" message="tns:IServicePreservation_GetSchedule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ResetPreparedPreservation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/ResetPreparedPreservation" message="tns:IServicePreservation_ResetPreparedPreservation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/ResetPreparedPreservationResponse" message="tns:IServicePreservation_ResetPreparedPreservation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="FindPreparedPreservationObjects">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/FindPreparedPreservationObjects" message="tns:IServicePreservation_FindPreparedPreservationObjects_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/FindPreparedPreservationObjectsResponse" message="tns:IServicePreservation_FindPreparedPreservationObjects_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationName">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationName" message="tns:IServicePreservation_GetPreservationName_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationNameResponse" message="tns:IServicePreservation_GetPreservationName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="MarkPreservationAsSigned">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/MarkPreservationAsSigned" message="tns:IServicePreservation_MarkPreservationAsSigned_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/MarkPreservationAsSignedResponse" message="tns:IServicePreservation_MarkPreservationAsSigned_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AbortConservation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AbortConservation" message="tns:IServicePreservation_AbortConservation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AbortConservationResponse" message="tns:IServicePreservation_AbortConservation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CheckPreservationExceptions">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/CheckPreservationExceptions" message="tns:IServicePreservation_CheckPreservationExceptions_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/CheckPreservationExceptionsResponse" message="tns:IServicePreservation_CheckPreservationExceptions_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CreatePreservationIndexFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/CreatePreservationIndexFile" message="tns:IServicePreservation_CreatePreservationIndexFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/CreatePreservationIndexFileResponse" message="tns:IServicePreservation_CreatePreservationIndexFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationInfo" message="tns:IServicePreservation_GetPreservationInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationInfoResponse" message="tns:IServicePreservation_GetPreservationInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationUserForArchive">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationUserForArchive" message="tns:IServicePreservation_GetPreservationUserForArchive_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationUserForArchiveResponse" message="tns:IServicePreservation_GetPreservationUserForArchive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetSelectedDocumentsNumber">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetSelectedDocumentsNumber" message="tns:IServicePreservation_GetSelectedDocumentsNumber_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetSelectedDocumentsNumberResponse" message="tns:IServicePreservation_GetSelectedDocumentsNumber_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetAttributes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetAttributes" message="tns:IServicePreservation_GetAttributes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetAttributesResponse" message="tns:IServicePreservation_GetAttributes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CopyCompEDViewerIndexFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/CopyCompEDViewerIndexFile" message="tns:IServicePreservation_CopyCompEDViewerIndexFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/CopyCompEDViewerIndexFileResponse" message="tns:IServicePreservation_CopyCompEDViewerIndexFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetHolidays">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetHolidays" message="tns:IServicePreservation_GetHolidays_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetHolidaysResponse" message="tns:IServicePreservation_GetHolidays_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CreatePreservationClosingFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/CreatePreservationClosingFile" message="tns:IServicePreservation_CreatePreservationClosingFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/CreatePreservationClosingFileResponse" message="tns:IServicePreservation_CreatePreservationClosingFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTaskGroup">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetTaskGroup" message="tns:IServicePreservation_GetTaskGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetTaskGroupResponse" message="tns:IServicePreservation_GetTaskGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationAlert">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationAlert" message="tns:IServicePreservation_GetPreservationAlert_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationAlertResponse" message="tns:IServicePreservation_GetPreservationAlert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTaskGroupTypes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetTaskGroupTypes" message="tns:IServicePreservation_GetTaskGroupTypes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetTaskGroupTypesResponse" message="tns:IServicePreservation_GetTaskGroupTypes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationUser" message="tns:IServicePreservation_GetPreservationUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationUserResponse" message="tns:IServicePreservation_GetPreservationUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationTaskTypes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationTaskTypes" message="tns:IServicePreservation_GetPreservationTaskTypes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationTaskTypesResponse" message="tns:IServicePreservation_GetPreservationTaskTypes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetTasksFromTaskGroup">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetTasksFromTaskGroup" message="tns:IServicePreservation_GetTasksFromTaskGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetTasksFromTaskGroupResponse" message="tns:IServicePreservation_GetTasksFromTaskGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationTaskGroup">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationTaskGroup" message="tns:IServicePreservation_AddPreservationTaskGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationTaskGroupResponse" message="tns:IServicePreservation_AddPreservationTaskGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationTask">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationTask" message="tns:IServicePreservation_AddPreservationTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationTaskResponse" message="tns:IServicePreservation_AddPreservationTask_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPreservationAlert">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationAlert" message="tns:IServicePreservation_AddPreservationAlert_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/AddPreservationAlertResponse" message="tns:IServicePreservation_AddPreservationAlert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservation" message="tns:IServicePreservation_GetPreservation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationResponse" message="tns:IServicePreservation_GetPreservation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationTaskTypesAndPreservationScheduleTaskTypes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationTaskTypesAndPreservationScheduleTaskTypes" message="tns:IServicePreservation_GetPreservationTaskTypesAndPreservationScheduleTaskTypes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationTaskTypesAndPreservationScheduleTaskTypesResponse" message="tns:IServicePreservation_GetPreservationTaskTypesAndPreservationScheduleTaskTypes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CreatePreservation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/CreatePreservation" message="tns:IServicePreservation_CreatePreservation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/CreatePreservationResponse" message="tns:IServicePreservation_CreatePreservation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CreatePreservationByTask">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/CreatePreservationByTask" message="tns:IServicePreservation_CreatePreservationByTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/CreatePreservationByTaskResponse" message="tns:IServicePreservation_CreatePreservationByTask_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPresservationClosingFileInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPresservationClosingFileInfo" message="tns:IServicePreservation_GetPresservationClosingFileInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPresservationClosingFileInfoResponse" message="tns:IServicePreservation_GetPresservationClosingFileInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ClosePreservation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/ClosePreservation" message="tns:IServicePreservation_ClosePreservation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/ClosePreservationResponse" message="tns:IServicePreservation_ClosePreservation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="ResetPreservation">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/ResetPreservation" message="tns:IServicePreservation_ResetPreservation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/ResetPreservationResponse" message="tns:IServicePreservation_ResetPreservation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservations">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservations" message="tns:IServicePreservation_GetPreservations_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsResponse" message="tns:IServicePreservation_GetPreservations_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPreservationsToSign">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsToSign" message="tns:IServicePreservation_GetPreservationsToSign_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/GetPreservationsToSignResponse" message="tns:IServicePreservation_GetPreservationsToSign_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Pulse">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePreservation/Pulse" message="tns:IServicePreservation_Pulse_OutputCallbackMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NetTcpBinding_IServicePreservation" type="tns:IServicePreservation">
+    <wsp:PolicyReference URI="#NetTcpBinding_IServicePreservation_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="GetPreservationAlertTypesByTaskType">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationAlertTypesByTaskType" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationRole">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationRole" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationRole">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationRole" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationParameter">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationParameter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationParameter">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationParameter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationParameter">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationParameter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationExpire">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationExpire" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationAsSigned">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationAsSigned" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationPath">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationPath" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationTaskGroup">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationTaskGroup" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationTaskGroupTypeDescription">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationTaskGroupTypeDescription" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationTaskGroupType">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationTaskGroupType" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationStorageDevices">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationStorageDevices" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationStorageDevicesFromDates">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationStorageDevicesFromDates" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationsInStorageDevices">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationsInStorageDevices" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationInStorageDevice">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationInStorageDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationInStorageDevice">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationInStorageDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationStorageDevice">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationStorageDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationStorageDevice">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationStorageDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PreservationStorageDeviceChangeStatus">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/PreservationStorageDeviceChangeStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationJournaling">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationJournaling" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationStorageDeviceFromLabel">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationStorageDeviceFromLabel" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationStorageDeviceLastVerifyDate">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationStorageDeviceLastVerifyDate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateArchivePreservationMark">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/CreateArchivePreservationMark" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchivePreservationMarkFile">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetArchivePreservationMarkFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetClosingFilesTimeStampFile">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetClosingFilesTimeStampFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TimeStampArchivePreservationMarkFile">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/TimeStampArchivePreservationMarkFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTimeStampedArchivePreservationMarkFile">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetTimeStampedArchivePreservationMarkFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSHA1Mark">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetSHA1Mark" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSHA256Mark">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetSHA256Mark" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDefaultPreservationSchedule">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetDefaultPreservationSchedule" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationsFromArchiveAndDates">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationsFromArchiveAndDates" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadEntratelFile">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UploadEntratelFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadEntratelFile">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DownloadEntratelFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentArchivePreservationMarkXmlTemplate">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetCurrentArchivePreservationMarkXmlTemplate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeCurrentArchivePreservationMarkXmlTemplate">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/ChangeCurrentArchivePreservationMarkXmlTemplate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationJournalingActivities">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationJournalingActivities" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddVerifyPreservationToJournaling">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddVerifyPreservationToJournaling" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationJournaling">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationJournaling" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationJournaling">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationJournaling" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationJournalingLastPrintManualActivityDate">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationJournalingLastPrintManualActivityDate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationStorageDeviceStatus">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationStorageDeviceStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationJournalings">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationJournalings" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationsFromJournaling">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationsFromJournaling" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationsFromArchive">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationsFromArchive" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservedDocument">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservedDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUsedCryptography">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetUsedCryptography" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetHashFromFile">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetHashFromFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetHashFromBuffer">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetHashFromBuffer" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationStorageDevicesCount">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationStorageDevicesCount" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchiveCompany">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetArchiveCompany" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchiveCompanyByUser">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetArchiveCompanyByUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IsAlive">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/IsAlive" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAdministratedArchives">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetAdministratedArchives" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationUsersInArchiveByRole">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationUsersInArchiveByRole" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRoles">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetRoles" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationUser">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationUser">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationUserRolesByPreservationUser">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationUserRolesByPreservationUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationUser">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationUserRole">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationUserRole" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationSchedule">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationSchedule" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationSchedule">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationSchedule" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationSchedule">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationSchedule" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationSchedule_TaskTypeBySchedule">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationSchedule_TaskTypeBySchedule" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTaskTypesByUserRole">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetTaskTypesByUserRole" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationTaskType">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationTaskType" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationTaskType">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationTaskType" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDetailedPreservationTaskGroup">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetDetailedPreservationTaskGroup" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationTaskGroupExpiryByTask">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationTaskGroupExpiryByTask" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationsByUserAndTask">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationsByUserAndTask" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationHoliday">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationHoliday" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationHoliday">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationHoliday" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationHoliday">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationHoliday" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationAlertTypes">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationAlertTypes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationAlertType">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/UpdatePreservationAlertType" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationAlertType">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationAlertType" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationAlertType">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/DeletePreservationAlertType" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationArchives">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationArchives" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserRoleInArchive">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetUserRoleInArchive" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationParameter">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationParameter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFirstPreservationParameter">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetFirstPreservationParameter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IsUserInRoleOnArchive">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/IsUserInRoleOnArchive" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IsUserInRole">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/IsUserInRole" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationTaskGroup">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationTaskGroup" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetTaskGroupClosed">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/SetTaskGroupClosed" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetScheduleFromTaskGroup">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetScheduleFromTaskGroup" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSchedule">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetSchedule" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetPreparedPreservation">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/ResetPreparedPreservation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FindPreparedPreservationObjects">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/FindPreparedPreservationObjects" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationName">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationName" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MarkPreservationAsSigned">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/MarkPreservationAsSigned" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AbortConservation">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AbortConservation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckPreservationExceptions">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/CheckPreservationExceptions" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreatePreservationIndexFile">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/CreatePreservationIndexFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationInfo">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationUserForArchive">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationUserForArchive" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSelectedDocumentsNumber">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetSelectedDocumentsNumber" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAttributes">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetAttributes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CopyCompEDViewerIndexFile">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/CopyCompEDViewerIndexFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetHolidays">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetHolidays" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreatePreservationClosingFile">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/CreatePreservationClosingFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTaskGroup">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetTaskGroup" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationAlert">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationAlert" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTaskGroupTypes">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetTaskGroupTypes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationUser">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationTaskTypes">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationTaskTypes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTasksFromTaskGroup">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetTasksFromTaskGroup" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationTaskGroup">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationTaskGroup" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationTask">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationTask" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationAlert">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/AddPreservationAlert" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservation">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationTaskTypesAndPreservationScheduleTaskTypes">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationTaskTypesAndPreservationScheduleTaskTypes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreatePreservation">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/CreatePreservation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreatePreservationByTask">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/CreatePreservationByTask" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPresservationClosingFileInfo">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPresservationClosingFileInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ClosePreservation">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/ClosePreservation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetPreservation">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/ResetPreservation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservations">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservations" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationsToSign">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/GetPreservationsToSign" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Pulse">
+      <soap12:operation soapAction="http://tempuri.org/IServicePreservation/Pulse" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServicePreservation">
+    <wsdl:port name="NetTcpBinding_IServicePreservation" binding="tns:NetTcpBinding_IServicePreservation">
+      <soap12:address location="net.tcp://localhost/BiblosDS.WCF.Preservation/ServicePreservation/" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost/BiblosDS.WCF.Preservation/ServicePreservation/</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Dns>localhost</Dns>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

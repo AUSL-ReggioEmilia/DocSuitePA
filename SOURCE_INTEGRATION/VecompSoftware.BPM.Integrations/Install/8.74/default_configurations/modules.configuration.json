@@ -1,0 +1,16 @@
+﻿[
+  {
+    "Name": "VecompSoftware.BPM.Integrations.Modules.AUSLPC.ASCON",
+    "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\VecompSoftware.BPM.Integrations.Modules.AUSLPC.ASCON",
+    "Timer": "Default",
+    "ServiceWakeType": 1,
+    "Enabled": true
+  },
+  {
+    "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.Dematerialisation",
+    "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\VecompSoftware.BPM.Integrations.Modules.VSW.Dematerialisation",
+    "Timer": "Default",
+    "ServiceWakeType": 1,
+    "Enabled": true
+  }
+]

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="TemplateProtocolContactManual" table="TemplateProtocolContactManual">
+    
+    <composite-id class="TemplateProtocolContactManualCompositeKey" name="Id" unsaved-value="any">
+      <key-property column="idTemplateProtocol" name="IdTemplateProtocol" />
+      <key-property column="Incremental" name="Incremental" />
+    </composite-id>
+    
+    <property column="ComunicationType" name="ComunicationType" type="AnsiString" />
+    <property name="Type" column="Type" type="AnsiString" />
+    <property name="IdAD" column="idAD" type="AnsiString" />
+    
+    <component class="Contact" name="Contact">
+      <many-to-one name="ContactType" column="idContactType" class="ContactType" />
+      <property name="FullIncrementalPath" column="FullIncrementalPath" />
+      <property name="Description" column="Description" />
+      <property name="BirthDate" column="BirthDate" />
+      <property name="BirthPlace" column="BirthPlace" />
+      <property name="Code" column="Code" />
+      <property name="FiscalCode" column="FiscalCode" />
+      <property name="TelephoneNumber" column="TelephoneNumber" />
+      <property name="FaxNumber" column="FaxNumber" />
+      <property name="EmailAddress" column="EMailAddress" />
+      <property name="CertifiedMail" column="CertifydMail" />
+      <property name="Note" column="Note" />
+      <component class="Address" name="Address">
+        <many-to-one name="PlaceName" column="idPlaceName" class="ContactPlaceName" lazy="false">
+        </many-to-one>
+        <property name="Address" column="Address" />
+        <property name="CivicNumber" column="CivicNumber" />
+        <property name="ZipCode" column="ZipCode" />
+        <property name="City" column="City" />
+        <property name="CityCode" column="CityCode" />
+        <property name="Nationality" column="Nationality" />
+        <property name="Language" column="Language" />
+      </component>
+      <many-to-one name="StudyTitle" class="ContactTitle" column="idTitle">
+      </many-to-one>
+    </component>
+    
+    <many-to-one name="TemplateProtocol" class="TemplateProtocol" insert="false" update="false" column="idTemplateProtocol" />
+    
+  </class>
+
+</hibernate-mapping>

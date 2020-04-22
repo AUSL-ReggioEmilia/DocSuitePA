@@ -1,0 +1,219 @@
+﻿.uds table.datatable {
+    border: 1px solid #999999;
+    background: #F5F5F5;
+}
+
+.uds table.datatable th, .uds table.datatable td.head {
+    background-image: none;
+    border-bottom: 1px solid #999999;
+    color: #ffffff;
+    background-color: rgba(50,206,134,1);
+}
+
+.uds table.datatable td {
+    background-color: #F5F5F5;
+}
+
+.uds table.datatable td.label {
+}
+
+.uds table.datatable td span.readValue {
+    vertical-align: middle;
+}
+
+.uds table.datatable .labelPanel {
+background-color: #dcebdf;
+}
+
+/*Colore Selezionato*/
+.uds table.datatable td.selected {
+    background-color: Yellow;
+    cursor: hand;
+}
+
+/* Eliminare datataform a favore di datatable */
+.uds table.dataform {
+    background: #F5F5F5;
+}
+
+.uds table.dataform td {
+    background-color: #F5F5F5;
+    padding: 1px 2px 1px 2px;
+}
+
+.uds table.dataform td.label {
+    background-color: #E5E5E5;
+    font-size: 11px;
+}
+/* Eliminare datataform a favore di datatable */
+
+.uds .titolo {
+    background-color: rgba(0,127,70,1);
+    background-image: none;
+    height: 15pt;
+    padding-top: 3px;
+}
+
+.uds div.titolo {
+    background-color: rgba(0,127,70,1);
+    color: white;
+}
+
+.uds tr.titolo {
+    background-color: rgba(0,127,70,1);
+    color: white;
+}
+
+.uds .dsw-panel .dsw-panel-title {
+    border-bottom: 1px solid #999999;
+    color: #ffffff;
+    background-color: rgba(50,206,134,1);
+}
+
+.uds .dsw-panel .dsw-panel-content {
+    color: #000;
+}
+
+/*Tabelle*/
+.uds .Table {
+    border-width: 0;
+    border-collapse: collapse;
+    color: black;
+    width: 100%;
+    height: 15pt;
+}
+
+.uds .Table td {
+    padding: 2px;
+}
+
+/*Intestazione Tabelle*/
+.uds tr.tabella {
+    font-weight: bold;
+    color: #ffffff;
+    height: 15pt;
+    background-color: rgba(50,206,134,1);
+    background-image: none;
+    /*background-image: url(Images/Prot/ProtTabellaGrad.gif);*/
+}
+
+/*Colore Scuro*/
+.uds tr.Scuro, .uds td.SXScuro {
+    background-color: #dcdcdc;
+}
+
+.uds td.SXScuro {
+    font-weight: bold;
+    text-align: right;
+}
+
+/*Colore Chiaro*/
+.uds tr.Chiaro, .uds td.DXChiaro {
+    background-color: #F5F5F5;
+    vertical-align: middle;
+}
+
+.uds tr.ChiaroNoPadding, .uds td.DXChiaroNoPadding {
+    background-color: #F5F5F5;
+    vertical-align: middle;
+    padding-bottom: 0px !important;
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+.uds td.label {
+    vertical-align: middle;
+    font-size: 11px;
+    text-align: right;
+}
+
+.uds .udsDataTable {
+    /*margin-bottom: 0;*/
+    margin: 0;
+}
+
+.uds .border-bottom-collapse {
+    border-bottom: 0 !important;
+}
+
+.uds .border-top-collapse {
+    margin-bottom: 0;
+    border-top: 0 !important;
+}
+
+.uds .dsw-arrow-down {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_down.png);
+    background-position: center;
+    width: 16px;
+    height: 16px;
+}
+
+.uds .dsw-arrow-up {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_up.png);
+    width: 16px;
+    height: 16px;
+}
+
+.uds .layout0 {
+    width: 100%;
+}
+
+.uds .layout1 {
+    height: 57vh !important;
+    float: left;
+    width: 49.5%;
+    display: inline;
+}
+
+.uds .layout2 {
+    height: 57vh !important;
+    float: left;
+    width: 33%;
+    display: inline;
+}
+
+.uds .layoutView0 {
+    width: 100%;
+}
+
+.uds .layoutView1 {
+    height: auto;
+    float: left;
+    width: 49.5%;
+    display: inline;
+}
+
+.uds .layoutView2 {
+    height: auto;
+    float: left;
+    width: 33%;
+    display: inline;
+}
+
+.uds .left {
+    float: left;
+}
+
+.uds .center {
+    margin-top: 0.3%;
+}
+
+.uds .boldLabel {
+    font-weight: bold;
+}
+
+.uds .margin {
+    margin-left: 15%;
+}
+.uds div.RadPanelBar_Office2007 .rpText {
+    line-height: 20px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: rgba(50,206,134,1);
+    background-image: none;
+}
+
+.uds div.RadPanelBar_Office2007 .font_node {
+    font-weight: bold;
+}

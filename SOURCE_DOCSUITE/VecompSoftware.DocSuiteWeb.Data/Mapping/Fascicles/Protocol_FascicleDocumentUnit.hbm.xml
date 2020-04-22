@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="FascicleDocumentUnit" table="FascicleDocumentUnits">
+
+    <id name="Id" column="IdFascicleDocumentUnit" >
+      <generator class="guid.comb" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+
+    <property name="ReferenceType">
+      <column name="ReferenceType" not-null="true" />
+    </property>
+
+    <property name="IdDocumentUnit">
+      <column name="IdDocumentUnit" not-null="true" />
+    </property>
+
+    <property name="IdFascicleFolder">
+      <column name="IdFascicleFolder" not-null="true" />
+    </property>
+    
+    <many-to-one column="IdFascicle" name="Fascicle" class="Fascicle" not-null="true" />
+ 
+    <!--<many-to-one column="UniqueIdProtocol" name="Protocol" class="Protocol" property-ref="UniqueId" not-null="true" />-->
+
+  </class>
+
+</hibernate-mapping>

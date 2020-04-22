@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<class name="Pratica">
+  <property name="Year" field="Year" label="Anno" />
+  <property name="Number" field="Number" label="Numero" />
+  <property name="ContainerName" field="Container.Name" label="Contenitore" />
+  <property name="RoleName" field="Role.Name" label="Settore" />
+  <property name="CategoryCode" field="Category.Code" label="Codice Classificatore" />
+  <property name="CategoryFullCode" field="Category.FullCodeDotted" label="Codice Completo Classificatore" />
+  <property name="CategoryName" field="Category.Name" label="Classificatore" />
+  <property name="CategoryFullName" field="Category.FullName" label="Classificatore Completo" />
+  <property name="StartDate" field="StartDate" label="Data Inizio" />
+  <property name="ServiceNumber" field="ServiceNumber" label="Numero Provvisorio" />
+  <property name="Name" field="Name" label="Nome" />
+  <property name="DocumentObject" field="DocumentObject" label="Oggetto" />
+  <property name="Manager" field="Manager" label="Responsabile" />
+  <property name="Note" field="Note" label="Note" />
+  <property name="ContactDescription" field="ContactDescription" label="Contatto" />
+  <property name="FolderName" field="FolderName" label="Cartella" />
+  <property name="FolderExpiryDate" field="FolderExpiryDate" label="Data Scadenza Cartella" />
+  <property name="FolderExpiryDescription" field="FolderExpiryDescription" label="Descrizione Scadenza Cartella" />
+  <property name="FolderIncremental" field="FolderIncremental"  label="Incrementale Cartella" />
+  <property name="Status" field="Status.Description" label="Stato" />
+</class>

@@ -1,0 +1,170 @@
+﻿@model BiblosDS.Library.Common.Objects.Preservation
+
+@if (@Model != null)
+{
+
+    @section featured{
+        <hgroup class="title">
+            <h1>Archivio: @Model.Archive.Name</h1>
+        </hgroup>
+    }
+
+    <div id="example" class="k-block">
+        <table class="k-grid">
+            <tr>
+                <td align="right"><label>Conservazione</label></td>
+                <td>dal <b>@Model.StartDate.GetValueOrDefault().ToString("dd/MM/yyyy")</b> al <b>@Model.EndDate.GetValueOrDefault().ToString("dd/MM/yyyy")</b></td>
+            </tr>
+            <tr>
+                <td nowrap align="right"><label>Responsabile conservazione</label></td>
+                <td><b>@(Model.User != null ? Model.User.Name + " " + Model.User.Surname : string.Empty)</b></td>
+            </tr>
+            @if (!Model.CloseDate.HasValue)
+            {
+                <tr>
+                    <td colspan="2"><label>Conservazione non chiusa. Caricare il file chiusura firmato (formato .p7m) e la corrispondente marca temporale (formati .m7m o .tsd)</label></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="hidden" id="hidUploadHasErrors" />
+                        <input type="hidden" id="hidRouteForClose" value="@Url.Action("ClosePreservation", new { idPreservation = Model.IdPreservation })" />
+                        @(Html.Kendo().Upload()
+                                        .Name("filesUpload")
+                                        .HtmlAttributes("filesUpload")
+                                        .Multiple(true)
+                                        .Async(async => async
+                                            .Save<BiblosDS.LegalExtension.AdminPortal.Controllers.HomeController>(x => x.PreservationUploadFiles(Model.IdPreservation, Model.Path))
+                                            .RemoveUrl(@Url.Action("PreservationRemoveUploadedFiles", new { preservationPath = Model.Path }))
+                                            .AutoUpload(false))
+                                        .Events(evt => evt.Select("onSelect").Upload("onUpload").Error("onError").Complete("onComplete")))
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        @using (Html.BeginForm("ClosePreservation", "Home"))
+                        {
+                            @Html.HiddenFor(m => m.IdPreservation)
+                            <input type="submit" id="btnClosePreservation" value="Chiudi conservazione" class="k-button" />
+                        }
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td align="right"><label>Data chiusura</label></td>
+                    <td><b>@Model.CloseDate.Value.ToString("dd/MM/yyyy")</b></td>
+                </tr>
+            }
+            <tr>
+                <td align="right">Path</td>
+                <td><b><small>@Model.Path</small></b></td>
+
+            </tr>
+            <tr>
+                <td align="right">Data Ultima Verifica</td>
+                <td><b>@(Model.LastVerifiedDate != null ? Model.LastVerifiedDate.Value.ToString("dd/MM/yyyy") : "#")</b></td>
+            </tr>
+            <tr>
+                <td align="right"> </td>
+                <td>
+                    <a href='../ExistingPreservationVerifyDoAction/@Model.IdPreservation' class='k-button'>Esegui Verifica</a>
+                </td>
+            </tr>
+            @if (TempData.ContainsKey("ErrorMessages"))
+            {
+                <tr>
+                    <td align="right"><b>Esito verifica</b></td>
+                    <td>
+                        @{
+                            List<string> errors = (List<string>)TempData["ErrorMessages"];
+                            <div>
+                                @foreach (var err in errors)
+                                {
+                                    <div>@err</div>
+                                }
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+}
+else
+{
+    <b>Conservazione non eseguita</b>
+}
+
+<script type="text/javascript">
+    function onSelect(s) {
+        if (s != null && s != undefined) {
+            var files = s.files;
+
+            if (files != null && files != undefined) {
+                $.each(files, function check(i, val) {
+                    if (!canUploadThisFile(val.name, val.extension)) {
+                        s.preventDefault();
+                        return false;
+                    }
+                });
+                return true;
+            }
+        }
+        s.preventDefault();
+        return false;
+    }
+
+    function onUpload(e) {
+        if ($("span.k-filename").length < 2) {
+            alert('Selezionare entrambi i file per procedere con il caricamento.');
+            e.preventDefault();
+            return false;
+        }
+        $('#hidUploadHasErrors').val('false');
+        return true;
+    }
+
+    function onError(e) {
+        if (e === "upload") {
+            $('#hidUploadHasErrors').val('true');
+        }
+    }
+
+    function canUploadThisFile(fileName, fileExtension) {
+        debugger;
+        if (fileExtension == undefined || fileExtension == null || (fileExtension.toLowerCase() != '.p7m' && fileExtension.toLowerCase() != '.m7m' && fileExtension.toLowerCase() != '.tsd')) {
+            alert('Sono ammessi solo file firmati (.p7m) o marcati temporalmente (.m7m o .tsd).');
+            return false;
+        }
+
+        if (fileName == undefined || fileName.length < 9) {
+            alert('Il nome del file deve iniziare con "CHIUSURA"');
+            return false;
+        }
+
+        if ($("span.k-filename").length > 1) {
+            alert('Sono già stati selezionati entrambi i file.');
+            return false;
+        }
+
+        if ($("span.k-filename[title='" + fileName + "']").length > 0) {
+            alert('Il file è già stato selezionato.');
+            return false;
+        }
+
+        //        if ($("span.k-filename[title ^='" + fileName.substr(0, fileNameStart.length) + "']").length > 0) {
+        //            alert('Il file è già stato aggiunto.');
+        //            return false;
+        //        }
+        return true;
+    }
+
+    function onComplete() {
+        if ($('#hidUploadHasErrors').val() === 'false') {
+            $('#btnClosePreservation').click();
+        }
+    }
+</script>

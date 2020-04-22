@@ -1,0 +1,31 @@
+﻿{
+  "TenantName": "AUSL-RE",
+  "TenantId": "1F761813-6086-44F1-A507-99954EA64343",
+  "TopicWorkflowIntegration": "workflow_integration",
+  "WorkflowUDSCedoliniCompleteSubscription": "WorkflowUDSCedoliniCompleted",
+  "WorkflowRepositoryName": "Invio cedolini",
+  "MatricolaUtenti": {
+    "1": "VECOMPSOFTWARE\\tonini",
+    "2": "VECOMPSOFTWARE\\nori",
+    "4": "VECOMPSOFTWARE\\piccoli",
+    "5": "VECOMPSOFTWARE\\compri",
+    "6": "VECOMPSOFTWARE\\dan",
+    "7": "VECOMPSOFTWARE\\targa",
+    "8": "VECOMPSOFTWARE\\magai",
+    "9": "VECOMPSOFTWARE\\chiavegato",
+    "10": "VECOMPSOFTWARE\\fabbri",
+    "11": "VECOMPSOFTWARE\\volanti",
+    "12": "VECOMPSOFTWARE\\colasanti",
+    "14": "VECOMPSOFTWARE\\miotto",
+    "15": "VECOMPSOFTWARE\\fabrizio.lazzarotto",
+    "16": "VECOMPSOFTWARE\\leonardo.bussinello",
+    "17": "VECOMPSOFTWARE\\carmen.dauria",
+    "35": "VECOMPSOFTWARE\\simone.penna",
+    "36": "VECOMPSOFTWARE\\gabriele.brentegani",
+    "39": "VECOMPSOFTWARE\\giulia.salamone",
+    "40": "VECOMPSOFTWARE\\denis.ceriolo",
+    "41": "VECOMPSOFTWARE\\giulia.madeddu",
+    "44": "VECOMPSOFTWARE\\giacomo.caldironi",
+    "48": "VECOMPSOFTWARE\\matteo.fedrigo"
+  }
+}

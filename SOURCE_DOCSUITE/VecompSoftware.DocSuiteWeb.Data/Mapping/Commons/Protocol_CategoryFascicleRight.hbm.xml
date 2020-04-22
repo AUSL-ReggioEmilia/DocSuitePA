@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Commons">
+
+  <class name="CategoryFascicleRight" table="CategoryFascicleRights">
+
+    <id name="Id" column="IdCategoryFascicleRight">
+      <generator class="guid.comb" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+
+
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <many-to-one column="IdCategoryFascicle" name="CategoryFascicle" class="VecompSoftware.DocSuiteWeb.Data.Entity.Commons.CategoryFascicle" />
+    <many-to-one column="IdRole" name="Role" class="VecompSoftware.DocSuiteWeb.Data.Role" />
+    <many-to-one column="IdContainer" name="Container" class="VecompSoftware.DocSuiteWeb.Data.Container" />
+  </class>
+
+</hibernate-mapping>

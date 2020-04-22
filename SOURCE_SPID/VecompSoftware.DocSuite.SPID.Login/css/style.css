@@ -1,0 +1,56 @@
+﻿body {
+    background-color: #eef5f9;
+}
+
+header {
+    height: auto;
+    position: absolute;
+    width: 100%;
+    z-index: 99;
+    background-color: transparent;
+}
+
+.main-header-area {
+    height: 90px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    border-bottom: 2px solid #fff;
+}
+
+.login-container {
+    max-width: 600px;
+}
+
+.login-panel{
+    margin-top: 130px;
+}
+
+.logo-image {
+    width: 100%;
+    max-width: 330px;
+    margin-top: 10px;
+}
+
+.italia-it-button-size-m.federa {
+    width: 270px;
+}
+
+
+.federa-button {
+    color: white !important;
+    background-color: #F36D2A !important;
+}
+
+    .federa-button:hover {
+        color: white !important;
+        background-color: #EF4107 !important;
+    }
+
+@media (max-width: 767px) {
+    .logo-image {
+        margin: 10px auto;
+    }
+}

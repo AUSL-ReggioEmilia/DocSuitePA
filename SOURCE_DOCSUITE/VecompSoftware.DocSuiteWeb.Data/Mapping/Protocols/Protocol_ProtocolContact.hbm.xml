@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolContact" table="ProtocolContact">
+    
+    <composite-id class="ProtocolContactCompositeKey" name="Id" unsaved-value="any">
+      <key-property column="Year" name="Year" />
+      <key-property column="Number" name="Number" />
+      <key-property column="idContact" name="IdContact" />
+      <key-property column="ComunicationType" name="ComunicationType" type="AnsiString" />
+    </composite-id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    <property name="Type" column="Type" type="AnsiString" />
+
+    <property name="UniqueId">
+      <column name="UniqueId" not-null="true" unique="true" />
+    </property>
+    
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+
+    <property name="UniqueIdProtocol">
+      <column name="UniqueIdProtocol" not-null="true"/>
+    </property>
+    
+    <many-to-one class="Contact" name="Contact" column="idContact" insert="false" update="false" />
+    <many-to-one name="Protocol" class="Protocol" insert="false" update="false">
+      <column name="Year" />
+      <column name="Number" />
+    </many-to-one>
+    
+  </class>
+
+</hibernate-mapping>

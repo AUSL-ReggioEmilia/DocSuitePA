@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://Vecomp.BiblosDs.Documents" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://Vecomp.BiblosDs.Documents" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://Vecomp.BiblosDs.Documents/Imports">
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd0" namespace="http://Vecomp.BiblosDs.Documents" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/Document" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Archive" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/ArchiveServerConfig" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/Server" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/ServerRole" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd9" namespace="http://BiblosDS/2009/10/Storage" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd10" namespace="http://BiblosDS/2009/10/StorageType" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/AttributeValue" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd12" namespace="http://BiblosDS/2009/10/Attribute" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd13" namespace="http://BiblosDS/2009/10/AttributeGroup" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd14" namespace="http://BiblosDS/2009/10/FilterOperator" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd15" namespace="http://BiblosDS/2009/10/AttributeMode" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd16" namespace="http://BiblosDS/2009/10/Certificate" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd17" namespace="http://BiblosDS/2009/10/Content" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd18" namespace="http://BiblosDS/2009/10/DocumentServer" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd19" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd20" namespace="http://BiblosDS/2009/10/StorageArea" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/Permission" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd22" namespace="http://BiblosDS/2009/10/PermissionMode" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd23" namespace="http://BiblosDS/2009/10/Preservation" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd24" namespace="http://BiblosDS/2009/10/PreservationJournaling" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd25" namespace="http://BiblosDS/2009/10/PreservationJournalingActivity" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd26" namespace="http://BiblosDS/2009/10/PreservationUser" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd27" namespace="http://BiblosDS/2009/10/PreservationUserRole" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd28" namespace="http://BiblosDS/2009/10/PreservationRole" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd29" namespace="http://BiblosDS/2009/10/PreservationTask" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd30" namespace="http://BiblosDS/2009/10/PreservationAlert" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd31" namespace="http://BiblosDS/2009/10/PreservationAlertType" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd32" namespace="http://BiblosDS/2009/10/PreservationTaskType" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd33" namespace="http://BiblosDS/2009/10/PreservationScheduleTaskType" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd34" namespace="http://BiblosDS/2009/10/PreservationSchedule" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd35" namespace="http://BiblosDS/2009/10/PreservationTaskTypes" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd36" namespace="http://BiblosDS/2009/10/PreservationTaskGroup" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd37" namespace="http://BiblosDS/2009/10/PreservationTaskGroupType" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd38" namespace="http://BiblosDS/2009/10/DocumentAttach" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd39" namespace="http://BiblosDS/2009/10/ArchiveStatistics" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd40" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd41" namespace="http://BiblosDS/2009/10/DocumentResponse" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd42" namespace="http://BiblosDS/2009/10/ResponseBase" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd43" namespace="http://BiblosDS/2009/10/ResponseError" />
+      <xsd:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd44" namespace="http://BiblosDS/2009/10/ContentFormat" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IDocuments_DeleteDocumentLink_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDocumentLink" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DeleteDocumentLink_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDocumentLinkResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DeleteDocumentLink_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q1:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentLinks_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentLinks" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentLinks_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentLinksResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentLinks_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q2:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentAttach_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddDocumentAttach" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentAttach_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddDocumentAttachResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentAttach_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q3:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_ConfirmDocumentAttach_InputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmDocumentAttach" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_ConfirmDocumentAttach_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmDocumentAttachResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_ConfirmDocumentAttach_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q4:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentAttachs_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentAttachs" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentAttachs_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentAttachsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentAttachs_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q5:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentAttachContent_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentAttachContent" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentAttachContent_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentAttachContentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentAttachContent_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q6:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SetVisibleDocumentAttach_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetVisibleDocumentAttach" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SetVisibleDocumentAttach_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetVisibleDocumentAttachResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SetVisibleDocumentAttach_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q7="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q7:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetArchiveStatistics_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchiveStatistics" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetArchiveStatistics_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchiveStatisticsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetArchiveStatistics_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q8="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q8:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentContentById_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentContentById" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentContentById_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentContentByIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentContentById_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q9="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q9:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentInfoById_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentInfoById" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentInfoById_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentInfoByIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentInfoById_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q10="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q10:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentsInfoByIdPaged_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentsInfoByIdPaged" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentsInfoByIdPaged_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentsInfoByIdPagedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentsInfoByIdPaged_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q11="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q11:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_InsertDocumentChain_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertDocumentChain" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_InsertDocumentChain_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertDocumentChainResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_InsertDocumentChain_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q12="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q12:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_ConfirmChain_InputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmChain" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_ConfirmChain_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmChainResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_ConfirmChain_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q13="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q13:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_UpdateDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateDocument" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_UpdateDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_UpdateDocument_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q14="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q14:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckMetaData_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckMetaData" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckMetaData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckMetaDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckMetaData_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q15="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q15:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetChainInfoById_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetChainInfoById" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetChainInfoById_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetChainInfoByIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetChainInfoById_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q16="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q16:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetMetadataStructure_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetadataStructure" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetMetadataStructure_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetadataStructureResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetMetadataStructure_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q17="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q17:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentCheckOut_InputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentCheckOut" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentCheckOut_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentCheckOutResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentCheckOut_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q18="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q18:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentUndoCheckOut_InputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentUndoCheckOut" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentUndoCheckOut_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentUndoCheckOutResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentUndoCheckOut_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q19="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q19:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentAttributeCheckIn_InputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentAttributeCheckIn" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentAttributeCheckIn_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentAttributeCheckInResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentAttributeCheckIn_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q20="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q20:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentCheckIn_InputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentCheckIn" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentCheckIn_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentCheckInResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentCheckIn_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q21="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q21:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentMoveToArchive_InputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentMoveToArchive" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentMoveToArchive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentMoveToArchiveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentMoveToArchive_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q22="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q22:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentMoveToStorage_InputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentMoveToStorage" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentMoveToStorage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentMoveToStorageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentMoveToStorage_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q23="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q23:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentMoveFromTransito_InputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentMoveFromTransito" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentMoveFromTransito_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DocumentMoveFromTransitoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_DocumentMoveFromTransito_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q24="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q24:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_RestoreAttribute_InputMessage">
+    <wsdl:part name="parameters" element="tns:RestoreAttribute" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_RestoreAttribute_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RestoreAttributeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_RestoreAttribute_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q25="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q25:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SignDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:SignDocument" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SignDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SignDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SignDocument_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q26="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q26:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentContent_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentContent" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentContent_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentContentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentContent_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q27="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q27:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentInServer_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentInServer" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentInServer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentInServerResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentInServer_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q28="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q28:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentConformContent_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentConformContent" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentConformContent_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentConformContentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentConformContent_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q29="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q29:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentInfo" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentInfo_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q30="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q30:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CreateDocumentChain_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateDocumentChain" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CreateDocumentChain_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateDocumentChainResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CreateDocumentChain_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q31="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q31:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_ConfirmDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmDocument" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_ConfirmDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_ConfirmDocument_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q32="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q32:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentToChain_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddDocumentToChain" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentToChain_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddDocumentToChainResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentToChain_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q33="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q33:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentToMaster_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddDocumentToMaster" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentToMaster_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddDocumentToMasterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentToMaster_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q34="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q34:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentChainWithWorkflow_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddDocumentChainWithWorkflow" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentChainWithWorkflow_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddDocumentChainWithWorkflowResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentChainWithWorkflow_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q35="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q35:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetAttributesDefinition_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAttributesDefinition" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetAttributesDefinition_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAttributesDefinitionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetAttributesDefinition_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q36="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q36:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckIsReady_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckIsReady" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckIsReady_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckIsReadyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckIsReady_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q37="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q37:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckIntegrity_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckIntegrity" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckIntegrity_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckIntegrityResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckIntegrity_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q38="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q38:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetChainInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetChainInfo" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetChainInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetChainInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetChainInfo_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q39="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q39:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetChainInfoDetails_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetChainInfoDetails" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetChainInfoDetails_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetChainInfoDetailsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetChainInfoDetails_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q40="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q40:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckOutDocumentContent_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckOutDocumentContent" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckOutDocumentContent_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckOutDocumentContentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckOutDocumentContent_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q41="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q41:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckOutDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckOutDocument" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckOutDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckOutDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckOutDocument_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q42="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q42:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_UndoCheckOutDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:UndoCheckOutDocument" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_UndoCheckOutDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UndoCheckOutDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_UndoCheckOutDocument_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q43="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q43:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckInDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:CheckInDocument" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckInDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CheckInDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_CheckInDocument_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q44="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q44:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetArchives_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchives" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetArchives_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchivesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetArchives_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q45="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q45:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetStorages_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetStorages" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetStorages_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetStoragesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetStorages_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q46="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q46:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetStorageAreas_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetStorageAreas" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetStorageAreas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetStorageAreasResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetStorageAreas_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q47="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q47:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_IsAlive_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsAlive" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_IsAlive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsAliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_IsAlive_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q48="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q48:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentId_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentId" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentId_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q49="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q49:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SetVisibleChain_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetVisibleChain" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SetVisibleChain_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetVisibleChainResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SetVisibleChain_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q50="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q50:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SetVisibleDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetVisibleDocument" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SetVisibleDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetVisibleDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_SetVisibleDocument_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q51="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q51:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_IsDocumentSigned_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsDocumentSigned" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_IsDocumentSigned_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsDocumentSignedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_IsDocumentSigned_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q52="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q52:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentSigned_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSigned" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentSigned_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentSignedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_GetDocumentSigned_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q53="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q53:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentLink_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddDocumentLink" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentLink_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddDocumentLinkResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDocuments_AddDocumentLink_BiblosDsExceptionFault_FaultMessage">
+    <wsdl:part xmlns:q54="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" name="detail" element="q54:BiblosDsException" />
+  </wsdl:message>
+  <wsdl:portType name="IDocuments">
+    <wsdl:operation name="DeleteDocumentLink">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DeleteDocumentLink" message="tns:IDocuments_DeleteDocumentLink_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DeleteDocumentLinkResponse" message="tns:IDocuments_DeleteDocumentLink_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DeleteDocumentLinkBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_DeleteDocumentLink_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentLinks">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentLinks" message="tns:IDocuments_GetDocumentLinks_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentLinksResponse" message="tns:IDocuments_GetDocumentLinks_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentLinksBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentLinks_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentAttach">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentAttach" message="tns:IDocuments_AddDocumentAttach_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentAttachResponse" message="tns:IDocuments_AddDocumentAttach_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentAttachBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_AddDocumentAttach_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmDocumentAttach">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmDocumentAttach" message="tns:IDocuments_ConfirmDocumentAttach_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmDocumentAttachResponse" message="tns:IDocuments_ConfirmDocumentAttach_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmDocumentAttachBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_ConfirmDocumentAttach_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentAttachs">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentAttachs" message="tns:IDocuments_GetDocumentAttachs_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentAttachsResponse" message="tns:IDocuments_GetDocumentAttachs_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentAttachsBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentAttachs_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentAttachContent">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentAttachContent" message="tns:IDocuments_GetDocumentAttachContent_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentAttachContentResponse" message="tns:IDocuments_GetDocumentAttachContent_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentAttachContentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentAttachContent_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SetVisibleDocumentAttach">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleDocumentAttach" message="tns:IDocuments_SetVisibleDocumentAttach_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleDocumentAttachResponse" message="tns:IDocuments_SetVisibleDocumentAttach_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleDocumentAttachBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_SetVisibleDocumentAttach_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetArchiveStatistics">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetArchiveStatistics" message="tns:IDocuments_GetArchiveStatistics_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetArchiveStatisticsResponse" message="tns:IDocuments_GetArchiveStatistics_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetArchiveStatisticsBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetArchiveStatistics_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentContentById">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentContentById" message="tns:IDocuments_GetDocumentContentById_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentContentByIdResponse" message="tns:IDocuments_GetDocumentContentById_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentContentByIdBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentContentById_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentInfoById">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInfoById" message="tns:IDocuments_GetDocumentInfoById_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInfoByIdResponse" message="tns:IDocuments_GetDocumentInfoById_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInfoByIdBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentInfoById_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentsInfoByIdPaged">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentsInfoByIdPaged" message="tns:IDocuments_GetDocumentsInfoByIdPaged_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentsInfoByIdPagedResponse" message="tns:IDocuments_GetDocumentsInfoByIdPaged_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentsInfoByIdPagedBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentsInfoByIdPaged_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertDocumentChain">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/InsertDocumentChain" message="tns:IDocuments_InsertDocumentChain_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/InsertDocumentChainResponse" message="tns:IDocuments_InsertDocumentChain_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/InsertDocumentChainBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_InsertDocumentChain_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmChain">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmChain" message="tns:IDocuments_ConfirmChain_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmChainResponse" message="tns:IDocuments_ConfirmChain_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmChainBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_ConfirmChain_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDocument">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/UpdateDocument" message="tns:IDocuments_UpdateDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/UpdateDocumentResponse" message="tns:IDocuments_UpdateDocument_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/UpdateDocumentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_UpdateDocument_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckMetaData">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckMetaData" message="tns:IDocuments_CheckMetaData_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckMetaDataResponse" message="tns:IDocuments_CheckMetaData_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckMetaDataBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_CheckMetaData_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChainInfoById">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfoById" message="tns:IDocuments_GetChainInfoById_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfoByIdResponse" message="tns:IDocuments_GetChainInfoById_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfoByIdBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetChainInfoById_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMetadataStructure">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetMetadataStructure" message="tns:IDocuments_GetMetadataStructure_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetMetadataStructureResponse" message="tns:IDocuments_GetMetadataStructure_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetMetadataStructureBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetMetadataStructure_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DocumentCheckOut">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentCheckOut" message="tns:IDocuments_DocumentCheckOut_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentCheckOutResponse" message="tns:IDocuments_DocumentCheckOut_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentCheckOutBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_DocumentCheckOut_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DocumentUndoCheckOut">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentUndoCheckOut" message="tns:IDocuments_DocumentUndoCheckOut_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentUndoCheckOutResponse" message="tns:IDocuments_DocumentUndoCheckOut_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentUndoCheckOutBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_DocumentUndoCheckOut_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DocumentAttributeCheckIn">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentAttributeCheckIn" message="tns:IDocuments_DocumentAttributeCheckIn_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentAttributeCheckInResponse" message="tns:IDocuments_DocumentAttributeCheckIn_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentAttributeCheckInBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_DocumentAttributeCheckIn_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DocumentCheckIn">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentCheckIn" message="tns:IDocuments_DocumentCheckIn_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentCheckInResponse" message="tns:IDocuments_DocumentCheckIn_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentCheckInBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_DocumentCheckIn_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DocumentMoveToArchive">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveToArchive" message="tns:IDocuments_DocumentMoveToArchive_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveToArchiveResponse" message="tns:IDocuments_DocumentMoveToArchive_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveToArchiveBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_DocumentMoveToArchive_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DocumentMoveToStorage">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveToStorage" message="tns:IDocuments_DocumentMoveToStorage_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveToStorageResponse" message="tns:IDocuments_DocumentMoveToStorage_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveToStorageBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_DocumentMoveToStorage_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DocumentMoveFromTransito">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveFromTransito" message="tns:IDocuments_DocumentMoveFromTransito_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveFromTransitoResponse" message="tns:IDocuments_DocumentMoveFromTransito_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveFromTransitoBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_DocumentMoveFromTransito_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RestoreAttribute">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/RestoreAttribute" message="tns:IDocuments_RestoreAttribute_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/RestoreAttributeResponse" message="tns:IDocuments_RestoreAttribute_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/RestoreAttributeBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_RestoreAttribute_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SignDocument">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SignDocument" message="tns:IDocuments_SignDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SignDocumentResponse" message="tns:IDocuments_SignDocument_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SignDocumentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_SignDocument_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentContent">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentContent" message="tns:IDocuments_GetDocumentContent_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentContentResponse" message="tns:IDocuments_GetDocumentContent_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentContentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentContent_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentInServer">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInServer" message="tns:IDocuments_GetDocumentInServer_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInServerResponse" message="tns:IDocuments_GetDocumentInServer_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInServerBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentInServer_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentConformContent">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentConformContent" message="tns:IDocuments_GetDocumentConformContent_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentConformContentResponse" message="tns:IDocuments_GetDocumentConformContent_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentConformContentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentConformContent_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentInfo">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInfo" message="tns:IDocuments_GetDocumentInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInfoResponse" message="tns:IDocuments_GetDocumentInfo_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInfoBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentInfo_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateDocumentChain">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CreateDocumentChain" message="tns:IDocuments_CreateDocumentChain_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CreateDocumentChainResponse" message="tns:IDocuments_CreateDocumentChain_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CreateDocumentChainBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_CreateDocumentChain_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmDocument">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmDocument" message="tns:IDocuments_ConfirmDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmDocumentResponse" message="tns:IDocuments_ConfirmDocument_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmDocumentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_ConfirmDocument_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentToChain">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentToChain" message="tns:IDocuments_AddDocumentToChain_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentToChainResponse" message="tns:IDocuments_AddDocumentToChain_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentToChainBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_AddDocumentToChain_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentToMaster">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentToMaster" message="tns:IDocuments_AddDocumentToMaster_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentToMasterResponse" message="tns:IDocuments_AddDocumentToMaster_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentToMasterBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_AddDocumentToMaster_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentChainWithWorkflow">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentChainWithWorkflow" message="tns:IDocuments_AddDocumentChainWithWorkflow_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentChainWithWorkflowResponse" message="tns:IDocuments_AddDocumentChainWithWorkflow_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentChainWithWorkflowBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_AddDocumentChainWithWorkflow_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAttributesDefinition">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetAttributesDefinition" message="tns:IDocuments_GetAttributesDefinition_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetAttributesDefinitionResponse" message="tns:IDocuments_GetAttributesDefinition_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetAttributesDefinitionBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetAttributesDefinition_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckIsReady">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckIsReady" message="tns:IDocuments_CheckIsReady_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckIsReadyResponse" message="tns:IDocuments_CheckIsReady_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckIsReadyBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_CheckIsReady_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckIntegrity">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckIntegrity" message="tns:IDocuments_CheckIntegrity_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckIntegrityResponse" message="tns:IDocuments_CheckIntegrity_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckIntegrityBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_CheckIntegrity_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChainInfo">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfo" message="tns:IDocuments_GetChainInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfoResponse" message="tns:IDocuments_GetChainInfo_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfoBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetChainInfo_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChainInfoDetails">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfoDetails" message="tns:IDocuments_GetChainInfoDetails_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfoDetailsResponse" message="tns:IDocuments_GetChainInfoDetails_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfoDetailsBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetChainInfoDetails_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckOutDocumentContent">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckOutDocumentContent" message="tns:IDocuments_CheckOutDocumentContent_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckOutDocumentContentResponse" message="tns:IDocuments_CheckOutDocumentContent_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckOutDocumentContentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_CheckOutDocumentContent_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckOutDocument">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckOutDocument" message="tns:IDocuments_CheckOutDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckOutDocumentResponse" message="tns:IDocuments_CheckOutDocument_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckOutDocumentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_CheckOutDocument_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UndoCheckOutDocument">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/UndoCheckOutDocument" message="tns:IDocuments_UndoCheckOutDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/UndoCheckOutDocumentResponse" message="tns:IDocuments_UndoCheckOutDocument_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/UndoCheckOutDocumentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_UndoCheckOutDocument_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckInDocument">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckInDocument" message="tns:IDocuments_CheckInDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckInDocumentResponse" message="tns:IDocuments_CheckInDocument_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/CheckInDocumentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_CheckInDocument_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetArchives">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetArchives" message="tns:IDocuments_GetArchives_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetArchivesResponse" message="tns:IDocuments_GetArchives_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetArchivesBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetArchives_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStorages">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetStorages" message="tns:IDocuments_GetStorages_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetStoragesResponse" message="tns:IDocuments_GetStorages_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetStoragesBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetStorages_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageAreas">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetStorageAreas" message="tns:IDocuments_GetStorageAreas_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetStorageAreasResponse" message="tns:IDocuments_GetStorageAreas_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetStorageAreasBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetStorageAreas_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="IsAlive">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/IsAlive" message="tns:IDocuments_IsAlive_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/IsAliveResponse" message="tns:IDocuments_IsAlive_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/IsAliveBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_IsAlive_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentId">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentId" message="tns:IDocuments_GetDocumentId_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentIdResponse" message="tns:IDocuments_GetDocumentId_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentIdBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentId_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SetVisibleChain">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleChain" message="tns:IDocuments_SetVisibleChain_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleChainResponse" message="tns:IDocuments_SetVisibleChain_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleChainBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_SetVisibleChain_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SetVisibleDocument">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleDocument" message="tns:IDocuments_SetVisibleDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleDocumentResponse" message="tns:IDocuments_SetVisibleDocument_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleDocumentBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_SetVisibleDocument_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="IsDocumentSigned">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/IsDocumentSigned" message="tns:IDocuments_IsDocumentSigned_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/IsDocumentSignedResponse" message="tns:IDocuments_IsDocumentSigned_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/IsDocumentSignedBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_IsDocumentSigned_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSigned">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentSigned" message="tns:IDocuments_GetDocumentSigned_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentSignedResponse" message="tns:IDocuments_GetDocumentSigned_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentSignedBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_GetDocumentSigned_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentLink">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentLink" message="tns:IDocuments_AddDocumentLink_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentLinkResponse" message="tns:IDocuments_AddDocumentLink_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentLinkBiblosDsExceptionFault" name="BiblosDsExceptionFault" message="tns:IDocuments_AddDocumentLink_BiblosDsExceptionFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

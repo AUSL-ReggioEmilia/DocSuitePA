@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ResolutionJournalTemplateSpecification" table="ResolutionJournalTemplateSpecification">
+
+    <id name="Id" column="Id">
+      <generator class="identity" />
+    </id>
+
+    <property name="ServiceCode" column="ServiceCode" />
+
+    <many-to-one name="ReslType" column="IdResolutionType" class="ResolutionType" />
+    <many-to-one class="ResolutionJournalTemplate" name="Template" column="IdTemplate" />
+    <many-to-one class="Container" name="Container" column="IDContainer" />
+
+  </class>
+  
+</hibernate-mapping>

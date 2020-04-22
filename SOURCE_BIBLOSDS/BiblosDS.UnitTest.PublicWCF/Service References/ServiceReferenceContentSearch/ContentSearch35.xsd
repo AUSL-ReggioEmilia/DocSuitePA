@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/AttributeMode" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/AttributeMode" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/ContentSearch.svc?xsd=xsd9" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="AttributeMode">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="IdMode" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="AttributeMode" nillable="true" type="tns:AttributeMode" />
+</xs:schema>

@@ -1,0 +1,16 @@
+﻿{
+  "0": {
+    "Position": 0,
+    "Name": "Protocolla inserto",
+    "AuthorizationType": "None",
+    "ActivityOperation": {
+      "Action": "ToProtocol",
+      "Area": "Link"
+    },
+    "ActivityType": "ProtocolCreate",
+    "InputArguments": [
+    ],
+    "OutputArguments": [
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolParer" table="ProtocolParer">
+    
+    <composite-id class="YearNumberCompositeKey" name="Id">
+      <key-property column="Year" name="Year" />
+      <key-property column="Number" name="Number" />
+    </composite-id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    <property name="ArchivedDate" column="ArchiviedDate" not-null="false" />
+    <property name="ParerUri" column="ParerUri" />
+    <property name="IsForArchive" column="IsForArchive" />
+    <property name="HasError" column="HasError" />
+    <property name="LastError" column="LastError" />
+    <property name="LastSendDate" column="LastSendDate" not-null="false"/>
+
+    <property name="UniqueId">
+      <column name="UniqueId" not-null="true" unique="true" />
+    </property>
+
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+
+    <property name="UniqueIdProtocol">
+      <column name="UniqueIdProtocol" not-null="true"/>
+    </property>
+    
+  </class>
+
+</hibernate-mapping>

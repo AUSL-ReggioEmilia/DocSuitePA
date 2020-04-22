@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/PreservationTaskType" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationTaskType" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd31" namespace="http://BiblosDS/2009/10/PreservationRole" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd36" namespace="http://BiblosDS/2009/10/PreservationScheduleTaskType" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="ArrayOfPreservationTaskType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PreservationTaskType" nillable="true" type="tns:PreservationTaskType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPreservationTaskType" nillable="true" type="tns:ArrayOfPreservationTaskType" />
+  <xs:complexType name="PreservationTaskType">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="IdPreservationTaskType" type="ser:guid" />
+          <xs:element minOccurs="0" name="Period" type="xs:short" />
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/PreservationRole" minOccurs="0" name="Roles" nillable="true" type="q2:ArrayOfPreservationRole" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/PreservationScheduleTaskType" minOccurs="0" name="ScheduleTaskTypes" nillable="true" type="q3:ArrayOfPreservationScheduleTaskType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PreservationTaskType" nillable="true" type="tns:PreservationTaskType" />
+</xs:schema>

@@ -1,0 +1,140 @@
+Epic 13499: [AUSL-RE ASL-TO AUSL-PC] Monitoraggio dati amministrazione trasparente
+Epic 13742: [***REMOVED***]Gestione PEC in ingresso in Errore
+
+
+Feature: 13500: [AUSL-RE] Implementazione 'statistiche di accesso' in DocSuite e 'Informazioni recenti' in amministrazione trasparente
+Feature: 13501: [AUSL-RE] DocSuite: Implementazione pagina delle statistiche della trasparenza in modalità "Per sezione"
+Feature: 13503: [ASL-TO] Monitoraggio Trasparenza: Gestione obblighi amministrazione trasparente
+Feature: 13698: [DSW] Bonifica piano di fascicolazione classificatori
+Feature: 13744: [***REMOVED***]JeepService: Miglioramento metodo ArchiveFiles della Classe Receiver.
+Feature: 13745: [***REMOVED***]JeepService: Garantire che al fallimento con KO tenico della PEC, il file msg del filesystem viene spostato nella speciale cartella in errore.
+Feature: 13746: [***REMOVED***]JeepService: Nel modulo PEC sviluppiamo un file watcher che vive dentro un task in modo tale che intercetti e/o elabori quelli che trova al primo avvio nella cartelle in PEC in errore. Il suo scopo è gestire l'invio delle PEC in errore alle Web
+Feature: 13747: [***REMOVED***]WebAPI: Protocollazione manuale delle PEC in errore
+Feature: 13748: [AUSL-RE]Gestione dei Log nel Sommario delle UDS
+Feature: 13749: [AUSL-RE]Migrare telerik all'ultima versione 2018
+Feature: 13750: [***REMOVED***]DocSuite: Protocollazione manuale delle PEC in errore
+Feature: 13753: [AUSL-RE] DocSuite: Implementazione pagina delle statistiche della trasparenza in modalità "per settori appartenenza"
+Feature: 13754: [AUSL-RE] DocSuite: Implementazione pagina delle statistiche della trasparenza in modalità "Monitoraggio digitalizzazione flusso trasparenza"
+Feature: 13761: [AUSL-RE] DocSuite: Implementazione e gestione del registro di monitoraggio trasparenza
+Feature: 13847: [DSW] Fascicoli : Miglioramento gestione alberatura fascicoli
+Feature: 13872: [AUSL-RE] Gestione PEC con password
+Feature: 13999: [AGENAS]Distribuzione di protocollo : Aggiungere la distribuzione di protocolli anche per la tipologia in uscita
+Feature: 14119: [DSW] Esecuzione test rilascio 8.75
+
+
+User Story 5928: [AUSL-RE] Modulo UDS: Visualizzatore pagina di Log dal sommario UDS
+User Story 11669: [DSW] Refactor gestione classificatore nella pagina di piano di fascicolazione
+User Story 12587: [AUSL-RE]Migrare componenti telerik all'ultima versione 2018
+User Story 13699: [DSW] Bonificare record esistenti della tabella CategoryFascicles
+User Story 13700: [DSW] Bonificare validazioni riguardanti piano di fascicolazione
+User Story 13701: [DSW] Bonificare sql function riguardanti piano di fascicolazione
+User Story 13702: [DSW] Bonificare odata function riguardanti piano di fascicolazione
+User Story 13703: [DSW] Bonificare nei service typescript le chiamate alle WebAPI riguardanti piano di fascicolazione
+User Story 13704: [DSW] Bonificare modelli nel framework riguardanti piano di fascicolazione
+User Story 13705: [DSW] Bonificare metodi nell'integration riguardanti piano di fascicolazione
+User Story 13708: [DSW] Bonificare salvataggio piano di fascicolazione classificatore in Tabelle
+User Story 13735: [AUSL-RE] Modulo Log UDS: Permettere la configurazione del gruppo speciale che può vedere solo i propri log di Archivi da designer
+User Story 13786: [AUSL-RE] DocSuite Amministrazione Trasparente: Aggiunta nel sommario di protocollo pulsante "Monitoraggio"
+User Story 13787: [AUSL-RE] DocSuite Amministrazione Trasparente: Gestione pagina “Registro monitoraggio trasparenza”
+User Story 13788: [AUSL-RE] DocSuite Amministrazione Trasparente: nuova voce di menu “Registro monitoraggio trasparenza”
+User Story 13789: [AUSL-RE] DocSuite Amministrazione Trasparente: Nuova tabella SQL TrasparentAdministrationMonitorLogs
+User Story 13790: [AUSL-RE] DocSuite Amministrazione Trasparente: Mapping Entity Framework della tabella TrasparentAdministrationMonitorLogs (WebAPI)
+User Story 13791: [AUSL-RE] DocSuite Amministrazione Trasparente: Creazione controller Rest WebAPI TrasparentAdministrationMonitorLogs
+User Story 13792: [AUSL-RE] DocSuite Amministrazione Trasparente: Creazione controller Rest WebAPI TrasparentAdministrationMonitorLogs
+User Story 13793: [AUSL-RE] DocSuite Amministrazione Trasparente: Creazione Facade in Docsuite del controller rest WebAPI TrasparentAdministrationMonitor
+User Story 13794: [AUSL-RE] DocSuite Amministrazione Trasparente: Creazione UserControl 'uscAmmTraspMonitorLog.ascx'
+User Story 13795: [AUSL-RE] DocSuite Amministrazione Trasparente: Aggiunta nel sommario di Atti pulsante "Monitoraggio"
+User Story 13796: [AUSL-RE] DocSuite Amministrazione Trasparente: Aggiunta nel sommario di Archivi pulsante "Monitoraggio"
+User Story 13797: [AUSL-RE] DocSuite Amministrazione Trasparente: Aggiunta nel sommario di Serie Documentali pulsante "Monitoraggio"
+User Story 13798: [AUSL-RE] DocSuite Monitoraggio Trasparenza: Nel menù di Amministrazione Trasparente creare una nuova voce di "Monitoraggio digitalizzazione flusso trasparenza"
+User Story 13799: [AUSL-RE] DocSuite Monitoraggio Trasparenza: Gestione pagina "Monitoraggio digitalizzazione flusso trasparenza"
+User Story 13800: [AUSL-RE] DocSuite Monitoraggio Trasparenza: Mapping odata function WebAPI 'GetMonitoringQualitySummary'
+User Story 13801: [AUSL-RE] DocSuite Monitoraggio Trasparenza: Mapping odata function WebAPI 'GetMonitoringQualityDetails'
+User Story 13817: [ASL-TO] Nuova tabella 'DocumentSeriesConstraints'
+User Story 13818: [ASL-TO] Mappare l'entità DocumentSeriesConstraints nelle WebAPI
+User Story 13819: [ASL-TO] Configurazione obblighi per singola serie documentale
+User Story 13820: [ASL-TO] Gestione obblighi trasparenza in inserimento serie documentale
+User Story 13821: [ASL-TO] Gestione obblighi della trasparenza in modifica serie documentale
+User Story 13822: [ASL-TO] Refactor pagina gestione tipologia atti (Template di trasparenza)
+User Story 13823: [ASL-TO] Template trasparenza -> revisione pagina di associazione serie documentali a tipologia atto
+User Story 13824: [ASL-TO] Gestione obbligo trasparenza di default in inserimento serie documentale
+User Story 13825: [ASL-TO] Nuova colonna HasMainDocument in DocumentSeriesItem
+User Story 13826: [ASL-TO] Tool bonifica colonna HasDocumentMain
+User Story 13841: [AUSL-RE] DocSuite Monitoraggio Trasparenza: Nel menù di Amministrazione Trasparente creare una nuova voce di "Per sezione"
+User Story 13842: [AUSL-RE] DocSuite Monitoraggio Trasparenza: Nel menù di Amministrazione Trasparente creare una nuova voce di "Per sezione"
+User Story 13843: [AUSL-RE] DocSuite Monitoraggio Trasparenza: Mapping odata function WebAPI 'GetMonitoringSeriesBySection'
+User Story 13844: [AUSL-RE] DocSuite Monitoraggio Trasparenza: Nel menù di Amministrazione Trasparente creare una nuova voce di "Monitoraggio pubblicazioni Settori di appartenenza"
+User Story 13845: [AUSL-RE] DocSuite Monitoraggio Trasparenza: Gestione pagina "Monitoraggio pubblicazioni Settori di appartenenza"
+User Story 13846: [AUSL-RE] DocSuite Monitoraggio Trasparenza: Mapping odata function WebAPI 'GetMonitoringSeriesByRole'
+User Story 13848: [DSW] Fascicoli : Modificare la store procedure FascicleForlderInsert
+User Story 13850: [DSW] Fascicoli : Rimuovere la tipologia cartellina di inserti nelle WebAPI
+User Story 13851: [DSW] Fascicoli : Rimuovere la tipologia cartellina di inserti in TypeScript
+User Story 13852: [DSW] Fascicoli : Rimuovere in docsuite gestione cartellina di inserti
+User Story 13853: [DSW] Fascicoli : Unificare la gestione inserimento a livello di cartellina
+User Story 13854: [DSW] Fascicoli : Tool di bonifica delle cartelline di inserti
+User Story 13855: [***REMOVED***]DocSuite: Gestione sommario"Pec in errore".
+User Story 13856: [***REMOVED***]DocSuite: Protocollazione "Pec in errore".
+User Story 13857: [***REMOVED***]JeepService: Verificare che in ogni condizione di errore con tentativi maggiore di 5 la PEC venga sempre spostata nella casella di errore
+User Story 13858: [***REMOVED***]JeepService: Creare una struttura chiamata "IterationTracker"
+User Story 13859: [***REMOVED***]JeepService: Gestione e logging della struttura "IterationTracker"
+User Story 13862: [***REMOVED***]WebAPI: Controller OData di lettura di Topic/Subscription del Service Bus
+User Story 13870: [***REMOVED***]WebAPI: Aggiungere al controller rest TopicController il verbo Http Delete
+User Story 13873: [AUSL-RE] Gestione PEC : miglioria opzioni durante invio PEC
+User Story 13874: [AUSL-RE] Gestione PEC : Sviluppo allegati come file ZIP protetto da password
+User Story 13875: [AUSL-RE] Gestione PEC con Password : Invip seconda PEC contenente la password
+User Story 13901: [DSW] Ottmizzazione TenantModel
+User Story 13902: [***REMOVED***]JeepService: Nel modulo PEC avviare un FileSystemWatcher nella cartella di deposito 'Error' delle PEC in errore
+User Story 13903: [***REMOVED***]JeepService: Modulo PEC, gestione ed invio eventi EventErrorStreamPECMail, EventErrorSummaryPECMail
+User Story 13904: [***REMOVED***]JeepService: Configurare il FileSystemWatcher del modulo PEC per il reinvio degli eventi al service bus (in caso di errore di comunicazione con le WebAPInella cartella di deposito 'Error' delle PEC in errore)
+User Story 13905: [***REMOVED***]JeepService: Modulo PEC, creare parametro FileSystemWatcherRetryTimer
+User Story 13906: [***REMOVED***]JeepService: Modulo PEC, creare il parametro FileSystemWatcherTreshold
+User Story 13913: [ASL-TO] Nuova colonna ConstraintValue in DocumentSeriesItem
+User Story 13914: [ASL-TO] Nuova colonna IdDocumentSeriesConstraint in ResolutionKindDocumentSeries
+User Story 13915: [ASL-TO] Mappare le entità ResolutionKinds e ResolutionKindDocumentSeries nelle WebAPI
+User Story 13930: [ASL-TO] Allineamento standard entità ResolutionKinds e ResolutionKindDocumentSeries
+User Story 13998: [AUSL-RE ASL-TO AUSL-PC] Implementazione "Informazioni recenti" in Amministrazione Trasparente
+User Story 14000: [AGENAS]Distribuzione di protocollo : Introdurre parametro parameter env di protocollo 'ProtocolDistributionTypologies'
+User Story 14001: [AGENAS]Distribuzione di protocollo :Bonificare pagina userscrivaniad.aspx per agganciare logica del parametro 'ProtocolDistributionTypologies'
+User Story 14002: [AGENAS]Distribuzione di protocollo :Bonificare pagina ProtRicerca.aspx per agganciare logica del parametro 'ProtocolDistributionTypologies'
+User Story 14003: [AGENAS]Distribuzione di protocollo :Bonificare usercontrol uscSettori.uscx per agganciare logica del parametro 'ProtocolDistributionTypologies'
+User Story 14004: [AGENAS]Distribuzione di protocollo : Verificare il sommario di protocollo e vari right
+User Story 14007: [AUSL-RE] Gestione PEC come Zip con Password : Parametrizzare la funzionalità
+User Story 14027: [ASL-TO] Nuovo parametro TransparentManagerGroups
+User Story 14062: [DSW] Fascicoli : Nell'alberatura del visualizzatore dei documenti di Fascicolo, riordinare l'alberatura in modo che compaiano i documenti delle UD fascicolate prima di eventuali inserti.
+User Story 14072: [AUSL-RE ASL-TO AUSL-PC] Implementazione "visualizzazione obblighi trasparenza" in Amministrazione Trasparente
+User Story 14088: [AUSL-RE]In Ricerca di Fascicolo per Responsabile di Procedimento, mostrare solo il ramo dei responsabili di Procedimento
+User Story 14091: [AUSL-RE] Togliere il concetto di Fascicola-Referenzia da UD, sostituendolo con 'Inserisci UD in Fascicolo', analogamente a quanto già avviene in sommario di Fascicolo.
+User Story 14158: [AUSL-RE]Parametrizzare in ricerca di Fascicolo la visibilità del tipo di autorizzazione, eliminare il N.Scaffale,togliere il campo Nome
+User Story 14192: [AUSL-RE]Richiesta modifica notifiche per autorizzazione privacy
+User Story 14237: [AUSL-RE] Estendere il diritto agli utenti a prescindere dal diritto privacy sul contenitore
+User Story 14259: [AUSL-RE]Monitoraggio Trasparenza: Aggiungere filtri utente, tipologa documento, contenitore
+
+
+Bug 13741: [DSW]Nella gestione dei contatti IPA in Inserimento di Protocollo, viene salvata sul database la codifica html del contatto.
+Bug 13743: [AUSL-PC]I classificatori creati il giorno stesso non sono poi visibili nell'inserimento di protocollo tra i classificatori che possono essere scelti
+Bug 13768: [AGENAS]In quelle viste di scrivania di Protocollo in cui è presente l'ordinamento crescente/decrescente dei protocolli, l'ordinamento al caricamento della pagina non è coerente
+Bug 14016: [AUSL-RE]In Ricerca Atti, selezionando solo il flag "Atti" e inserendo il numero di servizio, premendo poi invio da tastiera appare la finestra di selezione contatti da Rubrica, anzichè i risultati della ricerca
+Bug 14071: [AUSL-RE]Quando si prova a fascicolare un UD ad esempio Protocollo, da sommario di fascicolo le WebApi vanno in errore. Vedi logs
+Bug 14110: [AUSL-RE]Quando si fascicola da Sommario di Archivi, non viene popolato l'idFascicleFolder e questo comporta che manca l'associazione nel sommario di Fascicolo tra l'ud fascicolato e il nodo nella treeview di visualizzazione dei documenti
+Bug 14189: [CTT] Errori nella numerazione degli Archivi che prendono l'IdUDSRepository sbagliato
+Bug 14258: [AUSL-RE]Monitoraggio Trasparenza: La funzione Export Excel non funziona e blocca il processo w3wp
+
+
+Issue 14120: [DSW] Pannello monitoraggio visibile nelle varie pagine di Protocollo anche se non ci sono dati
+Issue 14121: [DSW] Crea PEC per ogni destinatario disabilitata se seleziono più contatti manuali
+Issue 14124: [DSW] Protocollo->Ricerca, filtro contatti con selezione da AD non funziona
+Issue 14125: [DSW] Errore funzionalità "Stampa" reportistica PEC
+Issue 14129: [DSW] Anomalie funzionalità di Invia PEC con documenti protetti da Password
+Issue 14130: [DSW]Fascicolando da Sommario di un UD, se poi si vuole referenziare in un altro Fascicolo il bottone Inserisci risulta disabilitato.
+Issue 14131: [DSW]Non si riesce ad accedere al Sommario di Archivi
+Issue 14132: [DSW] Ricerca Fascicoli, selezione responsabile di procedimento visualizza anche le rubriche di settore
+Issue 14133: [DSW] Ricerca Fascicoli, togliere filtro N. Scaffale
+Issue 14134: [DSW] Errore ajax in ricerca Classificatore da tabelle
+Issue 14142: [DSW] Non funziona Template di trasparenza
+Issue 14145: [DSW] Protocollo->Fascicola:è andato perso il controllo sulla selezione vuota dei Fascicoli nella lista dei Fascicoli disponibili
+Issue 14146: [DSW] Protocollo->Fascicola: se rimuovo una fascicolo in cui un ud è stata fascicolata e poi premo di nuovo Inserisci, resta in memoria il vecchio fascicolo
+Issue 14155: [DSW] Collaborazione, errore in recupero Tipologia documento in pagina di inserimento
+Issue 14165: [DSW] Anomalia grafica in FascUDManager.aspx
+Issue 14173: [DSW] Contatti da IPA la Descrizione del contatto viene troncata a 60 caratteri
+Issue 14177: [DSW]Non funziona più la propagazione ai figli dei settori autorizzati nell'alberatura delle cartelle da Sommario di Dossier
+Issue 14186: [DSW] Anomalia in selezione ruolo utente in Tavoli

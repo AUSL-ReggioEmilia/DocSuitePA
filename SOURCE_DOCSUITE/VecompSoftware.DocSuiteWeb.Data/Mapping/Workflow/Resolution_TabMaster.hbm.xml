@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="TabMaster" table="TabMaster">
+    
+    <composite-id class="TabMasterCompositeKey" name="Id">
+      <key-property column="Configuration" name="Configuration" type="AnsiString" />
+      <key-property column="ResolutionType" name="ResolutionType" />
+    </composite-id>
+    
+    <property name="Description" column="Description" type="AnsiString" />
+    <property name="Title" column="Title" type="AnsiString" />
+    <property name="IdResolutionFileDes" column="idResolutionFileDes" type="AnsiString" />
+    <property name="WorkflowType" column="WorkflowType" type="AnsiString" />
+    <property name="ViewAllStep" column="ViewAllStep" type="AnsiString" />
+    <property name="ManagedData" column="ManagedData" type="AnsiString" />
+    
+    <many-to-one class="ResolutionType" name="ReslType" column="ResolutionType" insert="false" update="false" />
+    
+  </class>
+
+</hibernate-mapping>

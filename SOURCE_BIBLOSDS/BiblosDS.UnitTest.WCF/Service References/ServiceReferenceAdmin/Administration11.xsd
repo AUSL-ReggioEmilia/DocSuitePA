@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/StorageRule" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/StorageRule" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/Attribute" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd17" namespace="http://BiblosDS/2009/10/RuleOperator" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Storage" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="ArrayOfStorageRule">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="StorageRule" nillable="true" type="tns:StorageRule" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStorageRule" nillable="true" type="tns:ArrayOfStorageRule" />
+  <xs:complexType name="StorageRule">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/Attribute" minOccurs="0" name="Attribute" nillable="true" type="q2:Attribute" />
+          <xs:element minOccurs="0" name="RuleFilter" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="RuleFormat" nillable="true" type="xs:string" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/RuleOperator" minOccurs="0" name="RuleOperator" nillable="true" type="q3:RuleOperator" />
+          <xs:element minOccurs="0" name="RuleOrder" type="xs:short" />
+          <xs:element xmlns:q4="http://BiblosDS/2009/10/Storage" minOccurs="0" name="Storage" nillable="true" type="q4:Storage" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StorageRule" nillable="true" type="tns:StorageRule" />
+</xs:schema>

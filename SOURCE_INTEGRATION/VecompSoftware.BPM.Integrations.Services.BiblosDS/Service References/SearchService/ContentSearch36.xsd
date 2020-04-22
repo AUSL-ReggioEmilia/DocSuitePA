@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/StorageType" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/StorageType" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd9" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="StorageType">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="IdStorageType" type="ser:guid" />
+          <xs:element minOccurs="0" name="StorageAssembly" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="StorageClassName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StorageType" nillable="true" type="tns:StorageType" />
+</xs:schema>

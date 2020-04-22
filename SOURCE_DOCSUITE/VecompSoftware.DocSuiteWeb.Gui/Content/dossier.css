@@ -1,0 +1,103 @@
+﻿.dossier .titolo {
+    background: #44C0EA;
+    height: 15pt;
+    padding-top: 3px;
+}
+
+.dossier .form-group {
+    background-color: #EBF5F9;
+}
+
+.dossier .form-control {
+    background-color: #EBF5F9;
+}
+
+.dossier .dsw-panel .dsw-panel-title {
+    border-bottom: 1px solid #808080;
+    color: navy;
+    background-color: #aedef1;
+}
+
+.dossier .dsw-panel .dsw-panel-content {
+    color: #000;
+    background-color: #EBF5F9;
+}
+
+
+.dossier table.datatable th, .dossier table.datatable td.head, .dossier .datatable.tHead {
+    background-color: #aedef1;
+    border-bottom: 1px solid #808080;
+    color: navy;
+}
+
+.dossier table.datatable td {
+    padding: 3px;
+    background-color: #EBF5F9;
+}
+
+    .dossier table.datatable td.label {
+        background-color: #D3ECF5;
+    }
+
+.dossier table.datatable .labelPanel {
+    background-color: #D3ECF5;
+}
+
+.dossier .Scuro {
+    background-color: #D3ECF5;
+}
+
+.dossier .Chiaro {
+    background-color: #EBF5F9;
+}
+
+.dossier .rgAdvPart {
+    display: none;
+}
+
+.dossier .dossierGrid th {
+    text-align: center;
+}
+
+.dossier .dossierGrid .rgRow > td,
+.dossier .dossierGrid .rgAltRow > td {
+    border-width: 0px 0px 0px 0px;
+}
+
+.dossier td.label.disabled,
+.dossier li.rddlItem.disabled {
+    color: grey;
+}
+
+.dossier .slideshow {
+    margin-top: 25px;
+    margin-left: 20px;
+}
+
+.dossier .messageExcpetion {
+    margin-top: 10px;
+    margin-left: 38px;
+    margin-right: 38px;
+}
+
+.dossier .windowTitle {
+    margin-top: 10px;
+    margin-right: 35px;
+}
+
+.dossierLink {
+    color: rgb(32, 35, 180) !important;
+}
+
+.dossier .dsw-arrow-down {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_down.png);
+    background-position: center;
+    width: 16px;
+    height: 16px;
+}
+
+.dossier .dsw-arrow-up {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_up.png);
+    width: 16px;
+    height: 16px;
+}

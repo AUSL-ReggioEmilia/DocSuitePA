@@ -1,0 +1,822 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://ComunicazioniElettroniche.Telegramma.WS" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="WCFTelegrammiService" targetNamespace="http://ComunicazioniElettroniche.Telegramma.WS" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://ComunicazioniElettroniche.Telegramma.WS">
+      <xsd:element name="GetIdRequest">
+        <xsd:complexType>
+          <xsd:sequence />
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetIdRequestResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="GetIdRequestResult" nillable="true" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="RecipientValidation">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="recipient" nillable="true" type="tns:Recipient" />
+            <xsd:element minOccurs="0" name="idRequest" nillable="true" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="Recipient">
+        <xsd:sequence>
+          <xsd:element name="ClientIDRecipient" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="Provincia" nillable="true" type="xsd:string" />
+          <xsd:element xmlns:q1="http://ComunicazioniElettroniche.Telegramma.Schema.TelegrammaSchema" name="destinatario" nillable="true" type="q1:Destinatario" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Recipient" nillable="true" type="tns:Recipient" />
+      <xsd:element name="RecipientValidationResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="RecipientValidationResult" nillable="true" type="tns:RecipientValidationResult" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="RecipientValidationResult">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="Destinatari" nillable="true" type="tns:ArrayOfRecipient" />
+          <xsd:element xmlns:q2="http://ComunicazioniElettroniche.Common.Schema.GenericSchema" name="Result" nillable="true" type="q2:CEResult" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="RecipientValidationResult" nillable="true" type="tns:RecipientValidationResult" />
+      <xsd:complexType name="ArrayOfRecipient">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Recipient" nillable="true" type="tns:Recipient" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfRecipient" nillable="true" type="tns:ArrayOfRecipient" />
+      <xsd:element name="RecipientsValidation">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="recipients" nillable="true" type="tns:ArrayOfRecipient" />
+            <xsd:element minOccurs="0" name="idRequest" nillable="true" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="RecipientsValidationResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="RecipientsValidationResult" nillable="true" type="tns:ArrayOfRecipientValidationResult" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="ArrayOfRecipientValidationResult">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="RecipientValidationResult" nillable="true" type="tns:RecipientValidationResult" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfRecipientValidationResult" nillable="true" type="tns:ArrayOfRecipientValidationResult" />
+      <xsd:element name="Submit">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="telegramma" nillable="true" type="tns:Telegramma" />
+            <xsd:element minOccurs="0" name="Customer" nillable="true" type="xsd:string" />
+            <xsd:element minOccurs="0" name="idRequest" nillable="true" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="Telegramma">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="DataTelegramma" type="xsd:dateTime" />
+          <xsd:element xmlns:q3="http://ComunicazioniElettroniche.Telegramma.Schema.TelegrammaSchema" name="Destinatari" nillable="true" type="q3:ArrayOfTelegrammaDestinatario" />
+          <xsd:element minOccurs="0" name="Firma" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="GUIDMessage" nillable="true" type="xsd:string" />
+          <xsd:element xmlns:q4="http://ComunicazioniElettroniche.Telegramma.Schema.TelegrammaSchema" name="Mittente" nillable="true" type="q4:Mittente" />
+          <xsd:element name="Nazionale" type="xsd:boolean" />
+          <xsd:element name="Opzioni" nillable="true" type="tns:Opzioni" />
+          <xsd:element xmlns:q5="http://ComunicazioniElettroniche.Telegramma.Schema.TelegrammaSchema" name="PartiTesto" nillable="true" type="q5:InfoTesto" />
+          <xsd:element xmlns:q6="http://ComunicazioniElettroniche.Telegramma.Schema.TelegrammaSchema" minOccurs="0" name="Valorizzazione" nillable="true" type="q6:Valorizzazione" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Telegramma" nillable="true" type="tns:Telegramma" />
+      <xsd:complexType name="Opzioni">
+        <xsd:sequence>
+          <xsd:element name="CTA" type="xsd:boolean" />
+          <xsd:element minOccurs="0" name="Note" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Opzioni" nillable="true" type="tns:Opzioni" />
+      <xsd:element name="SubmitResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="SubmitResult" nillable="true" type="tns:SubmitResult" />
+            <xsd:element minOccurs="0" name="telegramma" nillable="true" type="tns:Telegramma" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="SubmitResult">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="DestinatariResult" nillable="true" type="tns:ArrayOfRecipientValidationResult" />
+          <xsd:element xmlns:q7="http://ComunicazioniElettroniche.Common.Schema.GenericSchema" name="Result" nillable="true" type="q7:CEResult" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="SubmitResult" nillable="true" type="tns:SubmitResult" />
+      <xsd:element name="Modify">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="telegramma" nillable="true" type="tns:Telegramma" />
+            <xsd:element minOccurs="0" name="Customer" nillable="true" type="xsd:string" />
+            <xsd:element minOccurs="0" name="idRequest" nillable="true" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ModifyResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="ModifyResult" nillable="true" type="tns:SubmitResult" />
+            <xsd:element minOccurs="0" name="telegramma" nillable="true" type="tns:Telegramma" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Abort">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="idRequest" nillable="true" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="AbortResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q8="http://ComunicazioniElettroniche.Common.Schema.GenericSchema" minOccurs="0" name="AbortResult" nillable="true" type="q8:CEResult" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="PreConfirm">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idRequest" nillable="true" type="q9:ArrayOfstring" />
+            <xsd:element minOccurs="0" name="autoConfirm" type="xsd:boolean" />
+            <xsd:element minOccurs="0" name="forceOrderCreation" type="xsd:boolean" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="PreConfirmResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="PreConfirmResult" nillable="true" type="tns:PreconfirmResult" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="PreconfirmResult">
+        <xsd:sequence>
+          <xsd:element xmlns:q10="http://ComunicazioniElettroniche.Common.Schema.ConfirmResponseSchema" minOccurs="0" name="ConfirmOrderResponse" nillable="true" type="q10:ConfirmOrderResponse" />
+          <xsd:element xmlns:q11="http://ComunicazioniElettroniche.Common.Schema.PreConfirmResponseSchema" name="OrderResponse" nillable="true" type="q11:OrderResponse" />
+          <xsd:element xmlns:q12="http://ComunicazioniElettroniche.Common.Schema.GenericSchema" name="Result" nillable="true" type="q12:CEResult" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PreconfirmResult" nillable="true" type="tns:PreconfirmResult" />
+      <xsd:element name="AbortOrder">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q13="http://ComunicazioniElettroniche.Common.Schema.AbortOrderSchema" minOccurs="0" name="abortOrder" nillable="true" type="q13:AbortOrder" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="AbortOrderResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q14="http://ComunicazioniElettroniche.Common.Schema.GenericSchema" minOccurs="0" name="AbortOrderResult" nillable="true" type="q14:CEResult" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Confirm">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q15="http://ComunicazioniElettroniche.Common.Schema.ConfirmRequestSchema" minOccurs="0" name="confirmOrder" nillable="true" type="q15:ConfirmOrder" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ConfirmResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="ConfirmResult" nillable="true" type="tns:ConfirmOrderResult" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="ConfirmOrderResult">
+        <xsd:sequence>
+          <xsd:element xmlns:q16="http://ComunicazioniElettroniche.Common.Schema.ConfirmResponseSchema" name="ConfirmOrderResponse" nillable="true" type="q16:ConfirmOrderResponse" />
+          <xsd:element xmlns:q17="http://ComunicazioniElettroniche.Common.Schema.GenericSchema" name="Result" nillable="true" type="q17:CEResult" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ConfirmOrderResult" nillable="true" type="tns:ConfirmOrderResult" />
+      <xsd:element name="ConfirmCapture">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q18="http://ComunicazioniElettroniche.Common.Schema.ConfirmCaptureSchema" minOccurs="0" name="confirmCapture" nillable="true" type="q18:ConfirmCapture" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ConfirmCaptureResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q19="http://ComunicazioniElettroniche.Common.Schema.GenericSchema" minOccurs="0" name="ConfirmCaptureResult" nillable="true" type="q19:CEResult" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetStatus">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="getStatusRequest" nillable="true" type="tns:GetStatusRequest" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="GetStatusRequest">
+        <xsd:sequence>
+          <xsd:element name="GUIDMessage" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="GetStatusRequest" nillable="true" type="tns:GetStatusRequest" />
+      <xsd:element name="GetStatusResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="GetStatusResult" nillable="true" type="tns:GetStatusResult" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="GetStatusResult">
+        <xsd:sequence>
+          <xsd:element xmlns:q20="http://ComunicazioniElettroniche.Common.Schema.GenericSchema" name="Result" nillable="true" type="q20:CEResult" />
+          <xsd:element minOccurs="0" name="Status" nillable="true" type="tns:TelegrammaStatusType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="GetStatusResult" nillable="true" type="tns:GetStatusResult" />
+      <xsd:complexType name="TelegrammaStatusType">
+        <xsd:sequence>
+          <xsd:element name="GUIDMessage" nillable="true" type="xsd:string" />
+          <xsd:element name="TelgramStatusDetails" nillable="true" type="tns:ArrayOfTelegrammaStatusDetailsType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="TelegrammaStatusType" nillable="true" type="tns:TelegrammaStatusType" />
+      <xsd:complexType name="ArrayOfTelegrammaStatusDetailsType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="TelegrammaStatusDetailsType" nillable="true" type="tns:TelegrammaStatusDetailsType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfTelegrammaStatusDetailsType" nillable="true" type="tns:ArrayOfTelegrammaStatusDetailsType" />
+      <xsd:complexType name="TelegrammaStatusDetailsType">
+        <xsd:sequence>
+          <xsd:element name="IDTelegramma" nillable="true" type="xsd:string" />
+          <xsd:element name="Parte" type="xsd:int" />
+          <xsd:element xmlns:q21="http://schemas.datacontract.org/2004/07/ComunicazioniElettroniche.Telegramma.WS" name="State" type="q21:TelegrammaDetailStateValues" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="TelegrammaStatusDetailsType" nillable="true" type="tns:TelegrammaStatusDetailsType" />
+    </xsd:schema>
+    <xsd:schema xmlns:tns="http://ComunicazioniElettroniche.Telegramma.Schema.TelegrammaSchema" elementFormDefault="qualified" targetNamespace="http://ComunicazioniElettroniche.Telegramma.Schema.TelegrammaSchema">
+      <xsd:complexType name="Destinatario">
+        <xsd:sequence>
+          <xsd:element name="CAP" nillable="true" type="xsd:string" />
+          <xsd:element name="Citta" nillable="true" type="xsd:string" />
+          <xsd:element name="Cognome" nillable="true" type="xsd:string" />
+          <xsd:element name="Indirizzo" nillable="true" type="xsd:string" />
+          <xsd:element name="Nome" nillable="true" type="xsd:string" />
+          <xsd:element name="RagioneSociale" nillable="true" type="xsd:string" />
+          <xsd:element name="Stato" nillable="true" type="xsd:string" />
+          <xsd:element name="Telefono" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Destinatario" nillable="true" type="tns:Destinatario" />
+      <xsd:complexType name="ArrayOfTelegrammaDestinatario">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="TelegrammaDestinatario" nillable="true" type="tns:TelegrammaDestinatario" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfTelegrammaDestinatario" nillable="true" type="tns:ArrayOfTelegrammaDestinatario" />
+      <xsd:complexType name="TelegrammaDestinatario">
+        <xsd:sequence>
+          <xsd:element name="Destinatario" nillable="true" type="tns:Destinatario" />
+          <xsd:element name="Frazionario" nillable="true" type="xsd:string" />
+          <xsd:element name="IDTelegramma" nillable="true" type="xsd:string" />
+          <xsd:element name="LineaPilota" nillable="true" type="xsd:string" />
+          <xsd:element name="NumeroDestinatarioCorrente" type="xsd:int" />
+          <xsd:element name="TipoRec" type="tns:TelegrammaDestinatarioTipoRec" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="TelegrammaDestinatario" nillable="true" type="tns:TelegrammaDestinatario" />
+      <xsd:simpleType name="TelegrammaDestinatarioTipoRec">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Item" />
+          <xsd:enumeration value="TLF" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:element name="TelegrammaDestinatarioTipoRec" nillable="true" type="tns:TelegrammaDestinatarioTipoRec" />
+      <xsd:complexType name="Mittente">
+        <xsd:sequence>
+          <xsd:element name="CAP" nillable="true" type="xsd:string" />
+          <xsd:element name="Citta" nillable="true" type="xsd:string" />
+          <xsd:element name="Cognome" nillable="true" type="xsd:string" />
+          <xsd:element name="Indirizzo" nillable="true" type="xsd:string" />
+          <xsd:element name="InvioAlMittente" type="xsd:boolean" />
+          <xsd:element name="Nome" nillable="true" type="xsd:string" />
+          <xsd:element name="RagioneSociale" nillable="true" type="xsd:string" />
+          <xsd:element name="Telefono" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Mittente" nillable="true" type="tns:Mittente" />
+      <xsd:complexType name="InfoTesto">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="NumeroParteCorrente" type="xsd:int" />
+          <xsd:element name="Testo" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="InfoTesto" nillable="true" type="tns:InfoTesto" />
+      <xsd:complexType name="Valorizzazione">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="ImportoTotale" nillable="true" type="xsd:string" />
+          <xsd:element minOccurs="0" name="ParoleDigitate" type="xsd:int" />
+          <xsd:element minOccurs="0" name="ParoleFisiche" type="xsd:int" />
+          <xsd:element minOccurs="0" name="ParoleSviluppate" type="xsd:int" />
+          <xsd:element minOccurs="0" name="ParoleTassabili" type="xsd:int" />
+          <xsd:element minOccurs="0" name="ParoleTassateNelRigoPreambolo" type="xsd:int" />
+          <xsd:element minOccurs="0" name="TariffazioneManuale" type="xsd:boolean" />
+          <xsd:element xmlns:q22="http://ComunicazioniElettroniche.Common.Schema.PreConfirmResponseSchema" minOccurs="0" name="Total" nillable="true" type="q22:DetailBillRow" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Valorizzazione" nillable="true" type="tns:Valorizzazione" />
+    </xsd:schema>
+    <xsd:schema xmlns:tns="http://ComunicazioniElettroniche.Common.Schema.PreConfirmResponseSchema" elementFormDefault="qualified" targetNamespace="http://ComunicazioniElettroniche.Common.Schema.PreConfirmResponseSchema">
+      <xsd:complexType name="DetailBillRow">
+        <xsd:complexContent mixed="false">
+          <xsd:extension base="tns:Row">
+            <xsd:sequence>
+              <xsd:element name="GrossValuePerUnit" type="xsd:decimal" />
+              <xsd:element name="MaterialCode" nillable="true" type="xsd:string" />
+              <xsd:element name="MaterialCodeDescription" nillable="true" type="xsd:string" />
+              <xsd:element name="NetValuePerUnit" type="xsd:decimal" />
+              <xsd:element name="Quantity" type="xsd:decimal" />
+              <xsd:element name="TaxAmountPerUnit" type="xsd:decimal" />
+              <xsd:element name="TaxCode" nillable="true" type="xsd:string" />
+              <xsd:element name="TaxPercentage" type="xsd:decimal" />
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:element name="DetailBillRow" nillable="true" type="tns:DetailBillRow" />
+      <xsd:complexType name="Row">
+        <xsd:sequence>
+          <xsd:element name="Currency" nillable="true" type="xsd:string" />
+          <xsd:element name="Description" nillable="true" type="xsd:string" />
+          <xsd:element name="GrossValue" type="xsd:decimal" />
+          <xsd:element name="NetValue" type="xsd:decimal" />
+          <xsd:element name="TaxAmount" type="xsd:decimal" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Row" nillable="true" type="tns:Row" />
+      <xsd:complexType name="OrderResponse">
+        <xsd:sequence>
+          <xsd:element name="IdOrder" nillable="true" type="xsd:string" />
+          <xsd:element name="PaymentTypes" nillable="true" type="tns:ArrayOfPaymentType" />
+          <xsd:element name="ServiceInstance" nillable="true" type="tns:ArrayOfServiceInstance" />
+          <xsd:element name="Total" nillable="true" type="tns:GranTotal" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="OrderResponse" nillable="true" type="tns:OrderResponse" />
+      <xsd:complexType name="ArrayOfPaymentType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PaymentType" nillable="true" type="tns:PaymentType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfPaymentType" nillable="true" type="tns:ArrayOfPaymentType" />
+      <xsd:complexType name="PaymentType">
+        <xsd:sequence>
+          <xsd:element name="PostPayment" type="xsd:boolean" />
+          <xsd:element name="TypeDescription" nillable="true" type="xsd:string" />
+          <xsd:element name="TypeId" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PaymentType" nillable="true" type="tns:PaymentType" />
+      <xsd:complexType name="ArrayOfServiceInstance">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="ServiceInstance" nillable="true" type="tns:ServiceInstance" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfServiceInstance" nillable="true" type="tns:ArrayOfServiceInstance" />
+      <xsd:complexType name="ServiceInstance">
+        <xsd:sequence>
+          <xsd:element name="Details" nillable="true" type="tns:ArrayOfDetailBillRow" />
+          <xsd:element name="GUIDMessage" nillable="true" type="xsd:string" />
+          <xsd:element name="Result" nillable="true" type="tns:ServiceInstanceResult" />
+          <xsd:element name="ServiceId" nillable="true" type="xsd:string" />
+          <xsd:element name="Total" nillable="true" type="tns:GranTotal" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ServiceInstance" nillable="true" type="tns:ServiceInstance" />
+      <xsd:complexType name="ArrayOfDetailBillRow">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="DetailBillRow" nillable="true" type="tns:DetailBillRow" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfDetailBillRow" nillable="true" type="tns:ArrayOfDetailBillRow" />
+      <xsd:complexType name="ServiceInstanceResult">
+        <xsd:sequence>
+          <xsd:element name="Code" nillable="true" type="xsd:string" />
+          <xsd:element name="Description" nillable="true" type="xsd:string" />
+          <xsd:element name="Status" type="tns:ServiceInstanceResultStatus" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ServiceInstanceResult" nillable="true" type="tns:ServiceInstanceResult" />
+      <xsd:simpleType name="ServiceInstanceResultStatus">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="I" />
+          <xsd:enumeration value="W" />
+          <xsd:enumeration value="E" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:element name="ServiceInstanceResultStatus" nillable="true" type="tns:ServiceInstanceResultStatus" />
+      <xsd:complexType name="GranTotal">
+        <xsd:complexContent mixed="false">
+          <xsd:extension base="tns:Row">
+            <xsd:sequence>
+              <xsd:element name="IDB" type="xsd:decimal" />
+              <xsd:element name="TotalWithIDB" type="xsd:decimal" />
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:element name="GranTotal" nillable="true" type="tns:GranTotal" />
+    </xsd:schema>
+    <xsd:schema xmlns:tns="http://ComunicazioniElettroniche.Common.Schema.GenericSchema" elementFormDefault="qualified" targetNamespace="http://ComunicazioniElettroniche.Common.Schema.GenericSchema">
+      <xsd:complexType name="CEResult">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="Description" nillable="true" type="xsd:string" />
+          <xsd:element name="ResType" type="tns:CEResultResType" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="CEResult" nillable="true" type="tns:CEResult" />
+      <xsd:simpleType name="CEResultResType">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="I" />
+          <xsd:enumeration value="W" />
+          <xsd:enumeration value="E" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:element name="CEResultResType" nillable="true" type="tns:CEResultResType" />
+    </xsd:schema>
+    <xsd:schema xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+      <xsd:complexType name="ArrayOfstring">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfstring" nillable="true" type="tns:ArrayOfstring" />
+    </xsd:schema>
+    <xsd:schema xmlns:tns="http://ComunicazioniElettroniche.Common.Schema.ConfirmResponseSchema" elementFormDefault="qualified" targetNamespace="http://ComunicazioniElettroniche.Common.Schema.ConfirmResponseSchema">
+      <xsd:complexType name="ConfirmOrderResponse">
+        <xsd:sequence>
+          <xsd:element name="EPM" nillable="true" type="tns:EPM" />
+          <xsd:element name="TicketIds" nillable="true" type="tns:ArrayOfTicketIdsTicketId" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ConfirmOrderResponse" nillable="true" type="tns:ConfirmOrderResponse" />
+      <xsd:complexType name="EPM">
+        <xsd:sequence>
+          <xsd:element name="PostmarkToken" nillable="true" type="xsd:base64Binary" />
+          <xsd:element name="TimeStamp" nillable="true" type="xsd:string" />
+          <xsd:element name="TranKey" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="EPM" nillable="true" type="tns:EPM" />
+      <xsd:complexType name="ArrayOfTicketIdsTicketId">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="TicketIdsTicketId" nillable="true" type="tns:TicketIdsTicketId" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfTicketIdsTicketId" nillable="true" type="tns:ArrayOfTicketIdsTicketId" />
+      <xsd:complexType name="TicketIdsTicketId">
+        <xsd:sequence>
+          <xsd:element name="ID" nillable="true" type="xsd:string" />
+          <xsd:element name="ReceipientId" nillable="true" type="xsd:string" />
+          <xsd:element name="RequestId" nillable="true" type="xsd:string" />
+          <xsd:element name="ServiceId" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="TicketIdsTicketId" nillable="true" type="tns:TicketIdsTicketId" />
+    </xsd:schema>
+    <xsd:schema xmlns:tns="http://ComunicazioniElettroniche.Common.Schema.AbortOrderSchema" elementFormDefault="qualified" targetNamespace="http://ComunicazioniElettroniche.Common.Schema.AbortOrderSchema">
+      <xsd:complexType name="AbortOrder">
+        <xsd:sequence>
+          <xsd:element name="IdOrder" nillable="true" type="xsd:string" />
+          <xsd:element name="Options" nillable="true" type="tns:AbortOrderOptions" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="AbortOrder" nillable="true" type="tns:AbortOrder" />
+      <xsd:complexType name="AbortOrderOptions">
+        <xsd:sequence>
+          <xsd:element name="AbortRequest" type="xsd:boolean" />
+          <xsd:element name="Description" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="AbortOrderOptions" nillable="true" type="tns:AbortOrderOptions" />
+    </xsd:schema>
+    <xsd:schema xmlns:tns="http://ComunicazioniElettroniche.Common.Schema.ConfirmRequestSchema" elementFormDefault="qualified" targetNamespace="http://ComunicazioniElettroniche.Common.Schema.ConfirmRequestSchema">
+      <xsd:complexType name="ConfirmOrder">
+        <xsd:sequence>
+          <xsd:element name="IdOrder" nillable="true" type="xsd:string" />
+          <xsd:element name="PaymentDate" type="xsd:dateTime" />
+          <xsd:element xmlns:q23="http://ComunicazioniElettroniche.Common.Schema.PreConfirmResponseSchema" name="PaymentType" nillable="true" type="q23:PaymentType" />
+          <xsd:element name="TransactionData" nillable="true" type="tns:TransactionData" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ConfirmOrder" nillable="true" type="tns:ConfirmOrder" />
+      <xsd:complexType name="TransactionData">
+        <xsd:sequence>
+          <xsd:element name="IdTransaction" nillable="true" type="xsd:string" />
+          <xsd:element name="TransactionCode" nillable="true" type="xsd:string" />
+          <xsd:element name="TransactionDate" type="xsd:dateTime" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="TransactionData" nillable="true" type="tns:TransactionData" />
+    </xsd:schema>
+    <xsd:schema xmlns:tns="http://ComunicazioniElettroniche.Common.Schema.ConfirmCaptureSchema" elementFormDefault="qualified" targetNamespace="http://ComunicazioniElettroniche.Common.Schema.ConfirmCaptureSchema">
+      <xsd:complexType name="ConfirmCapture">
+        <xsd:sequence>
+          <xsd:element name="CapturedAmount" type="xsd:decimal" />
+          <xsd:element name="IdOrder" nillable="true" type="xsd:string" />
+          <xsd:element name="PaymentDate" type="xsd:dateTime" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ConfirmCapture" nillable="true" type="tns:ConfirmCapture" />
+    </xsd:schema>
+    <xsd:schema xmlns:tns="http://schemas.datacontract.org/2004/07/ComunicazioniElettroniche.Telegramma.WS" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/ComunicazioniElettroniche.Telegramma.WS">
+      <xsd:simpleType name="TelegrammaDetailStateValues">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Unknown" />
+          <xsd:enumeration value="Aborted" />
+          <xsd:enumeration value="Confirmed" />
+          <xsd:enumeration value="Printed" />
+          <xsd:enumeration value="Printing" />
+          <xsd:enumeration value="Submit" />
+          <xsd:enumeration value="Rerouted" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:element name="TelegrammaDetailStateValues" nillable="true" type="tns:TelegrammaDetailStateValues" />
+    </xsd:schema>
+    <xs:schema xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="anyType" nillable="true" type="xs:anyType" />
+      <xs:element name="anyURI" nillable="true" type="xs:anyURI" />
+      <xs:element name="base64Binary" nillable="true" type="xs:base64Binary" />
+      <xs:element name="boolean" nillable="true" type="xs:boolean" />
+      <xs:element name="byte" nillable="true" type="xs:byte" />
+      <xs:element name="dateTime" nillable="true" type="xs:dateTime" />
+      <xs:element name="decimal" nillable="true" type="xs:decimal" />
+      <xs:element name="double" nillable="true" type="xs:double" />
+      <xs:element name="float" nillable="true" type="xs:float" />
+      <xs:element name="int" nillable="true" type="xs:int" />
+      <xs:element name="long" nillable="true" type="xs:long" />
+      <xs:element name="QName" nillable="true" type="xs:QName" />
+      <xs:element name="short" nillable="true" type="xs:short" />
+      <xs:element name="string" nillable="true" type="xs:string" />
+      <xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte" />
+      <xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt" />
+      <xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong" />
+      <xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort" />
+      <xs:element name="char" nillable="true" type="tns:char" />
+      <xs:simpleType name="char">
+        <xs:restriction base="xs:int" />
+      </xs:simpleType>
+      <xs:element name="duration" nillable="true" type="tns:duration" />
+      <xs:simpleType name="duration">
+        <xs:restriction base="xs:duration">
+          <xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?" />
+          <xs:minInclusive value="-P10675199DT2H48M5.4775808S" />
+          <xs:maxInclusive value="P10675199DT2H48M5.4775807S" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:element name="guid" nillable="true" type="tns:guid" />
+      <xs:simpleType name="guid">
+        <xs:restriction base="xs:string">
+          <xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:attribute name="FactoryType" type="xs:QName" />
+      <xs:attribute name="Id" type="xs:ID" />
+      <xs:attribute name="Ref" type="xs:IDREF" />
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="IWCFTelegrammiService_GetIdRequest_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetIdRequest" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_GetIdRequest_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetIdRequestResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_RecipientValidation_InputMessage">
+    <wsdl:part name="parameters" element="tns:RecipientValidation" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_RecipientValidation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RecipientValidationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_RecipientsValidation_InputMessage">
+    <wsdl:part name="parameters" element="tns:RecipientsValidation" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_RecipientsValidation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RecipientsValidationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_Submit_InputMessage">
+    <wsdl:part name="parameters" element="tns:Submit" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_Submit_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SubmitResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_Modify_InputMessage">
+    <wsdl:part name="parameters" element="tns:Modify" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_Modify_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ModifyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_Abort_InputMessage">
+    <wsdl:part name="parameters" element="tns:Abort" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_Abort_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AbortResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_PreConfirm_InputMessage">
+    <wsdl:part name="parameters" element="tns:PreConfirm" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_PreConfirm_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PreConfirmResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_AbortOrder_InputMessage">
+    <wsdl:part name="parameters" element="tns:AbortOrder" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_AbortOrder_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AbortOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_Confirm_InputMessage">
+    <wsdl:part name="parameters" element="tns:Confirm" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_Confirm_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_ConfirmCapture_InputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmCapture" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_ConfirmCapture_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmCaptureResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_GetStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetStatus" />
+  </wsdl:message>
+  <wsdl:message name="IWCFTelegrammiService_GetStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetStatusResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IWCFTelegrammiService">
+    <wsdl:operation name="GetIdRequest">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/GetIdRequest" message="tns:IWCFTelegrammiService_GetIdRequest_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/GetIdRequestResponse" message="tns:IWCFTelegrammiService_GetIdRequest_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RecipientValidation">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/RecipientValidation" message="tns:IWCFTelegrammiService_RecipientValidation_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/RecipientValidationResponse" message="tns:IWCFTelegrammiService_RecipientValidation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RecipientsValidation">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/RecipientsValidation" message="tns:IWCFTelegrammiService_RecipientsValidation_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/RecipientsValidationResponse" message="tns:IWCFTelegrammiService_RecipientsValidation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Submit">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/Submit" message="tns:IWCFTelegrammiService_Submit_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/SubmitResponse" message="tns:IWCFTelegrammiService_Submit_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Modify">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/Modify" message="tns:IWCFTelegrammiService_Modify_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/ModifyResponse" message="tns:IWCFTelegrammiService_Modify_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Abort">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/Abort" message="tns:IWCFTelegrammiService_Abort_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/AbortResponse" message="tns:IWCFTelegrammiService_Abort_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PreConfirm">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/PreConfirm" message="tns:IWCFTelegrammiService_PreConfirm_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/PreConfirmResponse" message="tns:IWCFTelegrammiService_PreConfirm_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AbortOrder">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/AbortOrder" message="tns:IWCFTelegrammiService_AbortOrder_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/AbortOrderResponse" message="tns:IWCFTelegrammiService_AbortOrder_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Confirm">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/Confirm" message="tns:IWCFTelegrammiService_Confirm_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/ConfirmResponse" message="tns:IWCFTelegrammiService_Confirm_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmCapture">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/ConfirmCapture" message="tns:IWCFTelegrammiService_ConfirmCapture_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/ConfirmCaptureResponse" message="tns:IWCFTelegrammiService_ConfirmCapture_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStatus">
+      <wsdl:input wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/GetStatus" message="tns:IWCFTelegrammiService_GetStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/GetStatusResponse" message="tns:IWCFTelegrammiService_GetStatus_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IWCFTelegrammiService" type="tns:IWCFTelegrammiService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetIdRequest">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/GetIdRequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RecipientValidation">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/RecipientValidation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RecipientsValidation">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/RecipientsValidation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Submit">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/Submit" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Modify">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/Modify" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Abort">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/Abort" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PreConfirm">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/PreConfirm" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AbortOrder">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/AbortOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Confirm">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/Confirm" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmCapture">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/ConfirmCapture" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStatus">
+      <soap:operation soapAction="http://ComunicazioniElettroniche.Telegramma.WS/IWCFTelegrammiService/GetStatus" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WCFTelegrammiService">
+    <wsdl:port name="BasicHttpBinding_IWCFTelegrammiService" binding="tns:BasicHttpBinding_IWCFTelegrammiService">
+      <soap:address location="http://ppcews06/TelegrammaExtranet/WsTOL.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolLog" table="ProtocolLog">
+
+    <id name="Id" column="id">
+      <generator class="native" />
+    </id>
+    
+    <property name="LogDate" column="LogDate" />
+    <property name="SystemComputer" column="SystemComputer" type="AnsiString" />
+    <property name="SystemUser" column="SystemUser" type="AnsiString" />
+    <property name="Program" column="Program" type="AnsiString" />
+    <property name="Year" column="Year" />
+    <property name="Number" column="Number" />
+    <property name="LogType" column="LogType" type="AnsiString" />
+    <property name="LogDescription" column="LogDescription" type="AnsiString" />
+    <property name="Severity" column="Severity" />
+    <property name="Hash" column="Hash" />
+    <property name="UniqueId" column="UniqueId" unique="true" />
+
+    <property name="UniqueIdProtocol">
+      <column name="UniqueIdProtocol" not-null="true"/>
+    </property>
+    
+    <many-to-one name="Protocol" class="Protocol" lazy="false" fetch="join" insert="false" update="false" not-found="ignore">
+      <column name="Year" />
+      <column name="Number" />
+    </many-to-one>
+    
+  </class>
+
+</hibernate-mapping>

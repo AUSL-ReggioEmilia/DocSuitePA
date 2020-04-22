@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3CFE3AD8-84E2-4755-A58E-BEB074B890D5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Mapper.Model</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Mapper.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commons\ICategoryFullTableValuedModelMapper.cs" />
+    <Compile Include="Commons\IContactFullTableValuedModelMapper.cs" />
+    <Compile Include="Commons\Implementation\CategoryFullTableValuedModelMapper.cs" />
+    <Compile Include="Commons\Implementation\ContactFullTableValuedModelMapper.cs" />
+    <Compile Include="Commons\Implementation\RoleFullTableValuedModelMapper.cs" />
+    <Compile Include="Commons\IRoleFullTableValuedModelMapper.cs" />
+    <Compile Include="Fascicles\IFascicleDocumentUnitModelMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleDocumentUnitModelMapper.cs" />
+    <Compile Include="JeepServiceHosts\IJeepServiceHostModelMapper.cs" />
+    <Compile Include="JeepServiceHosts\IJeepServiceHostTableValuedModelMapper.cs" />
+    <Compile Include="JeepServiceHosts\Implementation\JeepServiceHostModelMapper.cs" />
+    <Compile Include="JeepServiceHosts\Implementation\JeepServiceHostTableValuedModelMapper.cs" />
+    <Compile Include="Parameters\Implementation\ParameterGuidModelMapper.cs" />
+    <Compile Include="Parameters\IParameterGuidModelMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailAttachmentTableValuedMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailAttachmentTableValuedModelMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailBoxConfigurationModelMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailBoxConfigurationTableValuedModelMapper.cs" />
+    <Compile Include="PECMails\IPECMailAttachmentTableValuedMapper.cs" />
+    <Compile Include="PECMails\IPECMailAttachmentTableValuedModelMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailBoxModelMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailBoxTableValuedModelMapper.cs" />
+    <Compile Include="PECMails\IPECMailBoxConfigurationModelMapper.cs" />
+    <Compile Include="PECMails\IPECMailBoxConfigurationTableValuedModelMapper.cs" />
+    <Compile Include="PECMails\IPECMailBoxModelMapper.cs" />
+    <Compile Include="PECMails\IPECMailBoxTableValuedModelMapper.cs" />
+    <Compile Include="Processes\Implementation\ProcessTableValuedModelMapper.cs" />
+    <Compile Include="Processes\IProcessTableValuedModelMapper.cs" />
+    <Compile Include="Processes\Implementation\ProcessFascicleTemplateModelMapper.cs" />
+    <Compile Include="Processes\Implementation\ProcessModelMapper.cs" />
+    <Compile Include="Processes\IProcessFascicleTemplateModelMapper.cs" />
+    <Compile Include="Processes\IProcessModelMapper.cs" />
+    <Compile Include="Protocols\IAdvancedProtocolModelMapper.cs" />
+    <Compile Include="Protocols\IAdvancedProtocolTableValuedModelMapper.cs" />
+    <Compile Include="Protocols\Implementation\AdvacedProtocolTableValuedModelMapper.cs" />
+    <Compile Include="Protocols\Implementation\AdvancedProtocolModelMapper.cs" />
+    <Compile Include="Commons\IContactModelMapper.cs" />
+    <Compile Include="Commons\IContainerTableValuedEntityMapper.cs" />
+    <Compile Include="Commons\Implementation\ContactModelMapper.cs" />
+    <Compile Include="Commons\Implementation\ContactTableValuedModelMapper.cs" />
+    <Compile Include="Commons\Implementation\ContainerTableValuedEntityMapper.cs" />
+    <Compile Include="Commons\Implementation\RoleTableValuedModelMapper.cs" />
+    <Compile Include="Commons\IContactTableValuedModelMapper.cs" />
+    <Compile Include="Commons\IRoleTableValuedModelMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitChainModelMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitModelMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitUserModelMapper .cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitRoleModelMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitChainModelMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitModelMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitUserModelMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitRoleModelMapper.cs" />
+    <Compile Include="Dossiers\IDossierContactTableValuedModelMapper.cs" />
+    <Compile Include="Dossiers\IDossierFolderModelMapper.cs" />
+    <Compile Include="Dossiers\IDossierRoleTableValuedModelMapper.cs" />
+    <Compile Include="Dossiers\IDossierFolderTableValuedModelMapper.cs" />
+    <Compile Include="Dossiers\IDossierTableValuedModelMapper.cs" />
+    <Compile Include="Dossiers\IDossierModelMapper.cs" />
+    <Compile Include="Dossiers\IDossierRoleModelMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierContactTableValuedModelMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierFolderModelMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierRoleTableValuedModelMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierFolderTableValuedModelMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierTableValuedModelMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierModelMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierRoleModelMapper.cs" />
+    <Compile Include="Fascicles\IFascicleFolderModelMapper.cs" />
+    <Compile Include="Fascicles\IFascicleFolderTableValuedModelMapper.cs" />
+    <Compile Include="Fascicles\IFascicleDocumentModelMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleFolderModelMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleFolderTableValuedModelMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleDocumentModelMapper.cs" />
+    <Compile Include="Monitors\IMonitoringSeriesSectionTableValuedModelMapper.cs" />
+    <Compile Include="Monitors\Implementation\MonitoringSeriesSectionTableValuedModelMapper.cs" />
+    <Compile Include="Monitors\Implementation\TransparentAdministrationMonitorLogModelMapper.cs" />
+    <Compile Include="Monitors\Implementation\TransparentAdministrationMonitorLogTableValuedModelMapper.cs" />
+    <Compile Include="Monitors\ITransparentAdministrationMonitorLogModelMapper.cs" />
+    <Compile Include="Monitors\ITransparentAdministrationMonitorLogTableValuedModelMapper.cs" />
+    <Compile Include="ParameterModelMapper.cs" />
+    <Compile Include="BaseModelMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationUserTableValueModelMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationVersioningTableValueModelMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationSignTableValueModelMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationTableValuedModelMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationUserModelMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationSignModelMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationVersioningModelMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationVersioningTableValueModelMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationUserTableValueModelMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationSignTableValueModelMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationTableValuedModelMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationUserModelMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationSignModelMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationVersioningModelMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationModelMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationModelMapper.cs" />
+    <Compile Include="Commons\Implementation\LocationModelMapper.cs" />
+    <Compile Include="Commons\Implementation\RoleModelMapper.cs" />
+    <Compile Include="Commons\ILocationModelMapper.cs" />
+    <Compile Include="Commons\IRoleModelMapper.cs" />
+    <Compile Include="Commons\ICategoryModelMapper.cs" />
+    <Compile Include="Commons\IContainerModelMapper.cs" />
+    <Compile Include="Commons\IContainerTableValuedModelMapper.cs" />
+    <Compile Include="Commons\ICategoryTableValuedModelMapper.cs" />
+    <Compile Include="Commons\Implementation\ContainerModelMapper.cs" />
+    <Compile Include="Commons\Implementation\CategoryModelMapper.cs" />
+    <Compile Include="Commons\Implementation\ContainerTableValuedModelMapper.cs" />
+    <Compile Include="Commons\Implementation\CategoryTableValuedModelMapper.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesItemCollaborationTableValueModelMapper.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesItemModelMapper.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemCollaborationTableValueModelMapper.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemModelMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitChainTableValuedModelMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitChainTableValuedModelMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitTableValuedModelMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitTableValuedModelMapper.cs" />
+    <Compile Include="Fascicles\IFascicleTableValuedModelMapper.cs" />
+    <Compile Include="Fascicles\IFascicleModelMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleTableValuedModelMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleModelMapper.cs" />
+    <Compile Include="MassimariScarto\IMassimarioScartoModelMapper.cs" />
+    <Compile Include="MassimariScarto\Implementation\MassimarioScartoModelMapper.cs" />
+    <Compile Include="Messages\IMessageContactModelMapper.cs" />
+    <Compile Include="Messages\IMessageContactEmailModelMapper.cs" />
+    <Compile Include="Messages\IMessageEmailModelMapper.cs" />
+    <Compile Include="Messages\IMessageAttachmentModelMapper.cs" />
+    <Compile Include="Messages\IMessageModelMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageContactEmailModelMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageContactModelMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageAttachmentModelMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageEmailModelMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageModelMapper.cs" />
+    <Compile Include="Parameters\Implementation\ParameterBoolModelMapper.cs" />
+    <Compile Include="Parameters\Implementation\AbsentManagerCertificateModelMapper.cs" />
+    <Compile Include="Parameters\Implementation\ParameterModelMapper.cs" />
+    <Compile Include="Parameters\Implementation\ParameterShortModelMapper.cs" />
+    <Compile Include="Parameters\Implementation\ParameterTableValuedMapper.cs" />
+    <Compile Include="Parameters\Implementation\ParameterTableValuedModelMapper.cs" />
+    <Compile Include="Parameters\Implementation\TenantModelMapper.cs" />
+    <Compile Include="Parameters\Implementation\ParameterJsonModelMapper.cs" />
+    <Compile Include="Parameters\IParameterBoolModelMapper.cs" />
+    <Compile Include="Parameters\IAbsentManagerCertificateModelMapper.cs" />
+    <Compile Include="Parameters\IParameterModelMapper.cs" />
+    <Compile Include="Parameters\IParameterShortModelMapper.cs" />
+    <Compile Include="Parameters\IParameterTableValuedMapper.cs" />
+    <Compile Include="Parameters\IParameterTableValuedModelMapper.cs" />
+    <Compile Include="Parameters\ITenantModelMapper.cs" />
+    <Compile Include="Parameters\IParameterJsonModelMapper.cs" />
+    <Compile Include="Parameters\IParameterIntModelMapper.cs" />
+    <Compile Include="Parameters\Implementation\ParameterIntModelMapper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolContactTableValuedModelMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolContactManualTableValuedModelMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolTypeTableValuedModelMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolParerTableValuedModelMapper.cs" />
+    <Compile Include="Protocols\IProtocolContactTableValueModelMapper.cs" />
+    <Compile Include="Protocols\IProtocolContactManualTableValueModelMapper.cs" />
+    <Compile Include="Protocols\IProtocolTypeTableValuedModelMapper.cs" />
+    <Compile Include="Protocols\IProtocolParerTableValuedModelMapper.cs" />
+    <Compile Include="Protocols\IProtocolTableValuedModelMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolTableValuedModelMapper.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionCollaborationTableValueModelMapper.cs" />
+    <Compile Include="Resolutions\Implementation\FileResolutionModelMapper.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionRoleModelMapper.cs" />
+    <Compile Include="Resolutions\IResolutionCollaborationTableValueModelMapper.cs" />
+    <Compile Include="Resolutions\IFileResolutionModelMapper.cs" />
+    <Compile Include="Resolutions\IResolutionRoleModelMapper.cs" />
+    <Compile Include="Resolutions\IResolutionModelMapper.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionModelMapper.cs" />
+    <Compile Include="Securities\IDomainUserModelMessageContactEmailModelMapper.cs" />
+    <Compile Include="Securities\IDomainUserModelMessageContactModelMapper.cs" />
+    <Compile Include="Securities\IDomainUserModelCollaborationUserModelMapper.cs" />
+    <Compile Include="Securities\IDomainUserModelCollaborationSignModelMapper.cs" />
+    <Compile Include="Securities\IDomainUserModelMapper.cs" />
+    <Compile Include="Securities\IDomainGroupModelMapper.cs" />
+    <Compile Include="Securities\Implementation\BaseDomainModelMapper.cs" />
+    <Compile Include="Securities\Implementation\DomainUserModelMessageContactModelMapper.cs" />
+    <Compile Include="Securities\Implementation\DomainUserModelMessageContactEmailModelMapper.cs" />
+    <Compile Include="Securities\Implementation\DomainUserModelCollaborationUserModelMapper.cs" />
+    <Compile Include="Securities\Implementation\DomainUserModelCollaborationSignModelMapper.cs" />
+    <Compile Include="Securities\Implementation\DomainUserModelMapper.cs" />
+    <Compile Include="Securities\Implementation\DomainGroupModelMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitUDSCommandModelMapper.cs" />
+    <Compile Include="Tenants\Implementation\TenantConfigurationModelMapper.cs" />
+    <Compile Include="Tenants\Implementation\TenantConfigurationTableValuedModelMapper.cs" />
+    <Compile Include="Tenants\Implementation\TenantTableValuedModelMapper.cs" />
+    <Compile Include="Tenants\ITenantConfigurationModelMapper.cs" />
+    <Compile Include="Tenants\ITenantConfigurationTableValuedModelMapper.cs" />
+    <Compile Include="Tenants\ITenantTableValuedModelMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSCollaborationEntityMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSContactEntityMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSDocumentUnitEntityMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSMessageEntityMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSPECMailEntityMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSRoleEntityMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSUserEntityMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSRepositoryTableValuedModelMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSRepositoryModelMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSSchemaRepositoryModelMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitUDSCommandModelMapper.cs" />
+    <Compile Include="UDS\IUDSRoleEntityMapper.cs" />
+    <Compile Include="UDS\IUDSUserEntityMapper.cs" />
+    <Compile Include="UDS\IUDSPECMailEntityMapper.cs" />
+    <Compile Include="UDS\IUDSMessageEntityMapper.cs" />
+    <Compile Include="UDS\IUDSDocumentUnitEntityMapper.cs" />
+    <Compile Include="UDS\IUDSCollaborationEntityMapper.cs" />
+    <Compile Include="UDS\IUDSContactEntityMapper.cs" />
+    <Compile Include="UDS\IUDSRepositoryTableValuedModelMapper.cs" />
+    <Compile Include="UDS\IUDSRepositoryModelMapper.cs" />
+    <Compile Include="UDS\IUDSSchemaRepositoryModelMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowRoleMappingCollaborationUserModelMapper.cs" />
+    <Compile Include="Workflows\IWorkflowRoleMappingCollaborationUserModelMapper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Entity\VecompSoftware.DocSuiteWeb.Entity.csproj">
+      <Project>{34901fa6-4816-4872-9986-e42b2e866095}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Mapper\VecompSoftware.DocSuiteWeb.Mapper.csproj">
+      <Project>{643b29b4-b25d-44d3-8831-e80c5e5f25d0}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Mapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Model\VecompSoftware.DocSuiteWeb.Model.csproj">
+      <Project>{df5935ca-367b-4124-9840-aafd3c419eba}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Repository\VecompSoftware.DocSuiteWeb.Repository.csproj">
+      <Project>{27d8fcbb-8a8e-430b-8747-a5ace9b4ffca}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="VecompSoftware.DocSuiteWeb.Mapper.Model.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

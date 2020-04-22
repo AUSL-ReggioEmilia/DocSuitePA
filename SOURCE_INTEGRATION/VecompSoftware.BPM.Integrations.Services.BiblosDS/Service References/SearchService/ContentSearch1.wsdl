@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://Vecomp.BiblosDs.ContentSearch" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://Vecomp.BiblosDs.ContentSearch" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://Vecomp.BiblosDs.ContentSearch/Imports">
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd0" namespace="http://Vecomp.BiblosDs.ContentSearch" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/Condition" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/FilterCondition" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/FilterOperator" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/DocumentResponse" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/ResponseBase" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/ResponseError" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Document" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd9" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd10" namespace="http://BiblosDS/2009/10/Archive" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/ArchiveServerConfig" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd12" namespace="http://BiblosDS/2009/10/Server" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd13" namespace="http://BiblosDS/2009/10/ServerRole" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd14" namespace="http://BiblosDS/2009/10/Storage" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd15" namespace="http://BiblosDS/2009/10/StorageType" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd16" namespace="http://BiblosDS/2009/10/AttributeValue" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd17" namespace="http://BiblosDS/2009/10/Attribute" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd18" namespace="http://BiblosDS/2009/10/AttributeGroup" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd19" namespace="http://BiblosDS/2009/10/AttributeMode" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd20" namespace="http://BiblosDS/2009/10/Certificate" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/Content" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd22" namespace="http://BiblosDS/2009/10/DocumentServer" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd23" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd24" namespace="http://BiblosDS/2009/10/StorageArea" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd25" namespace="http://BiblosDS/2009/10/Permission" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd26" namespace="http://BiblosDS/2009/10/PermissionMode" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd27" namespace="http://BiblosDS/2009/10/Preservation" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd28" namespace="http://BiblosDS/2009/10/PreservationJournaling" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd29" namespace="http://BiblosDS/2009/10/PreservationJournalingActivity" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd30" namespace="http://BiblosDS/2009/10/PreservationUser" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd31" namespace="http://BiblosDS/2009/10/PreservationUserRole" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd32" namespace="http://BiblosDS/2009/10/PreservationRole" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd33" namespace="http://BiblosDS/2009/10/PreservationTask" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd34" namespace="http://BiblosDS/2009/10/PreservationAlert" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd35" namespace="http://BiblosDS/2009/10/PreservationAlertType" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd36" namespace="http://BiblosDS/2009/10/PreservationTaskType" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd37" namespace="http://BiblosDS/2009/10/PreservationScheduleTaskType" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd38" namespace="http://BiblosDS/2009/10/PreservationSchedule" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd39" namespace="http://BiblosDS/2009/10/PreservationTaskTypes" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd40" namespace="http://BiblosDS/2009/10/PreservationTaskGroup" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd41" namespace="http://BiblosDS/2009/10/PreservationTaskGroupType" />
+      <xsd:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd42" namespace="http://BiblosDS/2009/10/DocumentAttach" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IContentSearch_IsAlive_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsAlive" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_IsAlive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsAliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_SearchQueryPaged_InputMessage">
+    <wsdl:part name="parameters" element="tns:SearchQueryPaged" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_SearchQueryPaged_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchQueryPagedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_SearchQuery_InputMessage">
+    <wsdl:part name="parameters" element="tns:SearchQuery" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_SearchQuery_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchQueryResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_SearchQueryLatestVersion_InputMessage">
+    <wsdl:part name="parameters" element="tns:SearchQueryLatestVersion" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_SearchQueryLatestVersion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchQueryLatestVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_SearchQueryContext_InputMessage">
+    <wsdl:part name="parameters" element="tns:SearchQueryContext" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_SearchQueryContext_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchQueryContextResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_SearchQueryContextLatestVersion_InputMessage">
+    <wsdl:part name="parameters" element="tns:SearchQueryContextLatestVersion" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_SearchQueryContextLatestVersion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchQueryContextLatestVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetAllDocumentChains_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllDocumentChains" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetAllDocumentChains_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllDocumentChainsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetAllDocuments_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllDocuments" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetAllDocuments_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllDocumentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetAllDocumentsWithThumbnail_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllDocumentsWithThumbnail" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetAllDocumentsWithThumbnail_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllDocumentsWithThumbnailResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetDocumentsByAttributeValue_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentsByAttributeValue" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetDocumentsByAttributeValue_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentsByAttributeValueResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetPagingDocumentsByAttributeValue_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPagingDocumentsByAttributeValue" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetPagingDocumentsByAttributeValue_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPagingDocumentsByAttributeValueResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetDocumentsByAttributeValueContains_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentsByAttributeValueContains" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetDocumentsByAttributeValueContains_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentsByAttributeValueContainsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetPagingDocumentsByAttributeValueContains_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPagingDocumentsByAttributeValueContains" />
+  </wsdl:message>
+  <wsdl:message name="IContentSearch_GetPagingDocumentsByAttributeValueContains_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPagingDocumentsByAttributeValueContainsResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IContentSearch">
+    <wsdl:operation name="IsAlive">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/IsAlive" message="tns:IContentSearch_IsAlive_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/IsAliveResponse" message="tns:IContentSearch_IsAlive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchQueryPaged">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/SearchQueryPaged" message="tns:IContentSearch_SearchQueryPaged_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/SearchQueryPagedResponse" message="tns:IContentSearch_SearchQueryPaged_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchQuery">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/SearchQuery" message="tns:IContentSearch_SearchQuery_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/SearchQueryResponse" message="tns:IContentSearch_SearchQuery_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchQueryLatestVersion">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/SearchQueryLatestVersion" message="tns:IContentSearch_SearchQueryLatestVersion_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/SearchQueryLatestVersionResponse" message="tns:IContentSearch_SearchQueryLatestVersion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchQueryContext">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/SearchQueryContext" message="tns:IContentSearch_SearchQueryContext_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/SearchQueryContextResponse" message="tns:IContentSearch_SearchQueryContext_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchQueryContextLatestVersion">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/SearchQueryContextLatestVersion" message="tns:IContentSearch_SearchQueryContextLatestVersion_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/SearchQueryContextLatestVersionResponse" message="tns:IContentSearch_SearchQueryContextLatestVersion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllDocumentChains">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetAllDocumentChains" message="tns:IContentSearch_GetAllDocumentChains_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetAllDocumentChainsResponse" message="tns:IContentSearch_GetAllDocumentChains_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllDocuments">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetAllDocuments" message="tns:IContentSearch_GetAllDocuments_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetAllDocumentsResponse" message="tns:IContentSearch_GetAllDocuments_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllDocumentsWithThumbnail">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetAllDocumentsWithThumbnail" message="tns:IContentSearch_GetAllDocumentsWithThumbnail_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetAllDocumentsWithThumbnailResponse" message="tns:IContentSearch_GetAllDocumentsWithThumbnail_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentsByAttributeValue">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetDocumentsByAttributeValue" message="tns:IContentSearch_GetDocumentsByAttributeValue_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetDocumentsByAttributeValueResponse" message="tns:IContentSearch_GetDocumentsByAttributeValue_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPagingDocumentsByAttributeValue">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetPagingDocumentsByAttributeValue" message="tns:IContentSearch_GetPagingDocumentsByAttributeValue_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetPagingDocumentsByAttributeValueResponse" message="tns:IContentSearch_GetPagingDocumentsByAttributeValue_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentsByAttributeValueContains">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetDocumentsByAttributeValueContains" message="tns:IContentSearch_GetDocumentsByAttributeValueContains_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetDocumentsByAttributeValueContainsResponse" message="tns:IContentSearch_GetDocumentsByAttributeValueContains_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPagingDocumentsByAttributeValueContains">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetPagingDocumentsByAttributeValueContains" message="tns:IContentSearch_GetPagingDocumentsByAttributeValueContains_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.ContentSearch/IContentSearch/GetPagingDocumentsByAttributeValueContainsResponse" message="tns:IContentSearch_GetPagingDocumentsByAttributeValueContains_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="TemplateProtocolRoleUser" table="TemplateProtocolRoleUser">
+    
+    <composite-id class="TemplateProtocolRoleUserCompositeKey" name="Id" unsaved-value="any">
+      <key-property column="idTemplateProtocol" name="IdTemplateProtocol" />
+      <key-property column="idRole" name="IdRole" />
+      <key-property column="GroupName" name="GroupName" type="AnsiString" />
+      <key-property column="UserName" name="UserName" type="AnsiString" />
+    </composite-id>
+
+    <property name="Account" column="Account" type="AnsiString" />
+    <property name="IsActive" column="IsActive" />
+
+    <many-to-one class="Role" name="Role" column="idRole" insert="false" update="false" />
+    <many-to-one name="TemplateProtocol" class="TemplateProtocol" insert="false" update="false" column="idTemplateProtocol" />
+    
+  </class>
+  
+</hibernate-mapping>

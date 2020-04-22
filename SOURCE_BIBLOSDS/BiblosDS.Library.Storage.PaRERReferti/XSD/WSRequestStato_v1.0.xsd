@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+
+  <!--  -->
+  
+  <!-- PARTE COMUNE -->
+
+  <!--  -->
+  <xs:complexType  name="VersatoreType">
+    <xs:sequence>
+      <xs:element name="Ambiente" type="TokenNonVuotoType"/>
+      <xs:element name="Ente" type="TokenNonVuotoType"/>
+      <xs:element name="Struttura" type="TokenNonVuotoType"/>
+      <xs:element name="UserID" type="TokenNonVuotoType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:complexType name="ChiaveType">
+    <xs:sequence>
+      <xs:element name="Numero" type="TokenNonVuotoType"/>
+      <xs:element name="Anno" type="xs:nonNegativeInteger"/>
+      <xs:element name="TipoRegistro" type="TokenNonVuotoType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <!--  -->
+  <xs:simpleType name="TokenNonVuotoType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--  -->
+<!--  -->
+
+<!--  -->
+  <!--  -->
+  <xs:element name="Recupero">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Versione" type="xs:string"/>
+        <xs:element name="Versatore" type="VersatoreType"/>
+        <xs:element name="Chiave" type="ChiaveType"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
+
+
+
+
+
+
+

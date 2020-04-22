@@ -1,0 +1,1 @@
+﻿spazio dinamico utilizzato dal listener del service bus per generare le entità dinamiche UDS

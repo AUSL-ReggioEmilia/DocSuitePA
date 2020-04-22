@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D63CFD6B-C2D5-4852-83E9-F9C87AB90C6F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.API.Connector</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.API.Connector</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Helpers, Version=8.87.0.0, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.8.87.19296.1\lib\net461\VecompSoftware.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.Json, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Json.8.87.19296.1\lib\net461\VecompSoftware.Helpers.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="APIConnector.cs" />
+    <Compile Include="CollaborationConnector.cs" />
+    <Compile Include="dto\APIProviderDTO.cs" />
+    <Compile Include="dto\OChartItemDTO.cs" />
+    <Compile Include="dto\OrgDeptDTO.cs" />
+    <Compile Include="FastInvoiceProtocolConnector.cs" />
+    <Compile Include="FastMergeConnector.cs" />
+    <Compile Include="jsonconverter\OChartItemDTOConverter.cs" />
+    <Compile Include="MailConnector.cs" />
+    <Compile Include="ProtocolConnector.cs" />
+    <Compile Include="Service References\APIService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="OChartConnector.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\CollaborationService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\FastInvoiceProtocolService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\FastMergeService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\MailService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\OChartService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ProtocolService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.API.Interface\VecompSoftware.DocSuiteWeb.API.Interface.csproj">
+      <Project>{67d6b9bc-df38-4b3d-9fac-80b21ce274e3}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.API.Interface</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\APIService\APIService.wsdl" />
+    <None Include="Service References\APIService\APIService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\APIService\APIService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\CollaborationService\CollaborationService.wsdl" />
+    <None Include="Service References\CollaborationService\CollaborationService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\CollaborationService\CollaborationService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FastInvoiceProtocolService\FastInvoiceProtocolService.wsdl" />
+    <None Include="Service References\FastInvoiceProtocolService\FastInvoiceProtocolService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FastInvoiceProtocolService\FastInvoiceProtocolService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FastMergeService\FastMergeService.wsdl" />
+    <None Include="Service References\FastMergeService\FastMergeService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FastMergeService\FastMergeService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MailService\MailService.wsdl" />
+    <None Include="Service References\MailService\MailService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MailService\MailService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\OChartService\OChartService.wsdl" />
+    <None Include="Service References\OChartService\OChartService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\OChartService\OChartService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\APIService\" />
+    <WCFMetadataStorage Include="Service References\CollaborationService\" />
+    <WCFMetadataStorage Include="Service References\FastInvoiceProtocolService\" />
+    <WCFMetadataStorage Include="Service References\FastMergeService\" />
+    <WCFMetadataStorage Include="Service References\MailService\" />
+    <WCFMetadataStorage Include="Service References\OChartService\" />
+    <WCFMetadataStorage Include="Service References\ProtocolService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\OChartService\OChartService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\OChartService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\OChartService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\OChartService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\APIService\APIService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\APIService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\APIService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\APIService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ProtocolService\ProtocolService.wsdl" />
+    <None Include="Service References\ProtocolService\ProtocolService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ProtocolService\ProtocolService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ProtocolService\ProtocolService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ProtocolService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ProtocolService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ProtocolService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MailService\MailService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MailService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MailService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MailService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CollaborationService\CollaborationService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CollaborationService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CollaborationService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CollaborationService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FastMergeService\FastMergeService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FastMergeService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FastMergeService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FastMergeService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FastInvoiceProtocolService\FastInvoiceProtocolService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FastInvoiceProtocolService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FastInvoiceProtocolService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FastInvoiceProtocolService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="TaskLock" table="TaskLock">
+    
+    <composite-id class="TaskLockCompositeKey" name="Id" unsaved-value="any">
+      <key-property column="TaskType" name="TaskType" type="AnsiString" />
+      <key-property column="TaskID" name="TaskId" type="AnsiString" />
+      <key-property column="Step" name="Step" />
+      <key-property column="Session" name="Session" />
+    </composite-id>
+    
+    <property name="State" column="State" type="AnsiChar" />
+    <property name="Message" column="Message" type="AnsiString" />
+    <property name="Created" column="Created" />
+    <property name="Data" column="Data" type="AnsiString" />
+    
+  </class>
+
+</hibernate-mapping>

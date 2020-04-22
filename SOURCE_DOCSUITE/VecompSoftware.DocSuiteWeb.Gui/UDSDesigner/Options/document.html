@@ -1,0 +1,142 @@
+
+
+<div id="DocumentOption" class="form-horizontal">
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Etichetta</label>
+        <div class="controls col-sm-9">
+            <input type="text" class="form-control" placeholder="Etichetta" rv-value="ctrl.label">
+        </div>
+    </div>
+
+    <div class="form-group" rv-class-hidden="ctrl.createBiblosArchive">
+        <label class="control-label col-sm-3">Archivio</label>
+        <div class="controls col-sm-9">
+            <div class="btn-group">
+                <button data-toggle="dropdown" id="selectDefault" class="btn btn-default dropdown-toggle" rv-class-disabled="ctrl.archiveReadOnly" rv-on-click="ctrl.getBiblosArchives">
+                    <i rv-show="ctrl.isLoadingArchives" class="fa fa-spinner fa-spin"></i> {ctrl.archive} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu scrollable-menu">
+                    <li rv-each-arch="ctrl.archives">
+                        <a rv-on-click="ctrl.selectedItemChanged">{arch}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Tipo collezione</label>
+        <div class="controls col-sm-9">
+            <select class="form-control" rv-value="ctrl.collectionType">
+                <option value="*">Seleziona</option>
+                <option value="Documenti">Documenti Principali</option>
+                <option value="Allegati">Allegati</option>
+                <option value="Annessi">Annessi</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="required">
+                <input id="required" type="checkbox" rv-checked="ctrl.required" rv-disabled="ctrl.readOnly"> Richiesto
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="modifyEnable">
+                <input id="modifyEnable" type="checkbox" rv-checked="ctrl.modifyEnable">  Campo modificabile
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="readOnly">
+                <input id="readOnly" type="checkbox" rv-checked="ctrl.readOnly" rv-disabled="ctrl.required"> Sola lettura
+            </label>
+        </div>
+
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="createBiblosArchive">
+                <input id="createBiblosArchive" type="checkbox" rv-checked="ctrl.createBiblosArchive"> Crea archivio BiblosDS
+            </label>
+        </div>
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="removeDocument">
+                <input id="documentDeletable" type="checkbox" rv-checked="ctrl.documentDeletable"> Abilita rimozione documento
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="enableMultifile">
+                <input id="enableMultifile" type="checkbox" rv-checked="ctrl.enableMultifile"> Abilita multi-file
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="enableUpload">
+                <input id="enableUpload" type="checkbox" rv-checked="ctrl.enableUpload"> Abilita upload
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="enableScanner">
+                <input id="enableScanner" type="checkbox" rv-checked="ctrl.enableScanner"> Abilita scanner
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="enableSign">
+                <input id="enableSign" type="checkbox" rv-checked="ctrl.enableSign"> Abilita firma digitale
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="enableSign">
+                <input id="signRequired" type="checkbox" rv-checked="ctrl.signRequired"> Firma digitale obbligatoria
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="copyProtocol">
+                <input id="copyProtocol" type="checkbox" rv-checked="ctrl.copyProtocol"> Abilita copia protocollo
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="copyResolution">
+                <input id="copyResolution" type="checkbox" rv-checked="ctrl.copyResolution"> Abilita copia atti
+            </label>
+        </div>
+
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="copySeries">
+                <input id="copySeries" type="checkbox" rv-checked="ctrl.copySeries"> Abilita copia serie documentale
+            </label>
+        </div>
+
+        <div class="controls col-sm-3" rv-class-hidden="ctrl.enableDematerialisationCheckBox">&nbsp;</div>
+        <div class="controls col-sm-9" rv-class-hidden="ctrl.enableDematerialisationCheckBox">
+            <label for="dematerializationEnabled">
+                <input id="dematerializationEnabled" type="checkbox" rv-checked="ctrl.dematerialisationEnabled"> Abilita la richiesta di attestazione
+            </label>
+        </div>
+
+    </div>
+
+
+</div>

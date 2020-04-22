@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://Vecomp.BiblosDs.Preservation" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://Vecomp.BiblosDs.Preservation" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://Vecomp.BiblosDs.Preservation/Imports">
+      <xsd:import schemaLocation="http://docsuitebiblosds.cloudapp.net/BiblosDS2010WCF/Preservation.svc?xsd=xsd0" namespace="http://Vecomp.BiblosDs.Preservation" />
+      <xsd:import schemaLocation="http://docsuitebiblosds.cloudapp.net/BiblosDS2010WCF/Preservation.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://docsuitebiblosds.cloudapp.net/BiblosDS2010WCF/Preservation.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://docsuitebiblosds.cloudapp.net/BiblosDS2010WCF/Preservation.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/PreservationEvents" />
+      <xsd:import schemaLocation="http://docsuitebiblosds.cloudapp.net/BiblosDS2010WCF/Preservation.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/ContentFormat" />
+      <xsd:import schemaLocation="http://docsuitebiblosds.cloudapp.net/BiblosDS2010WCF/Preservation.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Content" />
+      <xsd:import schemaLocation="http://docsuitebiblosds.cloudapp.net/BiblosDS2010WCF/Preservation.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IPreservation_VerifyPreservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:VerifyPreservation" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_VerifyPreservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:VerifyPreservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_PreservationHistory_InputMessage">
+    <wsdl:part name="parameters" element="tns:PreservationHistory" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_PreservationHistory_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PreservationHistoryResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_GetPreservationTaskStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationTaskStatus" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_GetPreservationTaskStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationTaskStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_PreparePreservationTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:PreparePreservationTask" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_PreparePreservationTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PreparePreservationTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_GetIdPreservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetIdPreservation" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_GetIdPreservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetIdPreservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_GetClosingPreservationHash_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetClosingPreservationHash" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_GetClosingPreservationHash_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetClosingPreservationHashResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_ConfirmSignedPreservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmSignedPreservation" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_ConfirmSignedPreservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConfirmSignedPreservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_GetPreservationAdEMark_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAdEMark" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_GetPreservationAdEMark_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAdEMarkResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_GetPreservationCloseFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationCloseFile" />
+  </wsdl:message>
+  <wsdl:message name="IPreservation_GetPreservationCloseFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationCloseFileResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IPreservation">
+    <wsdl:operation name="VerifyPreservation">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/VerifyPreservation" message="tns:IPreservation_VerifyPreservation_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/VerifyPreservationResponse" message="tns:IPreservation_VerifyPreservation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PreservationHistory">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/PreservationHistory" message="tns:IPreservation_PreservationHistory_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/PreservationHistoryResponse" message="tns:IPreservation_PreservationHistory_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationTaskStatus">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/GetPreservationTaskStatus" message="tns:IPreservation_GetPreservationTaskStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/GetPreservationTaskStatusResponse" message="tns:IPreservation_GetPreservationTaskStatus_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PreparePreservationTask">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/PreparePreservationTask" message="tns:IPreservation_PreparePreservationTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/PreparePreservationTaskResponse" message="tns:IPreservation_PreparePreservationTask_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIdPreservation">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/GetIdPreservation" message="tns:IPreservation_GetIdPreservation_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/GetIdPreservationResponse" message="tns:IPreservation_GetIdPreservation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetClosingPreservationHash">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/GetClosingPreservationHash" message="tns:IPreservation_GetClosingPreservationHash_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/GetClosingPreservationHashResponse" message="tns:IPreservation_GetClosingPreservationHash_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmSignedPreservation">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/ConfirmSignedPreservation" message="tns:IPreservation_ConfirmSignedPreservation_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/ConfirmSignedPreservationResponse" message="tns:IPreservation_ConfirmSignedPreservation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationAdEMark">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/GetPreservationAdEMark" message="tns:IPreservation_GetPreservationAdEMark_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/GetPreservationAdEMarkResponse" message="tns:IPreservation_GetPreservationAdEMark_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationCloseFile">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/GetPreservationCloseFile" message="tns:IPreservation_GetPreservationCloseFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Preservation/IPreservation/GetPreservationCloseFileResponse" message="tns:IPreservation_GetPreservationCloseFile_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

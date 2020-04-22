@@ -1,0 +1,106 @@
+[
+  {
+    "TenantId": "F916C0BA-69CF-4589-9B13-DBA7E97CFB8F",
+    "TenantName": "***REMOVED***",
+    "CurrentTenant": true,
+    "DomainAddress": "***REMOVED***",
+    "DomainPassword": "PRET-3275-tank",
+    "DomainUser": "***REMOVED***\\usrsvcprot",
+    "SecurityContext": "Domain",
+    "SignalRAddress": "https://protocollocll.enav.it/DSW.WebAPI",
+    "DSWUrl": "https://protocollocll.enav.it/SkyDoc",
+    "ODATAUrl": "https://protocollocll.enav.it/DSW.WebAPI/ODATA/",
+    "EnvironmentsEnable": {
+      "Protocollo": true,
+      "Pratiche": true,
+      "Atti": false
+    },
+    "WebApiClientConfig": {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.HttpClientConfiguration, VecompSoftware.DocSuiteWeb.Model",
+      "Addresses": [
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-WorkflowManagerAddress",
+          "Address": "https://protocollocll.enav.it/DSW.WebAPI/api/wfm/",
+          "Timeout": "00:00:15"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-EntityAddress",
+          "Address": "https://protocollocll.enav.it/DSW.WebAPI/api/entity/",
+          "Timeout": "00:00:15"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-ServiceBusAddress",
+          "Address": "https://protocollocll.enav.it/DSW.WebAPI/api/sb/",
+          "Timeout": "00:00:15"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-UDSAddress",
+          "Address": "https://protocollocll.enav.it/DSW.WebAPI/api/uds/",
+          "Timeout": "00:00:15"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "ODATA-EntityAddress",
+          "Address": "https://protocollocll.enav.it/DSW.WebAPI/ODATA/",
+          "Timeout": "00:00:15"
+        }
+      ]
+    }
+  },
+  {
+    "TenantId": "EAC6F666-639D-4CA6-B264-D0C33797CAFD",
+    "TenantName": "TECHNOSKY",
+    "CurrentTenant": false,
+    "DomainAddress": "technosky.enav.it",
+    "DomainPassword": "PS-ts-sd",
+    "DomainUser": "TECHNOSKY\\skydoc_tsky",
+    "SecurityContext": "Domain",
+    "SignalRAddress": "http://rmsal-prsdtsfe1/DSW.WebAPI/",
+    "DSWUrl": "http://protocollo.technosky.enav.it/skydoc",
+    "ODATAUrl": "http://rmsal-prsdtsfe1/DSW.WebAPI/ODATA/",
+    "EnvironmentsEnable": {
+      "Protocollo": false,
+      "Pratiche": false,
+      "Atti": false
+    },
+    "WebApiClientConfig": {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.HttpClientConfiguration, VecompSoftware.DocSuiteWeb.Model",
+      "Addresses": [
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-WorkflowManagerAddress",
+          "Address": "https://protocollocll.enav.it/DSW.WebAPI/api/wfm/",
+          "Timeout": "00:00:10"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-EntityAddress",
+          "Address": "https://protocollocll.enav.it/DSW.WebAPI/api/entity/",
+          "Timeout": "00:00:10"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-ServiceBusAddress",
+          "Address": "https://protocollocll.enav.it/DSW.WebAPI/api/sb/",
+          "Timeout": "00:00:10"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-UDSAddress",
+          "Address": "https://protocollocll.enav.it/DSW.WebAPI/api/uds/",
+          "Timeout": "00:00:10"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "ODATA-EntityAddress",
+          "Address": "https://protocollocll.enav.it/DSW.WebAPI/ODATA/",
+          "Timeout": "00:01:00"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Desks">
+
+  <class name="DeskLog" table="DeskLogs" lazy="true" >
+    
+    <id name="Id" column="IdDeskLog" >
+      <generator class="guid.comb" />
+    </id>
+    
+    <property name="LogDate">
+      <column name="LogDate" not-null="true" />
+    </property>
+    <property name="SystemComputer">
+      <column name="SystemComputer" not-null="true" />
+    </property>
+    <property name="SystemUser">
+      <column name="SystemUser" not-null="true" />
+    </property>
+    <property name="LogType">
+      <column name="LogType" not-null="true" />
+    </property>
+    <property name="LogDescription">
+      <column name="LogDescription" not-null="true" />
+    </property>
+    <property name="Severity">
+      <column name="Severity" not-null="false" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <many-to-one name="Desk">
+      <column name="IdDesk" not-null="true" />
+    </many-to-one>
+
+  </class>
+  
+</hibernate-mapping>

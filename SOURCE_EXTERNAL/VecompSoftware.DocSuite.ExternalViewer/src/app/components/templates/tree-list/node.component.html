@@ -1,0 +1,7 @@
+﻿<li *ngIf="item" [ngClass]="{'selected':item.isSelected}">
+    <img *ngIf="item.imageUrl" [src]="item.imageUrl" />
+    {{item.name}}
+    <ul *ngIf="item.children">
+        <node *ngFor="let child of item.children" [item]="child"></node>
+    </ul>
+</li>

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/ServerRole" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/ServerRole" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="ServerRole">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Undefined" />
+      <xs:enumeration value="Master" />
+      <xs:enumeration value="FullProxy" />
+      <xs:enumeration value="Proxy" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ServerRole" nillable="true" type="tns:ServerRole" />
+</xs:schema>

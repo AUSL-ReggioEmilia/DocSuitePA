@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="TaskParameter">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <property name="ParameterKey" />
+    <property name="Value" />
+
+    <many-to-one name="TaskHeader" column="IdTask" class="TaskHeader" cascade="none" />
+
+  </class>
+  
+</hibernate-mapping>

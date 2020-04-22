@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="DocumentoSanitario" type="DocumentoSanitarioType"/>
+  <xs:complexType name="DocumentoSanitarioType">
+    <xs:sequence>
+      <xs:element name="Chiave" type="ChiaveType" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Componente" type="ComponenteType" minOccurs="1" maxOccurs="1" />
+      <!-- può essere ommesso solo in caso di annullamento senza sostituzione -->
+      <xs:element name="Dati" type="DatiType" minOccurs="0" maxOccurs="1" />
+      <!-- deve esserci se si tratta di sostituzione o di annullamento -->
+      <xs:element name="Revisione" type="RevisioneType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ChiaveType" >
+    <xs:sequence>
+      <!-- IDReferto  -->
+      <xs:element name="Numero" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <!-- Anno del referto -->
+      <xs:element name="Anno" minOccurs="1" maxOccurs="1" type="xs:int" />
+      <!-- tipologia ovvero archivio , esempio LAB, RX, RX_A , ... -->
+      <!-- Anno e Numero devono essere univoci nell'archivio -->
+      <xs:element name="Archivio" minOccurs="1" maxOccurs="1" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ComponenteType" >
+    <xs:sequence>
+      <!-- nome del file .pdf.p7m associato all'xml (no path)-->
+      <xs:element name="Filename" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <!-- descrizione del documento , esempio "Referto Laboratorio Radiologico" -->
+      <xs:element name="Descrizione" minOccurs="1" maxOccurs="1" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DatiType">
+    <xs:sequence>
+      <!-- data e ora della emissione del referto -->
+      <xs:element name="DataOraReferto" minOccurs="1" maxOccurs="1" type="xs:dateTime" />
+      <xs:element name="Erogatore" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="ErogatoreDescrizione" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="SettoreErogatore" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="SettoreErogatoreDescrizione"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="Richiedente"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="RichiedenteDescrizione"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="Regime"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <!-- se omesso usa il nome e cognome del certificato di firma -->
+      <xs:element name="MedicoRefertante"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <!-- se omesso usa il codice fiscale del certificato di firma -->
+      <xs:element name="MedicoRefertanteDescrizione"  minOccurs="0" maxOccurs="1" type="xs:string" />
+      <xs:element name="IDAssistitoSAC"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="Cognome"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="Nome"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="Sesso"  minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="M"/>
+            <xs:enumeration value="F"/>
+            <xs:enumeration value="U"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="DataNascita"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="ComuneNascita"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="CodiceFiscale"  minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="IDPrenotazione"  minOccurs="0" maxOccurs="1" type="xs:string" />
+      <xs:element name="IDEpisodio"  minOccurs="1" maxOccurs="1" type="xs:string" />
+    </xs:sequence>  
+  </xs:complexType>
+  <xs:complexType name="RevisioneType">
+    <xs:sequence>
+      <xs:element name="Operazione" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="SOSTITUZIONE"/>
+            <xs:enumeration value="ANNULLAMENTO"/>
+	    <xs:enumeration value="INTEGRAZIONE"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="IDRefertoPrincipale" minOccurs="0" maxOccurs="1" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

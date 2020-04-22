@@ -1,0 +1,102 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "VecompSoftware.DocSuite.SPID.Portal": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "../wwwroot/dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "tsconfig.json",
+            "progress": true,
+            "polyfills": "src/polyfills/polyfills.ts",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/styles/federa-img",
+                "output": "/images/federa"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/styles/spid-img",
+                "output": "/images/spid"
+              }
+            ],
+            "styles": [
+              "src/styles/style.css"
+            ],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "media",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "VecompSoftware.DocSuite.SPID.Portal:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "VecompSoftware.DocSuite.SPID.Portal:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "VecompSoftware.DocSuite.SPID.Portal:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [ "tsconfig.json" ],
+            "exclude": [ "**/node_modules/**" ]
+          }
+        }
+      }
+    },
+    "VecompSoftware.DocSuite.SPID.Portal-e2e": {
+      "root": "e2e",
+      "sourceRoot": "e2e",
+      "projectType": "application"
+    }
+  },
+  "defaultProject": "VecompSoftware.DocSuite.SPID.Portal",
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app",
+      "styleext": "css"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  }
+}

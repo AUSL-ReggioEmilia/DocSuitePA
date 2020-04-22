@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/PreservationExpireResponse" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationExpireResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="PreservationExpireResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="EstimatedExpiry" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Expiry" nillable="true" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PreservationExpireResponse" nillable="true" type="tns:PreservationExpireResponse" />
+</xs:schema>

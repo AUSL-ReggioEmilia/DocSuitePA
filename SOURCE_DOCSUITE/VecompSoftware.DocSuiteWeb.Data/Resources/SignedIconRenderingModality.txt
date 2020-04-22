@@ -1,0 +1,1 @@
+{"ProtocolIconModality":0,"ResolutionIconModality":0,"DocumentSeriesIconModality":0,"UDSIconModality":0}

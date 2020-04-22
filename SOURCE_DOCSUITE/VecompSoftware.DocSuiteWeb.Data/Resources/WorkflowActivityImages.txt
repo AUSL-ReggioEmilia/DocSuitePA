@@ -1,0 +1,3 @@
+﻿        {
+        "DocSuite" : "~/App_Themes/DocSuite2008/imgset16/WF_Docsuite.png",
+        }

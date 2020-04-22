@@ -1,0 +1,60 @@
+/* COMMON STYLE
+
+--------------------------------------------------------- */
+.ja-megamenu ul.level0 {float:left;}
+.ja-megamenu ul.level0 li {text-transform:uppercase;}
+#ja-megamenu  > ul > li > a{padding:15px 25px; font-size:14px;}
+.ja-megamenu ul.level0 li.mega a.mega {color:#555; font-weight: normal;}
+.ja-megamenu a.active span.menu-title {font-weight:bold;}
+#ja-mainnav ul.level0 li.haschild-over a.haschild.over{}
+.ja-megamenu ul.level0 li.mega a.mega.over{color:#666;}
+.ja-megamenu ul.level0 li.haschild a.mega span.menu-title,
+.ja-megamenu ul.level0 li.haschild-over a.mega span.menu-title{background-image:none; padding-left:0;}
+
+/* lv - 1 and below
+-----------------------------------*/
+/* Styling ---*/
+.ja-megamenu ul.level1{}
+.ja-megamenu ul.level1 li.mega a.mega.over{color:#ccc;}
+.ja-megamenu ul.level1 li.mega{}
+.ja-megamenu ul.level1 li.first { border-top: 0; }
+.ja-megamenu ul.level1 li.mega a.mega {
+	border: 0;
+	height:auto;
+	padding:8px 0;
+}
+
+ /* CHILD CONTENT
+-----------------------------------*/
+.ja-megamenu .childcontent-inner-wrap{margin-left:8px;}
+.ja-megamenu .childcontent-inner {
+	background:#FFFFFF;
+	color: #555555;
+	margin-top:0;
+	padding:3px 6px;
+	border:1px solid #ecedf3;
+	border-top:none;
+}
+
+.ja-megamenu .level1 .childcontent-inner {margin-top:-20px; margin-left:0px;}
+.ja-megamenu .childcontent .ja-moduletable { color: #333; }
+.ja-megamenu .childcontent .ja-moduletable h3 {
+	background: none;
+	border-bottom: 1px dotted #ccc;
+	text-transform: uppercase;
+}
+div.ja-megamenu ul.level1 li.mega a.mega span.menu-desc{padding-left:0;font-size:11px; text-transform:capitalize;}
+
+/* Grouped --- */
+.ja-megamenu .group-title { border-bottom: 1px solid #ccc; }
+.ja-megamenu .group-title .menu-title {
+	color: #333;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 100%;
+}
+
+.ja-megamenu .group-title .menu-desc {
+	color: #999;
+	padding-left: 0 !important;
+}

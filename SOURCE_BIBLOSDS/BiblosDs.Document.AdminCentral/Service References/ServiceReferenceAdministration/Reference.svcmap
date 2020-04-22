@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ca2a8403-a844-4a16-9fdd-f9e1c3f13feb" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.ComponentModel.BindingList`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:1526/Administration.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Administration2.wsdl" MetadataType="Wsdl" ID="6b5e349f-3088-46c6-9b36-f389a056c5a7" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="Administration22.xsd" MetadataType="Schema" ID="3e2f76cd-139d-4db6-97ca-927bfd547a3f" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd20" />
+    <MetadataFile FileName="Administration221.xsd" MetadataType="Schema" ID="aa609f7f-865b-45cd-92f9-5f9f7698295b" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd30" />
+    <MetadataFile FileName="Administration222.xsd" MetadataType="Schema" ID="7e0160c3-aca6-4246-8cda-f0dc3e7516a9" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd10" />
+    <MetadataFile FileName="Administration1.xsd" MetadataType="Schema" ID="87284bb2-8094-4614-bb30-6995d18a617c" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd40" />
+    <MetadataFile FileName="Administration3.xsd" MetadataType="Schema" ID="450eaf67-39e2-487a-9bac-d5fe8d9d79cc" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd42" />
+    <MetadataFile FileName="Administration1.disco" MetadataType="Disco" ID="ba0def92-0260-4c4a-99c6-965c5ca9b303" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?disco" />
+    <MetadataFile FileName="Administration223.xsd" MetadataType="Schema" ID="e6198dd6-b311-4419-9086-f37530e6c303" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd17" />
+    <MetadataFile FileName="Administration224.xsd" MetadataType="Schema" ID="a795ba7c-bfc9-4f17-8042-61f2c79537d6" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd25" />
+    <MetadataFile FileName="Administration225.xsd" MetadataType="Schema" ID="09206754-3930-4ab9-aca8-5406a1c36952" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd35" />
+    <MetadataFile FileName="Administration226.xsd" MetadataType="Schema" ID="8a7680e5-6693-4928-876e-89ace1783b25" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd15" />
+    <MetadataFile FileName="Administration227.xsd" MetadataType="Schema" ID="d03086c2-bf50-4176-815f-c98f71295f1a" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd26" />
+    <MetadataFile FileName="Administration.xsd" MetadataType="Schema" ID="f6a1bdc7-7506-46f2-8aca-74675a6ed849" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd36" />
+    <MetadataFile FileName="Administration228.xsd" MetadataType="Schema" ID="deea7bf4-2210-4c3b-8159-d4cc217aa06e" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd16" />
+    <MetadataFile FileName="Administration229.xsd" MetadataType="Schema" ID="f81d9f62-a06e-4ea9-9796-587b28491a6b" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd12" />
+    <MetadataFile FileName="Administration2210.xsd" MetadataType="Schema" ID="11fde419-3c72-46bb-9e0f-18d4d5e320fe" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd23" />
+    <MetadataFile FileName="Administration2211.xsd" MetadataType="Schema" ID="555b4f79-84c0-4d82-992d-ceb4149dddcd" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd33" />
+    <MetadataFile FileName="Administration2212.xsd" MetadataType="Schema" ID="501f0aa2-1924-479a-878b-59560d751739" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd13" />
+    <MetadataFile FileName="Administration21.wsdl" MetadataType="Wsdl" ID="f25c613e-f64d-41e6-b2c5-9dcb03a6be79" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?wsdl" />
+    <MetadataFile FileName="Administration2213.xsd" MetadataType="Schema" ID="e36b9992-2f4f-42d3-a306-66c89a791d79" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd29" />
+    <MetadataFile FileName="Administration11.xsd" MetadataType="Schema" ID="9a533697-ddbe-47cb-8002-c75715a94dee" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd39" />
+    <MetadataFile FileName="Administration2214.xsd" MetadataType="Schema" ID="c6c9a1da-75c9-477e-8625-7c79315fa3a8" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd19" />
+    <MetadataFile FileName="Administration2215.xsd" MetadataType="Schema" ID="c10ca1c7-3cf2-4ba8-9372-b79f5e551e22" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd24" />
+    <MetadataFile FileName="Administration2216.xsd" MetadataType="Schema" ID="6b43eef4-d496-459b-9337-670093bec25c" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd34" />
+    <MetadataFile FileName="Administration2217.xsd" MetadataType="Schema" ID="d378a583-3ea6-4eb4-9013-70bdd4f73707" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd14" />
+    <MetadataFile FileName="Administration2218.xsd" MetadataType="Schema" ID="9d0f2f7d-ff09-4425-840e-bb343321950b" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd21" />
+    <MetadataFile FileName="Administration2219.xsd" MetadataType="Schema" ID="bffd3185-e04a-4e95-97f2-5d2a5acafb13" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd31" />
+    <MetadataFile FileName="Administration2220.xsd" MetadataType="Schema" ID="a1fbc7df-dce0-45a5-9f22-a7edec13a18c" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd11" />
+    <MetadataFile FileName="Administration2.xsd" MetadataType="Schema" ID="4ef08d05-5870-43d3-a2ba-38b5fba2f204" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd41" />
+    <MetadataFile FileName="Administration2221.xsd" MetadataType="Schema" ID="45ee31e0-a95a-4c10-a065-155bb267bc8f" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd22" />
+    <MetadataFile FileName="Administration2222.xsd" MetadataType="Schema" ID="2249a00c-c78c-4120-bd64-e13cfdca18d5" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd32" />
+    <MetadataFile FileName="Administration2223.xsd" MetadataType="Schema" ID="68156cde-b186-4b94-90e5-c5326c951ede" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd2" />
+    <MetadataFile FileName="Administration2224.xsd" MetadataType="Schema" ID="113c1f25-9348-4f3f-9c02-13af61607ecb" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd3" />
+    <MetadataFile FileName="Administration2225.xsd" MetadataType="Schema" ID="320ed13e-8076-478f-bbdb-4ed1e7f8afe6" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd0" />
+    <MetadataFile FileName="Administration2226.xsd" MetadataType="Schema" ID="6f8ab488-cc27-4938-8413-c1b5f0cb9d80" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd1" />
+    <MetadataFile FileName="Administration2227.xsd" MetadataType="Schema" ID="a7b55dff-41bb-49c3-a134-e05fd3f50df0" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd6" />
+    <MetadataFile FileName="Administration2228.xsd" MetadataType="Schema" ID="3681ae78-613f-442e-81b4-93d360d66cbd" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd7" />
+    <MetadataFile FileName="Administration2229.xsd" MetadataType="Schema" ID="522874de-0e5e-4aaa-a1c1-4fbf4aa30326" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd4" />
+    <MetadataFile FileName="Administration2230.xsd" MetadataType="Schema" ID="26ebf5be-16be-4833-9fdc-1e484f6efb2a" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd5" />
+    <MetadataFile FileName="Administration2231.xsd" MetadataType="Schema" ID="8ba3c98a-3c52-4a82-b0a0-9df1f9a22a3d" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd8" />
+    <MetadataFile FileName="Administration2232.xsd" MetadataType="Schema" ID="bdde0cd5-f39d-4345-b6be-bff3475841aa" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd9" />
+    <MetadataFile FileName="Administration2233.xsd" MetadataType="Schema" ID="f4ddc42c-b4a7-4f5e-a214-861c68796125" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd28" />
+    <MetadataFile FileName="Administration111.xsd" MetadataType="Schema" ID="e64ea309-3ae0-4e2b-aadc-91347161dfb6" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd38" />
+    <MetadataFile FileName="Administration2234.xsd" MetadataType="Schema" ID="e5b41186-bc77-44b3-9368-93f4fbbf1805" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd18" />
+    <MetadataFile FileName="Administration2235.xsd" MetadataType="Schema" ID="849a4e6a-15e0-4a1f-b07d-5cae04444728" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd27" />
+    <MetadataFile FileName="Administration110.xsd" MetadataType="Schema" ID="94decbac-902f-45b7-a914-bfadc93c8bc2" SourceId="1" SourceUrl="http://localhost:1526/Administration.svc?xsd=xsd37" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

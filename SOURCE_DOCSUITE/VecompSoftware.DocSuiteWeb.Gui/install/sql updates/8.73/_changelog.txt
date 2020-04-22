@@ -1,0 +1,91 @@
+Epic 13208: [AGENAS] Apposizione contrassegno elettronico nei documenti
+
+
+Feature 12671: [AUSL-PC]Cambio strutturale gestione inserti in Fascicoli e Dossier
+Feature 12808: [AUSL-PC AUSL-RE] Implementare ricerca per metadati in dossier e fascicoli
+Feature 12811: [AUSL-RE] Implementare gestione amministrazione trasparente in protocollo
+Feature 12816: [AUSL-RE] Implementare possibilità di associare codice javascript in archivi
+Feature 12825: [ASL-TO] Modifiche ultima pagina atti e firmatari collaborazione
+Feature 12831: [CTT] Personalizzazione risultati ricerca archivi e visualizzazione multipla documenti
+Feature 12839: [AUSL-RE] Modifiche responsabile di procedimento di fascicolo
+Feature 12919: [AUSL-PC] Contenitore, cartellinatura dinamica di un dossier e configurazione metadata
+Feature 12920: [AUSL-PC] Dossier cartellinatura automatica e automatismi fascicolo
+Feature 13218: [AGENAS] Apposizione contrassegno elettronico - ServiceBusReceiver
+Feature 13219: [AGENAS] Apposizione contrassegno elettronico - DocSuite
+
+
+User Story 12672: [AUSL-PC]Eliminare in inserimento di fascicoli la possibilità di inserire inserti e la loro visualizzazione in Sommario
+User Story 12673: [AUSL-PC]Eliminare in inserimento di dossier la possibilità di inserire inserti e la loro visualizzazione in Sommario
+User Story 12674: [AUSL-PC]Creare in Sommario di Fascicoli un nuovo pulsante "Inserti"
+User Story 12675: [AUSL-PC]Creare in Sommario di Dossier un nuovo pulsante "Inserti"
+User Story 12676: [AUSL-PC]Creare una nuova pagina che permetta di inserire le note degli inserti e l'aggiunta dei documenti
+User Story 12679: [AUSL-PC]Creare pagina gestione Inserti dei fascicoli
+User Story 12680: [AUSL-PC]Creare pagina gestione Inserti dei dossier
+User Story 12681: [AUSL-PC]Creare componente per la gestione degli inserti
+User Story 12682: [AUSL-PC]Creare modello per gli inserti caricati
+User Story 12683: [AUSL-PC]Implementare funzionalità elimina inserto
+User Story 12684: [AUSL-PC]Implementare funzionalità sostituisci inserto
+User Story 12685: [AUSL-PC]Implementare completamento gestione Inserti dei fascicoli
+User Story 12689: [AUSL-PC]Implementare completamento gestione Inserti dei dossier
+User Story 12724: [AUSL-RE AUSL-PC] Creare usercontrol esclusivamente lato client per l'inserimento dei metadati
+User Story 12751: [AUSL-RE AUSL-PC] Aggiunta colonna IdMetadataRepository alla tabella Dossiers nelle WebApi
+User Story 12798: [DSW] Creazione Tabella UDSUser
+User Story 12801: [DSW] Mappatura entità UDSUser nelle WebApi
+User Story 12804: [AUSL-RE AUSL-PC] In ricerca di fascicoli, implementare possibilità di ricercare per metadati
+User Story 12805: [AUSL-RE AUSL-PC] In ricerca di fascicoli, implementare possibilità di ricercare per metadato specifico
+User Story 12806: [AUSL-RE AUSL-PC] In ricerca di dossier implementare possibilità di ricercare per metadati
+User Story 12807: [AUSL-RE AUSL-PC] In ricerca di dossier, implementare possibilità di ricercare per metadato specifico
+User Story 12809: [AUSL-PC] Aggiungere proprietà al contenitore per utente firmatario di attestazione di conformità
+User Story 12810: [AUSL-PC] In fase di richiesta di attestazione di conformità, deve essere proposto come utente firmatario
+User Story 12812: [AUSL-RE] Aggiungere pulsante 'Amministrazione trasparente' in sommario di protocollo
+User Story 12813: [AUSL-RE] Implementare possibilità di inserire una serie di Amministrazione trasparente da sommario di protocollo
+User Story 12814: [AUSL-RE] In sommario di serie documentale mostrare il protocollo collegato e viceversa
+User Story 12815: [AUSL-RE] Aggiungere relazione tra Protocol e DocumentSeriesItem
+User Story 12817: [AUSL-RE] Implementare logica di associazione codice javascript specifico in base all'evento del componente
+User Story 12818: [AUSL-RE] Bonifica unità documentaria specifica
+User Story 12821: [AUSL-RE] Nel designer degli archivi dare la possibilità di associare codice javascript al singolo componente
+User Story 12822: [AUSL-RE] Implementare multiselezione di valori del lookup in archivi
+User Story 12826: [ASL-TO] Implementare possibilità di caricare documento per ultima pagina
+User Story 12827: [ASL-TO] In generazione di lettera di trasmissione permettere al selezione di un solo contenitore
+User Story 12828: [ASL-TO] In generazione di lettera di trasmissione modificare l'oggetto in base al contenitore
+User Story 12829: [ASL-TO] In collaborazione dare la possibilità di modificare i firmatari e i documenti se la collaborazione non è ancora firmata
+User Story 12832: [CTT] Implementare visualizzazione multipla documenti archivi
+User Story 12833: [CTT] Implementare possibilità di scegliere i metadati da mostrare nella griglia dei risultati degli archivi
+User Story 12837: [CTT] Nella griglia dei risultati degli archivi mostrare i metadati indicati come visibili in griglia
+User Story 12838: [CTT] Nel FastProtocolImport passare in riga di comando i percorsi dei file di configurazione xml e json
+User Story 12841: [AUSL-RE] In disegno di funzione permettere la modifica di un contatto quando si configura il responsabile di procedimento
+User Story 12842: [AUSL-RE] In inserimento di fascicolo proporre come responsabile di procedimento l'utente corrente
+User Story 12843: [AUSL-RE][AUSL-PC] Permettere alle segreterie di procedimento di aprire e chiudere fascicoli
+User Story 12878: [AUSL-RE] Definire un nuovo JSON per la mappatura degli eventi javascript da utilizzare nelle varie componenti degli archivi
+User Story 12918: [DSW] In griglia di inserti aggiungere colonne per data e per utente
+User Story 12924: [AUSL-PC] Nascondere il pulsante Opzioni in gestione contenitori se DossierEnabled = true
+User Story 12925: [AUSL-PC] Nuovo pulsante "Alberatura Dossier" in gestione contenitori
+User Story 12928: [AUSL-PC] Definire una nuova ContainerProperty "DossierFoldersModel"
+User Story 12929: [AUSL-PC] Implementare gestione alberatura Dossier in gestione Contenitore
+User Story 12933: [AUSL-PC] Gestione Metadata Repository in gestione Contenitore
+User Story 12934: [AUSL-PC] Automatismo alberatura in inserimento di Dossier
+User Story 12935: [AUSL-PC] Automatismo metadata repository in inserimento di Dossier
+User Story 12936: [AUSL-PC] Automatismo fascicoli in gestione di Dossier
+User Story 12937: [AUSL-PC] Automatismo inserimento Fascicolo da Dossier
+User Story 12951: [AUSL-RE] Spostare gestione inserti in pulsante 'Inserisci' di fascicolo
+User Story 12952: [AUSL-RE] Aggiungere ricerca per contenitore nella finestra di inserimento documenti in fascicolo
+User Story 12953: [AUSL-RE] Aggiungere ricerca per sottocategorie nella finestra di inserimento documenti in fascicolo
+User Story 12970: [AUSL-RE] Modificare visibilità pulsanti flussi di lavori in fascicoli
+User Story 12971: [AUSL-RE] Modificare visibilità pulsante log in fascicoli
+User Story 12982: [AUSL-RE] In ricerca fascicoli nascondere la ricerca testuale di responsabile di procecedimento e la ricerca di massimario di scarto
+User Story 12986: [DSW] Implementare l'autorizzazione al singolo contatto negli archivi in fase di inserimento di archivio
+User Story 12988: [ASL-TO] Aggiungere colonna JsonParameters in template di collaborazione
+User Story 13018: [AUSL-RE] Implementare possibilità di eliminare collegamento con protocollo e atto da una serie di Amministrazione trasparente
+User Story 13039: [AUSL-PC] Mappare l'entità ContainerProperty in WebAPI
+User Story 13116: [DSW] Visualizzare i contatti autorizzati in sommario di Archivio
+User Story 13117: [DSW] Permettere la visualizzazione dei documenti agli utenti autorizzati
+User Story 13118: [DSW] Creare strumento di migrazione per le autorizzazioni di Archivio
+User Story 13119: [ENPACL] Drop colonne PosteWeb
+User Story 13170: [DSW] Modificare la visibilita' del bottone documenti in Archivi
+User Story 13220: [AGENAS] Nuovo comando CommandSecurePaperRequest per l'applicazione del contrassegno a stampa
+User Story 13223: [AGENAS] Nuovo flusso di lavoro Contrassegno a stampa
+User Story 13226: [AGENAS] Nuovo parametro per gestione visibilità flussi di lavoro
+
+
+Bug 11719: [AFOLMB]Se l'oggetto del protocollo contiene un pipe dà errore a video e non si riesce a visualizzare il protocollo.
+Bug 12912: [AUSL-PC]ln Crea Fascicolo da Dossier la ricerca dei fascicoli deve essere ordinata dal meno recente al più recente

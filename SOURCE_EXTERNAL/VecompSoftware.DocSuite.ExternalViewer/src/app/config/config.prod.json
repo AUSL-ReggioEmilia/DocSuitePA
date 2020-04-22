@@ -1,0 +1,34 @@
+{
+  "apiOdataAddress": "http://srvgeddev9999.cloudapp.net/DSW.PublicWebAPI/odata/",
+  "apiRestAddress": "http://srvgeddev9999.cloudapp.net/DSW.PublicWebAPI/api/",
+  "apiAuthAddress": "http://srvgeddev9999.cloudapp.net/DSW.PublicWebAPI/Auth/Token",
+  "apiOdataControllers": {
+    "protocol": true,
+    "protocolAuthorized": false,
+    "archive": false,
+    "fascicle": false,
+    "document": false,
+    "pecMail": false,
+    "errorLog": false,
+    "documentUnit": false,
+    "dossier": false,
+    "dossierFolder": false,
+    "fascicleFolder": false
+  },
+  "apiRestControllers": {
+  },
+  "appLogo": "app/images/app-logo.png",
+  "title": "DocSuite - External Viewer",
+  "documentHandler": "http://srvgeddev9999.cloudapp.net/DocumentUnitHandler/DocumentUnitHandler.ashx/",
+  "toastLife": 5000,
+  "applicationName": "DocSuite - External Viewer",
+  "gridItemsNumber": 10,
+  "titleIntroduction": "DocSuite - External Viewer",
+  "introduction": "Sito disponibile solo per le integrazioni ufficiali con SkyDoc - Per visualizzare un protocollo, comporre l'URL indicando l'identificativo o la coppia anno e numero.",
+  "oauthUsername": {
+    "C39ADF96-AAEF-4237-BA56-A22A8C6BD4EF": "***REMOVED***.IP4D",
+    "51DAE147-3E30-4434-A73F-DCB5E062CA5E": "***REMOVED***.ERP_CONTRATTI",
+    "49DC7004-EFC1-454A-9174-CEA12D06061E": "TECHNOSKY.SAP_FATTURE",
+    "7AF08013-7018-4583-942C-73441C680994": "ENPACL.SMC"
+  }
+}

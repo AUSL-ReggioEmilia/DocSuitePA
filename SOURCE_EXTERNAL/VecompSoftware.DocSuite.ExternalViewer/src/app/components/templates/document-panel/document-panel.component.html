@@ -1,0 +1,10 @@
+﻿<li *ngIf="documents && documents.length > 0" >
+    <img [src]="rootDocumentImageUrl" />
+    {{rootLabel}}
+    <ul style="padding: 5px 0;">
+        <li *ngFor="let doc of documents" style="margin-left: 20px;">
+            <img [src]="doc.imageUrl" />
+            <a routerLink="Documento/identificativo/{{doc.id}}"> {{doc.documentName}}</a>
+        </li>
+    </ul>
+</li>

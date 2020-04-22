@@ -1,0 +1,84 @@
+Epic 13506: [AUSL-RE] Controllo e gestione delle firme digitali sui referti destinati al versamento presso ParER
+
+
+Feature 13257: [AUSL-RE] Autorizzazione utente singolo in protocollo
+Feature 13356: [AUSL-RE] Revisione gestione privacy
+Feature 13428: [AUSL-RE] Creazione nuovo sommario di fascicolo
+Feature 13507: [AUSL-RE] Controllo e gestione firme digitali referti nel JeepService
+Feature 13508: [AUSL-RE] Gestione elementi scartati per firma non valida in ParER WEB Monitor
+Feature 13610: [***REMOVED***] Modifiche per la conservazione dei log di Audit
+Feature 13613: [***REMOVED***] Nuovo modulo JeepService per conservazione Log DocSuite
+
+
+User Story 13073: [AUSL-RE] In ricerca fascicoli implementare la possibilità di ricercare per settore
+User Story 13258: [AUSL-RE] Rinominare entità e tabella ProtocolHighlightUser e aggiungere proprietà per tipologia
+User Story 13259: [AUSL-RE] Implementare possibilità di aggiungere utente da active directory nella sezione autorizzazioni
+User Story 13260: [AUSL-RE] Aggiungere nuovo diritto per privacy in contenitori
+User Story 13261: [AUSL-RE] Permettere di autorizzare il singolo utente solo a chi ha diritto privacy sul contenitore
+User Story 13262: [AUSL-RE] Eliminare pulsanti Collega e Referenzia in Inserisci UD in fascicolo
+User Story 13263: [AUSL-RE] Un fascicolo di procedimento è chiudibile se e solo se contiene almeno un documento fascicolato
+User Story 13264: [AUSL-RE] Gestire un unico pannello per il sommario di fascicolo
+User Story 13265: [AUSL-RE] Restringere la ricerca dei fascicoli ai soli fascicoli autorizzati
+User Story 13279: [AUSL-RE] Tutti i pannelli nelle pagine di fascicoli devono essere collassabili
+User Story 13283: [AUSL-RE] Nella griglia delle UD collegate mostrare anche gli inserti del fascicolo.
+User Story 13318: [AUSL-RE] Permettere agli utenti autorizzati al protocollo di vedere il sommario e i documenti
+User Story 13338: [AUSL-RE] Creare una nuova tabella DocumentUnitUsers
+User Story 13340: [AUSL-RE]Aggiungere l'informazione di autorizzazione all'utente per il comando di inserimento nel ServiceBus
+User Story 13341: [AUSL-RE]Mappare nel ServiceBus la nuova informazione di autorizzazione dell'utente per l'invio del comando
+User Story 13376: [AUSL-RE] In 'Livelli di privacy' permettere di scegliere un colore per ogni livello
+User Story 13377: [AUSL-RE] In 'Livelli di privacy' rendere obbligatoria la scelta dell'etichetta del livello
+User Story 13378: [AUSL-RE] Modificare visualizzazione nome del documento in componente di upload documenti
+User Story 13385: [AUSL-RE] Assegnare livello di privacy al documento tramite pop-up in protocollo
+User Story 13388: [AUSL-RE] Permettere di autorizzare il protocollo solo a chi ha diritto privacy sul contentiore, se è presente un'autorizzazione privacy
+User Story 13406: [AUSL-RE] Entità FascicleFolder
+User Story 13407: [AUSL-RE] Modificare visualizzazione documenti e log nel caso di privacy semplificata
+User Story 13408: [AUSL-RE] Mettere in relazione FascicleFolder e FascicleDocument
+User Story 13415: [AUSL-RE] Bonificare etichetta privacy in tutte le pagine ed eliminare parametro PrivacyEnabled
+User Story 13430: [AUSL-RE] Modifiche pannello informazioni base nel sommario di fascicolo
+User Story 13431: [AUSL-RE] Sommario autorizzazioni fascicoli
+User Story 13432: [AUSL-RE] Alberatura cartelle di fascicolo
+User Story 13433: [AUSL-RE] In fase di creazione di fascicolo generare le due cartelle base: Fascicolo e Inserti
+User Story 13434: [AUSL-RE] In fase di creazione di fascicolo creare le cartelle associate ai sottofascicoli del classificatore del fascicolo
+User Story 13435: [AUSL-RE] Gestire comportamento del pulsante Inserisci in base al nodo selezionato dell'alberatura di fascicolo
+User Story 13436: [AUSL-RE] Gestire la visibilità dei pulsanti di inserimento, modifica ed elimina cartella a seconda del nodo selezionato
+User Story 13437: [AUSL-RE] Gestire inserimento nuova cartella di fascicolo
+User Story 13438: [AUSL-RE] Gestire visibilità del pulsante rimuovi e la sua funzionalità di eliminare la cartella selezionata
+User Story 13439: [AUSL-RE] Gestire modifica cartella di fascicolo
+User Story 13440: [AUSL-RE] Griglia documenti e inserti in sommario di fascicolo
+User Story 13441: [AUSL-RE] Relazione FascicleFolder e FascicleProtocol, FascicleResolution, FascicleUDS, FascicleDocuemntSeriesItem
+User Story 13442: [AUSL-RE] Nel visualizzatore dei documenti di fascicolo mostrare i documenti suddivisi per cartelle
+User Story 13443: [AUSL-RE] Creare validazioni per inserimento di cartella di fascicolo
+User Story 13446: [AUSL-RE] In modifica cartella gestire le validazioni
+User Story 13447: [AUSL-RE] Gestire le validazioni in fase di eliminazione cartella
+User Story 13448: [AUSL-RE] fare tool di migrazione per creare le fasciclefolder (root, fascicolo e inserti) ed associare le ud presenti
+User Story 13449: [AUSL-RE] In inserimento di UD referenziare o fascicolare automaticamente nella cartella in base al classificatore
+User Story 13472: [AUSL-RE] Bonificare i metodi di inserisci e modifica UD in fascicolo (lato docsuite)
+User Story 13509: [AUSL-RE] Nuova libreria di integrazione con servizi REST DSS
+User Story 13510: [AUSL-RE] Nuovi modelli per comunicazione con servizi REST DSS
+User Story 13511: [AUSL-RE] Definire metodi di validazione e creazione firma digitale tramite DSS
+User Story 13512: [AUSL-RE] Introdurre verifica validità firma digitale nel modulo BDSImporter del JS
+User Story 13513: [AUSL-RE] ParER WEB Monitor - Nuova voce di menù per controllo elementi scartati
+User Story 13514: [AUSL-RE] ParER WEB Monitor - Nuova vista di visualizzazione elementi scartati
+User Story 13546: [AUSL-RE] Assegnare livello di privacy al documento tramite pop-up in atti e serie documentali
+User Story 13563: [AUSL-RE] Bonificare i metodi di inserisci e modifica UD in fascicolo (lato webapi)
+User Story 13611: [***REMOVED***]Aggiungere nuova colonna Hash nelle tabelle dei log per la gestione degli audit e mapparla in DocSuite
+User Story 13612: [***REMOVED***]Mappare nelle WebApi la nuova colonna "Hash", creata nelle tabelle dei log per la gestione degli audit
+User Story 13616: [***REMOVED***] Definire nuova entità Conservations per gestire gli elementi già sottoposti a conservazione
+User Story 13638: [***REMOVED***] Nuovo modulo LogConservation del JeepService
+User Story 13639: [***REMOVED***] Definire modello di serializzazione XML dei Log da conservare
+User Story 13641: [***REMOVED***] Business logic modulo LogConservation
+User Story 13644: [***REMOVED***]Creare helper che permetta di generare il codice hash
+User Story 13645: [***REMOVED***]Creare tool di migrazione per la generazione degli hash nelle tabelle dei log in cui è stata aggiunta la colonna hash
+User Story 13658: [***REMOVED***]Gestire in DocSuite la generazione dell'hash quando si crea un log
+User Story 13659: [***REMOVED***]Gestire nelle WebApi la generazione dell'hash quando si crea un log
+User Story 13660: [***REMOVED***]Gestire nel ServiceBus la generazione dell'hash quando si crea un log
+User Story 13667: [***REMOVED***]Modificare la tabella dei log per rendere obbligatoria la colonna "Hash"
+User Story 13672: [***REMOVED***] Funzioni di lettura log da conservare
+
+
+Bug 12129: [DSW] Anomalia in visualizzazione massiva documenti di PEC in arrivo
+Bug 12941: [DSW] Anomalia bordo secondo pannello autorizzazioni quando sono presenti due pannelli
+Bug 13348: [AUSL-RE]Dà errore a video quando si prova ad allegare uno zip con password in inserimento pec
+
+
+Issue 12855: [DSW] Bonificare tutte gli url delle ODATA function con spazi

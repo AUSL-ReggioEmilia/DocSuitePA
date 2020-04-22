@@ -1,0 +1,159 @@
+Epic 14034: [***REMOVED***] Richieste evolutive strumenti Application Management SkyDoc
+Epic 14999: [TECMARKET] Tavoli: quando si chiude un tavolo con numerosi documenti -> N collaborazioni
+Epic 15007: [AUSL-PC] Estrattore per invio archivi Libri Giornale e Libri Inventario al PaRER
+Epic 15904: [DSW] Ottimizzazione start-up prodotti Angular e migrazione Angular 7
+
+
+Feature 14035: [***REMOVED***]Implementare funzionalità “Clona Anagrafica” e “Clona Settori” in gestione Tabelle/Anagrafica/Rubrica e Tabelle/Settori
+Feature 14036: [***REMOVED***]Funzionalità “Sposta” in gestione Tabelle/Organigramma
+Feature 14037: [***REMOVED***]Introdurre la possibilità di eliminare/aggiungere un gruppo in modo massivo sulle risorse di protocollo
+Feature 14038: [***REMOVED***]Aggiunta di un utente ad un gruppo direttamente dalla pagina di gestione contenitori/settori
+Feature 14039: [***REMOVED***]Implementare funzionalità copia da Utente, ovvero la possibilità di copiare tutti i gruppi di un altro utente
+Feature 14040: [***REMOVED***]Implementare tool esterno per la replica degli automatismi
+Feature 14041: [***REMOVED***]Implementare finestra di Alert in funzione Duplica di protocollo
+Feature 14334: [AUSL-RE]Gestire il monitoraggio per settore di appartenenza
+
+
+User Story 14240: [***REMOVED***]Gestione Tabelle/Gruppi: Selezione multipla degli oggetti di dettaglio
+User Story 14241: [***REMOVED***]Gestione Tabelle/Gruppi: Rimizione massiva utenti
+User Story 14242: [***REMOVED***]Gestione Tabelle/Gruppi: Rimozione del gruppo nei settori
+User Story 14243: [***REMOVED***]Gestione Tabelle/Gruppi: Rimozione del gruppo nei contenitori
+User Story 14244: [***REMOVED***]Gestione Tabelle/Gruppi: Rimozione del gruppo nei classificatori
+User Story 14245: [***REMOVED***]Aggiunta di un utente ad un gruppo direttamente dalla pagina di gestione contenitori
+User Story 14246: [***REMOVED***]Aggiunta di un utente ad un gruppo direttamente dalla pagina di gestione settori
+User Story 14247: [***REMOVED***]Implementare funzionalità copia da Utente, ovvero la possibilità di copiare tutti i gruppi di un altro utente
+User Story 14248: [***REMOVED***] Duplica di protocollo, filtrare solo elementi attivi
+User Story 14249: [***REMOVED***]Implementare finestra di Alert in funzione Duplica di protocollo
+User Story 14250: [***REMOVED***]I Tabelle/Organigramma -> aggiungere pulsante sposta
+User Story 14251: [***REMOVED***]I Tabelle/Organigramma -> Implementare il pulsante sposta
+User Story 14328: [***REMOVED***]Amministrazione : Disattivazione/Attivazione massiva Settori
+User Story 14329: [***REMOVED***]Amministrazione : Disattivazione/Attivazione massiva Contatto di rubrica
+User Story 14330: [***REMOVED***]Implementare funzionalità “Clona settore” in gestione Tabelle/Settori
+User Story 14331: [***REMOVED***]Implementare funzionalità “Clona Contatto” in gestione Tabelle/Rubrica
+User Story 14337: [AUSL-RE]Monitoraggio Trasparenza: Aggiungere user control dei settori allo user control uscAmmTraspMonitorLog.ascx
+User Story 14338: [AUSL-RE]Monitoraggio Trasparenza: Settore proposto durante il monitoraggio delle sole serie documentali
+User Story 14339: [AUSL-RE]Monitoraggio Trasparenza: Aggiungere colonna IdRole nella tabella TransparentAdministrationMonitorLogs
+User Story 14340: [AUSL-RE]Monitoraggio Trasparenza: Nelle WebAPI adeguare l'entità e modello TransparentAdministrationMonitorLog
+User Story 14341: [AUSL-RE]Monitoraggio Trasparenza: Adeguare il TypeScript dello user control uscAmmTraspMonitorLog.ascx
+User Story 14342: [AUSL-RE]Monitoraggio Trasparenza: Adeguare la pagina Item.aspx
+User Story 14343: [AUSL-RE]Monitoraggio Trasparenza: Aggiungere colonna Settore nel registro del monitoraggio della trasparenza
+User Story 14344: [AUSL-RE]Monitoraggio Trasparenza: Nelle WebAPI adeguare il Service TransparentAdministrationMonitorLogService
+User Story 14436: [AUSL-RE]Monitoraggio Trasparenza: Aggiungere user control dei settori alla pagina TransparentAdministrationMonitorLog.aspx
+User Story 14437: [AUSL-RE]Monitoraggio Trasparenza: Aggiungere filtro per Settore in TransparentAdministrationMonitorLog.td, TransparentAdministrationMonitorLogService.ts, TransparentAdministrationMonitorLogSearchFilterDTO.ts
+User Story 14681: [ASL-TO] Amministrazione Trasparente: rendere di default la navigazione delle più recenti in Amministrazione Trasparente
+User Story 14998: [TECMARKET] gestione password utente in docsuite cloud senza dominio
+User Story 15026: [DSW]Bonificare metodo ProtSendMail in modo tale che non utilizzi ProtocolEnv.MailSmtpServer ma il moduo DSWMessages del JeepService
+User Story 15069: [AGENAS] funzionalità ricevuta per utenti manager e assegnatari
+User Story 15077: [AUSL-PC]Quando viene eliminata una collaborazione non ci sono informazioni su chi ha fatto cosa nè il motivo
+User Story 15162: [AUSL-RE]External Viewer: Nella griglia dei risultati aggiungere la possibilità di ricerca per contatto
+User Story 15203: [AUSL-RE]External Viewer: Nella griglia dei risultati aggiungere la possibilità di ricerca per oggetto
+User Story 15204: [AUSL-RE]Whistleblowing: Modifiche UX
+User Story 15205: [AUSL-RE]External Viewer: Nella griglia dei risultati aggiungere la possibilità di ricerca per range di date
+User Story 15206: [AUSL-RE]External Viewer: Nella griglia dei risultati mostrare la data di autorizzazione (personale)
+User Story 15207: [AUSL-RE]Public WebAPI: Modificare il controller Odata AuhtorizedProtocol
+User Story 15208: [AUSL-RE]External Viewer: Nella griglia dei risultati mostrare l'utente che ha autorizzazione il protocollo
+User Story 15209: [AUSL-RE]Monitoraggio Trasparenza: Adeguare il filtro per contenitore come fatto nei fascicoli
+User Story 15210: [AUSL-RE]Fascicolo: Modifiche etichette griglia dei risultati di fascicoli
+User Story 15213: [AUSL-RE]Fascicolo: Estendere comportamento opzione "rendi i fascicoli disponibili ai settori autorizzati" al sommario e documenti di Protocollo
+User Story 15214: [AUSL-RE]Fascicolo: Estendere comportamento opzione "rendi i fascicoli disponibili ai settori autorizzati" al sommario e documenti di Atto
+User Story 15215: [AUSL-RE]Fascicolo: Estendere comportamento opzione "rendi i fascicoli disponibili ai settori autorizzati" al sommario e documenti di Archivio
+User Story 15216: [AUSL-RE]Fascicolo: Aggiungere pulsante 'Invio settori'
+User Story 15217: [AUSL-RE]Classificatore: Migliorare le informazioni del classificatore in tabelle classificatore
+User Story 15218: [AUSL-RE]Classificatore: In gestione gruppi permette la selezione multipla durante la ricerca di gruppo
+User Story 15254: [TECMARKET] Collaborazione : Rendere possibile il check-in/check-out dei documenti in una collaborazione e/o modifica dei firmatari
+User Story 15255: [TECMARKET] Collaborazione : Rimuovere i vincono della collaborazione proveniente dal tavolo
+User Story 15256: [TECMARKET] Visualizzazione di documento: Introdurre la visualizzazione per versione del documento
+User Story 15257: [TECMARKET] Collaborazione : Rimuovere i vincono apertura collaborazione da tavolo se e solo se è chiusto
+User Story 15263: [CTT]Nel Preservation Portal, in Verifiche Conservazioni aggiungere bottoni 'Seleziona tutti' e 'Deseleziona tutti'
+User Story 15264: [TECMARKET] Tavoli : Aggiungere funzione rinomia file del documento del tavolo
+User Story 15266: [TECMARKET] Tavoli : Aggiungere numero di versione del documento nell'elenco dei documenti
+User Story 15268: [TECMARKET] Tavoli : In fase di 'Archivia documento check/in' chiedere la versione del documento
+User Story 15651: [AUSL-RE]Protocollo Privacy: Aggiungere pulsante 'Invio persona' per invio email del link all'External Viewer
+User Story 15652: [AUSL-RE]Protocollo Privacy: Rimuovere invio automatico della email di autorizzazione utente
+User Story 15722: [CTT]BiblosDS: Rendere un archivio conservabile quando si cambia il valore dell'archivio da "non conservabile" a "conservazione abilitata"
+User Story 15723: [AGENAS] Ricerca di protocollo: Aggiugnere UI radiobotton "Assegnati a me"
+User Story 15724: [AGENAS] Ricerca di protocollo: Modifica finder protocollo con la logica "Assegnati a me"
+User Story 15745: [AGENAS] Ricerca di protocollo: Salvare in sessione di FinderProtocol il valore assiciato al listbox "Assegnati a me"
+User Story 15751: [AGENAS] Sommario di PEC: Il pulsante protocolla è visibilile se e solo ho diritti di inserimento in un contenitore di Protocollo o Archivio
+User Story 15752: [AGENAS] Sommario di Protocollo: Il pulsante "Rispondi PEC" è visibilile se e solo ho diritti di inserimento in un contenitore di Protocollo
+User Story 15753: [AGENAS] Sommario di Protocollo: Il pulsante "LOG" visibilile anche su protocollo annullato
+User Story 15754: [TECMARKET] Tavoli:Visualizzare elenco delle collaborazione proveniente dal tavolo
+User Story 15795: [AUSL-RE] External Viewer: Introdurre la modalità CLI per la gestione dei pacchetti di angular
+User Story 15796: [AUSL-RE] External Viewer: Compilare l'env di angular in production mode
+User Story 15797: [AUSL-RE] External Viewer: Adottare le best practice riportate nel link, se possibile
+User Story 15798: [AUSL-RE] External Viewer: Per la sola modalità NTLM rimuovere la cache delle risposte ODATA alle public WebAPI
+User Story 15872: [AUSL-RE] External Viewer: Introdurre iconcine dei TAB di Sommario e Documenti di protocollo
+User Story 15875: [AGENAS] Ricerca di protocollo: Modifcare UI radiobotton "Annullati" in ListBox
+User Story 15889: [ASL-TO] Amministrazione Trasparente: Introdurre stile sito pubblico di Torino e migliorie
+User Story 15906: [DSW] Albo Online: Introdurre la modalità CLI per la gestione dei pacchetti di angular
+User Story 15907: [DSW] Albo Online: Migrare le soluzione a Angular 7
+User Story 15908: [DSW] Albo Online: Utilizzare Typescript 3.1
+User Story 15910: [DSW] Albo Online: Predisporre la compilazione l'env di angular in production mode
+User Story 15912: [DSW] Albo Online: Applicare best practice se possibile adottarle
+User Story 15914: [DSW] External Viewer: Utilizzare Typescript 3.1
+User Story 15915: [DSW] External Viewer: Migrare le soluzione a Angular 7
+User Story 15919: [DSW] Portale SPID: Migrazione ad Angular 7
+User Story 15920: [DSW] APP Accesso ATTI: Migrazione ad Angular 7
+User Story 15921: [DSW] Portale SPID: Modifiche token JWT
+User Story 15922: [DSW] APP Accesso ATTI: Utilizzare Typescript 3.1
+User Story 15923: [DSW] Portale SPID: Utilizzare Typescript 3.1
+User Story 15990: [AFOLMB] Amministrazione Trasparente: Introdurre stile sito pubblico di AFOL Monza Brianza
+User Story 15991: [AFOLMB] Amministrazione Trasparente: Introdurre parametro per mermettere visualizzazione tutti elementi (stile ***REMOVED***)
+User Story 16032: [AUSL-RE] External Viewer: Tab documenti di protocollo sempre in evidenza
+
+
+
+Bug 13740: [TEAFLEX]Non vengono inseriti nella Tabella DocumentUnit i protocolli importati tramite FPI
+Bug 14079: [AUSL-RE]Nella sezione "Autorizzazioni settori al Fascicolo" nel sommario, non è rispettato l'ordine alfabetico dei settori autorizzati
+Bug 14080: [AUSL-RE]In Tabelle-Classificatore quando si prova a rinominare una voce di classificazione, esce un alert che impedisce a modifica a causa della Data di attivazione
+Bug 14081: [DSW]In Tabelle-Classificatore quando si prova a rinominare una voce di classificazione, esce un alert che impedisce la modifica a causa del codice di servizio
+Bug 14218: [TECMARKET]L'ora sulla lavagna dei contributi nella pagina dei Tavoli è quella del server
+Bug 14220: [AUSL-PC] L'estrattore ParER non funziona per i Registri di Protocollo
+Bug 14404: [AUSL-RE]Quando si effettua una ricerca di atti, premendo invio si apre il popup dei contatti
+Bug 14547: [***REMOVED***]Anomalia paginazione e contatori pagina EventPECSummaryError.aspx
+Bug 14627: [AUSL-RE]In inserimento di pec, se si importano più contatti da excel, non si abilita il check "Invia una pec per ogni destinatario"
+Bug 14236: [AUSL-RE]Registro delibere: effettuando una stampa delle delibere su “registro pubblicazioni” relative all’anno in corso, non viene visualizzata la delibera N. 1
+Bug 14402: [AUSL-PC]Quando esporto da DocSuite una ricerca di Protocolli,la colonna Collegamenti del file excel non risulta popolata anche se esistono collegamenti
+Bug 14449: [CTT DSW] Ricerca in archivi contenenti campi booleani
+Bug 14695: [AGENAS] La ricerca di protocollo per settore autorizzato mostra tutti i protocolli con la sicurezza applicata
+Bug 14698: [AGENAS] mancata visualizzazione della documentazione utente con Chrome
+Bug 14699: [AGENAS] Se l'utente corrente non ha diritti di inserimento protocollo, nascondere il pulsante duplica dal sommario di protocollo.
+Bug 15000: [TECMARKET] Tavoli: mancato aggiornamento schermata dopo caricamento documenti
+Bug 15034: [AFOLMB]Quando si fascicola viene riportato il classificatore del sotto fascicolo e non il classificatore del fascicolo.
+Bug 15070: [AUSL-RE]Si possono scaricare gli zip dei documenti solo con i diritti a livello di contenitore e non se l'utente è autorizzato come settore sul protocollo
+Bug 15078: [ASL-TO]Esce errore a video se l'utente autorizzato ad un settore annullato vuole visualizzare l'atto dall'icona di documento in Ricerca di Atto
+Bug 15123: [AGENAS] Sommario PEC: Il pulsante "Presa in carico" con destinazione attiva, deve essere visibile se sono un vicario e/o firmatario della PECMailBoxRoles
+Bug 15136: [AUSL-PC]Il tasto Invio in Ricerca di Dossier non produce risultati.
+Bug 15161: [AUSL-PC]Protocollo: Il pannello "Visualizza responsabili" non disegna I manager dei protocolli in uscita
+Bug 15163: [AUSL-PC]Metadati Dossier/Fascicoli: Il campo data con chrome non viene mai validato correttamente
+Bug 15165: [AFOL]Fascicoli/Dossier: Il metadato di tipo 'ENUM' viene salvato erratamente nel database (si salva il value e non il text)
+Bug 15166: [AFOL]Fascicoli: Scomparso il pulsante 'Chiudi' al responsabile di procedimento
+Bug 15167: [AUSL-RE]Classificatore: Se si agisce a livello di piano di fascicolazione, dopo il conferma di chiude l'albero del classificatore
+Bug 15168: [AUSL-RE]Classificatore: Se si agisce a livello gruppi di classificatore, il salva non fa capire se l'operazione è stata eseguita.
+Bug 15169: [AUSL-RE]Fascicolo: In modifica delle autorizzazioni non è possibile modificare l'opzione "rendi i fascicoli disponibili ai settori autorizzati"
+Bug 15252: [AUSL-RE]Whistleblowing: Le WebAPI non tracciano i log degli errori
+Bug 15253: [AUSL-RE]Whistleblowing: Autenticazione NTLM multidominio- risolti i nomi sbagliati
+Bug 15261: [CTT]la Verifica 2017 delle fatture passive seganala che ci sono fatture precedenti, nonostante quelle del 2016 siano chiuse.
+Bug 15262: [CTT ***REMOVED***]Preservation portal: Compare errore a video durante la Verifica. La verifica viene effettuata ma resta in loading la pagina
+Bug 15267: [AUSL-PC]Sommario di protocollo : Premendo le proprietà di un contatto manuale mittente o destinatario che ha l'apice viene mostrato un errore.
+Bug 15585: [AUSL-RE]External Viewer: Migliorare la gestione di deploy in IIS in modo tale che non dia dipendente dal nome del site External Viewer
+Bug 15586: [CTT]Preservation portal: Verificare perché il preservation non conserva archivi con attributi di tipo catena in assenza di documento catena con status 5 (profile)
+Bug 15631: [AFOLMB]In Tabelle,Template di Collaborazione,quando si clicca su un campo diverso da "Descrizione" per ordinare i template, dà errore.
+Bug 15650: [AUSL-RE]Fascicolo: Validazioni errate in apertura di fascicolo
+Bug 15668: [***REMOVED***]Preservation portal: Errore di FIPS durante la fase di Login
+Bug 15669: [***REMOVED***]Preservation portal: Algoritmo di verifica delle password durante il Login non conforme
+Bug 15670: [***REMOVED***]Preservation portal: Log di login presenta la password in chiaro, GDPR non compliance
+Bug 15692: [AGENAS]Entrando nei log della PEC dal sommario, quando si clicca sulla pagina successiva non carica i successivi risultati rimanenti, ma ricarica sempre la prima pagina
+Bug 15748: [AFOLMB]Quando da Sommario di UD si fascicola,inserendo un apice nella ricerca di fascicoli disponibili,dà errore
+Bug 15787: [***REMOVED***]Disabilitare il pulsante "Inserisci Firma" in Invio pec durante l'invio
+Bug 15842: [***REMOVED*** TECKMARKET AFOL]Anomalia in gestione Fascicoli di Attività
+Bug 15972: [ASL-TO] Elevato numero di protocolli in errore (maggiore 10 per singola giornata)
+Bug 16027: [AUSL-RE] Protocolli multipli a fronte di una stessa collaborazione
+Bug 16063: [AUSL-RE]Pulsante 'Invio persona' accoda anche settori e visualizzazione pulsati
+Bug 16100: [AUSL-RE]Protocolli multipli a fronte di una stessa collaborazione:bonifica
+Bug 16176: [ENPACL]Fast Protocol Sender : invio delle mail senza protocollazione con problemi di dati
+Bug 16177: [ENPACL] Ricerca Poste Web:La ricerca parte da una data diversa da quella di spedizione
+Bug 16180: [AUSL-RE] Griglia delle viste di scrivania di collaborazione non visulizza correttamente l'ultimo elemento
+Bug 16184: [AUSL-RE]Stampe registro pubblicazioni : vengono escluse le delibere a numerazione 0
+Bug 16233: [AUSL-RE]Amministrazione trasparente errore nel download pdf da archivio storico
+Bug 16283: [AUSL-RE]La stampa registro delibere non ordina correttamente anno 2017

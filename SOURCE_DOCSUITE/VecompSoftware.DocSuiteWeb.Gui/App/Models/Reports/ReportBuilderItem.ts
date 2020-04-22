@@ -1,0 +1,6 @@
+﻿
+interface ReportBuilderItem {
+
+}
+
+export = ReportBuilderItem;

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ZebraPrinter" table="ZebraPrinter">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+    
+    <property name="Name" column="Name" />
+    <property name="Description" column="Description" />
+    <property name="DocumentTemplate" column="DocumentTemplate" />
+    <property name="AttachmentTemplate" column="AttachmentTemplate" />
+    
+    <bag name="ComputerLogs" table="ComputerLog" cascade="none" inverse="true">
+      <key column="IdZebraPrinter" />
+      <one-to-many class="ComputerLog" />
+    </bag>
+    
+  </class>
+
+
+</hibernate-mapping>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/Server" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/Server" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Preservation.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/Preservation.svc?xsd=xsd16" namespace="http://BiblosDS/2009/10/ServerRole" />
+  <xs:import schemaLocation="http://localhost:1526/Preservation.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="Server">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="IdServer" type="ser:guid" />
+          <xs:element minOccurs="0" name="ServerName" nillable="true" type="xs:string" />
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/ServerRole" minOccurs="0" name="ServerRole" type="q2:ServerRole" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Server" nillable="true" type="tns:Server" />
+</xs:schema>

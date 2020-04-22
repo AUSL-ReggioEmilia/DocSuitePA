@@ -1,0 +1,106 @@
+﻿@using BiblosDS.LegalExtension.AdminPortal.ViewModel.Home;
+@using BiblosDS.LegalExtension.AdminPortal.Models;
+@model DistributionPackagesSearchGridViewModel
+
+<script type="text/javascript">
+    function distributionPackagesGrid() {
+        var idArchive = null;
+        var dynamicFiltersDictionary = {};
+        var ctx = this;
+        this.readData = function () {
+            var fromDateControl = $("#FromDate").data("kendoDatePicker");
+            var toDateControl = $("#ToDate").data("kendoDatePicker");
+            return {
+                idArchive: ctx.idArchive,
+                fromDate: fromDateControl != null && fromDateControl.value() != null ? fromDateControl.value().toUTCString() : null,
+                toDate: toDateControl != null && toDateControl.value() != null ? toDateControl.value().toUTCString() : null,
+                dynamicFilters: JSON.stringify(ctx.dynamicFiltersDictionary)
+            }
+        }
+
+        this.searchData = function (idArchive, dynamicFiltersDictionary) {
+            ctx.idArchive = idArchive;
+            ctx.dynamicFiltersDictionary = dynamicFiltersDictionary;
+            $("#grid").data("kendoGrid").dataSource.read();
+        }
+
+        this.exportFullPdd = function (e) {
+            var data = ctx.readData();
+            $("#exportform").attr("action", "@Url.Action("ExportFullPDD", "Home")");
+            $("#export-archive").val(data.idArchive);
+            $("#export-from").val(data.fromDate);
+            $("#export-to").val(data.toDate);
+            $("#export-dynamicfilters").val(data.dynamicFilters);
+            $("#grid").data("kendoGrid").dataSource.read();
+        }
+
+        this.exportPdd = function (e) {
+            $("#exportform").attr("action", "@Url.Action("ExportPDD", "Home")");
+            var selectedItems = $("#grid").data("kendoGrid").selectedKeyNames();
+            if (selectedItems == null || selectedItems.length == 0) {
+                e.preventDefault();
+                alert("Selezionare almeno un documento per l'esportazione");
+                return;
+            }
+
+            $("#export-data").val(encodeURIComponent(JSON.stringify(selectedItems)));
+        }
+    }
+
+    var instanceClass;
+    $(function () {
+        instanceClass = new distributionPackagesGrid();
+        $("#searchGridResult").data("distributionPackagesGrid", instanceClass);
+    })
+</script>
+
+@(Html.Kendo().Grid<DistributionPackagesGridViewModel>()
+            .HtmlAttributes(new { @style = "height: 100%;" })
+            .Name("grid")
+            .Columns(columns =>
+            {
+                columns.Select().Width(50);
+                columns.Bound(o => o.DocumentName).Title("Nome documento").ClientTemplate("<b>#=DocumentName#</b>").Width(250);
+                columns.Bound(o => o.DocumentCreated).Width(150).Format("{0:dd/MM/yyyy}").Title("Data creazione");
+                columns.Bound(o => o.IdPreservation).Width(130).MinResizableWidth(130).ClientTemplate("#if(IsConservated) {#" +
+                    "<a href='" + Url.Content("~/Preservation/PreservationCheck/#=IdPreservation#") + "' class='k-button'>Conservazione</a>" +
+                    "# } #").Title("Conservazione");
+
+                for (int i = 0; i < Model.ArchiveAttributes.Count; i++)
+                {
+                    AttributeModel archiveAttribute = Model.ArchiveAttributes.ElementAt(i);
+                    columns.Bound(o => o.Metadata[i].MetadataValue).Title(archiveAttribute.Description).Width(150);
+                }
+            })
+            .ToolBar(toolbar => toolbar.Template(@<text>
+                <form action="" id="exportform" method="POST">
+                    <input type="hidden" id="export-data" name="data" />
+                    <input type="hidden" id="export-archive" name="idArchive" />
+                    <input type="hidden" id="export-from" name="fromDate" />
+                    <input type="hidden" id="export-to" name="toDate" />
+                    <input type="hidden" id="export-dynamicfilters" name="dynamicFilters" />
+                    <i class="lighter">Estrai Pacchetto di distribuzione degli elementi selezionati</i>
+                    @Html.Kendo().Button().Name("exportPdd").Content("Estrai selezionati").SpriteCssClass("fas fa-download").HtmlAttributes(new { @type = "submit" }).Events(events => events.Click("instanceClass.exportPdd"))                    
+                    @Html.Kendo().Button().Name("exportFullPdd").Content("Estrai tutti").SpriteCssClass("fas fa-download").HtmlAttributes(new { @type = "submit", @style = "margin-left: 10px;" }).Events(events => events.Click("instanceClass.exportFullPdd"))
+                </form>
+            </text>))
+                    .Pageable()
+                    .Scrollable(s => s.Height("435px"))
+                    .Resizable(resize => resize.Columns(true))
+                    .PersistSelection()
+                    .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .PageSize(10)
+                                .Model(model => model.Id(o => o.IdDocument))
+                                .Read(read => read.Action("FindDocuments", "Home").Data("instanceClass.readData")))
+                    .NoRecords("Nessun documento trovato"))
+
+<style>
+    #grid table {
+        min-width: 1000px;
+    }
+
+    .k-grid-norecords-template {
+        width: 20em;
+    }
+</style>

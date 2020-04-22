@@ -1,0 +1,9 @@
+<nav class="sidebar">
+    <ul class="list-group">
+        <app-sidebar-header #filter></app-sidebar-header>
+        <li role="separator" class="divider"></li>
+        <app-sidebar-loading [show]="isBusy"></app-sidebar-loading>
+        <app-sidebar-nav *ngFor="let app of applications | applicationsFilter : filter.term" [currentApplication]="app"></app-sidebar-nav>
+        <app-sidebar-user class="nav-user"></app-sidebar-user>
+    </ul>
+</nav>

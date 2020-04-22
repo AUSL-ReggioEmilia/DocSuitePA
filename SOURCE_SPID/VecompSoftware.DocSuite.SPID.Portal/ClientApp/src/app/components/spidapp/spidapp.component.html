@@ -1,0 +1,16 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div *ngIf="!isBusy" class="media animated fadeIn">
+            <div class="media-left media-middle text-success">
+                <i class="fa fa-5x fa-desktop"></i>
+            </div>
+            <div class="media-body media-middle">
+                <app-spidapp-content [currentApplication]="currentApplication"></app-spidapp-content>
+            </div>
+        </div>
+        <app-loading [show]="isBusy"></app-loading>
+    </div>
+    <div class="panel-footer" *ngIf="!isBusy">
+        <a class="btn btn-sm btn-success" href="{{currentApplication.Url}}" target="_blank"><i class="fa fa-external-link"></i>&nbsp;Accedi...</a>
+    </div>
+</div>

@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E017CB37-4206-4875-B4D8-6D6FBA4CC5E5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Data.EF</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Data.EF</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DSWDataContext.cs" />
+    <Compile Include="DataUnitOfWork.cs" />
+    <Compile Include="Mapping\Commons\CategoryFascicleRightMap.cs" />
+    <Compile Include="Mapping\Commons\UserLogMap.cs" />
+    <Compile Include="Mapping\DocumentArchives\DocumentSeriesItemLinkMap.cs" />
+    <Compile Include="Mapping\DocumentUnits\DocumentUnitFascicleCategoryMap.cs" />
+    <Compile Include="Mapping\DocumentUnits\DocumentUnitFascicleHistoricizedCategoryMap.cs" />
+    <Compile Include="Mapping\Fascicles\FascicleDocumentUnitMap.cs" />
+    <Compile Include="Mapping\JeepServiceHosts\JeepServiceHostMap.cs" />
+    <Compile Include="Mapping\PECMails\PECMailAttachmentMap.cs" />
+    <Compile Include="Mapping\PECMails\PECMailBoxConfigurationMap.cs" />
+    <Compile Include="Mapping\Processes\ProcessFascicleTemplateMap.cs" />
+    <Compile Include="Mapping\Processes\ProcessFascicleWorkflowRepositoryMap.cs" />
+    <Compile Include="Mapping\Processes\ProcessMap.cs" />
+    <Compile Include="Mapping\Protocols\AdvancedProtocolMap.cs" />
+    <Compile Include="Mapping\Collaborations\CollaborationLogMap.cs" />
+    <Compile Include="Mapping\Collaborations\CollaborationAggregateMap.cs" />
+    <Compile Include="Mapping\Collaborations\CollaborationMap.cs" />
+    <Compile Include="Mapping\Collaborations\CollaborationSignMap.cs" />
+    <Compile Include="Mapping\Collaborations\CollaborationUserMap.cs" />
+    <Compile Include="Mapping\Collaborations\CollaborationVersioningMap.cs" />
+    <Compile Include="Mapping\Commons\ContainerPropertyMap.cs" />
+    <Compile Include="Mapping\Commons\PrivacyLevelMap.cs" />
+    <Compile Include="Mapping\Conservations\ConservationMap.cs" />
+    <Compile Include="Mapping\DocumentArchives\DocumentSeriesConstraintMap.cs" />
+    <Compile Include="Mapping\DocumentArchives\DocumentSeriesItemLogMap.cs" />
+    <Compile Include="Mapping\DocumentUnits\DocumentUnitUserMap.cs" />
+    <Compile Include="Mapping\Dossiers\DossierCommentMap.cs" />
+    <Compile Include="Mapping\Dossiers\DossierFolderMap.cs" />
+    <Compile Include="Mapping\Dossiers\DossierFolderRoleMap.cs" />
+    <Compile Include="Mapping\Dossiers\DossierLinkMap.cs" />
+    <Compile Include="Mapping\Dossiers\DossierLogMap.cs" />
+    <Compile Include="Mapping\Dossiers\DossierDocumentMap.cs" />
+    <Compile Include="Mapping\Dossiers\DossierMap.cs" />
+    <Compile Include="Mapping\Dossiers\DossierRoleMap.cs" />
+    <Compile Include="Mapping\Fascicles\FascicleFolderMap.cs" />
+    <Compile Include="Mapping\Monitors\TransparentAdministrationMonitorLogMap.cs" />
+    <Compile Include="Mapping\Parameters\ParameterMap.cs" />
+    <Compile Include="Mapping\Resolutions\ResolutionDocumentSeriesItemMap.cs" />
+    <Compile Include="Mapping\Resolutions\ResolutionKindDocumentSeriesMap.cs" />
+    <Compile Include="Mapping\Resolutions\ResolutionKindMap.cs" />
+    <Compile Include="Mapping\Resolutions\ResolutionLogMap.cs" />
+    <Compile Include="Mapping\Templates\TemplateCollaborationMap.cs" />
+    <Compile Include="Mapping\Templates\TemplateCollaborationDocumentRepositoryMap.cs" />
+    <Compile Include="Mapping\Templates\TemplateCollaborationUserMap.cs" />
+    <Compile Include="Mapping\Commons\IncrementalMap.cs" />
+    <Compile Include="Mapping\Commons\CategorySchemaMap.cs" />
+    <Compile Include="Mapping\Commons\CategoryFascicleMap.cs" />
+    <Compile Include="Mapping\Commons\ContactPlaceNameMap.cs" />
+    <Compile Include="Mapping\Commons\ContactTitleMap.cs" />
+    <Compile Include="Mapping\Commons\ContactMap.cs" />
+    <Compile Include="Mapping\Commons\CategoryMap.cs" />
+    <Compile Include="Mapping\Commons\MetadataRepositoryMap.cs" />
+    <Compile Include="Mapping\Commons\RoleGroupMap.cs" />
+    <Compile Include="Mapping\Commons\ContainerGroupMap.cs" />
+    <Compile Include="Mapping\Commons\LocationMap.cs" />
+    <Compile Include="Mapping\Commons\ContainerMap.cs" />
+    <Compile Include="Mapping\Commons\RoleUserMap.cs" />
+    <Compile Include="Mapping\Commons\TableLogMap.cs" />
+    <Compile Include="Mapping\DocumentArchives\DocumentSeriesItemMap.cs" />
+    <Compile Include="Mapping\DocumentArchives\DocumentSeriesItemRoleMap.cs" />
+    <Compile Include="Mapping\DocumentArchives\DocumentSeriesMap.cs" />
+    <Compile Include="Mapping\DocumentUnits\DocumentUnitChainMap.cs" />
+    <Compile Include="Mapping\DocumentUnits\DocumentUnitRoleMap.cs" />
+    <Compile Include="Mapping\DocumentUnits\DocumentUnitMap.cs" />
+    <Compile Include="Mapping\Fascicles\FascicleDocumentMap.cs" />
+    <Compile Include="Mapping\Fascicles\FascicleRoleMap.cs" />
+    <Compile Include="Mapping\Fascicles\FascicleLogMap.cs" />
+    <Compile Include="Mapping\Fascicles\FascicleLinkMap.cs" />
+    <Compile Include="Mapping\Fascicles\FasciclePeriodMap.cs" />
+    <Compile Include="Mapping\Fascicles\FascicleMap.cs" />
+    <Compile Include="Mapping\MassimariScarto\MassimarioScartoMap.cs" />
+    <Compile Include="Mapping\OCharts\OChartItemContainerMap.cs" />
+    <Compile Include="Mapping\OCharts\OChartItemMap.cs" />
+    <Compile Include="Mapping\OCharts\OChartMap.cs" />
+    <Compile Include="Mapping\Parameters\ParameterEnvMap.cs" />
+    <Compile Include="Mapping\PECMails\PECMailBoxMap.cs" />
+    <Compile Include="Mapping\PECMails\PECMailReceiptMap.cs" />
+    <Compile Include="Mapping\PECMails\PECMailLogMap.cs" />
+    <Compile Include="Mapping\PECMails\PECMailMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolContactManualMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolDraftMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolLogMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolContactMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolParerMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolUserMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolRoleUserMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolRoleMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolDocumentTypeMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolLinkMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolTypeMap.cs" />
+    <Compile Include="Mapping\Commons\RoleMap.cs" />
+    <Compile Include="Mapping\Commons\SecurityGroupMap.cs" />
+    <Compile Include="Mapping\Commons\SecurityUserMap.cs" />
+    <Compile Include="Mapping\Desks\DeskCollaborationMap.cs" />
+    <Compile Include="Mapping\Desks\DeskDocumentEndorsementMap.cs" />
+    <Compile Include="Mapping\Desks\DeskDocumentMap.cs" />
+    <Compile Include="Mapping\Desks\DeskDocumentVersionMap.cs" />
+    <Compile Include="Mapping\Desks\DeskLogMap.cs" />
+    <Compile Include="Mapping\Desks\DeskMap.cs" />
+    <Compile Include="Mapping\Desks\DeskMessageMap.cs" />
+    <Compile Include="Mapping\Desks\DeskRoleUsersMap.cs" />
+    <Compile Include="Mapping\Desks\DeskStoryBoardMap.cs" />
+    <Compile Include="Mapping\Messages\MessageAttachmentMap.cs" />
+    <Compile Include="Mapping\Messages\MessageContactEmailMap.cs" />
+    <Compile Include="Mapping\Messages\MessageContactMap.cs" />
+    <Compile Include="Mapping\Messages\MessageEmailMap.cs" />
+    <Compile Include="Mapping\Messages\MessageLogMap.cs" />
+    <Compile Include="Mapping\Messages\MessageMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolMap.cs" />
+    <Compile Include="Mapping\Templates\TemplateDocumentRepositoryMap.cs" />
+    <Compile Include="Mapping\Resolutions\FileResolutionMap.cs" />
+    <Compile Include="Mapping\Resolutions\ResolutionContactMap.cs" />
+    <Compile Include="Mapping\Resolutions\ResolutionMap.cs" />
+    <Compile Include="Mapping\Resolutions\ResolutionRoleMap.cs" />
+    <Compile Include="Mapping\Tenants\TenantConfigurationMap.cs" />
+    <Compile Include="Mapping\Tenants\TenantMap.cs" />
+    <Compile Include="Mapping\Tenants\TenantWorkflowRepositoryMap.cs" />
+    <Compile Include="Mapping\UDS\UDSContactMap.cs" />
+    <Compile Include="Mapping\UDS\UDSMessageMap.cs" />
+    <Compile Include="Mapping\UDS\UDSDocumentUnitMap.cs" />
+    <Compile Include="Mapping\UDS\UDSCollaborationMap.cs" />
+    <Compile Include="Mapping\UDS\UDSPECMailMap.cs" />
+    <Compile Include="Mapping\UDS\UDSRoleMap.cs" />
+    <Compile Include="Mapping\UDS\UDSLogMap.cs" />
+    <Compile Include="Mapping\Templates\TemplateReportMap.cs" />
+    <Compile Include="Mapping\UDS\UDSTypologyMap.cs" />
+    <Compile Include="Mapping\UDS\UDSRepositoryMap.cs" />
+    <Compile Include="Mapping\UDS\UDSSchemaRepositoryMap.cs" />
+    <Compile Include="Mapping\UDS\UDSUserMap.cs" />
+    <Compile Include="Mapping\Workflows\WorkflowActivityLogMap.cs" />
+    <Compile Include="Mapping\Workflows\WorkflowAuthorizationMap.cs" />
+    <Compile Include="Mapping\Workflows\WorkflowActivityMap.cs" />
+    <Compile Include="Mapping\Workflows\WorkflowEvaluationPropertyMap.cs" />
+    <Compile Include="Mapping\Workflows\WorkflowInstanceLogMap.cs" />
+    <Compile Include="Mapping\Workflows\WorkflowInstanceRoleMap.cs" />
+    <Compile Include="Mapping\Workflows\WorkflowInstanceMap.cs" />
+    <Compile Include="Mapping\Workflows\WorkflowPropertyMap.cs" />
+    <Compile Include="Mapping\Workflows\WorkflowRoleMappingMap.cs" />
+    <Compile Include="Mapping\Workflows\WorkflowRepositoryMap.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="VecompSoftware.DocSuiteWeb.Data.EF.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
+      <Project>{C6F323C0-C21B-433B-90C8-0B64A42115AB}</Project>
+      <Name>VecompSoftware.Commons.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Common\VecompSoftware.DocSuiteWeb.Common.csproj">
+      <Project>{58938aa6-b3d6-4256-8c5c-4bcab88517bb}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data\VecompSoftware.DocSuiteWeb.Data.csproj">
+      <Project>{17962438-d43b-41e7-8d6f-5a0c33b054ae}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Entity\VecompSoftware.DocSuiteWeb.Entity.csproj">
+      <Project>{34901fa6-4816-4872-9986-e42b2e866095}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Repository.EF\VecompSoftware.DocSuiteWeb.Repository.EF.csproj">
+      <Project>{50c1e400-7a37-4f64-89e9-a0990f9e0dc3}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Repository.EF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Repository\VecompSoftware.DocSuiteWeb.Repository.csproj">
+      <Project>{27d8fcbb-8a8e-430b-8747-a5ace9b4ffca}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mapping\Tasks\" />
+    <Folder Include="Mapping\Tenders\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

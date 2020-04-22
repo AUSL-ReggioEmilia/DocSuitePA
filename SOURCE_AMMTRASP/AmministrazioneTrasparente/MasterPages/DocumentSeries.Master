@@ -1,0 +1,149 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="DocumentSeries.master.cs" Inherits="AmministrazioneTrasparente.MasterPages.DocumentSeries" %>
+
+<%@ Import Namespace="System.Activities.Statements" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <title></title>
+    <link type="text/css" rel="stylesheet" href="../css/bootstrap.css" />
+    <link href="../css/non-responsive.css" rel="stylesheet" />
+    <link href="../css/custom.css" rel="stylesheet" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+
+</head>
+<body>
+    <form id="form1" runat="server">
+        <telerik:RadScriptManager ID="scmMasterPage" runat="server" EnablePartialRendering="true" EnableHistory="false" EnableSecureHistoryState="false">
+            <Scripts>
+                <telerik:RadScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.Core.js" />
+                <telerik:RadScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQuery.js" />
+            </Scripts>
+        </telerik:RadScriptManager>
+        <telerik:RadScriptBlock ID="rsbGrid" runat="server">
+            <script type="text/javascript" src="js/jquery.sticky.js"></script>
+            <script type="text/javascript" language="javascript">
+                // trucco 
+            </script>
+        </telerik:RadScriptBlock>
+        <telerik:RadAjaxManager runat="server" ID="MyAjaxManager" />
+        <telerik:RadAjaxLoadingPanel ID="MyAjaxLoadingPanel" Skin="" runat="server" Transparency="30" BackgroundPosition="Top">
+            <div class="loading">
+                <asp:Image runat="server" ImageUrl="~/img/loading.gif" AlternateText="loading"></asp:Image>
+            </div>
+        </telerik:RadAjaxLoadingPanel>
+
+        <% if (!String.IsNullOrEmpty(HeaderExternalUrl))
+            { %>
+        <div class="navbar navbar-fixed-top">
+            <iframe class="header-frame" src="<%= HeaderExternalUrl %>" frameborder="0" scrolling="no" style="width: 100%; border: none; overflow: hidden;"></iframe>
+        </div>
+        <% } %>
+
+        <%
+            string headerpath = "css/Themes/" + ThemeConfiguration + "/master/header.aspx";
+            if (System.IO.File.Exists(Server.MapPath(headerpath))) { Server.Execute(headerpath); }
+            else
+            {
+        %>
+        <div id="header" class="navbar navbar-default navbar-fixed-top">
+            <div class="container container-brand">
+                <% if (HistoryEnable)
+                    {%>
+                <div class="navbar-right">
+                    <span class="navbar-brand navbar-storico"><%= !StoricoEnabled ? "Archivio corrente" : "Archivio storico" %></span>
+                </div>
+                <% } %>
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.aspx<%= (HistoryEnable ? "?history=" + StoricoEnabled : "") %>">
+                        <img alt="Amministrazione Trasparente" id="brand-logo" src="./img/<%= LogoImg %>" style="height: 63px;" />&nbsp;Amministrazione Trasparente</a>
+                </div>
+            </div>
+        </div>
+        <%
+            }
+        %>
+
+
+        <div class="container container-principale">
+            <div class="row" id="MainRow">
+                <div class="col-xs-3 hidden-print thumbnail" id="menu">
+                    <asp:Repeater runat="server" ID="MainMenuRepeater">
+                        <HeaderTemplate>
+                            <ul class="nav nav-pills nav-stacked">
+                        </HeaderTemplate>
+                        <ItemTemplate>
+                            <li class="<%# IsSelected((int) Eval("Id")) ? "active" : string.Empty %>">
+                                <a href='<%# ResolveUrl("~/Family.aspx?idFamily=" + Eval("Id") + (HistoryEnable ? "&history=" + StoricoEnabled : "")) %>'>
+                                    <%# Eval("Name") %>
+                                </a>
+                            </li>
+                        </ItemTemplate>
+                        <FooterTemplate>
+                            </ul>
+                        </FooterTemplate>
+                    </asp:Repeater>
+
+                    <% if (HistoryEnable)
+                        { %>
+                    <hr class="hr-menu" />
+                    <a href="<%= CurrentHistoryUrl %>" class="btn btn-success btn-block">
+                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                        <asp:Label runat="server" ID="lblArchiveType"></asp:Label>
+                    </a>
+                    <% } %>
+                </div>
+
+                <div class="col-xs-9" role="main" id="mainCol">
+                    <asp:ContentPlaceHolder runat="server" ID="MainPlaceHolder"></asp:ContentPlaceHolder>
+                </div>
+            </div>
+        </div>
+
+
+
+        <%
+            string footerpath = "/css/Themes/" + ThemeConfiguration + "/master/footer.aspx";
+            if (System.IO.File.Exists(Server.MapPath(footerpath))) { Server.Execute(footerpath); }
+            else
+            {
+        %>
+        <div class="footer">
+            <img class="img-thumbnail" src="./img/footer.png" alt="" />
+        </div>
+        <%
+            }
+        %>
+
+        <% if (!String.IsNullOrEmpty(FooterExternalUrl))
+            { %>
+        <iframe frameborder="0" class="footer-frame" src="<%= FooterExternalUrl %>" style="width: 100%; border: none; overflow: hidden;" scrolling="no"></iframe>
+        <% } %>
+
+        <% if (!String.IsNullOrEmpty(GoogleAnalyticsCode))
+            { %>
+        <!-- Google Analytics -->
+        <script>
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', '<%= GoogleAnalyticsCode%>', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <% } %>
+    </form>
+</body>
+</html>

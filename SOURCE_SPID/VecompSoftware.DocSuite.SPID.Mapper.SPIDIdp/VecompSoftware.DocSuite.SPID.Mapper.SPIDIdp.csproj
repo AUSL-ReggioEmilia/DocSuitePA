@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="favicon.ico">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.SPID.Common\VecompSoftware.DocSuite.SPID.Common.csproj" />
+    <ProjectReference Include="..\VecompSoftware.DocSuite.SPID.Mapper\VecompSoftware.DocSuite.SPID.Mapper.csproj" />
+    <ProjectReference Include="..\VecompSoftware.DocSuite.SPID.Model\VecompSoftware.DocSuite.SPID.Model.csproj" />
+  </ItemGroup>
+
+</Project>

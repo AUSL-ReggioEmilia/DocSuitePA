@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "importHelpers": true,
+    "module": "es2015",
+    "moduleResolution": "node",
+    "target": "es5",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": [ "es6", "dom" ],
+    "typeRoots": [
+      "node_modules/@types",
+      "src/typings"
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "@app-config/*": [ "src/app/config/*" ],
+      "@app-models/*": [ "src/app/models/*" ],
+      "@app-services/*": [ "src/app/services/*" ],
+      "@app-mappers/*": [ "src/app/mappers/*" ],
+      "@app-helpers/*": [ "src/app/helpers/*" ],
+      "@app-viewmodels/*": [ "src/app/viewmodels/*" ],
+      "@app-factories/*": [ "src/app/factories/*" ]
+    }
+  },
+  "exclude": [ "bin", "node_modules" ],
+  "atom": { "rewriteTsconfig": false }
+}

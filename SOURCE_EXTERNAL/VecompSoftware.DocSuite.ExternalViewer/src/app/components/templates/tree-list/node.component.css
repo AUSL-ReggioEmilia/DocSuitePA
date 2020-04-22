@@ -1,0 +1,8 @@
+﻿li{
+    font-weight: normal;
+}
+
+li.selected{
+    font-weight: bold;
+}
+

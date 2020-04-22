@@ -1,0 +1,56 @@
+Epic 15348: [DSW] Stampa Conforme : Migliormementi Itext7
+Epic 20059: [CTT] Preservation Portal : Modifiche al preservation Multiazienda
+Epic 20064: [TECMARKET] ]monitoraggio server automatico e reportistica in DocSuite
+
+
+Feature 16584: [CTT] Preservation Portal : Introdurre firma remota automatica nelle conservazioni da chiudere
+Feature 18757: [SM] impostazione piano dei procedimenti e attività collegato al piano di fascicolazione e massimario di scarto
+Feature 19465: [SM] Tenant Settori : Implementare la selezione dei settori restringendo per l'azienda selezionata
+Feature 19573: [SM] Raccolta dei procedimenti : Creazione della pagina amministrativa TbltProcess.aspx (Tabelle -> Procedimenti)
+Feature 19579: [SM] Raccolta dei procedimenti : Creazione nuovo usercontrol REST uscRoleRest.ascx
+Feature 19580: [SM] Raccolta dei procedimenti :  Creare una nuova pagina di inserimento di Fascicolo "FascProcessInserimento.aspx" agganciata alle logiche della raccolta dei procedimenti
+Feature 19776: [DSW] Stampa Conforme: Adozione IText7 in stampa conforme
+Feature 19784: [Agenas] Designer UDS: Possibilità di definire un campo di testo multilina come HTML
+Feature 19790: [SM] Tenant Contatti: Gestione contatti in modalità "tree view".
+Feature 19955: [SM] Fascicoli : Implementare il pannello "Collegamenti" nel sommario di Fascicoli
+Feature 20060: [CTT] Preservation Portal : Introdurre firma remota automatica nelle conservazioni da chiudere
+Feature 20065: [TECMARKET] Integration: Ceare modulo integration "TECMARKET.EventViewerAnalyzer" per query su EventView
+Feature 20068: [TECMARKET] Integration: Ceare modulo integration "TECMARKET.PerformanceAnalyzer" per query su EventView
+Feature 20071: [TECMARKET] Integration: Ceare modulo integration "TECMARKET.Reporting" per avvio workflows DocSuite
+Feature 20394: [SM] Tabelle Workflow : Il designer dei workflow deve permettere la gestione dei WorkflowSteps
+
+User Story 19466: [SM] Tenant Settori : Migliorare la gestione "tabelle -> Azienda" per gestione dei settori
+User Story 19467: [SM] Tenant Settori : Adeguare usercontrol UscSettori per gestione tenant (azienda) corrente 
+User Story 19574: [SM] Raccolta dei procedimenti : Modificare il menu della DocSuite aggiungendo il link "Procedimenti" 
+User Story 19575: [SM] Raccolta dei procedimenti : Predisporre le strutture typescript (Mapping/Model/Service) per la gestione delle nuove entità 
+User Story 19576: [SM] Raccolta dei procedimenti : Creare la pagina di Amministrazione della raccolta dei procedimenti (TbltProcess.aspx)
+User Story 19676: [SM] Raccolta dei procedimenti : Creare le SQL Functions per il nuovo usercontrol uscRoleRest
+User Story 19677: [SM] Raccolta dei procedimenti : Creare la funzione ODATA FindRoles
+User Story 19678: [SM] Raccolta dei procedimenti : Implementare lo user control uscRoleRest.ascx 
+User Story 19679: [SM] Raccolta dei procedimenti :  Creare nuova pagina di inserimento di Fascicolo "FascProcessInserimento.aspx"
+User Story 19680: [SM] Raccolta dei procedimenti : Gestione automatismi dei campi lookup nella pagina "FascProcessInserimento.aspx"
+User Story 19681: [SM] Raccolta dei procedimenti : Creare le sql functions per gestione pagina nuova pagina di inserimento di Fascicolo "FascProcessInserimento.aspx" 
+User Story 19682: [SM] Raccolta dei procedimenti : Creare la funzione ODATA FindProcesses
+User Story 19683: [SM] Raccolta dei procedimenti : Creare la funzione ODATA FindProcessFolders
+User Story 19684: [SM] Raccolta dei procedimenti : Modificare i service TypeScript per aggancio nuove funzioni odata FindProcesses e FindProcessFolders
+User Story 19777: [DSW] Stampa Conforme: Rimozione itext 5 adottando itext7
+User Story 19778: [DSW] Stampa Conforme: Conversione EML HTML -> PDF  senza passare dal converter
+User Story 19779: [DSW] Stampa Conforme: Nuovo metodo "BuildPDF"
+User Story 19785: [Agenas] UDS: Possibilità di definire un campo di testo multilinea come HTML
+User Story 19786: [Agenas] UDS Designer: Modificare il designer degli archivi aggiungendo l'opzione "Abilita campo HTML"nel field Text
+User Story 19787: [Agenas] UDS : Adeguare la pagina di inserimento/modifica dell'UDS gestendo l'opzione "Abilita campo HTML"nel field Text
+User Story 19791: [SM] Tenant Contatti: Gestione contatti in modalità "tree view".
+User Story 19792: [SM] Tenant Contatti: Disegnare la corretta iconografia dei contatti
+User Story 19956: [SM] Fascicoli : Implementare il pannello "Collegamenti" nel sommario di Fascicoli
+User Story 19957: [SM] Tenant Contatti: Implementare la modalità filtro "IDParent correttamente"
+User Story 20061: [CTT] Preservation Portal : Creare la tabella nuova CustomerCompany
+User Story 20062: [CTT] Preservation Portal : Mapping EDMX entità CustomerCompany
+User Story 20063: [CTT] Preservation Portal : Filtrare le varie viste sulla scelta della "Azienda" scelta dall'utente
+User Story 20066: [TECMARKET] Integration: Struttura modulo integration "TECMARKET.EventViewerAnalyzer"
+User Story 20067: [TECMARKET] Integration: Sviluppare business logic del modulo "TECMARKET.EventViewerAnalyzer"
+User Story 20069: [TECMARKET] Integration: Struttura modulo integration "TECMARKET.PerformanceAnalyzer"
+User Story 20070: [TECMARKET] Integration: Sviluppare business logic del modulo "TECMARKET.PerformanceAnalyzer"
+User Story 20072: [TECMARKET] Integration: Ceare modulo integration  "TECMARKET.Reporting" per avvio workflow
+User Story 20073: [TECMARKET] Integration:  Sviluppare business logic del modulo "TECMARKET.Reporting"
+User Story 20395: [SM] Tabelle Workflow : Adeguamento blocco informazioni
+User Story 20396: [SM] Tabelle Workflow : Gestione dei WorkflowSteps di WorkflowRepository

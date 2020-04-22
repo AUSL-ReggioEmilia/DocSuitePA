@@ -1,0 +1,33 @@
+﻿
+<kendo-splitter>
+
+    <kendo-splitter-pane [collapsible]="true" size="20%" (sizeChange)="onResize($event)">
+        <div class="s-sidebar__nav" [style.width]="treeWidth">
+            <input [(ngModel)]="searchTerm" #searchToken (keyup)='onkeyup(searchToken.value)' placeholder="Cerca..." class="input-style" />
+            <kendo-treeview [nodes]="parsedData"
+                            textField="text"
+                            kendoTreeViewExpandable
+                            [(expandedKeys)]="expandedKeys"
+                            kendoTreeViewSelectable
+                            kendoTreeViewHierarchyBinding
+                            childrenField="items"
+                            (nodeClick)="select($event)"
+                            (expand)="expand($event)"
+                            (collapse)="collapse($event)"
+                            class="nodeStyle">
+                <ng-template kendoTreeViewNodeTemplate let-dataItem>
+                    <img [src]="dataItem.itemType === 6 ? dataItem.imageUrl : dataItem.loadingNode ? 'app/images/spinners/spin-small.gif' : ''" />
+                    <span *ngIf="iconClass(dataItem) !== ''" [ngClass]="iconClass(dataItem)"></span>
+                    <div [style.font-weight]="searchTerm !== '' ? dataItem.searchedNodeFont : ''">{{dataItem.text}}</div>
+                </ng-template>
+            </kendo-treeview>
+        </div>
+    </kendo-splitter-pane>
+
+    <kendo-splitter-pane>
+        <div [style.display]="showDetails">
+            <router-outlet></router-outlet>
+        </div>
+    </kendo-splitter-pane>
+
+</kendo-splitter>

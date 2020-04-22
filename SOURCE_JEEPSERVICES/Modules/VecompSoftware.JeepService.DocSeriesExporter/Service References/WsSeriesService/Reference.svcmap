@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="c1638d9c-1444-47d2-b9d3-de4c3a038077" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://sviluppo/WSSeries-RE/WSSeries.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="WSSeries.disco" MetadataType="Disco" ID="c41583fa-ff5c-4da3-8f41-eea9db4fef1f" SourceId="1" SourceUrl="http://sviluppo/WSSeries-RE/WSSeries.svc?disco" />
+    <MetadataFile FileName="WSSeries.xsd" MetadataType="Schema" ID="bdaf4d14-c5fa-4af0-b40a-25f102452ccd" SourceId="1" SourceUrl="http://sviluppo/WSSeries-RE/WSSeries.svc?xsd=xsd1" />
+    <MetadataFile FileName="WSSeries1.xsd" MetadataType="Schema" ID="c61d02cb-ed35-4181-8350-19846d7c8fad" SourceId="1" SourceUrl="http://sviluppo/WSSeries-RE/WSSeries.svc?xsd=xsd0" />
+    <MetadataFile FileName="WSSeries.wsdl" MetadataType="Wsdl" ID="d40fb608-064a-474a-90ab-8fd3be490a7b" SourceId="1" SourceUrl="http://sviluppo/WSSeries-RE/WSSeries.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

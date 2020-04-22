@@ -1,0 +1,12 @@
+﻿[
+    {
+        "Priority": "1",
+        "CssName": "acqvr-gradient.css",
+        "ExplorerVersion": "9",
+        "Condition": "GreaterOrEqual"
+    },
+    {
+        "Priority": "2",
+        "CssName": "my_style.css"
+    }
+]

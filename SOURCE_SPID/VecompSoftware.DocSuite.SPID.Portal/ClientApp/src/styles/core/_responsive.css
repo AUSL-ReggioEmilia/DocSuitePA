@@ -1,0 +1,5 @@
+﻿@media screen and (max-width: 768px) {
+    .sidebar-mobile-show .sidebar {
+        left: 235px !important;
+    }
+}

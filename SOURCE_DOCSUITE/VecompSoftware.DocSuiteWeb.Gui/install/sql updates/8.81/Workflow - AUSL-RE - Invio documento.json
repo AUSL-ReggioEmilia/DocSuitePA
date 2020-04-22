@@ -1,0 +1,443 @@
+﻿{
+  "0": {
+    "Position": 0,
+    "Name": "Mail di assegnazione",
+    "AuthorizationType": "UserName",
+    "ActivityOperation": {
+      "Action": "Create",
+      "Area": "Message"
+    },
+    "ActivityType": "AutomaticActivity",
+    "InputArguments": [
+      {
+        "Name": "_dsw_a_SetAuditableProperties",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ActivityStartReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ActivityStartMotivation",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Accounts",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_ReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Subject",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": [
+      {
+        "Name": "_dsw_a_SetAuditableProperties",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ActivityStartReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ActivityStartMotivation",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Accounts",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_ReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Subject",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "EvaluationArguments": [
+      {
+        "Name": "_dsw_p_EmailEvaluationRecipient",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": "_dsw_p_Accounts"
+      },
+      {
+        "Name": "_dsw_e_MessageBody",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": "<strong>DocSuite - Gestione Documentale</strong><br /> <br />Con la presente si comunica la trasmissione della documentazione.<br /> <br />"
+      },
+      {
+        "Name": "_dsw_e_MessageSubject",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": " "
+      },
+      {
+        "Name": "_dsw_e_MessageLinkType",
+        "PropertyType": "PropertyInt",
+        "ValueInt": 2,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_MessageLink",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": "<a href=\"https://mydocsuite.ausl.re.it/#/MieAttivita\">I miei documenti autorizzati{0}{1}</a><br />"
+      }
+    ]
+  },
+  "1": {
+    "Position": 1,
+    "Name": "Invio documenti",
+    "AuthorizationType": "UserName",
+    "ActivityOperation": {
+      "Action": "Create",
+      "Area": "Desk"
+    },
+    "ActivityType": "GenericActivity",
+    "InputArguments": [
+      {
+        "Name": "_dsw_a_SetAuditableProperties",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ActivityStartReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ActivityStartMotivation",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Accounts",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_ReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Subject",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "EvaluationArguments": [
+      {
+        "Name": "_dsw_e_SharedToStep",
+        "PropertyType": "PropertyInt",
+        "ValueInt": 0,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": [
+      {
+        "Name": "_dsw_e_ActivityEndReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ActivityEndMotivation",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Accounts",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Subject",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ]
+  },
+  "2": {
+    "Position": 2,
+    "Name": "Mail di risposta",
+    "AuthorizationType": "UserName",
+    "ActivityOperation": {
+      "Action": "Create",
+      "Area": "Message"
+    },
+    "ActivityType": "AutomaticActivity",
+    "InputArguments": [
+      {
+        "Name": "_dsw_e_ActivityEndMotivation",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": [],
+    "EvaluationArguments": [
+      {
+        "Name": "_dsw_p_EmailEvaluationRecipient",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": "_dsw_p_ProposerUser"
+      },
+      {
+        "Name": "_dsw_e_MessageBody",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": " "
+      },
+      {
+        "Name": "_dsw_e_MessageSubject",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": " "
+      },
+      {
+        "Name": "_dsw_e_MessageLinkType",
+        "PropertyType": "PropertyInt",
+        "ValueInt": 3,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_MessageLink",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": "<strong>{0}</strong> ha risposto, si prega di consultare la scrivania nella sezione altre attività sui documenti."
+      }
+    ]
+  },
+  "3": {
+    "Position": 3,
+    "Name": "Invio documenti",
+    "AuthorizationType": "UserName",
+    "ActivityOperation": {
+      "Action": "Create",
+      "Area": "Desk"
+    },
+    "ActivityType": "GenericActivity",
+    "InputArguments": [
+      {
+        "Name": "_dsw_p_Accounts",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Subject",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ActivityEndReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ActivityEndMotivation",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "EvaluationArguments": [],
+    "OutputArguments": []
+  }
+}

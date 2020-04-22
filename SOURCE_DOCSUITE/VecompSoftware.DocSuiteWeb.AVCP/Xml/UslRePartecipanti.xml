@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<record>
+  <field name="CIG" requested="true" />
+  <field name="PIVA" requested="true"/>
+  <field name="RagioneSociale"/>  
+</record>

@@ -1,0 +1,170 @@
+﻿body {
+     padding-top: 100px;
+}
+
+h1, h2, h3 {
+    margin-top: 10px; 
+}
+
+a img {
+ border:none;
+}
+
+h1, .h1 {
+    font-size: 14px;
+}
+h2, .h2 {
+    font-size: 20px;
+}
+
+h1.navbar-text {
+    line-height: 63px;
+}
+
+#menu {
+    background-color: #B9DEBF;
+    width: 232.32px;
+    
+}
+
+div.RadPicker_Metro {
+    padding-left: 0px !important;
+}
+
+div.RadPicker_Metro .riSingle {
+}
+
+div.RadPicker_Metro input.riTextBox {
+    width: 140px !important;
+}
+
+div.rgDataDiv {
+    height: 100% !important;
+}
+
+
+#MainRow {
+    width: 970px;
+}
+
+#mainCol {
+    width: 697.5px;
+}
+
+#mainCol .col-xs-4 {
+    width: 189px;
+}
+#mainCol .col-xs-7 {
+    width: 350px;
+}
+
+#mainCol .form-group {
+    height: 35px;
+    margin-bottom: 0px;
+    border-bottom: 0px solid rgb(169, 161, 165);
+}
+
+table.table-search {
+    width: 100%;
+    margin-top: 10px;
+}
+
+table.table-search td {
+    
+    padding: 5px;
+}
+td.td-label {
+    font-weight: bold;
+    text-align: right;
+    width: 30%;
+}
+
+td.td-field {
+    width: 70%;
+}
+
+
+input.btn-cerca {
+    width: 160px;
+}
+
+.input-sm {
+    height: 25px;
+}
+
+#menu a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#menu li.active a {
+    background-color: #008046;
+}
+
+#submenu a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.well {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    width: 657.5px;
+}
+.table-striped > tbody > tr:nth-child(odd) > td,
+.table-striped > tbody > tr:nth-child(odd) > th {
+  background-color: rgb(220, 238, 223);
+}
+
+table.dettaglio {
+    background-color: #b9debf;
+}
+
+.container-principale {
+    width: 970px !important;
+}
+
+.colonna-etichetta {
+    width: 150px;
+    text-align: right;
+    font-weight: bold;
+}
+.colonna-grassetto {
+    font-weight: bold;
+}
+
+.navbar-brand {
+    font-size: 30px;    
+}
+
+div.footer {
+    clear: both;
+    text-align: center;
+    border-top: 1px solid gainsboro;
+    padding-top: 15px;
+}
+
+div.form-ricerca {
+    margin-top: 10px;
+}
+
+.loading {
+    background-color: #fff;
+    height: 100%;
+    width: 100%;
+}
+
+.navbar-storico {
+    margin-top: 19px;
+    font-size: 20px;
+}
+.RadPanelBar_Metro .rpLink {
+    border-bottom: 1px solid #e5e5e5 !important;
+}
+
+.RadPanelBar_Metro .rpOut {
+    margin: 3px !important;
+}

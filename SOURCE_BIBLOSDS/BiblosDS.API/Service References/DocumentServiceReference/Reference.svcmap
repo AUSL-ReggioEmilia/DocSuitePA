@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="c49d73cd-b87c-410e-b941-38050b3f4e03" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Vecomp.BiblosDs.Documents.wsdl" MetadataType="Wsdl" ID="8aa1a028-1723-4f2f-9400-84ded74c298c" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="BiblosDS1.wsdl" MetadataType="Wsdl" ID="379c93e8-d7d0-4d60-9f40-0a3947af5fd7" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="87dc6f50-221a-45d4-8740-34247f4e6f16" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Vecomp.BiblosDs.Documents.xsd" MetadataType="Schema" ID="f7e6f147-d651-4094-afc4-74b3720cb105" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="service21.xsd" MetadataType="Schema" ID="912b4629-fb96-42a0-8d92-9868d6431c59" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Document1.xsd" MetadataType="Schema" ID="2d3e713c-b06f-4a89-bf02-28b4c41d9cf1" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="BiblosDSObject1.xsd" MetadataType="Schema" ID="f68b4d1f-1e48-46d0-bd04-58a76707aee6" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Archive1.xsd" MetadataType="Schema" ID="30d1d721-808e-4d3f-864b-bdc0cb7da926" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="ArchiveServerConfig.xsd" MetadataType="Schema" ID="f49e85c2-9288-4a05-abaf-3ec788da3186" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Server.xsd" MetadataType="Schema" ID="68a058da-c635-45a3-b440-d7cba142fd06" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="ServerRole.xsd" MetadataType="Schema" ID="929754ea-a3bd-4ffd-afda-c60f825134e6" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Storage1.xsd" MetadataType="Schema" ID="037f19ff-4e2d-442c-b82b-868fd055e5cd" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="StorageType1.xsd" MetadataType="Schema" ID="ab94ca73-daca-4592-96e0-2a7672014177" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="AttributeValue1.xsd" MetadataType="Schema" ID="cc86ebc8-8f89-4849-a11e-a248ccff6f4b" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Attribute1.xsd" MetadataType="Schema" ID="8080ee8c-1468-4de8-9289-46bc4b7c153b" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="AttributeGroup1.xsd" MetadataType="Schema" ID="3f1b5ba3-4352-4398-ba79-38f91f23325f" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="FilterOperator1.xsd" MetadataType="Schema" ID="48fad8a0-caff-4142-8680-eda394eb4bb6" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="AttributeMode1.xsd" MetadataType="Schema" ID="c74418e8-6ff3-4f47-b5a6-c76e1c479b5e" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Certificate1.xsd" MetadataType="Schema" ID="66e94083-770c-4768-993f-d9ed6dcbf381" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Content1.xsd" MetadataType="Schema" ID="0d6d0f46-da65-4e66-8b6d-35c49700cc96" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="DocumentServer.xsd" MetadataType="Schema" ID="d32738b3-1450-4705-a9a2-18404e0fd733" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="BiblosDS.Library.Common.Objects1.xsd" MetadataType="Schema" ID="61059d5e-c25a-49ad-8c86-c1a86e8a9e7d" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="StorageArea1.xsd" MetadataType="Schema" ID="21f98b50-6be9-4dc3-9df1-bf1a18772128" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Permission1.xsd" MetadataType="Schema" ID="b10bb3e1-de62-41e1-8d4b-1c3637492b1c" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PermissionMode1.xsd" MetadataType="Schema" ID="651544a3-de8c-4350-a416-2bfab93f3cac" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Preservation1.xsd" MetadataType="Schema" ID="92cd7ad9-60b0-4bfb-a24e-8d84c0dc4772" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationJournaling1.xsd" MetadataType="Schema" ID="19c992f3-f7b4-43bf-93ec-918cef788f14" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationJournalingActivity1.xsd" MetadataType="Schema" ID="4ccddfdd-b2fd-42c6-b7cf-c47124358260" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationUser1.xsd" MetadataType="Schema" ID="dd06b236-01af-4175-a9ba-58aaf0c6a275" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationUserRole1.xsd" MetadataType="Schema" ID="5b191b09-317a-4ce2-befe-0103026f50cc" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationRole1.xsd" MetadataType="Schema" ID="6720a6c2-2819-4921-94de-c0d20f504a44" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationTask1.xsd" MetadataType="Schema" ID="4ec98de0-e372-492c-899d-675bf2e0099b" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationAlert1.xsd" MetadataType="Schema" ID="b84e0e3b-6925-47d0-8e6f-b8fbd2a3a79a" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationAlertType1.xsd" MetadataType="Schema" ID="0d0b5036-765d-4855-86bb-e2dcd295dd7b" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationTaskType1.xsd" MetadataType="Schema" ID="8b7c4acf-6885-4829-a535-b86ba6da389b" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationScheduleTaskType1.xsd" MetadataType="Schema" ID="ff5a1855-7df9-403a-9554-44bfe1b867d8" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationSchedule1.xsd" MetadataType="Schema" ID="6d438da5-1075-433c-8c84-fa37bb837316" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationTaskTypes.xsd" MetadataType="Schema" ID="357feede-9575-4f65-a8ff-b85113781c3d" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationTaskGroup1.xsd" MetadataType="Schema" ID="464453e0-b28c-47a1-8196-8234fd4a402a" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="PreservationTaskGroupType1.xsd" MetadataType="Schema" ID="04d285d1-4279-4b55-a99e-b3533f12bcbf" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="DocumentAttach.xsd" MetadataType="Schema" ID="a034eddc-1789-445a-8c32-7546132d0535" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="BiblosDS.Library.Common.Exceptions.xsd" MetadataType="Schema" ID="f547b2b3-6ca2-4201-92ae-240be01286a9" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="ContentFormat.xsd" MetadataType="Schema" ID="4afc8f68-75a3-4206-a8eb-671e40783634" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="ArchiveStatistics.xsd" MetadataType="Schema" ID="3471ee7c-f726-4280-a9d4-a0334dd28637" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="678f837c-4d75-400f-a9fe-a823b114d7ea" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="DocumentResponse.xsd" MetadataType="Schema" ID="27865772-f895-4ca4-9357-5954f13286a9" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="ResponseBase.xsd" MetadataType="Schema" ID="03e7af72-009b-4f79-a46e-a2ac841d96b3" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+    <MetadataFile FileName="ResponseError.xsd" MetadataType="Schema" ID="3cd1b506-768c-4bde-9eb4-0357ea57143d" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.Documents/ServiceDocument/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

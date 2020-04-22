@@ -1,0 +1,37 @@
+﻿Imports System.Web
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
+
+Partial Class TbltUDSTypologyGes
+    Inherits CommonBasePage
+
+#Region "Fields"
+
+    Private _idUDSTypology As Guid?
+#End Region
+
+#Region "Properties"
+
+    Protected ReadOnly Property IdUDSTypology As Guid?
+        Get
+            If _idUDSTypology Is Nothing Then
+                _idUDSTypology = HttpContext.Current.Request.QueryString.GetValueOrDefault(Of Guid?)("IdUDSTypology", Nothing)
+            End If
+            Return _idUDSTypology
+        End Get
+    End Property
+#End Region
+
+#Region "Events"
+    Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        MasterDocSuite.TitleVisible = False
+        If Not IsPostBack Then
+        End If
+    End Sub
+#End Region
+
+#Region "Methods"
+
+#End Region
+
+End Class
+

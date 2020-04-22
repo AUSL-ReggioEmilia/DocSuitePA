@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<QueryList>
+  <Query Id="0" Path="Application">
+    <Select Path="Application">*[System[(Level=2 or Level=3) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+  </Query>
+</QueryList>

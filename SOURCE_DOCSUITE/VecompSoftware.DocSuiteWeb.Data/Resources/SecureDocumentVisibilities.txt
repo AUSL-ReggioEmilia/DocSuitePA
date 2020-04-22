@@ -1,0 +1,10 @@
+﻿[
+	{
+		"Name": "Collaboration",
+		"VisibilityChains": {
+			"MainChain": false,
+			"AttachmentsChain": false,
+			"AnnexedChain": false
+		}
+	}
+]

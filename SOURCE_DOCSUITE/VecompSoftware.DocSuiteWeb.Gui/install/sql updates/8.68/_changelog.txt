@@ -1,0 +1,92 @@
+Feature 9164: [DSW] dematerializzazione del copia scansionata originale cartaceo
+Feature 11044: [AUSL-RE] Integrazione Zen, fase 0
+Feature 11112: [AUSL-RE] Fase 0 - CQRS Commands & Events
+Feature 11113: [DSW] Migliorie User Experience del modulo Dossier
+Feature 11126: [AUSL-RE] Fase 0 - Service BUS Receiver modulo CQRS
+Feature 11131: [AUSL-RE] Fase 0 - JeepService modulo PEC, gestione delle ricevute
+Feature 11133: [AUSL-RE] Fase 0 - Workflow Integration, nuovo modulo ZEN
+
+
+User Story 10623: [AUSL-RE]Creare un ProtocoLog per la serializzazione del comando del service bus
+User Story 10624: [AUSL-RE]Creare un ProtocoLog per il successo dell'invio del comando del service bus
+User Story 10627: [AUSL-RE]Creare una vista di scrivania "stato attestazione di conformità"
+User Story 10671: [AUSL-RE]Invio del comando "Richiesta attestazione" al service bus
+User Story 10751: [AUSL-RE]Gestire lo usercontrol con le logiche di funzionamento per la scelta dei firmatari e dei documenti
+User Story 10765: [AUSL-RE]Visualizzare la catena DematerialisationChain nel visualizzatore dei documenti degli Archivi
+User Story 10767: [AUSL-RE]Visualizzare la catena DematerialisationChain nel visualizzatore dei documenti delle Serie documentali
+User Story 10768: [AUSL-RE]Visualizzare la catena DematerialisationChain nel visualizzatore dei documenti del protocollo
+User Story 10799: [AUSL-RE]Creare un ResolutionLog per la serializzazione del comando del service bus
+User Story 10895: [AUSL-RE]Creare un DocumentSeriesItemLog per la serializzazione del comando del service bus
+User Story 10896: [AUSL-RE]Visualizzare la catena DematerialisationChain nel visualizzatore dei documenti dei fascicoli
+User Story 10911: [AUSL-PC] Migliorare la gestione dei contatti in archivia protocollo
+User Story 10927: [AUSL-RE] Nel listener di dematerializzazione implementare la chiamata al PDFGenerator
+User Story 10928: [AUSL-RE] Dal listener di dematerializzazione avviare una collaborazione
+User Story 10935: [AUSL-RE] Creare un nuovo modulo che gestisca il completa attività del workflow della collaborazione
+User Story 10942: [AUSL-PC] Allineare comportamento della vista di scrivania "da distribuire" con la vista "Da leggere"
+User Story 10987: [AUSL-RE] Aggiungere action type per validazioni del flusso di dematerializzazione
+User Story 10997: [AUSL-RE]Creare un ResolutionLog per il successo dell'invio del comando del service bus
+User Story 10998: [AUSL-RE]Creare un DocumentSeriesItemLog per il successo dell'invio del comando del service bus
+User Story 11007: [DSW] Integration, revisione BiblosClient modulo ENavigare
+User Story 11008: [AUSL-RE]In Collaborazioni, gestire la visibilità nella vista "Attività in corso" a tutte le segreterie, a prescindere dal firmatario.
+User Story 11011: [DSW] Aggiungere colonna Timestamp alla tabella Contact
+User Story 11022: [DSW] Creare Store Procedure per l'inserimento di Contatti dalle WebAPI
+User Story 11023: [DSW] Creare Store Procedure per l'Update di Contatti dalle WebAPI
+User Story 11024: [DSW] Creare Store Procedure di Delete di Contatti dalle WebAPI
+User Story 11025: [DSW] Aggiungere gestione messaggi schedulati SB nelle Web API
+User Story 11028: [DSW] Nelle WebApi Gestire l'inserimento di Contatti
+User Story 11031: [AUSL-RE] Permettere di visualizzare la pagina di richiesta attestazione dal sommario di serie documentale
+User Story 11032: [AUSL-RE] Permettere di visualizzare la pagina di richiesta attestazione dal sommario di atto
+User Story 11047: [AUSL-RE] Aggiunta della colonna Status alla tabella [cqrs].[DocumentUnits]
+User Story 11048: [AUSL-RE] Creare evento di annulla protocollo nel Framework
+User Story 11049: [AUSL-RE] Mandare comando al ServiceBus in fase di annullamento di protocollo
+User Story 11074: [AUSL-RE] Mappare ResolutionLog nelle WebAPI
+User Story 11075: [AUSL-RE] Mappare DocumentSeriesItemLog nelle WebAPI
+User Story 11076: [AUSL-RE] Bonificare ResolutionLog e creare script sql
+User Story 11077: [AUSL-RE] Bonificare DocumentSeriesItemLog e creare script sql
+User Story 11078: [AUSL-RE] Omnibus, gestione nuovo metodo WS "CercaDocSuite" per la ricerca utenti
+User Story 11100: [AUSL-RE] Implementare gestione CQRS per catena dematerializzazione di Protocollo
+User Story 11101: [AUSL-RE] Implementare gestione CQRS per catena dematerializzazione di Atto
+User Story 11102: [AUSL-RE] Implementare gestione CQRS per catena dematerializzazione della Serie Documentale
+User Story 11114: [AUSL-RE] Nuovo comando CQRS CommandCreatePECMail
+User Story 11115: [DSW] Spostare pulsantiera sommario dossier
+User Story 11116: [AUSL-RE] Nuovo evento CQRS EventReceivedReceiptPECMail
+User Story 11117: [DSW] In fase di creazione di cartella aggiungere funzionalità di creazione fascicolo
+User Story 11120: [AUSL-RE] Revisione eventi CQRS EventCreateProtocol, EventUpdateProtocol e EventCreatePECMail
+User Story 11123: [DSW] Inserire pulsante Fascicola nel sommario di ogni UD
+User Story 11124: [AUSL-RE] Inviare comando di creazione PEC CQRS
+User Story 11125: [DSW] Nella pagina associa fascicolo da unità documentaria inserire possibilità di collegare un fascicolo
+User Story 11127: [AUSL-RE] Nuova gestione dei comandi nei Listener
+User Story 11129: [AUSL-RE] Gestione comando CommandCreateProtocol
+User Story 11130: [AUSL-RE] Gestione comando CommandUpdateProtocol
+User Story 11134: [AUSL-RE] Logiche di gestione ricevute
+User Story 11135: [AUSL-RE] Spedire evento EventReceivedReceiptPECMail al ServiceBUS
+User Story 11136: [AUSL-RE] Integrare client WebAPI in modulo PEC
+User Story 11137: [AUSL-RE] Creare nuovo modulo VecompSoftware.DocSuite.BPM.Integrations.Modules.AUSLRE.ZEN
+User Story 11138: [AUSL-RE] Implementare servizio e modelli per comunicazione WS ZEN
+User Story 11141: [AUSL-RE] Gestione evento di protocollazione collaborazione da GASP
+User Story 11142: [AUSL-RE] Gestione evento di annullamento protocollo da GASP
+User Story 11143: [AUSL-RE] Gestione evento di invio PEC da protocollo GASP
+User Story 11144: [AUSL-RE] Gestione evento di ricezione ricevuta PEC inviata da protocollo GASP
+User Story 11174: [DSW]Nel designer degli Archivi sostituire "Enumeratore" con "Scelta multipla"
+User Story 11187: [DSW] Aggiornare il tool DocumentUnit Migrator perchè mappi correttamente l'idStatus nella nuova colonna Status della tabella [cqrs].[DocumentUnits]
+User Story 11240: [AUSL-RE] WSColl, aggiungere gestione TemplateName in creazione collaborazione
+User Story 11245: [DSW] Creare entità per tipologia archivi
+User Story 11246: [DSW] Creare voci dinamiche del menu in base alle tipologie degli archivi
+User Story 11247: [DSW] Implementare struttura pagina di 'Gestione tipologie' in tabelle
+User Story 11248: [DSW] Implementare la creazione di una nuova tipologia
+User Story 11253: [DSW] Implementare la visualizzazione delle tipologie nella pagina 'Gestione tipologie'
+User Story 11271: [DSW] Creare tabella DossierLinks
+User Story 11272: [DSW] Mappare entità DossierLink
+User Story 11297: [DSW] Aggiungere possibilità di filtro per tipologia in ricerca di Archivi
+
+Bug 10305: [ASL-TO]Durante la firma multipla, i documenti e allegati OMISSIS scelti in fase di inserimento di una Collaborazione non vengono visualizzati.							
+Bug 10747: [AUSL-RE]Nella Ricerca di Serie Documentali,quando è presente il filtro per Nominativo, non viene restituito alcun risultato							
+Bug 10748: [AUSL-PC]Nella Gestione dei Security User, se si selezionano più gruppi appartenenti all'utente per eliminarli, dà errore.							
+Bug 10802: [CTT]Riserva di protocollo dopo cambio anno							
+Bug 10879: [AFOLMB]Aggiornare il campo "Segreterie" al cambio selezione di un template di Collaborazione che adesso si accumulano a quelle del template precedente.							
+Bug 10890: [ASL-TO]Se elimino l'autorizzazione di un atto con il pulsante "Autorizzazione" dal settore padre, dà errore perchè cerca di eliminare un settore che non risulta inserito.							
+Bug 10959: [AUSL-RE] Amministrazione trasparente, errore in visualizzazione documenti AVCP							
+Bug 11276: [AUSL-PC]Gestire la casistica di errore che avviene in Adozione di Delibera se sono presenti due firme uguali della stessa persona							
+Bug 11351: [AUSL-PC]I filtri di ricerca "Adottate dal" "al" della Firma Ultima Pagina in Atti non mostra i risultati corretti.							
+
+Issue 11266: [DSW] Miglioramento etichette di prodotto: Contenitori							

@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:i0="http://Vecomp.BiblosDs.Documents" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Documents" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="WSHttpBinding_IDocuments_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:import namespace="http://Vecomp.BiblosDs.Documents" location="http://localhost:1526/Documents.svc?wsdl=wsdl0" />
+  <wsdl:types />
+  <wsdl:binding name="WSHttpBinding_IDocuments" type="i0:IDocuments">
+    <wsp:PolicyReference URI="#WSHttpBinding_IDocuments_policy" />
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="DeleteDocumentLink">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/DeleteDocumentLink" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentLinks">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentLinks" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentAttach">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentAttach" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmDocumentAttach">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmDocumentAttach" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentAttachs">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentAttachs" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentAttachContent">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentAttachContent" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SetVisibleDocumentAttach">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleDocumentAttach" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchiveStatistics">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetArchiveStatistics" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentContentById">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentContentById" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentInfoById">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInfoById" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentsInfoByIdPaged">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentsInfoByIdPaged" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="InsertDocumentChain">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/InsertDocumentChain" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmChain">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmChain" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDocument">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/UpdateDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CheckMetaData">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/CheckMetaData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetChainInfoById">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfoById" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetMetadataStructure">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetMetadataStructure" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DocumentCheckOut">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentCheckOut" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DocumentUndoCheckOut">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentUndoCheckOut" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DocumentAttributeCheckIn">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentAttributeCheckIn" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DocumentCheckIn">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentCheckIn" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DocumentMoveToArchive">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveToArchive" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DocumentMoveToStorage">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveToStorage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DocumentMoveFromTransito">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/DocumentMoveFromTransito" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="RestoreAttribute">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/RestoreAttribute" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SignDocument">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/SignDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentContent">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentContent" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentInServer">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInServer" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentConformContent">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentConformContent" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentInfo">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CreateDocumentChain">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/CreateDocumentChain" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ConfirmDocument">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/ConfirmDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentToChain">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentToChain" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentToMaster">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentToMaster" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentChainWithWorkflow">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentChainWithWorkflow" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetAttributesDefinition">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetAttributesDefinition" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CheckIsReady">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/CheckIsReady" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CheckIntegrity">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/CheckIntegrity" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetChainInfo">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetChainInfoDetails">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetChainInfoDetails" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CheckOutDocumentContent">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/CheckOutDocumentContent" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CheckOutDocument">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/CheckOutDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UndoCheckOutDocument">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/UndoCheckOutDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CheckInDocument">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/CheckInDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetArchives">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetArchives" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorages">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetStorages" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetStorageAreas">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetStorageAreas" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="IsAlive">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/IsAlive" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentId">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentId" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SetVisibleChain">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleChain" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SetVisibleDocument">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/SetVisibleDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="IsDocumentSigned">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/IsDocumentSigned" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentSigned">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/GetDocumentSigned" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddDocumentLink">
+      <soap12:operation soapAction="http://Vecomp.BiblosDs.Documents/IDocuments/AddDocumentLink" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="BiblosDsExceptionFault">
+        <soap12:fault use="literal" name="BiblosDsExceptionFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Documents">
+    <wsdl:port name="WSHttpBinding_IDocuments" binding="tns:WSHttpBinding_IDocuments">
+      <soap12:address location="http://localhost:1526/Documents.svc" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>http://localhost:1526/Documents.svc</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

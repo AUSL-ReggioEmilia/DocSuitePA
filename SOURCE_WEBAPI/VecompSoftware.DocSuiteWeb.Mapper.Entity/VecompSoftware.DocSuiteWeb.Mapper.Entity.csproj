@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A1C4A68A-A888-4CF1-A1E5-2ED391E4F826}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Mapper.Entity</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Mapper.Entity</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commons\ICategoryFascicleRightMapper.cs" />
+    <Compile Include="Commons\Implementation\CategoryFascicleRightMapper.cs" />
+    <Compile Include="Commons\Implementation\UserLogMapper.cs" />
+    <Compile Include="Commons\IUserLogMapper.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesItemLinkMapper.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemLinkMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitFascicleCategoryMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitFascicleHistoricizedCategoryMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitFascicleCategoryMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitFascicleHistoricizedCategoryMapper.cs" />
+    <Compile Include="Fascicles\IFascicleDocumentUnitMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleDocumentUnitMapper.cs" />
+    <Compile Include="JeepServiceHosts\IJeepServiceHostMapper.cs" />
+    <Compile Include="JeepServiceHosts\Implementation\JeepServiceHostMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailAttachmentMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailBoxConfigurationMapper.cs" />
+    <Compile Include="PECMails\IPECMailAttachmentMapper.cs" />
+    <Compile Include="PECMails\IPECMailBoxConfigurationMapper.cs" />
+    <Compile Include="Processes\Implementation\ProcessFascicleTemplateMapper.cs" />
+    <Compile Include="Processes\Implementation\ProcessFascicleWorkflowRepositoryMapper.cs" />
+    <Compile Include="Processes\Implementation\ProcessMapper.cs" />
+    <Compile Include="Processes\IProcessFascicleTemplateMapper.cs" />
+    <Compile Include="Processes\IProcessFascicleWorkflowRepositoryMapper.cs" />
+    <Compile Include="Processes\IProcessMapper.cs" />
+    <Compile Include="Protocols\IAdvancedProtocolMapper.cs" />
+    <Compile Include="Protocols\Implementation\AdvancedProtocolMapper.cs" />
+    <Compile Include="BaseEntityMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationAggregateMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationUserMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationSignMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationVersioningMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationLogMapper.cs" />
+    <Compile Include="Collaborations\ICollaborationMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationLogMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationAggregateMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationUserMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationSignMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationVersioningMapper.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationMapper.cs" />
+    <Compile Include="Commons\IContainerPropertyMapper.cs" />
+    <Compile Include="Commons\Implementation\ContainerPropertyMapper.cs" />
+    <Compile Include="Commons\Implementation\PrivacyLevelMapper.cs" />
+    <Compile Include="Commons\IPrivacyLevelMapper.cs" />
+    <Compile Include="Conservations\IConservationMapper.cs" />
+    <Compile Include="Conservations\Implementation\ConservationMapper.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesItemLogMapper.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesConstraintMapper.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesConstraintMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitUserMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitUserMapper.cs" />
+    <Compile Include="Dossiers\IDossierCommentMapper.cs" />
+    <Compile Include="Dossiers\IDossierFolderMapper.cs" />
+    <Compile Include="Dossiers\IDossierLinkMapper.cs" />
+    <Compile Include="Dossiers\IDossierLogMapper.cs" />
+    <Compile Include="Dossiers\IDossierDocumentMapper.cs" />
+    <Compile Include="Dossiers\IDossierFolderRoleMapper.cs" />
+    <Compile Include="Dossiers\IDossierMapper.cs" />
+    <Compile Include="Dossiers\IDossierRoleMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierCommentMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierFolderMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierLinkMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierLogMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierDocumentMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierFolderRoleMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierMapper.cs" />
+    <Compile Include="Dossiers\Implementation\DossierRoleMapper.cs" />
+    <Compile Include="Fascicles\IFascicleFolderMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleFolderMapper.cs" />
+    <Compile Include="Parameters\Implementation\ParameterMapper.cs" />
+    <Compile Include="Monitors\Implementation\TransparentAdministrationMonitorLogMapper.cs" />
+    <Compile Include="Monitors\ITransparentAdministrationMonitorLogMapper.cs" />
+    <Compile Include="Parameters\IParameterMapper.cs" />
+    <Compile Include="Resolutions\Implementation\DocumentSeriesItemLogMapper.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionDocumentSeriesItemMapper.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionLogMapper.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionKindMapper.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionKindDocumentSeriesMapper.cs" />
+    <Compile Include="Resolutions\IResolutionDocumentSeriesItemMapper.cs" />
+    <Compile Include="Resolutions\IResolutionLogMapper.cs" />
+    <Compile Include="Resolutions\IResolutionKindMapper.cs" />
+    <Compile Include="Resolutions\IResolutionKindDocumentSeriesMapper.cs" />
+    <Compile Include="Templates\Implementation\TemplateDocumentRepositoryMapper.cs" />
+    <Compile Include="Templates\Implementation\TemplateCollaborationDocumentRepositoryMapper.cs" />
+    <Compile Include="Templates\Implementation\TemplateCollaborationMapper.cs" />
+    <Compile Include="Templates\Implementation\TemplateCollaborationUserMapper.cs" />
+    <Compile Include="Templates\Implementation\TemplateReportMapper.cs" />
+    <Compile Include="Templates\ITemplateDocumentRepositoryMapper.cs" />
+    <Compile Include="Templates\ITemplateCollaborationMapper.cs" />
+    <Compile Include="Templates\ITemplateCollaborationDocumentRepositoryMapper.cs" />
+    <Compile Include="Templates\ITemplateCollaborationUserMapper.cs" />
+    <Compile Include="Commons\IIncrementalMapper.cs" />
+    <Compile Include="Commons\ICategorySchemaMapper .cs" />
+    <Compile Include="Commons\ICategoryFascicleMapper.cs" />
+    <Compile Include="Commons\IContactPlaceNameMapper.cs" />
+    <Compile Include="Commons\IContactTitleMapper.cs" />
+    <Compile Include="Commons\IMetadataRepositoryMapper.cs" />
+    <Compile Include="Commons\Implementation\IncrementalMapper.cs" />
+    <Compile Include="Commons\Implementation\CategorySchemaMapper.cs" />
+    <Compile Include="Commons\Implementation\CategoryFascicleMapper.cs" />
+    <Compile Include="Commons\Implementation\MetadataRepositoryMapper.cs" />
+    <Compile Include="Parameters\Implementation\ParameterEnvMapper.cs" />
+    <Compile Include="Commons\Implementation\TableLogMapper.cs" />
+    <Compile Include="Commons\Implementation\RoleUserMapper.cs" />
+    <Compile Include="Commons\Implementation\SecurityUserWorkflowAuthorizationMapper.cs" />
+    <Compile Include="Commons\Implementation\RoleUserWorkflowAuthorizationMapper.cs" />
+    <Compile Include="Commons\Implementation\SecurityUserMapper.cs" />
+    <Compile Include="Commons\Implementation\SecurityGroupMapper.cs" />
+    <Compile Include="Commons\Implementation\RoleMapper.cs" />
+    <Compile Include="Commons\Implementation\RoleGroupMapper.cs" />
+    <Compile Include="Commons\Implementation\ContainerGroupMapper.cs" />
+    <Compile Include="Parameters\IParameterEnvMapper.cs" />
+    <Compile Include="Commons\ITableLogMapper.cs" />
+    <Compile Include="Commons\IRoleUserMapper.cs" />
+    <Compile Include="Commons\ISecurityUserWorkflowAuthorizationMapper.cs" />
+    <Compile Include="Commons\IRoleUserWorkflowAuthorizationMapper.cs" />
+    <Compile Include="Commons\ISecurityUserMapper.cs" />
+    <Compile Include="Commons\ISecurityGroupMapper.cs" />
+    <Compile Include="Commons\IRoleMapper.cs" />
+    <Compile Include="Commons\IRoleGroupMapper.cs" />
+    <Compile Include="Commons\IContainerGroupMapper.cs" />
+    <Compile Include="Commons\ILocationMapper.cs" />
+    <Compile Include="Commons\IContainerMapper.cs" />
+    <Compile Include="Commons\Implementation\ContainerMapper.cs" />
+    <Compile Include="Commons\Implementation\ContactPlaceNameMapper.cs" />
+    <Compile Include="Commons\Implementation\ContactTitleMapper.cs" />
+    <Compile Include="Commons\Implementation\ContactMapper.cs" />
+    <Compile Include="Commons\Implementation\CategoryMapper.cs" />
+    <Compile Include="Commons\ICategoryMapper.cs" />
+    <Compile Include="Commons\IContactMapper.cs" />
+    <Compile Include="Commons\Implementation\LocationMapper.cs" />
+    <Compile Include="Desks\IDeskCollaborationMapper.cs" />
+    <Compile Include="Desks\IDeskDocumentMapper.cs" />
+    <Compile Include="Desks\IDeskMapper.cs" />
+    <Compile Include="Desks\Implementation\DeskCollaborationMapper.cs" />
+    <Compile Include="Desks\Implementation\DeskDocumentMapper.cs" />
+    <Compile Include="Desks\Implementation\DeskMapper.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesItemRoleMapper.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesItemMapper.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesMapper.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemRoleMapper.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemMapper.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitChainMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitRoleMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitRoleMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitChainMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitMapper.cs" />
+    <Compile Include="Fascicles\IFascicleDocumentMapper.cs" />
+    <Compile Include="Fascicles\IFascicleRoleMapper.cs" />
+    <Compile Include="Fascicles\IFascicleLogMapper.cs" />
+    <Compile Include="Fascicles\IFascicleLinkMapper.cs" />
+    <Compile Include="Fascicles\IFasciclePeriodMapper.cs" />
+    <Compile Include="Fascicles\IFascicleMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleDocumentMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleRoleMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleLinkMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleLogMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FasciclePeriodMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleMapper.cs" />
+    <Compile Include="MassimariScarto\IMassimarioScartoMapper.cs" />
+    <Compile Include="MassimariScarto\Implementation\MassimarioScartoMapper.cs" />
+    <Compile Include="Messages\IMessageAttachmentMapper.cs" />
+    <Compile Include="Messages\IMessageContactMapper.cs" />
+    <Compile Include="Messages\IMessageEmailMapper.cs" />
+    <Compile Include="Messages\IMessageLogMapper.cs" />
+    <Compile Include="Messages\IMessageContactEmailMapper.cs" />
+    <Compile Include="Messages\IMessageMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageAttachmentMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageContactMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageEmailMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageLogMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageContactEmailMapper.cs" />
+    <Compile Include="Messages\Implementation\MessageMapper.cs" />
+    <Compile Include="OCharts\IOChartItemContainerMapper.cs" />
+    <Compile Include="OCharts\Implementation\OChartItemContainerMapper.cs" />
+    <Compile Include="OCharts\IOChartItemMapper.cs" />
+    <Compile Include="OCharts\Implementation\OChartItemMapper.cs" />
+    <Compile Include="OCharts\IOChartMapper.cs" />
+    <Compile Include="OCharts\Implementation\OChartMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailReceiptMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailLogMapper.cs" />
+    <Compile Include="PECMails\IPECMailBoxMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailBoxMapper.cs" />
+    <Compile Include="PECMails\IPECMailLogMapper.cs" />
+    <Compile Include="PECMails\IPECMailReceiptMapper.cs" />
+    <Compile Include="PECMails\IPECMailMapper.cs" />
+    <Compile Include="PECMails\Implementation\PECMailMapper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolContactMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolContactManualMapper .cs" />
+    <Compile Include="Protocols\Implementation\ProtocolDraftMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolLogMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolLinkMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolUserMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolParerMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolRoleIUserMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolRoleMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolDocumentTypeMapper.cs" />
+    <Compile Include="Protocols\IProtocolContactManualMapper .cs" />
+    <Compile Include="Protocols\IProtocolDraftMapper.cs" />
+    <Compile Include="Protocols\IProtocolLinkMapper.cs" />
+    <Compile Include="Protocols\IProtocolUserMapper.cs" />
+    <Compile Include="Protocols\IProtocolParerMapper.cs" />
+    <Compile Include="Protocols\IProtocolRoleUserMapper.cs" />
+    <Compile Include="Protocols\IProtocolRoleMapper.cs" />
+    <Compile Include="Protocols\IProtocolContactMapper.cs" />
+    <Compile Include="Protocols\IProtocolLogMapper.cs" />
+    <Compile Include="Protocols\IProtocolDocumentTypeMapper.cs" />
+    <Compile Include="Protocols\IProtocolTypeMapper.cs" />
+    <Compile Include="Protocols\IProtocolMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolTypeMapper.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolMapper.cs" />
+    <Compile Include="Resolutions\IFileResolutionMapper.cs" />
+    <Compile Include="Resolutions\Implementation\FileResolutionMapper.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionContactMapper.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionRoleMapper.cs" />
+    <Compile Include="Resolutions\IResolutionContactMapper.cs" />
+    <Compile Include="Resolutions\IResolutionMapper.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionMapper.cs" />
+    <Compile Include="Resolutions\IResolutionRoleMapper.cs" />
+    <Compile Include="Tenants\Implementation\TenantConfigurationMapper.cs" />
+    <Compile Include="Tenants\Implementation\TenantMapper.cs" />
+    <Compile Include="Tenants\Implementation\TenantWorkflowRepositoryMapper.cs" />
+    <Compile Include="Tenants\ITenantConfigurationMapper.cs" />
+    <Compile Include="Tenants\ITenantMapper.cs" />
+    <Compile Include="Tenants\ITenantWorkflowRepositoryMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSContactMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSMessageMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSDocumentUnitMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSCollaborationMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSPECMailMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSRoleMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSLogMapper.cs" />
+    <Compile Include="Templates\ITemplateReportMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSTypologyMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSRepositoryMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSSchemaRepositoryMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSUserMapper.cs" />
+    <Compile Include="UDS\IUDSContactMapper.cs" />
+    <Compile Include="UDS\IUDSMessageMapper.cs" />
+    <Compile Include="UDS\IUDSDocumentUnitMapper.cs" />
+    <Compile Include="UDS\IUDSCollaborationMapper.cs" />
+    <Compile Include="UDS\IUDSPECMailMapper.cs" />
+    <Compile Include="UDS\IUDSRoleMapper.cs" />
+    <Compile Include="UDS\IUDSLogMapper.cs" />
+    <Compile Include="UDS\IUDSTypologyMapper.cs" />
+    <Compile Include="UDS\IUDSRepositoryMapper.cs" />
+    <Compile Include="UDS\IUDSSchemaRepositoryMapper.cs" />
+    <Compile Include="UDS\IUDSUserMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowAuthorizationMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowEvaluationPropertyMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowInstanceLogMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowInstanceRoleMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowPropertyMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowRoleMappingMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowRepositoryMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowInstanceMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowActivityLogMapper.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowActivityMapper.cs" />
+    <Compile Include="Workflows\IWorkflowAuthorizationMapper.cs" />
+    <Compile Include="Workflows\IWorkflowEvaluationPropertyMapper.cs" />
+    <Compile Include="Workflows\IWorkflowInstanceLogMapper.cs" />
+    <Compile Include="Workflows\IWorkflowInstanceRoleMapper.cs" />
+    <Compile Include="Workflows\IWorkflowPropertyMapper.cs" />
+    <Compile Include="Workflows\IWorkflowRoleMappingMapper .cs" />
+    <Compile Include="Workflows\IWorkflowRepositoryMapper.cs" />
+    <Compile Include="Workflows\IWorkflowInstanceMapper.cs" />
+    <Compile Include="Workflows\IWorkflowActivityLogMapper.cs" />
+    <Compile Include="Workflows\IWorkflowActivityMapper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VecompSoftware.DocSuiteWeb.Mapper.Entity.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tasks\" />
+    <Folder Include="Tenders\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
+      <Project>{c6f323c0-c21b-433b-90c8-0b64a42115ab}</Project>
+      <Name>VecompSoftware.Commons.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Entity\VecompSoftware.DocSuiteWeb.Entity.csproj">
+      <Project>{34901fa6-4816-4872-9986-e42b2e866095}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Mapper\VecompSoftware.DocSuiteWeb.Mapper.csproj">
+      <Project>{643b29b4-b25d-44d3-8831-e80c5e5f25d0}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Mapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Repository\VecompSoftware.DocSuiteWeb.Repository.csproj">
+      <Project>{27d8fcbb-8a8e-430b-8747-a5ace9b4ffca}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

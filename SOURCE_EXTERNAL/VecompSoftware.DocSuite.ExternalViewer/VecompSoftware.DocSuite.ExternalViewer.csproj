@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{6508B146-256C-4C51-947E-2902A245A0EE}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <OutputPath>bin</OutputPath>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TypeScriptToolsVersion>3.6</TypeScriptToolsVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <Use64BitIISExpress />
+  </PropertyGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\app-theme.css" />
+    <Content Include="src\app.css" />
+    <Content Include="src\app\app.component.html" />
+    <Content Include="src\app\components\commons\document.component.css" />
+    <Content Include="src\app\components\commons\document.component.html" />
+    <Content Include="src\app\components\dossiers\dossier-summary.component.css" />
+    <Content Include="src\app\components\dossiers\dossier-summary.component.html" />
+    <Content Include="src\app\components\dossiers\dossiers.component.css" />
+    <Content Include="src\app\components\dossiers\dossiers.component.html" />
+    <Content Include="src\app\components\fascicles\fascicle-summary.component.html" />
+    <Content Include="src\app\components\fascicles\fascicle-summary.component.css" />
+    <Content Include="src\app\components\menu\fascicle-menu.component.html" />
+    <Content Include="src\app\components\menu\fascicle-menu.component.css" />
+    <Content Include="src\app\components\home.component.css" />
+    <Content Include="src\app\components\commons\error-page.component.html" />
+    <Content Include="src\app\components\home.component.html" />
+    <Content Include="src\app\components\commons\loading.component.css" />
+    <Content Include="src\app\components\commons\loading.component.html" />
+    <Content Include="src\app\components\protocols\protocol-summary.component.css" />
+    <Content Include="src\app\components\protocols\protocol-summary.component.html" />
+    <Content Include="src\app\components\templates\document-panel\document-panel.component.html" />
+    <Content Include="src\app\components\templates\grid\grid.component.css" />
+    <Content Include="src\app\components\templates\grid\grid.component.html" />
+    <Content Include="src\app\components\templates\pec-panel\pec-info.component.css" />
+    <Content Include="src\app\components\templates\pec-panel\pec-info.component.html" />
+    <Content Include="src\app\components\templates\pec-panel\pec-panel.component.css" />
+    <Content Include="src\app\components\templates\pec-panel\pec-panel.component.html" />
+    <Content Include="src\app\components\templates\pec-panel\pec-trace.component.html" />
+    <Content Include="src\app\components\templates\tree-list\node.component.css" />
+    <Content Include="src\app\components\templates\tree-list\tree.component.html" />
+    <Content Include="src\app\components\templates\tree-list\node.component.html" />
+    <Content Include="src\app\components\templates\upload-component\upload-component.component.css" />
+    <Content Include="src\app\components\templates\upload-component\upload-component.component.html" />
+    <Content Include="src\app\images\annulment.png" />
+    <Content Include="src\app\images\app-logo.png" />
+    <Content Include="src\app\images\arrow-right.png" />
+    <Content Include="src\app\images\collapse-down.png" />
+    <Content Include="src\app\images\collapse-up.png" />
+    <Content Include="src\app\images\contacts\administration.gif" />
+    <Content Include="src\app\images\contacts\aoo.gif" />
+    <Content Include="src\app\images\contacts\aoo.png" />
+    <Content Include="src\app\images\contacts\building.gif" />
+    <Content Include="src\app\images\contacts\group.gif" />
+    <Content Include="src\app\images\contacts\sector.gif" />
+    <Content Include="src\app\images\contacts\manual.png" />
+    <Content Include="src\app\images\contacts\manual.gif" />
+    <Content Include="src\app\images\contacts\person.png" />
+    <Content Include="src\app\images\contacts\person.gif" />
+    <Content Include="src\app\images\contacts\role.gif" />
+    <Content Include="src\app\images\contacts\uo.gif" />
+    <Content Include="src\app\images\contacts\uo.png" />
+    <Content Include="src\app\images\document-units\document-series.png" />
+    <Content Include="src\app\images\document-units\resolution.gif" />
+    <Content Include="src\app\images\documents\document-signed-gold.png" />
+    <Content Include="src\app\images\documents\file-extension-doc.png" />
+    <Content Include="src\app\images\documents\file-extension-eml.png" />
+    <Content Include="src\app\images\documents\file-extension-pdf.png" />
+    <Content Include="src\app\images\documents\file-extension-rar.png" />
+    <Content Include="src\app\images\documents\file-extension-txt.png" />
+    <Content Include="src\app\images\documents\file-extension-xls.png" />
+    <Content Include="src\app\images\documents\file-extension-zip.png" />
+    <Content Include="src\app\images\documents\folder-open.png" />
+    <Content Include="src\app\images\fascicles\fascicle.png" />
+    <Content Include="src\app\images\pec\pec-accettazione.gif" />
+    <Content Include="src\app\images\pec\pec-avvenuta-consegna.gif" />
+    <Content Include="src\app\images\pec\pec-errore-consegna.gif" />
+    <Content Include="src\app\images\pec\pec-preavviso-errore-consegna.gif" />
+    <Content Include="src\app\images\document-units\protocol.gif" />
+    <Content Include="src\app\images\reject.png" />
+    <Content Include="src\app\images\sectors\brick.png" />
+    <Content Include="src\app\images\sectors\bricks.png" />
+    <Content Include="src\app\images\sectors\user.png" />
+    <Content Include="src\app\images\spinners\spin-bar.gif" />
+    <Content Include="src\app\images\spinners\spin-horizontal.gif" />
+    <Content Include="src\app\images\spinners\spin-small.gif" />
+    <Content Include="src\app\images\spinners\spin.gif" />
+    <Content Include="src\app\images\user-image.png" />
+    <Content Include="src\contents\bootstrap.min.css" />
+    <Content Include="src\favicon.ico" />
+    <Content Include="src\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="src\index.html" />
+    <Content Include="src\libs\traceur\traceur.js" />
+    <Content Include="README.txt" />
+    <Content Include="web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="src\app\app.component.ts" />
+    <TypeScriptCompile Include="src\app\app.module.ts" />
+    <TypeScriptCompile Include="src\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\components\commons\authentication.component.ts" />
+    <TypeScriptCompile Include="src\app\components\commons\document.component.ts" />
+    <TypeScriptCompile Include="src\app\components\dossiers\dossier-summary.component.ts" />
+    <TypeScriptCompile Include="src\app\components\dossiers\dossiers.component.ts" />
+    <TypeScriptCompile Include="src\app\components\protocols\protocol-summary.component.ts" />
+    <TypeScriptCompile Include="src\app\helpers\adapted-bfs-tree.helper.ts" />
+    <TypeScriptCompile Include="src\app\helpers\item-type.helper.ts" />
+    <TypeScriptCompile Include="src\app\helpers\tree-node.helper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\dossiers\dossier-folder.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\dossiers\dossier-role.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\dossiers\dossier.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\fascicles\fascicle-folder.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\roles\role.mapper.ts" />
+    <TypeScriptCompile Include="src\app\models\dossiers\dossier-folder.model.ts" />
+    <TypeScriptCompile Include="src\app\models\dossiers\dossier-role.model.ts" />
+    <TypeScriptCompile Include="src\app\models\dossiers\dossier.model.ts" />
+    <TypeScriptCompile Include="src\app\models\fascicles\fascicle-folder.model.ts" />
+    <TypeScriptCompile Include="src\app\models\roles\role.model.ts" />
+    <TypeScriptCompile Include="src\app\resolvers\dossiers\dossiers.resolve.ts" />
+    <TypeScriptCompile Include="src\app\components\fascicles\fascicle-summary.component.ts" />
+    <TypeScriptCompile Include="src\app\components\menu\fascicle-menu.component.ts" />
+    <TypeScriptCompile Include="src\app\components\templates\document-panel\document-panel.component.ts" />
+    <TypeScriptCompile Include="src\app\components\templates\grid\grid.component.ts" />
+    <TypeScriptCompile Include="src\app\components\templates\pec-panel\pec-panel.component.ts" />
+    <TypeScriptCompile Include="src\app\components\templates\pec-panel\pec-trace.component.ts" />
+    <TypeScriptCompile Include="src\app\components\templates\pec-panel\pec-info.component.ts" />
+    <TypeScriptCompile Include="src\app\components\templates\tree-list\node.component.ts" />
+    <TypeScriptCompile Include="src\app\components\templates\tree-list\tree.component.ts" />
+    <TypeScriptCompile Include="src\app\components\templates\upload-component\upload-component.component.ts" />
+    <TypeScriptCompile Include="src\app\interceptors\cache.interceptor.ts" />
+    <TypeScriptCompile Include="src\app\mappers\commons\authentication.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\commons\document.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\commons\contact-tree-list.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\commons\user-tree-list.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\document-units\document-unit.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\fascicles\fascicle.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\fascicles\fascicle-contact.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\pec-mails\pec-mail-receipt.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\pec-mails\pec-mail.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\protocols\protocol-contact.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\protocols\protocol-user.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\protocols\protocol-sector.mapper.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\authentication.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\chain.type.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\odata-result.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\odata.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\workflow-property-helper.ts" />
+    <TypeScriptCompile Include="src\app\models\config\app-config-model.ts" />
+    <TypeScriptCompile Include="src\app\models\generic-contact.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\contact.type.ts" />
+    <TypeScriptCompile Include="src\app\models\document-unit.type.ts" />
+    <TypeScriptCompile Include="src\app\models\document-units\document-unit.model.ts" />
+    <TypeScriptCompile Include="src\app\models\fascicles\fascicle-contact.model.ts" />
+    <TypeScriptCompile Include="src\app\models\pec-mails\pec-mail-receipt.model.ts" />
+    <TypeScriptCompile Include="src\app\models\pec-mails\pec-active.type.ts" />
+    <TypeScriptCompile Include="src\app\models\protocols\comunication.type.ts" />
+    <TypeScriptCompile Include="src\app\models\protocols\protocol-authorized-search.model.ts" />
+    <TypeScriptCompile Include="src\app\models\protocols\protocol-user.model.ts" />
+    <TypeScriptCompile Include="src\app\models\protocols\protocol-status.type.ts" />
+    <TypeScriptCompile Include="src\app\models\protocols\protocol-authorized.model.ts" />
+    <TypeScriptCompile Include="src\app\pipes\date-time-format.pipe.ts" />
+    <TypeScriptCompile Include="src\app\services\commons\app-config.service.ts" />
+    <TypeScriptCompile Include="src\app\services\commons\authentication.service.ts" />
+    <TypeScriptCompile Include="src\app\services\commons\communication.service.ts" />
+    <TypeScriptCompile Include="src\app\services\commons\document.service.ts" />
+    <TypeScriptCompile Include="src\app\services\commons\loading-spinner.service.ts" />
+    <TypeScriptCompile Include="src\app\services\document-units\document-unit.service.ts" />
+    <TypeScriptCompile Include="src\app\services\dossiers\dossier-folder.service.ts" />
+    <TypeScriptCompile Include="src\app\services\dossiers\dossier.service.ts" />
+    <TypeScriptCompile Include="src\app\services\fascicles\fascicle-folder.service.ts" />
+    <TypeScriptCompile Include="src\app\services\fascicles\fascicle.service.ts" />
+    <TypeScriptCompile Include="src\app\services\menu\fascicle-menu.resolve.ts" />
+    <TypeScriptCompile Include="src\app\components\commons\error-page.component.ts" />
+    <TypeScriptCompile Include="src\app\components\home.component.ts" />
+    <TypeScriptCompile Include="src\app\components\commons\loading.component.ts" />
+    <TypeScriptCompile Include="src\app\services\pec-mails\pec-mail.service.ts" />
+    <TypeScriptCompile Include="src\app\settings\global.setting.ts" />
+    <TypeScriptCompile Include="src\app\settings\static.setting.ts" />
+    <TypeScriptCompile Include="src\app\helpers\base.helper.ts" />
+    <TypeScriptCompile Include="src\app\helpers\exception-handler.helper.ts" />
+    <TypeScriptCompile Include="src\app\main.ts" />
+    <TypeScriptCompile Include="src\app\mappers\base.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\commons\container.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\commons\sector-tree-list.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\commons\category.mapper.ts" />
+    <TypeScriptCompile Include="src\app\mappers\protocols\protocol.mapper.ts" />
+    <TypeScriptCompile Include="src\app\models\base-service.model.ts" />
+    <TypeScriptCompile Include="src\app\models\protocols\protocol.type.ts" />
+    <TypeScriptCompile Include="src\app\models\archive-entity.model.ts" />
+    <TypeScriptCompile Include="src\app\models\document-series\document-series.model.ts" />
+    <TypeScriptCompile Include="src\app\models\document-series\document-series-item.model.ts" />
+    <TypeScriptCompile Include="src\app\models\document-series\document-series-item-status.ts" />
+    <TypeScriptCompile Include="src\app\models\fascicles\fascicle-archive.model.ts" />
+    <TypeScriptCompile Include="src\app\models\fascicles\fascicle-document-series-item.model.ts" />
+    <TypeScriptCompile Include="src\app\models\fascicles\fascicle-protocol.model.ts" />
+    <TypeScriptCompile Include="src\app\models\fascicles\fascicle-reference.type.ts" />
+    <TypeScriptCompile Include="src\app\models\fascicles\fascicle-link.model.ts" />
+    <TypeScriptCompile Include="src\app\models\fascicles\fascicle.model.ts" />
+    <TypeScriptCompile Include="src\app\models\fascicles\fascicle.type.ts" />
+    <TypeScriptCompile Include="src\app\models\identifier.model.ts" />
+    <TypeScriptCompile Include="src\app\models\base.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\contact.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\category.model.ts" />
+    <TypeScriptCompile Include="src\app\models\environment.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\location.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\container.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\sector-user.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\sector.model.ts" />
+    <TypeScriptCompile Include="src\app\models\document-unit.model.ts" />
+    <TypeScriptCompile Include="src\app\models\pec-mails\pec-mail.model.ts" />
+    <TypeScriptCompile Include="src\app\models\pec-mails\pec-direction.type.ts" />
+    <TypeScriptCompile Include="src\app\models\pec-mails\pec.type.ts" />
+    <TypeScriptCompile Include="src\app\models\protocols\protocol-link.model.ts" />
+    <TypeScriptCompile Include="src\app\models\protocols\protocol-sector.model.ts" />
+    <TypeScriptCompile Include="src\app\models\protocols\protocol-contact.model.ts" />
+    <TypeScriptCompile Include="src\app\models\protocols\protocol.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\document.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\error-log.model.ts" />
+    <TypeScriptCompile Include="src\app\globals.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\error-level.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\document.type.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\response.model.ts" />
+    <TypeScriptCompile Include="src\app\models\commons\tree-list.model.ts" />
+    <TypeScriptCompile Include="src\app\pipes\date-format.pipe.ts" />
+    <TypeScriptCompile Include="src\app\pipes\number-format.pipe.ts" />
+    <TypeScriptCompile Include="src\app\services\base.service.ts" />
+    <TypeScriptCompile Include="src\app\services\error-log.service.ts" />
+    <TypeScriptCompile Include="src\app\services\protocols\protocol.service.ts" />
+    <TypeScriptCompile Include="src\environments\environment.prod.ts" />
+    <TypeScriptCompile Include="src\environments\environment.ts" />
+    <TypeScriptCompile Include="src\polyfills.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="package.json" />
+    <Content Include="src\tsconfig.app.json" />
+    <Content Include="tsconfig.json" />
+    <Content Include="src\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="src\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="src\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="src\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="src\app\config\config.dev.json" />
+    <Content Include="src\app\config\config.prod.json" />
+    <Content Include="angular.json" />
+    <Content Include="package-lock.json" />
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\app\components\document-series\" />
+    <Folder Include="src\app\components\shared\" />
+    <Folder Include="src\app\components\uds\" />
+    <Folder Include="src\app\contents\" />
+    <Folder Include="src\app\models\archives\" />
+    <Folder Include="src\app\models\shared\" />
+    <Folder Include="src\app\services\paperworks\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.ExternalViewer</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>src\favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets')" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>56166</DevelopmentServerPort>
+          <DevelopmentServerVPath>/dist</DevelopmentServerVPath>
+          <IISUrl>http://localhost/ExternalViewer</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(Configuration) == Debug (ng build)
+else (
+call npm install
+call ng build --prod --aot --output-hashing all --extract-css true --named-chunks false
+)</PostBuildEvent>
+  </PropertyGroup>
+</Project>

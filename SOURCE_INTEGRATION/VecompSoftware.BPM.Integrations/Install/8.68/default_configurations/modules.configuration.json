@@ -1,0 +1,9 @@
+﻿[
+  {
+    "Name": "VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ENavigare",
+    "Path": "C:\\Workspace\\Integration[8.65]\\Modules\\***REMOVED***\\VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ENavigare\\bin\\Debug",
+    "Timer": "Default",
+    "ServiceWakeType": 1,
+    "Enabled": true
+  }
+]

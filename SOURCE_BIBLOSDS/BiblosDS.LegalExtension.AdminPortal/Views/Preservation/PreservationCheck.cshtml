@@ -1,0 +1,145 @@
+﻿@using BiblosDS.LegalExtension.AdminPortal.ViewModel.Preservations
+@model BiblosDS.LegalExtension.AdminPortal.ViewModel.Preservations.PreservationCheckViewModel
+@{
+    ViewBag.Title = "Stato conservazione";
+}
+
+@section featured{
+    <hgroup class="title">
+        <h1>@ViewBag.Title</h1>
+    </hgroup>
+}
+
+<div style="padding:10px 0px 15px 0px;">
+    @Html.ActionLink("Ritorna all'elenco delle conservazioni dell'archivio", "ArchivePreservation", "Home", new { id = Model.IdArchive }, new { })
+</div>
+
+<div class="k-block">
+    <table class="k-custom-table">
+        <tr>
+            <td align="right"><label>Archivio</label></td>
+            <td><b>@Model.ArchiveName</b></td>
+        </tr>
+        <tr>
+            <td align="right"><label>Conservazione</label></td>
+            <td>@Html.Raw(Model.ConservationDescription)</td>
+        </tr>
+        <tr>
+            <td align="right">Path</td>
+            <td>
+                <span id="path" class="pathLink" onclick="selectText('path');">@Model.Path</span>
+            </td>
+        </tr>
+        <tr>
+            <td nowrap align="right"><label>Responsabile conservazione</label></td>
+            <td><b>@Model.Manager</b></td>
+        </tr>
+        <tr>
+            <td align="right"><label>Data chiusura</label></td>
+            <td><b>@Model.CloseDateLabel</b></td>
+        </tr>
+        <tr>
+            <td align="right">Data ultima verifica positiva</td>
+            <td><b>@Model.LastVerifiedDateLabel</b></td>
+        </tr>
+        <tr>
+            <td align="right">Versamenti</td>
+            <td>@Html.ActionLink("Visualizza versamenti della conservazione", "Index", "AwardBatch", new { id = Model.IdArchive, idPreservation = Model.IdPreservation }, null)</td>
+        </tr>
+        <tr>
+            <td align="right"> </td>
+            <td>
+                @if (Model.PathExist)
+                {
+                    @Html.ActionLink("Esegui verifica", "Check", new { id = Model.IdPreservation }, new { @class = "k-button" })
+                }
+                else
+                {
+                    <div class="k-block k-error-colored">
+                        <b>Percorso di conservazione inesistente.</b> Non è possibile eseguire la verifica
+                    </div>
+                }
+
+                @if (Model.IsClosed && Model.PathExist)
+                {
+                    @Html.ActionLink("Pacchetto di archiviazione", "DownloadPreservationPDA", new { id = Model.IdPreservation, includeDocuments = false }, new { @class = "k-button", @id = "downloadPreservationPDA" })
+                    @(Html.Kendo().CheckBox()
+                                .Label("Includi documenti")
+                                .Name("includeDocuments")
+                                .HtmlAttributes(new { @style = "margin-left: 10px;" })
+                    )
+                }
+            </td>
+        </tr>
+    </table>
+</div>
+
+@if (Model.VerifyFiles.Count > 0)
+{
+    @(Html.Kendo().Window().Name("verifyDetails")
+                            .Title("Dettagli verifica")
+                            .Modal(true)
+                            .Visible(false)
+                            .Resizable()
+                            .Animation(true)
+                            .Width(550)
+                            .Height(400)
+                            .Events(events =>
+                            {
+                                events.Open("onOpen");
+                                events.Refresh("onRefresh");
+                            }))
+
+    <h3 style="margin-top: 10px; margin-bottom: 10px;">Verifiche eseguite</h3>
+    <table class="k-custom-table">
+        @foreach (PreservationCheckVerifyFileViewModel verifyFile in Model.VerifyFiles)
+        {
+            <tr>
+                <td align="right" style="white-space: nowrap; vertical-align:top;">
+                    @verifyFile.DateCreatedLabel
+                </td>
+                <td>
+                    <div style="padding-bottom:10px;">
+                        @if (!verifyFile.Success)
+                        {
+                            <a href="#" onclick="showDetails('@Model.IdPreservation', '@Html.Encode(@verifyFile.FileName)')" style="color:#f00 !important;"><b>Verifica conclusa con esito negativo</b></a>
+                        }
+                        else
+                        {
+                            <a href="#" onclick="showDetails('@Model.IdPreservation', '@Html.Encode(@verifyFile.FileName)')">Verifica conclusa con esito positivo</a>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+}
+<script type="text/javascript">
+        var myWindow;
+        $(document).ready(function () {
+            myWindow = $("#verifyDetails");
+
+            $("#includeDocuments").change(function (e) {
+                var link = "@Url.Action("DownloadPreservationPDA", new { id = Model.IdPreservation })?includeDocuments=" + $("#includeDocuments").is(':checked');
+                $("#downloadPreservationPDA").attr("href", link);
+            });
+        });
+
+        function showDetails(idPreservation, fileName) {
+            var wnd = myWindow.data("kendoWindow");
+            wnd.refresh({
+                url: "../PreservationCheckNotification",
+                data: { id: idPreservation, fileName: fileName }
+            });
+            wnd.center().open();
+        }
+
+        function onOpen(e) {
+            kendo.ui.progress(e.sender.element, true);
+        }
+
+        function onRefresh(e) {
+            kendo.ui.progress(e.sender.element, false);
+        }
+</script>
+
