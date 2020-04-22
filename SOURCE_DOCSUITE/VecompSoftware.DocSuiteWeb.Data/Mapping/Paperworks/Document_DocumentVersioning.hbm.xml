@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="DocumentVersioning" table="DocumentVersioning">
+
+    <composite-id class="YearNumberIncrCompositeKey" name="Id">
+      <key-property column="Year" name="Year" />
+      <key-property column="Number" name="Number" />
+      <key-property column="Incremental" name="Incremental" />
+    </composite-id>
+    <property name="Year" column="Year" insert="false" update="false" />
+    <property name="Number" column="Number" insert="false" update="false" />
+    <property name="IncrementalObject" column="IncrementalObject"  />
+    <property name="CheckOutUser" column="CheckOutUser" type="AnsiString" />
+    <property name="CheckOutDate" column="CheckOutDate" insert="false" update="false" />
+    <property name="CheckInUser" column="CheckInUser" type="AnsiString" />
+    <property name="CheckInDate" column="CheckInDate" />
+    <property name="CheckDir" column="CheckDir" type="AnsiString" />
+    <property name="CheckSystemComputer" column="CheckSystemComputer" type="AnsiString" />
+    <property name="CheckStatus" column="CheckStatus" type="AnsiString" />
+
+    <many-to-one name="DocumentObject" class="DocumentObject" insert="false" update="false">
+      <column name="Year" />
+      <column name="Number" />
+      <column name="IncrementalObject" />
+    </many-to-one>
+
+  </class>
+
+</hibernate-mapping>

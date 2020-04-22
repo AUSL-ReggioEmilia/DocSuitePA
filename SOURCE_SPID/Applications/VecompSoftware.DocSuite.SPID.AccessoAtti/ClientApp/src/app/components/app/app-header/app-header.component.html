@@ -1,0 +1,26 @@
+<nav class="app-header navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="mobile-collapse-button pull-left navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" appMobileSidebarToggler>
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div class="app-navbar-brand">
+                <i class="logo"></i>
+                <a class="navbar-brand" routerLink="/">Accesso civico atti</a>
+            </div>
+        </div>
+        <div class="app-user-header">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a routerLink="/" class="user-logged">
+                        <span>Benvenuto {{user.Name}} {{user.Surname}}</span>
+                        <img class="user-logged-icon img-circle" />
+                    </a>                    
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

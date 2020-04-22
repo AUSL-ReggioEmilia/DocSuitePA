@@ -1,0 +1,33 @@
+﻿<div *ngIf="gridData">
+    <kendo-grid [data]="gridData" [pageable]="paginationEnabled" [skip]="skip" [pageSize]="pageSize" [groupable]="groupable" [group]="groups" (pageChange)="pageChange($event)" [scrollable]="'none'">
+        <kendo-grid-column title="Atto" width="1200" [headerClass]="'grid-header'">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                {{dataItem.inclusiveNumber}} del {{dataItem.adoptionDate | dateFormat}}
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="subject" title="Oggetto" width="6000" [headerClass]="'grid-header'"></kendo-grid-column>
+        <kendo-grid-column *ngIf="serviceNumberVisible" field="serviceNumber" title="Codice" width="100" [headerClass]="'grid-header'"></kendo-grid-column>
+        <kendo-grid-column field="service" title="Servizio" width="100" [style]="{'display': 'none'}" [headerStyle]="{'display': 'none'}"></kendo-grid-column>
+        <kendo-grid-column *ngIf="executiveDateVisible" field="executiveDate" title="Data Esecutività" width="10" [headerClass]="'grid-header'" [class]="'resolution-cell'">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                {{dataItem.executiveDate | dateFormat}}
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="publicationDateVisible" field="publicationDate" title="Data Pubblicazione" width="10" [headerClass]="'grid-header'" [class]="'resolution-cell'">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                {{dataItem.publicationDate | dateFormat}}
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="proposerColumnVisible" field="proposer" title="Proponente" width="1000" [headerClass]="'grid-header'"></kendo-grid-column>
+        <kendo-grid-column width="15" [class]="'resolution-cell'">
+            <ng-template kendoGridHeaderTemplate let-column>
+                <div style="text-align:center;"><img src="app/images/file-extension-pdf.png" /></div>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <a href="{{dataItem.documentUrl}}" target="_blank"><img src="app/images/file-extension-pdf.png" title="Vedi Documento" /></a>
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-messages noRecords="Nessun elemento trovato." pagerPage="Pagina" pagerOf="di" pagerItems="elementi" pagerItemsPerPage="elementi per pagina">
+        </kendo-grid-messages>
+    </kendo-grid>
+</div>

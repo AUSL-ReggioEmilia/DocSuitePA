@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.ExternalViewer", "VecompSoftware.DocSuite.ExternalViewer\VecompSoftware.DocSuite.ExternalViewer.csproj", "{6508B146-256C-4C51-947E-2902A245A0EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.DocumentHandler", "VecompSoftware.DocSuite.DocumentHandler\VecompSoftware.DocSuite.DocumentHandler.csproj", "{8823F6F5-1279-450F-A911-5E5CC9FBD2D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.AttiOnline", "VecompSoftware.DocSuite.AttiOnline\VecompSoftware.DocSuite.AttiOnline.csproj", "{4E427423-88ED-4A55-8C3A-5AB4397AE4F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.DocumentUnitHandler", "VecompSoftware.DocSuite.DocumentUnitHandler\VecompSoftware.DocSuite.DocumentUnitHandler.csproj", "{81B90037-A8F2-48B3-8C58-469FF07F2133}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6508B146-256C-4C51-947E-2902A245A0EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6508B146-256C-4C51-947E-2902A245A0EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6508B146-256C-4C51-947E-2902A245A0EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6508B146-256C-4C51-947E-2902A245A0EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8823F6F5-1279-450F-A911-5E5CC9FBD2D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8823F6F5-1279-450F-A911-5E5CC9FBD2D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8823F6F5-1279-450F-A911-5E5CC9FBD2D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8823F6F5-1279-450F-A911-5E5CC9FBD2D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E427423-88ED-4A55-8C3A-5AB4397AE4F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E427423-88ED-4A55-8C3A-5AB4397AE4F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E427423-88ED-4A55-8C3A-5AB4397AE4F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E427423-88ED-4A55-8C3A-5AB4397AE4F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81B90037-A8F2-48B3-8C58-469FF07F2133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81B90037-A8F2-48B3-8C58-469FF07F2133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81B90037-A8F2-48B3-8C58-469FF07F2133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81B90037-A8F2-48B3-8C58-469FF07F2133}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {44603199-69E3-4263-81A5-29763C8E25BF}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://dev.azure.com/docsuiteweb
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = VecompSoftware.DocSuite.ExternalViewer\\VecompSoftware.DocSuite.ExternalViewer.csproj
+		SccProjectName1 = VecompSoftware.DocSuite.ExternalViewer
+		SccLocalPath1 = VecompSoftware.DocSuite.ExternalViewer
+		SccProjectUniqueName2 = VecompSoftware.DocSuite.DocumentHandler\\VecompSoftware.DocSuite.DocumentHandler.csproj
+		SccProjectName2 = VecompSoftware.DocSuite.DocumentHandler
+		SccLocalPath2 = VecompSoftware.DocSuite.DocumentHandler
+		SccProjectUniqueName3 = VecompSoftware.DocSuite.DocumentUnitHandler\\VecompSoftware.DocSuite.DocumentUnitHandler.csproj
+		SccProjectName3 = VecompSoftware.DocSuite.DocumentUnitHandler
+		SccLocalPath3 = VecompSoftware.DocSuite.DocumentUnitHandler
+		SccProjectUniqueName4 = VecompSoftware.DocSuite.AttiOnline\\VecompSoftware.DocSuite.AttiOnline.csproj
+		SccProjectName4 = VecompSoftware.DocSuite.AttiOnline
+		SccLocalPath4 = VecompSoftware.DocSuite.AttiOnline
+	EndGlobalSection
+EndGlobal

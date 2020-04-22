@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ProtocolDataSet" targetNamespace="http://tempuri.org/ProtocolDataSet.xsd" xmlns:mstns="http://tempuri.org/ProtocolDataSet.xsd" xmlns="http://tempuri.org/ProtocolDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection ConnectionStringObject="Data Source=SVILUPPO;Initial Catalog=ENPACLProtocollo;User ID=DocSuite;Password=Passw0rd" IsAppSettingsProperty="false" Modifier="Assembly" Name="ProtConnection (VecompSoftware.DocSuiteWeb.API)" ParameterPrefix="@" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="ProtocolDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="ProtocolDataSet" msprop:Generator_UserDSName="ProtocolDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="ProtocolDataTable" msprop:Generator_TableClassName="ProtocolDataTableDataTable" msprop:Generator_TableVarName="tableProtocolDataTable" msprop:Generator_RowChangedName="ProtocolDataTableRowChanged" msprop:Generator_TablePropName="ProtocolDataTable" msprop:Generator_RowDeletingName="ProtocolDataTableRowDeleting" msprop:Generator_RowChangingName="ProtocolDataTableRowChanging" msprop:Generator_RowEvHandlerName="ProtocolDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="ProtocolDataTableRowDeleted" msprop:Generator_RowClassName="ProtocolDataTableRow" msprop:Generator_UserTableName="ProtocolDataTable" msprop:Generator_RowEvArgName="ProtocolDataTableRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Protocol_ID" msprop:Generator_ColumnVarNameInTable="columnProtocol_ID" msprop:Generator_ColumnPropNameInRow="Protocol_ID" msprop:Generator_ColumnPropNameInTable="Protocol_IDColumn" msprop:Generator_UserColumnName="Protocol_ID" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_Object" msprop:Generator_ColumnVarNameInTable="columnProtocol_Object" msprop:Generator_ColumnPropNameInRow="Protocol_Object" msprop:Generator_ColumnPropNameInTable="Protocol_ObjectColumn" msprop:Generator_UserColumnName="Protocol_Object" type="xs:string" minOccurs="0" />
+              <xs:element name="Category_ID" msprop:Generator_ColumnVarNameInTable="columnCategory_ID" msprop:Generator_ColumnPropNameInRow="Category_ID" msprop:Generator_ColumnPropNameInTable="Category_IDColumn" msprop:Generator_UserColumnName="Category_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="Category_Code" msprop:Generator_ColumnVarNameInTable="columnCategory_Code" msprop:Generator_ColumnPropNameInRow="Category_Code" msprop:Generator_ColumnPropNameInTable="Category_CodeColumn" msprop:Generator_UserColumnName="Category_Code" type="xs:string" minOccurs="0" />
+              <xs:element name="Category_FullCode" msprop:Generator_ColumnVarNameInTable="columnCategory_FullCode" msprop:Generator_ColumnPropNameInRow="Category_FullCode" msprop:Generator_ColumnPropNameInTable="Category_FullCodeColumn" msprop:Generator_UserColumnName="Category_FullCode" type="xs:string" minOccurs="0" />
+              <xs:element name="Category_Description" msprop:Generator_ColumnVarNameInTable="columnCategory_Description" msprop:Generator_ColumnPropNameInRow="Category_Description" msprop:Generator_ColumnPropNameInTable="Category_DescriptionColumn" msprop:Generator_UserColumnName="Category_Description" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_RegistrationDate" msprop:Generator_ColumnVarNameInTable="columnProtocol_RegistrationDate" msprop:Generator_ColumnPropNameInRow="Protocol_RegistrationDate" msprop:Generator_ColumnPropNameInTable="Protocol_RegistrationDateColumn" msprop:Generator_UserColumnName="Protocol_RegistrationDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Protocol_RegistrationUser" msprop:Generator_ColumnVarNameInTable="columnProtocol_RegistrationUser" msprop:Generator_ColumnPropNameInRow="Protocol_RegistrationUser" msprop:Generator_ColumnPropNameInTable="Protocol_RegistrationUserColumn" msprop:Generator_UserColumnName="Protocol_RegistrationUser" type="xs:string" minOccurs="0" />
+              <xs:element name="Container_ID" msprop:Generator_ColumnVarNameInTable="columnContainer_ID" msprop:Generator_ColumnPropNameInRow="Container_ID" msprop:Generator_ColumnPropNameInTable="Container_IDColumn" msprop:Generator_UserColumnName="Container_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="Container_Description" msprop:Generator_ColumnVarNameInTable="columnContainer_Description" msprop:Generator_ColumnPropNameInRow="Container_Description" msprop:Generator_ColumnPropNameInTable="Container_DescriptionColumn" msprop:Generator_UserColumnName="Container_Description" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_DocumentDate" msprop:Generator_ColumnVarNameInTable="columnProtocol_DocumentDate" msprop:Generator_ColumnPropNameInRow="Protocol_DocumentDate" msprop:Generator_ColumnPropNameInTable="Protocol_DocumentDateColumn" msprop:Generator_UserColumnName="Protocol_DocumentDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Protocol_DocumentCode" msprop:Generator_ColumnVarNameInTable="columnProtocol_DocumentCode" msprop:Generator_ColumnPropNameInRow="Protocol_DocumentCode" msprop:Generator_ColumnPropNameInTable="Protocol_DocumentCodeColumn" msprop:Generator_UserColumnName="Protocol_DocumentCode" type="xs:string" minOccurs="0" />
+              <xs:element name="DocumentType_ID" msprop:Generator_ColumnVarNameInTable="columnDocumentType_ID" msprop:Generator_ColumnPropNameInRow="DocumentType_ID" msprop:Generator_ColumnPropNameInTable="DocumentType_IDColumn" msprop:Generator_UserColumnName="DocumentType_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="DocumentType_Description" msprop:Generator_ColumnVarNameInTable="columnDocumentType_Description" msprop:Generator_ColumnPropNameInRow="DocumentType_Description" msprop:Generator_ColumnPropNameInTable="DocumentType_DescriptionColumn" msprop:Generator_UserColumnName="DocumentType_Description" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_Advanced_Status" msprop:Generator_ColumnVarNameInTable="columnProtocol_Advanced_Status" msprop:Generator_ColumnPropNameInRow="Protocol_Advanced_Status" msprop:Generator_ColumnPropNameInTable="Protocol_Advanced_StatusColumn" msprop:Generator_UserColumnName="Protocol_Advanced_Status" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_Year" msprop:Generator_ColumnVarNameInTable="columnProtocol_Year" msprop:Generator_ColumnPropNameInRow="Protocol_Year" msprop:Generator_ColumnPropNameInTable="Protocol_YearColumn" msprop:Generator_UserColumnName="Protocol_Year" type="xs:int" minOccurs="0" />
+              <xs:element name="Protocol_Number" msprop:Generator_ColumnVarNameInTable="columnProtocol_Number" msprop:Generator_ColumnPropNameInRow="Protocol_Number" msprop:Generator_ColumnPropNameInTable="Protocol_NumberColumn" msprop:Generator_UserColumnName="Protocol_Number" type="xs:int" minOccurs="0" />
+              <xs:element name="Protocol_ServiceCategory" msprop:Generator_ColumnVarNameInTable="columnProtocol_ServiceCategory" msprop:Generator_ColumnPropNameInRow="Protocol_ServiceCategory" msprop:Generator_ColumnPropNameInTable="Protocol_ServiceCategoryColumn" msprop:Generator_UserColumnName="Protocol_ServiceCategory" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_Note" msprop:Generator_ColumnVarNameInTable="columnProtocol_Note" msprop:Generator_ColumnPropNameInRow="Protocol_Note" msprop:Generator_ColumnPropNameInTable="Protocol_NoteColumn" msprop:Generator_UserColumnName="Protocol_Note" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_TypeId" msprop:Generator_ColumnVarNameInTable="columnProtocol_TypeId" msprop:Generator_ColumnPropNameInRow="Protocol_TypeId" msprop:Generator_ColumnPropNameInTable="Protocol_TypeIdColumn" msprop:Generator_UserColumnName="Protocol_TypeId" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_TypeName" msprop:Generator_ColumnVarNameInTable="columnProtocol_TypeName" msprop:Generator_ColumnPropNameInRow="Protocol_TypeName" msprop:Generator_ColumnPropNameInTable="Protocol_TypeNameColumn" msprop:Generator_UserColumnName="Protocol_TypeName" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_StatusId" msprop:Generator_ColumnVarNameInTable="columnProtocol_StatusId" msprop:Generator_ColumnPropNameInRow="Protocol_StatusId" msprop:Generator_ColumnPropNameInTable="Protocol_StatusIdColumn" msprop:Generator_UserColumnName="Protocol_StatusId" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_StatusDescription" msprop:Generator_ColumnVarNameInTable="columnProtocol_StatusDescription" msprop:Generator_ColumnPropNameInRow="Protocol_StatusDescription" msprop:Generator_ColumnPropNameInTable="Protocol_StatusDescriptionColumn" msprop:Generator_UserColumnName="Protocol_StatusDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_DocumentProtocol" msprop:Generator_ColumnVarNameInTable="columnProtocol_DocumentProtocol" msprop:Generator_ColumnPropNameInRow="Protocol_DocumentProtocol" msprop:Generator_ColumnPropNameInTable="Protocol_DocumentProtocolColumn" msprop:Generator_UserColumnName="Protocol_DocumentProtocol" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_FullNumber" msprop:Generator_ColumnVarNameInTable="columnProtocol_FullNumber" msprop:Generator_ColumnPropNameInRow="Protocol_FullNumber" msprop:Generator_ColumnPropNameInTable="Protocol_FullNumberColumn" msprop:Generator_UserColumnName="Protocol_FullNumber" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_TypeDescription" msprop:Generator_ColumnVarNameInTable="columnProtocol_TypeDescription" msprop:Generator_ColumnPropNameInRow="Protocol_TypeDescription" msprop:Generator_ColumnPropNameInTable="Protocol_TypeDescriptionColumn" msprop:Generator_UserColumnName="Protocol_TypeDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_POrigin" msprop:Generator_ColumnVarNameInTable="columnProtocol_POrigin" msprop:Generator_ColumnPropNameInRow="Protocol_POrigin" msprop:Generator_ColumnPropNameInTable="Protocol_POriginColumn" msprop:Generator_UserColumnName="Protocol_POrigin" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_Cancellation" msprop:Generator_ColumnVarNameInTable="columnProtocol_Cancellation" msprop:Generator_ColumnPropNameInRow="Protocol_Cancellation" msprop:Generator_ColumnPropNameInTable="Protocol_CancellationColumn" msprop:Generator_UserColumnName="Protocol_Cancellation" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_Location" msprop:Generator_ColumnVarNameInTable="columnProtocol_Location" msprop:Generator_ColumnPropNameInRow="Protocol_Location" msprop:Generator_ColumnPropNameInTable="Protocol_LocationColumn" msprop:Generator_UserColumnName="Protocol_Location" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_Proposer" msprop:Generator_ColumnVarNameInTable="columnProtocol_Proposer" msprop:Generator_ColumnPropNameInRow="Protocol_Proposer" msprop:Generator_ColumnPropNameInTable="Protocol_ProposerColumn" msprop:Generator_UserColumnName="Protocol_Proposer" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_LastChangedDate" msprop:Generator_ColumnVarNameInTable="columnProtocol_LastChangedDate" msprop:Generator_ColumnPropNameInRow="Protocol_LastChangedDate" msprop:Generator_ColumnPropNameInTable="Protocol_LastChangedDateColumn" msprop:Generator_UserColumnName="Protocol_LastChangedDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_LastChangedUser" msprop:Generator_ColumnVarNameInTable="columnProtocol_LastChangedUser" msprop:Generator_ColumnPropNameInRow="Protocol_LastChangedUser" msprop:Generator_ColumnPropNameInTable="Protocol_LastChangedUserColumn" msprop:Generator_UserColumnName="Protocol_LastChangedUser" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_ParerStatusCode" msprop:Generator_ColumnVarNameInTable="columnProtocol_ParerStatusCode" msprop:Generator_ColumnPropNameInRow="Protocol_ParerStatusCode" msprop:Generator_ColumnPropNameInTable="Protocol_ParerStatusCodeColumn" msprop:Generator_UserColumnName="Protocol_ParerStatusCode" type="xs:int" minOccurs="0" />
+              <xs:element name="Protocol_ParerStatusDescription" msprop:Generator_ColumnVarNameInTable="columnProtocol_ParerStatusDescription" msprop:Generator_ColumnPropNameInRow="Protocol_ParerStatusDescription" msprop:Generator_ColumnPropNameInTable="Protocol_ParerStatusDescriptionColumn" msprop:Generator_UserColumnName="Protocol_ParerStatusDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_hasRoles" msprop:Generator_ColumnVarNameInTable="columnProtocol_hasRoles" msprop:Generator_ColumnPropNameInRow="Protocol_hasRoles" msprop:Generator_ColumnPropNameInTable="Protocol_hasRolesColumn" msprop:Generator_UserColumnName="Protocol_hasRoles" type="xs:string" minOccurs="0" />
+              <xs:element name="Protocol_Signature" msprop:Generator_ColumnVarNameInTable="columnProtocol_Signature" msprop:Generator_ColumnPropNameInRow="Protocol_Signature" msprop:Generator_ColumnPropNameInTable="Protocol_SignatureColumn" msprop:Generator_UserColumnName="Protocol_Signature" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ContactDataTable" msprop:Generator_TableClassName="ContactDataTableDataTable" msprop:Generator_TableVarName="tableContactDataTable" msprop:Generator_RowChangedName="ContactDataTableRowChanged" msprop:Generator_TablePropName="ContactDataTable" msprop:Generator_RowDeletingName="ContactDataTableRowDeleting" msprop:Generator_RowChangingName="ContactDataTableRowChanging" msprop:Generator_RowEvHandlerName="ContactDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="ContactDataTableRowDeleted" msprop:Generator_RowClassName="ContactDataTableRow" msprop:Generator_UserTableName="ContactDataTable" msprop:Generator_RowEvArgName="ContactDataTableRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Protocol_ID" msprop:Generator_ColumnVarNameInTable="columnProtocol_ID" msprop:Generator_ColumnPropNameInRow="Protocol_ID" msprop:Generator_ColumnPropNameInTable="Protocol_IDColumn" msprop:Generator_UserColumnName="Protocol_ID" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_IsSender" msprop:Generator_ColumnVarNameInTable="columnContact_IsSender" msprop:Generator_ColumnPropNameInRow="Contact_IsSender" msprop:Generator_ColumnPropNameInTable="Contact_IsSenderColumn" msprop:Generator_UserColumnName="Contact_IsSender" type="xs:boolean" minOccurs="0" />
+              <xs:element name="Contact_ID" msprop:Generator_ColumnVarNameInTable="columnContact_ID" msprop:Generator_ColumnPropNameInRow="Contact_ID" msprop:Generator_ColumnPropNameInTable="Contact_IDColumn" msprop:Generator_UserColumnName="Contact_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="Contact_Description" msprop:Generator_ColumnVarNameInTable="columnContact_Description" msprop:Generator_ColumnPropNameInRow="Contact_Description" msprop:Generator_ColumnPropNameInTable="Contact_DescriptionColumn" msprop:Generator_UserColumnName="Contact_Description" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_FullIncrementalPath" msprop:Generator_ColumnVarNameInTable="columnContact_FullIncrementalPath" msprop:Generator_ColumnPropNameInRow="Contact_FullIncrementalPath" msprop:Generator_ColumnPropNameInTable="Contact_FullIncrementalPathColumn" msprop:Generator_UserColumnName="Contact_FullIncrementalPath" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_FormattedDescription" msprop:Generator_ColumnVarNameInTable="columnContact_FormattedDescription" msprop:Generator_ColumnPropNameInRow="Contact_FormattedDescription" msprop:Generator_ColumnPropNameInTable="Contact_FormattedDescriptionColumn" msprop:Generator_UserColumnName="Contact_FormattedDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_FullDescription" msprop:Generator_ColumnVarNameInTable="columnContact_FullDescription" msprop:Generator_ColumnPropNameInRow="Contact_FullDescription" msprop:Generator_ColumnPropNameInTable="Contact_FullDescriptionColumn" msprop:Generator_UserColumnName="Contact_FullDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_BirthDate" msprop:Generator_ColumnVarNameInTable="columnContact_BirthDate" msprop:Generator_ColumnPropNameInRow="Contact_BirthDate" msprop:Generator_ColumnPropNameInTable="Contact_BirthDateColumn" msprop:Generator_UserColumnName="Contact_BirthDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_Indirizzo" msprop:Generator_ColumnVarNameInTable="columnContact_Indirizzo" msprop:Generator_ColumnPropNameInRow="Contact_Indirizzo" msprop:Generator_ColumnPropNameInTable="Contact_IndirizzoColumn" msprop:Generator_UserColumnName="Contact_Indirizzo" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_Località" msprop:Generator_ColumnVarNameInTable="columnContact_Località" msprop:Generator_ColumnPropNameInRow="Contact_Località" msprop:Generator_ColumnPropNameInTable="Contact_LocalitàColumn" msprop:Generator_UserColumnName="Contact_Località" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_Provincia" msprop:Generator_ColumnVarNameInTable="columnContact_Provincia" msprop:Generator_ColumnPropNameInRow="Contact_Provincia" msprop:Generator_ColumnPropNameInTable="Contact_ProvinciaColumn" msprop:Generator_UserColumnName="Contact_Provincia" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_CAP" msprop:Generator_ColumnVarNameInTable="columnContact_CAP" msprop:Generator_ColumnPropNameInRow="Contact_CAP" msprop:Generator_ColumnPropNameInTable="Contact_CAPColumn" msprop:Generator_UserColumnName="Contact_CAP" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_Citta" msprop:Generator_ColumnVarNameInTable="columnContact_Citta" msprop:Generator_ColumnPropNameInRow="Contact_Citta" msprop:Generator_ColumnPropNameInTable="Contact_CittaColumn" msprop:Generator_UserColumnName="Contact_Citta" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_LastName" msprop:Generator_ColumnVarNameInTable="columnContact_LastName" msprop:Generator_ColumnPropNameInRow="Contact_LastName" msprop:Generator_ColumnPropNameInTable="Contact_LastNameColumn" msprop:Generator_UserColumnName="Contact_LastName" type="xs:string" minOccurs="0" />
+              <xs:element name="Contact_FirstName" msprop:Generator_ColumnVarNameInTable="columnContact_FirstName" msprop:Generator_ColumnPropNameInRow="Contact_FirstName" msprop:Generator_ColumnPropNameInTable="Contact_FirstNameColumn" msprop:Generator_UserColumnName="Contact_FirstName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="RoleDataTable" msprop:Generator_TableClassName="RoleDataTableDataTable" msprop:Generator_TableVarName="tableRoleDataTable" msprop:Generator_RowChangedName="RoleDataTableRowChanged" msprop:Generator_TablePropName="RoleDataTable" msprop:Generator_RowDeletingName="RoleDataTableRowDeleting" msprop:Generator_RowChangingName="RoleDataTableRowChanging" msprop:Generator_RowEvHandlerName="RoleDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="RoleDataTableRowDeleted" msprop:Generator_RowClassName="RoleDataTableRow" msprop:Generator_UserTableName="RoleDataTable" msprop:Generator_RowEvArgName="RoleDataTableRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Protocol_ID" msprop:Generator_ColumnVarNameInTable="columnProtocol_ID" msprop:Generator_ColumnPropNameInRow="Protocol_ID" msprop:Generator_ColumnPropNameInTable="Protocol_IDColumn" msprop:Generator_UserColumnName="Protocol_ID" type="xs:string" minOccurs="0" />
+              <xs:element name="Role_ID" msprop:Generator_ColumnVarNameInTable="columnRole_ID" msprop:Generator_ColumnPropNameInRow="Role_ID" msprop:Generator_ColumnPropNameInTable="Role_IDColumn" msprop:Generator_UserColumnName="Role_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="Role_Name" msprop:Generator_ColumnVarNameInTable="columnRole_Name" msprop:Generator_ColumnPropNameInRow="Role_Name" msprop:Generator_ColumnPropNameInTable="Role_NameColumn" msprop:Generator_UserColumnName="Role_Name" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="PECMailOutgoingDataTable" msprop:Generator_TableClassName="PECMailOutgoingDataTableDataTable" msprop:Generator_TableVarName="tablePECMailOutgoingDataTable" msprop:Generator_TablePropName="PECMailOutgoingDataTable" msprop:Generator_RowDeletingName="PECMailOutgoingDataTableRowDeleting" msprop:Generator_RowChangingName="PECMailOutgoingDataTableRowChanging" msprop:Generator_RowEvHandlerName="PECMailOutgoingDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="PECMailOutgoingDataTableRowDeleted" msprop:Generator_UserTableName="PECMailOutgoingDataTable" msprop:Generator_RowChangedName="PECMailOutgoingDataTableRowChanged" msprop:Generator_RowEvArgName="PECMailOutgoingDataTableRowChangeEvent" msprop:Generator_RowClassName="PECMailOutgoingDataTableRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IDPECMail" msdata:ReadOnly="true" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnIDPECMail" msprop:Generator_ColumnPropNameInRow="IDPECMail" msprop:Generator_ColumnPropNameInTable="IDPECMailColumn" msprop:Generator_UserColumnName="IDPECMail" type="xs:int" />
+              <xs:element name="Protocol_ID" msprop:Generator_ColumnVarNameInTable="columnProtocol_ID" msprop:Generator_ColumnPropNameInRow="Protocol_ID" msprop:Generator_ColumnPropNameInTable="Protocol_IDColumn" msprop:Generator_UserColumnName="Protocol_ID" type="xs:string" minOccurs="0" />
+              <xs:element name="MailSubject" msprop:nullValue="_empty" msprop:Generator_ColumnPropNameInRow="MailSubject" msprop:Generator_ColumnVarNameInTable="columnMailSubject" msprop:Generator_ColumnPropNameInTable="MailSubjectColumn" msprop:Generator_UserColumnName="MailSubject" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1000" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="MailSenders" msprop:nullValue="_empty" msprop:Generator_ColumnPropNameInRow="MailSenders" msprop:Generator_ColumnVarNameInTable="columnMailSenders" msprop:Generator_ColumnPropNameInTable="MailSendersColumn" msprop:Generator_UserColumnName="MailSenders" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1000" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="MailRecipients" msprop:nullValue="_empty" msprop:Generator_ColumnPropNameInRow="MailRecipients" msprop:Generator_ColumnVarNameInTable="columnMailRecipients" msprop:Generator_ColumnPropNameInTable="MailRecipientsColumn" msprop:Generator_UserColumnName="MailRecipients" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1000" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="MailDate" msprop:Generator_ColumnVarNameInTable="columnMailDate" msprop:Generator_ColumnPropNameInRow="MailDate" msprop:Generator_ColumnPropNameInTable="MailDateColumn" msprop:Generator_UserColumnName="MailDate" type="xs:dateTime" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="MessageEmailDataTable" msprop:Generator_TableClassName="MessageEmailDataTableDataTable" msprop:Generator_TableVarName="tableMessageEmailDataTable" msprop:Generator_RowChangedName="MessageEmailDataTableRowChanged" msprop:Generator_TablePropName="MessageEmailDataTable" msprop:Generator_RowDeletingName="MessageEmailDataTableRowDeleting" msprop:Generator_RowChangingName="MessageEmailDataTableRowChanging" msprop:Generator_RowEvHandlerName="MessageEmailDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="MessageEmailDataTableRowDeleted" msprop:Generator_RowClassName="MessageEmailDataTableRow" msprop:Generator_UserTableName="MessageEmailDataTable" msprop:Generator_RowEvArgName="MessageEmailDataTableRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IDMessageEmail" msdata:ReadOnly="true" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnIDMessageEmail" msprop:Generator_ColumnPropNameInRow="IDMessageEmail" msprop:Generator_ColumnPropNameInTable="IDMessageEmailColumn" msprop:Generator_UserColumnName="IDMessageEmail" type="xs:int" />
+              <xs:element name="SentDate" msprop:Generator_ColumnVarNameInTable="columnSentDate" msprop:Generator_ColumnPropNameInRow="SentDate" msprop:Generator_ColumnPropNameInTable="SentDateColumn" msprop:Generator_UserColumnName="SentDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Subject" msprop:Generator_ColumnVarNameInTable="columnSubject" msprop:Generator_ColumnPropNameInRow="Subject" msprop:Generator_ColumnPropNameInTable="SubjectColumn" msprop:Generator_UserColumnName="Subject">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="500" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Protocol_ID" msprop:Generator_ColumnVarNameInTable="columnProtocol_ID" msprop:Generator_ColumnPropNameInRow="Protocol_ID" msprop:Generator_ColumnPropNameInTable="Protocol_IDColumn" msprop:Generator_UserColumnName="Protocol_ID" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="CollaborationDataTable" msprop:Generator_TableClassName="CollaborationDataTableDataTable" msprop:Generator_TableVarName="tableCollaborationDataTable" msprop:Generator_TablePropName="CollaborationDataTable" msprop:Generator_RowDeletingName="CollaborationDataTableRowDeleting" msprop:Generator_RowChangingName="CollaborationDataTableRowChanging" msprop:Generator_RowEvHandlerName="CollaborationDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="CollaborationDataTableRowDeleted" msprop:Generator_UserTableName="CollaborationDataTable" msprop:Generator_RowChangedName="CollaborationDataTableRowChanged" msprop:Generator_RowEvArgName="CollaborationDataTableRowChangeEvent" msprop:Generator_RowClassName="CollaborationDataTableRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Collaboration_ID" msprop:Generator_ColumnVarNameInTable="columnCollaboration_ID" msprop:Generator_ColumnPropNameInRow="Collaboration_ID" msprop:Generator_ColumnPropNameInTable="Collaboration_IDColumn" msprop:Generator_UserColumnName="Collaboration_ID" type="xs:string" minOccurs="0" />
+              <xs:element name="Collaboration_Object" msprop:Generator_ColumnVarNameInTable="columnCollaboration_Object" msprop:Generator_ColumnPropNameInRow="Collaboration_Object" msprop:Generator_ColumnPropNameInTable="Collaboration_ObjectColumn" msprop:Generator_UserColumnName="Collaboration_Object" type="xs:string" minOccurs="0" />
+              <xs:element name="Collaboration_RegistrationDate" msprop:Generator_ColumnVarNameInTable="columnCollaboration_RegistrationDate" msprop:Generator_ColumnPropNameInRow="Collaboration_RegistrationDate" msprop:Generator_ColumnPropNameInTable="Collaboration_RegistrationDateColumn" msprop:Generator_UserColumnName="Collaboration_RegistrationDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Role_Name" msprop:Generator_ColumnVarNameInTable="columnRole_Name" msprop:Generator_ColumnPropNameInRow="Role_Name" msprop:Generator_ColumnPropNameInTable="Role_NameColumn" msprop:Generator_UserColumnName="Role_Name" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:PECMailOutgoingDataTable" />
+      <xs:field xpath="mstns:IDPECMail" />
+    </xs:unique>
+    <xs:unique name="MessageEmailDataTable_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:MessageEmailDataTable" />
+      <xs:field xpath="mstns:IDMessageEmail" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

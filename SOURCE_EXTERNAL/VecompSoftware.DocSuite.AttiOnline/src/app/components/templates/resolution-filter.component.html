@@ -1,0 +1,44 @@
+﻿<div class="panelbar-wrapper">
+  <kendo-panelbar (stateChange)="panelChange($event)"> 
+    <kendo-panelbar-item [title]="'Ricerca avanzata'">
+      <ng-template kendoPanelBarContent>
+        <div class="search-form">
+          <form (ngSubmit)="submitSearch(form.value)" #form="ngForm" class="form-horizontal">
+
+            <div class="form-group">
+              <label class="col-sm-1 control-label">Anno: </label>
+              <div class="col-sm-2">
+                <input type="text" class="form-control" [(ngModel)]="model.year" id="year" name="year" ngModel>
+              </div>
+              <label class="col-sm-1 control-label">Numero: </label>
+              <div class="col-sm-2">
+                <input type="text" class="form-control" [(ngModel)]="model.number" id="number" name="number" ngModel>
+              </div>
+              <label class="col-sm-2 control-label">Data adozione: </label>
+              <div class="col-sm-2" style="text-align: left;">
+                <kendo-dateinput [format]="'dd/MM/yyyy'" [(ngModel)]="model.adoptionDate" id="adoptionDate" name="adoptionDate"></kendo-dateinput>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-1 control-label">Oggetto: </label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" [(ngModel)]="model.subject" id="subject" name="subject" ngModel>
+              </div>
+              
+              <label class="col-sm-2 control-label">Proponente: </label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" [(ngModel)]="model.proposer" id="proposer" name="proposer" ngModel>
+              </div>
+            </div>
+
+            <div style="text-align: center">
+              <button kendoButton [primary]="true">Cerca</button>
+            </div>
+
+          </form>
+        </div>
+      </ng-template>
+    </kendo-panelbar-item>
+  </kendo-panelbar>
+</div>

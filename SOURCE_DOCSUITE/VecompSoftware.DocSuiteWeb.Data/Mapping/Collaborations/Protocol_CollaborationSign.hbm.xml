@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="CollaborationSign" table="CollaborationSigns">
+
+    <id name="Id" column="IdCollaborationSign" >
+      <generator class="guid.comb" />
+    </id>
+
+    <property name="IdCollaboration" column="IdCollaboration" />
+    <property name="Incremental" column="Incremental"/>
+    <property name="IsActive" column="IsActive" />
+    <property name="IdStatus" column="IdStatus" />
+    <property name="SignUser" column="SignUser" type="AnsiString" />
+    <property name="SignName" column="SignName" type="AnsiString" />
+    <property name="SignEMail" column="SignEMail" type="AnsiString" />
+    <property name="SignDate" column="SignDate" />
+    <property name="IsRequired" column="IsRequired" />
+    <property name="IsAbsent" column="IsAbsent" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" not-null="true" />
+    <property name="RegistrationDate" column="RegistrationDate" not-null="true" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+
+    <many-to-one class="Collaboration" name="Collaboration" column="IdCollaboration" insert="false" update="false" cascade="none"/>
+
+  </class>
+
+</hibernate-mapping>

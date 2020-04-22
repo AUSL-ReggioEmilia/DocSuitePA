@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="FileResolution" table="FileResolution">
+  
+    <id name="Id" column="idResolution" unsaved-value="any">
+      <generator class="assigned" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    <property name="IdResolutionFile" column="idResolutionFile" />
+    <property name="IdProposalFile" column="idProposalFile" />
+    <property name="IdAttachements" column="idAttachements" />
+    <property name="IdPrivacyAttachments" column="idPrivacyAttachments" />
+    <property name="IdControllerFile" column="idControllerFile" />
+    <property name="IdAssumedProposal" column="idAssumedProposal" />
+    <property name="IdUltimaPagina" column="idUltimaPaginaFile" />
+    <property name="IdFrontalinoRitiro" column="idFrontalinoRitiro" />
+    <property name="IdFrontespizio" column="idFrontespizio" />
+    <property name="IdAnnexes" column="idAnnexes" />
+    <property name="IdPrivacyPublicationDocument" column="idPrivacyPublicationDocument" />
+    <property name="IdMainDocumentsOmissis" column="idMainDocumentsOmissis" />
+    <property name="IdAttachmentsOmissis" column="idAttachmentsOmissis" />
+    <property name="IdSupervisoryBoardFile" column="idSupervisoryBoardFile" />
+    <property name="UniqueId" column="UniqueId" unique="true" />
+    <property name="DematerialisationChainId" column="DematerialisationChainId" />
+    <property name="UniqueIdResolution" column="UniqueIdResolution" />
+    
+    <many-to-one class="Resolution" name="Resolution" column="idResolution" insert="false" update="false" />
+    
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,10 @@
+﻿{
+  "WorkflowIntegrationTopic": "workflow_integration",
+  "ProtocolCreatedSubscription": "ProtocolCreated",
+  "ProtocolCancelSubscription": "ProtocolCancel",
+  "PECMailCreatedSubscription": "PECMailCreated",
+  "PECMailReceiptReceivedSubscription": "PECMailReceiptReceived",
+  "ZENWebApiUrl": "http://localhost:60293/api/SIDRest/FBprotocollo",
+  "ZENUsername": "User",
+  "ZENPassword": "sIdR&st!"
+}

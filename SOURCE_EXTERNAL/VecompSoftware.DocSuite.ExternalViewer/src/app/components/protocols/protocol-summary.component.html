@@ -1,0 +1,209 @@
+﻿
+<div class="panel card panel-fix" *ngIf="protocol">
+    <div>
+        <div class="card-header card-header-icon">
+            <div class="card-icon card-azure">
+                <h3 class="card-category ">Protocollo - Sommario</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+
+        <!--Anno - Numero - Data Registrazione-->
+        <div class="row card-space-out">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon card-azure">
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category">Anno</p>
+
+                    </div>
+                    <div class="responsive-text responsive-text-left">{{protocol.year}}</div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon card-azure">
+                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category">Numero</p>
+                    </div>
+                    <div class="responsive-text responsive-text-left"> {{protocol.number | numberFormat}}</div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon card-azure">
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category">Data</p>
+                    </div>
+                    <div class="responsive-text responsive-text-left">{{protocol.registrationDate | dateFormat}}</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--Oggetto-->
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-headercard-header-icon">
+                        <p class="card-category card-azure card-text title-label">Oggetto di</p>
+                    </div>
+
+                    <div>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide" scope="row">Oggetto</th>
+                                    <td class="responsive-text border-hide">{{protocol.subject}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide " scope="row">Note</th>
+                                    <td class="responsive-text border-hide">{{protocol.note}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon card-azure">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category">Mittenti</p>
+                    </div>
+                    <div class="panel-body tree-fix">
+                        <tree [data]="senders"></tree>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon card-azure">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category">Destinatari</p>
+                    </div>
+                    <div class="panel-body tree-fix">
+                        <tree [data]="recipients"></tree>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--PEC d'origine-->
+        <div class="panel-prot">
+            <pec-panel *ngIf="pecIngoingCount > 0" [year]="protocol.year" [number]="protocol.number" [direction]="0" title="Messaggi d'origine ({{pecIngoingCount}})"></pec-panel>
+        </div>
+
+        <!--PEC inviate-->
+        <div>
+            <pec-panel *ngIf="pecOutgoingCount > 0" [year]="protocol.year" [number]="protocol.number" [direction]="1" title="Messaggi PEC Inviati ({{pecOutgoingCount}})"></pec-panel>
+        </div>
+
+        <!--Informazioni-->
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-headercard-header-icon">
+                        <p class="card-category card-azure card-text title-label">Informazioni</p>
+                    </div>
+                    <div class="table-padding-sm-all">
+                        <table class="table">
+                            <tbody>
+                                <tr *ngIf="protocol.container">
+                                    <th class="responsive-text column-right border-hide" scope="row">Contenitore</th>
+                                    <td class="responsive-text border-hide">{{protocol.container.name}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide " scope="row">Classificatore</th>
+                                    <td class="responsive-text border-hide">{{protocol.category.hierarchyDescription}}</td>
+                                </tr>
+                                <tr *ngIf="protocol.type == 1">
+                                    <th class="responsive-text column-right border-hide" scope="row">Proponente</th>
+                                    <td class="responsive-text border-hide">{{protocol.assignee}}</td>
+                                </tr>
+                                <tr *ngIf="protocol.type == -1">
+                                    <th class="responsive-text column-right border-hide" scope="row">Assegnatario</th>
+                                    <td class="responsive-text border-hide">{{protocol.addressee}}</td>
+                                </tr>
+                                <tr *ngIf="protocol.serviceCategory">
+                                    <th class="responsive-text column-right border-hide" scope="row">Categoria</th>
+                                    <td class="responsive-text border-hide">{{protocol.serviceCategory}}</td>
+                                </tr>
+                                <tr *ngIf="protocol.registrationDate">
+                                    <th class="responsive-text column-right border-hide" scope="row">Creato da</th>
+                                    <td class="responsive-text border-hide">{{protocol.registrationUser}} {{protocol.registrationDate | dateFormat}}</td>
+                                </tr>
+                                <tr *ngIf="protocol.lastChangedUser && protocol.lastChangedDate">
+                                    <th class="responsive-text column-right border-hide" scope="row">Modificato da</th>
+                                    <td class="responsive-text  border-hide">{{protocol.lastChangedUser}} {{protocol.lastChangedDate | dateFormat}}</td>
+                                </tr>
+                                <tr *ngIf="workflowActivity != null && workflowActivity.endMotivationDate != null">
+                                    <th class="responsive-text column-right border-hide" scope="row">Risposta</th>
+                                    <td class="responsive-text border-hide">{{workflowActivity.endMotivation}}</td>
+                                </tr>
+                                <tr *ngIf="workflowActivity != null && workflowActivity.endMotivationDate != null">
+                                    <th class="responsive-text column-right border-hide" scope="row">In data</th>
+                                    <td class="responsive-text border-hide">{{workflowActivity.endMotivationDate | dateFormat}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--Annullamento-->
+        <div class="panel panel-info panel-prot" *ngIf="protocol.status == -2">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon-adjustments  card-azure">
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                            </div>
+                            <p class="card-category">Estremi del Provvedimento di annullamento del Protocollo</p>
+                            <div class="responsive-text">{{protocol.annulmentReason}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--Rigetto-->
+        <div class="panel panel-info panel-prot" *ngIf="protocol.isRejected">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon-adjustments card-azure">
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                            </div>
+                            <p class="card-category">Estremi del Rigetto</p>
+                            <div class="responsive-text">{{rejectReason}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,134 @@
+﻿
+html, body, form
+        {
+            height: 100%;
+            margin: 0px;
+            padding:0px;
+            overflow:hidden;
+        }
+
+div.fakeDiv {
+    display: none;
+}
+
+.PDFContainer
+{
+    background-color: #565656;
+    position: relative;
+}
+
+.DocumentTreeContainer {
+    text-align: left;
+    height: 100%;
+}
+
+.ToolBarContainer {
+    height: 35px;
+    text-align: left;
+}
+
+.ModalOverlay {
+    display: none;
+}
+
+#viewer {
+    height: 100%;
+}
+
+#frmDocumentViewer {
+    height: 100%;
+}
+
+.TreeViewFullHeight {
+    height: 100%;
+}
+
+/* Text ecclipse */
+div.RadTreeView .rtIn
+{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 80%;
+    display: inline-block;
+    padding: 3px 3px 2px;
+}
+div.RadTreeView .rtHover .rtIn,
+div.RadTreeView .rtSelected .rtIn
+{
+    padding: 2px 2px 10px 1px;
+}
+
+.RadTreeView {
+    white-space: nowrap !important;
+}
+
+.RadTreeView LABEL {
+    white-space:nowrap!important;
+}
+.rtvListDocumentContainerAligned
+{
+    white-space:nowrap!important;
+}
+/* Text ecclipse */
+
+.dswm_main {
+    background-color: rgb(245, 245, 245); 
+    padding: 5px;
+}
+
+.dswm_from {
+    float: left; 
+    height: 25px
+}
+
+.dswm_to {
+    float: left;
+    margin-bottom: 5px;
+    width: 655px;
+}
+
+.dsw_subject {
+    float: left; 
+    height: 25px; 
+    white-space: nowrap;
+}
+
+div.divContent {
+    height: 100%;
+    margin: 0;
+}
+
+.PanePosition
+{
+    position: relative;
+}
+
+.success, .warning, .error, .validation {
+    border: 1px solid;
+    margin: 2px 5px;
+    padding:5px 5px 5px 20px;
+    background-repeat: no-repeat;
+    background-position: 2px center;   
+    position: absolute;
+    right:0;    
+}
+    /*Setto la dimensione del testo all'interno del popup.*/
+    .success, .warning, .error, .validation > span {
+        font-size:9px;
+    }
+
+.success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+    background-image:url('../../App_Themes/DocSuite2008/imgset16/accept.png');    
+}
+.warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+    background-image: url('../../App_Themes/DocSuite2008/imgset16/error.png');    
+}
+.error {
+    color: #D8000C;
+    background-color: #FFBABA;
+    background-image: url('../../App_Themes/DocSuite2008/imgset16/delete.png');    
+}

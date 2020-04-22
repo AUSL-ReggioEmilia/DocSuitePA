@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolTransfert" table="ProtocolTransfert">
+    
+    <composite-id class="YearNumberCompositeKey" name="Id">
+      <key-property column="Year" name="Year" />
+      <key-property column="Number" name="Number" />
+    </composite-id>
+    
+    <property name="Year" column="Year" insert="false" update="false" />
+    <property name="Number" column="Number" insert="false" update="false" />
+    <property name="ProtocolObject" column="Object" type="AnsiString" />
+    <property name="Note" column="Note" type="StringClob" />
+    <property name="Request" column="Request" type="StringClob" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+
+    <many-to-one class="Container" name="Container" column="idContainer" />
+    <many-to-one class="Category" name="Category" column="idCategory" />
+    <many-to-one class="ProtocolType" name="Type" column="Type" />
+  
+  </class>
+
+</hibernate-mapping>

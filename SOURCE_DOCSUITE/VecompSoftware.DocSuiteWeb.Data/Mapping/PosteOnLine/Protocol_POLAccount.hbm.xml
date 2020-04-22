@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="POLAccount" table="PosteOnLineAccount">
+    
+    <id name="Id" column="IdPosteOnLineAccount">
+      <generator class="identity" />
+    </id>
+    
+    <property name="Name" column="Name" />
+    <property name="WsRaccomandataUrl" column="WsRaccomandataUrl" />
+    <property name="WsLetteraUrl" column="WsLetteraUrl" />
+    <property name="WsTelegrammaUrl" column="WsTelegrammaUrl" />
+    <property name="Username" column="Username" />
+    <property name="Password" column="Password" />
+    <property name="Customer" column="Customer" />
+    <property name="X509Certificate" column="X509Certificate" />
+    <property name="ExtendedProperties" column="ExtendedProperties"/>
+    
+    <bag name="Roles" table="PosteOnLineAccountRole" cascade="all-delete-orphan" inverse="true">
+      <key column="IdPosteOnLineAccount" />
+      <many-to-many class="Role" column="idRole" />
+    </bag>
+
+    <many-to-one column="ContactId" name="DefaultContact" class="Contact" not-null="false" />
+    
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,20 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noImplicitUseStrict": true,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "declaration": false,
+    "lib": [ "es2015", "dom" ],
+    "module": "amd",
+    "sourceMap": true,
+    "target": "es5"
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot",
+    "Temp",
+    "Help"
+  ]
+}

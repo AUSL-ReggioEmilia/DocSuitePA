@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<record>
+  
+  <field name="AnnoRiferimento" type="Int32" requested="true"/>
+  <field name="Oggetto"/>
+  <field name="CIG"/>
+  <field name="CodiceFiscaleProponente"/>
+  <field name="DenominazioneProponente"/>
+  <field name="Partecipante"/>
+  <field name="Aggiudicatario"/>
+  <field name="CodiceFiscaleAggiudicatario"/>
+  <field name="CodiceFiscaleEstero"/>
+  <field name="DurataDal" type="DateTime"/>
+  <field name="DurataAl" type="DateTime"/>
+  <field name="SceltaContraente"/>
+  <field name="ImportoAggiudicazione" type="Decimal"/>
+  <field name="NumeroProvvedimento" type="Int32"/>
+  <field name="SiglaProvvedimento"/>
+  <field name="DataProvvedimento" type="DateTime"/>
+  <field name="DataInserimento" type="DateTime"/>
+  <field name="CodiceFiscalePartecipante"/>
+  <field name="RagioneSocialePartecipante"/>
+</record>

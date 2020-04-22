@@ -1,0 +1,398 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{395C7019-BDEE-4E20-9C53-5DF070E480FC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Service.Entity</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Service.Entity</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commons\ICategoryFascicleRightService.cs" />
+    <Compile Include="Commons\IContactPlaceNameService.cs" />
+    <Compile Include="Commons\IContactTitleService.cs" />
+    <Compile Include="Commons\Implementation\CategoryFascicleRightService.cs" />
+    <Compile Include="Commons\Implementation\ContactPlaceNameService.cs" />
+    <Compile Include="Commons\Implementation\ContactTitleService.cs" />
+    <Compile Include="Commons\Implementation\UserLogService.cs" />
+    <Compile Include="Commons\IUserLogService.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesItemLinkService.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemLinkService.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitFascicleCategoryService.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitFascicleHistoricizedCategoryService.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitFascicleCategoryService.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitFascicleHistoricizedCategoryService.cs" />
+    <Compile Include="Fascicles\IFascicleDocumentUnitService.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleDocumentUnitService.cs" />
+    <Compile Include="JeepServiceHosts\IJeepServiceHostService.cs" />
+    <Compile Include="JeepServiceHosts\Implementation\JeepServiceHostService.cs" />
+    <Compile Include="PECMails\Implementation\PECMailAttachmentService.cs" />
+    <Compile Include="PECMails\Implementation\PECMailBoxConfigurationService.cs" />
+    <Compile Include="PECMails\IPECMailAttachmentService.cs" />
+    <Compile Include="PECMails\Implementation\PECMailBoxService.cs" />
+    <Compile Include="PECMails\IPECMailBoxConfigurationService.cs" />
+    <Compile Include="PECMails\IPECMailBoxService.cs" />
+    <Compile Include="Processes\Implementation\ProcessFascicleTemplateService.cs" />
+    <Compile Include="Processes\Implementation\ProcessFascicleWorkflowRepositoryService.cs" />
+    <Compile Include="Processes\Implementation\ProcessService.cs" />
+    <Compile Include="Processes\IProcessFascicleTemplateService.cs" />
+    <Compile Include="Processes\IProcessFascicleWorkflowRepositoryService.cs" />
+    <Compile Include="Processes\IProcessService.cs" />
+    <Compile Include="Protocols\IAdvancedProtocolService.cs" />
+    <Compile Include="Protocols\Implementation\AdvancedProtocolService.cs" />
+    <Compile Include="BaseLogService.cs" />
+    <Compile Include="BaseService.cs" />
+    <Compile Include="Collaborations\ICollaborationAggregateService.cs" />
+    <Compile Include="Collaborations\ICollaborationUserService.cs" />
+    <Compile Include="Collaborations\ICollaborationSignService.cs" />
+    <Compile Include="Collaborations\ICollaborationVersioningService.cs" />
+    <Compile Include="Collaborations\ICollaborationLogService.cs" />
+    <Compile Include="Collaborations\ICollaborationService.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationAggregateService.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationUserService.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationSignService.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationVersioningService.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationLogService.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationService.cs" />
+    <Compile Include="Commons\IContainerPropertyService.cs" />
+    <Compile Include="Commons\Implementation\ContainerPropertyService.cs" />
+    <Compile Include="Commons\Implementation\PrivacyLevelService.cs" />
+    <Compile Include="Commons\IPrivacyLevelService.cs" />
+    <Compile Include="Conservations\IConservationService.cs" />
+    <Compile Include="Conservations\Implementation\ConservationService.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesConstraintService.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesItemLogService.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesConstraintService.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemLogService.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitUserService.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitUserService .cs" />
+    <Compile Include="Dossiers\IDossierCommentService.cs" />
+    <Compile Include="Dossiers\IDossierFolderRoleService.cs" />
+    <Compile Include="Dossiers\IDossierFolderService.cs" />
+    <Compile Include="Dossiers\IDossierLinkService.cs" />
+    <Compile Include="Dossiers\IDossierLogService.cs" />
+    <Compile Include="Dossiers\IDossierDocumentService.cs" />
+    <Compile Include="Dossiers\IDossierRoleService.cs" />
+    <Compile Include="Dossiers\IDossierService.cs" />
+    <Compile Include="Dossiers\Implementation\BaseDossierService.cs" />
+    <Compile Include="Dossiers\Implementation\DossierCommentService.cs" />
+    <Compile Include="Dossiers\Implementation\DossierFolderRoleService.cs" />
+    <Compile Include="Dossiers\Implementation\DossierFolderService.cs" />
+    <Compile Include="Dossiers\Implementation\DossierLinkService.cs" />
+    <Compile Include="Dossiers\Implementation\DossierLogService.cs" />
+    <Compile Include="Dossiers\Implementation\DossierDocumentService.cs" />
+    <Compile Include="Dossiers\Implementation\DossierRoleService.cs" />
+    <Compile Include="Dossiers\Implementation\DossierService.cs" />
+    <Compile Include="Fascicles\IFascicleFolderService.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleFolderService.cs" />
+    <Compile Include="Monitors\Implementation\TransparentAdministrationMonitorLogService.cs" />
+    <Compile Include="Monitors\ITransparentAdministrationMonitorLogService.cs" />
+    <Compile Include="Parameters\Implementation\ParameterService.cs" />
+    <Compile Include="Parameters\IParameterService.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionDocumentSeriesItemService.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionKindService.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionKindDocumentSeriesService.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionLogService.cs" />
+    <Compile Include="Resolutions\IResolutionKindDocumentSeriesService.cs" />
+    <Compile Include="Resolutions\IResolutionKindService.cs" />
+    <Compile Include="Resolutions\IResolutionLogService.cs" />
+    <Compile Include="Resolutions\IResolutionDocumentSeriesItemService.cs" />
+    <Compile Include="Templates\Implementation\TemplateDocumentRepositoryService.cs" />
+    <Compile Include="Templates\Implementation\TemplateCollaborationDocumentRepositoryService.cs" />
+    <Compile Include="Templates\Implementation\TemplateCollaborationService.cs" />
+    <Compile Include="Templates\Implementation\TemplateCollaborationUserService.cs" />
+    <Compile Include="Templates\Implementation\TemplateReportService.cs" />
+    <Compile Include="Templates\ITemplateDocumentRepositoryService.cs" />
+    <Compile Include="Templates\ITemplateCollaborationDocumentRepositoryService.cs" />
+    <Compile Include="Templates\ITemplateCollaborationService.cs" />
+    <Compile Include="Templates\ITemplateCollaborationUserService.cs" />
+    <Compile Include="Commons\ICategorySchemaService.cs" />
+    <Compile Include="Commons\ICategoryFascicleService.cs" />
+    <Compile Include="Commons\IIncrementalService.cs" />
+    <Compile Include="Commons\ILocationService.cs" />
+    <Compile Include="Commons\IMetadataRepositoryService.cs" />
+    <Compile Include="Commons\Implementation\CategorySchemaService .cs" />
+    <Compile Include="Commons\Implementation\CategoryFascicleService.cs" />
+    <Compile Include="Commons\Implementation\IncrementalService.cs" />
+    <Compile Include="Commons\Implementation\LocationService.cs" />
+    <Compile Include="Commons\Implementation\MetadataRepositoryService.cs" />
+    <Compile Include="Commons\Implementation\TableLogService.cs" />
+    <Compile Include="Commons\Implementation\RoleUserService.cs" />
+    <Compile Include="Commons\Implementation\RoleService.cs" />
+    <Compile Include="Commons\Implementation\RoleGroupService.cs" />
+    <Compile Include="Commons\Implementation\ContainerGroupService.cs" />
+    <Compile Include="Commons\Implementation\ContainerService.cs" />
+    <Compile Include="Commons\ITableLogService.cs" />
+    <Compile Include="Commons\IRoleUserService.cs" />
+    <Compile Include="Commons\IRoleService.cs" />
+    <Compile Include="Commons\IRoleGroupService.cs" />
+    <Compile Include="Commons\IContainerGroupService.cs" />
+    <Compile Include="Commons\IContainerService.cs" />
+    <Compile Include="Commons\Implementation\ContactService.cs" />
+    <Compile Include="Commons\Implementation\CategoryService.cs" />
+    <Compile Include="Commons\ICategoryService.cs" />
+    <Compile Include="Commons\IContactService.cs" />
+    <Compile Include="Desks\IDeskDocumentService.cs" />
+    <Compile Include="Desks\IDeskService.cs" />
+    <Compile Include="Desks\Implementation\DeskDocumentService.cs" />
+    <Compile Include="Desks\Implementation\DeskService.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesItemRoleService.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemRoleService.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitChainService.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitRoleService.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitService.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitChainService.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitRoleService.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitService.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesItemService.cs" />
+    <Compile Include="DocumentArchives\IDocumentSeriesService.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemService.cs" />
+    <Compile Include="DocumentArchives\Implementation\DocumentSeriesService.cs" />
+    <Compile Include="Fascicles\IFascicleDocumentService.cs" />
+    <Compile Include="Fascicles\IFascicleRoleService.cs" />
+    <Compile Include="Fascicles\IFascicleLogService.cs" />
+    <Compile Include="Fascicles\IFascicleLinkService.cs" />
+    <Compile Include="Fascicles\IFascicolableService.cs" />
+    <Compile Include="Fascicles\IFascicleService.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleDocumentService.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleRoleService.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleLinkService.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleLogService.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleService.cs" />
+    <Compile Include="IEntityBaseService.cs" />
+    <Compile Include="ILogService.cs" />
+    <Compile Include="IServiceEntity.cs" />
+    <Compile Include="MassimariScarto\IMassimarioScartoService.cs" />
+    <Compile Include="MassimariScarto\Implementation\MassimarioScartoService.cs" />
+    <Compile Include="Messages\IMessageAttachmentService.cs" />
+    <Compile Include="Messages\IMessageContactService.cs" />
+    <Compile Include="Messages\IMessageEmailService.cs" />
+    <Compile Include="Messages\IMessageLogService.cs" />
+    <Compile Include="Messages\IMessageContactEmailService.cs" />
+    <Compile Include="Messages\IMessageService.cs" />
+    <Compile Include="Messages\Implementation\MessageAttachmentService.cs" />
+    <Compile Include="Messages\Implementation\MessageContactService.cs" />
+    <Compile Include="Messages\Implementation\MessageEmailService .cs" />
+    <Compile Include="Messages\Implementation\MessageLogService.cs" />
+    <Compile Include="Messages\Implementation\MessageContactEmailService.cs" />
+    <Compile Include="Messages\Implementation\MessageService.cs" />
+    <Compile Include="OCharts\Implementation\OChartService.cs" />
+    <Compile Include="OCharts\IOChartService.cs" />
+    <Compile Include="PECMails\Implementation\PECMailLogService.cs" />
+    <Compile Include="PECMails\Implementation\PECMailReceiptService.cs" />
+    <Compile Include="PECMails\IPECMailLogService.cs" />
+    <Compile Include="PECMails\IPECMailReceiptService.cs" />
+    <Compile Include="PECMails\IPECMailService.cs" />
+    <Compile Include="PECMails\Implementation\PECMailService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolContactManualService .cs" />
+    <Compile Include="Protocols\Implementation\ProtocolDraftService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolUserService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolDocumentTypeService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolLogService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolContactService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolRoleUserService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolRoleService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolParerService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolLinkService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolTypeService.cs" />
+    <Compile Include="Protocols\IProtocolContactManualService .cs" />
+    <Compile Include="Protocols\IProtocolDraftService.cs" />
+    <Compile Include="Protocols\IProtocolLogService.cs" />
+    <Compile Include="Protocols\IProtocolContactService.cs" />
+    <Compile Include="Protocols\IProtocolRoleUserService.cs" />
+    <Compile Include="Protocols\IProtocolRoleService.cs" />
+    <Compile Include="Protocols\IProtocolDocumentTypeService.cs" />
+    <Compile Include="Protocols\IProtocolParerService.cs" />
+    <Compile Include="Protocols\IProtocolLinkService.cs" />
+    <Compile Include="Protocols\IProtocolUserService.cs" />
+    <Compile Include="Protocols\IProtocolTypeService.cs" />
+    <Compile Include="Protocols\IProtocolService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolService.cs" />
+    <Compile Include="Resolutions\IFileResolutionService.cs" />
+    <Compile Include="Resolutions\Implementation\FileResolutionService.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionRoleService.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionContactService.cs" />
+    <Compile Include="Resolutions\IResolutionRoleService.cs" />
+    <Compile Include="Resolutions\IResolutionContactService.cs" />
+    <Compile Include="Resolutions\IResolutionService.cs" />
+    <Compile Include="Resolutions\Implementation\ResolutionService.cs" />
+    <Compile Include="ServiceHelper.cs" />
+    <Compile Include="Tenants\Implementation\TenantConfigurationService.cs" />
+    <Compile Include="Tenants\Implementation\TenantService.cs" />
+    <Compile Include="Tenants\Implementation\TenantWorkflowRepositoryService.cs" />
+    <Compile Include="Tenants\ITenantConfigurationService.cs" />
+    <Compile Include="Tenants\ITenantService.cs" />
+    <Compile Include="Tenants\ITenantWorkflowRepositoryService.cs" />
+    <Compile Include="UDS\Implementation\BaseUDSService.cs" />
+    <Compile Include="UDS\Implementation\UDSContactService.cs" />
+    <Compile Include="UDS\Implementation\UDSMessageService.cs" />
+    <Compile Include="UDS\Implementation\UDSDocumentUnitService.cs" />
+    <Compile Include="UDS\Implementation\UDSCollaborationService.cs" />
+    <Compile Include="UDS\Implementation\UDSPECMailService.cs" />
+    <Compile Include="UDS\Implementation\UDSRoleService.cs" />
+    <Compile Include="UDS\Implementation\UDSLogService.cs" />
+    <Compile Include="Templates\ITemplateReportService.cs" />
+    <Compile Include="UDS\Implementation\UDSTypologyService.cs" />
+    <Compile Include="UDS\Implementation\UDSSchemaRepositoryService.cs" />
+    <Compile Include="UDS\Implementation\UDSRepositoryService.cs" />
+    <Compile Include="UDS\Implementation\UDSUserService.cs" />
+    <Compile Include="UDS\IUDSContactService.cs" />
+    <Compile Include="UDS\IUDSMessageService.cs" />
+    <Compile Include="UDS\IUDSDocumentUnitService.cs" />
+    <Compile Include="UDS\IUDSCollaborationService.cs" />
+    <Compile Include="UDS\IUDSPECMailService.cs" />
+    <Compile Include="UDS\IUDSRoleService.cs" />
+    <Compile Include="UDS\IUDSLogService.cs" />
+    <Compile Include="UDS\IUDSTypologyService.cs" />
+    <Compile Include="UDS\IUDSRepositoryService.cs" />
+    <Compile Include="UDS\IUDSSchemaRepositoryService.cs" />
+    <Compile Include="UDS\IUDSUserService.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowActivityLogService.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowAuthorizationService.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowEvaluationPropertyService.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowInstanceLogService.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowInstanceRoleService.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowPropertyService.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowRoleMappingService.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowRepositoryService.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowInstanceService.cs" />
+    <Compile Include="Workflows\Implementation\WorkflowActivityService.cs" />
+    <Compile Include="Workflows\IWorkflowActivityLogService.cs" />
+    <Compile Include="Workflows\IWorkflowAuthorizationService.cs" />
+    <Compile Include="Workflows\IWorkflowEvaluationPropertyService.cs" />
+    <Compile Include="Workflows\IWorkflowInstanceLogService.cs" />
+    <Compile Include="Workflows\IWorkflowInstanceRoleService.cs" />
+    <Compile Include="Workflows\IWorkflowPropertyService.cs" />
+    <Compile Include="Workflows\IWorkflowRoleMappingService.cs" />
+    <Compile Include="Workflows\IWorkflowRepositoryService.cs" />
+    <Compile Include="Workflows\IWorkflowInstanceService.cs" />
+    <Compile Include="Workflows\IWorkflowActivityService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
+      <Project>{c6f323c0-c21b-433b-90c8-0b64a42115ab}</Project>
+      <Name>VecompSoftware.Commons.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.Document.BiblosDS\VecompSoftware.DocSuite.Document.BiblosDS.csproj">
+      <Project>{1ea007b2-b9fe-4a04-aae4-f86366fb3036}</Project>
+      <Name>VecompSoftware.DocSuite.Document.BiblosDS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.Service.Models\VecompSoftware.DocSuite.Service.Models.csproj">
+      <Project>{666bdbda-d461-4692-9cf7-ff03784a6e96}</Project>
+      <Name>VecompSoftware.DocSuite.Service.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Common\VecompSoftware.DocSuiteWeb.Common.csproj">
+      <Project>{58938aa6-b3d6-4256-8c5c-4bcab88517bb}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data\VecompSoftware.DocSuiteWeb.Data.csproj">
+      <Project>{17962438-d43b-41e7-8d6f-5a0c33b054ae}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Entity\VecompSoftware.DocSuiteWeb.Entity.csproj">
+      <Project>{34901fa6-4816-4872-9986-e42b2e866095}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Finder\VecompSoftware.DocSuiteWeb.Finder.csproj">
+      <Project>{b311cf16-3a65-44c6-850b-92fcff26e79f}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Finder</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Mapper.Entity\VecompSoftware.DocSuiteWeb.Mapper.Entity.csproj">
+      <Project>{a1c4a68a-a888-4cf1-a1e5-2ed391e4f826}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Mapper.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Mapper\VecompSoftware.DocSuiteWeb.Mapper.csproj">
+      <Project>{643b29b4-b25d-44d3-8831-e80c5e5f25d0}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Mapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Model\VecompSoftware.DocSuiteWeb.Model.csproj">
+      <Project>{DF5935CA-367B-4124-9840-AAFD3C419EBA}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Repository\VecompSoftware.DocSuiteWeb.Repository.csproj">
+      <Project>{27d8fcbb-8a8e-430b-8747-a5ace9b4ffca}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Security\VecompSoftware.DocSuiteWeb.Security.csproj">
+      <Project>{B4E770ED-2298-488A-856B-5BF53EBF88EC}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Service\VecompSoftware.DocSuiteWeb.Service.csproj">
+      <Project>{5dad3fd5-f0f4-485c-8c6c-b0be0c288ee6}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Validation\VecompSoftware.DocSuiteWeb.Validation.csproj">
+      <Project>{cbf9fe81-3a91-4b42-964d-17381f1cfbbd}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Validation</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="VecompSoftware.DocSuiteWeb.Service.Entity.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tasks\" />
+    <Folder Include="Tenders\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

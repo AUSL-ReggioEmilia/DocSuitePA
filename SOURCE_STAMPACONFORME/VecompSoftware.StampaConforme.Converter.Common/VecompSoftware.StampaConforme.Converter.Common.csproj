@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7C82B7D1-A390-4AF7-BFAE-F1777C1AD703}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.StampaConforme.Converter.Common</RootNamespace>
+    <AssemblyName>VecompSoftware.StampaConforme.Converter.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Commons.BiblosDS.Objects, Version=8.79.0.0, Culture=neutral, PublicKeyToken=c0dbac381df9e61c, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.BiblosDS.Objects.8.79.19078.2\lib\net461\VecompSoftware.Commons.BiblosDS.Objects.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=8.80.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.8.80.19092.2\lib\net461\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=8.80.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.8.80.19092.2\lib\net461\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers, Version=8.79.0.0, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.8.79.19078.2\lib\net461\VecompSoftware.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.XML, Version=8.79.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.8.79.19078.2\lib\net461\VecompSoftware.Helpers.XML.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.XML.Converters, Version=8.79.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.Converters.8.79.19078.2\lib\net461\VecompSoftware.Helpers.XML.Converters.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PdfToThumbnailConverter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlToHtmlConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

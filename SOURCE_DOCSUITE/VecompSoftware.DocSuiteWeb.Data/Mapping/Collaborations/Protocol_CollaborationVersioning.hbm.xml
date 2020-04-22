@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="CollaborationVersioning" table="CollaborationVersioning">
+    
+    <id name ="Id" column="IdCollaborationVersioning">
+      <generator class="guid.comb"/>
+    </id>
+
+    <property name="CollaborationIncremental" column="CollaborationIncremental" />
+    <property name="Incremental" column="Incremental" />
+    <property name="IdDocument" column="idDocument" />
+    <property name="DocumentName" column="DocumentName" type="AnsiString" />
+    <property name="IsActive" column="IsActive" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="IdRepository" column="IdRepository"/>
+    <property name="CheckedOut" column="CheckedOut" />
+    <property name="CheckOutUser" column="CheckOutUser" />
+    <property name="CheckOutSessionId" column="CheckOutSessionId" />
+    <property name="CheckOutDate" column="CheckOutDate" />
+    <property name="DocumentChecksum" column="DocumentChecksum" />
+    <property name="DocumentGroup" column="DocumentGroup" />
+    
+    <many-to-one class="Collaboration" name="Collaboration" column="IdCollaboration" insert="true" update="true" cascade="none"/>
+
+  </class>
+  
+</hibernate-mapping>

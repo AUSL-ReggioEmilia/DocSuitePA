@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="d15aad42-eb69-4fc8-9353-ffc635b094b6" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost/DSW.API/CollaborationService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="CollaborationService.wsdl" MetadataType="Wsdl" ID="b0d122d4-bd56-48f2-a72d-4944e27975fc" SourceId="1" SourceUrl="http://localhost/DSW.API/CollaborationService.svc?wsdl" />
+    <MetadataFile FileName="CollaborationService.xsd" MetadataType="Schema" ID="96c2cc53-20f5-4fee-81ed-4696b69e7a1c" SourceId="1" SourceUrl="http://localhost/DSW.API/CollaborationService.svc?xsd=xsd1" />
+    <MetadataFile FileName="CollaborationService1.xsd" MetadataType="Schema" ID="e1b0c766-d4ad-4bc6-9bb5-2948d33edf0c" SourceId="1" SourceUrl="http://localhost/DSW.API/CollaborationService.svc?xsd=xsd0" />
+    <MetadataFile FileName="CollaborationService.disco" MetadataType="Disco" ID="f8815559-d999-4ea3-8402-eea5710ee7d3" SourceId="1" SourceUrl="http://localhost/DSW.API/CollaborationService.svc?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

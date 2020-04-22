@@ -1,0 +1,1008 @@
+[
+  {
+    "TenantId": "1F761813-6086-44F1-A507-99954EA64342",
+    "TenantName": "ASMN",
+    "CurrentTenant": true,
+    "DomainAddress": "VECOMPSOFTWARE",
+    "DomainPassword": "Passw0rd",
+    "DomainUser": "VECOMPSOFTWARE\\developer",
+    "SignalRAddress": "http://localhost/DSW.WebAPI/",
+    "DSWUrl": "http://localhost/DSW/",
+    "ODATAUrl": "http://localhost/DSW.WebAPI/ODATA/",
+    "EnvironmentsEnable": {
+      "Protocollo": true,
+      "Pratiche": true,
+      "Atti": true
+    },
+    "Entities": {
+      "Collaboration": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Collaborations"
+      },
+      "CollaborationSign": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CollaborationSigns"
+      },
+      "CollaborationLog": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CollaborationLogs"
+      },
+      "CollaborationUser": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CollaborationUsers"
+      },
+      "CollaborationVersioning": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CollaborationVersionings"
+      },
+      "Protocol": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Protocols"
+      },
+      "ProtocolContactManual": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolContactManuals"
+      },
+      "ProtocolContact": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolContacts"
+      },
+      "ProtocolDraft": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolDrafts"
+      },
+      "ProtocolHighlightUser": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolHighlightUsers"
+      },
+      "ProtocolLink": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolLinks"
+      },
+      "ProtocolLog": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolLogs"
+      },
+      "ProtocolParer": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolParers"
+      },
+      "ProtocolRole": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolRoles"
+      },
+      "ProtocolRoleUser": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolRoleUsers"
+      },
+      "DocumentUnitModel": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentUnits"
+      },
+      "Fascicle": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Fascicles"
+      },
+      "FascicleProtocol": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleProtocols"
+      },
+      "FascicleLog": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleLogs"
+      },
+      "FascicleResolution": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleResolutions"
+      },
+      "Resolution": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Resolutions"
+      },
+      "FascicleUDS": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleUDSs"
+      },
+      "FascicleLink": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleLinks"
+      },
+      "FascicleDocument": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleDocuments"
+      },
+      "FascicleDocumentSeriesItem": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleDocumentSeriesItems"
+      },
+      "FascicleRole": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleRoles"
+      },
+      "DomainUserModel": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DomainUsers"
+      },
+      "DomainUser": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DomainUsers"
+      },
+      "DomainGroup": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DomainGroups"
+      },
+      "UDSRepository": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "UDSRepositories"
+      },
+      "UDSSchemaRepository": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "UDSSchemaRepositories"
+      },
+      "DocumentUnit": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentUnits"
+      },
+      "DocumentUnitChain": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentUnitChains"
+      },
+      "DocumentUnitRole": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentUnitRoles"
+      },
+      "MassimarioScarto": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MassimariScarto"
+      },
+      "MassimarioScartoSchema": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MassimariScartoSchema"
+      },
+      "MessageAttachment": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MessageAttachments"
+      },
+      "MessageContact": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MessageContacts"
+      },
+      "MessageContactEmail": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MessageContactEmails"
+      },
+      "MessageEmail": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MessageEmails"
+      },
+      "MessageLog": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MessageLogs"
+      },
+      "Message": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Messages"
+      },
+      "OChart": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "OCharts"
+      },
+      "PECMailLog": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "PECMailLogs"
+      },
+      "PECMailReceipt": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "PECMailReceipts"
+      },
+      "PECMail": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "PECMails"
+      },
+      "Category": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Categories"
+      },
+      "CategoryFascicle": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CategoryFascicles"
+      },
+      "CategorySchema": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CategorySchemas"
+      },
+      "Contact": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Contacts"
+      },
+      "ContainerGroup": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ContainerGroups"
+      },
+      "Container": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Containers"
+      },
+      "Incremental": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Incrementals"
+      },
+      "Location": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Locations"
+      },
+      "RoleGroup": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "RoleGroups"
+      },
+      "Role": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Roles"
+      },
+      "RoleUser": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "RoleUsers"
+      },
+      "TableLog": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "TableLogs"
+      },
+      "Desk": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Desks"
+      },
+      "DocumentSeries": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentSeries"
+      },
+      "DocumentSeriesItemRole": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentSeriesItemRoles"
+      },
+      "DocumentSeriesItem": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentSeriesItems"
+      },
+      "WorkflowActivity": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowActivities"
+      },
+      "WorkflowActivityLog": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowActivityLogs"
+      },
+      "WorkflowAuthorization": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowAuthorizations"
+      },
+      "WorkflowInstance": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowInstances"
+      },
+      "WorkflowInstanceLog": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowInstanceLogs"
+      },
+      "WorkflowProperty": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowProperties"
+      },
+      "WorkflowRepository": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowRepositories"
+      },
+      "WorkflowRoleMapping": {
+        "IsActive": true,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowRoleMappings"
+      },
+      "TemplateCollaboration": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "TemplateCollaborations"
+      },
+      "TemplateDocumentRepository": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "TemplateDocumentRepositories"
+      },
+      "TemplateCollaborationDocumentRepository": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "TemplateCollaborationDocumentRepositories"
+      },
+      "TemplateCollaborationUser": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "TemplateCollaborationUsers"
+      },
+      "Dossier": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "Dossiers"
+      },
+      "DossierFolder": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "DossierFolderss"
+      },
+      "DossierDocument": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "DossierDocuments"
+      },
+      "DossierLog": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "DossierLogs"
+      },
+      "DossierRole": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "DossierRoles"
+      },
+      "UDSTypology": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "UDSTypologies"
+      },
+      "MetadataRepository": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "MetadataRepositories"
+      },
+      "PrivacyLevel": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "PrivacyLevels"
+      },
+      "UDSLog": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "UDSLogs"
+      },
+      "UDSRole": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "UDSRoles"
+      },
+      "TemplateReport": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "TemplateReports"
+      },
+      "ContainerProperty": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "ContainerProperties"
+      },
+      "UDSUser": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "UDSUsers"
+      },
+      "DocumentUnitUser": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "DocumentUnitUsers"
+      },
+      "FascicleFolder": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "FascicleFolderss"
+      },
+      "Conservation": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "Conservations"
+      }
+    },
+    "WebApiClientConfig": {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.HttpClientConfiguration, VecompSoftware.DocSuiteWeb.Model",
+      "Addresses": [
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-WorkflowManagerAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/wfm/",
+          "Timeout": "00:01:00"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-EntityAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/entity/",
+          "Timeout": "00:01:00"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-ServiceBusAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/sb/",
+          "Timeout": "00:01:00"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-UDSAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/uds/",
+          "Timeout": "00:01:00"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "ODATA-EntityAddress",
+          "Address": "http://localhost/DSW.WebAPI/ODATA/",
+          "Timeout": "00:01:00"
+        }
+      ]
+    }
+  },
+  {
+    "TenantId": "1F761813-6086-44F1-A507-99954EA64342",
+    "TenantName": "AUSL",
+    "CurrentTenant": false,
+    "DomainAddress": "RMVSW",
+    "DomainPassword": "Passw0rd",
+    "DomainUser": "RMVSW\\administrator",
+    "SignalRAddress": "http://localhost/DSW.WebAPI.AUSL-RE/",
+    "DSWUrl": "http://localhost/DSW/",
+    "ODATAUrl": "http://localhost/DSW.WebAPI/ODATA/",
+    "EnvironmentsEnable": {
+      "Protocollo": false,
+      "Pratiche": false,
+      "Atti": false
+    },
+    "Entities": {
+      "Collaboration": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Collaborations"
+      },
+      "CollaborationSign": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CollaborationSigns"
+      },
+      "CollaborationLog": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CollaborationLogs"
+      },
+      "CollaborationUser": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CollaborationUsers"
+      },
+      "CollaborationVersioning": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CollaborationVersionings"
+      },
+      "Protocol": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Protocols"
+      },
+      "ProtocolContactManual": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolContactManuals"
+      },
+      "ProtocolContact": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolContacts"
+      },
+      "ProtocolDraft": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolDrafts"
+      },
+      "ProtocolHighlightUser": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolHighlightUsers"
+      },
+      "ProtocolLink": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolLinks"
+      },
+      "ProtocolLog": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolLogs"
+      },
+      "ProtocolParer": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolParers"
+      },
+      "ProtocolRole": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolRoles"
+      },
+      "ProtocolRoleUser": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ProtocolRoleUsers"
+      },
+      "DocumentUnitModel": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentUnits"
+      },
+      "Fascicle": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Fascicles"
+      },
+      "FascicleProtocol": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleProtocols"
+      },
+      "FascicleLog": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleLogs"
+      },
+      "FascicleResolution": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleResolutions"
+      },
+      "Resolution": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Resolutions"
+      },
+      "FascicleUDS": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleUDSs"
+      },
+      "FascicleLink": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleLinks"
+      },
+      "FascicleDocument": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleDocuments"
+      },
+      "FascicleDocumentSeriesItem": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleDocumentSeriesItems"
+      },
+      "FascicleRole": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "FascicleRoles"
+      },
+      "DomainUserModel": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DomainUsers"
+      },
+      "DomainUser": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DomainUsers"
+      },
+      "DomainGroup": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DomainGroups"
+      },
+      "UDSRepository": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "UDSRepositories"
+      },
+      "UDSSchemaRepository": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "UDSSchemaRepositories"
+      },
+      "DocumentUnit": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentUnits"
+      },
+      "DocumentUnitChain": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentUnitChains"
+      },
+      "DocumentUnitRole": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentUnitRoles"
+      },
+      "MassimarioScarto": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MassimariScarto"
+      },
+      "MassimarioScartoSchema": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MassimariScartoSchema"
+      },
+      "MessageAttachment": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MessageAttachments"
+      },
+      "MessageContact": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MessageContacts"
+      },
+      "MessageContactEmail": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MessageContactEmails"
+      },
+      "MessageEmail": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MessageEmails"
+      },
+      "MessageLog": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "MessageLogs"
+      },
+      "Message": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Messages"
+      },
+      "OChart": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "OCharts"
+      },
+      "PECMailLog": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "PECMailLogs"
+      },
+      "PECMailReceipt": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "PECMailReceipts"
+      },
+      "PECMail": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "PECMails"
+      },
+      "Category": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Categories"
+      },
+      "CategoryFascicle": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CategoryFascicles"
+      },
+      "CategorySchema": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "CategorySchemas"
+      },
+      "Contact": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Contacts"
+      },
+      "ContainerGroup": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "ContainerGroups"
+      },
+      "Container": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Containers"
+      },
+      "Incremental": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Incrementals"
+      },
+      "Location": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Locations"
+      },
+      "RoleGroup": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "RoleGroups"
+      },
+      "Role": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Roles"
+      },
+      "RoleUser": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "RoleUsers"
+      },
+      "TableLog": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "TableLogs"
+      },
+      "Desk": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "Desks"
+      },
+      "DocumentSeries": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentSeries"
+      },
+      "DocumentSeriesItemRole": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentSeriesItemRoles"
+      },
+      "DocumentSeriesItem": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "DocumentSeriesItems"
+      },
+      "WorkflowActivity": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowActivities"
+      },
+      "WorkflowActivityLog": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowActivityLogs"
+      },
+      "WorkflowAuthorization": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowAuthorizations"
+      },
+      "WorkflowInstance": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowInstances"
+      },
+      "WorkflowInstanceLog": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowInstanceLogs"
+      },
+      "WorkflowProperty": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowProperties"
+      },
+      "WorkflowRepository": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowRepositories"
+      },
+      "WorkflowRoleMapping": {
+        "IsActive": false,
+        "Timeout": "00:00:15",
+        "ODATAControllerName": "WorkflowRoleMappings"
+      },
+      "TemplateCollaboration": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "TemplateCollaborations"
+      },
+      "TemplateDocumentRepository": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "TemplateDocumentRepositories"
+      },
+      "TemplateCollaborationDocumentRepository": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "TemplateCollaborationDocumentRepositories"
+      },
+      "TemplateCollaborationUser": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "TemplateCollaborationUsers"
+      },
+      "Dossier": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "Dossiers"
+      },
+      "DossierFolder": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "DossierFolderss"
+      },
+      "DossierDocument": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "DossierDocuments"
+      },
+      "DossierLog": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "DossierLogs"
+      },
+      "DossierRole": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "DossierRoles"
+      },
+      "UDSTypology": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "UDSTypologies"
+      },
+      "MetadataRepository": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "MetadataRepositories"
+      },
+      "PrivacyLevel": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "PrivacyLevels"
+      },
+      "UDSLog": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "UDSLogs"
+      },
+      "UDSRole": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "UDSRoles"
+      },
+      "TemplateReport": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "TemplateReports"
+      },
+      "ContainerProperty": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "ContainerProperties"
+      },
+      "UDSUser": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "UDSUsers"
+      },
+      "DocumentUnitUser": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "DocumentUnitUsers"
+      },
+      "FascicleFolder": {
+        "IsActive": false,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "FascicleFolderss"
+      },
+      "Conservation": {
+        "IsActive": true,
+        "Timeout": "00:00:30",
+        "ODATAControllerName": "Conservations"
+      }
+    },
+    "WebApiClientConfig": {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.HttpClientConfiguration, VecompSoftware.DocSuiteWeb.Model",
+      "Addresses": [
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-WorkflowManagerAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/wfm/",
+          "Timeout": "00:01:00"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-EntityAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/entity/",
+          "Timeout": "00:01:00"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-ServiceBusAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/sb/",
+          "Timeout": "00:01:00"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-UDSAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/uds/",
+          "Timeout": "00:01:00"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "ODATA-EntityAddress",
+          "Address": "http://localhost/DSW.WebAPI/ODATA/",
+          "Timeout": "00:01:00"
+        }
+      ]
+    }
+  }
+]

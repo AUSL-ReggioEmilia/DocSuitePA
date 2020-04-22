@@ -1,0 +1,112 @@
+﻿[{
+	"Description": "Fascicolo",
+	"IconUrl": "../App_Themes/DocSuite2008/imgset16/fascicle_open.png",
+	"Environment": 8,
+	"ItemType": 1,
+	"ReportItems": [{
+		"Name": "FascicleObject",
+		"DisplayName": "Oggetto",
+		"PropertyType": 1,
+		"Condition": null,
+		"EntityType": 8,
+		"Children": null
+	}, {
+		"Name": "Year",
+		"DisplayName": "Anno",
+		"PropertyType": 4,
+		"Condition": null,
+		"EntityType": 8,
+		"Children": null
+	}, {
+		"Name": "Number",
+		"DisplayName": "Numero",
+		"PropertyType": 2,
+		"Condition": null,
+		"EntityType": 8,
+		"Children": null
+	}, {
+		"Name": "Title",
+		"DisplayName": "Titolo",
+		"PropertyType": 1,
+		"Condition": null,
+		"EntityType": 8,
+		"Children": null
+	}]
+}, {
+	"Description": "Fascicolo",
+	"IconUrl": "../App_Themes/DocSuite2008/imgset16/fascicle_open.png",
+	"Environment": 8,
+	"ItemType": 2,
+	"ReportItems": [{
+		"ConditionName": "Fascicolo di attività"
+	}]
+}, {
+	"Description": "Protocollo",
+	"IconUrl": "../Comm/Images/DocSuite/Protocollo16.gif",
+	"Environment": 1,
+	"ItemType": 1,
+	"ReportItems": [{
+		"Name": "Year",
+		"DisplayName": "Anno",
+		"PropertyType": 4,
+		"Condition": null,
+		"EntityType": 1,
+		"Children": null
+	}, {
+		"Name": "Number",
+		"DisplayName": "Numero",
+		"PropertyType": 2,
+		"Condition": null,
+		"EntityType": 1,
+		"Children": null
+	}, {
+		"Name": "Object",
+		"DisplayName": "Oggetto",
+		"PropertyType": 1,
+		"Condition": null,
+		"EntityType": 1,
+		"Children": null
+	}, {
+		"Name": "Container",
+		"DisplayName": "Contenitore",
+		"PropertyType": 512,
+		"Condition": null,
+		"EntityType": 1,
+		"Children": [{
+			"Name": "Name",
+			"DisplayName": "Nome",
+			"PropertyType": 1,
+			"Condition": null,
+			"EntityType": 1,
+			"Children": null
+		}]
+	}, {
+		"Name": "Sender",
+		"DisplayName": "Mittente",
+		"PropertyType": 256,
+		"Condition": 1,
+		"EntityType": 1,
+		"Children": [{
+			"Name": "Name",
+			"DisplayName": "Nome",
+			"PropertyType": 1,
+			"Condition": null,
+			"EntityType": 1,
+			"Children": null
+		}]
+	}, {
+		"Name": "Recipient",
+		"DisplayName": "Destinatario",
+		"PropertyType": 256,
+		"Condition": 2,
+		"EntityType": 1,
+		"Children": [{
+			"Name": "Name",
+			"DisplayName": "Nome",
+			"PropertyType": 1,
+			"Condition": null,
+			"EntityType": 0,
+			"Children": null
+		}]
+	}]
+}]

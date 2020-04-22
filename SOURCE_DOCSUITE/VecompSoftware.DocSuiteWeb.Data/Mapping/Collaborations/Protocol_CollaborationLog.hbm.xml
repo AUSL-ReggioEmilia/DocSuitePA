@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="CollaborationLog" table="CollaborationLog">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+    
+    <property name="IdCollaboration" column="IdCollaboration" />
+    <property name="CollaborationIncremental" column="CollaborationIncremental" />
+    <property name="Incremental" column="Incremental" />
+    <property name="IdChain" column="IdChain" />
+    <property name="LogDate" column="LogDate" />
+    <property name="SystemComputer" column="SystemComputer" type="AnsiString" />
+    <property name="SystemUser" column="SystemUser" type="AnsiString" />
+    <property name="SessionId" column="SessionId" type="AnsiString" />
+    <property name="Program" column="Program" type="AnsiString" />
+    <property name="LogType" column="LogType" type="AnsiString" />
+    <property name="LogDescription" column="LogDescription" type="AnsiString" />
+    <property name="Severity" column="Severity" />
+    
+    <many-to-one class="Collaboration" name="Collaboration" column="IdCollaboration" insert="false" update="false" cascade="none"/>
+    
+  </class>
+
+</hibernate-mapping>

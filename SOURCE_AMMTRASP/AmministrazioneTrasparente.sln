@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2003
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmministrazioneTrasparente", "AmministrazioneTrasparente\AmministrazioneTrasparente.csproj", "{3BF03C1D-9B48-4C5F-99E8-FF017A2AD674}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmministrazioneTrasparente.SQLite", "AmministrazioneTrasparente.SQLite\AmministrazioneTrasparente.SQLite.csproj", "{7595A784-2969-4AB1-9BE2-99AE7424B4E7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3BF03C1D-9B48-4C5F-99E8-FF017A2AD674}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BF03C1D-9B48-4C5F-99E8-FF017A2AD674}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BF03C1D-9B48-4C5F-99E8-FF017A2AD674}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BF03C1D-9B48-4C5F-99E8-FF017A2AD674}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7595A784-2969-4AB1-9BE2-99AE7424B4E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7595A784-2969-4AB1-9BE2-99AE7424B4E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7595A784-2969-4AB1-9BE2-99AE7424B4E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7595A784-2969-4AB1-9BE2-99AE7424B4E7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F9CD51C5-BABA-4EBC-B446-E30E286FF5F8}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://docsuiteweb.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = AmministrazioneTrasparente\\AmministrazioneTrasparente.csproj
+		SccProjectName1 = AmministrazioneTrasparente
+		SccLocalPath1 = AmministrazioneTrasparente
+		SccProjectUniqueName2 = AmministrazioneTrasparente.SQLite\\AmministrazioneTrasparente.SQLite.csproj
+		SccProjectName2 = AmministrazioneTrasparente.SQLite
+		SccLocalPath2 = AmministrazioneTrasparente.SQLite
+	EndGlobalSection
+EndGlobal

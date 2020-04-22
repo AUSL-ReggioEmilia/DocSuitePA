@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6DBD65E3-A831-4D8D-B226-A419C7A5BF15}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.BPM.Integrations.Services.SignServices</RootNamespace>
+    <AssemblyName>VecompSoftware.BPM.Integrations.Services.SignServices</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.EnterpriseLogging, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.EnterpriseLogging.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.EnterpriseLogging.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArubaService\Factories\ArubaSignFactory.cs" />
+    <Compile Include="ArubaService\Models\ArubaSignModel.cs" />
+    <Compile Include="Connected Services\Aruba\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\AsyncHelper.cs" />
+    <Compile Include="ISignServiceClient.cs" />
+    <Compile Include="Enums\SignRequestType.cs" />
+    <Compile Include="Enums\SignType.cs" />
+    <Compile Include="IUrlProvider.cs" />
+    <Compile Include="Models\ISignerParameter.cs" />
+    <Compile Include="Models\ISignFactory.cs" />
+    <Compile Include="Enums\ProviderType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SignService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\Aruba\configuration91.svcinfo" />
+    <None Include="Connected Services\Aruba\configuration.svcinfo" />
+    <None Include="Connected Services\Aruba\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="favicon.ico" />
+    <None Include="Connected Services\Aruba\ArubaSignService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\Aruba\ArubaSignServiceService.wsdl" />
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.addpkcs7signResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.arssReturn.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.authMethodsReturn.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.auth_methodsResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.closesessionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.credentialListReturn.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.credentials_queryResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.encryptedEnvelopeResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.encryptedEnvelopReturn.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.getVersionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.gwReturn.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.listCertAuthResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.listCertResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.listprocessResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.m7mResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.markReturn.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.opensessionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.pdfsignatureResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.pdfsignatureV2Response.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.pdfsignatureV2_multipleResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.pingResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.pkcs7signhashResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.pkcs7signhash_multipleResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.pkcs7signResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.pkcs7signV2Response.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.pkcs7signV2_multipleResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.retriveCredentialResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.retriveCredentialReturn.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.sendCredentialResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.signhashResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.signHashReturn.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.signReturn.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.signReturnV2.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.signReturnV2Multiple.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.test_otpResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.tsdResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.tsrResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.userCertList.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.userCertListAuth.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.verifyOtpResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.verifyResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.verifyReturn.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.xmlsignatureResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\VecompSoftware.BPM.Integrations.Services.SignServices.Aruba.xmlsignature_multipleResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\Aruba\xmlmime.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\Aruba\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

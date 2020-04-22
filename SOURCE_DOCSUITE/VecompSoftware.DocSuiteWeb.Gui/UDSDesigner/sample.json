@@ -1,0 +1,50 @@
+﻿{
+  "elements": [
+    {
+      "ctrlType": "Title",
+      "label": "Nuovo documento",
+      "subject": "Oggetto del documento",
+      "enableWorkflow": false
+    },
+    {
+      "ctrlType": "Document",
+      "label": "Documenti",
+      "archive": "Archivio",
+      "collectionType": "Documenti",
+      "enableMultifile": false,
+      "enableUpload": true,
+      "enableScanner": true,
+      "enableSign": true,
+      "copyProtocol": false,
+      "copyResolution": false,
+      "copySeries": false,
+      "documentDeletable":  false
+    },
+    {
+      "ctrlType": "Contact",
+      "label": "Contatti",
+      "enableAD": false,
+      "enableAddressBook": false,
+      "enableADDistribution": false,
+      "enableManual": true,
+      "enableExcelImport": true,
+      "enableMultiContact": false
+    },
+    {
+      "ctrlType": "Authorization",
+      "label": "Autorizzazione"
+    },
+    {
+      "ctrlType": "Checkbox",
+      "label": "Checkbox",
+      "defaultValue": false
+    },
+    {
+      "ctrlType": "Date",
+      "label": "Data",
+      "restrictedYear": false,
+      "required": false,
+      "defaultValue": ""
+    }
+  ]
+}

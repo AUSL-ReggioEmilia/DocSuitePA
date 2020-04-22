@@ -1,0 +1,21 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Spid</title>
+</head>
+<body onload="javascript:document.forms[0].submit()">
+    <form method="post" action="@Html.Raw(ViewData["FormUrlAction"])" enctype="application/x-www-form-urlencoded">
+        <input type="hidden" name="spid"
+               value="@Html.Raw(ViewData["SPID"])">
+        <input type="hidden" name="spurl" value="@Html.Raw(ViewData["SPURL"])" />
+        <input type="submit" value="Invia" style="display:none" />
+    </form>
+    <h3>Disconnessione dal servizio di Federa in corso....</h3>
+</body>
+</html>

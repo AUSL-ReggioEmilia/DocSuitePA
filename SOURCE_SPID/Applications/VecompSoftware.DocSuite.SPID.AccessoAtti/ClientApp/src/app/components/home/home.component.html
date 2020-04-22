@@ -1,0 +1,11 @@
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12">
+        <app-pending-requests [requests]="requests" [isBusy]="isBusy" class="col-sm-4"></app-pending-requests>
+        <app-confirmed-requests [requests]="requests" [isBusy]="isBusy" class="col-sm-4"></app-confirmed-requests>
+        <app-denied-requests [requests]="requests" [isBusy]="isBusy" class="col-sm-4"></app-denied-requests>
+    </div>
+    <div class="col-xs-12 col-sm-12">
+        <app-my-last-requests [isBusy]="isBusy" [requests]="requests"></app-my-last-requests>
+    </div>
+</div>

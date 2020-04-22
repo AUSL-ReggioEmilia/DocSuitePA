@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Desks">
+
+  <class name="DeskDocumentVersion" table="DeskDocumentVersions" lazy="true" >
+    
+    <id name="Id" column="IdDeskDocumentVersion">
+      <generator class="guid.comb" />
+    </id>
+    
+    <!--unique-key consente di verificare che per un documento esista una univoca versione.-->
+    <property name="Version">
+      <column name="Version" not-null="false" unique-key="CK_DocumentVersions"/>
+    </property>
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+    
+    <!--unique-key consente di verificare che per un documento esista una univoca versione.-->
+    <many-to-one name="DeskDocument">
+      <column name="IdDeskDocument" not-null="false" unique-key="CK_DocumentVersions"/>
+    </many-to-one>
+    
+    <bag name="DeskDocumentEndorsements">
+      <key column="IdDeskDocumentVersion" />
+      <one-to-many class="DeskDocumentEndorsement" />
+    </bag>
+    <bag name="DeskStoryBoards" inverse="true">
+      <key column="IdDeskDocumentVersion" />
+      <one-to-many class="DeskStoryBoard" />
+    </bag>
+    
+  </class>
+
+</hibernate-mapping>

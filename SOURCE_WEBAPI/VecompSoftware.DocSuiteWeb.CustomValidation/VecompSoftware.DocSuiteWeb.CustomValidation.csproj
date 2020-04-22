@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B8569C27-50B1-4787-9C9C-3FDD2079EEB7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.CustomValidation</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.CustomValidation</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Validation, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Validation.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Validation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseValidator.cs" />
+    <Compile Include="Entities\Commons\CategoryFascicleContainsPeriodic.cs" />
+    <Compile Include="Commons\HasContainerPrefixGroupName.cs" />
+    <Compile Include="Entities\Commons\ContactAlreadyExists.cs" />
+    <Compile Include="Entities\Commons\ContactSearchCodeAlreadyExists.cs" />
+    <Compile Include="Entities\Commons\ContainerNameAlreadyExist.cs" />
+    <Compile Include="Commons\GuidValidator.cs" />
+    <Compile Include="Commons\MinDateTimeOffsetValidator.cs" />
+    <Compile Include="Commons\NotAllowedValidator.cs" />
+    <Compile Include="Commons\TrueValidator.cs" />
+    <Compile Include="Entities\Commons\HasProcedureFascicleActive.cs" />
+    <Compile Include="Entities\Commons\PrivacyColourAlreadyExists.cs" />
+    <Compile Include="Entities\Commons\PrivacyDescriptionAlreadyExists.cs" />
+    <Compile Include="Entities\Commons\PrivacyLevelAlreadyExists.cs" />
+    <Compile Include="Entities\DocumentArchives\DocumentSeriesConstraintAlreadyExists.cs" />
+    <Compile Include="Entities\DocumentUnits\HasValidEnvironment.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\HasChildren.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\HasParentValidStatus.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\IsEditable.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\IsAssociatedWithFascicle.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\IsDeletable.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\FascicleAlreadyExists.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\IsFascicleRemovable.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\NameAlreadyExists.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\HasCategoryWithFascicle.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\HasValidCategory.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\HasValidStatus.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\IsDoneByManager.cs" />
+    <Compile Include="Entities\Dossiers\DossierAlreadyExists.cs" />
+    <Compile Include="Entities\Dossiers\HasModifyRights.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\HasAccountedRole.cs" />
+    <Compile Include="Entities\Dossiers\HasResponsibleRole.cs" />
+    <Compile Include="Entities\Dossiers\HasContainerRights.cs" />
+    <Compile Include="Entities\Dossiers\IsResponsibleRoleUnique.cs" />
+    <Compile Include="Entities\Fascicles\ActivityFascicleAlreadyExists.cs" />
+    <Compile Include="Entities\Fascicles\CollectionCountValidator.cs" />
+    <Compile Include="Entities\Fascicles\Configuration\CollectionCountValidatorData.cs" />
+    <Compile Include="Entities\Fascicles\Configuration\GuidEmptyValidatorData.cs" />
+    <Compile Include="Entities\Fascicles\FascicleAlreadyExists.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\DocumentUnitExists.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\HasAdoptionDate.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\HasEnvironmentValidForPeriodicFascicles.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\HasValidCategory.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\IsDocumentFascicolable.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\IsDocumentUnitAlreadyInFascicle.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\IsDocumentUnitFascicolable.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\IsEnvironmentValid.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\IsFascicleOpen.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\IsLegacyFascicle.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\IsPeriodicFascicle.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnits\IsProcedureFascicolable.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolders\CanFascicleFolderMovable.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolders\CanFascicleFolderDeletable.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolders\HasChildren.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolders\HasParent.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolders\HasAssociatedCategory.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolders\IsValidFolderLevel.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolders\NameAlreadyExists.cs" />
+    <Compile Include="Entities\Fascicles\CanFascicleDeletable.cs" />
+    <Compile Include="Entities\Fascicles\HasProcedureContainer.cs" />
+    <Compile Include="Entities\Fascicles\IsNotConservated.cs" />
+    <Compile Include="Entities\Fascicles\IsPeriodicFascicleUnique.cs" />
+    <Compile Include="Entities\Fascicles\GuidEmptyValidator.cs" />
+    <Compile Include="Entities\Fascicles\HasAlreadyPeriodicFascicle.cs" />
+    <Compile Include="Entities\Fascicles\HasAlreadyProcedureFascicle.cs" />
+    <Compile Include="Entities\Fascicles\HasAutorizedRole.cs" />
+    <Compile Include="Entities\Fascicles\IsActivityFascicle.cs" />
+    <Compile Include="Entities\Fascicles\IsActivityFascicleClosedByManager.cs" />
+    <Compile Include="Entities\Fascicles\IsActivityFascicleReserved.cs" />
+    <Compile Include="Entities\Fascicles\HasFascicleDocumentGuidEmpty.cs" />
+    <Compile Include="Entities\Fascicles\HasAssociatedFolder.cs" />
+    <Compile Include="Entities\Fascicles\IsLegacyFascicle.cs" />
+    <Compile Include="Entities\Fascicles\HasManagerFiscalCode.cs" />
+    <Compile Include="Entities\Fascicles\HasValidCategory.cs" />
+    <Compile Include="Entities\Fascicles\HasValidFascicleType.cs" />
+    <Compile Include="Entities\Fascicles\IsFascicleClosed.cs" />
+    <Compile Include="Entities\Fascicles\IsFascicleClosable.cs" />
+    <Compile Include="Entities\Fascicles\IsFascicleManagerUnique.cs" />
+    <Compile Include="Entities\Fascicles\HasRequiredMetadata.cs" />
+    <Compile Include="Entities\Fascicles\IsMasterRoleUnique.cs" />
+    <Compile Include="Entities\MassimariScarto\HasValidParentEndDate.cs" />
+    <Compile Include="Entities\MassimariScarto\HasValidCode.cs" />
+    <Compile Include="Entities\MassimariScarto\HasValidChildrenEndDate.cs" />
+    <Compile Include="Entities\MassimariScarto\HasValidStartDate.cs" />
+    <Compile Include="Entities\MetadataRepositories\MetadataRepositoryAlreadyExists.cs" />
+    <Compile Include="Entities\PECMails\IsOutgoingPECMail.cs" />
+    <Compile Include="Entities\PECMails\HasPECAlreadyArchive.cs" />
+    <Compile Include="Entities\Processes\IsProcessDeletable.cs" />
+    <Compile Include="Entities\Processes\IsProcessNameUnique.cs" />
+    <Compile Include="Entities\Processes\IsValidDatePeriod.cs" />
+    <Compile Include="Entities\Processes\ProcessFascicleTemplates\IsProcessFascicleTemplateDeletable.cs" />
+    <Compile Include="Entities\Processes\ProcessFascicleTemplates\IsProcessFascicleTemplateUnique.cs" />
+    <Compile Include="Entities\Processes\ProcessFascicleTemplates\IsValidDatePeriod.cs" />
+    <Compile Include="Entities\Protocols\HasInboundProtocolSenderContact.cs" />
+    <Compile Include="Entities\Protocols\HasOutgoingProtocolRecipientContact.cs" />
+    <Compile Include="Entities\Protocols\HasProtocolMainDocument.cs" />
+    <Compile Include="Entities\Protocols\HasContainerRights.cs" />
+    <Compile Include="Entities\Protocols\IsCategoryActive.cs" />
+    <Compile Include="Entities\Protocols\HasDocSuiteCurrentYear.cs" />
+    <Compile Include="Entities\Protocols\IsProtocolCreatable.cs" />
+    <Compile Include="Entities\Protocols\IsContainerActive.cs" />
+    <Compile Include="Entities\Protocols\IsCurrentYear.cs" />
+    <Compile Include="Entities\Protocols\IsProtocolUpdatable.cs" />
+    <Compile Include="Entities\Resolutions\ResolutionKindDocumentSeries\HasAlreadyDocumentSeries.cs" />
+    <Compile Include="Entities\Resolutions\ResolutionKinds\IsDeletable.cs" />
+    <Compile Include="Entities\Resolutions\ResolutionKinds\NameAlreadyExists.cs" />
+    <Compile Include="Entities\Templates\HasTemplateUniqueDocument.cs" />
+    <Compile Include="Entities\Templates\HasTemplateValidRole.cs" />
+    <Compile Include="Entities\Templates\HasTemplateValidSigner.cs" />
+    <Compile Include="Entities\Templates\TemplateAlreadyExist.cs" />
+    <Compile Include="Entities\Tenants\IsTenantNameUnique.cs" />
+    <Compile Include="Entities\Tenants\IsOnlyOneTenantActivated.cs" />
+    <Compile Include="Entities\UDS\IsActive.cs" />
+    <Compile Include="Entities\UDS\NameAlreadyExists.cs" />
+    <Compile Include="Entities\Workflows\IsWorkflowActivityCompleted.cs" />
+    <Compile Include="Entities\Workflows\IsWorkflowAuthorized.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="VecompSoftware.DocSuiteWeb.CustomValidation.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
+      <Project>{C6F323C0-C21B-433B-90C8-0B64A42115AB}</Project>
+      <Name>VecompSoftware.Commons.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Common\VecompSoftware.DocSuiteWeb.Common.csproj">
+      <Project>{58938aa6-b3d6-4256-8c5c-4bcab88517bb}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data\VecompSoftware.DocSuiteWeb.Data.csproj">
+      <Project>{17962438-d43b-41e7-8d6f-5a0c33b054ae}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Entity\VecompSoftware.DocSuiteWeb.Entity.csproj">
+      <Project>{34901fa6-4816-4872-9986-e42b2e866095}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Finder\VecompSoftware.DocSuiteWeb.Finder.csproj">
+      <Project>{b311cf16-3a65-44c6-850b-92fcff26e79f}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Finder</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Model\VecompSoftware.DocSuiteWeb.Model.csproj">
+      <Project>{DF5935CA-367B-4124-9840-AAFD3C419EBA}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Repository\VecompSoftware.DocSuiteWeb.Repository.csproj">
+      <Project>{27d8fcbb-8a8e-430b-8747-a5ace9b4ffca}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Security\VecompSoftware.DocSuiteWeb.Security.csproj">
+      <Project>{B4E770ED-2298-488A-856B-5BF53EBF88EC}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Validation\VecompSoftware.DocSuiteWeb.Validation.csproj">
+      <Project>{cbf9fe81-3a91-4b42-964d-17381f1cfbbd}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Validation</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="VecompSoftware.DocSuiteWeb.Services.WSDocm.WSDocm" CodeBehind="WSDocm.svc.cs" %>

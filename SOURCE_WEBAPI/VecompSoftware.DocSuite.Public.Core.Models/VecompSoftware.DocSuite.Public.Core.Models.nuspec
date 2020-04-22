@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>VecompSoftware.DocSuite.Public.Core.Models</id>
+    <version>8.87.0.0</version>
+    <title>VecompSoftware DocSuite Public Models</title>
+    <authors>Dgroove Srl</authors>
+    <owners>Dgroove Srl</owners>
+    <iconUrl>https://vecompsoftwarenugetserver.azurewebsites.net/favicon.ico</iconUrl>
+    <description>Modelli standard per l'integrazione, tramite WebAPI, con il sistema documentale DocSuite</description>
+    <copyright>Copyright © Dgroove 2019</copyright>
+    <tags>VecompSoftware, Models, DocSuite, Integrazioni, Standard, DocSuite.Public.WebAPI</tags>
+    <dependencies />
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Core" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework="net461" />
+    </frameworkAssemblies>
+    <references />
+    <projectUrl>https://www.dgroove.it/</projectUrl>
+    <summary>Modelli standard per l'integrazione, tramite WebAPI, con il sistema documentale DocSuite</summary>
+  </metadata>
+  <files>
+    <file src="VecompSoftware.DocSuite.Public.Core.Models.pdb" target="lib\net461" />
+    <file src="VecompSoftware.DocSuite.Public.Core.Models.dll" target="lib\net461" />
+  </files>
+</package>

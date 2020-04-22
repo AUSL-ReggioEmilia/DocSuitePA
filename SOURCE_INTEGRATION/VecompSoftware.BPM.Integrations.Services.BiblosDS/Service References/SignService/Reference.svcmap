@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="7154d5e3-029a-40e8-b31e-175fdae9d9c1" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://SRVGEDDEV9999.CLOUDAPP.NET/BiblosDS2010WCF/DigitalSignature.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="DigitalSignature.xsd" MetadataType="Schema" ID="2ad48f49-260d-4c30-b6c2-ba6c93ada45f" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/DigitalSignature.svc?xsd=xsd1" />
+    <MetadataFile FileName="DigitalSignature.wsdl" MetadataType="Wsdl" ID="caba414d-2e4e-406f-a3e6-cb3bc524fd02" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/DigitalSignature.svc?wsdl" />
+    <MetadataFile FileName="DigitalSignature1.xsd" MetadataType="Schema" ID="e1f93db5-8664-42e4-99d3-d1a7c365ba87" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/DigitalSignature.svc?xsd=xsd6" />
+    <MetadataFile FileName="DigitalSignature2.xsd" MetadataType="Schema" ID="0da52831-be9a-4e4f-afca-6d44452fe4f7" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/DigitalSignature.svc?xsd=xsd5" />
+    <MetadataFile FileName="DigitalSignature3.xsd" MetadataType="Schema" ID="a4e5c3e9-da98-46ca-9cd1-5fb21c3d4040" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/DigitalSignature.svc?xsd=xsd0" />
+    <MetadataFile FileName="DigitalSignature4.xsd" MetadataType="Schema" ID="7a13fcfb-a44d-45a3-868e-988dc1df27e8" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/DigitalSignature.svc?xsd=xsd4" />
+    <MetadataFile FileName="DigitalSignature5.xsd" MetadataType="Schema" ID="c0acb791-376b-4dc1-9bba-a8ff01f5082d" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/DigitalSignature.svc?xsd=xsd3" />
+    <MetadataFile FileName="DigitalSignature.disco" MetadataType="Disco" ID="d7d4cc26-601a-4a08-b822-5927f7f7e88f" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/DigitalSignature.svc?disco" />
+    <MetadataFile FileName="DigitalSignature6.xsd" MetadataType="Schema" ID="b9f754b6-e946-4ce9-9adc-36d837e02d4c" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/DigitalSignature.svc?xsd=xsd2" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

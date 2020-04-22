@@ -1,0 +1,36 @@
+﻿using System;
+using VecompSoftware.DocSuiteWeb.Common.Loggers;
+using VecompSoftware.DocSuiteWeb.Data;
+using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
+using VecompSoftware.DocSuiteWeb.Security;
+using VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Dossiers;
+
+namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Dossiers
+{
+    public class DossierRoleValidator : ObjectValidator<DossierRole, DossierRoleValidator>, IDossierRoleValidator
+    {
+        #region [ Constructor ]
+
+        public DossierRoleValidator(ILogger logger, IDossierRoleValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        #endregion
+
+        #region [ Properties ]
+        public Guid UniqueId { get; set; }
+        public AuthorizationRoleType AuthorizationRoleType { get; set; }
+        public DossierRoleStatus Status { get; set; }
+        public bool IsMaster { get; set; }
+        public string RegistrationUser { get; set; }
+        public DateTimeOffset RegistrationDate { get; set; }
+        public string LastChangedUser { get; set; }
+        public DateTimeOffset? LastChangedDate { get; set; }
+        public byte[] Timestamp { get; set; }
+        #endregion
+
+        #region [ Navigation Properties ]
+        public Dossier Dossier { get; set; }
+        public Role Role { get; set; }
+        #endregion
+    }
+}

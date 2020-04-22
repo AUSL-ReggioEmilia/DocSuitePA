@@ -1,0 +1,96 @@
+/**
+* Tabs GK5 - style 1
+* @package Joomla!
+* @Copyright (C) 2009-2012 Gavick.com
+* @ All rights reserved
+* @ Joomla! is Free Software
+* @ Released under GNU/GPL License : http://www.gnu.org/copyleft/gpl.html
+* @version $Revision: GK5 1.0 $
+**/
+
+/*
+ *
+ ==================  Edit Tabs  ================= */
+
+.b4tab {margin:0 30px;min-height:38px;}
+.gkTabsWrap.vertical ul li,
+.gkTabsWrap.horizontal ul li {
+	color: #666;
+	text-shadow: 0 -1px 0 #eee;
+	background: #eee; /* Old browsers */
+}
+.gkTabsContainer + .b4tab ul {
+}
+.gkTabsWrap.horizontal > .b4tabul {
+	background: #fff;
+}
+ 
+/* ==================  End  ===================== */
+
+
+/* 
+ * VERTICAL mode 
+ */
+ 
+/* tabs */
+.gkTabsWrap.vertical ul {
+	background: transparent;
+	height: 38px;
+	margin: 0;
+	padding: 0;
+}
+.gkTabsWrap.vertical ul li,
+.gkTabsWrap.horizontal ul li {
+	border-radius: 2px 2px 0 0;
+	cursor: pointer;
+	float: left;
+	line-height: 38px;
+	list-style-type: none;
+	margin: 0 4px 0 0;
+	padding: 0 12px;
+	position: relative;
+	font-size: 13px;
+	font-weight: bold;
+}
+/* bottom tabs */
+.gkTabsContainer + .b4tab ul.butbot {
+	background:#fff;
+	margin:0 0 50px;
+	float:left;
+}
+.gkTabsContainer + .b4tab ul.butbot li {
+	border-radius: 0;
+}
+/* containers */
+/* 
+ * HORIZONTAL mode 
+ */
+.gkTabsWrap.horizontal > .b4tab ul,
+.gkTabsWrap.horizontal > .b4tab.gkTabsContainer {
+	display: table-cell;
+	vertical-align: top;
+}
+.gkTabsWrap.horizontal > .b4tab ul {
+	position: relative;
+	z-index: 5;
+}
+/* tabs */
+
+.gkTabsWrap.horizontal ul li {
+	cursor: pointer;
+	float: right;
+	border-radius: 2px;
+	margin: 0 0 3px;
+}
+.gkTabsWrap.horizontal ul li:hover,
+.gkTabsWrap.horizontal ul li.active {
+	/* line 45 */
+}
+/* right tabs */
+.gkTabsWrap.horizontal .gkTabsContainer + .b4tab ul {
+	border: none 
+}
+.gkTabsWrap.horizontal .gkTabsContainer + .b4tab ul li {
+	border-radius: 2px ;
+	float: left;
+}

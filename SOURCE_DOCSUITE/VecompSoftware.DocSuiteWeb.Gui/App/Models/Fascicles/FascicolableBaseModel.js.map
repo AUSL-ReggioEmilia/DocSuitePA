@@ -1,0 +1,1 @@
+{"version":3,"file":"FascicolableBaseModel.js","sourceRoot":"","sources":["FascicolableBaseModel.ts"],"names":[],"mappings":";IAKA;QAQI,+BAAY,UAAgB;YACxB,IAAI,UAAU,IAAI,IAAI,EAAE;gBACpB,IAAI,CAAC,QAAQ,GAAG,IAAI,aAAa,EAAE,CAAC;gBACpC,IAAI,CAAC,QAAQ,CAAC,QAAQ,GAAG,UAAU,CAAC;aACvC;QACL,CAAC;QACL,4BAAC;IAAD,CAAC,AAdD,IAcC;IAED,OAAS,qBAAqB,CAAC"}

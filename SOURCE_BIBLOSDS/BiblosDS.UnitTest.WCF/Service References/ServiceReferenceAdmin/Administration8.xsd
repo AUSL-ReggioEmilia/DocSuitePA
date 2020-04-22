@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="DocumentArchiveCertificate">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CertificateBlob" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="FileName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IdArchiveCertificate" type="ser:guid" />
+      <xs:element minOccurs="0" name="Pin" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UserName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DocumentArchiveCertificate" nillable="true" type="tns:DocumentArchiveCertificate" />
+  <xs:complexType name="Status">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="IdStatus" type="xs:short" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Status" nillable="true" type="tns:Status" />
+  <xs:complexType name="ArrayOfStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Status" nillable="true" type="tns:Status" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStatus" nillable="true" type="tns:ArrayOfStatus" />
+</xs:schema>

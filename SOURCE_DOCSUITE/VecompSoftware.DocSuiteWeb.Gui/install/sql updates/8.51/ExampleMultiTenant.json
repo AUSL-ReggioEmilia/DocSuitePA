@@ -1,0 +1,668 @@
+﻿[
+  {
+    "TenantId": "1F761813-6086-44F1-A507-99954EA64342",
+    "TenantName": "ASMN",
+    "CurrentTenant": true,
+    "DomainAddress": "VECOMPSOFTWARE",
+    "DomainPassword": "Passw0rd",
+    "DomainUser": "VECOMPSOFTWARE\\developer",
+    "SignalRAddress": "http://localhost/DSW.WebAPI/",
+    "DSWUrl": "http://localhost/DSW/",
+    "ODATAUrl": "http://localhost/DSW.WebAPI/ODATA/",
+    "EnvironmentsEnable": {
+      "Protocollo": true,
+      "Pratiche": true,
+      "Atti": true
+    },
+    "Entities": {
+      "Collaboration": {
+        "IsActive": true,
+        "ODATAControllerName": "Collaborations"
+      },
+      "CollaborationSign": {
+        "IsActive": true,
+        "ODATAControllerName": "CollaborationSigns"
+      },
+      "CollaborationLog": {
+        "IsActive": true,
+        "ODATAControllerName": "CollaborationLogs"
+      },
+      "CollaborationUser": {
+        "IsActive": true,
+        "ODATAControllerName": "CollaborationUsers"
+      },
+      "CollaborationVersioning": {
+        "IsActive": true,
+        "ODATAControllerName": "CollaborationVersionings"
+      },
+      "Protocol": {
+        "IsActive": true,
+        "ODATAControllerName": "Protocols"
+      }
+    },
+    "WebApiClientConfig": {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.HttpClientConfiguration, VecompSoftware.DocSuiteWeb.Model",
+      "Addresses": [
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-WorkflowManagerAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/wfm/",
+          "Timeout": "00:01:00",
+          "NetworkCredential": {
+            "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.Credential, VecompSoftware.DocSuiteWeb.Model"
+          }
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-EntityAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/entity/",
+          "Timeout": "00:01:00",
+          "NetworkCredential": {
+            "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.Credential, VecompSoftware.DocSuiteWeb.Model"
+          }
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-ServiceBusAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/sb/",
+          "Timeout": "00:01:00",
+          "NetworkCredential": {
+            "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.Credential, VecompSoftware.DocSuiteWeb.Model"
+          }
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-UDSAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/uds/",
+          "Timeout": "00:01:00",
+          "NetworkCredential": {
+            "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.Credential, VecompSoftware.DocSuiteWeb.Model"
+          }
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-EnterpriseServiceBusAddress",
+          "Address": "http://sviluppo:81/EnterpriseBus/api/",
+          "NetworkCredential": {
+            "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.Credential, VecompSoftware.DocSuiteWeb.Model"
+          }
+        }
+      ],
+      "EndPoints": [
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandODGTaskDetail",
+          "AddressName": "API-EnterpriseServiceBusAddress",
+          "ControllerName": "CQRS"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandODGTask",
+          "AddressName": "API-EnterpriseServiceBusAddress",
+          "ControllerName": "CQRS"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventInsertUDSData",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventUpdateUDSData",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventCreateUDS",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventCompleteWorkflowActivity",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventCompleteWorkflowInstance",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventUpdateUDS",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventCreatePECMail",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventCreateProtocol",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventError",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventClaimToken",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandUpdateUDS",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Queue"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandCreateUDS",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Queue"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandUpdateUDSData",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Queue"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandInsertUDSData",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Queue"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowActivity",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "WorkflowActivity"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowInstance",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "WorkflowInstance"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowProperty",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "WorkflowProperty"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowRepository",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "WorkflowRepository"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "Collaboration",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Collaboration"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "CollaborationLog",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Collaboration"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "CollaborationSign",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Collaboration"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "CollaborationUser",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Collaboration"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "CollaborationVersioning",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Collaboration"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "Desk",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskCollaboration",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskDocument",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskDocumentEndorsement",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskDocumentVersion",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskLog",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskMessage",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskRoleUser",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskStoryBoard",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "UDSRepository",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "UDSRepository"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "UDSSchemaRepository",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "UDSSchemaRepository"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowValidate",
+          "AddressName": "API-WorkflowManagerAddress",
+          "ControllerName": "WorkflowValidate"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowPublish",
+          "AddressName": "API-WorkflowManagerAddress",
+          "ControllerName": "WorkflowPublish"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowNotify",
+          "AddressName": "API-WorkflowManagerAddress",
+          "ControllerName": "WorkflowNotify"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowStart",
+          "AddressName": "API-WorkflowManagerAddress",
+          "ControllerName": "WorkflowStart"
+        }
+      ]
+    }
+  },
+  {
+    "TenantId": "1F761813-6086-44F1-A507-99954EA64343",
+    "TenantName": "AUSL",
+    "CurrentTenant": false,
+    "DomainAddress": "RMVSW",
+    "DomainPassword": "Passw0rd",
+    "DomainUser": "RMVSW\\administrator",
+    "SignalRAddress": "http://localhost/DSW.WebAPI.AUSL-RE/",
+    "DSWUrl": "http://localhost/DSW/",
+    "ODATAUrl": "http://localhost/DSW.WebAPI/ODATA/",
+    "EnvironmentsEnable": {
+      "Protocollo": true,
+      "Pratiche": false,
+      "Atti": false
+    },
+    "Entities": {
+      "Collaboration": {
+        "IsActive": true,
+        "ODATAControllerName": "Collaborations"
+      },
+      "CollaborationSign": {
+        "IsActive": true,
+        "ODATAControllerName": "CollaborationSigns"
+      },
+      "CollaborationLog": {
+        "IsActive": true,
+        "ODATAControllerName": "CollaborationLogs"
+      },
+      "CollaborationUser": {
+        "IsActive": true,
+        "ODATAControllerName": "CollaborationUsers"
+      },
+      "CollaborationVersioning": {
+        "IsActive": true,
+        "ODATAControllerName": "CollaborationVersionings"
+      },
+      "Protocol": {
+        "IsActive": true,
+        "ODATAControllerName": "Protocols"
+      }
+    },
+    "WebApiClientConfig": {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.HttpClientConfiguration, VecompSoftware.DocSuiteWeb.Model",
+      "Addresses": [
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-WorkflowManagerAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/wfm/",
+          "Timeout": "00:01:00",
+          "NetworkCredential": {
+            "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.Credential, VecompSoftware.DocSuiteWeb.Model"
+          }
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-EntityAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/entity/",
+          "Timeout": "00:01:00",
+          "NetworkCredential": {
+            "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.Credential, VecompSoftware.DocSuiteWeb.Model"
+          }
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-ServiceBusAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/sb/",
+          "Timeout": "00:01:00",
+          "NetworkCredential": {
+            "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.Credential, VecompSoftware.DocSuiteWeb.Model"
+          }
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-UDSAddress",
+          "Address": "http://localhost/DSW.WebAPI/api/uds/",
+          "Timeout": "00:01:00",
+          "NetworkCredential": {
+            "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.Credential, VecompSoftware.DocSuiteWeb.Model"
+          }
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+          "AddressName": "API-EnterpriseServiceBusAddress",
+          "Address": "http://sviluppo:81/EnterpriseBus/api/",
+          "NetworkCredential": {
+            "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.Credential, VecompSoftware.DocSuiteWeb.Model"
+          }
+        }
+      ],
+      "EndPoints": [
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandODGTaskDetail",
+          "AddressName": "API-EnterpriseServiceBusAddress",
+          "ControllerName": "CQRS"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandODGTask",
+          "AddressName": "API-EnterpriseServiceBusAddress",
+          "ControllerName": "CQRS"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventInsertUDSData",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventUpdateUDSData",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventCreateUDS",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventCompleteWorkflowActivity",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventCompleteWorkflowInstance",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventUpdateUDS",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventCreatePECMail",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventCreateProtocol",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventError",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "IEventClaimToken",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Topic"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandUpdateUDS",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Queue"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandCreateUDS",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Queue"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandUpdateUDSData",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Queue"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "ICommandInsertUDSData",
+          "AddressName": "API-ServiceBusAddress",
+          "ControllerName": "Queue"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowActivity",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "WorkflowActivity"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowInstance",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "WorkflowInstance"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowProperty",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "WorkflowProperty"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowRepository",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "WorkflowRepository"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "Collaboration",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Collaboration"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "CollaborationLog",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Collaboration"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "CollaborationSign",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Collaboration"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "CollaborationUser",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Collaboration"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "CollaborationVersioning",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Collaboration"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "Desk",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskCollaboration",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskDocument",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskDocumentEndorsement",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskDocumentVersion",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskLog",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskMessage",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskRoleUser",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "DeskStoryBoard",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "Desk"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "UDSRepository",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "UDSRepository"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "UDSSchemaRepository",
+          "AddressName": "API-EntityAddress",
+          "ControllerName": "UDSSchemaRepository"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowValidate",
+          "AddressName": "API-WorkflowManagerAddress",
+          "ControllerName": "WorkflowValidate"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowPublish",
+          "AddressName": "API-WorkflowManagerAddress",
+          "ControllerName": "WorkflowPublish"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowNotify",
+          "AddressName": "API-WorkflowManagerAddress",
+          "ControllerName": "WorkflowNotify"
+        },
+        {
+          "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.WebApiControllerEndpoint, VecompSoftware.DocSuiteWeb.Model",
+          "EndpointName": "WorkflowStart",
+          "AddressName": "API-WorkflowManagerAddress",
+          "ControllerName": "WorkflowStart"
+        }
+      ]
+    }
+  }
+]

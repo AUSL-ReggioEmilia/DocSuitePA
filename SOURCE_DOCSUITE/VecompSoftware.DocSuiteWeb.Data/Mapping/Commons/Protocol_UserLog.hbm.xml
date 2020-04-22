@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="UserLog" table="UserLog">
+    
+    <id name="Id" column="SystemUser" type="AnsiString">
+      <generator class="assigned" />
+    </id>
+    
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    <property name="SystemServer" column="SystemServer" type="AnsiString" />
+    <property name="SystemComputer" column="SystemComputer" type="AnsiString" />
+    <property name="AccessNumber" column="AccessNumber" />
+    <property name="PrevOperationDate" column="PrevOperationDate" />
+    <property name="SessionId" column="SessionId" type="AnsiString" />
+    <property name="AdvancedScanner" column="AdvancedScanner" />
+    <property name="AdvancedViewer" column="AdvancedViewer" />
+    <property name="UserMail" column="UserMail"/>
+    <property name="MobilePhone" column="MobilePhone"/>
+    <property name="DefaultAdaptiveSearchControls" column="DefaultAdaptiveSearchControls"/>
+    <property name="AdaptiveSearchStatistics" column="AdaptiveSearchStatistics"/>
+    <property name="AdaptiveSearchEvaluated" column="AdaptiveSearchEvaluated"/>
+    <property name="PrivacyLevel" column="PrivacyLevel"/>
+    <property name="CurrentTenantId" column="CurrentTenantId"/>
+
+    <property name="UniqueId">
+      <column name="IdUserLog" not-null="true" unique="true" />
+    </property>
+    <property name="LastOperationDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+    <property name="UserProfile" column="UserProfile"/>
+  </class>
+
+
+</hibernate-mapping>

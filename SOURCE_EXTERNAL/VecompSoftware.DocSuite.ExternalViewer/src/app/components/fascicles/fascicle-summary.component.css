@@ -1,0 +1,35 @@
+﻿.tree-node-active{
+    font-weight: bold;
+}
+
+.panel-prot{
+    margin-bottom: 4px;
+}
+
+.panel-body{
+    max-height: 100%;
+    min-height: 100%;
+    overflow-y: auto;    
+}
+
+.image-pointer{
+    cursor: pointer;
+}
+
+
+.border-hide {
+    border: none;
+}
+
+.card-stats .card-header .card-category:not([class*=text-]) {
+    color: #000 !important;
+    font-size: 14px;
+}
+
+.card .card-category:not([class*=text-]) {
+    color: #fff;
+}
+
+.table {
+    text-align: justify !important;
+}

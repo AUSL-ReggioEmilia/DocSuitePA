@@ -1,0 +1,161 @@
+<div id="TitleOption" class="form-horizontal">
+    <div class="form-group">
+        <label class="control-label col-sm-3">Titolo</label>
+        <div class="controls col-sm-9">
+            <input type="text" class="form-control" placeholder="Nuovo documento" rv-disabled="ctrl.titleReadOnly" rv-value="ctrl.label" maxlength="40">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Oggetto</label>
+        <div class="controls col-sm-9">
+            <input type="text" class="form-control" placeholder="Oggetto del documento" rv-value="ctrl.subject">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Disposizione</label>
+        <div class="controls col-sm-9">
+            <select id="itemChanger" class="form-control" rv-value="ctrl.selectedItem" rv-on-click="ctrl.selectedItemChanged">
+                <option value="1">Una colonna</option>
+                <option value="2">Due colonne</option>
+                <option value="3">Tre colonne</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="controls col-sm-3">&nbsp;</div>
+    <div class="controls col-sm-9">
+        <label for="subjectResultVisibility">
+            <input id="subjectResultVisibility" type="checkbox" rv-checked="ctrl.subjectResultVisibility"> Visualizza oggetto tra i risultati di ricerca
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Alias</label>
+        <div class="controls col-sm-5">
+            <input type="text" class="form-control" placeholder="Alias" rv-disabled="ctrl.titleReadOnly" rv-value="ctrl.alias" maxlength="4">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Funzioni</label>
+        <div class="controls col-sm-4">
+            <label for="enabledCQRSSync">
+                <input id="enabledCQRSSync" type="checkbox" rv-checked="ctrl.enabledCQRSSync"> Abilita fascicolazione
+            </label>
+            <label for="enabledWorkflow" rv-class-hidden="ctrl.enableWorkflowCheckBox">
+                <input id="enabledWorkflow" type="checkbox" rv-checked="ctrl.enabledWorkflow" rv-disabled="ctrl.enableWorkflowCheckBox"> Abilita workflow
+            </label>
+            <label for="enabledCancelMotivation">
+                <input id="enabledCancelMotivation" type="checkbox" rv-checked="ctrl.enabledCancelMotivation"> Abilita motivazione annullamento
+            </label>
+            <label for="HideRegistrationIdentifier">
+                <input id="HideRegistrationIdentifier " type="checkbox" rv-checked="ctrl.hideRegistrationIdentifier"> Nascondi numero registrazione
+            </label>
+
+        </div>
+
+        <div class="controls col-sm-5">
+            <label for="enabledProtocol">
+                <input id="enabledProtocol" type="checkbox" rv-checked="ctrl.enabledProtocol"> Abilita protocollazione
+            </label>
+            <label for="enabledPEC">
+                <input id="enabledPEC" type="checkbox" rv-checked="ctrl.enabledPEC"> Archiviabile da PEC
+            </label>
+            <label for="signatureMetadataEnabled">
+                <input id="signatureMetadataEnabled" type="checkbox" rv-checked="ctrl.signatureMetadataEnabled" rv-enabled="ctrl.enableManualSignature"> Segnatura manuale
+            </label>
+            <label for="enabledModifySubject">
+                <input id="modifyEnable" type="checkbox" rv-checked="ctrl.modifyEnable"> Abilita modifica oggetto
+            </label>
+
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Pulsantiera</label>
+        <div class="controls col-sm-4">
+
+            <label for="enabledPECButton">
+                <input id="enabledPECButton" type="checkbox" rv-checked="ctrl.enabledPECButton" rv-disabled="true"> Invio PEC
+            </label>
+
+
+
+            <label for="enabledMailButton">
+                <input id="enabledMailButton" type="checkbox" rv-checked="ctrl.enabledMailButton"> Invio Mail
+            </label>
+
+        </div>
+
+        <div class="controls col-sm-5">
+
+            <label for="enabledMailRoleButton">
+                <input id="enabledMailRoleButton" type="checkbox" rv-checked="ctrl.enabledMailRoleButton" rv-enabled="ctrl.visibleMailButton"> Invio Mail Settori
+            </label>
+
+
+            <label for="enabledLinkButton">
+                <input id="enabledLinkButton" type="checkbox" rv-checked="ctrl.enabledLinkButton"> Collegamento
+            </label>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Classificazione</label>
+        <div class="controls col-sm-9">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Seleziona classificazione..." rv-readOnly="true" rv-value="ctrl.categoryName">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" rv-on-click="ctrl.selectCategory"><i class="fa fa-plus fa-lg"></i></button>
+                </span>
+            </div>
+        </div>
+        <div class="controls col-sm-3 col-sm-offset-3">
+            <label for="categoryReadOnly">
+                <input id="categoryReadOnly" type="checkbox" rv-checked="ctrl.categoryReadOnly"> Sola lettura
+            </label>
+        </div>
+        <div class="controls col-sm-3">
+            <label for="categoryDefaultEnabled">
+                <input id="categoryDefaultEnabled" type="checkbox" rv-checked="ctrl.categoryDefaultEnabled"> Imposta Default
+            </label>
+        </div>
+        <div class="controls col-sm-3">
+            <label for="categorySearchable">
+                <input id="categorySearchable" type="checkbox" rv-checked="ctrl.categorySearchable"> Visibile in ricerca
+            </label>
+        </div>
+        <div class="controls col-sm-3">&nbsp;</div>
+        <div class="controls col-sm-9">
+            <label for="categoryResultVisibility">
+                <input id="categoryResultVisibility" type="checkbox" rv-checked="ctrl.categoryResultVisibility"> Visualizza classificatore tra i risultati di ricerca
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Contenitore</label>
+        <div class="controls col-sm-3">
+            <label for="autoGeneratedContainer">
+                <input id="autoGeneratedContainer" type="checkbox" rv-checked="ctrl.createContainer" rv-disabled="ctrl.titleReadOnly"> Crea contenitore
+            </label>
+        </div>
+        <div class="controls col-sm-3">
+            <label for="containerSearchable">
+                <input id="containerSearchable" type="checkbox" rv-checked="ctrl.containerSearchable"> Visibile in ricerca
+            </label>
+        </div>
+        <div class="controls col-sm-6 col-sm-offset-3" rv-class-hidden="ctrl.createContainer">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Seleziona contenitore..." rv-readOnly="true" rv-value="ctrl.containerName">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" rv-on-click="ctrl.selectContainer" rv-hide="ctrl.titleReadOnly"><i class="fa fa-plus fa-lg"></i></button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

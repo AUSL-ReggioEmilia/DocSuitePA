@@ -1,0 +1,16 @@
+.input-style {
+    width: 75%;
+    margin: 2% 5%;
+}
+
+.s-sidebar__nav {
+    position: fixed;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transition: all .3s ease-in;
+    width: 20%;
+    background-color: white;
+    color: black;
+    bottom: 0;
+    top: 7.5%;
+}

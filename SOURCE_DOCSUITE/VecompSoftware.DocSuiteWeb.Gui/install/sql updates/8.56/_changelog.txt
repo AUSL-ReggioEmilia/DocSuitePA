@@ -1,0 +1,69 @@
+﻿Feature 6443: [ENAV] Invia IP4D e Gestione Workflow
+Feature 6483: [ENAV] Workflow Protocolla con firma digitale
+Feature 6484: [ENAV] Workflow Protocolla semplice
+Feature 6741: [AUSL-PC] Servizio per creazione PDF da Template
+Feature 6773: [FALCK] Collaborazioni da workflow, approvazione semplice e da archivio
+
+
+User Story 6271: [DSW] Propagazione Massiva: Parametrizzare visibilità pulsante
+User Story 6353: [ENAV] External Viewer: creazione menù laterale
+User Story 6354: [ENAV] External Viewer: creazione pannello settori in sommario di protocollo
+User Story 6355: [ENAV] External Viewer: creare pannello contatti in sommario Protocollo
+User Story 6386: [ENAV] External Viewer: implementare pannello PECMails in sommario di protocollo
+User Story 6398: [FALCK] Introduzione parametro per nascondere i pulsanti "Firma" e "Prosegui" in Collaborazioni
+User Story 6406: [AGSM] Finalizzare autenticazione OAUTH per portale fornitori
+User Story 6407: [AGSM] Albo fornitori: Nuovo archivio per la registrazione dei fornitori
+User Story 6409: [AGSM] Albo Fornitori: Refactor pagina di gestione metadati fornitori
+User Story 6411: [ASL-TO] Modificare il pannello Riferimento in Inserimento di Fascicolo
+User Story 6416: [DSW] Filtrare la selezione del fascicolo durante la fascicolazione di Protocollo
+User Story 6440: [ENAV] Creazione Nuova Tabella WorkflowRoleMapping
+User Story 6441: [ENAV] Modifica alla Scrivania Workfow
+User Story 6442: [ENAV]Rivedere il funzionamento della Scrivania
+User Story 6445: [ENAV] Invia IP4D da Protocollo
+User Story 6446: [ENAV] IP4D: Firma documento da Workflow
+User Story 6454: [ENAV] External Viewer: implementare pagina di visualizzazione dei documenti
+User Story 6458: [ENAV] Creazione Controller ODATA - Protocollo
+User Story 6459: [ENAV] External Viewer: creare sql function e finder per Category
+User Story 6464: [ENAV] Creazione Parametro WorkflowManagerEnabled
+User Story 6485: [ENAV] IP4D: Nuova activity per la creazione di una nuova collaborazione da Sharepoint
+User Story 6486: [ENAV] IP4D: Finalizzare i controller di collaborazione
+User Story 6490: [ENAV] Aggiunta di un ulteriore colonna "Tipologia" in Scrivania di Workflow
+User Story 6491: [ENAV] Mapping del campo Subject
+User Story 6494: [ENAV] Correzione eventuali incongruenze di gestione Scrivania Workflow
+User Story 6495: [ENAV] Possibilità di filtrare la scrivania per settore
+User Story 6538: [ENAV] Introduzione WorkflowRepository: UI
+User Story 6628: [ENAV] Funzione HasProtocolInsertRight per verificare i diritti dell'utente
+User Story 6651: [ENAV] IP4D: Firma documento da Workflow - Agganciare MappingTag sulle segreterie di collaborazione
+User Story 6654: [ENAV] IP4D: Creazione ProtocolDraft nella WorkflowActivity Crea Collaborazione
+User Story 6658: [DSW] Aggiungere una nuova workflow property quando viene completata l'activity di firma
+User Story 6713: [DSW] Creare FascicleDocumentHandler per visualizzare i documenti associati ai fascicoli
+User Story 6714: [DSW] Aggiungere LOG nell'entità Fascicolata o Referenziata
+User Story 6719: [AUSL-RE] Modificare la visibilità del pulsante "Piano di fascicolazione" in gestione Classificatore
+User Story 6732: [DSW] Bonificare Unique Index FascicleDocSeriesItems e FascicleUds
+User Story 6774: [FALCK] Collaborazioni da workflow, approvazione semplice
+User Story 6775: [FALCK] Collaborazioni da workflow, collaborazioni da archivio
+User Story 6776: [FALCK] Collaborazioni da workflow, Protocollazione collaborazione da archivio
+User Story 6780: [AUSL-PC] Creazione metodo caricamento template pdf-moduli
+User Story 6781: [AUSL-PC] Creazione pagina Web che mostri i template pdf-moduli caricati
+User Story 6821: [CTT] Aggiungere constraint su idContainer di UDSRepositories
+User Story 6823: [CTT] Modificare listener per creazione Archivio in Biblos quando viene creata una UDS
+User Story 6829: [FALCK] Revisione Workflow Studio
+
+
+Bug 5148: [ASL-TO] Il recupero di contenitore non funziona
+Bug 6263: [AUSL-RE] Eseguendo back IE dopo inserimento proposta da collaborazione si genera nuova proposta che va a sostituire il precedente IdResolution nella collaborazione
+Bug 6313: [ASL-TO] Nelle determine con contenitore privacy che è stato eliminato la colonna privacy della tabella Container viene settata a NULL
+Bug 6387: [ASL-TO] I fascicoli legacy vengono visualizzati come periodici
+Bug 6388: [ASL-TO] Artefatto grafico nella selezione di un fascicolo in Protocollo
+Bug 6389: [ASL-TO] Eliminazione della componentistica "Utente" nel pannello Classificatore
+Bug 6408: [ASL-TO] Il Pannello in Classificatore non si aggiorna all'aggiunta di un gruppo
+Bug 6410: [ASL-TO] Mancata visualizzazione della checkBox "estendi ricerca alle sottocategorie" in Fascicoli , Classificazione
+Bug 6412: [ASL-TO] In inserimento fascicoli nella selezione per Responsabile di Procedimento non ha senso la visualizzazione di tutta la rubrica
+Bug 6415: [ASL-TO] Gestione contemporanea di gruppi in Aggiungi Settore del Classificatore
+Bug 6417: [ASL-TO] In ricerca Fascicolo gestione della funzionalità "Estendi ricerca alle Sottocategorie"
+Bug 6419: [AUSL-PC] Non è possibile scrivere il motivo dell'annullamento quando si annulla l'atto
+Bug 6444: [ASL-TO] Ordinamento della lista fascicoli nella selezione dei "Fascicoli disponibili" da Protocollo
+Bug 6453: [AUSL-PC] In inserimento di collegamento di protocollo,il tasto "Conferma" è nascosto
+Bug 6659: [YAC] In GetWorkflowRoleMappingByMappingTag gestire la ricerca sull'idWorkflowRepository
+Bug 6689: [AUSL-PC] Timeout nella visualizzazione della vista "Attività in corso"
+Bug 6735: [ENAV] Problemi nella rubrica contatti in relazione alla tipologia di protocollo selezionata

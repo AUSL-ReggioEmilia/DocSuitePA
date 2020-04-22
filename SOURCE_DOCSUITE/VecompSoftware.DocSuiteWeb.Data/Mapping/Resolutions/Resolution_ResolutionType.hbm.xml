@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ResolutionType" table="ResolutionType">
+    
+    <id name="Id" column="idType">
+      <generator class="assigned" />
+    </id>
+    
+    <property name="Description" column="Description" type="AnsiString" />
+    
+    <bag name="TabMaster" table="TabMaster" cascade="none" inverse="true">
+      <key>
+        <column name="ResolutionType" />
+      </key>
+      <one-to-many class="TabMaster" />
+      <filter condition=":Azienda=Configuration" name="ConfigurationFilter">
+      </filter>
+    </bag>
+    
+  </class>
+
+  <filter-def name="ConfigurationFilter">
+    <filter-param name="Azienda" type="AnsiString" />
+  </filter-def>
+  
+</hibernate-mapping>

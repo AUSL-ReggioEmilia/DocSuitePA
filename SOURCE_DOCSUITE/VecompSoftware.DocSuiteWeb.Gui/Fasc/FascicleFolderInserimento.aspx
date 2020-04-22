@@ -1,0 +1,63 @@
+﻿<%@ Page Title="Cartella - Inserimento" Language="vb" AutoEventWireup="false" CodeBehind="FascicleFolderInserimento.aspx.vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Inherits="VecompSoftware.DocSuiteWeb.Gui.FascicleFolderInserimento" %>
+<%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
+
+<asp:Content ContentPlaceHolderID="cphHeader" runat="server">
+    <telerik:RadScriptBlock runat="server" ID="RadScriptBlock">
+        <script type="text/javascript">
+            var fascicleFolderInserimento;
+            require(["Fasc/FascicleFolderInserimento"], function (FascicleFolderInserimento) {
+                $(function () {
+                    fascicleFolderInserimento = new FascicleFolderInserimento(tenantModelConfiguration.serviceConfiguration);
+                    fascicleFolderInserimento.currentFascicleFolderId = "<%= IdFascicleFolder%>";
+                    fascicleFolderInserimento.currentPageId = "<%= pageContent.ClientID%>";
+                    fascicleFolderInserimento.txtNameId = "<%= txtName.ClientID%>";
+                    fascicleFolderInserimento.btnConfermaId = "<%= btnConferma.ClientID%>";
+                    fascicleFolderInserimento.btnConfermaUniqueId = "<%= btnConferma.UniqueID%>";
+                    fascicleFolderInserimento.ajaxManagerId = "<%= AjaxManager.ClientID%>";
+                    fascicleFolderInserimento.managerId = "<%= MasterDocSuite.DefaultWindowManager.ClientID %>";
+                    fascicleFolderInserimento.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
+                    fascicleFolderInserimento.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";                                        
+                    fascicleFolderInserimento.fascicleNameRowId = "<%= fascicleNameRow.ClientID%>";   
+                    fascicleFolderInserimento.sessionUniqueKey = "<%= SessionUniqueKey %>";
+                    fascicleFolderInserimento.doNotUpdateDatabase = "<%= DoNotUpdateDatabase %>";
+                    fascicleFolderInserimento.initialize();
+                });
+            });
+        </script>
+    </telerik:RadScriptBlock>
+    <telerik:RadNotification ID="radNotification" runat="server"
+        VisibleOnPageLoad="false" LoadContentOn="PageLoad" Width="400" Height="200" Animation="FlyIn"
+        EnableRoundedCorners="true" EnableShadow="true" ContentIcon="delete" Title="Errore pagina" TitleIcon="none" AutoCloseDelay="0" Position="Center" />
+</asp:Content>
+
+
+<asp:Content runat="server" ContentPlaceHolderID="cphContent">
+       <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
+        <telerik:RadFormDecorator RenderMode="Lightweight" ID="frmDecorator"  EnableRoundedCorners="false" runat="server" DecoratedControls="Fieldset"></telerik:RadFormDecorator>
+    <telerik:RadPageLayout runat="server" ID="pageContent" HtmlTag="Div" Width="100%" Height="95%">
+        <Rows>            
+            <telerik:LayoutRow CssClass="windowTitle ts-initialize" ID="fascicleNameRow" >
+                <Columns>
+                    <telerik:LayoutColumn Span="2" Height="35px">
+                        <b>Nome: </b>
+                    </telerik:LayoutColumn>
+                    <telerik:LayoutColumn Span="10" CssClass="t-col-left-padding t-col-right-padding" Height="35px">
+                        <telerik:RadTextBox ID="txtName" runat="server" Width="100%"/>
+                    </telerik:LayoutColumn>
+                </Columns>
+            </telerik:LayoutRow>
+        </Rows>
+    </telerik:RadPageLayout>
+</asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="cphFooter">
+    <telerik:RadPageLayout runat="server" ID="RadPageLayout1" HtmlTag="Div" Width="100%" Height="100%">
+        <Rows>
+            <telerik:LayoutRow>
+                <Content>
+                    <telerik:RadButton Text="Conferma" runat="server" ID="btnConferma" AutoPostBack="false" />
+                </Content>
+            </telerik:LayoutRow>
+        </Rows>
+    </telerik:RadPageLayout>
+</asp:Content>

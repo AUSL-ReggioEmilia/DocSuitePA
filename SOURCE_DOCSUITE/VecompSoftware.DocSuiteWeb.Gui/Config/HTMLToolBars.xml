@@ -1,0 +1,20 @@
+<root>
+    <tools name="MainToolbar1">
+		<tool name="Bold" Text="Bold"/>
+		<tool name="Italic" Text="Italic"/>
+		<tool name="Underline" Text="Underline"/>
+		<tool name="Cut" Text="Cut"/>
+		<tool name="Copy" Text="Copy"/>
+		<tool name="Paste" Text="Paste"/>
+    </tools>	
+	    <tools name="MainToolbar2">
+		<tool name="JustifyLeft" Text="JustifyLeft"/>
+		<tool name="JustifyCenter" Text="JustifyCenter"/>
+		<tool name="InsertUnorderedList" Text="InsertUnorderedList"/>
+		<tool name="InsertTable" Text="InsertTable"/>
+    </tools>
+</root>
+
+
+
+ 

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="BiblosDsException">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Code" type="tns:FaultCode" />
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StackTrace" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BiblosDsException" nillable="true" type="tns:BiblosDsException" />
+  <xs:simpleType name="FaultCode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="GENERIC_ERROR" />
+      <xs:enumeration value="Archive_Exception" />
+      <xs:enumeration value="ArchiveStorage_Exception" />
+      <xs:enumeration value="Attribute_Exception" />
+      <xs:enumeration value="AttributeRequired_Exception" />
+      <xs:enumeration value="DocumentCheckOut_Exception" />
+      <xs:enumeration value="DocumentNotConvertible_Exception" />
+      <xs:enumeration value="DocumentNotFound_Exception" />
+      <xs:enumeration value="DocumentPrimaryKey_Exception" />
+      <xs:enumeration value="DocumentReadOnly_Exception" />
+      <xs:enumeration value="FileNotFound_Exception" />
+      <xs:enumeration value="FileNotUploaded_Exception" />
+      <xs:enumeration value="Permission_Exception" />
+      <xs:enumeration value="StorageAreaConfiguration_Exception" />
+      <xs:enumeration value="StorageConfiguration_Exception" />
+      <xs:enumeration value="StorageIsProcessingFile_Exception" />
+      <xs:enumeration value="StorageNotFound_Exception" />
+      <xs:enumeration value="DocumentNotReadyForAttach_Exception" />
+      <xs:enumeration value="DocumentWithoutContent_Exception" />
+      <xs:enumeration value="DocumentConnectionExists_Exception" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="FaultCode" nillable="true" type="tns:FaultCode" />
+</xs:schema>

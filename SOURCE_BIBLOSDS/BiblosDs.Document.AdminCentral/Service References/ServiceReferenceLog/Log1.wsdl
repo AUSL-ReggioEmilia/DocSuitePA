@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://Vecomp.BiblosDs.Log" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://Vecomp.BiblosDs.Log" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://Vecomp.BiblosDs.Log/Imports">
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd0" namespace="http://Vecomp.BiblosDs.Log" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/RuleOperator" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Enums" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/LogResponse" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/ResponseBase" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/ResponseError" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd8" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ILog_DoWork_InputMessage">
+    <wsdl:part name="parameters" element="tns:DoWork" />
+  </wsdl:message>
+  <wsdl:message name="ILog_DoWork_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DoWorkResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILog_GetAllLogs_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllLogs" />
+  </wsdl:message>
+  <wsdl:message name="ILog_GetAllLogs_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllLogsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILog_GetArchiveLogs_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchiveLogs" />
+  </wsdl:message>
+  <wsdl:message name="ILog_GetArchiveLogs_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetArchiveLogsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILog_GetLogsPaged_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogsPaged" />
+  </wsdl:message>
+  <wsdl:message name="ILog_GetLogsPaged_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogsPagedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILog_GetLogIDArchives_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogIDArchives" />
+  </wsdl:message>
+  <wsdl:message name="ILog_GetLogIDArchives_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogIDArchivesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ILog">
+    <wsdl:operation name="DoWork">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Log/ILog/DoWork" message="tns:ILog_DoWork_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Log/ILog/DoWorkResponse" message="tns:ILog_DoWork_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllLogs">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Log/ILog/GetAllLogs" message="tns:ILog_GetAllLogs_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Log/ILog/GetAllLogsResponse" message="tns:ILog_GetAllLogs_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetArchiveLogs">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Log/ILog/GetArchiveLogs" message="tns:ILog_GetArchiveLogs_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Log/ILog/GetArchiveLogsResponse" message="tns:ILog_GetArchiveLogs_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLogsPaged">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Log/ILog/GetLogsPaged" message="tns:ILog_GetLogsPaged_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Log/ILog/GetLogsPagedResponse" message="tns:ILog_GetLogsPaged_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLogIDArchives">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Log/ILog/GetLogIDArchives" message="tns:ILog_GetLogIDArchives_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Log/ILog/GetLogIDArchivesResponse" message="tns:ILog_GetLogIDArchives_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

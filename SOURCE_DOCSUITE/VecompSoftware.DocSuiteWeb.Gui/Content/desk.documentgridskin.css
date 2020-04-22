@@ -1,0 +1,314 @@
+﻿.RadGrid_DeskDocumentCustomSkin
+{
+    border: 1px solid #fff;
+    color: #333;
+    background-color: #fff;
+}
+
+.RadGrid_DeskDocumentCustomSkin .rgDataDiv
+{
+    height : auto !important ;
+}
+
+.RadGrid_DeskDocumentCustomSkin .rgMasterTable {
+        width: 100% !important;
+    }
+ 
+.RadGrid_DeskDocumentCustomSkin,
+.RadGrid_DeskDocumentCustomSkin .rgMasterTable,
+.RadGrid_DeskDocumentCustomSkin .rgDetailTable,
+.RadGrid_DeskDocumentCustomSkin .rgGroupPanel table,
+.RadGrid_DeskDocumentCustomSkin .rgCommandRow table,
+.RadGrid_DeskDocumentCustomSkin .rgEditForm table,
+.RadGrid_DeskDocumentCustomSkin .rgPager table
+{
+    font: 14px "Segoe UI", Arial, Helvetica, sans-serif;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgHeader:first-child,
+.RadGrid_DeskDocumentCustomSkin th.rgResizeCol:first-child,
+.RadGrid_DeskDocumentCustomSkin .rgFilterRow > td:first-child,
+.RadGrid_DeskDocumentCustomSkin .rgRow > td:first-child,
+.RadGrid_DeskDocumentCustomSkin .rgAltRow > td:first-child
+{
+    border-left-width: 0;
+    padding-left: 8px;
+}
+ 
+ 
+.RadGrid_DeskDocumentCustomSkin th.rgHeader
+{
+    color: #333;
+    text-transform: uppercase;
+    font-size: 11px;
+    height: 30px;
+    text-align: left;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgHeader a
+{
+    color: #333;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgHeader,
+.RadGrid_DeskDocumentCustomSkin th.rgResizeCol
+{
+    background-color: #5d8cc9;
+    border-bottom: 1px solid white;
+    border-right: 1px solid white;
+    background: 0 -2300px repeat-x #c3d8f1 url('/aspnet-ajax/WebResource.axd?d=HrpSsNyero6YByW3rWmYFQKo4H_1dbdYZWxbMMXM8FvDuDs3K5gqT0TjPdEKFWd8tnP_xsEbdtl9VNhM2zzNj78XIV2DI-CQph-gT6zggROSNHzLzTPIoqEaFunVb-KOl6ArGeNe-lrRe4KRAnp4Wpd8NBhBFxnGdefYcV66bUk1&t=635633510738804619');
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgHeaderDiv
+{
+    margin-left: 0;
+}
+
+.RadGrid_DeskDocumentCustomSkin .rgHeaderWrapper .rgHeaderDiv {
+    border-right: 0;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgMultiHeaderRow th.rgHeader,
+.RadGrid_DeskDocumentCustomSkin .rgMultiHeaderRow th.rgResizeCol
+{
+    border: solid #5d8cc9;
+    border-width: 0 0 1px 1px;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgFilterRow
+{
+    background-color: #dbeddc;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin th.rgSorted,
+.RadGrid_DeskDocumentCustomSkin th.rgSorted a
+{
+    color: #fff;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgRow td,
+.RadGrid_DeskDocumentCustomSkin .rgAltRow td,
+.RadGrid_DeskDocumentCustomSkin .rgFooter td
+{
+    border: 0;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgEditRow td
+{
+    border-style: solid;
+    border-width: 0 0 1px 0;
+    border-color: #e8e8e8;
+}
+
+.RadGrid_DeskDocumentCustomSkin td.rgPagerCell
+{
+    border-top: 0 !important;  
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgRow td,
+.RadGrid_DeskDocumentCustomSkin .rgAltRow td
+{
+    vertical-align: middle;
+    border-top: solid #ddd;
+    border-width: 1px 0 0 0;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    text-align: left;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgRow img,
+.RadGrid_DeskDocumentCustomSkin .rgAltRow img
+{
+    vertical-align: middle;
+    margin-right: 5px;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgRow td
+{
+    border-color: white;
+}
+
+.RadGrid_DeskDocumentCustomSkin .rgAltRow
+{
+    background: #f9f9f9;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin td.rgSorted
+{
+    background-color: #e8eee8;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgAltRow .rgSorted
+{
+    background-color: #dee5df;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgSelectedRow .rgSorted,
+.RadGrid_DeskDocumentCustomSkin .rgActiveRow .rgSorted,
+.RadGrid_DeskDocumentCustomSkin .rgHoveredRow .rgSorted,
+.RadGrid_DeskDocumentCustomSkin .rgEditRow .rgSorted
+{
+    background-color: transparent;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgRow a,
+.RadGrid_DeskDocumentCustomSkin .rgAltRow a,
+.RadGrid_DeskDocumentCustomSkin tr.rgEditRow a,
+.RadGrid_DeskDocumentCustomSkin .rgFooter a,
+.RadGrid_DeskDocumentCustomSkin .rgEditForm a
+{
+    color: black;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgHoveredRow
+{
+    background: #f5f0d2;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgMasterTable .rgSelectedCell,
+.RadGrid_DeskDocumentCustomSkin .rgSelectedRow,
+.RadGrid_DeskDocumentCustomSkin td.rgEditRow .rgSelectedRow,
+.RadGrid_DeskDocumentCustomSkin .rgSelectedRow td.rgSorted
+{
+    background: #ffcb60 0 -3900px repeat-x url('/aspnet-ajax/WebResource.axd?d=HrpSsNyero6YByW3rWmYFQKo4H_1dbdYZWxbMMXM8FvDuDs3K5gqT0TjPdEKFWd8tnP_xsEbdtl9VNhM2zzNj78XIV2DI-CQph-gT6zggROSNHzLzTPIoqEaFunVb-KOl6ArGeNe-lrRe4KRAnp4Wpd8NBhBFxnGdefYcV66bUk1&t=635633510738804619');
+}
+
+* + html .RadGrid_DeskDocumentCustomSkin .rgSelectedRow .rgSorted {
+        background-color: #ffcb60;
+    }
+
+html .RadGrid_DeskDocumentCustomSkin .rgSelectedRow .rgSorted {
+    background-color: #ffcb60;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgSelectedCell a,
+.RadGrid_DeskDocumentCustomSkin .rgSelectedRow a
+{
+    color: white;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgActiveRow
+{
+    background: #fff;
+    color: black;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgActiveCell a,
+.RadGrid_DeskDocumentCustomSkin .rgActiveRow input,
+.RadGrid_DeskDocumentCustomSkin .rgActiveRow a
+{
+    color: black;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgEditRow
+{
+    background: #cdcdcd;
+}
+ 
+* + html .RadGrid_DeskDocumentCustomSkin .rgEditRow .rgSorted
+{
+    background-color: #cdcdcd;
+}
+ 
+* html .RadGrid_DeskDocumentCustomSkin .rgEditRow .rgSorted
+{
+    background-color: #cdcdcd;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgEditRow td,
+.RadGrid_DeskDocumentCustomSkin .rgEditRow td.rgSorted
+{
+    border-color: #cdcdcd;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgFooterDiv,
+.RadGrid_DeskDocumentCustomSkin .rgFooter
+{
+    background: white;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgFooter td,
+.RadGrid_DeskDocumentCustomSkin .rgFooterWrapper
+{
+    border-top: 1px solid;
+    border-color: #999 #e4e4e4;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgHeader .rgSortAsc,
+.RadGrid_DeskDocumentCustomSkin .rgHeader .rgSortDesc
+{
+    margin: 0 0 0 6px;
+    width: 16px;
+    height: 16px;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgHeader .rgSortAsc
+{
+    background-position: -120px -20px;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgHeader .rgSortDesc
+{
+    background-position: -120px -70px;
+}
+ 
+.RadGrid_DeskDocumentCustomSkin .rgFilterRow td
+{
+    padding: 7px 50px 7px 5px;
+}
+ 
+/*rtl*/
+.RadGridRTL_DeskDocumentCustomSkin .rgHeader:first-child,
+.RadGridRTL_DeskDocumentCustomSkin th.rgResizeCol:first-child,
+.RadGridRTL_DeskDocumentCustomSkin .rgFilterRow > td:first-child,
+.RadGridRTL_DeskDocumentCustomSkin .rgRow > td:first-child,
+.RadGridRTL_DeskDocumentCustomSkin .rgAltRow > td:first-child
+{
+    border-left-width: 1px;
+    padding-left: 7px;
+}
+ 
+.RadGridRTL_DeskDocumentCustomSkin .rgPageFirst
+{
+    background-position: -11px -761px;
+}
+ 
+.RadGridRTL_DeskDocumentCustomSkin .rgPageFirst:active
+{
+    background-position: -111px -761px;
+}
+ 
+.RadGridRTL_DeskDocumentCustomSkin .rgPagePrev
+{
+    background-position: -11px -161px;
+}
+ 
+.RadGridRTL_DeskDocumentCustomSkin .rgPagePrev:active
+{
+    background-position: -111px -161px;
+}
+ 
+.RadGridRTL_DeskDocumentCustomSkin .rgPageNext
+{
+    background-position: -11px -111px;
+}
+ 
+.RadGridRTL_DeskDocumentCustomSkin .rgPageNext:active
+{
+    background-position: -111px -111px;
+}
+ 
+.RadGridRTL_DeskDocumentCustomSkin .rgPageLast
+{
+    background-position: -11px -711px;
+}
+ 
+.RadGridRTL_DeskDocumentCustomSkin .rgPageLast:active
+{
+    background-position: -111px -711px;
+}
+ 
+.RadGridRTL_DeskDocumentCustomSkin .rgExpand
+{
+    background-position: -12px -112px;
+}

@@ -1,0 +1,132 @@
+Epic 16829: [AUSL-RE] Fascicoli fase 4: Raccolta dei procedimenti e diriti di fascicolazione su contenitore
+Epic 16830: [AUSL-RE] ExternalViewer: Gestione flussi di lavoro "Pareri" e "Pareri di documenti non protocollati"
+Epic 16839: [AUSL-RE] Workflow: Gestione del Workflow "Parere" in DocSuite
+Epic 17012: [ENAV] Cantiere Doppia visualizzazione foglio di stile AdE / AssoSoftware
+
+
+Feature 16492: [LI-NEA] Fascicoli: Implementare la gestione persistita in DocSuite del numero di inserti presenti in una catena associata alla cartella di fascicolo.
+Feature 16831: [AUSL-RE] ExternalViewer: Modifiche grafiche ExternalViewer
+Feature 16840: [AUSL-RE] Private WebAPI: Adeguamenti entità WorkflowActivity per gestione Pareri
+Feature 16844: [AUSL-RE] Menu: Unificare menu "Dossier" con "Fascicoli"
+Feature 16853: [AUSL-RE] Public WebAPI: Estendere il controller ODATA WorkflowsController (del ramo Workflows)
+Feature 16920: [AUSL-RE] Listeners: Adeguamenti entità WorkflowActivity per gestione Pareri
+Feature 16979: [AUSL-RE] Fascicoli: Ottimizzazione relazioni Fascicoli: Gestione entità "FascicleDocumentUnit"
+Feature 17002: [AUSL-RE] Integrations: Creare modulo VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion
+Feature 17013: [ENAV] DocSuite : Aggiungere gestione risorse XSD e XLST nell'assembly della DocSuite
+Feature 17019: [ENAV] Stampa Conforme: Gestione nuovo nuovo metodo "XmlWithStylesheetConvert"
+Feature 17022: [ENAV] DocSuite: Modifica al Visualizzatore Documentale delle Fatture per scelta folgio di stile
+Feature 17029: [AUSL-RE] Fascicoli: Gestire la relazioni "FascicleDocumentUnits" a livello di Fascicle
+Feature 17071: [AUSL-RE] DocSuite: Avviare workflow dalla vista di scrivania 
+Feature 17095: [AUSL-RE] Monitoraggio Trasparenza: Miglioramenti al monitoraggio della trasparenza
+Feature 17109: [AUSL-RE] DocumentUnitMigrator : Gestione UDSUsers e ProtocolUsers in migrazione UD
+Feature 17113: [AUSL-RE] Public WebAPI: Aggiungere controller REST CompleteWorkflowActivityController (del ramo Workflows)
+Feature 17122: [AUSL-RE] DocSuite : Pulizia etichette "Flussi di lavoro-> attività"
+Feature 17127: [AUSL-RE] ExternalViewer: Creare una nuova griglia con ricerca "le mie attività".
+Feature 17128: [AUSL-RE] ExternalViewer: Creare una somamario di "attività" (rappresentazione WorkflowActivity)
+Feature 17135: [AUSL-RE] ExternalViewer: Creare una componente "Completa attività" che permette di completare la workflowactivity da utilizzare in sommario di Protocollo o di Attività 
+Feature 17148: [AUSL-RE] DocumentUnitMigrator : Gestione bonifica FascicleDocumentUnits
+Feature 17150: [AUSL-RE] Fascicoli: Gestione dei Log del fascicolo
+Feature 17154: [AUSL-RE] Fascicoli: Gestione Contenitore nel Classificatore con parametro attivo FascicleContainerEnabled
+Feature 17158: [AUSL-RE] Fascicoli: Gestione diritti di fascicoli nella gestione gruppi di contenitore
+Feature 17163: [AUSL-RE] Fascicoli: In fase di apertura di procedimento e periodico richiedere un Contenitore (non generalista).
+Feature 17166: [AUSL-RE] Fascicoli: Aggiungere filtro per contenitore nella pagina di ricerca dei fascicoli (non generalista).
+Feature 17169: [AUSL-RE] Fascicoli: Adeguare la ricerca dei fascicoli collegati come avviene in ricerca di fascicoli da sommario di protocollo.
+Feature 17343: [DSW] Aggiungere policy di retry nei converter di Office e OpenOffice
+Feature 17418: [AUSL-RE] Scrivania di Workflow : Aggiungere il filtro "Attività avviate da me/miei settori"
+
+
+User Story 16728: [AUSL-RE] Integration: Aggiunta modulo DSW FascicleClose
+User Story 16832: [AUSL-RE] ExternalViewer: Modifiche sommmario di protocollo 
+User Story 16833: [AUSL-RE] ExternalViewer: Modifiche sommmario di protocollo migliorare gli spazi di padding
+User Story 16834: [AUSL-RE] ExternalViewer: Modifiche alla sezione "I miei documenti"
+User Story 16835: [AUSL-RE] ExternalViewer: Modifiche alla sezione "Ricerca"
+User Story 16841: [AUSL-RE] DocSuite Aggiunta nuove colonne entità WorkflowActivity
+User Story 16842: [AUSL-RE] Private WebAPI: Adeguare l'entità WorkflowActivity
+User Story 16843: [AUSL-RE] Private WebAPI: Creare enum WorkflowPriorityType
+User Story 16845: [AUSL-RE] Menu: Modificare voce livello 0 Fascicoli in  "Dossier e Fascicoli"
+User Story 16846: [AUSL-RE] Menu: Eliminare la voce Dossier di livello 0
+User Story 16847: [AUSL-RE] Menu: Adeguare json di menu per unificazione Menu "Fascicoli" con "Dossier"
+User Story 16848: [AUSL-RE] Menu: Adeguare fameset.asxp.vb per gestine struttura di menu unificata "Fascicoli" con "Dossier"
+User Story 16856: [AUSL-RE] Public WebAPI: Creare WorkflowActivityFinderModel 
+User Story 16857: [AUSL-RE] Public WebAPI: Aggiungere funzione ODATA "MyActivities" al Controller WorkflowsController 
+User Story 16858: [AUSL-RE] WebAPI: Creare il modello WorkflowActivityModel 
+User Story 16859: [AUSL-RE] Public WebAPI: Implementare funzione ODATA "MyActivities" 
+User Story 16921: [AUSL-RE] Framework: Creare Evento EventCreateRoleAuthorization e interfaccia IEventCreateRoleAuthorization
+User Story 16922: [AUSL-RE] Framework: Creare Evento EventDeleteRoleAuthorization e interfaccia IEventDeleteRoleAuthorization
+User Story 16923: [AUSL-RE] Framework: Creare Evento EventCreateUserAuthorization e interfaccia IEventCreateUserAuthorization
+User Story 16924: [AUSL-RE] Framework: Creare Evento EventDeleteUserAuthorization e interfaccia IEventDeleteUserAuthorization 
+User Story 16925: [AUSL-RE] Listeners: Verifica funzionamento della sincronizzazione delle autorizzazioni di Protocollo per la gestione dell'entità DocumentUnitUser.
+User Story 16926: [AUSL-RE] Listeners: Modificare il modulo CQRS ModelInsert e ModelUpdate (Listeners) per l'invio dei nuovi eventi Autorizzazione utente e Settore
+User Story 16980: [AUSL-RE] Fascicoli: Creazione tabella "dbo.FascicleDocumentUnits"
+User Story 16981: [AUSL-RE] Fascicle Private WebAPI: Creazione controller Rest FascicleDocumentUnit
+User Story 16982: [AUSL-RE] Fascicle Private WebAPI: Creazione controller ODATA FascicleDocumentUnit
+User Story 16983: [AUSL-RE] Fascicoli: Aggiornare libreria VecompSoftware.Clients.WebAPI - FascicleDocumentUnit
+User Story 16984: [AUSL-RE] Fascicoli:  Creare il Validation Layer dell'entità FascicleDocumentUnit
+User Story 16985: [AUSL-RE] Fascicle Private WebAPI: Creare layer Service dell'entità FascicleDocumentUnit
+User Story 16986: [AUSL-RE] Fascicle Private WebAPI: Creare Mapping Layer dell'entità FascicleDocumentUnit
+User Story 16987: [AUSL-RE] Fascicle Private WebAPI: Settare Inversion of Controller dei layers di FascicleDocumentUnit
+User Story 16988: [AUSL-RE] Fascicle Private WebAPI: Mappare tabella dbo.FascicleDocumentUnits nella classe FascicleDocumentUnit
+User Story 16989: [AUSL-RE] Fascicle Private WebAPI: Custom validation FascicleDocumentUnit sulla falsa riga di quanto fatto FascicleProtocols
+User Story 16990: [AUSL-RE] Fascicle Private WebAPI: Aggiornare il file EnterpriseLibrary.Validation.config con le nuove Custom validation di FascicleDocumentUnit 
+User Story 17005: [AUSL-RE] Workflow Integration : Creare modulo VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion
+User Story 17010: [AUSL-RE] Workflow Integration : Avvio del workflow "Richiedi parare" dal moudlo VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion
+User Story 17014: [ENAV] DocSuite : Aggiungere risorse XSD e XLST nell'assembly della DocSuite
+User Story 17017: [ENAV] DocSuite : Creare DTO InvoiceResources nella libreria Data
+User Story 17018: [ENAV] DocSuite : Aggiungere alla singleton DocSuiteContext il popolamento della InvoiceResources
+User Story 17020: [ENAV] Stampa Conforme: Create metodo "XmlWithStylesheetConvert" nel Servizio Web
+User Story 17021: [ENAV] Framework: Aggiornare il service di stampa conforme nella permettendo l'utilizzo del nuovo metodo "XmlWithStylesheetConvert"
+User Story 17023: [ENAV] DocSuite: Modificare il visualizzatore documentale per la selezione foglio di stile
+User Story 17024: [ENAV] DocSuite: Modificare il documenthandler con l'aggancio al nuovo metodo di stampa conforme selezione foglio di stile
+User Story 17030: [AUSL-RE] Fascicoli DocSuite: Rimuovere vecchie relazioni in favore della nuova "FascicleDocumentUnits"
+User Story 17031: [AUSL-RE] Fascicoli Private WebAPI : Completamento controller Odata "FascicleDocumentUnits" con bonifica sql function
+User Story 17032: [AUSL-RE] Listeners: Verifica e bonifica del nuovo modello di gestione dei fascicoli "FascicleDocumentUnits" 
+User Story 17033: [AUSL-RE] Integrations: Verifica e bonifica del nuovo modello di gestione dei fascicoli "FascicleDocumentUnits" 
+User Story 17072: [AUSL-RE] DocSuite: Inserire un pulsante "Crea Attività" nella vista di scrivania "Flussi di lavoro"
+User Story 17073: [AUSL-RE] DocSuite Workflow: Creazione pagina  "WorkflowActivityInsert.aspx" per avvio di workflow
+User Story 17074: [AUSL-RE] DocSuite Workflow: Creazione pagina  "WorkflowActivitySummary.aspx" per la visualizzazione del sommario di workflow
+User Story 17096: [AUSL-RE] Monitoraggio Trasparenza: Modifica pagina item.asxp per visualizzazione tramite DocumentUnitId
+User Story 17097: [AUSL-RE] Monitoraggio Trasparenza: Modifica Facade nhibernate DocumentSeriesItemFacade
+User Story 17098: [AUSL-RE] Monitoraggio Trasparenza: Modifica pagina TransparentAdministrationMonitorLog inserendo link al sommario della serie documentale (item.aspx)
+User Story 17099: [AUSL-RE] Monitoraggio Trasparenza: Migliormanenti UX della magina di memorizzazione del "Monitoraggio"
+User Story 17110: [AUSL-RE] DocumentUnitMigrator : Gestione UDSUsers e ProtocolUsers per Protocolli o Archivi
+User Story 17111: [AUSL-RE] DocumentUnitMigrator : Gestione UDSUsers e ProtocolUsers per opzione LeftJoin
+User Story 17114: [AUSL-RE] Public WebAPI: Aggiungere controller REST CompleteWorkflowActivityController (del ramo Workflows)
+User Story 17118: [AUSL-RE] Public WebAPI: Business Logic controller REST CompleteWorkflowActivityController
+User Story 17123: [AUSL-RE] DocSuite : Pulizia etichette "Flussi di lavoro-> attività"
+User Story 17149: [AUSL-RE] DocumentUnitMigrator : Gestione bonifica FascicleDocumentUnits
+User Story 17151: [AUSL-RE] Fascicoli: Modifica visibilità del pulsante btnWorkflowLogs
+User Story 17152: [AUSL-RE] Fascicoli: Creare un nuovo pulsante LOG che visualizzi la pagina "FascicleLog.aspx" in FascVisualizza.aspx
+User Story 17153: [AUSL-RE] Fascicoli: Creare pagina FascicleLog.aspx
+User Story 17157: [AUSL-RE] Fascicoli: Gestione Contenitore nel Classificatore con parametro attivo FascicleContainerEnabled
+User Story 17161: [AUSL-RE] Fascicoli: Aggiunta diritti di fascicoli nei gruppi di contenitore
+User Story 17162: [AUSL-RE] Fascicoli: Riepilogo informativo dei diritti di fascicoli nei gruppi di contenitore
+User Story 17164: [AUSL-RE] Fascicoli: In fase di apertura di procedimento richiedere obbligatoriamente Contenitore (non generalista).
+User Story 17165: [AUSL-RE] Fascicoli: In fase di apertura di peridico adattare la scelta del contenitore (non generalista).
+User Story 17167: [AUSL-RE] WebAPI Fascicoli: Aggiungere filtro per contenitore nella pagina di ricerca dei fascicoli (non generalista).
+User Story 17168: [AUSL-RE] Fascicoli: Aggiungere filtro per contenitore nella pagina di ricerca dei fascicoli (non generalista).
+User Story 17170: [AUSL-RE] Fascicoli: Adeguare la ricerca dei fascicoli collegati come avviene in ricerca di fascicoli da sommario di protocollo.
+User Story 17177: [AUSL-RE] ExternalViewer: Creare rotta "MieAttivita" 
+User Story 17178: [AUSL-RE] ExternalViewer: Nuove componenti per la gestione delle mie attivita
+User Story 17179: [AUSL-RE] ExternalViewer: Nuova una componente "Completa attività" che permette di completare la workflowactivity
+User Story 17180: [AUSL-RE] ExternalViewer: Business logic della componente "Completa attività"
+User Story 17181: [AUSL-RE] ExternalViewer: Aggiungere al sommario di protocollo il pulsante "Esprimi parere"
+User Story 17182: [AUSL-RE] Public WebAPI: Aggiungere funzione ODATA "CurrentWorkflowActivityFromDocumentUnit" al Controller WorkflowActivitiesController 
+User Story 17183: [AUSL-RE] ExternalViewer: Aggiungere al sommario di attività il pulsante "Esprimi parere"
+User Story 17184: [AUSL-RE] ExternalViewer: Creare una somamario di "attività" (rappresentazione WorkflowActivity)
+User Story 17344: [DSW] Aggiungere policy di retry nel converter di OpenOffice
+User Story 17366: [AUSL-RE] WebAPI: Revisione CategoryFascicleService per rimozione in cascata dei CategoryFascicleRights
+User Story 17367: [AUSL-RE] WebAPI: Revisione CategoryFascicleController per invio del comando CommandDeleteCategoryFascicle
+User Story 17398: [AUSL-RE] WebAPI: Aggiungere custom validation HasProcedureFascicleActive per l'entità CategoryFascicle
+User Story 17399: [AUSL-RE] Gestione classificatore: Cambiare etichetta "svuota piano di fascicolazione" in "Annulla piano di procedimento"
+User Story 17400: [AUSL-RE] Gestione classificatore: Implementare logica "Annulla piano di procedimento"
+User Story 17419: [AUSL-RE] Scrivania di Workflow : Aggiungere il filtro "Attività avviate da me/miei settori"
+User Story 17420: [AUSL-RE] Scrivania di Workflow : Modificare il finder WorkflowActivityFinder inserendo la proprietà string RequestorUser
+User Story 17421: [AUSL-RE] Scrivania di Workflow : Applicare la logica di ricerca al WorkflowActivityFinder della proprietà RequestorUser
+
+
+Bug 16836: [AUSL-RE] ExternalViewer: Se è stata applicata l'autenticazione NTLM alcune chiamate vengono prodotto in berear autentication
+Bug 17061: [AFOL]Il pulsante "Rispondi PEC" genera errore se nell'oggetto sono presenti parentesi quadre
+Bug 17063: [ASL-TO] Visualizzazione errata della codifica dell'apostrofo per l'invio PEC al Collegio Sindacale
+
+Issue 12975: [DSW] Togliere utilizzo metodo GetContainersCount a favore di un metodo nella CommonShared che carichi una sola volta i contenitori
+Issue 17342: [AGENAS] Conferma e Duplica PEC da Protocollazione riporta l'associazione del Protocollo

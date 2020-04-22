@@ -1,0 +1,582 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{BA6839B0-C370-4189-9ADA-D59D0E8ED56D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{7639789B-316D-45B2-AD80-A675FFC88E28}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{21092DFB-BF37-474D-91E3-8FD3FE303EA2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FALCK", "FALCK", "{C9AC9AD2-2819-4FA1-BB49-82AA5661CF05}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ENAV", "ENAV", "{95503BA1-06ED-431D-86EF-C08C4E95A2C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integration", "VecompSoftware.BPM.Integrations\VecompSoftware.BPM.Integration.csproj", "{290D27C4-9B13-48F8-AF11-48A580BFB876}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Services.BiblosDS", "VecompSoftware.BPM.Integrations.Services.BiblosDS\VecompSoftware.BPM.Integrations.Services.BiblosDS.csproj", "{3279E762-E123-4D8B-ABC0-6CBCA4489776}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Services.ServiceBus", "VecompSoftware.BPM.Integrations.Services.ServiceBus\VecompSoftware.BPM.Integrations.Services.ServiceBus.csproj", "{FBFED947-BE1B-4C76-A530-CB9692009853}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Services.WebAPI", "VecompSoftware.BPM.Integrations.Services.WebAPI\VecompSoftware.BPM.Integrations.Services.WebAPI.csproj", "{D819E5E7-454A-4A1E-A2D7-F4EF9991998A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Services.WorkflowManager", "VecompSoftware.BPM.Integrations.Services.WorkflowManager\VecompSoftware.BPM.Integrations.Services.WorkflowManager.csproj", "{50A958CE-8AC4-4EB7-BDD9-B63B469F1D54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules", "VecompSoftware.BPM.Integrations.Modules\VecompSoftware.BPM.Integrations.Modules.csproj", "{8430C3B8-2511-4A46-9A0A-C1044E1DDEF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.FALCK.Data", "VecompSoftware.BPM.Integrations.Modules.FALCK.Data\VecompSoftware.BPM.Integrations.Modules.FALCK.Data.csproj", "{BE06773B-2B0C-4D46-A38F-48FB168E075A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.FALCK.Workflows", "VecompSoftware.BPM.Integrations.Modules.FALCK.Workflows\VecompSoftware.BPM.Integrations.Modules.FALCK.Workflows.csproj", "{3E4272A8-E198-4926-B18D-1947459B42F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.ENAV.IP4D", "VecompSoftware.BPM.Integrations.Modules.ENAV.IP4D\VecompSoftware.BPM.Integrations.Modules.ENAV.IP4D.csproj", "{01E41CD1-2A07-4F9D-A7B7-17294DD81BB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Model", "VecompSoftware.BPM.Integrations.Model\VecompSoftware.BPM.Integrations.Model.csproj", "{A9AA9956-35BC-4365-A8F3-3C0FE3E0D3C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.ModuleManager", "VecompSoftware.BPM.Integrations.ModuleManager\VecompSoftware.BPM.Integrations.ModuleManager.csproj", "{E6E421E5-F183-4227-A2BE-F3EF4D0C2E22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.ServiceWake", "VecompSoftware.BPM.Integrations.ServiceWake\VecompSoftware.BPM.Integrations.ServiceWake.csproj", "{1ABFBB6D-CDE0-4ED7-93E3-2DB3BFB3848A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.ServiceWake.Periodic", "VecompSoftware.BPM.Integrations.ServiceWake.Periodic\VecompSoftware.BPM.Integrations.ServiceWake.Periodic.csproj", "{5708E79B-A518-434A-98AF-30C48F8D93C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.ServiceWake.Single", "VecompSoftware.BPM.Integrations.ServiceWake.Single\VecompSoftware.BPM.Integrations.ServiceWake.Single.csproj", "{5414DE83-7CEE-424B-8522-490E8431B4B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Services.StampaConforme", "VecompSoftware.BPM.Integrations.Services.StampaConforme\VecompSoftware.BPM.Integrations.Services.StampaConforme.csproj", "{92ED11A2-2501-4309-A8C1-FB349BA8E2FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare", "VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare\VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare.csproj", "{35CBCEB5-D6B1-4E88-9933-716C28B0B9CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare.Data", "VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare.Data\VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare.Data.csproj", "{F553B6BA-0D46-47B1-B947-452039AF0568}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VSW", "VSW", "{50602576-8B2F-47AE-8421-6A8F8603D3AD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AUSLRE", "AUSLRE", "{F7BCA047-3362-4BA3-A369-50447B4134BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN", "VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN\VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN.csproj", "{0B04C15F-FFEB-429B-AFD9-C6E78DA83E44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.Dematerialisation", "VecompSoftware.BPM.Integrations.Modules.VSW.Dematerialisation\VecompSoftware.BPM.Integrations.Modules.VSW.Dematerialisation.csproj", "{75DC7174-D1F7-4231-969B-FA6C48F5EFE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle", "VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle\VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle.csproj", "{07B66370-25E2-4BC4-9EB3-51F5F06F5EB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.SecureDocument", "VecompSoftware.BPM.Integrations.Modules.VSW.SecureDocument\VecompSoftware.BPM.Integrations.Modules.VSW.SecureDocument.csproj", "{018341E9-7ED1-4E31-B5BA-6EF32FBF5F18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator", "VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator\VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator.csproj", "{170A896C-A877-422B-8B02-0A2CF33203D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Contract", "VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Contract\VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Contract.csproj", "{2E26F485-8B3E-4700-B124-882D0B683358}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Data", "VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Data\VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Data.csproj", "{9514C971-5FDB-498A-9B31-4A0C24C86DAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink", "VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink\VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink.csproj", "{FB574A97-3B75-4310-9A80-DED0F7634CAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit", "VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit\VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit.csproj", "{1F390A86-F59C-4C45-B87F-7126A4F42E89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.PayableInvoiceFileSystem", "VecompSoftware.BPM.Integrations.Modules.VSW.PayableInvoiceFileSystem\VecompSoftware.BPM.Integrations.Modules.VSW.PayableInvoiceFileSystem.csproj", "{5B323736-7369-4491-9AB6-01B2EEAF649B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Services.SignServices", "VecompSoftware.BPM.Integrations.Services.SignService\VecompSoftware.BPM.Integrations.Services.SignServices.csproj", "{6DBD65E3-A831-4D8D-B226-A419C7A5BF15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Invoice", "VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Invoice\VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Invoice.csproj", "{05414306-7ADA-48D6-A424-642563F13CEB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AFOL", "AFOL", "{A3CA8366-5A4A-4A12-AD69-FBE6E78B34F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Invoice", "VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Invoice\VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Invoice.csproj", "{6F8ADDC8-A579-4BDC-B33A-BD291D74152C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Data", "VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Data\VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Data.csproj", "{9756DF75-228B-4B40-8C15-D8DE31602848}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TECHNOSKY", "TECHNOSKY", "{57D6461A-3976-4430-849D-D8F4D67F35E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice", "VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice\VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice.csproj", "{978C356D-8F03-42F3-84A0-EAF968BCB2B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion", "VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion\VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion.csproj", "{E74D238A-A68E-473E-A267-63C9F6780A88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose", "VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose\VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose.csproj", "{C373CD74-987B-4E99-B1C9-F5EE5D1A81ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice", "VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice\VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice.csproj", "{D640DC40-C080-47FF-BEAB-FD29AA2F8B35}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ENEA", "ENEA", "{9C9C94AA-6332-4D74-A3AB-33FD10B29361}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.ENEA.Wide", "VecompSoftware.BPM.Integrations.Modules.ENEA.Wide\VecompSoftware.BPM.Integrations.Modules.ENEA.Wide.csproj", "{86F619BD-9567-45C1-82FA-0B709B0F0565}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TEAFLEX", "TEAFLEX", "{90355175-0778-44A7-BA15-E29911EBF6F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice", "VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice\VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice.csproj", "{CAB968B0-7C56-44D3-A6F9-8AF7B37C3D9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging", "VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging\VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging.csproj", "{C11CE2CF-E318-4F5D-8374-88CA97F14242}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign", "VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign\VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign.csproj", "{ACFB1E42-BF5C-4B38-8CCB-4FBE6B71CBC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID", "VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID\VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID.csproj", "{3587FEFE-E0D1-4BF8-81F7-0537E7C11C8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.AUSLRE.AVELCO", "VecompSoftware.BPM.Integrations.Modules.AUSLRE.AVELCO\VecompSoftware.BPM.Integrations.Modules.AUSLRE.AVELCO.csproj", "{2688DBC1-86C7-4170-A060-39131002BE39}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AGENAS", "AGENAS", "{DDE93C2A-09D5-45BA-ABA7-656CFCC9DE96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.AGENAS.RDA", "VecompSoftware.BPM.Integrations.Modules.AGENAS.RDA\VecompSoftware.BPM.Integrations.Modules.AGENAS.RDA.csproj", "{E99A2613-C0B7-4768-9397-DAC1850A3AAF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TECMARKET", "TECMARKET", "{FFAD5ABD-9BCD-4AB3-8D14-7C936E3493E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer", "VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer\VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer.csproj", "{26E04BFB-42EF-4EE4-BF19-320B4F98586F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer", "VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer\VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer.csproj", "{5E42B1A9-F907-44C4-BDFB-1DE5878396C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.TECMARKET.Reporting", "VecompSoftware.BPM.Integrations.Modules.TECMARKET.Reporting\VecompSoftware.BPM.Integrations.Modules.TECMARKET.Reporting.csproj", "{BD47E940-8E90-426E-930F-B1A910CAB26E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess", "VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess\VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess.csproj", "{58F77D5D-DEF4-4FE9-A0C5-D932E971EFA7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DGROOVE", "DGROOVE", "{AEC9E5AA-F45B-4B44-B5EF-1406F80462C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini", "VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini\VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini.csproj", "{2BE4FB27-D5D5-4A31-B4A5-670E39AB6175}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{290D27C4-9B13-48F8-AF11-48A580BFB876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{290D27C4-9B13-48F8-AF11-48A580BFB876}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{290D27C4-9B13-48F8-AF11-48A580BFB876}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{290D27C4-9B13-48F8-AF11-48A580BFB876}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3279E762-E123-4D8B-ABC0-6CBCA4489776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3279E762-E123-4D8B-ABC0-6CBCA4489776}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3279E762-E123-4D8B-ABC0-6CBCA4489776}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3279E762-E123-4D8B-ABC0-6CBCA4489776}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBFED947-BE1B-4C76-A530-CB9692009853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBFED947-BE1B-4C76-A530-CB9692009853}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBFED947-BE1B-4C76-A530-CB9692009853}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBFED947-BE1B-4C76-A530-CB9692009853}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D819E5E7-454A-4A1E-A2D7-F4EF9991998A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D819E5E7-454A-4A1E-A2D7-F4EF9991998A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D819E5E7-454A-4A1E-A2D7-F4EF9991998A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D819E5E7-454A-4A1E-A2D7-F4EF9991998A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50A958CE-8AC4-4EB7-BDD9-B63B469F1D54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50A958CE-8AC4-4EB7-BDD9-B63B469F1D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50A958CE-8AC4-4EB7-BDD9-B63B469F1D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50A958CE-8AC4-4EB7-BDD9-B63B469F1D54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8430C3B8-2511-4A46-9A0A-C1044E1DDEF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8430C3B8-2511-4A46-9A0A-C1044E1DDEF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8430C3B8-2511-4A46-9A0A-C1044E1DDEF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8430C3B8-2511-4A46-9A0A-C1044E1DDEF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE06773B-2B0C-4D46-A38F-48FB168E075A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE06773B-2B0C-4D46-A38F-48FB168E075A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE06773B-2B0C-4D46-A38F-48FB168E075A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE06773B-2B0C-4D46-A38F-48FB168E075A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E4272A8-E198-4926-B18D-1947459B42F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E4272A8-E198-4926-B18D-1947459B42F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E4272A8-E198-4926-B18D-1947459B42F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E4272A8-E198-4926-B18D-1947459B42F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01E41CD1-2A07-4F9D-A7B7-17294DD81BB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01E41CD1-2A07-4F9D-A7B7-17294DD81BB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01E41CD1-2A07-4F9D-A7B7-17294DD81BB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01E41CD1-2A07-4F9D-A7B7-17294DD81BB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9AA9956-35BC-4365-A8F3-3C0FE3E0D3C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9AA9956-35BC-4365-A8F3-3C0FE3E0D3C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9AA9956-35BC-4365-A8F3-3C0FE3E0D3C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9AA9956-35BC-4365-A8F3-3C0FE3E0D3C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6E421E5-F183-4227-A2BE-F3EF4D0C2E22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6E421E5-F183-4227-A2BE-F3EF4D0C2E22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6E421E5-F183-4227-A2BE-F3EF4D0C2E22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6E421E5-F183-4227-A2BE-F3EF4D0C2E22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ABFBB6D-CDE0-4ED7-93E3-2DB3BFB3848A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ABFBB6D-CDE0-4ED7-93E3-2DB3BFB3848A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ABFBB6D-CDE0-4ED7-93E3-2DB3BFB3848A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ABFBB6D-CDE0-4ED7-93E3-2DB3BFB3848A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5708E79B-A518-434A-98AF-30C48F8D93C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5708E79B-A518-434A-98AF-30C48F8D93C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5708E79B-A518-434A-98AF-30C48F8D93C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5708E79B-A518-434A-98AF-30C48F8D93C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5414DE83-7CEE-424B-8522-490E8431B4B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5414DE83-7CEE-424B-8522-490E8431B4B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5414DE83-7CEE-424B-8522-490E8431B4B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5414DE83-7CEE-424B-8522-490E8431B4B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92ED11A2-2501-4309-A8C1-FB349BA8E2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92ED11A2-2501-4309-A8C1-FB349BA8E2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92ED11A2-2501-4309-A8C1-FB349BA8E2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92ED11A2-2501-4309-A8C1-FB349BA8E2FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35CBCEB5-D6B1-4E88-9933-716C28B0B9CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35CBCEB5-D6B1-4E88-9933-716C28B0B9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35CBCEB5-D6B1-4E88-9933-716C28B0B9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35CBCEB5-D6B1-4E88-9933-716C28B0B9CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F553B6BA-0D46-47B1-B947-452039AF0568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F553B6BA-0D46-47B1-B947-452039AF0568}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F553B6BA-0D46-47B1-B947-452039AF0568}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F553B6BA-0D46-47B1-B947-452039AF0568}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B04C15F-FFEB-429B-AFD9-C6E78DA83E44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B04C15F-FFEB-429B-AFD9-C6E78DA83E44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B04C15F-FFEB-429B-AFD9-C6E78DA83E44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B04C15F-FFEB-429B-AFD9-C6E78DA83E44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75DC7174-D1F7-4231-969B-FA6C48F5EFE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75DC7174-D1F7-4231-969B-FA6C48F5EFE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75DC7174-D1F7-4231-969B-FA6C48F5EFE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75DC7174-D1F7-4231-969B-FA6C48F5EFE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07B66370-25E2-4BC4-9EB3-51F5F06F5EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07B66370-25E2-4BC4-9EB3-51F5F06F5EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07B66370-25E2-4BC4-9EB3-51F5F06F5EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07B66370-25E2-4BC4-9EB3-51F5F06F5EB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{018341E9-7ED1-4E31-B5BA-6EF32FBF5F18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{018341E9-7ED1-4E31-B5BA-6EF32FBF5F18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{018341E9-7ED1-4E31-B5BA-6EF32FBF5F18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{018341E9-7ED1-4E31-B5BA-6EF32FBF5F18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{170A896C-A877-422B-8B02-0A2CF33203D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{170A896C-A877-422B-8B02-0A2CF33203D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{170A896C-A877-422B-8B02-0A2CF33203D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{170A896C-A877-422B-8B02-0A2CF33203D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E26F485-8B3E-4700-B124-882D0B683358}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E26F485-8B3E-4700-B124-882D0B683358}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E26F485-8B3E-4700-B124-882D0B683358}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E26F485-8B3E-4700-B124-882D0B683358}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9514C971-5FDB-498A-9B31-4A0C24C86DAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9514C971-5FDB-498A-9B31-4A0C24C86DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9514C971-5FDB-498A-9B31-4A0C24C86DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9514C971-5FDB-498A-9B31-4A0C24C86DAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB574A97-3B75-4310-9A80-DED0F7634CAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB574A97-3B75-4310-9A80-DED0F7634CAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB574A97-3B75-4310-9A80-DED0F7634CAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB574A97-3B75-4310-9A80-DED0F7634CAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F390A86-F59C-4C45-B87F-7126A4F42E89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F390A86-F59C-4C45-B87F-7126A4F42E89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F390A86-F59C-4C45-B87F-7126A4F42E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F390A86-F59C-4C45-B87F-7126A4F42E89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B323736-7369-4491-9AB6-01B2EEAF649B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B323736-7369-4491-9AB6-01B2EEAF649B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B323736-7369-4491-9AB6-01B2EEAF649B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B323736-7369-4491-9AB6-01B2EEAF649B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DBD65E3-A831-4D8D-B226-A419C7A5BF15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DBD65E3-A831-4D8D-B226-A419C7A5BF15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DBD65E3-A831-4D8D-B226-A419C7A5BF15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DBD65E3-A831-4D8D-B226-A419C7A5BF15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05414306-7ADA-48D6-A424-642563F13CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05414306-7ADA-48D6-A424-642563F13CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05414306-7ADA-48D6-A424-642563F13CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05414306-7ADA-48D6-A424-642563F13CEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F8ADDC8-A579-4BDC-B33A-BD291D74152C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F8ADDC8-A579-4BDC-B33A-BD291D74152C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F8ADDC8-A579-4BDC-B33A-BD291D74152C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F8ADDC8-A579-4BDC-B33A-BD291D74152C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9756DF75-228B-4B40-8C15-D8DE31602848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9756DF75-228B-4B40-8C15-D8DE31602848}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9756DF75-228B-4B40-8C15-D8DE31602848}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9756DF75-228B-4B40-8C15-D8DE31602848}.Release|Any CPU.Build.0 = Release|Any CPU
+		{978C356D-8F03-42F3-84A0-EAF968BCB2B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{978C356D-8F03-42F3-84A0-EAF968BCB2B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{978C356D-8F03-42F3-84A0-EAF968BCB2B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{978C356D-8F03-42F3-84A0-EAF968BCB2B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E74D238A-A68E-473E-A267-63C9F6780A88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E74D238A-A68E-473E-A267-63C9F6780A88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E74D238A-A68E-473E-A267-63C9F6780A88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E74D238A-A68E-473E-A267-63C9F6780A88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C373CD74-987B-4E99-B1C9-F5EE5D1A81ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C373CD74-987B-4E99-B1C9-F5EE5D1A81ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C373CD74-987B-4E99-B1C9-F5EE5D1A81ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C373CD74-987B-4E99-B1C9-F5EE5D1A81ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D640DC40-C080-47FF-BEAB-FD29AA2F8B35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D640DC40-C080-47FF-BEAB-FD29AA2F8B35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D640DC40-C080-47FF-BEAB-FD29AA2F8B35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D640DC40-C080-47FF-BEAB-FD29AA2F8B35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86F619BD-9567-45C1-82FA-0B709B0F0565}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86F619BD-9567-45C1-82FA-0B709B0F0565}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86F619BD-9567-45C1-82FA-0B709B0F0565}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86F619BD-9567-45C1-82FA-0B709B0F0565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAB968B0-7C56-44D3-A6F9-8AF7B37C3D9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAB968B0-7C56-44D3-A6F9-8AF7B37C3D9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAB968B0-7C56-44D3-A6F9-8AF7B37C3D9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAB968B0-7C56-44D3-A6F9-8AF7B37C3D9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C11CE2CF-E318-4F5D-8374-88CA97F14242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C11CE2CF-E318-4F5D-8374-88CA97F14242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C11CE2CF-E318-4F5D-8374-88CA97F14242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C11CE2CF-E318-4F5D-8374-88CA97F14242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACFB1E42-BF5C-4B38-8CCB-4FBE6B71CBC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACFB1E42-BF5C-4B38-8CCB-4FBE6B71CBC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACFB1E42-BF5C-4B38-8CCB-4FBE6B71CBC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACFB1E42-BF5C-4B38-8CCB-4FBE6B71CBC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3587FEFE-E0D1-4BF8-81F7-0537E7C11C8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3587FEFE-E0D1-4BF8-81F7-0537E7C11C8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3587FEFE-E0D1-4BF8-81F7-0537E7C11C8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3587FEFE-E0D1-4BF8-81F7-0537E7C11C8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2688DBC1-86C7-4170-A060-39131002BE39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2688DBC1-86C7-4170-A060-39131002BE39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2688DBC1-86C7-4170-A060-39131002BE39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2688DBC1-86C7-4170-A060-39131002BE39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E99A2613-C0B7-4768-9397-DAC1850A3AAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E99A2613-C0B7-4768-9397-DAC1850A3AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E99A2613-C0B7-4768-9397-DAC1850A3AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E99A2613-C0B7-4768-9397-DAC1850A3AAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26E04BFB-42EF-4EE4-BF19-320B4F98586F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26E04BFB-42EF-4EE4-BF19-320B4F98586F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26E04BFB-42EF-4EE4-BF19-320B4F98586F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26E04BFB-42EF-4EE4-BF19-320B4F98586F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E42B1A9-F907-44C4-BDFB-1DE5878396C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E42B1A9-F907-44C4-BDFB-1DE5878396C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E42B1A9-F907-44C4-BDFB-1DE5878396C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E42B1A9-F907-44C4-BDFB-1DE5878396C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD47E940-8E90-426E-930F-B1A910CAB26E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD47E940-8E90-426E-930F-B1A910CAB26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD47E940-8E90-426E-930F-B1A910CAB26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD47E940-8E90-426E-930F-B1A910CAB26E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58F77D5D-DEF4-4FE9-A0C5-D932E971EFA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58F77D5D-DEF4-4FE9-A0C5-D932E971EFA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58F77D5D-DEF4-4FE9-A0C5-D932E971EFA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58F77D5D-DEF4-4FE9-A0C5-D932E971EFA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BE4FB27-D5D5-4A31-B4A5-670E39AB6175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BE4FB27-D5D5-4A31-B4A5-670E39AB6175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BE4FB27-D5D5-4A31-B4A5-670E39AB6175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BE4FB27-D5D5-4A31-B4A5-670E39AB6175}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C9AC9AD2-2819-4FA1-BB49-82AA5661CF05} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{95503BA1-06ED-431D-86EF-C08C4E95A2C3} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{3279E762-E123-4D8B-ABC0-6CBCA4489776} = {21092DFB-BF37-474D-91E3-8FD3FE303EA2}
+		{FBFED947-BE1B-4C76-A530-CB9692009853} = {21092DFB-BF37-474D-91E3-8FD3FE303EA2}
+		{D819E5E7-454A-4A1E-A2D7-F4EF9991998A} = {21092DFB-BF37-474D-91E3-8FD3FE303EA2}
+		{50A958CE-8AC4-4EB7-BDD9-B63B469F1D54} = {21092DFB-BF37-474D-91E3-8FD3FE303EA2}
+		{8430C3B8-2511-4A46-9A0A-C1044E1DDEF6} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{BE06773B-2B0C-4D46-A38F-48FB168E075A} = {C9AC9AD2-2819-4FA1-BB49-82AA5661CF05}
+		{3E4272A8-E198-4926-B18D-1947459B42F0} = {C9AC9AD2-2819-4FA1-BB49-82AA5661CF05}
+		{01E41CD1-2A07-4F9D-A7B7-17294DD81BB4} = {95503BA1-06ED-431D-86EF-C08C4E95A2C3}
+		{A9AA9956-35BC-4365-A8F3-3C0FE3E0D3C8} = {BA6839B0-C370-4189-9ADA-D59D0E8ED56D}
+		{E6E421E5-F183-4227-A2BE-F3EF4D0C2E22} = {BA6839B0-C370-4189-9ADA-D59D0E8ED56D}
+		{1ABFBB6D-CDE0-4ED7-93E3-2DB3BFB3848A} = {BA6839B0-C370-4189-9ADA-D59D0E8ED56D}
+		{5708E79B-A518-434A-98AF-30C48F8D93C5} = {BA6839B0-C370-4189-9ADA-D59D0E8ED56D}
+		{5414DE83-7CEE-424B-8522-490E8431B4B1} = {BA6839B0-C370-4189-9ADA-D59D0E8ED56D}
+		{92ED11A2-2501-4309-A8C1-FB349BA8E2FD} = {21092DFB-BF37-474D-91E3-8FD3FE303EA2}
+		{35CBCEB5-D6B1-4E88-9933-716C28B0B9CC} = {95503BA1-06ED-431D-86EF-C08C4E95A2C3}
+		{F553B6BA-0D46-47B1-B947-452039AF0568} = {95503BA1-06ED-431D-86EF-C08C4E95A2C3}
+		{50602576-8B2F-47AE-8421-6A8F8603D3AD} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{F7BCA047-3362-4BA3-A369-50447B4134BF} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{0B04C15F-FFEB-429B-AFD9-C6E78DA83E44} = {F7BCA047-3362-4BA3-A369-50447B4134BF}
+		{75DC7174-D1F7-4231-969B-FA6C48F5EFE4} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{07B66370-25E2-4BC4-9EB3-51F5F06F5EB2} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{018341E9-7ED1-4E31-B5BA-6EF32FBF5F18} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{170A896C-A877-422B-8B02-0A2CF33203D0} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{2E26F485-8B3E-4700-B124-882D0B683358} = {95503BA1-06ED-431D-86EF-C08C4E95A2C3}
+		{9514C971-5FDB-498A-9B31-4A0C24C86DAB} = {95503BA1-06ED-431D-86EF-C08C4E95A2C3}
+		{FB574A97-3B75-4310-9A80-DED0F7634CAB} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{1F390A86-F59C-4C45-B87F-7126A4F42E89} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{5B323736-7369-4491-9AB6-01B2EEAF649B} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{6DBD65E3-A831-4D8D-B226-A419C7A5BF15} = {21092DFB-BF37-474D-91E3-8FD3FE303EA2}
+		{05414306-7ADA-48D6-A424-642563F13CEB} = {95503BA1-06ED-431D-86EF-C08C4E95A2C3}
+		{A3CA8366-5A4A-4A12-AD69-FBE6E78B34F9} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{6F8ADDC8-A579-4BDC-B33A-BD291D74152C} = {A3CA8366-5A4A-4A12-AD69-FBE6E78B34F9}
+		{9756DF75-228B-4B40-8C15-D8DE31602848} = {A3CA8366-5A4A-4A12-AD69-FBE6E78B34F9}
+		{57D6461A-3976-4430-849D-D8F4D67F35E4} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{978C356D-8F03-42F3-84A0-EAF968BCB2B0} = {57D6461A-3976-4430-849D-D8F4D67F35E4}
+		{E74D238A-A68E-473E-A267-63C9F6780A88} = {F7BCA047-3362-4BA3-A369-50447B4134BF}
+		{C373CD74-987B-4E99-B1C9-F5EE5D1A81ED} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{D640DC40-C080-47FF-BEAB-FD29AA2F8B35} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{9C9C94AA-6332-4D74-A3AB-33FD10B29361} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{86F619BD-9567-45C1-82FA-0B709B0F0565} = {9C9C94AA-6332-4D74-A3AB-33FD10B29361}
+		{90355175-0778-44A7-BA15-E29911EBF6F3} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{CAB968B0-7C56-44D3-A6F9-8AF7B37C3D9F} = {90355175-0778-44A7-BA15-E29911EBF6F3}
+		{C11CE2CF-E318-4F5D-8374-88CA97F14242} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{ACFB1E42-BF5C-4B38-8CCB-4FBE6B71CBC2} = {50602576-8B2F-47AE-8421-6A8F8603D3AD}
+		{3587FEFE-E0D1-4BF8-81F7-0537E7C11C8B} = {F7BCA047-3362-4BA3-A369-50447B4134BF}
+		{2688DBC1-86C7-4170-A060-39131002BE39} = {F7BCA047-3362-4BA3-A369-50447B4134BF}
+		{DDE93C2A-09D5-45BA-ABA7-656CFCC9DE96} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{E99A2613-C0B7-4768-9397-DAC1850A3AAF} = {DDE93C2A-09D5-45BA-ABA7-656CFCC9DE96}
+		{FFAD5ABD-9BCD-4AB3-8D14-7C936E3493E6} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{26E04BFB-42EF-4EE4-BF19-320B4F98586F} = {FFAD5ABD-9BCD-4AB3-8D14-7C936E3493E6}
+		{5E42B1A9-F907-44C4-BDFB-1DE5878396C8} = {FFAD5ABD-9BCD-4AB3-8D14-7C936E3493E6}
+		{BD47E940-8E90-426E-930F-B1A910CAB26E} = {FFAD5ABD-9BCD-4AB3-8D14-7C936E3493E6}
+		{58F77D5D-DEF4-4FE9-A0C5-D932E971EFA7} = {FFAD5ABD-9BCD-4AB3-8D14-7C936E3493E6}
+		{AEC9E5AA-F45B-4B44-B5EF-1406F80462C0} = {7639789B-316D-45B2-AD80-A675FFC88E28}
+		{2BE4FB27-D5D5-4A31-B4A5-670E39AB6175} = {AEC9E5AA-F45B-4B44-B5EF-1406F80462C0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BAD08BB6-08A4-43B2-8098-6AFACBDB2955}
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 48
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://dev.azure.com/docsuiteweb
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = VecompSoftware.BPM.Integrations.Services.BiblosDS\\VecompSoftware.BPM.Integrations.Services.BiblosDS.csproj
+		SccProjectTopLevelParentUniqueName1 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName1 = VecompSoftware.BPM.Integrations.Services.BiblosDS
+		SccLocalPath1 = VecompSoftware.BPM.Integrations.Services.BiblosDS
+		SccProjectUniqueName2 = VecompSoftware.BPM.Integrations.Services.ServiceBus\\VecompSoftware.BPM.Integrations.Services.ServiceBus.csproj
+		SccProjectTopLevelParentUniqueName2 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName2 = VecompSoftware.BPM.Integrations.Services.ServiceBus
+		SccLocalPath2 = VecompSoftware.BPM.Integrations.Services.ServiceBus
+		SccProjectUniqueName3 = VecompSoftware.BPM.Integrations.Services.StampaConforme\\VecompSoftware.BPM.Integrations.Services.StampaConforme.csproj
+		SccProjectTopLevelParentUniqueName3 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName3 = VecompSoftware.BPM.Integrations.Services.StampaConforme
+		SccLocalPath3 = VecompSoftware.BPM.Integrations.Services.StampaConforme
+		SccProjectUniqueName4 = VecompSoftware.BPM.Integrations.Services.WebAPI\\VecompSoftware.BPM.Integrations.Services.WebAPI.csproj
+		SccProjectTopLevelParentUniqueName4 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName4 = VecompSoftware.BPM.Integrations.Services.WebAPI
+		SccLocalPath4 = VecompSoftware.BPM.Integrations.Services.WebAPI
+		SccProjectUniqueName5 = VecompSoftware.BPM.Integrations.Services.WorkflowManager\\VecompSoftware.BPM.Integrations.Services.WorkflowManager.csproj
+		SccProjectTopLevelParentUniqueName5 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName5 = VecompSoftware.BPM.Integrations.Services.WorkflowManager
+		SccLocalPath5 = VecompSoftware.BPM.Integrations.Services.WorkflowManager
+		SccProjectUniqueName6 = VecompSoftware.BPM.Integrations.Model\\VecompSoftware.BPM.Integrations.Model.csproj
+		SccProjectTopLevelParentUniqueName6 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName6 = VecompSoftware.BPM.Integrations.Model
+		SccLocalPath6 = VecompSoftware.BPM.Integrations.Model
+		SccProjectUniqueName7 = VecompSoftware.BPM.Integrations.ModuleManager\\VecompSoftware.BPM.Integrations.ModuleManager.csproj
+		SccProjectTopLevelParentUniqueName7 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName7 = VecompSoftware.BPM.Integrations.ModuleManager
+		SccLocalPath7 = VecompSoftware.BPM.Integrations.ModuleManager
+		SccProjectUniqueName8 = VecompSoftware.BPM.Integrations.ServiceWake\\VecompSoftware.BPM.Integrations.ServiceWake.csproj
+		SccProjectTopLevelParentUniqueName8 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName8 = VecompSoftware.BPM.Integrations.ServiceWake
+		SccLocalPath8 = VecompSoftware.BPM.Integrations.ServiceWake
+		SccProjectUniqueName9 = VecompSoftware.BPM.Integrations.ServiceWake.Periodic\\VecompSoftware.BPM.Integrations.ServiceWake.Periodic.csproj
+		SccProjectTopLevelParentUniqueName9 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName9 = VecompSoftware.BPM.Integrations.ServiceWake.Periodic
+		SccLocalPath9 = VecompSoftware.BPM.Integrations.ServiceWake.Periodic
+		SccProjectUniqueName10 = VecompSoftware.BPM.Integrations.ServiceWake.Single\\VecompSoftware.BPM.Integrations.ServiceWake.Single.csproj
+		SccProjectTopLevelParentUniqueName10 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName10 = VecompSoftware.BPM.Integrations.ServiceWake.Single
+		SccLocalPath10 = VecompSoftware.BPM.Integrations.ServiceWake.Single
+		SccProjectUniqueName11 = VecompSoftware.BPM.Integrations\\VecompSoftware.BPM.Integration.csproj
+		SccProjectName11 = VecompSoftware.BPM.Integrations
+		SccLocalPath11 = VecompSoftware.BPM.Integrations
+		SccProjectUniqueName12 = VecompSoftware.BPM.Integrations.Modules.FALCK.Data\\VecompSoftware.BPM.Integrations.Modules.FALCK.Data.csproj
+		SccProjectTopLevelParentUniqueName12 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName12 = VecompSoftware.BPM.Integrations.Modules.FALCK.Data
+		SccLocalPath12 = VecompSoftware.BPM.Integrations.Modules.FALCK.Data
+		SccProjectUniqueName13 = VecompSoftware.BPM.Integrations.Modules.ENAV.IP4D\\VecompSoftware.BPM.Integrations.Modules.ENAV.IP4D.csproj
+		SccProjectTopLevelParentUniqueName13 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName13 = VecompSoftware.BPM.Integrations.Modules.ENAV.IP4D
+		SccLocalPath13 = VecompSoftware.BPM.Integrations.Modules.ENAV.IP4D
+		SccProjectUniqueName14 = VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare\\VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare.csproj
+		SccProjectTopLevelParentUniqueName14 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName14 = VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare
+		SccLocalPath14 = VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare
+		SccProjectUniqueName15 = VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare.Data\\VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare.Data.csproj
+		SccProjectTopLevelParentUniqueName15 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName15 = VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare.Data
+		SccLocalPath15 = VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare.Data
+		SccProjectUniqueName16 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN\\VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN.csproj
+		SccProjectTopLevelParentUniqueName16 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName16 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN
+		SccLocalPath16 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN
+		SccProjectUniqueName17 = VecompSoftware.BPM.Integrations.Modules.VSW.Dematerialisation\\VecompSoftware.BPM.Integrations.Modules.VSW.Dematerialisation.csproj
+		SccProjectTopLevelParentUniqueName17 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName17 = VecompSoftware.BPM.Integrations.Modules.VSW.Dematerialisation
+		SccLocalPath17 = VecompSoftware.BPM.Integrations.Modules.VSW.Dematerialisation
+		SccProjectUniqueName18 = VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle\\VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle.csproj
+		SccProjectTopLevelParentUniqueName18 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName18 = VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle
+		SccLocalPath18 = VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle
+		SccProjectUniqueName19 = VecompSoftware.BPM.Integrations.Modules.VSW.SecureDocument\\VecompSoftware.BPM.Integrations.Modules.VSW.SecureDocument.csproj
+		SccProjectTopLevelParentUniqueName19 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName19 = VecompSoftware.BPM.Integrations.Modules.VSW.SecureDocument
+		SccLocalPath19 = VecompSoftware.BPM.Integrations.Modules.VSW.SecureDocument
+		SccProjectUniqueName20 = VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator\\VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator.csproj
+		SccProjectTopLevelParentUniqueName20 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName20 = VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator
+		SccLocalPath20 = VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator
+		SccProjectUniqueName21 = VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Data\\VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Data.csproj
+		SccProjectTopLevelParentUniqueName21 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName21 = VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Data
+		SccLocalPath21 = VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Data
+		SccProjectUniqueName22 = VecompSoftware.BPM.Integrations.Modules\\VecompSoftware.BPM.Integrations.Modules.csproj
+		SccProjectTopLevelParentUniqueName22 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName22 = VecompSoftware.BPM.Integrations.Modules
+		SccLocalPath22 = VecompSoftware.BPM.Integrations.Modules
+		SccProjectUniqueName23 = VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink\\VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink.csproj
+		SccProjectTopLevelParentUniqueName23 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName23 = VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink
+		SccLocalPath23 = VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink
+		SccProjectUniqueName24 = VecompSoftware.BPM.Integrations.Modules.FALCK.Workflows\\VecompSoftware.BPM.Integrations.Modules.FALCK.Workflows.csproj
+		SccProjectTopLevelParentUniqueName24 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName24 = VecompSoftware.BPM.Integrations.Modules.FALCK.Workflows
+		SccLocalPath24 = VecompSoftware.BPM.Integrations.Modules.FALCK.Workflows
+		SccProjectUniqueName25 = VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit\\VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit.csproj
+		SccProjectTopLevelParentUniqueName25 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName25 = VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit
+		SccLocalPath25 = VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit
+		SccProjectUniqueName26 = VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Contract\\VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Contract.csproj
+		SccProjectTopLevelParentUniqueName26 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName26 = VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Contract
+		SccLocalPath26 = VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Contract
+		SccProjectUniqueName27 = VecompSoftware.BPM.Integrations.Services.SignService\\VecompSoftware.BPM.Integrations.Services.SignServices.csproj
+		SccProjectTopLevelParentUniqueName27 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName27 = VecompSoftware.BPM.Integrations.Services.SignService
+		SccLocalPath27 = VecompSoftware.BPM.Integrations.Services.SignService
+		SccProjectUniqueName28 = VecompSoftware.BPM.Integrations.Modules.VSW.PayableInvoiceFileSystem\\VecompSoftware.BPM.Integrations.Modules.VSW.PayableInvoiceFileSystem.csproj
+		SccProjectTopLevelParentUniqueName28 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName28 = VecompSoftware.BPM.Integrations.Modules.VSW.PayableInvoiceFileSystem
+		SccLocalPath28 = VecompSoftware.BPM.Integrations.Modules.VSW.PayableInvoiceFileSystem
+		SccProjectUniqueName29 = VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Invoice\\VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Invoice.csproj
+		SccProjectTopLevelParentUniqueName29 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName29 = VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Invoice
+		SccLocalPath29 = VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Invoice
+		SccProjectUniqueName30 = VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Invoice\\VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Invoice.csproj
+		SccProjectTopLevelParentUniqueName30 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName30 = VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Invoice
+		SccLocalPath30 = VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Invoice
+		SccProjectUniqueName31 = VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Data\\VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Data.csproj
+		SccProjectTopLevelParentUniqueName31 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName31 = VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Data
+		SccLocalPath31 = VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Data
+		SccProjectUniqueName32 = VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice\\VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice.csproj
+		SccProjectTopLevelParentUniqueName32 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName32 = VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice
+		SccLocalPath32 = VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice
+		SccProjectUniqueName33 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion\\VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion.csproj
+		SccProjectTopLevelParentUniqueName33 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName33 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion
+		SccLocalPath33 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion
+		SccProjectUniqueName34 = VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose\\VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose.csproj
+		SccProjectTopLevelParentUniqueName34 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName34 = VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose
+		SccLocalPath34 = VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose
+		SccProjectUniqueName35 = VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice\\VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice.csproj
+		SccProjectTopLevelParentUniqueName35 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName35 = VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice
+		SccLocalPath35 = VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice
+		SccProjectUniqueName36 = VecompSoftware.BPM.Integrations.Modules.ENEA.Wide\\VecompSoftware.BPM.Integrations.Modules.ENEA.Wide.csproj
+		SccProjectTopLevelParentUniqueName36 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName36 = VecompSoftware.BPM.Integrations.Modules.ENEA.Wide
+		SccLocalPath36 = VecompSoftware.BPM.Integrations.Modules.ENEA.Wide
+		SccProjectUniqueName37 = VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice\\VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice.csproj
+		SccProjectTopLevelParentUniqueName37 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName37 = VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
+		SccLocalPath37 = VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
+		SccProjectUniqueName38 = VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign\\VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign.csproj
+		SccProjectTopLevelParentUniqueName38 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName38 = VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
+		SccLocalPath38 = VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
+		SccProjectUniqueName39 = VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging\\VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging.csproj
+		SccProjectTopLevelParentUniqueName39 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName39 = VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging
+		SccLocalPath39 = VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging
+		SccProjectUniqueName40 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID\\VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID.csproj
+		SccProjectTopLevelParentUniqueName40 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName40 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
+		SccLocalPath40 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
+		SccProjectUniqueName41 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.AVELCO\\VecompSoftware.BPM.Integrations.Modules.AUSLRE.AVELCO.csproj
+		SccProjectTopLevelParentUniqueName41 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName41 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.AVELCO
+		SccLocalPath41 = VecompSoftware.BPM.Integrations.Modules.AUSLRE.AVELCO
+		SccProjectUniqueName42 = VecompSoftware.BPM.Integrations.Modules.AGENAS.RDA\\VecompSoftware.BPM.Integrations.Modules.AGENAS.RDA.csproj
+		SccProjectTopLevelParentUniqueName42 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName42 = VecompSoftware.BPM.Integrations.Modules.AGENAS.RDA
+		SccLocalPath42 = VecompSoftware.BPM.Integrations.Modules.AGENAS.RDA
+		SccProjectUniqueName43 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer\\VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer.csproj
+		SccProjectTopLevelParentUniqueName43 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName43 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer
+		SccLocalPath43 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer
+		SccProjectUniqueName44 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer\\VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer.csproj
+		SccProjectTopLevelParentUniqueName44 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName44 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer
+		SccLocalPath44 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer
+		SccProjectUniqueName45 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.Reporting\\VecompSoftware.BPM.Integrations.Modules.TECMARKET.Reporting.csproj
+		SccProjectTopLevelParentUniqueName45 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName45 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.Reporting
+		SccLocalPath45 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.Reporting
+		SccProjectUniqueName46 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess\\VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess.csproj
+		SccProjectTopLevelParentUniqueName46 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName46 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
+		SccLocalPath46 = VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
+		SccProjectUniqueName47 = VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini\\VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini.csproj
+		SccProjectTopLevelParentUniqueName47 = VecompSoftware.BPM.Integrations.sln
+		SccProjectName47 = VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini
+		SccLocalPath47 = VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini
+	EndGlobalSection
+EndGlobal

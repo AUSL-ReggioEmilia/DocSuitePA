@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ResolutionJournalTemplate" table="ResolutionJournalTemplate">
+
+    <id name="Id" column="Id">
+      <generator class="identity" />
+    </id>
+
+    <property name="IsEnabled" column="IsEnabled" />
+    <property name="Code" column="Code" />
+    <property name="Description" column="Description" />
+    <property name="TemplateFile" column="TemplateFile" />
+    <property name="TemplateSource" column="TemplateSource" />
+    <property name="TemplateGroup" column="TemplateGroup" />
+    <property name="Pagination" column="Pagination" />
+    <property name="MultipleSign" column="MultipleSign" />
+    <property name="SignatureFormat" column="SignatureFormat" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+
+    <many-to-one name="Location" column="IdLocation" class="Location" />
+
+    <bag name="Specifications" table="ResolutionJournalTemplateSpecification" cascade="all-delete-orphan" inverse="true">
+      <key column="IdTemplate" />
+      <one-to-many class="ResolutionJournalTemplateSpecification" />
+    </bag>
+
+  </class>
+
+</hibernate-mapping>

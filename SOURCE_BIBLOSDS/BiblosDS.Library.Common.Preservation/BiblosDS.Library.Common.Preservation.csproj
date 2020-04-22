@@ -1,0 +1,363 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7A3FC3A4-FD1B-4426-8A05-437279F55CCC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BiblosDS.Library.Common.Preservation</RootNamespace>
+    <AssemblyName>BiblosDS.Library.Common.Preservation</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>BiblosDS.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AzureDebug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AzureDebug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDS.Library.Common.Preservation.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.ServiceRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\ExternalLibs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress, Version=0.23.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.23.0\lib\net45\SharpCompress.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AwardBatch\AwbReport.cs" />
+    <Compile Include="Indice\IndiceReport.cs" />
+    <Compile Include="IpdaDoc\Ipda.cs" />
+    <Compile Include="IpdaDoc\IpdaDocument.cs" />
+    <Compile Include="IpdaDoc\IpdaConverter.cs" />
+    <Compile Include="IpdaDoc\IpdaUtil.cs" />
+    <Compile Include="ObjectsXml\Comunicazione.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\DataImpegno.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\DatiAnagr.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\DatiArchivioInformatico.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\DatiDelegatoConservazione.cs" />
+    <Compile Include="ObjectsXml\DatiFornitura.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\DatiIntermediarioTrasmissione.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\DatiResponsabileConservazione.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\DatiSuperImpronta.cs" />
+    <Compile Include="ObjectsXml\DatiTitolareContabilita.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\Documento.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\DomFiscale.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\FileChiusura.cs" />
+    <Compile Include="ObjectsXml\ImpegnoTrasmissione.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\DatiImpronta.cs" />
+    <Compile Include="ObjectsXml\IndiceDocumentiInArchivio.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\Indirizzo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\LuogoConservazione.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\TipoComunicazioneEnum.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\TipoDocumento.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectsXml\IXmlBasicInterface.cs" />
+    <Compile Include="ObjectsXml\XmlBasic.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceStorage\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Services\PreservationFileManager.cs" />
+    <Compile Include="Services\PreservationService.cs" />
+    <Compile Include="Services\PreservationService.AwardBatch.cs" />
+    <Compile Include="Services\PreservationService.Ipda.cs" />
+    <Compile Include="Services\PreservationService.v1.cs" />
+    <Compile Include="Services\PreservationServiceEx.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BiblosDS.Cloud\BiblosDS.Cloud.csproj">
+      <Project>{d5ddf3d0-9198-41b6-abea-4a4af2d61128}</Project>
+      <Name>BiblosDS.Cloud</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Common.CompEd\BiblosDS.Library.Common.CompEd.csproj">
+      <Project>{296b2d42-be61-423f-8525-5cd8c8bf1677}</Project>
+      <Name>BiblosDS.Library.Common.CompEd</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Common.Objects\BiblosDS.Library.Common.Objects.csproj">
+      <Project>{BE2B09F0-D141-41B7-820E-85FE7D9A7360}</Project>
+      <Name>BiblosDS.Library.Common.Objects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Common\BiblosDS.Library.Common.csproj">
+      <Project>{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}</Project>
+      <Name>BiblosDS.Library.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.WCF.DigitalSign\BiblosDS.WCF.DigitalSign.csproj">
+      <Project>{2938cc2a-7650-47d6-8020-6066792a0788}</Project>
+      <Name>BiblosDS.WCF.DigitalSign</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Helper\BiblosDS.Library.Helper.csproj">
+      <Project>{141c7da3-2000-4674-9895-e3766e8b2dfd}</Project>
+      <Name>BiblosDS.Library.Helper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BiblosDS.Service.Storage\VecompSoftware.BiblosDS.Service.Storage.csproj">
+      <Project>{8e30becc-af85-467d-ba7c-a1b61f584c00}</Project>
+      <Name>VecompSoftware.BiblosDS.Service.Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.ServiceContract.BiblosDS\VecompSoftware.ServiceContract.BiblosDS.csproj">
+      <Project>{7b33f200-7e95-4ae7-a993-995f3a4d2ff3}</Project>
+      <Name>VecompSoftware.ServiceContract.BiblosDS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.ServiceContract\VecompSoftware.ServiceContract.csproj">
+      <Project>{c917a52b-467f-4976-88d7-0f5ecce3e6e5}</Project>
+      <Name>VecompSoftware.ServiceContract</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="BiblosDS.snk" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Document.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Archive.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Attribute.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\AttributeGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\AttributeMode.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\AttributeValue.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\BiblosDS.Library.Common.Objects.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\BiblosDS.wsdl" />
+    <None Include="Service References\ServiceReferenceStorage\BiblosDSObject.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Certificate.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Content.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Document.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\FilterOperator.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Permission.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PermissionMode.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Preservation.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationAlert.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationAlertType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationSchedule.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationScheduleTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTask.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTaskGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTaskGroupType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationTaskType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationUser.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\PreservationUserRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\service.wsdl" />
+    <None Include="Service References\ServiceReferenceStorage\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\Storage.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\StorageArea.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceStorage\StorageType.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ServiceReferenceStorage\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReferenceStorage\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReferenceStorage\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReferenceStorage\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CHIUSURA.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Template.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\INDICE.xsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

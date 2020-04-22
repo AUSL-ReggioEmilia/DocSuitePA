@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/ResponseBase" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/ResponseBase" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd44" namespace="http://BiblosDS/2009/10/ResponseError" />
+  <xs:complexType name="ResponseBase">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://BiblosDS/2009/10/ResponseError" minOccurs="0" name="Error" nillable="true" type="q1:ResponseError" />
+      <xs:element minOccurs="0" name="HasErros" type="xs:boolean" />
+      <xs:element minOccurs="0" name="TotalRecords" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResponseBase" nillable="true" type="tns:ResponseBase" />
+</xs:schema>

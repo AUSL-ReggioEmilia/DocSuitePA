@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="WebPublication" table="WebPublication">
+    
+    <id name="Id" column="Id">
+      <generator class="identity"></generator>
+    </id>
+        
+    <property name="ExternalKey" column="ExternalKey" />
+    <property name="Status" column="Status" />
+    <property name="IDDocument" column="IDDocument" />
+    <property name="EnumDocument" column="EnumDocument" />
+    <property name="Descrizione" column="Descrizione" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="IsPrivacy" column="IsPrivacy" />
+
+    <many-to-one name="Resolution" column="IDResolution" class="Resolution" />
+    <many-to-one name="Location" column="IDLocation" class="Location" />
+
+  </class>
+
+</hibernate-mapping>

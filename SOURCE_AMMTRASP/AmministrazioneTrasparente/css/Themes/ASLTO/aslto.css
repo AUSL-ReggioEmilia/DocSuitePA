@@ -1,0 +1,45 @@
+﻿
+
+.container-principale,
+.container-brand {
+    width: 100% !important;
+    min-width: 970px;
+}
+
+#MainRow {
+    width: 100% !important;
+}
+
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+#menu {
+    z-index: 1000;
+}
+
+#mainCol {
+    width: 100% !important;
+    padding-left: 250px;
+    margin-left: -233px;
+    padding-right: 0 !important;
+}
+
+td.td-label {
+    width: 25%;
+}
+
+td.td-field {
+    width: 75%;
+}
+
+
+.hr-menu {
+    border-color: rgb(151, 199, 153);
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.navbar-storico {
+    margin-top: 0;
+}

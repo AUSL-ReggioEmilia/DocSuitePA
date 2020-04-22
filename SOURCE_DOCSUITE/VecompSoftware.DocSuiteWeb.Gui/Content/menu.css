@@ -1,0 +1,45 @@
+﻿.PanelBarMenu .rtLI a {
+    margin-left: 25px;
+    font-size: 13px;
+}
+
+.RadPanelBar_Bootstrap a.rpLink, .RadPanelBar_Bootstrap .rpHeaderTemplate {
+    line-height: 31px;
+}
+
+.RadTreeView_Bootstrap .rtTop, .RadTreeView_Bootstrap .rtMid, .RadTreeView_Bootstrap .rtBot {
+    padding: 1px 0 1px 20px;
+}
+
+.RadTreeView_Bootstrap div .rtImg + .rtIn {
+    padding-left: 7px;
+}
+.rtMinus + .rtImg + .rtIn {
+    margin-left: 16px !important;
+} 
+
+
+.RadTreeView_Bootstrap img.rtImg {
+    margin: 0 -22px 0 6px;
+}
+
+.RadTreeView_Bootstrap a.rtIn {
+    padding: 2px 8px;
+}
+
+.RadTreeView_Bootstrap span.rtIn {
+    font-size: 13px;
+}
+
+.RadPanelBar_Bootstrap .rpExpanded span.rpExpandHandle, .RadPanelBar_Bootstrap .rpExpanded.rpDisabled:hover span.rpExpandHandle {
+    background-position: -17px -21px;
+}
+
+.RadPanelBar .rpText {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.RadTreeView .rtSp {
+    height: 16px !important;
+}

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="f57a0c0b-bdcb-4204-83f8-d8bad6db8a21" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.ComponentModel.BindingList`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:1526/BiblosDs.WCF/Log.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Log12.xsd" MetadataType="Schema" ID="535200d4-1bc1-4b01-a6e5-5d665662f36c" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd3" />
+    <MetadataFile FileName="Log2.xsd" MetadataType="Schema" ID="21dd985a-06ba-472a-bdc8-91a1fc9ba8ec" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd8" />
+    <MetadataFile FileName="Log22.xsd" MetadataType="Schema" ID="4b21d017-541a-425b-9074-d6ae059c3af5" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd6" />
+    <MetadataFile FileName="Log.xsd" MetadataType="Schema" ID="ab885b39-cb72-4e5d-a435-c59656b52657" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd0" />
+    <MetadataFile FileName="Log23.xsd" MetadataType="Schema" ID="c8e34a02-95ab-4c7c-a737-27cb323fe576" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd7" />
+    <MetadataFile FileName="Log.disco" MetadataType="Disco" ID="43821389-a732-477c-befc-28e41e3168cd" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?disco" />
+    <MetadataFile FileName="Log11.xsd" MetadataType="Schema" ID="1cecc7f9-5fd9-49cb-9a5b-0306f2b44688" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd4" />
+    <MetadataFile FileName="Log1.xsd" MetadataType="Schema" ID="62a57a3f-02e9-48c7-909a-06a0f04f0bdf" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd2" />
+    <MetadataFile FileName="Log21.xsd" MetadataType="Schema" ID="676fc388-c1b7-4662-9ce3-38030ca6395a" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd5" />
+    <MetadataFile FileName="Log.wsdl" MetadataType="Wsdl" ID="81ab8d69-55f4-4112-8877-c530d63ff71e" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?wsdl" />
+    <MetadataFile FileName="Log1.wsdl" MetadataType="Wsdl" ID="6a6b6a76-16d1-4821-9183-4bdeff6a0a47" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="Log13.xsd" MetadataType="Schema" ID="07d812ef-f1fe-4bdf-ba86-767f07e978e0" SourceId="1" SourceUrl="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

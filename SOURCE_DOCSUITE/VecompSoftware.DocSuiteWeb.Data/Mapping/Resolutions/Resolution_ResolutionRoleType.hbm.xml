@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ResolutionRoleType" >
+    
+    <id name="Id" generator="identity" />
+    
+    <property name="Name" />
+    <property name="SingleRole" />
+    <property name="RoleRestriction" />
+    <property name="RightPosition" />
+    <property name="RightDistributed" />
+    <property name="RightsGuaranteed" />
+    <property name="RightsAdded" />
+    <property name="Enabled" />
+    <property name="SortOrder" />
+    <property name="CommandName" />
+    
+  </class>
+
+</hibernate-mapping>

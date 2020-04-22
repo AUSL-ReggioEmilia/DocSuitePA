@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ResolutionWorkflow" table="ResolutionWorkflow">
+    
+    <composite-id class="ResolutionWorkflowCompositeKey" name="Id">
+      <key-property column="idResolution" name="IdResolution" />
+      <key-property column="Incremental" name="Incremental" />
+    </composite-id>
+    
+    <property name="IsActive" column="IsActive" />
+    <property name="ResStep" column="Step" />
+    <property name="DocumentName" column="DocumentName" type="AnsiString" />
+    <property name="Document" column="Document" />
+    <property name="Attachment" column="Attachment" />
+    <property name="Annexed" column="Annexed" />
+    <property name="PrivacyAttachment" column="PrivacyAttachment" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="IncrementalFather" column="IncrementalFather" />
+    <property name="DocumentsOmissis" column="DocumentsOmissis" />
+    <property name="AttachmentsOmissis" column="AttachmentsOmissis" />
+
+    <many-to-one class="Resolution" name="Resolution" column="idResolution" update="false" insert="false" />
+    <many-to-one name="Parent" class="ResolutionWorkflow" insert="false" update="false" cascade="save-update">
+      <column name="idResolution" />
+      <column name="IncrementalFather" />
+    </many-to-one>
+    
+  </class>
+
+</hibernate-mapping>

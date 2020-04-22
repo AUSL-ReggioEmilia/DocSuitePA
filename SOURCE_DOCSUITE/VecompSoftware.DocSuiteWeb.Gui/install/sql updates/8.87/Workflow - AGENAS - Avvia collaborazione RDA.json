@@ -1,0 +1,46 @@
+﻿{
+  "0": {
+    "Position": 0,
+    "Name": "Crea Collaborazione",
+    "AuthorizationType": "AllSecretary",
+    "ActivityOperation": {
+      "Action": "Create",
+      "Area": "Collaboration"
+    },
+    "ActivityType": "CollaborationCreate",
+    "InputArguments": [
+      {
+        "Name": "_dsw_p_WorkflowLabel",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Operation",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": [
+      {
+        "Name": "_dsw_e_CollaborationId",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ]
+  }
+}

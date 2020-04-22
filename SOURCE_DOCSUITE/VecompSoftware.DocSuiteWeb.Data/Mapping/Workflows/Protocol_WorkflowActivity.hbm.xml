@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Workflows">
+
+  <class name="WorkflowActivity" table="WorkflowActivities" lazy="true" >
+    <id name="Id" column="IdWorkflowActivity" >
+      <generator class="guid.comb" />
+    </id>
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>    
+    <many-to-one name="WorkflowInstance">
+      <column name="IdWorkflowInstance" not-null="true" />
+    </many-to-one>
+    <property name="Name">
+      <column name="Name" not-null="false" />
+    </property>
+    <property name="ActivityType">
+      <column name="ActivityType" not-null="true" />
+    </property>
+    <property name="Status">
+      <column name="Status" not-null="true" />
+    </property>
+    <property name="DueDate">
+      <column name="DueDate" not-null="false" />
+    </property>
+    <property name="Priority">
+      <column name="Priority" not-null="false" />
+    </property>
+    <property name="Subject">
+      <column name="Subject" not-null="false" />
+    </property>
+    <property name="DocumentUnitReferencedId">
+      <column name="DocumentUnitReferencedId" not-null="false" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <bag name="WorkflowProperties" cascade="save-update">
+      <key column="IdWorkflowActivity" />
+      <one-to-many class="WorkflowProperty" />
+    </bag>
+    <bag name="WorkflowActivityLogs">
+      <key column="IdWorkflowActivity" />
+      <one-to-many class="WorkflowActivityLog" />
+    </bag>
+    <bag name="WorkflowAuthorizations">
+      <key column="IdWorkflowActivity" />
+      <one-to-many class="WorkflowAuthorization" />
+    </bag>
+  </class>
+
+</hibernate-mapping>

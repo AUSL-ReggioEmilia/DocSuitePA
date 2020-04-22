@@ -1,0 +1,189 @@
+﻿{
+  "ModuleConfigurations": [
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Invoice",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\AFOL.ERPInvoice",
+      "ServiceWakeType": "Timer",
+      "Timer": "ERPInvoiceTimer",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\AUSLRE.RequestOpinion",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\AUSLRE.ZEN",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\ENAV.ENavigare",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Contract",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\ENAV.ERPContract",
+      "ServiceWakeType": "Timer",
+      "Timer": "ERPContractTimer",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.ENAV.ERP.Invoice",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\ENAV.ERPInvoice",
+      "ServiceWakeType": "Timer",
+      "Timer": "ERPInvoiceTimer",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.ENAV.IP4D",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\ENAV.IP4D",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.FALCK.Workflows",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\FALCK.Workflows",
+      "ServiceWakeType": "Timer",
+      "Timer": "Default",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.FALCK.Teams",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\FALCK.Teams",
+      "ServiceWakeType": "Timer",
+      "Timer": "Default",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\TECHNOSKY.SAPInvoice",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.Dematerialisation",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\Dematerialisation",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\DocumentUnitLink",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\FascicleDocumentUnit",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.PayableInvoiceFileSystem",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\PayableInvoiceFileSystem",
+      "ServiceWakeType": "Timer",
+      "Timer": "PayableInvoiceFileSystemTimer",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\PeriodicFascicle",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\ReceivableInvoice",
+      "ServiceWakeType": "Timer",
+      "Timer": "ReceivableInvoiceTimer",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.SecureDocument",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\SecureDocument",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\TokenSecurityGenerator",
+      "ServiceWakeType": "Timer",
+      "Timer": "TokenSecurityGeneratorTimer",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\FascicleClose",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.ENEA.Wide",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\ENEA.Wide",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\TEAFLEX.ArchiveInvoice",
+      "ServiceWakeType": "Timer",
+      "Timer": "ReceivableInvoiceTimer",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\WorkflowLogging",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    }
+  ],
+  "PeriodConfigurations": [
+    {
+      "Name": "Default",
+      "Period": "00:00:10",
+      "StartHour": "00:00:00",
+      "EndHour": "23:59:59"
+    },
+    {
+      "Name": "ERPContractTimer",
+      "Period": "00:01:00",
+      "StartHour": "09:00:00",
+      "EndHour": "18:00:00"
+    },
+    {
+      "Name": "ERPInvoiceTimer",
+      "Period": "00:01:00",
+      "StartHour": "09:00:00",
+      "EndHour": "18:00:00"
+    },
+    {
+      "Name": "ERPFattureTimer",
+      "Period": "00:01:00",
+      "StartHour": "09:00:00",
+      "EndHour": "18:00:00"
+    },
+    {
+      "Name": "TokenSecurityGeneratorTimer",
+      "Period": "00:02:00",
+      "StartHour": "00:00:00",
+      "EndHour": "23:59:59"
+    },
+    {
+      "Name": "ReceivableInvoiceTimer",
+      "Period": "00:05:00",
+      "StartHour": "09:00:00",
+      "EndHour": "18:00:00"
+    },
+    {
+      "Name": "PayableInvoiceFileSystemTimer",
+      "Period": "00:05:00",
+      "StartHour": "09:00:00",
+      "EndHour": "18:00:00"
+    }
+  ]
+}

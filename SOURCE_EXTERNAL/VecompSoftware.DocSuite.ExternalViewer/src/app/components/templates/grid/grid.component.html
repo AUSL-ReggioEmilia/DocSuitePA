@@ -1,0 +1,32 @@
+﻿<div *ngIf="gridData">
+    <kendo-grid [data]="gridData" [pageable]="paginationEnabled" [skip]="skip" [pageSize]="pageSize" [groupable]="groupable" [group]="groups" (pageChange)="pageChange($event)" [scrollable]="'none'">
+        <kendo-grid-column field="title" title="Sommario" width="200" [headerClass]="'grid-header'">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <a routerLink="/Protocollo/identificativo/{{dataItem.id}}" title="Clicca qui per accedere al documento {{dataItem.title}}">
+                    <div class="center-block">
+                        <span class="k-icon k-i-document-manager"></span>
+                    </div>
+                </a>
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="subject" title="Oggetto" width="3500" [headerClass]="'grid-header'"></kendo-grid-column>
+        <kendo-grid-column field="registrationDate" title="Data di consegna" width="280" [headerClass]="'grid-header'" [class]="'cell'">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                {{dataItem.registrationDate | dateFormat}}
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="registrationUser" title="Autorizzato da" width="300" [headerClass]="'grid-header'"></kendo-grid-column>
+        <kendo-grid-column media="(min-width: 680px)" field="container" title="Servizio/Settore" width="1500" [headerClass]="'grid-header'">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                {{dataItem.container.name}}
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column media="(min-width: 680px)" field="category" title="Classificazione" width="1500" [headerClass]="'grid-header'">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                {{dataItem.category.name}}
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-messages noRecords="Nessun elemento trovato." pagerPage="Pagina" pagerOf="di" pagerItems="elementi" pagerItemsPerPage="elementi per pagina">
+        </kendo-grid-messages>
+    </kendo-grid>
+</div>

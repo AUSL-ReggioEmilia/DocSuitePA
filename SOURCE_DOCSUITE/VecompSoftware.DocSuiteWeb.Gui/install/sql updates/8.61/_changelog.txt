@@ -1,0 +1,59 @@
+Feature 6695: [DSW] Bonifica dei layers di mapping delle WebAPI Private
+
+User Story 5163: [DSW] Creare indice univoco su UniqueId
+User Story 6698: [DSW] Bonifica del Mapping di Collaboration
+User Story 6699: [DSW] Bonifica del Mapping di Commons
+User Story 6700: [DSW] Bonifica del Mapping di Securities
+User Story 6705: [DSW] Bonifica del Mapping di UDS
+User Story 6706: [DSW] Bonifica del Mapping di DocumentUnits
+User Story 6707: [DSW] Bonifica del Mapping di Fascicles
+User Story 6708: [DSW] Bonifica del Mapping di MassimarioScarto
+User Story 6709: [DSW] Bonifica del Mapping di Protocols
+User Story 6710: [DSW] Bonifica del Mapping di Resolutions
+User Story 7016: [ASL-TO] mappare la tablelog nelle webAPI
+User Story 7399: [DSW] Rinominare sql function del gruppo Protocollo, Collaborazione e Common
+User Story 7400: [DSW] Rinominare sql function del gruppo Fascicoli
+User Story 7410: [DSW] Rinominare sql function del gruppo MassimarioScarto
+User Story 7411: [DSW] Rinominare sql function del gruppo DocumentUnit
+User Story 7412: [DSW] Rinominare sql function del gruppo Protocollo
+User Story 7413: [DSW] Rinominare sql function del gruppo Collaborazione
+User Story 7414: [DSW] Rinominare sql function del gruppo Common
+User Story 7597: [ASL-TO] Modifica segnatura del Registro Pubblicazioni e del Registro Provvedimenti Adottati
+User Story 7660: [ASL-TO]Per la visibilità di PosteWeb,in posta inviata,definire un param ParameterEnv che riporti i gruppi con visibilità di tutti gli account di posteWeb
+User Story 7669: [ASL-TO]Se è presente un unico mittente o un unico destinatario nell'invio tramite PosteWeb deve di default selezionarsi quel mittente/destinatario
+User Story 7719: [DSW]Nell'inserimento di Delibere e Atti è stata fatta la pulizia dell'oggetto dai caratteri speciali
+
+
+Bug 4495: [AUSL-RE] Errore in protocollazione di PEC contenente diversi zip
+Bug 6314: [AUSL-RE] Modifica AVCP, errore interfaccia
+Bug 6361: [ASMN-RE] Nella ricerca serie Consulenti e Collaboratori il campo Nominativo causa errore in presenza del carattere apostrofo
+Bug 6607: [DSW] In inserimento Atto non funziona la funzionalità "cerca" nella finestra copia da Atto
+Bug 6692: [AUSL-PC] Il valore totale liquidato riportato in AVPC da interfaccia DSW non corrisponde efferrivamente al valore riportato dall' Import da Excel dei pagamenti
+Bug 7059: [ASL-TO] Messaggio sbagliato durante l'invio PEC di grandi dimensioni
+Bug 7249: [ASL-TO] I tasti di esportazione non funzionano nelle nuove viste di scrivania "Da Accettare", "Respinti" e "Auorizzati non accettati"
+Bug 7250: [ENPACL] FPS spacca nell'invio mail di protocolli
+Bug 7277: [AUSL-RE] Inoltra PEC dà errore sql
+Bug 7295: [ASMN-RE] Non è possibile selezionare i contenitori disabilitati in ricerca di Protocollo o Atti/Delibere
+Bug 7377: [AUSL-PC] Visibilità pulsante Evidenzia in Protocollo annullato
+Bug 7384: [AUSL-RE] Malfunzionamento ricerca protocollo - Note
+Bug 7385: [ASL-TO] Ricerca in rubrica da tabelle non mostra gli stessi risultati che dal protocollo
+Bug 7386: [ASL-TO] Problema di ordinamento in "Stampa selezione" di Delibere e Determine.
+Bug 7388: [AUSL-RE] manca avviso di inoltro collaborazioni non firmate
+Bug 7389: [AUSL-RE] Pulsanti collaborazione (sia nel sommario nelle viste) : Impedire doppio click
+Bug 7390: [ENAV] Rimozione parentesi tonda chiusa in oggetto di protocollo
+Bug 7397: [ASL-TO] Problemi nel modulo PEC con PEC che hanno nell'oggetto il carattere "\"
+Bug 7469: [AUSL-RE] Se si firma documento da sommario di Collaborazione e si clicca più volte "Prosegui" viene duplicato il nominativo del successivo firmatario
+Bug 7492: [AUSL-PC] Errore di timeout ricreando le catene documentali in DSW
+Bug 7526: [AFOLMB] Tavoli - Il JS non invia le mail di invito al tavolo perché rimangono in stato bozza
+Bug 7655: [ASL-TO] Riscontrato un messaggio ambiguo nell'invio tramite PosteWeb a contatti da rubrica che non hanno indirizzo completo
+Bug 7670: [ASL-TO]Cambiare il messaggio in output scorretto per l'utente quando flaggo mittente e destinatario e uno di questi non ha specificato l'indirizzo
+Bug 7673: [ASL-TO]Problema nell'aggancio delle collaborazioni alle rispettive Proposte di Determine con la collaborazione che resta nel"Da Protocollare/Gestire"
+Bug 7676: [ASL-TO]Invio di un messaggio in output se il nodo padre non ha indirizzo specificato
+Bug 7712: [ASL-TO]Riscontrata anomalia nel predisporre lettera di trasmissione delle determinazioni adottate.Si richiede adeguamento per ordine numerico crescente
+Bug 7714: [ASL-TO]Anomalia nel registro delibere sugli ordinamenti di stampe/registri
+
+
+Issue 2350: [ASL-TO] Lo zip creato nell'invio PEC OC non contiene i documenti ordinati correttamente
+Issue 3627: [ASL-TO] Atti: in Pubblicazione il simbolo € si trasforma in altro simbolo.
+Issue 5609: [AUSL-PC] Messaggio di errore nell'esportazione dell'elenco dei concorsi
+Issue 7548: [AFOLMB] Ordinare alfabeticamente i valori del campo enumeratore.

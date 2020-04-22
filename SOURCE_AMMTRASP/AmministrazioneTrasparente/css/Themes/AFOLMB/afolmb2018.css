@@ -1,0 +1,383 @@
+﻿@font-face {
+    font-family: BebasNeue;
+    src: url("fonts/bebasneue-regular-webfont.woff") format("woff");
+}
+
+@font-face {
+    font-family: Myriad;
+    src: url("fonts/MYRIADPRO-REGULAR.woff") format("woff");
+}
+
+body {
+    padding-top: 0px;
+    line-height: 1.5;
+}
+
+
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+#MainRow {
+    width: 1170px;
+    padding-left: 10px;
+}
+
+#menu {
+    z-index: 1000;
+    float: left;
+    background-color: #B9DEBF;
+    width: 230px;
+    background-color: inherit !important;
+    margin-right: 10px;
+}
+
+td.td-label {
+    width: 25%;
+}
+
+td.td-field {
+    width: 75%;
+}
+
+
+.hr-menu {
+    border-color: rgb(151, 199, 153);
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.navbar-storico {
+    margin-top: 0;
+}
+
+
+
+#menu li a {
+    display: inline-block;
+    padding: 11px 0px 11px 11px;
+    width: 100%;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 0px;
+    line-height: 16px;
+}
+
+#menu li {
+    display: inline-block;
+    box-sizing: border-box;
+    /* border-left: 7px solid $color-secondary; */
+    width: 100%;
+    margin-top: 2px;
+    color: white;
+    background: #918f90;
+    font-family: BebasNeue;
+    font-weight: 400;
+    letter-spacing: 1px !important;
+}
+
+
+
+    #menu li:hover a, #menu li.active a {
+        background: #bdbcbc !important;
+    }
+
+
+
+
+.container_12, .container_16 {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1160px;
+}
+
+.container_12 {
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 1170px !important;
+    position: relative;
+}
+
+
+body {
+    color: #243444;
+    background: url("images/gplaypattern.png");
+    font-family: Myriad;
+    font-size: 18px;
+}
+
+#gmSocialBox {
+    width: 60px;
+    position: absolute;
+    right: -60px;
+    top: 160px;
+    background: white;
+    z-index: 100;
+    border-radius: 0 5px 5px 0;
+    padding: 10px;
+    text-align: center;
+    line-height: 1;
+}
+
+    #gmSocialBox a {
+        font-size: 11px;
+    }
+
+.main-navigation {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.6em;
+    font-weight: 700;
+}
+
+    .main-navigation ul {
+        list-style: none;
+        margin: 0;
+        padding-left: 0;
+        display: table;
+        width: 100%;
+    }
+
+
+
+
+        .main-navigation ul li:first-child {
+            background: url("images/home-bg.png") no-repeat #2250a9;
+        }
+
+        .main-navigation ul li:first-of-type {
+            width: 188px;
+        }
+
+        .main-navigation ul li {
+            display: table-cell;
+            box-sizing: border-box;
+            border-right: 1px solid white;
+            height: 37px;
+            background: #2250a9;
+            color: white;
+            font-size: 19px;
+            font-family: BebasNeue;
+            letter-spacing: 1.2px;
+            font-weight: 700;
+            width: 20%;
+        }
+
+            .main-navigation ul li:last-child {
+                border-right: 0px none;
+            }
+
+
+            .main-navigation ul li:hover, .main-navigation ul .current_page_item {
+                /* background: $color-primary; */
+                background-color: #7a96cb;
+                text-decoration: none;
+            }
+
+
+
+            .main-navigation ul li a {
+                color: white;
+                text-decoration: none;
+            }
+
+
+.menu-item a.menu-image-title-after.menu-image-not-hovered img, .menu-item a.menu-image-hovered.menu-image-title-after .menu-image-hover-wrapper {
+    padding-right: 2px;
+}
+
+.menu-item a img {
+    border: none;
+    box-shadow: none;
+    vertical-align: middle;
+    display: inline;
+}
+
+#content, header {
+    background: white;
+}
+
+
+.well {
+    padding: 0px !important;
+    border-radius: 0px;
+    border: none;
+    margin-bottom: 20px;
+    min-height: 20px;
+    background-color: white;
+    box-shadow: none;
+}
+
+
+#mainCol {
+    padding: 0px;
+    width: 900px;
+    font-size: 0.8em;
+}
+
+
+    #mainCol a:hover {
+        color: #201000;
+        background: none;
+    }
+
+.container {
+    padding-right: 0px;
+    padding-left: 0px;
+    background: white;
+}
+
+header {
+    background: white;
+}
+
+.thumbnail {
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    transition: 0.2s ease-in-out;
+    height: auto;
+    line-height: 27px;
+    margin-bottom: 20px;
+    display: block;
+    max-width: 100%;
+    background-color: rgb(255, 255, 255);
+    -webkit-transition: all 0.2s ease-in-out;
+}
+
+footer .site-info {
+    color: white;
+    background-color: #243444;
+    width: 1150px;
+    height: 80px;
+    padding: 7px;
+    margin-bottom: 14px;
+}
+
+
+.main-navigation {
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+    font-size: 0.6em;
+    font-weight: 700;
+}
+
+.main-navigation {
+    clear: both;
+    display: block;
+    width: 100%;
+}
+
+.grid_1, .grid_2, .grid_3, .grid_4, .grid_5, .grid_6, .grid_7, .grid_8, .grid_9, .grid_10, .grid_11, .grid_12, .grid_13, .grid_14, .grid_15, .grid_16 {
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    /* margin: 5px; */
+    text-transform: uppercase;
+    text-align: left;
+    font-family: BebasNeue;
+    color: #2250a9;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+
+h2 {
+    font-size: 25px;
+    font-weight: 700;
+    /* margin: 5px; */
+    text-transform: uppercase;
+    text-align: left;
+    font-family: BebasNeue;
+    color: #2250a9;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+a, a:visited {
+    text-decoration: none;
+    color: #2250a9;
+}
+
+
+.btn-info {
+    border-color: #062B84;
+    color: rgb(255, 255, 255);
+    background-color: #2250a9;
+    font-size: 15px;
+}
+
+input.btn-cerca {
+    min-width: 160px;
+    width: auto;
+}
+
+#menu-footer li {
+    width: 33%;
+}
+
+#footer-menu {
+    margin: 10px 0px 10px 0px;
+}
+
+#submenu {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
+}
+
+
+#menu li:nth-child(2) {
+    background: url("images/tasti-trasparenza/traspa-01.jpg");
+}
+
+#menu li:nth-child(3) {
+    background: url("images/tasti-trasparenza/traspa-02.jpg");
+}
+
+#menu li:nth-child(4) {
+    background: url("images/tasti-trasparenza/traspa-03.jpg");
+}
+
+#menu li:nth-child(5) {
+    background: url("images/tasti-trasparenza/traspa-04.jpg");
+}
+
+#menu li:nth-child(6) {
+    background: url("images/tasti-trasparenza/traspa-05.jpg");
+}
+
+#menu li:nth-child(7) {
+    background: url("images/tasti-trasparenza/traspa-06.jpg");
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+    background-color: inherit;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td {
+    background-color: #fafafa;
+}
+
+
+table.dettaglio {
+    background-color: inherit;
+}
+
+
+.RadGrid_Metro .rgAltRow td {
+    border-color: #f1f1f1 !important;
+    background: #fafafa !important;
+}
+
+
+
+.RadGrid_Metro .rgRow td {
+    border-color: #f1f1f1 !important;
+}

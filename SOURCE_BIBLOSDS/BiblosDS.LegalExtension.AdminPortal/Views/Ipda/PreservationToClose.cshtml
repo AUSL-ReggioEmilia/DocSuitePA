@@ -1,0 +1,312 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.Ipda.IpdaPreservationToCloseViewModel
+
+@{
+    ViewBag.Title = "Conservazioni da chiudere";
+}
+
+@section featured {
+    <hgroup class="title">
+        <h1>@ViewBag.Title (@Model.PreservationsCount)</h1>
+    </hgroup>
+}
+
+<script id="no-records-template-id" type="text/x-kendo-template">
+    external HTML template, not centered
+</script>
+
+@if (Model.PreservationsCount == 0)
+{
+    <text><h3 style="margin-left: 15px;">Nessuna conservazione non firmata.</h3></text>;
+}
+else
+{
+    <div style="padding:10px 0px 15px 0px;">
+        @Html.ActionLink("Visualizza conservazioni da chiudere", "PreservationToClose", "Preservation")
+    </div>
+}
+
+@(Html.Kendo()
+            .TabStrip()
+            .Name("tabstrip")
+            .Animation(animation =>
+                      animation.Open(effect =>
+                          effect.Fade(FadeDirection.In)))
+            .Items(tabstrip =>
+            {
+                tabstrip.Add().Text("Firma integrata")
+                    .Selected(true)
+                    .Content(@<text>@SignTab()</text>);
+
+                        tabstrip.Add().Text("Scarica i file da firmare")
+                            .Content(@<text>@DownloadSignTab()</text>);
+                            })
+)
+
+@helper SignTab()
+    {
+        <div style="min-height:300px;">
+            <p>
+                <b>
+                    Se disponi della smartcard, lo strumento di firma integrato ti consente di eseguire rapidamente la firma di tutti i documenti.<br />
+                    Al termine della firma, le conservazioni verificate verranno chiuse automaticamente.
+                </b>
+            </p>
+            <div>
+                <p>
+                    <div>
+                        <span style="margin-right: 5px;"><i>Digita il pin della smartcard</i></span>
+                        @Html.Kendo().TextBox().Name("Pin").HtmlAttributes(new { @id = "Pin", @type = "password" })
+                    </div>
+                    @Html.Kendo().Button().Name("signButton").Content("Firma").Events(events => events.Click("Sign"))
+                    <span id="Spinner" style="margin-left:20px; display:none;">
+                        <img src="@Url.Content("~/content/images/wait.gif")" alt="" style="vertical-align:middle; text-align:center;" />
+                        &nbsp;
+                        <span id="SpinnerText"><b>Firma in corso...</b></span>
+                    </span>
+                </p>
+                <div id="signResult"></div>
+            </div>
+        </div>
+}
+
+@helper DownloadSignTab()
+    {
+        <div style="min-height:300px;">
+            <p>
+                <b>1. Scarica l'archivio zippato con i file da firmare e marcare temporalmente.</b><br />
+                @Html.ActionLink("Download", "DownloadPreservationFilesToClose", null, new { @class = "k-button", @style = "margin-top: 5px;" })
+            </p>
+            <p>
+                <b>
+                    2. Firma i file scaricati con marca temporale in formato .tsd e crea un archivio zippato con i file firmati.<br />
+                    Tramite il tasto sotto è possibile inviare l'archivio zippato. Le conservazioni verificate verranno chiuse automaticamente.<br />
+                </b>
+            </p>
+
+            <i class="lighter">E' possibile caricare solo file <b>ZIP</b></i>
+            @(Html.Kendo().Upload()
+                          .Name("files")
+                          .HtmlAttributes("files")
+                          .Multiple(false)
+                          .Validation(validation => validation.AllowedExtensions(new string[] { ".zip" }))
+                          .Messages(messages =>
+                          {
+                              messages.ClearSelectedFiles("Cancella");
+                              messages.UploadSelectedFiles("Avvia caricamento");
+                              messages.HeaderStatusUploaded("Attività completata");
+                              messages.HeaderStatusUploading("Caricamento...");
+                              messages.InvalidFileExtension("Il tipo di file selezionato non è corretto. Sono ammessi solo file zippati (.zip).");
+                              messages.Select("Seleziona file ZIP...");
+                          })
+                          .Async(async => async
+                                    .Save("PreservationUploadCloseFiles", "Ipda", new { messageId = ViewBag.messageId })
+                                    .Remove("PreservationRemoveCloseFiles", "Ipda", new { messageId = ViewBag.messageId })
+                                    .AutoUpload(false)
+                                    .ChunkSize(1000000)
+                                    .Concurrent(true))
+                          .Events(evt => evt.Select("onSelect").Error("onError").Success("onComplete")))
+            <br />
+            <div class="console"></div>
+            <div id="processResult"></div>
+        </div>
+}
+
+<script type="text/html" id="msgTemplate">
+    <div class="{cls}">
+        {msg}
+    </div>
+</script>
+
+<script type="text/javascript">
+
+  var closeFiles = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(this.Model.CloseFiles)) ;
+  var currFile = "";
+  var count = 0;
+  var isError = false;
+  var activex = null;
+
+  $(function () {
+    try {
+        if ("ActiveXObject" in window) {
+            activex = new ActiveXObject("VecompSoftware.MultiSigner.MultiSignerCtrl");
+        }
+    } catch (ex) {
+        console.error(ex);
+    }
+
+    if (activex != null) {      
+      $("#Pin").focus();
+
+      $("#Pin").keyup(function (e) {
+        if (e.keyCode == 13) {
+          Sign();
+        }
+      });
+    }
+    else {
+      //rimuove la prima tab della firma integrata
+      var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+      var tab = tabStrip.select(),
+      otherTab = tab.next();
+      otherTab = otherTab.length ? otherTab : tab.prev();
+
+      tabStrip.remove(tab);
+      tabStrip.select(otherTab);
+    }
+  });
+
+  function onSelect(e) {
+      $('#processResult').html('');
+  }
+
+  function onError(e) {
+      $('#processResult').html(e.XMLHttpRequest.statusText);
+  }
+
+  function onComplete(e) {
+      $('#processResult').html(e.response.extraDescription);
+  }
+
+
+  function Sign() {
+
+    if (activex == null)
+      return;
+
+    if (closeFiles.length == 0)
+    {
+      alert("Nessun file di chiusura da firmare");
+      return;
+    }
+
+    count = 0;
+    isError = false;
+
+    $("#Spinner").show();
+    $("#signResult").html("");
+
+    $("#signResult").append($("<div>", {
+      html: parseTemplate($("#msgTemplate").html(), { msg: "Inizio processo di firma...", cls: "signMsg" })
+    }));
+
+    activex.Pin = $("#Pin").val();
+
+    eval("function activex::OnError(message) {return showError(message);}");
+    eval("function activex::OnProcessedItem(index) {return showProcessed(index);}");
+
+    var items = closeFiles.concat();
+
+    //prova la firma di un documento della lista ogni 300ms.
+    //si interrompe in caso di errore
+    //quando ha firmato i documenti, passa alla chiusura
+    setTimeout(function()
+    {
+      if (items.length > 0 && !isError) {
+        SignDocument(items);
+        setTimeout(arguments.callee, 300);
+      }
+      else
+        closePreservations();
+    }, 300);
+
+    /*
+    $.each(closeFiles, function(index, filePath)
+    {
+      currFile = filePath;
+      activex.SignDocument(filePath, "", 2);
+    });
+
+    closePreservations();
+    */
+  }
+
+
+  function SignDocument(items)
+  {
+    if (activex.IsDone) {
+      currFile = items.shift();
+      activex.SignDocument(currFile, "", 2);
+    }
+  }
+
+
+  function closePreservations()
+  {
+    if (isError)
+    {
+      HideSpinner();
+      return;
+    }
+
+    //finito
+    $("#signResult").append($("<div>", {
+      html: parseTemplate($("#msgTemplate").html(), { msg: "Processo di firma completato", cls: "signMsg" })
+    }));
+
+    //inizio chiusura
+    $("#signResult").append($("<div>", {
+      html: parseTemplate($("#msgTemplate").html(), { msg: "Verifica e chiusura delle conservazioni", cls: "signMsg" })
+    }));
+
+    //chiude le conservazioni
+    $.ajax({
+      url: "@Url.Action("CloseOpenPreservations")",
+      dataType: "json",
+      contentType: "application/json; charset=utf-8",
+      type: "POST",
+      success: function(data) {
+        //inizio chiusura
+        var clsRes = "signMsg";
+        if (data.result != "")
+          clsRes = "signMsg signMsg-error";
+        else
+          data.result = "Chiusura completata";
+
+        $("#signResult").append($("<div>", {
+          html: parseTemplate($("#msgTemplate").html(), { msg: data.result, cls: clsRes })
+        }));
+
+        HideSpinner();
+      }
+    });
+
+  }
+
+
+  function showProcessed(index) {
+
+    $("#signResult").append($("<div>", {
+      html: parseTemplate($("#msgTemplate").html(), { msg: currFile + "<br>firmato con successo", cls: "signMsg" })
+    }));
+
+    UpdateSpinner();
+    return true;
+  }
+
+
+  function showError(message) {
+
+    $("#signResult").append($("<div>", {
+      html: parseTemplate($("#msgTemplate").html(), { msg: currFile + "<br>" + message, cls: "signMsg signMsg-error" })
+    }));
+
+    UpdateSpinner();
+    isError = true;
+    return true;
+  }
+
+
+  function UpdateSpinner()
+  {
+    count++;
+    $("#SpinnerText").html("<b>Processati " + count.toString() + " di " +  closeFiles.length.toString() + " documenti</b>");
+  }
+
+
+  function HideSpinner()
+  {
+    $("#Spinner").hide();
+    $("#Pin").val("");
+  }
+
+</script>

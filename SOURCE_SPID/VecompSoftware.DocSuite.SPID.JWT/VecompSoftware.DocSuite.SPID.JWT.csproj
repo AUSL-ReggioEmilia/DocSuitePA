@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="favicon.ico">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.SPID.Common\VecompSoftware.DocSuite.SPID.Common.csproj" />
+    <ProjectReference Include="..\VecompSoftware.DocSuite.SPID.DataProtection\VecompSoftware.DocSuite.SPID.DataProtection.csproj" />
+    <ProjectReference Include="..\VecompSoftware.DocSuite.SPID.Model\VecompSoftware.DocSuite.SPID.Model.csproj" />
+    <ProjectReference Include="..\VecompSoftware.DocSuite.SPID.Token\VecompSoftware.DocSuite.SPID.Token.csproj" />
+  </ItemGroup>
+
+</Project>

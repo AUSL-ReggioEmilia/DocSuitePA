@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="DocSuiteWeb_Gui_BiblosDS_BiblosDS" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://192.168.200.143/BiblosDSWeb.20/BiblosDS.asmx</Value>
+    </Setting>
+    <Setting Name="DocSuiteWeb_Gui_SP_PublishToSharepoint" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://win2003hv:99/PublishToSharepoint.asmx</Value>
+    </Setting>
+    <Setting Name="DocSuiteWeb_Gui_BiblosDSConv_BiblosDSConv" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://biblosstampaconforme.cloudapp.net:8080/BiblosDSconv.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

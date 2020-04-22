@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="PECMailBoxConfiguration">
+    
+    <id name="Id">
+      <generator class="identity" />
+    </id>
+
+    <property name="Name" />
+    <property name="MaxReadForSession" />
+    <property name="MaxSendForSession" />
+    <property name="UnzipAttachments" />
+    <property name="MarkAsRead" />
+    <property name="MoveToFolder" />
+    <property name="MoveErrorToFolder" />
+    <property name="InboxFolder" />
+    <property name="UploadSent" />
+    <property name="FolderSent" />
+    <property name="ImapSearchFlag" />
+    <property name="ImapStartDate" />
+    <property name="ImapEndDate" />
+    <property name="NoSubjectDefaultText" />
+    <property name="DeleteMailFromServer" column="DeleteMailFromServer" />
+    <property name="MaxReceiveByteSize" column="MaxReceiveByteSize" />
+    <property name="MaxSendByteSize" column="MaxSendByteSize" />
+    
+  </class>
+  
+</hibernate-mapping>

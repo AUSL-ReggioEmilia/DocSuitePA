@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DF5935CA-367B-4124-9840-AAFD3C419EBA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Model</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DocumentGenerator\BaseDocumentGeneratorParameter.cs" />
+    <Compile Include="DocumentGenerator\Parameters\DateTimeParameter.cs" />
+    <Compile Include="DocumentGenerator\XMLConverterModel.cs" />
+    <Compile Include="DocumentGenerator\DocumentGeneratorModel.cs" />
+    <Compile Include="DocumentGenerator\Parameters\FloatParameter.cs" />
+    <Compile Include="DocumentGenerator\Parameters\GuidParameter.cs" />
+    <Compile Include="DocumentGenerator\Parameters\IntParameter.cs" />
+    <Compile Include="DocumentGenerator\Parameters\BooleanParameter.cs" />
+    <Compile Include="DocumentGenerator\Parameters\CharParameter.cs" />
+    <Compile Include="DocumentGenerator\Parameters\StringParameter.cs" />
+    <Compile Include="DocumentGenerator\XMLModelKind.cs" />
+    <Compile Include="Documents\ArchiveDocument.cs" />
+    <Compile Include="Documents\AttributeValue.cs" />
+    <Compile Include="Documents\AttributeValueType.cs" />
+    <Compile Include="Documents\Document.cs" />
+    <Compile Include="Documents\SearchableDocumentModel.cs" />
+    <Compile Include="Documents\FilterDocumentModel.cs" />
+    <Compile Include="Documents\Signs\OTPType.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationBuildModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationDocumentGroupName.cs" />
+    <Compile Include="Entities\Commons\CategoryFascicleRightTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\CategoryModelType.cs" />
+    <Compile Include="Entities\Commons\RoleFinderModel.cs" />
+    <Compile Include="Entities\Commons\RoleFullTableValuedModel.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnitModel.cs" />
+    <Compile Include="Entities\Processes\IProcessTableValuedModel.cs" />
+    <Compile Include="Entities\Processes\ProcessFascicleTemplateModel.cs" />
+    <Compile Include="Entities\Processes\ProcessModel.cs" />
+    <Compile Include="Entities\Processes\ProcessTableValuedModel.cs" />
+    <Compile Include="Entities\Processes\ProcessType.cs" />
+    <Compile Include="Entities\Workflows\WorkflowStatus.cs" />
+    <Compile Include="ExternalModels\DocSuiteEvent.cs" />
+    <Compile Include="ExternalModels\DocSuiteModel.cs" />
+    <Compile Include="ExternalModels\DocSuiteStatus.cs" />
+    <Compile Include="ExternalModels\DocSuiteType.cs" />
+    <Compile Include="Integrations\GenericProcesses\InvoicePreviewModel.cs" />
+    <Compile Include="Integrations\ZenDesk\ArticleModel.cs" />
+    <Compile Include="Integrations\ZenDesk\ArticleSearchModel.cs" />
+    <Compile Include="Integrations\ZenDesk\ArticlesModel.cs" />
+    <Compile Include="Integrations\ZenDesk\ArticlesSearchModel.cs" />
+    <Compile Include="Integrations\ZenDesk\BaseZenDeskModel.cs" />
+    <Compile Include="Integrations\ZenDesk\CategoryModel.cs" />
+    <Compile Include="Integrations\ZenDesk\SectionModel.cs" />
+    <Compile Include="Integrations\ZenDesk\CategoriesModel.cs" />
+    <Compile Include="Integrations\ZenDesk\SectionsModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\CategoryFinderModel.cs" />
+    <Compile Include="Entities\Commons\CategoryFullTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\ContactType.cs" />
+    <Compile Include="Entities\Commons\LanguageType.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFinderModel.cs" />
+    <Compile Include="Entities\Fascicles\FascicleRoleModel.cs" />
+    <Compile Include="Entities\Messages\MessageBuildModel.cs" />
+    <Compile Include="Entities\Fascicles\FascicleBuildModel.cs" />
+    <Compile Include="Entities\PECMails\InvoiceStatus.cs" />
+    <Compile Include="Entities\JeepServiceHosts\JeepServiceHostTableValuedModel.cs" />
+    <Compile Include="Entities\PECMails\InvoiceType.cs" />
+    <Compile Include="Entities\PECMails\PECMailActiveType.cs" />
+    <Compile Include="Entities\PECMails\PECMailBoxConfigurationModel.cs" />
+    <Compile Include="Entities\PECMails\PECMailBoxConfigurationTableValuedModel.cs" />
+    <Compile Include="Entities\PECMails\PECMailBoxModel.cs" />
+    <Compile Include="Entities\PECMails\PECMailBoxTableValuedModel.cs" />
+    <Compile Include="Entities\Collaborations\ICollaborationDraftModel.cs" />
+    <Compile Include="Entities\PECMails\PECMailBuildModel.cs" />
+    <Compile Include="Entities\PECMails\PECMailDirection.cs" />
+    <Compile Include="Entities\PECMails\PECMailModel.cs" />
+    <Compile Include="Entities\PECMails\PECMailMultipleType.cs" />
+    <Compile Include="Entities\PECMails\PECMailPriority.cs" />
+    <Compile Include="Entities\PECMails\PECMailProcessStatus.cs" />
+    <Compile Include="Entities\Protocols\AdvancedProtocolModel.cs" />
+    <Compile Include="Entities\Protocols\AdvancedProtocolTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\IContactTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\CategoryFascicleTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\DSWEnvironmentType.cs" />
+    <Compile Include="Entities\Commons\MetadataRepositoryModel.cs" />
+    <Compile Include="Entities\Commons\UserModel.cs" />
+    <Compile Include="Entities\Commons\IRoleTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\AuthorizationRoleType.cs" />
+    <Compile Include="Entities\Conservations\ConservationLogModel.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolderTableValuedModel.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolderModel.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolderStatus.cs" />
+    <Compile Include="Entities\Dossiers\DossierTableValuedModel.cs" />
+    <Compile Include="Entities\Dossiers\DossierDocumentModel.cs" />
+    <Compile Include="Entities\Dossiers\DossierRoleModel.cs" />
+    <Compile Include="Entities\Dossiers\DossierModel.cs" />
+    <Compile Include="EmptyModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationDestinationType.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationDocumentWorkflowModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationProtocolModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationSignerWorkflowModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationTableValuedModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationSignModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationUserModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationVersioningModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationModel.cs" />
+    <Compile Include="Entities\Commons\ContactAddressDraftModel.cs" />
+    <Compile Include="Entities\Commons\ContactDraftModel.cs" />
+    <Compile Include="Entities\Commons\DocumentModel.cs" />
+    <Compile Include="Entities\Commons\LocationModel.cs" />
+    <Compile Include="Entities\Commons\RoleModel.cs" />
+    <Compile Include="Entities\Commons\ContactTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\RoleTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\IContainerTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\ICategoryTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\CategoryModel.cs" />
+    <Compile Include="Entities\Commons\ContactModel.cs" />
+    <Compile Include="Entities\Commons\ContainerModel.cs" />
+    <Compile Include="Entities\DocumentUnits\ChainType.cs" />
+    <Compile Include="Entities\DocumentUnits\DocumentUnitRoleModel.cs" />
+    <Compile Include="Entities\DocumentUnits\DocumentUnitChainModel.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolderModel.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolderTypology.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolderStatus.cs" />
+    <Compile Include="Entities\Fascicles\FascicleFolderTableValuedModel.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentModel.cs" />
+    <Compile Include="Entities\Fascicles\VisibilityType.cs" />
+    <Compile Include="Entities\Messages\MessageContantTypology.cs" />
+    <Compile Include="Entities\Messages\MessageContactType.cs" />
+    <Compile Include="Entities\Messages\MessageAttachmentModel.cs" />
+    <Compile Include="Entities\Messages\MessageContactEmailModel.cs" />
+    <Compile Include="Entities\Messages\MessageContactModel.cs" />
+    <Compile Include="Entities\Messages\MessageEmailModel.cs" />
+    <Compile Include="Entities\Messages\MessageModel.cs" />
+    <Compile Include="Entities\Messages\MessageStatus.cs" />
+    <Compile Include="Entities\Messages\MessageType.cs" />
+    <Compile Include="Entities\Monitors\MonitoringQualityDetailsModel.cs" />
+    <Compile Include="Entities\Monitors\MonitoringQualitySummaryModel.cs" />
+    <Compile Include="Entities\Monitors\MonitoringSeriesRoleModel.cs" />
+    <Compile Include="Entities\Monitors\MonitoringSeriesSectionModel.cs" />
+    <Compile Include="Entities\Monitors\MonitoringSeriesSectionTableValuedModel.cs" />
+    <Compile Include="Entities\Monitors\TransparentAdministrationMonitorLogModel.cs" />
+    <Compile Include="Entities\Monitors\TransparentAdministrationMonitorLogTableValuedModel.cs" />
+    <Compile Include="Entities\Parameter\ParameterModel.cs" />
+    <Compile Include="Entities\Parameter\ParameterTableValuedModel.cs" />
+    <Compile Include="Entities\PECMails\PECMailErrorSummaryModel.cs" />
+    <Compile Include="Entities\PECMails\PECMailErrorStreamModel.cs" />
+    <Compile Include="Entities\Commons\ComunicationType.cs" />
+    <Compile Include="Entities\Commons\ContactBagDraftModel.cs" />
+    <Compile Include="Entities\Protocols\ProtocolContactType.cs" />
+    <Compile Include="Entities\Protocols\ProtocolRoleType.cs" />
+    <Compile Include="Entities\Protocols\ProtocolRoleDistributionType.cs" />
+    <Compile Include="Entities\Protocols\ProtocolBuildModel.cs" />
+    <Compile Include="Entities\Protocols\ProtocolDraftModel.cs" />
+    <Compile Include="Entities\Protocols\ProtocolRoleModel.cs" />
+    <Compile Include="Entities\Protocols\ProtocolRoleNoteType.cs" />
+    <Compile Include="Entities\Protocols\ProtocolRoleStatus.cs" />
+    <Compile Include="Entities\Protocols\ProtocolTypology.cs" />
+    <Compile Include="Entities\Protocols\ProtocolUserModel.cs" />
+    <Compile Include="Entities\Protocols\ProtocolUserType.cs" />
+    <Compile Include="Entities\Workflows\WorkflowActivityModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\ContactFinderModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\WorkflowActivityFinderModel.cs" />
+    <Compile Include="Reports\Implementation\ReportBuildModel.cs" />
+    <Compile Include="Reports\Implementation\ReportCategoryModel.cs" />
+    <Compile Include="Reports\Implementation\ReportModel.cs" />
+    <Compile Include="Reports\Implementation\ReportOutputFormatModel.cs" />
+    <Compile Include="Reports\Implementation\ReportParameterModel.cs" />
+    <Compile Include="Reports\Implementation\ReportParameterValueModel.cs" />
+    <Compile Include="Entities\Resolutions\FileResolutionModel.cs" />
+    <Compile Include="Entities\Resolutions\ResolutionRoleModel.cs" />
+    <Compile Include="Entities\Resolutions\ResolutionTableValuedModel.cs" />
+    <Compile Include="Entities\Tenants\TenantConfigurationModel.cs" />
+    <Compile Include="Entities\Tenants\TenantConfigurationTableValuedModel.cs" />
+    <Compile Include="Entities\Tenants\TenantConfigurationType.cs" />
+    <Compile Include="Entities\Tenants\TenantTableValuedModel.cs" />
+    <Compile Include="Entities\UDS\UDSCollaborationModel.cs" />
+    <Compile Include="Entities\UDS\UDSContactModel.cs" />
+    <Compile Include="Entities\UDS\UDSDocumentType.cs" />
+    <Compile Include="Entities\UDS\UDSRelationModel.cs" />
+    <Compile Include="Entities\UDS\UDSMessageModel.cs" />
+    <Compile Include="Entities\UDS\UDSPECMailModel.cs" />
+    <Compile Include="Entities\UDS\UDSDocumentUnitModel.cs" />
+    <Compile Include="Entities\UDS\UDSRelationType.cs" />
+    <Compile Include="Entities\UDS\UDSRepositoryTableValuedModel.cs" />
+    <Compile Include="Entities\UDS\UDSDocumentModel.cs" />
+    <Compile Include="Entities\UDS\UDSRoleModel.cs" />
+    <Compile Include="Entities\UDS\UDSUserModel.cs" />
+    <Compile Include="Entities\MassimariScarto\MassimarioScartoModel.cs" />
+    <Compile Include="Entities\MassimariScarto\MassimarioScartoSchemaModel.cs" />
+    <Compile Include="Entities\MassimariScarto\MassimarioScartoStatus.cs" />
+    <Compile Include="ExternalModels\ExternalViewerContactModel.cs" />
+    <Compile Include="ExternalModels\ExternalViewerModel.cs" />
+    <Compile Include="Integrations\GenericProcesses\DocumentManagementRequestModel.cs" />
+    <Compile Include="Integrations\GenericProcesses\IDocumentManagementRequestModel.cs" />
+    <Compile Include="Entities\JeepServiceHosts\JeepServiceHostModel.cs" />
+    <Compile Include="Metadata\CommentFieldModel.cs" />
+    <Compile Include="Metadata\DiscussionFieldModel.cs" />
+    <Compile Include="Metadata\EnumFieldModel.cs" />
+    <Compile Include="Metadata\MetadataModel.cs" />
+    <Compile Include="Metadata\TextFieldModel.cs" />
+    <Compile Include="Metadata\BaseFieldModel.cs" />
+    <Compile Include="Parameters\CollaborationManagersModel.cs" />
+    <Compile Include="Parameters\AbsentManagerCertificateModel.cs" />
+    <Compile Include="Parameters\JsonParameter.cs" />
+    <Compile Include="Parameters\JsonPropertyType.cs" />
+    <Compile Include="Parameters\MenuNodeModel.cs" />
+    <Compile Include="Parameters\ODATAModel.cs" />
+    <Compile Include="Parameters\ODataParameterModel.cs" />
+    <Compile Include="Parameters\SecurityContextType.cs" />
+    <Compile Include="Parameters\TemplateDocumentVisibilityConfiguration.cs" />
+    <Compile Include="Parameters\WorkflowPropertyConfig.cs" />
+    <Compile Include="Parameters\WorkflowOperationAction.cs" />
+    <Compile Include="Parameters\WorkflowOperationConfig.cs" />
+    <Compile Include="Entities\PECMails\PECMailAttachmentModel.cs" />
+    <Compile Include="Entities\PECMails\PECMailAttachmentTableValuedModel.cs" />
+    <Compile Include="Reports\IReportItem.cs" />
+    <Compile Include="Reports\Implementation\ReportBuilderConditionModel.cs" />
+    <Compile Include="Reports\Implementation\ReportBuilderModel.cs" />
+    <Compile Include="Reports\Implementation\ReportBuilderProjectionModel.cs" />
+    <Compile Include="Reports\Implementation\ReportBuilderProjectionType.cs" />
+    <Compile Include="Reports\Implementation\ReportBuilderPropertyCondition.cs" />
+    <Compile Include="Reports\Implementation\ReportBuilderPropertyModel.cs" />
+    <Compile Include="Reports\Implementation\ReportBuilderPropertyType.cs" />
+    <Compile Include="Reports\Implementation\ReportBuilderSortModel.cs" />
+    <Compile Include="Reports\Implementation\ReportSortType.cs" />
+    <Compile Include="Rulesets\PECMailBoxRuleset.cs" />
+    <Compile Include="Rulesets\RulesetType.cs" />
+    <Compile Include="Securities\DomainBaseModel.cs" />
+    <Compile Include="Securities\DomainUserModel.cs" />
+    <Compile Include="Securities\DomainGroupModel.cs" />
+    <Compile Include="Entities\DocumentArchives\DocumentSeriesItemModel.cs" />
+    <Compile Include="Entities\DocumentUnits\DocumentUnitModel.cs" />
+    <Compile Include="Entities\DocumentUnits\DocumentUnitTableValuedModel.cs" />
+    <Compile Include="Entities\DocumentUnits\DocumentUnitFilterModel.cs" />
+    <Compile Include="Entities\Fascicles\FascicleType.cs" />
+    <Compile Include="Entities\Fascicles\FascicleModel.cs" />
+    <Compile Include="Entities\Fascicles\FascicleTableValuedModel.cs" />
+    <Compile Include="Entities\Fascicles\ReferenceType.cs" />
+    <Compile Include="Entities\Protocols\ProtocolContactModel.cs" />
+    <Compile Include="Entities\Protocols\ProtocolContactManualModel.cs" />
+    <Compile Include="Entities\Protocols\ProtocolTypeModel.cs" />
+    <Compile Include="Entities\Protocols\ProtocolTableValuedModel.cs" />
+    <Compile Include="Entities\Protocols\ProtocolParerModel.cs" />
+    <Compile Include="Entities\Protocols\ProtocolModel.cs" />
+    <Compile Include="Entities\Resolutions\ResolutionModel.cs" />
+    <Compile Include="Entities\UDS\UDSBuildModel.cs" />
+    <Compile Include="Entities\UDS\UDSRepositoryModel.cs" />
+    <Compile Include="Entities\UDS\UDSRepositoryStatus.cs" />
+    <Compile Include="Entities\UDS\UDSSchemaRepositoryModel.cs" />
+    <Compile Include="Entities\UDS\UDSWorkflowModel.cs" />
+    <Compile Include="Parameters\GridViewModel.cs" />
+    <Compile Include="Parameters\TenantEntityConfiguration.cs" />
+    <Compile Include="Parameters\TenantModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Securities\HostIdentify.cs" />
+    <Compile Include="Securities\TokenSecurityModel.cs" />
+    <Compile Include="ServiceBus\EvaluationModel.cs" />
+    <Compile Include="ServiceBus\ServiceBusResponseState.cs" />
+    <Compile Include="ServiceBus\ServiceBusMessageState.cs" />
+    <Compile Include="ServiceBus\ServiceBusMessage.cs" />
+    <Compile Include="ServiceBus\ServiceBusMessageType.cs" />
+    <Compile Include="Entities\Templates\TemplateCollaborationModel.cs" />
+    <Compile Include="Entities\Templates\TemplateCollaborationStatus.cs" />
+    <Compile Include="ServiceBus\ServiceBusTopicMessage.cs" />
+    <Compile Include="ServiceBus\StepModel.cs" />
+    <Compile Include="Documents\Signs\ProviderSignType.cs" />
+    <Compile Include="Documents\Signs\RemoteSignType.cs" />
+    <Compile Include="Documents\Signs\StorageInformationType.cs" />
+    <Compile Include="Documents\Signs\RemoteSignProperty.cs" />
+    <Compile Include="Documents\Signs\UserProfile.cs" />
+    <Compile Include="Validations\ValidationMessageModel.cs" />
+    <Compile Include="Validations\ValidationModel.cs" />
+    <Compile Include="WebAPI\Client\IBaseAddress.cs" />
+    <Compile Include="WebAPI\Client\ICredential.cs" />
+    <Compile Include="WebAPI\Client\IHttpClientConfiguration.cs" />
+    <Compile Include="WebAPI\Client\Implementation\BaseAddress.cs" />
+    <Compile Include="WebAPI\Client\Implementation\Credential.cs" />
+    <Compile Include="WebAPI\Client\Implementation\HttpClientConfiguration.cs" />
+    <Compile Include="WebAPI\Client\Implementation\WebApiControllerEndpoint.cs" />
+    <Compile Include="WebAPI\Client\IWebApiControllerEndpoint.cs" />
+    <Compile Include="Workflow\AcceptanceStatus.cs" />
+    <Compile Include="Workflow\Actions\WorkflowActionDocumentUnitLinkModel.cs" />
+    <Compile Include="Workflow\Actions\WorkflowActionFascicleModel.cs" />
+    <Compile Include="Workflow\Actions\WorkflowActionModel.cs" />
+    <Compile Include="Workflow\ActivityModel.cs" />
+    <Compile Include="Workflow\ArgumentType.cs" />
+    <Compile Include="Workflow\Client\WorkflowClientConfiguration.cs" />
+    <Compile Include="Workflow\TranslationError.cs" />
+    <Compile Include="Workflow\TranslationErrorExtended.cs" />
+    <Compile Include="Workflow\WorkflowAccount.cs" />
+    <Compile Include="Workflow\WorkflowMessageLinkType.cs" />
+    <Compile Include="Workflow\WorkflowDocumentModel.cs" />
+    <Compile Include="Workflow\WorkflowNotification.cs" />
+    <Compile Include="Workflow\WorkflowReferenceBiblosModel.cs" />
+    <Compile Include="Workflow\WorkflowReferenceModel.cs" />
+    <Compile Include="Workflow\WorkflowAcceptanceModel.cs" />
+    <Compile Include="Workflow\WorkflowActivityAction.cs" />
+    <Compile Include="Workflow\WorkflowActivityArea.cs" />
+    <Compile Include="Workflow\WorkflowActivityOperation.cs" />
+    <Compile Include="Workflow\WorkflowActivityType.cs" />
+    <Compile Include="Workflow\WorkflowArgument.cs" />
+    <Compile Include="Workflow\WorkflowAuthorizationType.cs" />
+    <Compile Include="Workflow\WorkflowComplete.cs" />
+    <Compile Include="Workflow\WorkflowMapping.cs" />
+    <Compile Include="Workflow\WorkflowNotify.cs" />
+    <Compile Include="Workflow\WorkflowPublish.cs" />
+    <Compile Include="Workflow\WorkflowRequestStatus.cs" />
+    <Compile Include="Workflow\WorkflowResult.cs" />
+    <Compile Include="Workflow\WorkflowRole.cs" />
+    <Compile Include="Workflow\WorkflowStart.cs" />
+    <Compile Include="Workflow\WorkflowStep.cs" />
+    <Compile Include="Workflow\WorkflowValidate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VecompSoftware.DocSuiteWeb.Model.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commons\" />
+    <Folder Include="Entities\Reportings\" />
+    <Folder Include="Processes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
+      <Project>{c6f323c0-c21b-433b-90c8-0b64a42115ab}</Project>
+      <Name>VecompSoftware.Commons.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

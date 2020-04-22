@@ -1,0 +1,83 @@
+﻿
+<div class="panel card panel-fix">
+
+    <div>
+        <div class="card-header card-header-icon">
+            <div class="card-icon card-azure">
+                <h3 class="card-category ">Fascicolo - Sommario</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon-adjustments card-azure">
+                            <i class="fa fa-info" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category clearfix-label">Informazioni</p>
+                    </div>
+                    <div class="table-padding-sm-all">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide" scope="row">Titolo</th>
+                                    <td class="responsive-text border-hide">{{fascicle.title}}</td>
+                                    <th class="responsive-text column-right border-hide" scope="row">Tipo</th>
+                                    <td class="responsive-text border-hide">{{fascicleType}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide " scope="row">Data Apertura</th>
+                                    <td class="responsive-text border-hide">{{fascicle.startDate | dateFormat}}</td>
+                                    <th class="responsive-text column-right border-hide " scope="row">Data Chiusura</th>
+                                    <td class="responsive-text border-hide">{{fascicle.endDate | dateFormat}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide" scope="row">Creato da</th>
+                                    <td class="responsive-text border-hide">{{fascicle.registrationUser}}</td>
+                                    <th class="responsive-text column-right border-hide" scope="row">Modificato da</th>
+                                    <td class="responsive-text border-hide">{{fascicle.lastChangedUser}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide " scope="row">Creato il</th>
+                                    <td class="responsive-text border-hide">{{fascicle.registrationDate | dateFormat}}</td>
+                                    <th class="responsive-text column-right border-hide " scope="row">Modificato il</th>
+                                    <td class="responsive-text border-hide">{{fascicle.lastChangedDate | dateFormat}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon-adjustments card-azure">
+                            <i class="fa fa-cube" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category clearfix-label">Oggetto</p>
+                    </div>
+                    <div class="table-padding-sm-all">
+                        <table class="table">
+                            <tbody>
+
+                                <tr>
+                                    <th class="responsive-text column-right border-hide" scope="row">Oggetto</th>
+                                    <td class="responsive-text border-hide">{{fascicle.subject}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+

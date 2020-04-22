@@ -1,0 +1,97 @@
+﻿/* Overrides default bootstrap styles */
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f7f7f7;
+    position: relative;
+    margin: 0;
+    font-size: 12px;
+    padding-top: 70px;
+    padding-bottom: 30px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Container */
+.container {
+    min-width: 748px;
+}
+
+/* NAVBAR */
+.navbar-inverse {
+    min-height: 48px;
+    margin-bottom: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #191e23;
+    background: #2c3742; /* Old browsers */
+    background: -moz-linear-gradient(top, #2c3742 0%, #28303a 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2c3742), color-stop(100%,#28303a)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #2c3742 0%,#28303a 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #2c3742 0%,#28303a 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #2c3742 0%,#28303a 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #2c3742 0%,#28303a 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c3742', endColorstr='#28303a',GradientType=0 ); /* IE6-9 */
+}
+/* navbar-nav*/
+
+.navbar-inverse .navbar-nav {
+    padding-right: 20px;
+}
+/* navbar brand*/
+.navbar-inverse .navbar-brand {
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: lighter;
+    padding: 11px 20px;
+}
+
+    .navbar-inverse .navbar-brand strong {
+        font-weight: normal;
+    }
+/* navbar links */
+.navbar-inverse .nav > li > a {
+    padding: 13px 15px 8px;
+    border-left: 1px solid #101417;
+    color: rgb(214, 214, 214);
+    outline: 0px;
+    font-size: 15px;
+    height: 46px;
+    transition: background .1s linear;
+    -moz-transition: background .1s linear; /* Firefox 4 */
+    -webkit-transition: background .1s linear; /* Safari and Chrome */
+    -o-transition: background .1s linear; /* Opera */
+}
+
+    .navbar-inverse .nav > li > a:hover {
+        background: rgba(25, 31, 36,0.6);
+    }
+
+.nav .open > a:focus {
+    border-color: #101417;
+    background-color: rgb(238, 238, 238);
+}
+
+.pull-right.navbar-nav > li > .dropdown-menu {
+    left: 0;
+    right: 0;
+}
+
+/* Validation */
+.validation-error {
+    color: #e80c4d;
+    font-weight: bold;
+}
+
+/* Telerik customization */
+.RadGrid_MetroTouch, .RadGrid_MetroTouch .rgMasterTable, .RadGrid_MetroTouch .rgDetailTable, .RadGrid_MetroTouch .rgGroupPanel table, .RadGrid_MetroTouch .rgCommandRow table, .RadGrid_MetroTouch .rgEditForm table, .RadGrid_MetroTouch .rgPager table {
+    font-weight: 100;
+    font-size: 16px;
+    line-height: 20px !important;
+    font-family: 'Open Sans', 'Segoe UI',Arial,Helvetica,sans-serif !important;
+}
+
+.RadWindow_MetroTouch .rwTitleRow .rwTitlebar, .RadWindow_MetroTouch .rwTitleRow .rwTopLeft, .RadWindow_MetroTouch .rwTitleRow .rwTopRight {
+    background-color: #2c3742 !important;
+}

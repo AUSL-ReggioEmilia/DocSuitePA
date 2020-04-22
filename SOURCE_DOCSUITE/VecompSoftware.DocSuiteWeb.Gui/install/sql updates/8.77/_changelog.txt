@@ -1,0 +1,208 @@
+Epic 11348: [CTT ENAV] Implementare un motore di regole automatiche nel modulo PEC del JeepService
+Epic 14048: [ENAV] Fatturazione elettronica
+Epic 14221: [DSW] Integrazione ZenDesk in DocSuite
+Epic 14451: [ENAV] Modifiche alla interfaccia utente DocSuite (generali)
+
+
+Feature 11366: [CTT ENAV] Amministrazione : Pagina di definizione delle regole di spostamento automatico PEC
+Feature 11367: [CTT ENAV] JeepService modulo PEC: Implementare motore di valutazione delle regole RulesetDefinition
+Feature 14023: [CTT DSW] Implementare la possibilità di riaprire un Fascicolo che è già stato chiuso
+Feature 14026: [CTT DSW] Implementare la possibilità di annullare un Fascicolo
+Feature 14049: [ENAV] FE CA - gestione della comunicazione con SDI
+Feature 14050: [ENAV] FE CA - gestione workflow archivia, protocollo, invio
+Feature 14061: [ASL-TO] Consultazione umana per dati AVCP / xml in trasparenza
+Feature 14194: [ENAV] FE CA - servizio per acquisizione fatture attive
+Feature 14195: [ENAV] FE CA - connettore per ERP Enav
+Feature 14196: [ENAV] FE CA - connettore per SAP TechnoSky
+Feature 14197: [ENAV] FE - stampa conforme fatture elettroniche e file metadati
+Feature 14199: [ENAV] FE CP - gestione della comunicazione con SDI
+Feature 14200: [ENAV] FE CP - archivia fattura da protocollo (caso 2)
+Feature 14201: [ENAV] FE CP - workflow di archiviazione delle PEC contenenti fatture passive
+Feature 14202: [ENAV] FE CP - workflow di invio dati al gestionale contabile
+Feature 14203: [ENAV] FE CP - connettore gestionale ERP ENAV
+Feature 14204: [ENAV] FE CP - connettore gestionale SAP TechnoSky
+Feature 14205: [ENAV] FE CP - flusso di riconciliazione con sistema contabile
+Feature 14206: [ENAV] FE CP - gestione delle registrazioni "da completare"
+Feature 14209: [ENAV] FE CP - adeguamento ERP Contratti
+Feature 14210: [ENAV] Miglioramenti sito eNavigare
+Feature 14306: [ENAV] Protocollo: Creare un protocollo tramite Private WebAPI e Service Bus
+Feature 14349: [AUSL-PC]Adeguamento modulo archivi con parametrizzazione anno e numero di registrazione
+Feature 14452: [ENAV] visualizzazione contatto in risultati ricerca su archivi
+Feature 14453: [ENAV] Gestione rubrica per contatti fatturazione elettronica
+Feature 14454: [ENAV] Viste di monitoraggio esiti di colloquio SDI
+Feature 14566: [CTT ENAV] WebAPI: Creazione Controller Rest/ODATA dell'entità PECMailBox
+Feature 14572: [ENAV] PEC: Creare un PEC tramite Private WebAPI e Service Bus
+Feature 14590: [ENAV] Service Bus: Gestione della Retry Policy nel progetto Service Bus Receiver
+Feature 14612: [ENAV] Protocollo : Bonifica tabella Protocol e AdvancedProtocol
+Feature 14778: [ENAV] Archivi : Gestione delle relazioni dell'archivio in tabelle legate alla UDSRepositories
+Feature 14826: [ENAV] Archivi : Bonifica degli archivi con le nuove modalità di relazione delle entità figlie
+Feature 14864: [ENAV] DocSuite: Adeguare Anagrafiche Contatti e PECMailBox e PECMail per identificazione informazioni di Fatturazione
+Feature 14922: [DSW]Integrazione ZenDesk: Creazione service di comunicazione
+Feature 14966: [ENAV] Workflow Integration: Nuovo modulo 'VecompSoftware.BPM.Integrations.Modules.VSW.ActionFascicle'
+Feature 14969: [ENAV] Workflow Integration: Nuovo modulo 'VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink'
+Feature 15050: [ENAV] visualizzazione settore in risultati ricerca su archivi
+Feature 16019: [ENAV] Fatturazione Elettronica : Adeguamenti generici e comportamenti parametri
+Feature 16020: [ENAV] Fatturazione Elettronica : Introduzione cruscotti gestione flussi di fatturazione
+Feature 16091: [ENAV] FE CA - connettore per ERP AFOL
+
+
+
+User Story 6326: [JeepService] Aggiornare libreria Limilabs
+User Story 14171: [DSW] Aggiornamento Typescript 3 e Librerie Telerik R3 2018
+User Story 14219: [TECMARKET]Archivi: Introdurre filtro di ricerca archivio per tipologia in inserimento di archivio
+User Story 14307: [ENAV] Protocollo : Bonifica tabella Parameter
+User Story 14308: [ENAV] Protocollo Private WebAPI: Mappare tabella Parameter
+User Story 14309: [ENAV] Protocollo Private WebAPI: Creare layer Service delle'entità Parameter
+User Story 14310: [ENAV] Protocollo Private WebAPI: Creare layer Mapping delle'entità Parameter
+User Story 14311: [ENAV] Protocollo Private WebAPI: Creare layer Validation dell'entità Parameter
+User Story 14312: [ENAV] Protocollo Private WebAPI: Creare controller REST dell'entità Parameter
+User Story 14313: [ENAV] Protocollo Private WebAPI: Creare controller ODATA dell'entità Parameter
+User Story 14314: [ENAV] Protocollo Private WebAPI: Gestione ActionType "ActivateProtocol" in ServiceProtocol
+User Story 14315: [ENAV] Protocollo ServiceBus: Creare il modulo 'VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol'
+User Story 14316: [ENAV] Protocollo : Creare il comando 'CommandBuildProtocol', l'evento 'EventCompleteProtocolBuild' e il modello ProtocolBuildModel
+User Story 14317: [ENAV] Protocollo : Bonifica tabella AdvancedProtocol
+User Story 14318: [ENAV] Protocollo : Mapping nhibernate, aggiungere le colonne nuove di AdvancedProtocol
+User Story 14319: [ENAV] Protocollo : Nella gestione di creazione di protocollo popolare la colonna UniqueIdProtocol,UniqueID di AdvancedProtocol
+User Story 14320: [ENAV] Protocollo Private WebAPI: Creare controller ODATA dell'entità AdvancedProtocol
+User Story 14321: [ENAV] Protocollo Private WebAPI: Creare controller REST dell'entità AdvancedProtocol
+User Story 14322: [ENAV] Protocollo Private WebAPI: Mappare tabella AdvancedProtocol
+User Story 14323: [ENAV] Protocollo Private WebAPI: Creare layer Validation dell'entità AdvancedProtocol
+User Story 14324: [ENAV] Protocollo Private WebAPI: Creare layer Service delle'entità AdvancedProtocol
+User Story 14325: [ENAV] Protocollo Private WebAPI: Creare layer Mapping delle'entità AdvancedProtocol
+User Story 14326: [ENAV] Protocollo Private WebAPI: Aggiungere ActionType "CreateProtocol", "ActivateProtocol"
+User Story 14327: [ENAV] Protocollo Private WebAPI: Gestire il comand ICommandCreateProtocol nel controller rest Protocol
+User Story 14362: [CTT DSW]Private WebAPI Custom validation Fascicle: Implementare validazione "IsNotConservated" di Fascicolo
+User Story 14363: [CTT DSW] WebAPI : Creare un UpdateActionType 'OpenFascicleClosed'
+User Story 14364: [CTT DSW] WebAPI : Configurare XML di validazione dei fascicoli per l'actiontype "OpenFascicleClosed"
+User Story 14365: [CTT DSW] Fascicoli : Nuovo pulsante "Apri fascicolo" in sommario di fascicolo chiuso
+User Story 14366: [CTT DSW] Fascicoli : Azione "Apri fascicolo" in sommario di fascicolo chiuso
+User Story 14369: [CTT DSW] WebAPI : Adeguare il FascicleService per update action type "CancelFascicle"
+User Story 14382: [ENAV] Protocollo Private WebAPI: Settare Inversion of Controller dei layers di Parameter
+User Story 14389: [ENAV] Protocollo : Mapping nhibernate, aggiungere le colonne nuove di Parameter
+User Story 14392: [AUSL-PC]Archivi: Aggiugere il parametro 'HideRegistrationIdentifier' nel file UnitaDocumentariaSpecifica.xsd
+User Story 14393: [AUSL-PC]Archivi: Gestire il parametro 'HideRegistrationIdentifier' nel designer degli archivi
+User Story 14394: [AUSL-PC]Archivi: Gestire il parametro 'HideRegistrationIdentifier' nella pagina di ricerca archivi
+User Story 14395: [AUSL-PC]Archivi: Gestire il parametro 'HideRegistrationIdentifier' nella sommario di archivio
+User Story 14421: [CTT DSW] Fascicoli : Azione "Annulla" in sommario di fascicolo aperto
+User Story 14422: [CTT DSW] Fascicoli : Nuovo pulsante "Annulla" in sommario di fascicolo aperto
+User Story 14423: [CTT DSW] WebAPI : Implementare validazione "CanFascicleDeletable" di Fascicolo
+User Story 14426: [CTT DSW] WebAPI : Configurare XML di validazione dei fascicoli per l'actiontype "CancelFascicle"
+User Story 14427: [CTT DSW] WebAPI : Creare un UpdateActionType 'CancelFascicle'
+User Story 14428: [CTT DSW] WebAPI : Adeguare il FascicleController rest per la gestione del metodo AfterSave
+User Story 14429: [CTT DSW] WebAPI : Adeguare il ProtocolController rest per la gestione del metodo AfterSave
+User Story 14484: [ENAV] Protocollo Private WebAPI: Gestione ActionType "CreateProtocol" in ServiceProtocol
+User Story 14485: [ENAV] Protocollo Private WebAPI: Custom validation Protocol: Inserimento se e solo se ActionType = 'CreateProtocol'
+User Story 14486: [ENAV] Protocollo Private WebAPI: Custom validation Protocol: Inserimento se e solo se Year = Anno Corrente
+User Story 14487: [ENAV] Protocollo Private WebAPI: Custom validation Protocol: Inserimento se e solo se Parameter.[LastUsedYear] = Anno Corrente
+User Story 14488: [ENAV] Protocollo Private WebAPI: Custom validation Protocol: Inserimento se e solo se Protocol.Container = E' attivo
+User Story 14489: [ENAV] Protocollo Private WebAPI: Custom validation Protocol: Inserimento se e solo se Protocol.Category = E' attivo
+User Story 14490: [ENAV] Protocollo Private WebAPI: Custom validation Protocol: Inserimento se e solo se l'utente corrente ha diritti di inserimento sul contenitore
+User Story 14491: [ENAV] Protocollo Private WebAPI: Custom validation Protocol: Aggiornamento se e solo se Protocollo ha il documento principale
+User Story 14492: [ENAV] Protocollo Private WebAPI: Custom validation Protocol: Inserimento se e solo se Protocollo in ingresso ha almeno un Contatto Mittente
+User Story 14493: [ENAV] Protocollo Private WebAPI: Custom validation Protocol: Inserimento se e solo se Protocollo in uscita ha almeno un Contatto Destinarario
+User Story 14494: [ENAV] Protocollo Private WebAPI: Custom validation Protocol: Aggiornamento se e solo se ActionType = 'ActivateProtocol'
+User Story 14495: [ENAV] Protocollo Private WebAPI: Protocol Entity Mapping: Bonificare il mapping ProtocolMapper
+User Story 14496: [CTT ENAV] Casella PEC: Adeguare la tabella PECMailBox
+User Story 14497: [CTT ENAV] Casella PEC: Adeguare entità nhibernate PECMailBox
+User Story 14498: [CTT ENAV] Casella PEC WebAPI: Adeguare entità entity framework PECMailBox
+User Story 14499: [CTT ENAV] Casella PEC WebAPI: Creare modello PECMailBoxRuleset
+User Story 14500: [CTT ENAV] Casella PEC JeepService : Implementare PECMailBoxRuleset
+User Story 14501: [CTT ENAV] Entità PECMailLogType: Aggiugnere PECMailLogType.RulsetActivated
+User Story 14502: [CTT ENAV] Casella PEC: Creare voce di menu 'Tabelle -> Caselle PEC'
+User Story 14503: [CTT ENAV] Casella PEC: Creare pagina di gestione Caselle PEC 'TbltPECMailBox.aspx'
+User Story 14504: [CTT ENAV] Casella PEC: Implementare la 'TbltPECMailBox.aspx'
+User Story 14567: [ENAV] Protocollo Private WebAPI: Creare Service Layer dell'entità PECmailBox
+User Story 14568: [ENAV] Protocollo Private WebAPI: Creare controller ODATA dell'entità PECMailBox
+User Story 14569: [ENAV] Protocollo Private WebAPI: Creare controller REST dell'entità PECMailBox
+User Story 14570: [ENAV] Protocollo Private WebAPI: Creare layer Mapping dell'entità PECMailBox
+User Story 14571: [ENAV] Caselle PEC Private WebAPI: Creare layer Validation dell'entità PECMailBox
+User Story 14573: [ENAV] PEC: Bonifica tabella PECMailReceipt
+User Story 14574: [ENAV] PEC: Bonifica tabella PECMailAttachment
+User Story 14575: [ENAV] PEC Private WebAPI: Mappare tabella PECMailAttachment
+User Story 14576: [ENAV] PEC Private WebAPI: Creare layer Service dell'entità PECMailAttachment
+User Story 14577: [ENAV] PEC Private WebAPI: Bonificare il Layer PECMailService
+User Story 14578: [ENAV] PEC Private WebAPI: Creare Mapping Layer dell'entità PECMailAttachment
+User Story 14579: [ENAV] PEC Private WebAPI: Creare controller ODATA dell'entità PECMailAttachment
+User Story 14580: [ENAV] PEC Private WebAPI: Creare controller REST dell'entità PECMailAttachment
+User Story 14581: [ENAV] PEC Private WebAPI: Creare il Validation Layer dell'entità PECMailAttachment
+User Story 14582: [ENAV] PEC Private WebAPI: Aggiungere al PECMAIL Validation Layer i riferimenti di PECMailAttachments
+User Story 14583: [ENAV] PEC Private WebAPI: Bonificare Mapping PECMailReceipt
+User Story 14584: [ENAV] PEC Private WebAPI: Custom validation PEC: Inserimento se e solo se la PEC è di tipo 'Outgoing'
+User Story 14585: [ENAV] PEC Private WebAPI: Settare Inversion of Controller dei layers di PECMailAttachment
+User Story 14586: [ENAV] PEC : Mapping nhibernate, aggiungere le colonne nuove di PECMailAttachment
+User Story 14587: [ENAV] PEC : Mapping nhibernate, aggiungere le colonne nuove di PECMailReceipt
+User Story 14588: [ENAV] PEC: Script di migrazione delle tabelle PECMailAttachment e PECMailReceipt
+User Story 14589: [ENAV] PEC ServiceBUS: Creare il modulo 'VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail'
+User Story 14591: [ENAV] WebAPI: Creazione del modello EvaluationModel e StepModel
+User Story 14592: [ENAV] Service Bus Receiver: Creare classe exception : ServiceBusEvaluationException
+User Story 14593: [ENAV] Service Bus Receiver: Gestire l'eccezione ServiceBusEvaluationException nel metodo MessageCallAsync
+User Story 14594: [ENAV] Service Bus Receiver: Determinare se esiste la CustomProperty "ServiceBusEvaluationException" nel metodo MessageCallAsync
+User Story 14609: [ENAV]Stampa conforme : Sviluppare nuovo converter Outlook
+User Story 14610: [ENAV]Stampa conforme : Concludere nuovo converter Office
+User Story 14611: [ENAV]Stampa conforme : Modificare nuovo converter XML
+User Story 14613: [ENAV] Protocollo : Bonifica tabella Protocol e AdvancedProtocol
+User Story 14614: [ENAV] Protocollo : Tabella Protocol bonifica colonna IdCategoryAPI
+User Story 14615: [ENAV] Protocollo : Bonifica il mapping di nhibernate di Protocol e AdvancedProtocol
+User Story 14616: [ENAV] Protocollo : Bonifica il DAO e Facade/Finder di nhibernate di Protocol e AdvancedProtocol
+User Story 14619: [ENAV] Protocollo : Ricerca di protocollo con sottoclassificazione
+User Story 14620: [ENAV] Protocollo WebAPI: Bonifica Service, Mapping di Protocol e AdvancedProtocol
+User Story 14621: ENAV] Protocollo WebAPI: Bonifica mapping di entity framework di Protocol e AdvancedProtocol
+User Story 14622: [ENAV] WebAPI Protocollo : Bonifica ODATA Protocols e AdvancedProtocols
+User Story 14623: [ENAV] Creazione nuovo VecompSoftware.Helpers.XML.Converters
+User Story 14624: [ENAV] Framework: Creare Factory Converter/Deserializzazione XML to Model
+User Story 14626: [ENAV] WebAPI: Creare il modello ConverterXMLModel
+User Story 14667: [ENAV] Framework: XSD della fattura PA1.2
+User Story 14668: [ENAV] Framework: XSD della fattura PA1.1
+User Story 14669: [ENAV] Framework: XSL della fattura elettronica PR 1.2.1
+User Story 14670: [ENAV] Framework: XSL della fattura elettronica PA 1.2.1
+User Story 14671: [ENAV] Framework: XSL della fattura elettronica PA 1.0
+User Story 14678: [ENAV] Framework: XSL della fattura elettronica PA 1.1
+User Story 14684: [ENAV] PECMail: Creare il comando 'CommandBuildPECMail', l'evento 'EventCompletePecMAILBuild' e il modello PECMailBuildModel
+User Story 14729: [AUSL-RE]Monitoraggio Trasparenza: Modifica pagina QualityMonitor.aspx per espansione autamatica da redirect
+User Story 14781: [ENAV] Archivi: Creare tabella UDSPECMails
+User Story 14782: [ENAV] Archivi: Creare tabella UDSMessages
+User Story 14783: [ENAV] Archivi: Creare la tabella UDSContacts
+User Story 14784: [ENAV] Archivi: Creare la tabella UDSDocumentUnits
+User Story 14785: [ENAV] Archivi Private WebAPI: Mappare tabella uds.UDSDocumentUnits nella classe UDSDocumentUnit
+User Story 14786: [ENAV] Archivi Private WebAPI: Mappare tabella uds.UDSContacts nella classe UDSContact
+User Story 14787: [ENAV] Archivi Private WebAPI: Mappare tabella uds.UDSPECMails nella classe UDSPECMail
+User Story 14788: [ENAV] Archivi Private WebAPI: Mappare tabella uds.UDSMessages nella classe UDSMessage
+User Story 14789: [ENAV] Archivi Private WebAPI: Creare layer Service dell'entità UDSMessage
+User Story 14790: [ENAV] Archivi Private WebAPI: Creare layer Service dell'entità UDSPECMails
+User Story 14791: [ENAV] Archivi Private WebAPI: Creare layer Service dell'entità UDSContact
+User Story 14792: [ENAV] Archivi Private WebAPI: Creare layer Service dell'entità UDSDocumentUnit
+User Story 14793: [ENAV] Archivi Private WebAPI: Creare Mapping Layer dell'entità UDSPECMail
+User Story 14794: [ENAV] Archivi Private WebAPI: Creare Mapping Layer dell'entità UDSDocumentUnit
+User Story 14795: [ENAV] Archivi Private WebAPI: Creare Mapping Layer dell'entità UDSMessage
+User Story 14796: [ENAV] Archivi Private WebAPI: Creare Mapping Layer dell'entità UDSContact
+User Story 14797: [ENAV] Archivi Private WebAPI: Creare controller ODATA 'UDSContacts' dell'entità UDSContact
+User Story 14798: [ENAV] Archivi Private WebAPI: Creare controller ODATA 'UDSMessages' dell'entità UDSMessages
+User Story 14799: [ENAV] Archivi Private WebAPI: Creare controller ODATA 'UDSDocumentUnits' dell'entità UDSDocumentUnit
+User Story 14800: [ENAV] Archivi Private WebAPI: Creare controller ODATA 'UDSPECMails' dell'entità UDSPECMail
+User Story 14801: [ENAV] Archivi Private WebAPI: Creare controller REST 'UDSContact' dell'entità UDSContact
+User Story 14802: [ENAV] Archivi Private WebAPI: Creare controller REST 'UDSMessage' dell'entità UDSMessage
+User Story 14803: [ENAV] Archivi Private WebAPI: Creare controller REST 'UDSDocumentUnit' dell'entità UDSDocumentUnit
+
+
+
+Bug 5246: [AUSL-PC] Rispondi PEC: la funzionalità "Inserisci Firma" non funziona correttamente
+Bug 6782: [AUSL-RE] Problemi nel rendering di documento contenente allegato xml
+Bug 14403: [AUSL-RE]Collaborazione: La funzione "Cambia Responsabile" risulta incoerente con la gestione unificate delle segreterie
+Bug 14410: [AUSL-RE]Quando lo stato del servizio di verifica delle firme non è disponibile il JeepService non deve spostare i referti nella cartella di errore firme ma lasciarli nella cartella di input.
+Bug 14679: [ASL-TO] Mancato allineamento grafico sito di amministrazione trasparente
+Bug 14680: [ASL-TO ENAV CTT] errata gestione caselle pec non gestite in amministrazione
+Bug 15258: [CTT]Se dalla griglia di risultati di Protocollo,selezionando più protocolli,facendo "Visualizza documenti" e poi "Invio Mail",si genera errore perchè il CurrentProtocol è null
+Bug 15966: [CTT] Template di protocollo: Errore critico "Object reference not set"
+Bug 15969: [CTT]Errore sospesione numeri di protocollo
+Bug 16182: [AFOL] Errore durante la creazione dei fascicoli
+Bug 16188: [AUSL-PC] Richiesta modifica visibilità link a collaborazione associata ad atto con gestione privacy
+Bug 16190: [Li-nea]"Inserisci firma" in invia mail non funzionante
+Bug 16205: [CTT ENAV TEAFLEX AFOL DSW] Listener UDS.Listener.DataDelete: Manca il detach delle catene documentali durante l'annullamento di archivio
+Bug 16206: [CTT ENAV TEAFLEX AFOL DSW] DocumentUnitMigrator
+Bug 16207: [CTT ENAV TEAFLEX AFOL DSW] Annulla di protocollo: Manca il detach delle allegati e annessi
+Bug 16213: [CTT] Errore in modifica di un archivio sottoposto a conservazione
+Bug 16253: [TEAFLEX]Stampa conforme produce un errore a video
+
+
+Issue 13871: [DSW] Analisi CORS delle Private WebAPI/DocSuite
+Issue 16175: [ENEA] Errore in modifica password

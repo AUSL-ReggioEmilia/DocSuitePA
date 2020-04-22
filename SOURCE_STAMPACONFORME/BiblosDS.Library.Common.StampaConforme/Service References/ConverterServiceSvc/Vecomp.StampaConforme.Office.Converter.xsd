@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://Vecomp.StampaConforme.Office.Converter" elementFormDefault="qualified" targetNamespace="http://Vecomp.StampaConforme.Office.Converter" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://BiblosDS/2009/10/AttachConversionMode" />
+  <xs:element name="IsAlive">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsAliveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IsAliveResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVersion">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVersionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetVersionResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Convert">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="fileToConvert" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="fileExtension" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConvertResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ConvertResult" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConvertWithParameters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="fileToConvert" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="fileExtension" nillable="true" type="xs:string" />
+        <xs:element xmlns:q1="http://BiblosDS/2009/10/AttachConversionMode" minOccurs="0" name="mode" type="q1:AttachConversionMode" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConvertWithParametersResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ConvertWithParametersResult" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

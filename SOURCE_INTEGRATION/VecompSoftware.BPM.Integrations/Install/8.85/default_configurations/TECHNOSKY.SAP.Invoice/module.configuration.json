@@ -1,0 +1,126 @@
+﻿{
+  "TenantName": "TECHNOSKY",
+  "TenantId": "EAC6F666-639D-4CA6-B264-D0C33797CAFD",
+  "TopicBuilderEvent": "builder_event",
+  "TopicWorkflowCompleted": "workflow_completed",
+  "TopicWorkflowIntegration": "workflow_integration",
+  "WorkflowStartReceivableInvoiceSubscription": "WorkflowStartReceivableInvoice",
+  "WorkflowStartUpdateReceiptMetadataInvoiceSubscription": "WorkflowStartUpdateReceiptMetadataInvoice",
+  "WorkflowStartUpdateMetadataInvoiceSubscription": "WorkflowStartUpdateMetadataInvoice",
+  "WorkflowReceivableInvoiceUDSBuildCompleteSubscription": "WorkflowReceivableInvoiceUDSBuildCompleteSAP",
+  "ExternalViewerURIFormat": "https://protocollo.tecnosky.enav.it/ExternalViewer/#/Protocollo/anno/{0}/numero/{1}",
+  "ReceivableWorkflowConfigurations": {
+    "": {
+      "InvoicePR_V12": {
+        "WorkflowRepositoryName": "Fatturazione elettronica - Fattura tra privati passiva",
+        "UDSRepositoryName": "Fatture Passive",
+        "ProtocolContainerId": -32527,
+        "ProtocolCategoryId": -32765,
+        "ContactB2BParent": 321,
+        "ContactPAParent": 321,
+        "AuthorizationRoles": [ -32765 ],
+        "InvoicePersistanceConfigurations": {
+          "": {
+            "UDSRepositoryName": "Fatture Passive",
+            "FolderReceivedInvoice": "\\\\RMSAL-ITSMTSKY\\E-Fattura\\Ciclo Passivo\\FDP",
+            "FolderMetadataInvoiceLooking": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FDP\\MetadataLooking",
+            "FolderMetadataInvoiceWorking": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FDP\\MetadataWorking",
+            "FolderMetadataInvoiceError": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FDP\\MetadataError",
+            "FolderMetadataInvoiceBackup": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FDP\\MetadataBackup"
+          },
+          "fornitori@technosky.postecert.it": {
+            "UDSRepositoryName": "Fatture Passive",
+            "FolderReceivedInvoice": "\\\\RMSAL-ITSMTSKY\\E-Fattura\\Ciclo Passivo\\FDP",
+            "FolderMetadataInvoiceLooking": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FDP\\MetadataLooking",
+            "FolderMetadataInvoiceWorking": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FDP\\MetadataWorking",
+            "FolderMetadataInvoiceError": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FDP\\MetadataError",
+            "FolderMetadataInvoiceBackup": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FDP\\MetadataBackup"
+          },
+          "tesoreria@technosky.postecert.it": {
+            "UDSRepositoryName": "Fatture Passive",
+            "FolderReceivedInvoice": "\\\\RMSAL-ITSMTSKY\\E-Fattura\\Ciclo Passivo\\FPC",
+            "FolderMetadataInvoiceLooking": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FPC\\MetadataLooking",
+            "FolderMetadataInvoiceWorking": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FPC\\MetadataWorking",
+            "FolderMetadataInvoiceError": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FPC\\MetadataError",
+            "FolderMetadataInvoiceBackup": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FPC\\MetadataBackup"
+          },
+          "bgf@technosky.postecert.it": {
+            "UDSRepositoryName": "Fatture Passive",
+            "FolderReceivedInvoice": "\\\\RMSAL-ITSMTSKY\\E-Fattura\\Ciclo Passivo\\FLEC",
+            "FolderMetadataInvoiceLooking": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FLEC\\MetadataLooking",
+            "FolderMetadataInvoiceWorking": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FLEC\\MetadataWorking",
+            "FolderMetadataInvoiceError": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FLEC\\MetadataError",
+            "FolderMetadataInvoiceBackup": "C:\\BPM\\WorkflowServiceIntegration_DROP\\FLEC\\MetadataBackup"
+          }
+        }
+      }
+    },
+    "AZIENDA.FATTURE@PEC.IT": {
+      "InvoicePR_V12": {
+        "WorkflowRepositoryName": "AZIENDA - Fatturazione elettronica - Fattura tra privati passiva",
+        "UDSRepositoryName": "AZIENDA - Fatture passive",
+        "ProtocolContainerId": -32527,
+        "ProtocolCategoryId": -32765,
+        "ContactB2BParent": 321,
+        "ContactPAParent": 321,
+        "AuthorizationRoles": [ -32765 ],
+        "InvoicePersistanceConfigurations": {
+          "": {
+            "UDSRepositoryName": "AZIENDA - Fatture passive",
+            "FolderReceivedInvoice": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\Invoices",
+            "FolderMetadataInvoiceLooking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataLooking",
+            "FolderMetadataInvoiceWorking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataWorking",
+            "FolderMetadataInvoiceError": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataError",
+            "FolderMetadataInvoiceBackup": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataBackup"
+          }
+        }
+      }
+    }
+  },
+  "PayableWorkflowConfigurations": {
+    "": {
+      "InvoicePR_V12": {
+        "WorkflowRepositoryName": "Fatturazione elettronica - Fattura tra privati attiva",
+        "UDSRepositoryName": "Fatture Attive",
+        "MailRecipients": "sdi01@pec.fatturapa.it",
+        "SignInvoiceType": "AutomaticAruba",
+        "SignerParameter": {
+          "DelegatedDomain": "demoprod",
+          "DelegatedPassword": "password11",
+          "DelegatedUser": "delegato",
+          "OTPPassword": "dsign",
+          "OTPAuthType": "demoprod",
+          "User": "titolare",
+          "CertificateId": "AS0"
+        },
+        "ProtocolContainerId": -32527,
+        "ProtocolCategoryId": -32765,
+        "PECMailBoxId": 1,
+        "ContactB2BParent": 321,
+        "ContactPAParent": 321,
+        "AuthorizationRoles": [ -32765 ]
+      },
+      "InvoicePA_V12": {
+        "WorkflowRepositoryName": "Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+        "UDSRepositoryName": "Fatture Attive PA",
+        "MailRecipients": "sdi01@pec.fatturapa.it",
+        "SignInvoiceType": "AutomaticAruba",
+        "SignerParameter": {
+          "DelegatedDomain": "demoprod",
+          "DelegatedPassword": "password11",
+          "DelegatedUser": "delegato",
+          "OTPPassword": "dsign",
+          "OTPAuthType": "demoprod",
+          "User": "titolare",
+          "CertificateId": "AS0"
+        },
+        "ProtocolContainerId": -32527,
+        "ProtocolCategoryId": -32765,
+        "PECMailBoxId": 1,
+        "ContactB2BParent": 321,
+        "ContactPAParent": 321,
+        "AuthorizationRoles": [ -32765 ]
+      }
+    }
+  }
+}

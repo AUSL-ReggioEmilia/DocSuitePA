@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="DSWMessage" table="Message">
+    
+    <id name="Id" column="IDMessage">
+      <generator class="native" />
+    </id>
+    
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="Status" column="Status" />
+    <property name="MessageType" column="MessageType" />
+
+    <many-to-one class="Location" name="Location" column="IdLocation" lazy="proxy" />
+    <bag name="Emails" table="MessageEmail" cascade="none" inverse="true" fetch="select" >
+      <key column="IDMessage" />
+      <one-to-many class="MessageEmail" />
+    </bag>
+    <bag name="MessageContacts" table="MessageContact" cascade="none" inverse="true" fetch="join">
+      <key column="IDMessage" />
+      <one-to-many class="MessageContact" />
+    </bag>
+    <bag name="Attachments" table="MessageAttachment" cascade="none" inverse="true" fetch="select">
+      <key column="IDMessage" />
+      <one-to-many class="MessageAttachment" />
+    </bag>
+    <!-- TAVOLI
+    <bag name="DeskMessages">
+      <key column="IDMessage" />
+      <one-to-many class="DeskMessage" />
+    </bag>
+         TAVOLI -->
+    
+  </class>
+
+</hibernate-mapping>

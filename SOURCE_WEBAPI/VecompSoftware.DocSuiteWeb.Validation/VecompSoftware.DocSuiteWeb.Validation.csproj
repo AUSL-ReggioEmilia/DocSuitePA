@@ -1,0 +1,821 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CBF9FE81-3A91-4B42-964D-17381F1CFBBD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Validation</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Validation</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common">
+      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Validation">
+      <HintPath>..\packages\EnterpriseLibrary.Validation.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Services.Command, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.8.87.19296.2\lib\net461\VecompSoftware.Services.Command.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DSWValidationException.cs" />
+    <Compile Include="Mappings\CQRS\Events\IEventValidatorMapper.cs" />
+    <Compile Include="Mappings\CQRS\Events\Implementation\EventValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\ICategoryFascicleRightValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\CategoryFascicleRightValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\UserLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\IUserLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\IDocumentSeriesItemLinkValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\Implementation\DocumentSeriesItemLinkValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\IDocumentUnitFascicleCategoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\IDocumentUnitFascicleHistoricizedCategoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\Implementation\DocumentUnitFascicleCategoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\Implementation\DocumentUnitFascicleHistoricizedCategoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\IFascicleDocumentUnitValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\Implementation\FascicleDocumentUnitValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\JeepServiceHost\IJeepServiceHostValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\JeepServiceHost\Implementation\JeepServiceHostValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\Implementation\PECMailAttachmentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\Implementation\PECMailBoxConfigurationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\IPECMailAttachmentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\IPECMailBoxConfigurationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Processes\Implementation\ProcessFascicleTemplateValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Processes\Implementation\ProcessFascicleWorkflowRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Processes\Implementation\ProcessValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Processes\IProcessFascicleTemplateValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Processes\IProcessFascicleWorkflowRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Processes\IProcessValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IAdvancedProtocolValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\AdvancedProtocolValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\ICollaborationAggregateValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\ICollaborationVersioningValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\Implementation\CollaborationAggregateValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\Implementation\CollaborationVersioningValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\Implementation\CollaborationSignValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\Implementation\CollaborationUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\IContainerPropertyValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\ContainerPropertyValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\PrivacyLevelValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\IPrivacyLevelValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Conservations\IConservationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Conservations\Implementation\ConservationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\IDocumentSeriesConstraintValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\IDocumentSeriesItemLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\Implementation\DocumentSeriesConstraintValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\Implementation\DocumentSeriesItemLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\IDocumentUnitUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\Implementation\DocumentUnitUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\IDossierCommentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\IDossierFolderRoleValidatorMapper .cs" />
+    <Compile Include="Mappings\Entities\Dossiers\IDossierFolderValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\IDossierLinkValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\IDossierLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\IDossierDocumentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\IDossierRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\IDossierValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\Implementation\DossierCommentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\Implementation\DossierFolderRoleValidatorMapper .cs" />
+    <Compile Include="Mappings\Entities\Dossiers\Implementation\DossierFolderValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\Implementation\DossierLinkValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\Implementation\DossierLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\Implementation\DossierDocumentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\Implementation\DossierRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Dossiers\Implementation\DossierValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\IFascicleFolderValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\Implementation\FascicleFolderValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Monitors\Implementation\TransparentAdministrationMonitorLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Monitors\ITransparentAdministrationMonitorLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Parameters\Implementation\ParameterValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Parameters\IParameterValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\Implementation\ResolutionDocumentSeriesItemValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\Implementation\ResolutionKindDocumentSeriesValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\Implementation\ResolutionKindValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\Implementation\ResolutionLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\IResolutionDocumentSeriesItemValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\IResolutionKindDocumentSeriesValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\IResolutionKindValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\IResolutionLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Templates\Implementation\TemplateDocumentRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Templates\Implementation\TemplateCollaborationUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Templates\Implementation\TemplateCollaborationDocumentRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Templates\Implementation\TemplateCollaborationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Templates\Implementation\TemplateReportValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Templates\ITemplateDocumentRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Templates\ITemplateCollaborationUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Templates\ITemplateCollaborationDocumentRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Templates\ITemplateCollaborationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\ICategorySchemaValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\ICategoryFascicleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\IIncrementalValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\ILocationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\IMetadataRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\CategorySchemaValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\CategoryFascicleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\IncrementalValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\MetadataRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\TableLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\RoleUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\RoleGroupValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\ContainerGroupValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\ContainerValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\ContactPlaceNameValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\ContactTitleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\ContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\IContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\IContainerGroupValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\IRoleUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\IRoleGroupValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\ITableLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\IDocumentSeriesItemValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\IDocumentSeriesItemRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\Implementation\DocumentSeriesItemRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\IDocumentUnitChainValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\IDocumentUnitRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\IDocumentUnitValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\IDocumentSeriesValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\Implementation\DocumentSeriesItemValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentArchives\Implementation\DocumentSeriesValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\Implementation\DocumentUnitChainValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\Implementation\DocumentUnitRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\Implementation\DocumentUnitValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\IFascicleDocumentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\IFascicleRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\IFasciclePeriodValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\IFascicleLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\IFascicleLinkValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\IFascicleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\Implementation\FascicleRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\Implementation\FascicleDocumentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\Implementation\FasciclePeriodValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\Implementation\FascicleLinkValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\Implementation\FascicleLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Fascicles\Implementation\FascicleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\MassimariScarto\IMassimarioScartoValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\MassimariScarto\Implementation\MassimarioScartoValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\OCharts\Implementation\OChartItemContainerValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\OCharts\Implementation\OChartItemValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\OCharts\Implementation\OChartValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\Implementation\PECMailLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\Implementation\PECMailReceiptValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\IPECMailBoxValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\Implementation\PECMailBoxValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\Implementation\PECMailValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\IPECMailLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\IPECMailReceiptValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolContactManualValidatorMapper .cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolDraftValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolRoleUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolDocumentTypeValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolTypeValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolParerValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolLinkValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolContactManualValidatorMapper .cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolDraftValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolLinkValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolParerValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolRoleUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolTypeValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolDocumentTypeValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\IFileResolutionValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\Implementation\FileResolutionValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\Implementation\ResolutionRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\Implementation\ResolutionContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\IResolutionRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\IResolutionContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\IResolutionValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Resolutions\Implementation\ResolutionValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenants\Implementation\TenantConfigurationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenants\Implementation\TenantValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenants\Implementation\TenantWorkflowRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenants\ITenantConfigurationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenants\ITenantValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenants\ITenantWorkflowRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSMessageValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSDocumentUnitValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSCollaborationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSPECMailValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Templates\ITemplateReportValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSTypologyValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSMessageValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSDocumentUnitValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSCollaborationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSPECMailValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSTypologyValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\Implementation\WorkflowAuthorizationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\Implementation\WorkflowEvaluationPropertyValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\Implementation\WorkflowInstanceLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\Implementation\WorkflowInstanceRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\Implementation\WorkflowRoleMappingValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\IWorkflowAuthorizationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\IWorkflowEvaluationPropertyValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\IWorkflowInstanceLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\IWorkflowInstanceRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\IWorkflowRoleMappingValidatorMapper.cs" />
+    <Compile Include="Objects\CQRS\Events\IEventValidator.cs" />
+    <Compile Include="Objects\CQRS\Events\Implementation\EventValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\ICategoryFascicleRightValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\CategoryFascicleRightValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\UserLogValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\IUserLogValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\IDocumentSeriesItemLinkValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\Implementation\DocumentSeriesItemLinkValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\IDocumentUnitFascicleCategoryValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\IDocumentUnitFascicleHistoricizedCategoryValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\Implementation\DocumentUnitFascicleCategoryValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\Implementation\DocumentUnitFascicleHistoricizedCategoryValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\IFascicleDocumentUnitValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\Implementation\FascicleDocumentUnitValidator.cs" />
+    <Compile Include="Objects\Entities\JeepServiceHosts\IJeepServiceHostValidator.cs" />
+    <Compile Include="Objects\Entities\JeepServiceHosts\Implementation\JeepServiceHostValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\Implementation\PECMailAttachmentValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\Implementation\PECMailBoxConfigurationValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\IPECMailAttachmentValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\IPECMailBoxConfigurationValidator.cs" />
+    <Compile Include="Objects\Entities\Processes\Implementation\ProcessFascicleTemplateValidator.cs" />
+    <Compile Include="Objects\Entities\Processes\Implementation\ProcessFascicleWorkflowRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Processes\Implementation\ProcessValidator.cs" />
+    <Compile Include="Objects\Entities\Processes\IProcessFascicleTemplateValidator.cs" />
+    <Compile Include="Objects\Entities\Processes\IProcessFascicleWorkflowRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Processes\IProcessValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IAdvancedProtocolValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\AdvancedProtocolValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\ICollaborationAggregateValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\ICollaborationVersioningValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\Implementation\CollaborationAggregateValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\Implementation\CollaborationVersioningValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\IContainerPropertyValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\ContainerPropertyValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\PrivacyLevelValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\IPrivacyLevelValidator.cs" />
+    <Compile Include="Objects\Entities\Conservations\IConservationValidator.cs" />
+    <Compile Include="Objects\Entities\Conservations\Implementation\ConservationValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\IDocumentSeriesConstraintValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\IDocumentSeriesItemLogValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\Implementation\DocumentSeriesConstraintValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\Implementation\DocumentSeriesItemLogValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\IDocumentUnitUserValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\Implementation\DocumentUnitUserValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\IDossierCommentValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\IDossierFolderRoleValidator .cs" />
+    <Compile Include="Objects\Entities\Dossiers\IDossierFolderValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\IDossierLinkValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\IDossierLogValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\IDossierDocumentValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\IDossierRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\IDossierValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\Implementation\DossierCommentValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\Implementation\DossierFolderRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\Implementation\DossierFolderValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\Implementation\DossierLinkValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\Implementation\DossierLogValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\Implementation\DossierDocumentValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\Implementation\DossierRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Dossiers\Implementation\DossierValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\IFascicleFolderValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\Implementation\FascicleFolderValidator.cs" />
+    <Compile Include="Objects\Entities\Monitors\Implementation\TransparentAdministrationMonitorLogValidator.cs" />
+    <Compile Include="Objects\Entities\Monitors\ITransparentAdministrationMonitorLogValidator.cs" />
+    <Compile Include="Objects\Entities\Parameters\Implementation\ParameterValidator.cs" />
+    <Compile Include="Objects\Entities\Parameters\IParameterValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\Implementation\ResolutionDocumentSeriesItemValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\Implementation\ResolutionKindDocumentSeriesValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\Implementation\ResolutionKindValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\Implementation\ResolutionLogValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\IResolutionDocumentSeriesItemValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\IResolutionKindDocumentSeriesValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\IResolutionKindValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\IResolutionLogValidator.cs" />
+    <Compile Include="Objects\Entities\Templates\Implementation\TemplateDocumentRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Templates\Implementation\TemplateCollaborationUserValidator.cs" />
+    <Compile Include="Objects\Entities\Templates\Implementation\TemplateCollaborationDocumentRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Templates\Implementation\TemplateCollaborationValidator.cs" />
+    <Compile Include="Objects\Entities\Templates\Implementation\TemplateReportValidator.cs" />
+    <Compile Include="Objects\Entities\Templates\ITemplateDocumentRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Templates\ITemplateCollaborationUserValidator.cs" />
+    <Compile Include="Objects\Entities\Templates\ITemplateCollaborationDocumentRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Templates\ITemplateCollaborationValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\ICategorySchemaValidator .cs" />
+    <Compile Include="Objects\Entities\Commons\ICategoryFascicleValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\IIncrementalValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\IMetadataRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\CategorySchemaValidator .cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\CategoryFascicleValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\IncrementalValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\MetadataRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\RoleUserValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\TableLogValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\ITableLogValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\IRoleGroupValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\IContainerGroupValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\ICategoryValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\RoleGroupValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\ContainerGroupValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\ContainerValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\ContactPlaceNameValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\ContactTitleValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\ContactValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\CategoryValidator.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\CategoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\ICategoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\SecurityUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\SecurityGroupValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\RoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\Implementation\LocationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\ISecurityUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\IMessageLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\IMessageValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\IMessageAttachmentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\Implementation\MessageContactEmailValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\Implementation\MessageLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\Implementation\MessageAttachmentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\Implementation\MessageEmailValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\Implementation\MessageContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\Implementation\MessageValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\Implementation\WorkflowPropertyValidatorMapper.cs" />
+    <Compile Include="Mappings\IValidatorMapper.cs" />
+    <Compile Include="Objects\CQRS\Commands\ICommandValidator.cs" />
+    <Compile Include="Objects\CQRS\Commands\Implementation\CommandValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\Implementation\CollaborationLogValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\Implementation\CollaborationSignValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\Implementation\CollaborationUserValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\Implementation\CollaborationValidator.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\ICollaborationSignValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\Collaborations\ICollaborationSignValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\ICollaborationUserValidator.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\ICollaborationUserValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\Commons\ILocationValidator.cs" />
+    <Compile Include="Mappings\Entities\Commons\IRoleValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Commons\ISecurityGroupValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\Commons\IContactValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\IContactTitleValidator.cs" />
+    <Compile Include="Mappings\Entities\Commons\IContactTitleValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\Commons\IContactPlaceNameValidator.cs" />
+    <Compile Include="Mappings\Entities\Commons\IContactPlaceNameValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\Commons\IContainerValidator.cs" />
+    <Compile Include="Mappings\Entities\Commons\IContainerValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\Commons\IRoleUserValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\IRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\ISecurityGroupValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\ISecurityUserValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\LocationValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\RoleValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\SecurityGroupValidator.cs" />
+    <Compile Include="Objects\Entities\Commons\Implementation\SecurityUserValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\IDeskCollaborationValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\IDeskDocumentValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\IDeskDocumentEndorsementValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\IDeskDocumentVersionValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\IDeskLogValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\IDeskMessageValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\IDeskRoleUserValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\IDeskStoryBoardValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\Implementation\DeskCollaborationValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\Implementation\DeskDocumentEndorsementValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\Implementation\DeskDocumentValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\Implementation\DeskDocumentVersionValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\Implementation\DeskLogValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\Implementation\DeskMessageValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\Implementation\DeskRoleUserValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\Implementation\DeskStoryBoardValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Entities\DocumentArchives\IDocumentSeriesItemValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\IDocumentSeriesItemRoleValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\IDocumentSeriesValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\Implementation\DocumentSeriesItemRoleValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\Implementation\DocumentSeriesItemValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentArchives\Implementation\DocumentSeriesValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\IDocumentUnitRoleValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\IDocumentUnitChainValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\IDocumentUnitValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\Implementation\DocumentUnitChainValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\Implementation\DocumentUnitRoleValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\Implementation\DocumentUnitValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\IFascicleDocumentValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\IFascicleRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\IFascicleLinkValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\IFasciclePeriodValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\IFascicleLogValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\IFascicleValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\Implementation\FascicleDocumentValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\Implementation\FascicleRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\Implementation\FasciclePeriodValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\Implementation\FascicleLogValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\Implementation\FascicleLinkValidator.cs" />
+    <Compile Include="Objects\Entities\Fascicles\Implementation\FascicleValidator.cs" />
+    <Compile Include="Objects\Entities\MassimariScarto\IMassimarioScartoValidator.cs" />
+    <Compile Include="Objects\Entities\MassimariScarto\Implementation\MassimarioScartoValidator.cs" />
+    <Compile Include="Objects\Entities\Messages\IMessageAttachmentValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Entities\Messages\IMessageContactEmailValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Entities\Messages\IMessageContactValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Entities\Messages\IMessageEmailValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Entities\Messages\IMessageLogValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Entities\Messages\IMessageValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Entities\Messages\IMessageEmailValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\IMessageContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Messages\IMessageContactEmailValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\Messages\Implementation\MessageAttachmentValidator.cs" />
+    <Compile Include="Objects\Entities\Messages\Implementation\MessageContactEmailValidator.cs" />
+    <Compile Include="Objects\Entities\Messages\Implementation\MessageContactValidator.cs" />
+    <Compile Include="Objects\Entities\Messages\Implementation\MessageEmailValidator.cs" />
+    <Compile Include="Objects\Entities\Messages\Implementation\MessageLogValidator.cs" />
+    <Compile Include="Objects\Entities\Messages\Implementation\MessageValidator.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\PECMails\IPECMailValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\OCharts\IOChartValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\OCharts\IOChartItemContainerValidator.cs" />
+    <Compile Include="Mappings\Entities\OCharts\IOChartItemContainerValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\OCharts\Implementation\OChartItemContainerValidator.cs" />
+    <Compile Include="Objects\Entities\OCharts\IOChartItemValidator.cs" />
+    <Compile Include="Mappings\Entities\OCharts\IOChartItemValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\OCharts\Implementation\OChartItemValidator.cs" />
+    <Compile Include="Objects\Entities\OCharts\IOChartValidator.cs" />
+    <Compile Include="Objects\Entities\OCharts\Implementation\OChartValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\Implementation\PECMailLogValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\Implementation\PECMailReceiptValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\IPECMailBoxValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\Implementation\PECMailBoxValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\Implementation\PECMailValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\IPECMailLogValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\IPECMailReceiptValidator.cs" />
+    <Compile Include="Objects\Entities\PECMails\IPECMailValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolContactManualValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolDraftValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolRoleUserValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolLogValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolContactValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolDocumentTypeValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolParerValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolLinkValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolUserValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolContactManualValidator .cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolDraftValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolContactValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolUserValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolRoleUserValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolTypeValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolLogValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolDocumentTypeValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolParerValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolLinkValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolTypeValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\IFileResolutionValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\Implementation\FileResolutionValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\Implementation\ResolutionRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\Implementation\ResolutionContactValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\IResolutionRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\IResolutionContactValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\IResolutionValidator.cs" />
+    <Compile Include="Objects\Entities\Resolutions\Implementation\ResolutionValidator.cs" />
+    <Compile Include="Objects\Entities\Tenants\Implementation\TenantConfigurationValidator.cs" />
+    <Compile Include="Objects\Entities\Tenants\Implementation\TenantValidator.cs" />
+    <Compile Include="Objects\Entities\Tenants\Implementation\TenantWorkflowRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Tenants\ITenantConfigurationValidator.cs" />
+    <Compile Include="Objects\Entities\Tenants\ITenantValidator.cs" />
+    <Compile Include="Objects\Entities\Tenants\ITenantWorkflowRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSMessageValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSContactValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSContactValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSDocumentUnitValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSCollaborationValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSPECMailValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSRoleValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSLogValidator.cs" />
+    <Compile Include="Objects\Entities\Templates\ITemplateReportValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSTypologyValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSSchemaRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSUserValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSMessageValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSDocumentUnitValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSCollaborationValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSPECMailValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSRoleValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSLogValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSTypologyValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSSchemaRepositoryValidator.cs" />
+    <Compile Include="Mappings\Entities\Workflows\IWorkflowPropertyValidatorMapper.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSUserValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\Implementation\WorkflowAuthorizationValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\Implementation\WorkflowEvaluationPropertyValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\Implementation\WorkflowInstanceLogValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\Implementation\WorkflowInstanceRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\Implementation\WorkflowRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\Implementation\WorkflowRoleMappingValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\IWorkflowAuthorizationValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\IWorkflowEvaluationPropertyValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\IWorkflowInstanceLogValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\IWorkflowInstanceRoleValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\IWorkflowPropertyValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\Implementation\WorkflowPropertyValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\Implementation\WorkflowInstanceValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\Implementation\WorkflowActivityLogValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\Implementation\WorkflowActivityValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\IWorkflowRoleMappingValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\IWorkflowRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\IWorkflowInstanceValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\IWorkflowActivityLogValidator.cs" />
+    <Compile Include="Objects\Entities\Workflows\IWorkflowActivityValidator.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\ICollaborationLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\Implementation\CollaborationLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\Implementation\CollaborationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\ICollaborationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\IDeskCollaborationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\IDeskDocumentEndorsementValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\IDeskDocumentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\IDeskDocumentVersionValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\IDeskLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\IDeskMessageValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\Implementation\DeskCollaborationValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\Implementation\DeskDocumentEndorsementValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\Implementation\DeskDocumentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\Implementation\DeskDocumentVersionValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\Implementation\DeskLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\Implementation\DeskMessageValidatorMapper.cs" />
+    <Compile Include="Mappings\CQRS\Commands\Implementation\CommandValidatorMapper.cs" />
+    <Compile Include="Mappings\CQRS\Commands\ICommandValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSSchemaRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSSchemaRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\Implementation\WorkflowInstanceValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\Implementation\WorkflowRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\Implementation\WorkflowActivityValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\Implementation\WorkflowActivityLogValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\IWorkflowInstanceValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\IWorkflowRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\IWorkflowActivityValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Workflows\IWorkflowActivityLogValidatorMapper.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\ICategoryFascicleRightRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\CategoryFascicleRightRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\UserLogRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\IUserLogRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\DocumentUnits\IDocumentUnitFascicleCategoryRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\DocumentUnits\IDocumentUnitFascicleHistoricizedCategoryRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\DocumentUnits\Implementation\DocumentUnitFascicleCategoryRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\DocumentUnits\Implementation\DocumentUnitFascicleHistoricizedCategoryRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\JeepServiceHost\IJeepServiceHostRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\JeepServiceHost\Implementation\JeepServiceHostRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\PECMails\Implementation\PECMailAttachmentRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\PECMails\Implementation\PECMailBoxConfigurationRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\PECMails\IPECMailAttachmentRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\PECMails\Implementation\PECMailBoxRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\PECMails\IPECMailBoxConfigurationRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\PECMails\IPECMailBoxRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Processes\Implementation\ProcessRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Processes\IProcessRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Protocols\IAdvancedProtocolRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Protocols\Implementation\AdvancedProtocolRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\PrivacyLevelRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\RoleUserRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\IPrivacyLevelRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\IRoleUserRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Conservations\IConservationRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Conservations\Implementation\ConservationRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Dossiers\IDossierRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Dossiers\Implementation\DossierRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Monitors\Implementation\TransparentAdministrationMonitorLogRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Monitors\ITransparentAdministrationMonitorLogRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Parameters\Implementation\ParameterRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Parameters\IParameterRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Templates\Implementation\TemplateDocumentRepositoryRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Templates\Implementation\TemplateCollaborationRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Templates\ITemplateDocumentRepositoryRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Templates\ITemplateCollaborationRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\ICategoryFascicleRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\IIncrementalRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\ILocationRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\IMetadataRepositoryRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\CategoryFascicleRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\IncrementalRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\LocationRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\MetadataRepositoryRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\TableLogRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\RoleRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\ContainerRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\ITableLogRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\IRoleRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\IContainerRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\ContactRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\Implementation\CategoryRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\ICategoryRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Commons\IContactRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\DocumentUnits\IDocumentUnitRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\DocumentUnits\Implementation\DocumentUnitRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\DocumentArchives\IDocumentSeriesRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\DocumentArchives\Implementation\DocumentSeriesRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Fascicles\IFascicleRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Fascicles\Implementation\FascicleRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\MassimariScarto\IMassimarioScartoRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\MassimariScarto\Implementation\MassimarioScartoRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\OCharts\Implementation\OChartRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\OCharts\IOChartRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\PECMails\IPECMailRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\PECMails\Implementation\PECMailRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Protocols\IProtocolRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Protocols\Implementation\ProtocolRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Resolutions\IResolutionRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Resolutions\Implementation\ResolutionRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Tenants\Implementation\TenantConfigurationRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Tenants\Implementation\TenantRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Tenants\Implementation\TenantWorkflowRepositoryRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Tenants\ITenantConfigurationRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Tenants\ITenantRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Tenants\ITenantWorkflowRepositoryRuleset.cs" />
+    <Compile Include="RulesetDefinitions\ServiceBus\Implementation\TopicRuleset.cs" />
+    <Compile Include="RulesetDefinitions\ServiceBus\ITopicRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Workflows\Implementation\WorkflowRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Workflows\IWorkflowRuleset.cs" />
+    <Compile Include="RulesetDefinitions\ServiceBus\Implementation\QueueRuleset.cs" />
+    <Compile Include="RulesetDefinitions\ServiceBus\IQueueRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\UDS\Implementation\UDSRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\UDS\IUDSRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Workflows\IWorkflowRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Workflows\Implementation\WorkflowRuleset.cs" />
+    <Compile Include="Mappings\Entities\Desks\IDeskRoleUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\IDeskStoryBoardValidatorMapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Entities\Desks\IDeskValidatorMapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Entities\Desks\Implementation\DeskStoryBoardValidatorMapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Entities\Desks\Implementation\DeskRoleUserValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Desks\Implementation\DeskValidatorMapper.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Collaborations\Implementation\CollaborationRuleset.cs" />
+    <Compile Include="Objects\Entities\Collaborations\ICollaborationLogValidator.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Collaborations\ICollaborationRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Desks\Implementation\DeskRulesetDefinition.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Desks\IDeskRuleset.cs" />
+    <Compile Include="Objects\ObjectValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\ICollaborationValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\Implementation\DeskValidator.cs" />
+    <Compile Include="Objects\Entities\Desks\IDeskValidator.cs" />
+    <Compile Include="Objects\IObjectValidator.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Messages\IMessageRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Messages\Implementation\MessageRulesetDefinition.cs" />
+    <Compile Include="IValidator.cs" />
+    <Compile Include="IValidatorRuleset.cs" />
+    <Compile Include="IValidatorService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValidatorService.cs" />
+    <Compile Include="GenericRulesetDefinition.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="VecompSoftware.DocSuiteWeb.Validation.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mappings\Entities\Tasks\" />
+    <Folder Include="Mappings\Entities\Tenders\" />
+    <Folder Include="Mappings\Workflows\" />
+    <Folder Include="Objects\Entities\Tasks\" />
+    <Folder Include="Objects\Entities\Tenders\" />
+    <Folder Include="Objects\Workflows\" />
+    <Folder Include="RulesetDefinitions\Entities\Tasks\" />
+    <Folder Include="RulesetDefinitions\Entities\Tenders\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Common\VecompSoftware.DocSuiteWeb.Common.csproj">
+      <Project>{58938aa6-b3d6-4256-8c5c-4bcab88517bb}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data\VecompSoftware.DocSuiteWeb.Data.csproj">
+      <Project>{17962438-D43B-41E7-8D6F-5A0C33B054AE}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Entity\VecompSoftware.DocSuiteWeb.Entity.csproj">
+      <Project>{34901fa6-4816-4872-9986-e42b2e866095}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Mapper\VecompSoftware.DocSuiteWeb.Mapper.csproj">
+      <Project>{643b29b4-b25d-44d3-8831-e80c5e5f25d0}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Mapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Model\VecompSoftware.DocSuiteWeb.Model.csproj">
+      <Project>{df5935ca-367b-4124-9840-aafd3c419eba}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Repository\VecompSoftware.DocSuiteWeb.Repository.csproj">
+      <Project>{27d8fcbb-8a8e-430b-8747-a5ace9b4ffca}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Security\VecompSoftware.DocSuiteWeb.Security.csproj">
+      <Project>{b4e770ed-2298-488a-856b-5bf53ebf88ec}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Security</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

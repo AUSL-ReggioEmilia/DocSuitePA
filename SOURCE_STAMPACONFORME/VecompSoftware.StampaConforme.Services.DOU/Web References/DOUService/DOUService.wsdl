@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:ax26="http://pagerange.param.dou.land.it/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ax21="http://keys.dou.land.it/xsd" xmlns:ax23="http://param.dou.land.it/xsd" xmlns:ax29="http://dou.land.it/xsd" xmlns:ns="http://dou.land.it" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ax24="http://coords.param.dou.land.it/xsd" targetNamespace="http://dou.land.it" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation>
+    Please Type your service description here
+  </wsdl:documentation>
+  <wsdl:types>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://dou.land.it/xsd">
+      <xs:complexType name="DOUResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="idPdf" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="pdf" nillable="true" type="xs:base64Binary" />
+          <xs:element minOccurs="0" name="reason" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="status" type="xs:int" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://keys.dou.land.it/xsd">
+      <xs:complexType name="ArchiveKey">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="value" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns:ax22="http://keys.dou.land.it/xsd" xmlns:ax28="http://param.dou.land.it/xsd" xmlns:ax210="http://dou.land.it/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://dou.land.it">
+      <xs:import namespace="http://keys.dou.land.it/xsd" />
+      <xs:import namespace="http://param.dou.land.it/xsd" />
+      <xs:import namespace="http://dou.land.it/xsd" />
+      <xs:element name="createWithParam">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element name="idservice" type="xs:int" />
+            <xs:element minOccurs="0" name="key" nillable="true" type="ax22:ArchiveKey" />
+            <xs:element minOccurs="0" name="param" nillable="true" type="ax28:Param" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="createWithParamResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="updateWithParam">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element minOccurs="0" name="idPdf" nillable="true" type="xs:string" />
+            <xs:element name="idservice" type="xs:int" />
+            <xs:element minOccurs="0" name="param" nillable="true" type="ax28:Param" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="updateWithParamResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="updateWithPreviousDocument">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element minOccurs="0" name="oldPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element name="idservice" type="xs:int" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="updateWithPreviousDocumentResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="updateWithPreviousDocumentWithParam">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element minOccurs="0" name="oldPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element name="idservice" type="xs:int" />
+            <xs:element minOccurs="0" name="param" nillable="true" type="ax28:Param" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="updateWithPreviousDocumentWithParamResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="createAndUpload">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element name="idservice" type="xs:int" />
+            <xs:element minOccurs="0" name="key" nillable="true" type="ax22:ArchiveKey" />
+            <xs:element minOccurs="0" name="metadata" nillable="true" type="xs:base64Binary" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="createAndUploadResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="createAndUploadWithParam">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element name="idservice" type="xs:int" />
+            <xs:element minOccurs="0" name="key" nillable="true" type="ax22:ArchiveKey" />
+            <xs:element minOccurs="0" name="param" nillable="true" type="ax28:Param" />
+            <xs:element minOccurs="0" name="metadata" nillable="true" type="xs:base64Binary" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="createAndUploadWithParamResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="deleteWithDocument">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element name="idservice" type="xs:int" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="deleteWithDocumentResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="updateNoGlyph">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element name="idservice" type="xs:int" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="updateNoGlyphResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="upload">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element minOccurs="0" name="idPdf" nillable="true" type="xs:string" />
+            <xs:element name="idservice" type="xs:int" />
+            <xs:element minOccurs="0" name="metadata" nillable="true" type="xs:base64Binary" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="uploadResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="update">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element minOccurs="0" name="idPdf" nillable="true" type="xs:string" />
+            <xs:element name="idservice" type="xs:int" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="updateResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="delete">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="idPdf" nillable="true" type="xs:string" />
+            <xs:element name="idservice" type="xs:int" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="deleteResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="create">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="inPdf" nillable="true" type="xs:base64Binary" />
+            <xs:element name="idservice" type="xs:int" />
+            <xs:element minOccurs="0" name="key" nillable="true" type="ax22:ArchiveKey" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="createResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax210:DOUResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+    <xs:schema xmlns:ax27="http://pagerange.param.dou.land.it/xsd" xmlns:ax25="http://coords.param.dou.land.it/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://param.dou.land.it/xsd">
+      <xs:import namespace="http://coords.param.dou.land.it/xsd" />
+      <xs:import namespace="http://pagerange.param.dou.land.it/xsd" />
+      <xs:complexType name="Param">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="coords" nillable="true" type="ax25:Coords" />
+          <xs:element minOccurs="0" name="pagerange" nillable="true" type="ax27:PageRange" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://pagerange.param.dou.land.it/xsd">
+      <xs:complexType name="PageRange">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="range" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://coords.param.dou.land.it/xsd">
+      <xs:complexType name="Coords">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="x" type="xs:int" />
+          <xs:element minOccurs="0" name="y" type="xs:int" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="uploadRequest">
+    <wsdl:part name="parameters" element="ns:upload" />
+  </wsdl:message>
+  <wsdl:message name="uploadResponse">
+    <wsdl:part name="parameters" element="ns:uploadResponse" />
+  </wsdl:message>
+  <wsdl:message name="updateWithPreviousDocumentRequest">
+    <wsdl:part name="parameters" element="ns:updateWithPreviousDocument" />
+  </wsdl:message>
+  <wsdl:message name="updateWithPreviousDocumentResponse">
+    <wsdl:part name="parameters" element="ns:updateWithPreviousDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="deleteWithDocumentRequest">
+    <wsdl:part name="parameters" element="ns:deleteWithDocument" />
+  </wsdl:message>
+  <wsdl:message name="deleteWithDocumentResponse">
+    <wsdl:part name="parameters" element="ns:deleteWithDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="updateRequest">
+    <wsdl:part name="parameters" element="ns:update" />
+  </wsdl:message>
+  <wsdl:message name="updateResponse">
+    <wsdl:part name="parameters" element="ns:updateResponse" />
+  </wsdl:message>
+  <wsdl:message name="updateNoGlyphRequest">
+    <wsdl:part name="parameters" element="ns:updateNoGlyph" />
+  </wsdl:message>
+  <wsdl:message name="updateNoGlyphResponse">
+    <wsdl:part name="parameters" element="ns:updateNoGlyphResponse" />
+  </wsdl:message>
+  <wsdl:message name="deleteRequest">
+    <wsdl:part name="parameters" element="ns:delete" />
+  </wsdl:message>
+  <wsdl:message name="deleteResponse">
+    <wsdl:part name="parameters" element="ns:deleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="createAndUploadRequest">
+    <wsdl:part name="parameters" element="ns:createAndUpload" />
+  </wsdl:message>
+  <wsdl:message name="createAndUploadResponse">
+    <wsdl:part name="parameters" element="ns:createAndUploadResponse" />
+  </wsdl:message>
+  <wsdl:message name="updateWithPreviousDocumentWithParamRequest">
+    <wsdl:part name="parameters" element="ns:updateWithPreviousDocumentWithParam" />
+  </wsdl:message>
+  <wsdl:message name="updateWithPreviousDocumentWithParamResponse">
+    <wsdl:part name="parameters" element="ns:updateWithPreviousDocumentWithParamResponse" />
+  </wsdl:message>
+  <wsdl:message name="createAndUploadWithParamRequest">
+    <wsdl:part name="parameters" element="ns:createAndUploadWithParam" />
+  </wsdl:message>
+  <wsdl:message name="createAndUploadWithParamResponse">
+    <wsdl:part name="parameters" element="ns:createAndUploadWithParamResponse" />
+  </wsdl:message>
+  <wsdl:message name="createRequest">
+    <wsdl:part name="parameters" element="ns:create" />
+  </wsdl:message>
+  <wsdl:message name="createResponse">
+    <wsdl:part name="parameters" element="ns:createResponse" />
+  </wsdl:message>
+  <wsdl:message name="updateWithParamRequest">
+    <wsdl:part name="parameters" element="ns:updateWithParam" />
+  </wsdl:message>
+  <wsdl:message name="updateWithParamResponse">
+    <wsdl:part name="parameters" element="ns:updateWithParamResponse" />
+  </wsdl:message>
+  <wsdl:message name="createWithParamRequest">
+    <wsdl:part name="parameters" element="ns:createWithParam" />
+  </wsdl:message>
+  <wsdl:message name="createWithParamResponse">
+    <wsdl:part name="parameters" element="ns:createWithParamResponse" />
+  </wsdl:message>
+  <wsdl:portType name="DOUPortType">
+    <wsdl:operation name="upload">
+      <wsdl:input wsaw:Action="urn:upload" message="ns:uploadRequest" />
+      <wsdl:output wsaw:Action="urn:uploadResponse" message="ns:uploadResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="updateWithPreviousDocument">
+      <wsdl:input wsaw:Action="urn:updateWithPreviousDocument" message="ns:updateWithPreviousDocumentRequest" />
+      <wsdl:output wsaw:Action="urn:updateWithPreviousDocumentResponse" message="ns:updateWithPreviousDocumentResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deleteWithDocument">
+      <wsdl:input wsaw:Action="urn:deleteWithDocument" message="ns:deleteWithDocumentRequest" />
+      <wsdl:output wsaw:Action="urn:deleteWithDocumentResponse" message="ns:deleteWithDocumentResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="update">
+      <wsdl:input wsaw:Action="urn:update" message="ns:updateRequest" />
+      <wsdl:output wsaw:Action="urn:updateResponse" message="ns:updateResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="updateNoGlyph">
+      <wsdl:input wsaw:Action="urn:updateNoGlyph" message="ns:updateNoGlyphRequest" />
+      <wsdl:output wsaw:Action="urn:updateNoGlyphResponse" message="ns:updateNoGlyphResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="delete">
+      <wsdl:input wsaw:Action="urn:delete" message="ns:deleteRequest" />
+      <wsdl:output wsaw:Action="urn:deleteResponse" message="ns:deleteResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createAndUpload">
+      <wsdl:input wsaw:Action="urn:createAndUpload" message="ns:createAndUploadRequest" />
+      <wsdl:output wsaw:Action="urn:createAndUploadResponse" message="ns:createAndUploadResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="updateWithPreviousDocumentWithParam">
+      <wsdl:input wsaw:Action="urn:updateWithPreviousDocumentWithParam" message="ns:updateWithPreviousDocumentWithParamRequest" />
+      <wsdl:output wsaw:Action="urn:updateWithPreviousDocumentWithParamResponse" message="ns:updateWithPreviousDocumentWithParamResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createAndUploadWithParam">
+      <wsdl:input wsaw:Action="urn:createAndUploadWithParam" message="ns:createAndUploadWithParamRequest" />
+      <wsdl:output wsaw:Action="urn:createAndUploadWithParamResponse" message="ns:createAndUploadWithParamResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="create">
+      <wsdl:input wsaw:Action="urn:create" message="ns:createRequest" />
+      <wsdl:output wsaw:Action="urn:createResponse" message="ns:createResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="updateWithParam">
+      <wsdl:input wsaw:Action="urn:updateWithParam" message="ns:updateWithParamRequest" />
+      <wsdl:output wsaw:Action="urn:updateWithParamResponse" message="ns:updateWithParamResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createWithParam">
+      <wsdl:input wsaw:Action="urn:createWithParam" message="ns:createWithParamRequest" />
+      <wsdl:output wsaw:Action="urn:createWithParamResponse" message="ns:createWithParamResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DOUSoap11Binding" type="ns:DOUPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="upload">
+      <soap:operation soapAction="urn:upload" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateWithPreviousDocument">
+      <soap:operation soapAction="urn:updateWithPreviousDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteWithDocument">
+      <soap:operation soapAction="urn:deleteWithDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update">
+      <soap:operation soapAction="urn:update" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateNoGlyph">
+      <soap:operation soapAction="urn:updateNoGlyph" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delete">
+      <soap:operation soapAction="urn:delete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createAndUpload">
+      <soap:operation soapAction="urn:createAndUpload" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateWithPreviousDocumentWithParam">
+      <soap:operation soapAction="urn:updateWithPreviousDocumentWithParam" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createAndUploadWithParam">
+      <soap:operation soapAction="urn:createAndUploadWithParam" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="create">
+      <soap:operation soapAction="urn:create" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateWithParam">
+      <soap:operation soapAction="urn:updateWithParam" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createWithParam">
+      <soap:operation soapAction="urn:createWithParam" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="DOUSoap12Binding" type="ns:DOUPortType">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="upload">
+      <soap12:operation soapAction="urn:upload" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateWithPreviousDocument">
+      <soap12:operation soapAction="urn:updateWithPreviousDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteWithDocument">
+      <soap12:operation soapAction="urn:deleteWithDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update">
+      <soap12:operation soapAction="urn:update" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateNoGlyph">
+      <soap12:operation soapAction="urn:updateNoGlyph" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delete">
+      <soap12:operation soapAction="urn:delete" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createAndUpload">
+      <soap12:operation soapAction="urn:createAndUpload" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateWithPreviousDocumentWithParam">
+      <soap12:operation soapAction="urn:updateWithPreviousDocumentWithParam" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createAndUploadWithParam">
+      <soap12:operation soapAction="urn:createAndUploadWithParam" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="create">
+      <soap12:operation soapAction="urn:create" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateWithParam">
+      <soap12:operation soapAction="urn:updateWithParam" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createWithParam">
+      <soap12:operation soapAction="urn:createWithParam" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DOU">
+    <wsdl:port name="DOUHttpsSoap11Endpoint" binding="ns:DOUSoap11Binding">
+      <soap:address location="https://dougen.coll.securepaper.it:8443/DOU/services/DOU.DOUHttpsSoap11Endpoint/" />
+    </wsdl:port>
+    <wsdl:port name="DOUHttpSoap11Endpoint" binding="ns:DOUSoap11Binding">
+      <soap:address location="" />
+    </wsdl:port>
+    <wsdl:port name="DOUHttpsSoap12Endpoint" binding="ns:DOUSoap12Binding">
+      <soap12:address location="https://dougen.coll.securepaper.it:8443/DOU/services/DOU.DOUHttpsSoap12Endpoint/" />
+    </wsdl:port>
+    <wsdl:port name="DOUHttpSoap12Endpoint" binding="ns:DOUSoap12Binding">
+      <soap12:address location="" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

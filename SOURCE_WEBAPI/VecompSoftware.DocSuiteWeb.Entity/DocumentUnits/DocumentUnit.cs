@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using VecompSoftware.Commons.Interfaces.CQRS.Commands;
+using VecompSoftware.Commons.Interfaces.CQRS.Events;
+using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
+using VecompSoftware.DocSuiteWeb.Entity.Monitors;
+using VecompSoftware.DocSuiteWeb.Entity.UDS;
+using VecompSoftware.DocSuiteWeb.Entity.Workflows;
+using VecompSoftware.DocSuiteWeb.Repository.Entity;
+
+namespace VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
+{
+    public class DocumentUnit : DSWBaseEntity, IUnauditableEntity, IWorkflowContentBase
+    {
+        #region [ Constructor ]
+
+        public DocumentUnit() : this(Guid.NewGuid()) { }
+        public DocumentUnit(Guid uniqueId)
+            : base(uniqueId)
+        {
+            DocumentUnitRoles = new HashSet<DocumentUnitRole>();
+            DocumentUnitChains = new HashSet<DocumentUnitChain>();
+            DocumentUnitUsers = new HashSet<DocumentUnitUser>();
+            DocumentUnitFascicleHistoricizedCategories = new HashSet<DocumentUnitFascicleHistoricizedCategory>();
+            DocumentUnitFascicleCategories = new HashSet<DocumentUnitFascicleCategory>();
+            TransparentAdministrationMonitorLogs = new HashSet<TransparentAdministrationMonitorLog>();
+            UDSDocumentUnits = new HashSet<UDSDocumentUnit>();
+            WorkflowActivities = new HashSet<WorkflowActivity>();
+            FascicleDocumentUnits = new HashSet<FascicleDocumentUnit>();
+        }
+        #endregion
+
+        #region [ Properties ]
+
+        public short Year { get; set; }
+
+        public int Number { get; set; }
+
+        public string Title { get; set; }
+
+        public int Environment { get; set; }
+
+        public string DocumentUnitName { get; set; }
+
+        public string Subject { get; set; }
+
+        public DocumentUnitStatus Status { get; set; }
+
+        #endregion
+
+        #region [ Navigation Properties ]
+
+        public virtual Category Category { get; set; }
+
+        public virtual Container Container { get; set; }
+
+        public virtual ICollection<FascicleDocumentUnit> FascicleDocumentUnits { get; set; }
+
+        public virtual Fascicle Fascicle { get; set; }
+
+        public virtual UDSRepository UDSRepository { get; set; }
+
+        public virtual ICollection<DocumentUnitRole> DocumentUnitRoles { get; set; }
+
+        public virtual ICollection<DocumentUnitChain> DocumentUnitChains { get; set; }
+
+        public virtual ICollection<DocumentUnitUser> DocumentUnitUsers { get; set; }
+
+        public virtual ICollection<DocumentUnitFascicleHistoricizedCategory> DocumentUnitFascicleHistoricizedCategories { get; set; }
+
+        public virtual ICollection<DocumentUnitFascicleCategory> DocumentUnitFascicleCategories { get; set; }
+
+        public virtual ICollection<TransparentAdministrationMonitorLog> TransparentAdministrationMonitorLogs { get; set; }
+
+        public virtual ICollection<UDSDocumentUnit> UDSDocumentUnits { get; set; }
+
+        public virtual ICollection<WorkflowActivity> WorkflowActivities { get; set; }
+        #endregion
+
+        #region [ Not Mapping Properties ]
+        public Guid? IdWorkflowActivity { get; set; }
+        public string WorkflowName { get; set; }
+        public ICollection<IWorkflowAction> WorkflowActions { get; set; }
+
+        #endregion
+    }
+}

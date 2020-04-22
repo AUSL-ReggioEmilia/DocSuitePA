@@ -1,0 +1,66 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.Models.PreservationVerifyListModel
+@{
+    ViewBag.Title = "Verifiche eseguite";
+}
+
+@section featured{
+    <hgroup class="title">
+        <h1>@ViewBag.Title</h1>
+    </hgroup>
+}
+
+<table class="k-grid k-grid-alt" style="width:100%;">
+    <tr>
+        <th style="width:120px;">Data esecuzione</th>
+        <th>Report</th>
+    </tr>
+    @FillCheckList()
+</table>
+
+
+@helper FillCheckList()
+    {
+        FileInfo[] files = null;
+
+        if (String.IsNullOrWhiteSpace(Model.verifyFolder))
+        {
+            return;
+        }
+
+        DirectoryInfo directoryInfo = new DirectoryInfo(Model.verifyFolder);
+        files = directoryInfo.GetFiles("verifica*.pdf", SearchOption.TopDirectoryOnly).OrderByDescending(t => t.LastWriteTime).ToArray();
+
+        int count = 0;
+
+        if (files == null || files.Length == 0)
+        {
+            <br />
+            <div style="margin-top:5px; padding:10px;" class="k-block k-info-colored">
+                Nessun report di verifica presente
+            </div>
+        }
+        else
+        {
+            <br />
+        }
+
+        foreach (FileInfo file in files)
+        {
+            count++;
+
+            <tr>
+                <td align="right" style="white-space: nowrap; vertical-align:top;">
+                    @file.LastWriteTime.ToShortDateString() &nbsp;
+                    @file.LastWriteTime.ToShortTimeString()
+                </td>
+                <td colspan="2">
+                    <div style="padding-bottom:10px;">
+                        <a target="_blank" href="@String.Format("../Reports/{0}", file.Name )">@file.Name</a>
+                    </div>
+                </td>
+            </tr>
+        }
+
+}
+
+

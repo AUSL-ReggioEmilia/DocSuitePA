@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>VecompSoftware.DocSuiteWeb.Service.Workflow</id>
+    <version>8.87.0.0</version>
+    <authors>Dgroove Srl</authors>
+    <owners>Dgroove Srl</owners>
+    <iconUrl>https://vecompsoftwarenugetserver.azurewebsites.net/favicon.ico</iconUrl>
+    <description>VecompSoftware.DocSuiteWeb.Service.Workflow</description>
+    <copyright>Copyright © Dgroove 2019</copyright>
+    <tags>VecompSoftware.DocSuiteWeb.Service.Workflow, YAC, Project_WebAPI</tags>
+    <dependencies>
+      <group targetFramework="net461">
+        <dependency id="Microsoft.Activities" version="1.0.50408.1" />
+        <dependency id="Microsoft.Activities.Design" version="1.0.50408.2" />
+        <dependency id="Microsoft.Workflow.Client" version="1.0.50408.1" />
+        <dependency id="Newtonsoft.Json" version="12.0.2" />
+        <dependency id="VecompSoftware.Clients.Workflow" version="8.87.0.0" />
+        <dependency id="VecompSoftware.Core.Command" version="8.87.0.0" />
+        <dependency id="VecompSoftware.Commons.Interfaces" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuite.Document" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuite.Service.Models" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Common" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Data" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Entity" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Finder" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Mapper" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Mapper.ServiceBus" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Mapper.Workflow" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Model" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Repository" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Security" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Service" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Service.Entity" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Service.ServiceBus" version="8.87.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Validation" version="8.87.0.0" />
+        <dependency id="VecompSoftware.Helpers.Workflow" version="8.87.0.0" />
+        <dependency id="VecompSoftware.Services.Command" version="8.87.0.0" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net461" />
+      <frameworkAssembly assemblyName="mscorlib" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Core" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Data" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Net.Http" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xaml" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net461" />
+    </frameworkAssemblies>
+    <references />
+  </metadata>
+  <files>
+    <file src="VecompSoftware.DocSuiteWeb.Service.Workflow.pdb" target="lib\net461" />
+    <file src="VecompSoftware.DocSuiteWeb.Service.Workflow.dll" target="lib\net461" />
+  </files>
+</package>

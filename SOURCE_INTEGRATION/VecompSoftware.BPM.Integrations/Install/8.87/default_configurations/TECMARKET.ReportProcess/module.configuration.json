@@ -1,0 +1,11 @@
+{
+  "TenantName": "ASL-TO-CITTA",
+  "TenantId": "E5ED27AA-7FEA-432F-91F4-42B9A9250908",
+  "WorkflowRepositoryNormalName": "WORKFLOW WITHOUT ERRORS",
+  "WorkflowRepositoryErrorName": "WORKFLOW WITH ERRORS",
+  "WorkflowEventsPath": "C:\\Program Files (x86)\\BPM\\Integration_Drops\\TECMARKET.Reporting",
+  "IdTemplateDocumentRepository": "e75d8a2c-45a0-4eae-995a-d3e1949615ed",
+  "UDSName": "TECMARKET - Monitoraggio e Controlli",
+  "ReportFileName": "Report.pdf",
+  "ReportSubject": "Report"
+}

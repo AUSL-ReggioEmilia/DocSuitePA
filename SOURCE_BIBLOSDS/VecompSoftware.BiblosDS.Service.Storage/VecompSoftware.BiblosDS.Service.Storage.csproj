@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8E30BECC-AF85-467D-BA7C-A1B61F584C00}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.BiblosDS.Service.Storage</RootNamespace>
+    <AssemblyName>VecompSoftware.BiblosDS.Service.Storage</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>BiblosDs.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StorageInstanceBuilder.cs" />
+    <Compile Include="StorageService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BiblosDS.Library.Common.Objects\BiblosDS.Library.Common.Objects.csproj">
+      <Project>{be2b09f0-d141-41b7-820e-85fe7d9a7360}</Project>
+      <Name>BiblosDS.Library.Common.Objects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Common\BiblosDS.Library.Common.csproj">
+      <Project>{db93d492-2ab1-42b8-a6ba-831ef3ef2841}</Project>
+      <Name>BiblosDS.Library.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.IStorage\BiblosDS.Library.IStorage.csproj">
+      <Project>{373b3c22-ed21-43cd-8e4f-6820db71e850}</Project>
+      <Name>BiblosDS.Library.IStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Storage.Azure\BiblosDS.Library.Storage.Azure.csproj">
+      <Project>{b56c2cbc-5cbd-46ac-b653-56988cc86cb7}</Project>
+      <Name>BiblosDS.Library.Storage.Azure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Storage.BDSCom\BiblosDS.Library.Storage.BDSCom.csproj">
+      <Project>{3657b5a7-6915-4964-8bb1-c79a91013d70}</Project>
+      <Name>BiblosDS.Library.Storage.BDSCom</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Storage.Ftp\BiblosDS.Library.Storage.Ftp.csproj">
+      <Project>{5653f486-1147-4606-a09f-5b3d3cf234d3}</Project>
+      <Name>BiblosDS.Library.Storage.Ftp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Storage.LegacyBiblosDS\BiblosDS.Library.Storage.FileSystem.csproj">
+      <Project>{23320850-9e43-4560-9f2c-3ab3cd96a8bf}</Project>
+      <Name>BiblosDS.Library.Storage.FileSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Storage.PaRERReferti\BiblosDS.Library.Storage.PaRERReferti.csproj">
+      <Project>{3e00e01c-b002-4389-986d-41315d321c1c}</Project>
+      <Name>BiblosDS.Library.Storage.PaRERReferti</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Storage.SharePoint2010DS\BiblosDS.Library.Storage.SharePoint2010DS.csproj">
+      <Project>{7ddd9137-26ce-4ba6-b775-7f04ce32c0d9}</Project>
+      <Name>BiblosDS.Library.Storage.SharePoint2010DS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Storage.SharePoint2010\BiblosDS.Library.Storage.SharePoint2010.csproj">
+      <Project>{474346af-ece5-4f32-9d98-40dfed5a062f}</Project>
+      <Name>BiblosDS.Library.Storage.SharePoint2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Storage.SharePoint\BiblosDS.Library.Storage.SharePoint.csproj">
+      <Project>{7d4f58b8-96e3-4055-8c22-01eb59da6983}</Project>
+      <Name>BiblosDS.Library.Storage.SharePoint</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BiblosDS.Library.Storage.SQL2008\BiblosDS.Library.Storage.SqlServer.csproj">
+      <Project>{2bc55b3e-358c-47b6-9bc5-83cfb5e31933}</Project>
+      <Name>BiblosDS.Library.Storage.SqlServer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="BiblosDs.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

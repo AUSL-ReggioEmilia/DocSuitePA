@@ -1,0 +1,22 @@
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Codice</th>
+                <th class="text-center">Stato</th>
+                <th>Nome</th>
+                <th class="text-center">Data richiesta</th>                
+                <th class="text-center">Visualizza</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let request of requests">
+                <td class="col-sm-4">{{ request.Id }}</td>
+                <td class="col-sm-1 text-center"><i class="{{ getStatusClass(request.Status)}}" title="{{ getStatusDescription(request.Status) }}" aria-hidden="true"></i></td>
+                <td class="col-sm-4">{{ request.Name }}</td>
+                <td class="col-sm-2 text-center">{{ request.Date | date:'dd/MM/yyyy' }}</td>
+                <td class="col-sm-1 text-center"><a href="{{deserializeModel(request.Model) | urlExternalViewer}}" target="_blank" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;Visualizza</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

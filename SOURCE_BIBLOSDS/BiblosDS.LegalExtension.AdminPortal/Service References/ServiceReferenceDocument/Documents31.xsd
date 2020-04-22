@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/ArchiveStatistics" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/ArchiveStatistics" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="ArchiveStatistics">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DocumentsCount" type="xs:int" />
+          <xs:element minOccurs="0" name="DocumentsVolume" type="xs:long" />
+          <xs:element minOccurs="0" name="ForwardedDevicesCount" type="xs:int" />
+          <xs:element minOccurs="0" name="PreservationsCount" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ArchiveStatistics" nillable="true" type="tns:ArchiveStatistics" />
+</xs:schema>

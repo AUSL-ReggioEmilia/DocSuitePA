@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{71DDB326-ACB1-4FB0-ABB1-51286E7001FB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.8.87.19295.1\lib\net461\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Collaborations\CollaborationDao.cs" />
+    <Compile Include="Commons\RoleUserDao.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitChainDao.cs" />
+    <Compile Include="Fascicles\FascicleDocumentUnitDao.cs" />
+    <Compile Include="Fascicles\FascicleDao.cs" />
+    <Compile Include="MassimariScarto\MassimarioScartoDao.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UDS\UDSLogDao.cs" />
+    <Compile Include="UDS\UDSRepositoryDao.cs" />
+    <Compile Include="Workflows\WorkflowActivityLogDao.cs" />
+    <Compile Include="Workflows\WorkflowRoleMappingDao.cs" />
+    <Compile Include="Workflows\WorkflowActivityDao.cs" />
+    <Compile Include="Workflows\WorkflowAuthorizationDao.cs" />
+    <Compile Include="Workflows\WorkflowInstanceDao.cs" />
+    <Compile Include="Workflows\WorkflowPropertyDao.cs" />
+    <Compile Include="Workflows\WorkflowRepositoryDao.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder\VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.csproj">
+      <Project>{d6c8f945-56c2-4187-b06a-14c89301db62}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data\VecompSoftware.DocSuiteWeb.Data.vbproj">
+      <Project>{26fc3668-b677-40a7-abbb-512736e7a815}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.DTO\VecompSoftware.DocSuiteWeb.DTO.csproj">
+      <Project>{d1157a6b-b6dd-4103-aed4-80a5b8ed881d}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.WebAPIManager\VecompSoftware.WebAPIManager.csproj">
+      <Project>{41cad351-d8e5-4ebf-b7a9-3eda0c92ce69}</Project>
+      <Name>VecompSoftware.WebAPIManager</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Desks\" />
+    <Folder Include="DocumentSeries\" />
+    <Folder Include="Messages\" />
+    <Folder Include="PECMails\" />
+    <Folder Include="Protocols\" />
+    <Folder Include="Resolutions\" />
+    <Folder Include="Tasks\" />
+    <Folder Include="Tenders\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

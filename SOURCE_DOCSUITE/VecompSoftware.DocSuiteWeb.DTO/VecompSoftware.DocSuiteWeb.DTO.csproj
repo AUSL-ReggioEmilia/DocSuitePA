@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D1157A6B-B6DD-4103-AED4-80A5B8ED881D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.DTO</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.DTO</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.pdfa, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.pdfa.5.5.13.1\lib\itextsharp.pdfa.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.13.1\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xtra, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.xtra.5.5.13.1\lib\itextsharp.xtra.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telerik.Web.UI, Version=2018.3.910.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Web.UI.2018.3.910.45\lib\net45\Telerik.Web.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.8.87.19295.1\lib\net461\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers, Version=8.87.0.0, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.8.87.19296.1\lib\net461\VecompSoftware.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.PDF, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.PDF.8.87.19296.1\lib\net461\VecompSoftware.Helpers.PDF.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.UDS, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.UDS.8.87.19296.1\lib\net461\VecompSoftware.Helpers.UDS.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.Web, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Web.8.87.19296.1\lib\net461\VecompSoftware.Helpers.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.XML, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.8.87.19296.1\lib\net461\VecompSoftware.Helpers.XML.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Biblos, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Biblos.8.87.19296.1\lib\net461\VecompSoftware.Services.Biblos.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Logging, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Logging.8.87.19296.1\lib\net461\VecompSoftware.Services.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.StampaConforme, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.StampaConforme.8.87.19296.2\lib\net461\VecompSoftware.Services.StampaConforme.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Collaborations\AbsentManager.cs" />
+    <Compile Include="Collaborations\CollaborationResult.cs" />
+    <Compile Include="Collaborations\MultiSignDocumentInfo.cs" />
+    <Compile Include="Collaborations\CollaborationDocument.cs" />
+    <Compile Include="Commons\AjaxModel.cs" />
+    <Compile Include="Commons\CategoryUserProcedure.cs" />
+    <Compile Include="Commons\CategoryUserRight.cs" />
+    <Compile Include="Commons\ContainerGroupRight.cs" />
+    <Compile Include="Commons\ContainerNodeData.cs" />
+    <Compile Include="Commons\MiscellaneaDocumentModel.cs" />
+    <Compile Include="Commons\DocumentModel.cs" />
+    <Compile Include="Commons\DomainUser.cs" />
+    <Compile Include="Commons\MergeDocumentResult.cs" />
+    <Compile Include="Commons\MiscellaneaDocumentStatus.cs" />
+    <Compile Include="Commons\Notification.cs" />
+    <Compile Include="Commons\ReferenceModel.cs" />
+    <Compile Include="Commons\RejectedRoleModel.cs" />
+    <Compile Include="Commons\RoleGroupRight.cs" />
+    <Compile Include="Commons\RoleUserRight.cs" />
+    <Compile Include="Commons\ContainerUserRight.cs" />
+    <Compile Include="Commons\TemplateAutorizationModel.cs" />
+    <Compile Include="Desks\DeskComment.cs" />
+    <Compile Include="Desks\DeskDocumentResult.cs" />
+    <Compile Include="Desks\DeskEndorsement.cs" />
+    <Compile Include="Desks\DeskResult.cs" />
+    <Compile Include="Desks\DeskRoleUserResult.cs" />
+    <Compile Include="DocumentSeries\DocumentSeriesInsertModel.cs" />
+    <Compile Include="DocumentSeries\SeriesObjectFormat.cs" />
+    <Compile Include="DocumentSeries\TransparentAdministrationMonitorLogViewModel.cs" />
+    <Compile Include="DocumentUnits\SendDocumentUnitType.cs" />
+    <Compile Include="Fascicles\FascicleRightPosition.cs" />
+    <Compile Include="Messages\SMSReport.cs" />
+    <Compile Include="Messages\JobSMSNotification.cs" />
+    <Compile Include="OData\ODataModel.cs" />
+    <Compile Include="PECMails\PECMailBoxPECReportDto.cs" />
+    <Compile Include="PECMails\PECMailBoxModuleReportDto.cs" />
+    <Compile Include="PECMails\PECMailBoxDto.cs" />
+    <Compile Include="PECMails\PECMailBoxUserDto.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocols\ProtocolRoleNoteModel.cs" />
+    <Compile Include="Protocols\SharepointResult.cs" />
+    <Compile Include="Reports\ReportToolboxItemModel.cs" />
+    <Compile Include="Resolutions\ResolutionChangeDSI.cs" />
+    <Compile Include="Resolutions\ResolutionDocument.cs" />
+    <Compile Include="Resolutions\ResolutionFrontispiece.cs" />
+    <Compile Include="Resolutions\ResolutionInsertModel.cs" />
+    <Compile Include="Resolutions\ResolutionSeriesDraftInsert.cs" />
+    <Compile Include="Resolutions\ResolutionKindTypeResults.cs" />
+    <Compile Include="UDS\UDSDto.cs" />
+    <Compile Include="UDS\UDSDynamicControlDto.cs" />
+    <Compile Include="UDS\UDSEntityCQRSDocumentUnitDto.cs" />
+    <Compile Include="UDS\UDSEntityContainerDto.cs" />
+    <Compile Include="UDS\UDSEntityContactDto.cs" />
+    <Compile Include="UDS\UDSEntityDocumentUnitDto.cs" />
+    <Compile Include="UDS\UDSEntityPECMailDto.cs" />
+    <Compile Include="UDS\UDSEntityMessageDto.cs" />
+    <Compile Include="UDS\UDSEntityDocumentDto.cs" />
+    <Compile Include="UDS\UDSEntityCategoryDto.cs" />
+    <Compile Include="UDS\UDSEntityRepositoryDto.cs" />
+    <Compile Include="UDS\UDSEntityRoleDto.cs" />
+    <Compile Include="UDS\UDSFinderDto.cs" />
+    <Compile Include="UDS\UDSFinderExpressionDto.cs" />
+    <Compile Include="UDS\UDSEntityDto.cs" />
+    <Compile Include="UDS\UDSKeysDto.cs" />
+    <Compile Include="UDS\UDSRepositoryDetailsSearchModel.cs" />
+    <Compile Include="UDS\UDSRepositorySearchModel.cs" />
+    <Compile Include="UDS\UDSTreeViewDto.cs" />
+    <Compile Include="UDS\UDSTreeViewState.cs" />
+    <Compile Include="UserDiary\DiaryParameterFinder.cs" />
+    <Compile Include="UserDiary\UserDiaryResult.cs" />
+    <Compile Include="WebAPI\WebAPIDto.cs" />
+    <Compile Include="WebAPI\WebAPIServiceDto.cs" />
+    <Compile Include="Workflows\DematerialisationStatementResult.cs" />
+    <Compile Include="Workflows\RequestStatementResult.cs" />
+    <Compile Include="Workflows\RequestStatementPageRights.cs" />
+    <Compile Include="Workflows\WorkflowActivityResult.cs" />
+    <Compile Include="Workflows\WorkflowCollaborationSignerStatus.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tasks\" />
+    <Folder Include="Tenders\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data.Entity\VecompSoftware.DocSuiteWeb.Data.Entity.csproj">
+      <Project>{a50a9394-0f55-4563-b30a-cbabcc6a7638}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Data.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data\VecompSoftware.DocSuiteWeb.Data.vbproj">
+      <Project>{26fc3668-b677-40a7-abbb-512736e7a815}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

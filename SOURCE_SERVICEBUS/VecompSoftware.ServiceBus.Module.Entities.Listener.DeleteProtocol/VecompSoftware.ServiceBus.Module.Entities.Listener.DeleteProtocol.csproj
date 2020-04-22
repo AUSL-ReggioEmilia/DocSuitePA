@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{66E93655-A081-4D27-BA3D-FB67703F4F87}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol</RootNamespace>
+    <AssemblyName>VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.ServiceBus, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\ServiceBus.v1_1.1.0.6\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.8.87.19295.1\lib\net461\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Core.Command, Version=8.87.19296.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Core.Command.8.87.19296.3\lib\net461\VecompSoftware.Core.Command.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Command, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.8.87.19296.2\lib\net461\VecompSoftware.Services.Command.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Execution.cs" />
+    <Compile Include="Listener.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.ServiceBus.BiblosDS\VecompSoftware.ServiceBus.BiblosDS.csproj">
+      <Project>{3279E762-E123-4D8B-ABC0-6CBCA4489776}</Project>
+      <Name>VecompSoftware.ServiceBus.BiblosDS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.ServiceBus.Receiver.Base\VecompSoftware.ServiceBus.Receiver.Base.csproj">
+      <Project>{0503F4CE-F6E0-4345-992D-40D12C81A242}</Project>
+      <Name>VecompSoftware.ServiceBus.Receiver.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.ServiceBus.StampaConforme\VecompSoftware.ServiceBus.StampaConforme.csproj">
+      <Project>{B7D6928B-76B7-494A-8394-126906D3EACE}</Project>
+      <Name>VecompSoftware.ServiceBus.StampaConforme</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.ServiceBus.WebAPI\VecompSoftware.ServiceBus.WebAPI.csproj">
+      <Project>{2B9846E8-3E0D-4001-BCB6-85FBAED4A2B1}</Project>
+      <Name>VecompSoftware.ServiceBus.WebAPI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

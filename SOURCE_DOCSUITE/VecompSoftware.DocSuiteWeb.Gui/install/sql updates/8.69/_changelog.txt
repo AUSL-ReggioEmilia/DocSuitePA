@@ -1,0 +1,62 @@
+11244 Feature: [DSW] Pacchetto privacy
+11346 Feature: [ASL-TO]Gestione dei diritti sulle E-Mail affinchè il diritto sulle email non influenzi quello delle pec.
+11396 Feature: [DSW] Gestione Fascicoli Periodici
+11430 Feature: [DSW] Implementare look-up nelle librerie dinamiche degli archivi
+11431 Feature: [DSW] Implementare look-up nelle pagine di gestione degli archivi
+11461 Feature: [DSW] Gestione cartelle dossier
+
+
+7702 User Story: [ASL-TO]Correzione interfaccia DocSuite per errata formattazione degli oggetti degli atti
+8184 User Story: [ASL-TO]Ampliare la textBox dell'oggetto nelle mail all'interno della gestione degli atti
+11182 User Story: [CTT]Introdurre funzionalità di "Segnatura"di Protocollo e Archivi non conforme al DPR 445/2000
+11232 User Story: [CTT]Archivi : Implementare la funzione Invia Mail nel visualizzatore documentale
+11235 User Story: [DSW]Nei fascicoli di attività riportare la numerazione del Fascicolo analogamente a quella presente nei Fascicoli di Procedimento
+11249 User Story: [DSW] Implementare la modifica di una tipologia
+11254 User Story: [DSW] Implementare la visualizzazione degli archivi aggregati nella tipologia selezionata
+11255 User Story: [DSW] Implementare l'aggiunta di archivi ad una tipologia selezionata.
+11256 User Story: [DSW] Implementare la rimozione di archivi da una categoria selezionata.
+11337 User Story: [ASL-TO]Aggiungere nella configurazione di settore un flag email per dare i diritti all'utente di gestione delle email
+11339 User Story: [ASL-TO]Aggiungere in Ricerca di Protocollo un checkbox "Includi" accanto alla voce "Protocolli Annullati"
+11341 User Story: [ASL-TO]Gestire l'ordine delle delibere nell'elenco delle delibere adottate in ordine numerico crescente.
+11345 User Story: [ASL-TO]Gestire le logiche della Casella di protocollazione indipendentemente dalle PEC
+11349 User Story: [ASL-TO]Dare la possibilità a chi ha diritti di Uff.Dirigenziale di intervenire manualmente sulla data di pubblicazione ed esecutività di un atto
+11360 User Story: [ITW]In ricerca di protocollo di fatture, nei risultati, permettere la visualizzazione dei dati contabili
+11370 User Story: [AUSL-RE] Modifiche Parer Web Monitor, gestione errore referti
+11397 User Story: [DSW] Creazione del fascicolo Periodico
+11400 User Story: [DSW] Validazioni sui fascicoli periodici
+11401 User Story: [DSW] Gestione dei comandi ICommandCQRSFascicolable nel CQRS
+11402 User Story: [DSW] Verifiche diritti fascicolo Periodico
+11416 User Story: [DSW] Fascicolo Periodico: Adeguamento dei comandi/eventi del service bus di gestione dei fascicoli periodici
+11421 User Story: [DSW] Popolamento Comandi che implementano ICommandCQRSFascicolable
+11429 User Story: [DSW] Implementare look-up nel designer degli archivi
+11432 User Story: [DSW] Implementare look-up in ricerca di archivi
+11433 User Story: [DSW] Implementare look-up in inserimento di archivio
+11434 User Story: [DSW] Implementare look-up in modifica di archivio
+11444 User Story: [DSW] WebAPI : Popolamento Comandi che implementano ICommandCQRSFascicolable
+11449 User Story: [DSW] Inserimento delle UD nei fascicoli periodici
+11450 User Story: [DSW] Lookup Archivi : Modificare modello base XSD
+11451 User Story: [DSW] Lookup Archivi : Adeguare lo script di migrazione 8.69
+11454 User Story: [DSW] Revisione pagina Piano di fascicolazione
+11462 User Story: [DSW] Funzionalità modifica cartella
+11463 User Story: [DSW] Modifiche alla Funzionalità inserimento cartella
+11464 User Story: [DSW] inserire funzionalità "Crea fascicolo" nel sommario di Dossier
+11465 User Story: [DSW] Gestire propagazione massiva delle autorizzazioni della cartella alle cartelle figlie nel dossier
+11466 User Story: [DSW] Loggare il cambio di autorizzazioni in tutte le entità coinvolte
+11473 User Story: [DSW] Quando si pubblica una nuova versione di un archivio bisogna aggiornare le tipologie associate all'archivio
+11482 User Story: [DSW] Aggiunta dei periodi di fascicolazione trimestrale e mensile
+11491 User Story: [DSW] Lookup Archivi : Gestione nei listeners UDS Management del nuovo fields "Lookup"
+11506 User Story: [ENPACL]WSProt : in inserimento di protocollo da WebService permettere la gestione dello stato di Assegnazione
+11531 User Story: [DSW] Gestione del fascicolo periodico nelle WebAPI
+11615 User Story: [DSW] Spostare salvataggio UDSRepository nelle webapi
+
+9178 Bug: [AUSL-RE]Quando torno indietro con il back di IE alla pagina di ricerca Atti,il passo del flusso resta con il check ma l'intervallo di date resta disattivo
+10309 Bug: [ASL-TO]Nei Registri di Deliberazioni Adottate togliere dall'Interfaccia utente e all'interno dei documenti la colonna Prima Pag. e Ultima Pag.
+11175 Bug: [CTT]La gestione dei colori dei Classificatori nel piano di Fascicolazione non è più coerente e deve essere rivista.
+11273 Bug: [ASL-TO]Nella lettera di riepilogo di trasmissione di avvenuta adozione delle determine l'ordine di scrittura nella tabella deve essere per data di Adozione
+11288 Bug: [DSW]In Ricerca di Archivi, se filtro per qualsiasi campo e premo invio da tastiera,si apre la pagina di selezione dei contatti e non la pagina dei Risultati degli archivi
+11344 Bug: [AUSL-PC] Dopo l'auto-assegnazione di un Protocollo, entrando nel Sommario, non risulta popolato il campo "Assegnatario"
+11347 Bug: [CTT]Uniformare il numero dei fascicoli di attività
+11365 Bug: [DSW]In Ricerca di Fascicoli se filtro per qualsiasi campo e premo invio da tastiera,si apre la pagina di selezione dei contatti e non la pagina dei Risultati degli archivi
+11411 Bug: [CTT]Nella treeview dei Settori se entrando nella pagina clicco su un nodo padre che ha figli, il pulsante "Disegno di Funzione" resta disabilitato.
+11487 Bug: [DSW]Nella treeview dei Settori , se un settore è disabilitato, la pulsantiera deve essere disabilitata
+11488 Bug: [DSW]Nella Treeview dei Gruppi dare informazione di colore se un settore nel gruppo è disabilitato

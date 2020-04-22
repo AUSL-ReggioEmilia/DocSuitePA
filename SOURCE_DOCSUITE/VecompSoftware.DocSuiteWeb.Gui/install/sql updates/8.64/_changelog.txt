@@ -1,0 +1,104 @@
+﻿Feature: 8088 [AUSL-RE]Introdurre la funzionalità Duplica nell'Archivio
+Feature: 8298 [DSW] Creazione nuova pagina "Template Documenti" nel menù tabelle
+Feature: 8299 [DSW] Creazione nuova pagina di gestione Template Documenti
+Feature: 8300 [DSW] Aggiungere le funzionalità di selezione e check out/in dei Template Documenti nello user control di upload documenti
+Feature: 8301 [DSW] Creazione nuova pagina di ricerca/selezione dei Template Documenti pubblicati
+Feature: 8302 [DSW] Aggiungere la gestione dei Template in Collaborazione e Tavoli
+Feature: 8327 [ASL-TO] Modifica step di pubblicazione ed esecutività atto
+Feature: 8413 [DSW] Gestione Tipologia Atti
+Feature: 8604 [AUSL-PC] Nuovo metodo per la generazione PDF/A per integrazione Dedalus
+Feature: 8608 [AUSL-PC] Nuovo modulo AUSLPC.ASCON nel servizio Integration
+Feature: 8609 [AUSL-PC] Gestione Syntech, allineamento metadati consensi
+Feature: 8610 [AUSL-PC] Gestione Dedalus, allineamento consensi e generazione PDF/A
+Feature: 8611 [AUSL-PC] Gestione documenti firmati digitalmente tramite grafometrica
+			  
+User Story 4299: [DSW] - Gestione Tipologia Atti : Eliminazione tipologia atto
+User Story 7992: [AUSL-RE] Creare un repository per documenti
+User Story 8066: [ASL-TO] Automatismo passaggio in esecutività
+User Story 8067: [ASL-TO] In "Invio Collegio Sindacale Firma Digitale" determine, permettere la selezione di un periodo di adozione
+User Story 8285: [AGSM] Nel JeepService limitare il numero di tentativi di importazione di uno stesso file
+User Story 8294: [AUSL-RE]Inserire bottone Duplica nel sommario UDS
+User Story 8295: [AUSL-RE]Creare pagina UDSDuplica con check anche sui metadati
+User Story 8296: [AUSL-RE]Pagina UDSInsert creare metodo di fill campi statici data uds da inserire
+User Story 8297: [AUSL-RE]Pagina UDSInsert modificare metodo di fill campi statici aggiungendo anche quelli dinamici data uds da inserire
+User Story 8303: [DSW] Nuovo user control per la visualizzazione/ricerca del Template Documenti esistenti
+User Story 8304: [DSW] Visualizzare i dettagli di un Template Documento
+User Story 8305: [DSW] Visualizzare l'anteprima del Template nei dettagli
+User Story 8306: [DSW] Implementare la cancellazione di un Template
+User Story 8307: [DSW] Aggiungere o Modificare un Template Documento
+User Story 8308: [DSW] Definire il layout della pagina di gestione Template Documenti
+User Story 8309: [DSW] Creare un nuovo Template documento
+User Story 8310: [DSW] Modificare un Template documento
+User Story 8311: [ASL-TO] Implementare pubblicazione automatica di atti
+User Story 8312: [DSW] Aggiunta dell'icona di selezione Template Documento
+User Story 8313: [ASL-TO] Implementare esecutività automatica di atti
+User Story 8315: [DSW] Rendere parametriche le funzionalità relative al Template documento nello user control di upload documenti
+User Story 8316: [AUSL-RE] Inserire bottone fascicola in sommario UDS
+User Story 8317: [DSW] Creare una nuova pagina per la selezione dei Template Documenti pubblicati
+User Story 8318: [ASL-TO] Modifica step pubblicazione massiva atti
+User Story 8320: [DSW] Aggiungere la gestione dei Template Documenti in Collaborazione
+User Story 8321: [DSW] Aggiungere la gestione dei Template Documenti in Tavoli
+User Story 8322: [ASL-TO] Modifica step pubblicazione singola atti
+User Story 8323: [ASL-TO] Creazione pagina di attività del JeepService riguardanti gli atti
+User Story 8324: [AUSL-RE] Gestire caricamento fascicoli disponibili tipologia UDS in FascUDManager
+User Story 8325: [ASL-TO] Creare nuova entità ResolutionActivity
+User Story 8326: [AUSL-RE] Gestire Fascicoli Associati UDS
+User Story 8328: [AUSL-RE] Creare metodo fascicola UDS in FascUDManager
+User Story 8329: [AUSL-RE] Creare metodo rimuovi UDS in FascUDManager
+User Story 8330: [AUSL-RE] Modificare metodo addFascicleUD per inserire UDS da Fascicolo
+User Story 8362: [DSW] Creazione Validation WebAPi per inserimento di un TemplateRepository Documentale
+User Story 8385: [AUSL-RE] Caricare UDS in FascUDManager
+User Story 8401: [DSW] Bonifica FK with NoCheck Constraint
+User Story 8405: [AUSL-RE] Creare metodo inserimento FascicleUDS
+User Story 8414: [DSW]Inserire tipologia di atto attivo/disattivo
+User Story 8454: [AUSL-RE] Creare metodo rimuovi UDS in FascUDSService
+User Story 8464: [AUSL-RE] Caricare le UDS associate al fascicolo nel sommario del fascicolo
+User Story 8465: [AUSL-RE] Modificare funzione per caricare anche le UDS del fascicolo
+User Story 8493: [AUSL-RE] reindirizzare alla UDS quando si clicca il link in aggiungi uds al fascicolo
+User Story 8521: [ASL-TO] Creazione attività di esecutività dal sommario di Atto
+User Story 8522: [ASL-TO] Creazione attività di esecutività atto in Ricerca Flusso
+User Story 8538: [AUSL-RE] Creare metodo rimuovi FascicleUDS e validazioni
+User Story 8551: [ASL-TO] Visualizzare messaggio in home page nel caso di errori in attività del JeepService
+User Story 8596: [AUSL-RE]In visualizzazione fascicoli,creare la voce per i fascicoli che verranno poi marcati come pubblici
+User Story 8599: [AUSL-RE]Creare sul db una nuova colonna per la definizione di tipologia di Fascicolo
+User Story 8600: [AUSL-RE] Creare metodo rimuovi UDS da sommario di fascicolo
+User Story 8603: [AUSL-RE]Mappare sulle WebAPI la nuova tipologia inserita per i Fascicoli e fare le Validation
+User Story 8607: [AUSL-RE] Gestire documenti legati alle UDS nel Visualizza documenti dei fascicoli
+User Story 8617: [AUSL-PC] Creare un nuovo servizio ASCONPDFGeneratorService
+User Story 8618: [AUSL-PC] Creare un nuovo modello ASCONMetadataModel
+User Story 8619: [AUSL-PC] Creare comandi SB Dedalus e Syntech
+User Story 8620: [AUSL-PC] Invio comandi Dedalus e Syntech al SB
+User Story 8644: [DSW] Inserimento Atti: aggiungere filtro attivo/disattivo su Tipologia di Atto
+User Story 8645: [DSW] Modifica Atti: aggiungere filtro attivo/disattivo su Tipologia di Atto
+User Story 8666: [AUSL-PC] Creare modulo VecompSoftware.DocSuite.BPM.Integrations.Modules.AUSLPC.ASCON
+User Story 8674: [AUSL-PC] Generazione deocumento PDF/A
+User Story 8675: [AUSL-PC] Salvare il documento PDF/A in BiblosDs
+User Story 8676: [AUSL-PC] Salvare il documento PDF/A nella directory condivisa per la firma
+User Story 8677: [AUSL-PC] Creare nuovo episodio nel WS di Dedalus
+User Story 8678: [AUSL-RE] Nascondere pannello anni di conservazione se fascicolo di attività
+User Story 8679: [AUSL-PC] Data Layer Syntech
+User Story 8680: [AUSL-RE]Creare nel Sommario il riferimento al tipo di Visibilità
+User Story 8681: [AUSL-RE] Fare validazioni inserimento fascicoli di attività
+User Story 8682: [AUSL-RE]Creare un filtro in Ricerca di Fascicolo per dare la possiiblità di filtrare per attributo Pubblico o Riservato.
+User Story 8693: [AUSL-RE]Nei fascicoli di Procedimento permettere l'autorizzazione di più settori
+User Story 8704: [AUSL-RE] Fare validazioni modifica fascicoli di attività
+User Story 8713: [AUSL-RE] Modificare scelta classificazione in inserimento di Fascicolo di attività
+User Story 8714: [AUSL-RE] Modificare diritti in griglia dei risultati di fascicoli
+User Story 8731: [AUSL-RE] In modifica fascicolo il campo tipo non mostra la tipologia di fascicolo
+User Story 8739: [AUSL-RE] Fare validazioni chiusura fascicoli di attività
+User Story 8740: [AUSL-RE] Un fascicolo di attività può essere solo riservato
+User Story 8741: [AUSL-RE] I fascicoli di attività non possono avere UD fascicolate
+User Story 8756: [AUSL-RE] Caricare le UD da referenziare nel fascicolo di attività
+User Story 8760: [AUSL-RE] Inserire validazione sul visibility type in inserimento fascicolo di attività
+User Story 8761: [AUSL-RE] I fascicoli di attività possono essere chiusi da chi ha diritti tipo responsible sul facicolo
+User Story 8773: [AUSL-RE] Impostare visibilità Fascicoli
+User Story 8782: [AUSL-RE] In inserimento fascicolo gestire chi può inserire i fascicoli di attività e procedimento
+User Story 8783: [AUSL-RE] in inserimento di fascicolo attività posso autorizzare i miei settori
+User Story 8789: [AUSL-RE] In sommario del fascicolo creare un secondo pannellino per le autorizzazioni
+User Story 8799: [AUSL-RE] Gestire la visibilità dei documenti di un Fascicolo pubblico
+User Story 8853: [DSW] Modifica la gestione del titolo qaundo si inserisce un fascicolo di attività
+
+Bug 7778: [AGSM] Quando una o più righe del file Excel vanno in errore,il file viene riprocessato e genera record duplicati.
+Bug 8631: [DSW] In sommario di fascicolo non si aggiornano i fascicoli collegati
+Bug 8635: [DSW] In Fascicola da UD se rimuovo il "fascicolo fascicolato" non mi ripropone la lista di fascicoli disponibili per la fascicolazione
+Bug 8755: [DSW] Eliminare entità MassimariScartoSchema

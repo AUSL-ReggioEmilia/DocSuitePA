@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VecompSoftware.JeepService.DocSeriesExporter.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="VecompSoftware_JeepService_DocSeriesExporter_Sp2007ListsReference_Lists" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://server:55/_vti_bin/lists.asmx</Value>
+    </Setting>
+    <Setting Name="VecompSoftware_JeepService_DocSeriesExporter_Sp2007CopyReference_Copy" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://server:55/_vti_bin/copy.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

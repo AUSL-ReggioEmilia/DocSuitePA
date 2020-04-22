@@ -1,0 +1,18 @@
+{
+  "ConnectionString": "Data Source=srvgeddev9999.cloudapp.net;Initial Catalog=ENAV_eNavigare;User ID=sa;Pwd=Passw0rd;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=True;Max Pool Size=1024",
+  "DocumentSeriesItemTopic": "entity_event",
+  "DocumentSeriesItemSubscriptionCreate": "DocumentSeriesItemCreate",
+  "DocumentSeriesItemSubscriptionUpdate": "DocumentSeriesItemUpdate",
+  "WorkflowIntegrationTopic": "workflow_integration",
+  "DocumentSeriesItemSubscriptionRetired": "DocumentSeriesItemRetired",
+  "TenantName": "AUSL-RE",
+  "TenantId": "1F761813-6086-44F1-A507-99954EA64343",
+  "ArchiveMappingUrls": {
+    "Sistema di Gestione per la Qualità (Enav)": "https://protocollo.enav.it/sgqenav/SeriesItem.aspx?IdSeriesItem={0}&history=False",
+    "Sistema di Gestione per la Qualità (Techno Sky)": "https://protocollo.enav.it/sgqtsky/SeriesItem.aspx?IdSeriesItem={0}&history=False",
+    "Security Management System (Enav)": "https://protocollo.enav.it/secmsenav/SeriesItem.aspx?IdSeriesItem={0}&history=False",
+    "Safety Management System (Enav)": "https://protocollo.enav.it/smsenav/SeriesItem.aspx?IdSeriesItem={0}&history=False",
+    "Sistema di Gestione della Salute e della Sicurezza Sul Lavoro (Enav)": "https://protocollo.enav.it/sgsslenav/SeriesItem.aspx?IdSeriesItem={0}&history=False",
+    "Sistema di Gestione della Salute e della Sicurezza Sul Lavoro (Techno Sky)": "https://protocollo.enav.it/sgssltsky/SeriesItem.aspx?IdSeriesItem={0}&history=False",
+  }
+}

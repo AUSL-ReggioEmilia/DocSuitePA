@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Desks">
+
+  <class name="DeskDocumentEndorsement" table="DeskDocumentEndorsements" lazy="true" >
+    
+    <id name="Id" column="IdDeskDocumentEndorsement">
+      <generator class="guid.comb" />
+    </id>
+    
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+    <property name="Endorsement">
+      <column name="Endorsement" not-null="true" />
+    </property>
+
+    <many-to-one name="DeskRoleUser">
+      <column name="IdDeskRoleUser" not-null="false" />
+    </many-to-one>
+    <many-to-one name="DeskDocumentVersion">
+      <column name="IdDeskDocumentVersion" not-null="false" />
+    </many-to-one>
+    
+  </class>
+  
+</hibernate-mapping>

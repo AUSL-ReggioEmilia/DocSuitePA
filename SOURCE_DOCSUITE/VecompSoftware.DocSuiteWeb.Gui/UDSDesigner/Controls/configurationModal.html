@@ -1,0 +1,39 @@
+﻿<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form class="form-horizontal">
+            <div class="modal-header" id="configurationHeader">
+                <div class="form-group">
+                    <div class="controls col-sm-12">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="configuration_modal_label">Seleziona {ctrl.modalTitle}</h4>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="controls col-sm-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="txtSearch" placeholder="Cerca per descrizione..." />
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="btnSearch" rv-on-click="ctrl.searchElements"><i class="fa fa-search fa-lg"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body" id="configuration_body_modal">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="controls col-sm-12">
+                            <div class="configurationWrapper">
+                                <div id="configurationTree"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" class="btn btn-primary" rv-on-click="ctrl.saveCallback" id="configuration_save" value="Seleziona" />
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
+            </div>
+        </form>
+    </div>
+</div>

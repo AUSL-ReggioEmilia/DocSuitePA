@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Desks">
+  
+  <class name="DeskStoryBoard" table="DeskStoryBoards" lazy="true" >
+    
+    <id name="Id" column="IdStoryBoard">
+      <generator class="guid.comb" />
+    </id>
+    
+    <property name="Comment">
+      <column name="Comment" not-null="false" />
+    </property>
+    <property name="Author">
+      <column name="Author" not-null="false" />
+    </property>
+    <property name="BoardType">
+      <column name="BoardType" not-null="false" />
+    </property>
+    <property name="DateBoard">
+      <column name="DateBoard" not-null="false" />
+    </property>
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+    <many-to-one name="Desk">
+      <column name="IdDesk" not-null="true" />
+    </many-to-one>
+    
+    <many-to-one name="DeskRoleUser">
+      <column name="IdDeskRoleUser" not-null="false" />
+    </many-to-one>
+    <many-to-one name="DeskDocumentVersion">
+      <column name="IdDeskDocumentVersion" not-null="false" />
+    </many-to-one>
+    
+  </class>
+
+</hibernate-mapping>

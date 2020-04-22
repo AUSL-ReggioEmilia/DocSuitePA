@@ -1,0 +1,5 @@
+<div *ngIf="showErrors()" class="alert alert-danger">
+    <ul>
+        <li *ngFor="let error of errors()" [innerHTML]= "error"></li>
+    </ul>
+</div>

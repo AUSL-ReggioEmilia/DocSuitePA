@@ -1,0 +1,10 @@
+﻿<div>
+  <kendo-buttongroup [selection]="'single'">
+    <button kendoButton [togglable]="true" [selected]="resolutionType == 1" (click)="typeSelected(1)">
+      {{delibereDescription}}
+    </button>
+    <button kendoButton [togglable]="true" [selected]="resolutionType == 0" (click)="typeSelected(0)">
+      {{determineDescription}}
+    </button>
+  </kendo-buttongroup>
+</div>

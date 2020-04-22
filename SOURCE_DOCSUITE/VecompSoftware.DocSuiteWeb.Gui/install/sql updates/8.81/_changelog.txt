@@ -1,0 +1,143 @@
+Epic 14207: [ENAV] Ottimizzazione BiblosDS in conservazione e consultazione documenti [storage]
+Epic 15007: [AUSL-PC] Estrattore per invio archivi Libri Giornale e Libri Inventario al PaRER
+Epic 16927: [ASL-TO CTT] Integrazione Firma remota Proxy Sign Infocert e ARSS Aruba
+Epic 17112: [AUSL-RE] Workflow: Gestione risposta del "Parere" in DocSuite - Protocollazione/Collaborazione e Inserti
+Epic 17226: [CTT] Modifiche evolutive 8.81
+Epic 17545: [AUSL-RE] MyDocSuite: Aggiunta funzionalità Condividi "Parere"
+
+
+Feature 14444: [CTT] Archivi: Collegamento tra registrazioni di archivio
+Feature 15115: [CTT] Fascicoli: Inserimento multiplo di inserti di fascicoli
+Feature 15602: [AUSL-PC] Estrattore: Conservazione archivio DocSuite "Libro inventari"
+Feature 15603: [AUSL-PC] Estrattore: Conservazione archivio DocSuite "Libro giornale"
+Feature 16354: [ENEA] Archivi : Revisione del Versioning di Archivio mediante scelta esplicita del Designer
+Feature 16356: [ENEA CTT] Archivi: Effettuando il back del browser riportare i precedenti criteri di ricerca
+Feature 16928: [ASL-TO CTT] Firma remota: Gestione alias nel profilo utente
+Feature 16930: [ASL-TO CTT] Firma remota : Aggiungere firma automatica e remota nella modalità firma singola DocSuite
+Feature 16931: [ASL-TO CTT] Firma remota : Aggiungere firma automatica e remota nella modalità firma multipla DocSuite
+Feature 17229: [ENAV] Ottimizzazione DB BiblosDS, introduzione tabella PreservationDocuments
+Feature 17230: [ENAV] Tool bonifica tabella PreservationDocuments
+Feature 17231: [ENAV] Nuova funzionalità "Pulisci archivio corrente" in PreservationPortal per le conservazioni chiuse
+Feature 17232: [ENAV] Nuovo service WCFHost per la cancellazione dei documenti conservati da archivio corrente
+Feature 17233: [ENAV] Nuovo Integration per la cancellazione degli allegati di una PEC
+Feature 17234: [ENAV] Ottimizzazione fase di conservazione documenti
+Feature 17343: [DSW] Aggiungere policy di retry nei converter di Office e OpenOffice
+Feature 17477: [CTT] Archivi : Invio email settori in archivio comportamento analogo al protocollo
+Feature 17478: [AUSL RE] Nuovo user control uscDocumentUnitReferences.uscx
+Feature 17479: [CTT] Ricerca Archivi: Effettuando il back del browser riportare i precedenti criteri di ricerca 
+Feature 17521: [ENEA] Archivi : I campi LookupField e EnumField devo sempre gestire la struttura array json anche in modalità scelta singola
+Feature 17522: [ENEA] Archivi : Implementare l'opzione "DefaultTodayEnabled" per il campo DateField.
+Feature 17523: [ENEA] Designer Archivi : Per il campo EnumField e StatusField permettere la modifica dei valori esistenti
+Feature 17524: [CTT] Fascicoli: Caricamento inserti di fascicoli da file ZIP
+Feature 17655: [AUSL-RE] DocSuite : Modificare l'avvio del workflow in docsuite in modo tale si possa effettuare l'avvio a più utenti diversi
+Feature 17657: [AUSL-RE] MyDocSuite : Aggiunta pulsante "Condividi" per sommario di Attività e Protocollo
+Feature 17660: [AUSL-RE] MyDocSuite : Aggiungere nella layer nuovi di Angular per gestione comunicazione delle PrivateWebAPI.
+Feature 17834: [AUSL-RE] MyDocSuite : Modifiche grafiche minori
+Feature 17843: [AUSL-RE] Workflow: In sommario di attività creare il pulsante "Gestisci" 
+Feature 17850: [AUSL-RE] Workflow: Implemenare business logic "Gestisci" della "Attività Generica"
+Feature 17861: [DSW] CustomValidation : Irrobustire le custom validation sulle cartelline di fascicolo
+Feature 17865: [AUSL-RE] PEC: Inserire i documenti della PEC come inserti del fascicolo
+Feature 17872: [ENAV] Introduzione nuovo strato di WebAPI Rest
+Feature 17874: [AUSL-RE] Creazione nuovo servizio "CQRSDocuments" nel WCF Host
+Feature 17881: [AUSL-RE] DocSuite : Avvio workflow dal fascicolo con i riferimento del Document selezionato
+Feature 17918: [CTT] Fascicoli: Migliorie ricerca di protocolli fascicolati/referenziati
+
+
+User Story 13429: [DSW] Bonifica delle store procedure per la gestione dell'errore
+User Story 15604: [AUSL-PC] Estrattore "Libro giornale" : Generare classe CS da XSD
+User Story 15605: [AUSL-PC] Estrattore "Libro inventari" : Generare classe CS da XSD
+User Story 15606: [AUSL-PC] Estrattore "Libro giornale" : Creare le store di lettura dei record da conservare
+User Story 15607: [AUSL-PC] Estrattore "Libro inventari" : Creare le store di lettura dei record da conservare
+User Story 15608: [AUSL-PC] Estrattore "Libro giornale" : Mappatura entity framework delle store del dataset nuovo
+User Story 15609: [AUSL-PC] Estrattore  : Mappatura entity framework la struttura Conservations dello schema Conservations
+User Story 15610: [AUSL-PC] Estrattore "Libro inventari" : Mappatura entity framework delle store del dataset nuovo
+User Story 15612: [AUSL-PC] Estrattore "Libro giornale" : Implementare Mapping da UDS a ParerModel
+User Story 15613: [AUSL-PC] Estrattore "Libro inventari" : Implementare Mapping da UDS a ParerModel
+User Story 15614: [AUSL-PC] Estrattore "Libro giornale" : Creare script SQL per il deploy
+User Story 15615: [AUSL-PC] Estrattore "Libro inventari" : Creare script SQL per il deploy
+User Story 15616: [AUSL-PC] Estrattore "Libro giornale" : Inserire parametri di attivazione/disattivazione del riversamento della unità archivistica
+User Story 15617: [AUSL-PC] Estrattore "Libro inventari" : Inserire parametri di attivazione/disattivazione del riversamento della unità archivistica
+User Story 17345: [DSW] Aggiungere policy di retry nel converter di Office
+User Story 17504: [ENAV] Creazione tabella PreservationDocuments
+User Story 17505: [ENAV] Script di migrazione per popolamento tabella PreservationDocuments
+User Story 17506: [ENAV] Revisione codice per rimozione riferimenti IdPreservation a favore di PreservationDocuments
+User Story 17507: [ENAV] Tool migrazione PreservationDocuments
+User Story 17508: [ENAV] Introdurre SignarR e gestione comandi CQRS in WCFHost
+User Story 17509: [ENAV] Creare nuovo comando CommandPurgeConservated
+User Story 17510: [ENAV] Gestira la pulizia di una conservazione chiusa
+User Story 17511: [ENAV] PreservationPortal, nuova funzionalità pulisci archivio corrente
+User Story 17542: [ENEA] Archivi : Aggiunta tag "DefaultTodayEnabled" per il campo DateField nel framerwork
+User Story 17543: [ENEA] Archivi : Adeguare il Designer per la gestione del "DefaultTodayEnabled" per il campo DateField.
+User Story 17544: [ENEA] Archivi : Adeguare lo uscUDS.ascx per la gestione del "DefaultTodayEnabled" per il campo DateField.
+User Story 17558: [ASL-TO CTT] Firma remota: Aggiungere colonna UserProfile nella tabella UserLog
+User Story 17559: [ASL-TO CTT] Firma remota: Mappare in nhibernate la colonna UserProfile nell'entità UserLog
+User Story 17560: [ASL-TO CTT] Firma remota: Mappare in entity framework la colonna UserProfile nell'entità UserLog
+User Story 17561: [ASL-TO CTT] Firma remota: Creare i modelli per la memorizzazione dei parametri nel profilo utente
+User Story 17566: [ASL-TO CTT] Firma remota : Adeguare pagina SingleSign.aspx (automatica e non) in firma singola DocSuite
+User Story 17569: [ASL-TO CTT] Firma remota : Aggancio parametri default del profilo utente per la firma singola DocSuite
+User Story 17570: [ASL-TO CTT] Firma remota : Adeguare pagina MultiSign.aspx (automatica e non) per la firma multipla di collaborazione
+User Story 17571: [ASL-TO CTT] Firma remota : Aggancio parametri default del profilo utente per la firma multipla di collaborazione
+User Story 17572: [ASL-TO CTT] Firma remota: Aggiungere la pagina di profilo utente UserProfile.aspx
+User Story 17587: [ENEA] Archivi : Aggiunta tag "LinkButtonEnabled" nel complextype UnitaDocumentariaSpecifica
+User Story 17588: [ENEA] Archivi : Gestione opzione nell'UDS Designer "Collegamento"
+User Story 17589: [ENEA] Archivi : Introdurre il pulsante "Collegamento" nella pagina UDSView.aspx
+User Story 17590: [ENEA] Archivi : Creare pagina UDSLink.apx per la gestione della ricerca di "Collegamento" tra archivi
+User Story 17591: [ENEA] Archivi : Implementazione azione "Collegamento" tra archivi
+User Story 17592: [ENEA] Archivi : Agganciare nel sommario lo usercontrol uscDocumentUnitReferences.uscx
+User Story 17593: [ENEA CTT] Archivi: Effettuando il back del browser riportare i precedenti criteri di ricerca
+User Story 17594: [CTT] Fascicoli: Inserimento multiplo di inserti di fascicoli
+User Story 17602: [ENEA] Designer Archivi : Permettere sempre modalità scelta singola/multipla per i campi LookupField e EnumField 
+User Story 17603: [ENEA] Designer Archivi : Per il campo EnumField e StatusField permettere la modifica dei valori esistenti
+User Story 17604: [ENEA] Designer Archivi : Per il campo EnumField e StatusField permettere la cancellazione dei valori
+User Story 17607: [ENEA] Designer Archivi : Chiedere la creazione di versione nuova durante la pubblicazione di archivio (versione >1)
+User Story 17608: [ENEA] Listeners : Gestione in fase di aggiornamento UDS del parametro RequiredRevisionUDSRepository
+User Story 17611: [CTT] Fascicoli: Creare pulsante "Carica da ZIP"in gestione inserti
+User Story 17612: [CTT] Fascicoli: Creare nuova pagina UserControl\CommonUploadZIPMiscellanea.aspx per la gestione del caricamento da file ZIP
+User Story 17613: [AUSL RE] Collegamenti generici: Creare US uscDocumentUnitReferences.uscx
+User Story 17614: [AUSL RE] uscDocumentUnitReferences.uscx: Sviluppare logica di caricamento DocumentUnit di tipo Archivio
+User Story 17648: [ENAV] Ottimizzazione fase di conservazione documenti
+User Story 17656: [AUSL-RE] DocSuite : Modificare l'avvio del workflow in docsuite in modo tale si possa effettuare l'avvio a più utenti diversi
+User Story 17658: [AUSL-RE] MyDocSuite : Aggiunta pulsante "Condividi" per sommario di Attività
+User Story 17659: [AUSL-RE] MyDocSuite : Aggiunta pulsante "Condividi" per sommario di Protocollo
+User Story 17661: [AUSL-RE] MyDocSuite : Aggiungere nel config l'URL delle PrivateWebAPI.
+User Story 17662: [AUSL-RE] MyDocSuite : Modificare il base.service.ts e composeODataWebAPIUrl.ts per gestione con private o public API
+User Story 17663: [AUSL-RE] MyDocSuite : Sviluppo componente "Condividi"
+User Story 17664: [AUSL-RE] MyDocSuite : Sviluppo service di comuncazione col controller odata DomainUsers (private API)
+User Story 17835: [AUSL-RE] MyDocSuite : Mettere un bordino nella windows
+User Story 17836: [AUSL-RE] MyDocSuite : Mettere il filtro "Autorizzato da" al posto dell’attuale filtro "Settore"
+User Story 17837: [AUSL-RE] MyDocSuite : Migliorare allineamento in ricerca (griglia) di oggetto e data (non sono allineate)
+User Story 17838: [AUSL-RE] MyDocSuite : Rimuovere header
+User Story 17839: [AUSL-RE] MyDocSuite :Rimuovere landing page della rotta base
+User Story 17840: [AUSL-RE] MyDocSuite :Impostare la rotta di default "mie attivita”
+User Story 17841: [AUSL-RE] MyDocSuite : Impostare il menu responsivo e nuovo stile di default
+User Story 17842: [AUSL-RE] MyDocSuite : Menu sempre visibile
+User Story 17844: [AUSL-RE] Workflow: In sommario di attività creare il pulsante "Gestisci" 
+User Story 17849: [AUSL-RE] Workflow: Creare pagina di gestione "WorkflowActivityManage.aspx"
+User Story 17853: [AUSL-RE] Workflow: Implemenare "Gestisci -> Protocollo" 
+User Story 17854: [AUSL-RE] Workflow: Implemenare "Gestisci -> Archivio" 
+User Story 17855: [AUSL-RE] Workflow: Implemenare "Gestisci -> Collaborazione" 
+User Story 17856: [AUSL-RE] Workflow: Implemenare "Gestisci -> Fascicoli" 
+User Story 17862: [DSW] CustomValidation : Creare CustomValidation CanFascicleFolderDeletable 
+User Story 17863: [DSW] CustomValidation : Creare CustomValidation CanFascicleFolderMovable
+User Story 17864: [DSW] CustomValidation : Aggiornare il file EnterpriseLibrary.Validation.config
+User Story 17866: [AUSL-RE] PEC: Aggiungere terza opzione "Fascicoli"  per la gestione delle PEC
+User Story 17867: [AUSL-RE] PEC: BusinessLogic per gestione dei documenti come inserti di fascicolo
+User Story 17884: [AUSL-RE] DocSuite : Aggiornare la gestione Tabelle -> Attività 
+User Story 17885: [AUSL-RE] Fascicoli : Modifica pagina FascVisualizza per adattamento avvio workflow dal fascicolo con i riferimento degli inserti selezionati
+User Story 17886: [AUSL-RE] Fascicoli : Adeguamento avvio del workflow dal fascicolo per i riferimenti al DocumentsReferenceModel
+User Story 17887: [AUSL-RE] Fascicoli : Adeguamento uscStrtWorkflow per aggancio logica DSW_PROPERTY_WORKFLOW_RECIPIENT_MULTIPLE
+User Story 17888: [AUSL-RE] Fascicoli : Adeguamento uscStrtWorkflow aggancio sessiostorage dei contatti selezionati
+User Story 17889: [AUSL-RE] Fascicoli : Modifiche grafiche minori uscStartWorkflow
+
+
+Bug 15164: [AUSL-PC]Scrivania di Workflow: Le attività in corso/da completare non si vedono ai settori autorizzati
+Bug 16352: [ASL-TO] Ripristino della funzionalità di annullamento di un atto 
+Bug 17011: [DSW]Errore nella visualizzazione dei documenti dall'elenco PEC in caso di documenti rimossi
+Bug 17055: [CTT]Impossibilità di a aprire allegato .zip in archivio fatture
+Bug 17062: [AUSL-PC]Nuovo anno serie documentale errato
+Bug 17803: [ENEA] Gestione errore in fase di inserimento archivi trattamenti
+
+
+Issue 12975: [DSW] Togliere utilizzo metodo GetContainersCount a favore di un metodo nella CommonShared che carichi una sola volta i contenitori
+Issue 16492: [LI-NEA] Fascicoli: Implementare la gestione persistita in DocSuite del numero di inserti presenti in una catena associata alla cartella di fascicolo.
+Issue 17329: [ENPACL]FastProtocolSender : Poste Web -> Posta Inviata abilitare visualizzazione posta prioritaria

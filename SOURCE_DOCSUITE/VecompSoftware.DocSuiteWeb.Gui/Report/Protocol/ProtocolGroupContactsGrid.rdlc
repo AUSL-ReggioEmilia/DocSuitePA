@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Body>
+    <ReportItems>
+      <Subreport Name="Destinatari">
+        <ReportName>ProtocolContactsReportGrid</ReportName>
+        <Parameters>
+          <Parameter Name="Protocol_ID">
+            <Value>=Parameters!Protocol_ID.Value</Value>
+          </Parameter>
+          <Parameter Name="IsSender">
+            <Value>=False</Value>
+          </Parameter>
+          <Parameter Name="DocumentProtocol">
+            <Value>=String.Empty</Value>
+          </Parameter>
+        </Parameters>
+        <KeepTogether>true</KeepTogether>
+        <Top>0.6cm</Top>
+        <Height>0.6cm</Height>
+        <Width>9cm</Width>
+        <Style>
+          <Border>
+            <Color>LightGrey</Color>
+            <Style>None</Style>
+          </Border>
+          <BottomBorder>
+            <Style>Solid</Style>
+          </BottomBorder>
+        </Style>
+      </Subreport>
+      <Subreport Name="Mittenti">
+        <ReportName>ProtocolContactsReportGrid</ReportName>
+        <Parameters>
+          <Parameter Name="Protocol_ID">
+            <Value>=Parameters!Protocol_ID.Value</Value>
+          </Parameter>
+          <Parameter Name="IsSender">
+            <Value>=True</Value>
+          </Parameter>
+          <Parameter Name="DocumentProtocol">
+            <Value>=Parameters!DocumentProtocol.Value</Value>
+          </Parameter>
+        </Parameters>
+        <KeepTogether>true</KeepTogether>
+        <Height>0.6cm</Height>
+        <Width>9cm</Width>
+        <ZIndex>1</ZIndex>
+        <Style>
+          <Border>
+            <Color>LightGrey</Color>
+            <Style>None</Style>
+          </Border>
+          <BottomBorder>
+            <Style>Solid</Style>
+          </BottomBorder>
+        </Style>
+      </Subreport>
+    </ReportItems>
+    <Height>0.48161in</Height>
+    <Style />
+  </Body>
+  <Width>3.54331in</Width>
+  <Page>
+    <PageHeight>29.7cm</PageHeight>
+    <PageWidth>21cm</PageWidth>
+    <LeftMargin>2cm</LeftMargin>
+    <RightMargin>2cm</RightMargin>
+    <TopMargin>2cm</TopMargin>
+    <BottomMargin>2cm</BottomMargin>
+    <ColumnSpacing>0.13cm</ColumnSpacing>
+    <Style />
+  </Page>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="ProtocolDataSet">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>f5e6127b-938c-4f7f-a685-8838b6b42eea</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="ProtocolDataSet_ProtocolDataTable">
+      <Query>
+        <DataSourceName>ProtocolDataSet</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Protocol_ID">
+          <DataField>Protocol_ID</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_Object">
+          <DataField>Protocol_Object</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Category_ID">
+          <DataField>Category_ID</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Category_Code">
+          <DataField>Category_Code</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Category_FullCode">
+          <DataField>Category_FullCode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Category_Description">
+          <DataField>Category_Description</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_RegistrationDate">
+          <DataField>Protocol_RegistrationDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_RegistrationUser">
+          <DataField>Protocol_RegistrationUser</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Container_ID">
+          <DataField>Container_ID</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Container_Description">
+          <DataField>Container_Description</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_DocumentDate">
+          <DataField>Protocol_DocumentDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_DocumentCode">
+          <DataField>Protocol_DocumentCode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="DocumentType_ID">
+          <DataField>DocumentType_ID</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="DocumentType_Description">
+          <DataField>DocumentType_Description</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_Advanced_Status">
+          <DataField>Protocol_Advanced_Status</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_Year">
+          <DataField>Protocol_Year</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_Number">
+          <DataField>Protocol_Number</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_ServiceCategory">
+          <DataField>Protocol_ServiceCategory</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_Note">
+          <DataField>Protocol_Note</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_TypeId">
+          <DataField>Protocol_TypeId</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_TypeName">
+          <DataField>Protocol_TypeName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_StatusId">
+          <DataField>Protocol_StatusId</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_StatusDescription">
+          <DataField>Protocol_StatusDescription</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_StatusCode">
+          <DataField>Protocol_StatusCode</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Protocol_DocumentProtocol">
+          <DataField>Protocol_DocumentProtocol</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>ProtocolDataSet</rd:DataSetName>
+        <rd:SchemaPath>C:\Users\fabbri.VECOMPSOFTWARE\Documents\Visual Studio 2012\Projects\dsw8\DocSuiteWeb\VecompSoftware.DocSuiteWeb.Report\ProtocolDataSet.xsd</rd:SchemaPath>
+        <rd:TableName>ProtocolDataTable</rd:TableName>
+        <rd:TableAdapterFillMethod />
+        <rd:TableAdapterGetDataMethod />
+        <rd:TableAdapterName />
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="Protocol_ID">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="DocumentProtocol">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>576ba250-2547-4149-a9f1-96fa22f5241c</rd:ReportID>
+</Report>

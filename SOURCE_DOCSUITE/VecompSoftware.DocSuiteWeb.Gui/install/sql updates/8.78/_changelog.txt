@@ -1,0 +1,138 @@
+Epic 13525: [AUSL-PC AUSL-RE] Integrazione Avelco-SIST
+Epic 15104: [DSW] nuovo motore di gestione stampe / report PDF in DocSuite (vedi ASL TO)
+Epic 15219: [CTT] Gestione multiazienda
+
+Feature 13529: [AUSL-PC AUSL-RE] Workflow Avelco: Implementare flussi del fascicolo
+Feature 15220: [CTT] Tabelle: Creazione delle tabelle dell'oggetto di dominio Tenant (Azienda)
+Feature 15221: [CTT] Amministrazione: Gestione amministrativa del Tenant (Azienda)
+Feature 15222: [CTT] Utente: Gestione utente del Tenant (Azienda) di lavoro
+Feature 15595: [DSW]Private WebAPI: Integrare le API rest del motore di reporting di Telerik
+Feature 15621: [CTT] Tenant: Rendere compatibili i workflow per la gestione multitenant
+Feature 16183: [ENAV AUSL-RE DSW] Archivi : Introduzione gestione visualizzazione a colonne (max3)
+Feature 16333: [ENAV] Archivi: Introdurre i range di ricerca per tutti i campi dinamici DateField in ricerca di archivi
+
+
+User Story 15223: [CTT] Tenant: Creare tabella Tenants
+User Story 15224: [CTT] Tenant: Creare tabella TenantConfigurations
+User Story 15225: [CTT] Archivi Private WebAPI: Creare Mapping Layer dell'entità TenantConfiguration
+User Story 15226: [CTT] Tenant Private WebAPI: Creare Mapping Layer dell'entità Tenant
+User Story 15227: [CTT] Tenant Private WebAPI: Creare controller ODATA 'Tenants' dell'entità 'Tenant'
+User Story 15228: [CTT] Tenant Private WebAPI: Creare controller ODATA 'TenantConfigurations' dell'entità 'TenantConfiguration'
+User Story 15229: [CTT] Tenant Private WebAPI: Creare controller REST 'Tenant' dell'entità Tenant
+User Story 15230: [CTT] Tenant Private WebAPI: Creare controller REST 'TenantConfiguration' dell'entità TenantConfiguration
+User Story 15231: [CTT] Archivi Private WebAPI: Creare layer Service dell'entità Tenant
+User Story 15232: [CTT] Tenant Private WebAPI: Creare layer Service dell'entità TenantConfiguration
+User Story 15233: [CTT] Tenant Private WebAPI: Mappare tabella dbo.Tenants nella classe Tenant
+User Story 15234: [CTT] Tenant Private WebAPI: Mappare tabella dbo.TenantConfigurations nella classe TenantConfiguration
+User Story 15235: [CTT] Tenant Private WebAPI: Creare enum TenantConfigurationType nel layer Entity delle Tenants
+User Story 15236: [CTT] Archivi Private WebAPI: Creare il Validation Layer dell'entità Tenant
+User Story 15237: [CTT] Tenant Private WebAPI: Creare il Validation Layer dell'entità TenantConfiguration
+User Story 15238: [CTT] Tenant: Creare pagina di gestione amministrativa del Tenant (Azienda) 'TbltTenant.aspx'
+User Story 15239: [CTT] Tenant: Creare Service Typescript per la comunicazione delle WebAPI dell'entità Tenant
+User Story 15240: [CTT] Tenant: Creare Service Typescript per la comunicazione delle WebAPI dell'entità TenantConfiguration
+User Story 15241: [CTT] Tenant: Creare Mapper Typescript per mappature entità modello delle WebAPI Tenant
+User Story 15242: [CTT] Tenant: Creare Mapper Typescript per mappature entità modello delle WebAPI TenantConfiguration
+User Story 15243: [CTT] Tenant: Creare Model Typescript TenantConfigurationModel
+User Story 15244: [CTT] Tenant: Creare Model Typescript TenantModel
+User Story 15245: [CTT] Tenant: Se necessario creare ViewModels Typescript per la gestione delle viste della pagina tbltTenant.aspx
+User Story 15246: [CTT] Tenant Private WebAPI: Settare Inversion of Controller dei layers di Tenant
+User Story 15247: [CTT] Tenant Private WebAPI: Settare Inversion of Controller dei layers di TenantConfiguration
+User Story 15248: [CTT] Tenant Private WebAPI: Custom validation Tenant: Inserimento se e solo tenant name non esiste già
+User Story 15249: [CTT] Tenant Private WebAPI: Custom validation Tenant: Inserimento se e solo non esiste già un tenant attivo
+User Story 15407: [CTT] Tenant Utente: Modifica pagina di profilo utente
+User Story 15408: [CTT] Tenant Utente: Creare funzione odata GetUserTenants nel controller odata Tenants.
+User Story 15409: [CTT] Tenant Utente: Salvare in sessione asp.net e UserLog il tenantid (codice azienda) selezionato dall'utente corrente
+User Story 15410: [CTT] Tenant Utente: Aggiungere colonna CurrentTenantId nella tabella UserLog
+User Story 15411: [CTT] Tenant Utente: Mappare in nhibernate la colonna CurrentTenantId nell'entità UserLog
+User Story 15412: [CTT] Tenant Utente: Modificare mapping Protocol_UserLog.hbm.xml con la colonna CurrentTenantId
+User Story 15413: [CTT] Tenant Utente: Aggiungere metodo GetUserTenants nel TenantFinder.cs
+User Story 15414: [CTT] Tenant Utente: Aggiungere region Tenant nella CommonDefinition.cs
+User Story 15415: [CTT] Tenant Utente: Aggiungere modello TenantTableValuedModel
+User Story 15416: [CTT] Tenant Utente: Creare il mapper TenantTableValuedModelMapper
+User Story 15417: [CTT] Tenant Utente: Creare la SQL Function [Tenants_FX_UserTenants] nello schema sql [webapiprivate].
+User Story 15418: [CTT] Tenant Utente: Modifica Header della DocSuite con nome Azienda di lavoro
+User Story 15594: [ENAV] PEC Viste di monitoraggio : Avvio manuale Workflow dalle viste "PEC Scartate dal Workflow" in PECInvoice.aspx
+User Story 15596: [DSW] Private WebAPI : Creare VecompSoftware.DocSuite.Document.TelerikReport Layer
+User Story 15597: [DSW] Private WebAPI : Creare i modelli di interfacciamento al TelerikReport
+User Story 15598: [DSW] Private WebAPI : Creare controller odata ReportServices
+User Story 15599: [DSW] Private WebAPI : Creare controller REST ReportService
+User Story 15600: [DSW] Private WebAPI : Isolare mediante IOC il Layer VecompSoftware.DocSuite.Document.TelerikReport
+User Story 15620: [ENAV] Workflow Integration : Modifiche modulo 'VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoiceWorkflow'
+User Story 15624: [CTT] Tenant Private WebAPI: Creare Mapping Layer dell'entità TenantWorkflowRepository
+User Story 15625: [CTT] Tenant Private WebAPI: Creare controller ODATA 'TenantWorkflowRepositories' dell'entità 'TenantWorkflowRepository'
+User Story 15626: [CTT] Tenant Private WebAPI: Mappare tabella dbo.TenantWorkflowRepositories nella classe TenantWorkflowRepository
+User Story 15627: [CTT] Archivi Private WebAPI: Creare il Validation Layer dell'entità TenantWorkflowRepository
+User Story 15628: [CTT] Tenant: Modificare tabella TenantWorkflowRepositories
+User Story 15629: [CTT] Archivi Private WebAPI: Creare layer Service dell'entità TenantWorkflowRepository
+User Story 15630: [CTT] Tenant Private WebAPI: Creare controller REST 'TenantWorkflowRepository' dell'entità 'TenantWorkflowRepository'
+User Story 15654: [CTT] Tenant: Adeguare pagina 'TbltTenant.aspx' per nuova gestione tabella TenantWorkflowRepositories
+User Story 15713: [ENAV] Private WebAPI "PEC Scartate dal Workflow" : Aggiungere UpdateActionType PECMailInvoiceTenantCorrection
+User Story 15714: [ENAV] Private WebAPI "PEC Scartate dal Workflow" : Modifiare il metodo ExecuteMappingBeforeUpdate del service PECMailService
+User Story 15715: [ENAV] Private WebAPI "PEC Scartate dal Workflow" : Modifiare il controller REST PECMailController
+User Story 15766: [DSW] Private WebAPI : Creare VecompSoftware.DocSuite.Document.TelerikReport Layer
+User Story 15807: [AUSL-PC AUSL-RE] Workflow Avelco: Creare modello FascicleBuildModel
+User Story 15808: [AUSL-PC AUSL-RE] Workflow Avelco: Creare modello CollaborationBuildModel
+User Story 15809: [AUSL-PC AUSL-RE] Workflow Avelco: Creare modello MessageBuildModel
+User Story 15810: [AUSL-PC AUSL-RE] Workflow Avelco: Creare comando CommandBuildFascicle e interfaccia ICommandBuildFascicle
+User Story 15811: [AUSL-PC AUSL-RE] Workflow Avelco: Creare comando CommandBuildMessage e interfaccia ICommandBuildMessage
+User Story 15812: [AUSL-PC AUSL-RE] Workflow Avelco ServiceBus: Creare il modulo 'VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle'
+User Story 15813: [AUSL-PC AUSL-RE] Workflow Avelco ServiceBus: Creare il modulo 'VecompSoftware.ServiceBus.Module.Entities.Listener.InsertCollaboration'
+User Story 15814: [AUSL-PC AUSL-RE] Workflow Avelco ServiceBus: Creare il modulo 'VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage'
+User Story 15815: [AUSL-PC AUSL-RE] Workflow Avelco ServiceBus: Business Logic il modulo 'VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage'
+User Story 15816: [AUSL-PC AUSL-RE] Workflow Avelco Private WebAPI: Adeguare modello MessageAttachmentModel
+User Story 15817: [AUSL-PC AUSL-RE] Workflow Avelco Private WebAPI: Adeguare entità Message
+User Story 15818: [AUSL-PC AUSL-RE] Workflow Avelco: Creare comando CommandCreateMessage e interfaccia ICommandCreateMessage
+User Story 15819: [AUSL-PC AUSL-RE] Workflow Avelco: Creare Evento EventCompleteMessageBuild e interfaccia IEventCompleteMessageBuild
+User Story 15820: [AUSL-PC AUSL-RE] Workflow Avelco: Creare Evento EventCreateMessage e interfaccia IEventCreateMessage
+User Story 15821: [AUSL-PC AUSL-RE] Workflow Avelco: Creare Evento EventCompleteFascicleBuild e interfaccia IEventCompleteFascicleBuild
+User Story 15822: [AUSL-PC AUSL-RE] Workflow Avelco: Creare Evento EventCreateFascicle e interfaccia IEventCreateFascicle
+User Story 15823: [AUSL-PC AUSL-RE] Workflow Avelco: Creare Evento EventCreateCollaboration e interfaccia IEventCreateCollaboration
+User Story 15824: [AUSL-PC AUSL-RE] Workflow Avelco: Creare comando CommandCreateCollaboration e interfaccia ICommandCreateCollaboration
+User Story 15825: [AUSL-PC AUSL-RE] Workflow Avelco Private WebAPI: Adeguare entità Collaboration
+User Story 15826: [AUSL-PC AUSL-RE] Workflow Avelco Private WebAPI: Adeguare modello CollaborationVersioningModel
+User Story 15829: [AUSL-PC AUSL-RE] Workflow Avelco Private WebAPI: Adeguare controller REST MessageController
+User Story 15830: [AUSL-PC AUSL-RE] Workflow Avelco Private WebAPI: Adeguare controller REST CollaborationController
+User Story 15831: [AUSL-PC AUSL-RE] Workflow Avelco Private WebAPI: Adeguare entità Fascicle
+User Story 15834: [AUSL-PC AUSL-RE] Workflow Avelco Private WebAPI: Adeguare modelli FascicleDocumentModel, FascicleModel, DocumentUnitModel
+User Story 15835: [AUSL-PC AUSL-RE] Workflow Avelco Private WebAPI: Adeguare controller REST FascicleController
+User Story 15836: [AUSL-PC AUSL-RE] Workflow Avelco ServiceBus: Adeguare logica VecompSoftware.ServiceBus.Module.CQRS.Executors per l'evento ICommandCreateMessage
+User Story 15837: [AUSL-PC AUSL-RE] Workflow Avelco ServiceBus: Adeguare logica VecompSoftware.ServiceBus.Module.CQRS.Executors per l'evento ICommandCreateCollaboration
+User Story 15838: [AUSL-PC AUSL-RE] Workflow Avelco ServiceBus: Adeguare logica VecompSoftware.ServiceBus.Module.CQRS.Executors per l'evento ICommandCreateFascicle
+User Story 15839: [AUSL-PC AUSL-RE] Workflow Avelco: Creare comando CommandCreateFascicle e interfaccia ICommandCreateFascicle
+User Story 15840: [AUSL-PC AUSL-RE] Workflow Avelco: Creare comando CommandUpdateFascicle e interfaccia ICommandUpdateFascicle
+User Story 15841: [AUSL-PC AUSL-RE] Workflow Avelco: Creare Evento EventUpdateFascicle e interfaccia IEventUpdateFascicle
+User Story 15967: [CTT] TbltTenant: Mostare in ordine alfabetico i nomi delle aziende
+User Story 15968: [CTT] TbltTenant: Icone con sfondo trasparente
+User Story 15992: [CTT] Tenant Utente: Aggiornamento "Nome Azienda" dalla pagina di profilo utente
+User Story 15993: [CTT] Tenant: Miglioramenti finestre nella pagina 'TbltTenant.aspx'
+User Story 16005: [AUSL-PC AUSL-RE] Workflow Avelco ServiceBus: Business Logic il modulo 'VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle'
+User Story 16006: [AUSL-PC AUSL-RE] Workflow Avelco ServiceBus: Business Logic il modulo 'VecompSoftware.ServiceBus.Module.Entities.Listener.CollaborationFascicle'
+User Story 16018: [AUSL-PC AUSL-RE] Workflow Avelco: Creare modello FascicleRoleModel
+User Story 16122: [CTT] Fatturazione Elettronica multitenant
+User Story 16185: [ENAV AUSL-RE DSW] Archivi : Introduzione nel Designer degli archivi la gestione a colonne
+User Story 16186: [ENAV AUSL-RE DSW] Archivi : Gestione layout durante l'inserimento di archivio
+User Story 16187: [ENAV AUSL-RE DSW] Archivi : Gestione layout durante la visualizzazione di sommario di archivio
+User Story 16307: [ASL-TO]Modifica condizioni di visualizzazione in External Viewer
+User Story 16311: [ENPACL]Rimuovere parametro CQRSEnabled
+User Story 16314: [ASL-TO]Aggiungere log di modifica Data pubblicazione della serie documentale
+User Story 16334: [ENAV] Archivi: Introdurre i range di ricerca per tutti i campi dinamici DateField in ricerca di archivi
+User Story 16335: [ENAV] Archivi: Adeguare la sintassi della creazione della stringa ODATA per ii range di ricerca per tutti i campi dinamici DateField
+
+
+Bug 13802: [AUSL-RE]Errore invio email dal workflow delle webapi se il settore ha più indirizi email
+Bug 15681: [AFOLMB]Quando si autorizza un settore come responsabile di procedimento di un fascicolo si può autorizzare lo stesso anche tra le autorizzazioni.Questo non deve essere possibile.
+Bug 16119: [AFOLMB] Conversione in Copia conforme degli eml
+Bug 16146: [AFOLMB] Verificare comportamento metadati in fascioli
+Bug 16178: [AUSL-PC] In archivi il download dei documenti genera uno zip vuoto
+Bug 16179: [CTT]Visibilità errata pulsantiera di protocollo annullato
+Bug 16244: [ENEA] Errore di rendering dei risultati di ricerca in archivi quando è visibile un campo "lookup"
+Bug 16306: [ASL-TO]Errore nella visualizzazione delle Pratiche in DSW
+Bug 16310: [AFOL] Problema nell’invio di PEC con un contatto manuale
+Bug 16352: [ASL-TO] Ripristino della funzionalità di annullamento di un atto
+Bug 16353: [ENEA] perdita di dati in fase di modifica di registrazione di un archivio con campi Lookup
+Bug 16367: [CTT]Problema Estrattore Protocolli che hanno Location differenziate per Document e Attachment
+Bug 16404: [AFOL]LOGConservation (Audit) correttiva ai mapping della DocSuite
+Bug 16405: [AFOL]Modifica Tool HashMigrator per bonifica pregresso errato
+Bug 16414: [ENPACL] Collaborazioni: Una collaborazione restituita al proponente deve ripartire dal primo firmatario/visione
+
+Issue 16323: [DSW]Riportare codice estrattore AUSL-RE in ultima versione.

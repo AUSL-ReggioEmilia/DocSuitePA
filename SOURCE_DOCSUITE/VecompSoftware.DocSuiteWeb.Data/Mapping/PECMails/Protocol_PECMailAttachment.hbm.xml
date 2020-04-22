@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+  
+  <class name="PECMailAttachment" table="PECMailAttachment">
+    
+    <id name="Id" column="IDPECMailAttachment">
+      <generator class="identity" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    
+    <property name="AttachmentName" column="AttachmentName" />
+    <property name="IDDocument" column="IDDocument"/>
+    <property name="IsMain" column="IsMain" />
+    <property name="Size" column="Size" />
+    <property name="UniqueId" column="UniqueId" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="RegistrationUser" column="RegistrationUser" />
+
+    <many-to-one class="PECMailAttachment" name="Parent" column="IDParent" lazy="false" />
+    <many-to-one class="PECMail" name="Mail" column="IDPECMail" not-null="true" />
+    
+    <bag name="Children" table="PECMailAttachment" cascade="none" inverse="true">
+      <key column="IDParent" />
+      <one-to-many class="PECMailAttachment"/>
+    </bag>
+
+  </class>
+  
+</hibernate-mapping>

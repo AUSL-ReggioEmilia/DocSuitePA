@@ -1,0 +1,36 @@
+﻿Feature 4440: [ENPACL] Evoluzione PosteWeb
+Feature 7032: [FALCK] Integrazione DocSuite con gestionali esterni
+
+User Story 3508: [AUSL-RE] Import Excel in Serie Documentali : Introdurre funzione “Esporta in Excel”
+User Story 4441: [ENPACL] Gestione Mittente di Default
+User Story 5278: [ENPACL] Rivisitazione del riepilogo "Costi PosteWeb"
+User Story 6437: [ENAV] PEC Conservation (Settare gli attributi richiesti)
+User Story 6873: [AUSLRE][ASMNRE] Aggiungere Anteprima documento nel passaggio da Atto conforme a Adozione
+User Story 6994: [ASL-TO] Creazione pannelli degli oggetti di sicurezza associati al gruppo
+User Story 7033: [FALCK] Integrazione flussi documentali FALCK in Workflow DocSuite
+User Story 7034: [FALCK] Revisione MappingTag
+User Story 7083: [FALCK] ExternalViewer: implementare menu dei documenti di un fascicolo
+User Story 7084: [FALCK] ExternalViewer: implementare sommario del fascicolo
+User Story 7086: [FALCK] ExternalViewer: nelle WebAPI pubbliche creare modelli e controller per i Fascicoli
+User Story 7102: [AUSL-RE]Introdurre delibera al controllo regionale nell'esecutivià
+User Story 7109: [AUSL-RE]Rendere la pubblicazione compatibile col nuovo AlboOnline
+User Story 7118: [FALCK] Modifica modello di ritorno Approva Collaborazione
+User Story 7119: [FALCK] Creare activity di invio mail
+User Story 7149: [FALCK]Creare/mappare entità WorkflowInstanceLogs
+User Story 7167: [FALCK] ExternalViewer: nelle WebAPI pubbliche creare odata function che ritorna le UD presenti nel fascicolo
+User Story 7172: [FALCK]Creare tabella WorkflowInstanceRoles
+User Story 7193: [AUSL-RE] Allega PEC ad Archivio
+User Story 7209: [Falck]Creazione nuovo modulo viste scrivania per visualizzazione delle WorkflowInstances basato su comunicazione con WebAPI
+User Story 7232: [ENAV] ExternalViewer: implementare autenticazione OAuth
+
+Bug 6516: [ASL-TO] In Fascicoli non si riescono a visualizzare i documenti cliccando "Visualizza documenti"
+Bug 6779: [AUSL-RE] Problema nella vista degli allegati della PEC in presenza di molti documenti
+Bug 6822: [AUSL-RE] Utilizzando risoluzione 1024x768 l'ordine dei pulsanti viene sfasato
+Bug 6835: [AUSL-RE] Errore in lettura file Excel in import contatti Rubrica
+Bug 7066: [AUSL-RE] UDS: non è possibile archiviare senza inserire diritti a livello di contenitore Protocollo
+
+
+Issue 4536: [AUSL-RE] Interfaccia Security User - Info Gruppi - Entità DSW
+Issue 6885: [AUSL-RE] Se si inserisce un contatto di tipo persona la colonna Description della tabella Contact risulta vuota
+Issue 7194: [ASL-TO] Disabilitare selezione data di pubblicazione in ricerca flusso
+Issue 7213: [DSW] Nella pagina dei Gruppi uniformare lo stile della treeview degli utenti ai contenitori, classificatori e settori

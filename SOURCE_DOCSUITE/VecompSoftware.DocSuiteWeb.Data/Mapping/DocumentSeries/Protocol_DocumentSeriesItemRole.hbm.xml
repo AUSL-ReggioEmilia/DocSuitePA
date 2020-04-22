@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="DocumentSeriesItemRole" table="DocumentSeriesItemRole">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <property name="LinkType" column="LinkType" />
+    
+    <property name="UniqueIdDocumentSeriesItem">
+      <column name="UniqueIdDocumentSeriesItem" not-null="true"/>
+    </property>
+    
+    <many-to-one class="DocumentSeriesItem" name="Item" column="IdDocumentSeriesItem" cascade="none" />
+    <many-to-one class="Role" name="Role" column="IdRole" cascade="none" />
+
+  </class>
+  
+</hibernate-mapping>

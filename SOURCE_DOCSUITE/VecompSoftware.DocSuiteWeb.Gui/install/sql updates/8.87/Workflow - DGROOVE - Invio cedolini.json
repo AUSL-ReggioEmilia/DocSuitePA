@@ -1,0 +1,87 @@
+{
+  "0": {
+    "Position": 0,
+    "Name": "Mail di autorizzazione cedolino",
+    "AuthorizationType": 1,
+    "ActivityOperation": {
+      "Action": 0,
+      "Area": 8
+    },
+    "ActivityType": 0,
+    "InputArguments": [
+      {
+        "Name": "_dsw_p_Accounts",
+        "PropertyType": 1,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_ReferenceModel",
+        "PropertyType": 1,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": [],
+    "EvaluationArguments": [
+      {
+        "Name": "_dsw_p_EmailEvaluationRecipient",
+        "PropertyType": 1,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": "_dsw_p_Accounts"
+      },
+      {
+        "Name": "_dsw_e_MessageBody",
+        "PropertyType": 8,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": "<strong>DocSuite - Gestione Documentale</strong><br /> <br />E' stato autorizzato un nuovo cedolino<br /> <br />"
+      },
+      {
+        "Name": "_dsw_e_MessageSubject",
+        "PropertyType": 8,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": "DocSuite - Cedolino"
+      },
+      {
+        "Name": "_dsw_e_MessageLinkType",
+        "PropertyType": 16,
+        "ValueInt": 4,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_MessageLink",
+        "PropertyType": 8,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": "<a href=\"http://localhost/dsw?Tipo=UDS&amp;Azione=Apri&amp;IdUDS={0}&amp;IdUDSRepository={1}\">Visualizza cedolino</a><br />"
+      }
+    ]
+  }
+}

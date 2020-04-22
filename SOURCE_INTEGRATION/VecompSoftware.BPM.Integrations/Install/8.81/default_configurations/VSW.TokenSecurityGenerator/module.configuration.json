@@ -1,0 +1,9 @@
+﻿{
+  "Topic_Token_Event": "security/token_event",
+  "Subscription_ExternalViewerSecurityToken": "ExternalViewerSecurityToken",
+  "MillisecondExpiryToken": "5000",
+  "WorkflowName": "",
+  "AuthenticationId": "C1F7E406-2A44-42B7-9AA1-7B546545BB3C",
+  "TenantName": "AUSL-RE",
+  "TenantId": "1F761813-6086-44F1-A507-99954EA64343"
+}

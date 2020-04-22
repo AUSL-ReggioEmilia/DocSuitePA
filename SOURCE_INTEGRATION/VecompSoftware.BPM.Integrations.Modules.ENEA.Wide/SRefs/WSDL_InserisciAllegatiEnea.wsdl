@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://Wide/WebService.nsf/InserisciAllegatiService.wsdl"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="InserisciAllegatiService"
+	targetNamespace="http://Wide/WebService.nsf/InserisciAllegatiService.wsdl">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://Wide/WebService.nsf/InserisciAllegatiService.wsdl"
+			xmlns:tns="http://Wide/WebService.nsf/InserisciAllegatiService.wsdl"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+			<xsd:element name="inserisciAllegatiRequest">
+		  <xsd:complexType>
+		 <xsd:sequence>
+                 <xsd:element name="NumeroProtocollo" type="tns:Obbl_Type"/>
+                 <xsd:element name="TipoAllegato" type="tns:TipoAllegato_Type"/>
+                 <xsd:element name="Tipologia" type="tns:Tipologia_Type" maxOccurs="unbounded"/>
+                 <xsd:element name="Titolo" type="tns:Obbl_Type256" maxOccurs="unbounded"/>
+                 <xsd:element name="Descrizione" type="tns:Obbl_Type256" maxOccurs="unbounded"/>	
+                 <xsd:element name="PathFile" type="tns:Obbl_Type256"/>   
+		     <xsd:element name="NomeFile" type="tns:Obbl_Type256" maxOccurs="unbounded"/>  
+ 		     <xsd:element name="utente" type="tns:Obbl_Type"/>
+		</xsd:sequence>		
+	</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="inserisciAllegatiResponse">
+	<xsd:complexType>
+	    <xsd:sequence>
+		     <xsd:element name="esito" type="tns:Esito_Type"/>		     
+		     <xsd:element name="DescrizioneErrore" minOccurs="0" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	</xsd:element>
+<xsd:simpleType name="TipoAllegato_Type">
+<xsd:restriction base="xsd:string">
+	  <xsd:enumeration value="P"/>
+	  <xsd:enumeration value="R"/>	  
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="Tipologia_Type">
+<xsd:restriction base="xsd:string">
+	  <xsd:enumeration value="O"/>
+	  <xsd:enumeration value="A"/>	  
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="Obbl_Type256">
+	     <xsd:restriction base="xsd:string">
+	        <xsd:minLength value="1"/>
+                        <xsd:maxLength value="256"/>
+	     </xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="Stringa_Type">
+                  <xsd:restriction base="xsd:string">
+	  <xsd:minLength value="0"/>
+                  <xsd:maxLength value="256"/>
+	  </xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="Obbl_Type">
+       <xsd:restriction base="xsd:string">
+	  <xsd:minLength value="1"/>
+	  </xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="Esito_Type">
+<xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="0"/>
+	  <xsd:enumeration value="1"/>
+ </xsd:restriction>
+</xsd:simpleType>
+</xsd:schema>
+</wsdl:types>
+	<wsdl:message name="inserisciAllegatiRequest">
+	     <wsdl:part name="inserisciAllegatiRequest" element="tns:inserisciAllegatiRequest"/>
+	</wsdl:message>
+	<wsdl:message name="inserisciAllegatiResponse">
+	    <wsdl:part name="inserisciAllegatiResponse" element="tns:inserisciAllegatiResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="InserisciAllegatiServicePortType">
+		<wsdl:operation name="InserimentoAllegati">
+			<wsdl:input message="tns:inserisciAllegatiRequest"/>
+			<wsdl:output message="tns:inserisciAllegatiResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="InserisciAllegatiServiceBinding" type="tns:InserisciAllegatiServicePortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="InserimentoAllegati">
+			<soap:operation />
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="InserisciAllegatiService">
+		<wsdl:port name="InserisciAllegatiServicePort" binding="tns:InserisciAllegatiServiceBinding">
+			<soap:address
+				location="http://urano.sede.enea.it/Wide/WebService.nsf/InserisciAllegatiWebService" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

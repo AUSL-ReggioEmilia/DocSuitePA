@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B311CF16-3A65-44C6-850B-92FCFF26E79F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Finder</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Finder</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Helpers.Workflow, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.8.87.19296.2\lib\net461\VecompSoftware.Helpers.Workflow.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommonDefinition.cs" />
+    <Compile Include="Commons\CategoryFascicleRightFinder.cs" />
+    <Compile Include="Commons\ContactFinder.cs" />
+    <Compile Include="Commons\ContainerFinder.cs" />
+    <Compile Include="Commons\IncrementalFinder.cs" />
+    <Compile Include="Collaborations\CollaborationFinder.cs" />
+    <Compile Include="Commons\CategoryFinder.cs" />
+    <Compile Include="Commons\CategoryFascicleFinder.cs" />
+    <Compile Include="Commons\MetadataRepositoryFinder.cs" />
+    <Compile Include="Commons\ParameterEnvFinder.cs" />
+    <Compile Include="Commons\RoleFinder.cs" />
+    <Compile Include="Commons\RoleGroupFinder.cs" />
+    <Compile Include="Commons\PrivacyLevelFinder.cs" />
+    <Compile Include="Commons\RoleUserFinder.cs" />
+    <Compile Include="Conservations\ConservationFinder.cs" />
+    <Compile Include="DocumentArchives\DocumentSeriesConstraintFinder.cs" />
+    <Compile Include="DocumentArchives\DocumentSeriesFinder.cs" />
+    <Compile Include="DocumentArchives\DocumentSeriesItemFinder.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitRoleFinder.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitChainFinder.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitFinder.cs" />
+    <Compile Include="Dossiers\DossierFinder.cs" />
+    <Compile Include="Dossiers\DossierFolderFinder.cs" />
+    <Compile Include="Dossiers\DossierLogFinder.cs" />
+    <Compile Include="Dossiers\DossierRoleFinder.cs" />
+    <Compile Include="Fascicles\FascicleDocumentFinder.cs" />
+    <Compile Include="Fascicles\FascicleDocumentUnitFinder.cs" />
+    <Compile Include="Fascicles\FascicleLogFinder.cs" />
+    <Compile Include="Fascicles\FascicleFolderFinder.cs" />
+    <Compile Include="Fascicles\FascicleRoleFinder.cs" />
+    <Compile Include="Fascicles\FascicleLinkFinder.cs" />
+    <Compile Include="Fascicles\FascicleFinder.cs" />
+    <Compile Include="JeepServiceHosts\JeepServiceHostFinder.cs" />
+    <Compile Include="MassimariScarto\MassimarioScartoFinder.cs" />
+    <Compile Include="Monitors\TransparentAdministrationMonitorLogFinder.cs" />
+    <Compile Include="Parameters\ParameterFinder.cs" />
+    <Compile Include="PECMails\PECMailBoxConfigurationFinder.cs" />
+    <Compile Include="PECMails\PECMailBoxFinder.cs" />
+    <Compile Include="PECMails\PECMailFinder.cs" />
+    <Compile Include="Processes\ProcessFascicleTemplateFinder.cs" />
+    <Compile Include="Processes\ProcessFinder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocols\ProtocolFinder.cs" />
+    <Compile Include="Protocols\ProtocolContactFinder.cs" />
+    <Compile Include="Protocols\ProtocolRoleFinder.cs" />
+    <Compile Include="Protocols\ProtocolUserFinder.cs" />
+    <Compile Include="Resolutions\ResolutionKindDocumentSeriesFinder.cs" />
+    <Compile Include="Resolutions\ResolutionKindFinder.cs" />
+    <Compile Include="Resolutions\ResolutionRoleFinder.cs" />
+    <Compile Include="Resolutions\FileResolutionFinder.cs" />
+    <Compile Include="Resolutions\ResolutionContactFinder.cs" />
+    <Compile Include="Resolutions\ResolutionFinder.cs" />
+    <Compile Include="Templates\TemplateCollaborationFinder.cs" />
+    <Compile Include="Templates\TemplateCollaborationUserFinder.cs" />
+    <Compile Include="Templates\TemplateDocumentRepositoryFinder.cs" />
+    <Compile Include="Tenants\TenantConfigurationFinder.cs" />
+    <Compile Include="Tenants\TenantContainerFinder.cs" />
+    <Compile Include="Tenants\TenantFinder.cs" />
+    <Compile Include="Tenants\TenantPECMailBoxFinder.cs" />
+    <Compile Include="Tenants\TenantRoleFinder.cs" />
+    <Compile Include="Tenants\TenantWorkflowRepositoryFinder.cs" />
+    <Compile Include="UDS\UDSCollaborationFinder.cs" />
+    <Compile Include="UDS\UDSContactFinder.cs" />
+    <Compile Include="UDS\UDSDocumentUnitFinder.cs" />
+    <Compile Include="UDS\UDSMessageFinder.cs" />
+    <Compile Include="UDS\UDSPECMailFinder.cs" />
+    <Compile Include="UDS\UDSRoleFinder.cs" />
+    <Compile Include="UDS\UDSSchemaRepositoryFinder.cs" />
+    <Compile Include="UDS\UDSTypologyFinder.cs" />
+    <Compile Include="UDS\UDSRepositoryFinder.cs" />
+    <Compile Include="UDS\UDSLogFinder.cs" />
+    <Compile Include="UDS\UDSUserFinder.cs" />
+    <Compile Include="Workflows\WorkflowActivityFinder.cs" />
+    <Compile Include="Workflows\WorkflowInstanceFinder.cs" />
+    <Compile Include="Workflows\WorkflowRepositoryFinder.cs" />
+    <Compile Include="Workflows\WorkflowRoleMappingFinder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="VecompSoftware.DocSuiteWeb.Finder.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Desks\" />
+    <Folder Include="Messages\" />
+    <Folder Include="OCharts\" />
+    <Folder Include="Tasks\" />
+    <Folder Include="Tenders\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
+      <Project>{c6f323c0-c21b-433b-90c8-0b64a42115ab}</Project>
+      <Name>VecompSoftware.Commons.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Common\VecompSoftware.DocSuiteWeb.Common.csproj">
+      <Project>{58938AA6-B3D6-4256-8C5C-4BCAB88517BB}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Entity\VecompSoftware.DocSuiteWeb.Entity.csproj">
+      <Project>{34901fa6-4816-4872-9986-e42b2e866095}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Model\VecompSoftware.DocSuiteWeb.Model.csproj">
+      <Project>{df5935ca-367b-4124-9840-aafd3c419eba}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Repository\VecompSoftware.DocSuiteWeb.Repository.csproj">
+      <Project>{27D8FCBB-8A8E-430B-8747-A5ACE9B4FFCA}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

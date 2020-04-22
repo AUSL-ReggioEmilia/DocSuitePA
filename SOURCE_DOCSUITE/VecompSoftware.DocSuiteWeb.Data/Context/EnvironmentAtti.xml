@@ -1,0 +1,2292 @@
+<?xml version="1.0"?>
+<XmlEnvironment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="www.vecompsoftware.it">
+  <Name>atti</Name>
+  <Parameters>
+    <XmlParameter>
+      <Key>AuthorizInsert</Key>
+      <Value>0</Value>
+      <Group>Autorizzazioni</Group>
+      <Description>Abilita l'autorizzazione a settori in fase di Inserimento Resolution</Description>
+      <Note>0: non attivo, 1: attivo, 2: attivo e obbligatorio</Note>
+      <Signature>ResolutionEnv.AuthorizInsert</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Catalog</Key>
+      <Value>Resolutn</Value>
+      <Group>C</Group>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CategoryRoot</Key>
+      <Value>-32448</Value>
+      <Group>C</Group>
+      <Signature>ResolutionEnv.CategoryRoot</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CategorySelEnabled</Key>
+      <Group>C</Group>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CheckSignEnabled</Key>
+      <Value>1</Value>
+      <Group>C</Group>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CommSearchDefault</Key>
+      <Value>1</Value>
+      <Group>C</Group>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Configuration</Key>
+      <Value />
+      <Group>WorkFlow</Group>
+      <Description>Chiave di volta della TabWorkFlow, solitamente è il codice del cliente, che imposta la sua particolare configurazione.</Description>
+      <Note>ASMN, asl3-to</Note>
+      <Signature>ResolutionEnv.Configuration</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ConfirmSendMailCcn</Key>
+      <Value>{nome}@{Dominio}.it</Value>
+      <Group>Mail</Group>
+      <Note>{nome}@{Dominio}.it</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ConservationExtensions</Key>
+      <Value>.p7m|.m7m</Value>
+      <Group>Estrattore Informatici</Group>
+      <Description>Indica le estensioni dei file valide all'estrazione degli informatici. Le estensioni devono essere comprensive di "." (punto) e separate da "|" (pipe).</Description>
+      <Note>Ritorna un array di stringhe generato dallo split della stringa presente sul database. Qualora mancante considera DocSuiteContext.Current.ProtocolEnv.ConservationExtensions. Qualora anche quest'ultimo mancante, considera ".p7m|.m7m".</Note>
+      <Signature>ResolutionEnv.ConservationExtensions</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ConservationMaxResults</Key>
+      <Value>0</Value>
+      <Group>Estrattore Informatici</Group>
+      <Description>Indica il numero massimo di atti considerati per esecuzione della procedura di estrazione.</Description>
+      <Note>Qualora non valorizzato oppure valorizzato con "0" viene considerato come nessun limite.</Note>
+      <Signature>ResolutionEnv.ConservationMaxResults</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ContactRoot</Key>
+      <Group>C</Group>
+      <Note>0</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CopyProtocolDocumentsEnabled</Key>
+      <Value>0</Value>
+      <Group>Modulo di upload</Group>
+      <Signature>ResolutionEnv.CopyProtocolDocumentsEnabled</Signature>
+      <Version>7.2.8</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CopyReslDocumentsEnabled</Key>
+      <Value>0</Value>
+      <Group>Modulo di upload</Group>
+      <Signature>ResolutionEnv.CopyReslDocumentsEnabled</Signature>
+      <Version>7.2.8</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CorporateAcronym</Key>
+      <Value>AUSLRE</Value>
+      <Group>C</Group>
+      <Note>asl3to</Note>
+      <Signature>ResolutionEnv.CorporateAcronym</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CorporateName</Key>
+      <Value>Arcispedale Santa Maria Nuova</Value>
+      <Group>C</Group>
+      <Note>asl 3 di torino</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CustomWorkflowXml</Key>
+      <Value>&lt;?xml version="1.0"?&gt;&lt;CustomWorkflowXml&gt;&lt;AVVENUTAPUBBLICAZIONE&gt;&lt;![CDATA[ Avvenuta Pubblicazione ]]&gt;&lt;/AVVENUTAPUBBLICAZIONE&gt;&lt;ESECUTIVA&gt;&lt;![CDATA[ Esecutiva ]]&gt;&lt;/ESECUTIVA&gt;&lt;RISPOSTAOC&gt;&lt;![CDATA[ Risposta OC ]]&gt;&lt;/RISPOSTAOC&gt;&lt;SCADENZAOC&gt;&lt;![CDATA[ Scadenza OC ]]&gt;&lt;/SCADENZAOC&gt;&lt;RICEZIONE&gt;&lt;![CDATA[ Ricezione ]]&gt;&lt;/RICEZIONE&gt;&lt;SPEDIZIONE&gt;&lt;![CDATA[ Spedizione ]]&gt;&lt;/SPEDIZIONE&gt;&lt;PUBBLICATA&gt;&lt;![CDATA[ Pubblicata ]]&gt;&lt;/PUBBLICATA&gt;&lt;ADOTTATA&gt;&lt;![CDATA[ Adottata ]]&gt;&lt;/ADOTTATA&gt;&lt;SPEDCS&gt;&lt;![CDATA[ Sped. CS ]]&gt;&lt;/SPEDCS&gt;&lt;PROPOSTA&gt;&lt;![CDATA[ Proposta ]]&gt;&lt;/PROPOSTA&gt;&lt;/CustomWorkflowXml&gt;</Value>
+      <Group>C</Group>
+      <Signature>ResolutionEnv.CustomWorkflowXml</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DefaultAuthorizationRoles</Key>
+      <Group>Diritti</Group>
+      <Note>restituisce una lista se esiste nel database altrimenti una lista vuota</Note>
+      <Signature>ResolutionEnv.DefaultAuthorizationRoles</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DefaultCategory1</Key>
+      <Group>D</Group>
+      <Note>GetDefaultCategory() compone la chiave con ResolutionType. in uso anche con la property ManageDefaultCategory</Note>
+      <Signature>ResolutionEnv.GetDefaultCategory</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DefaultCategory2</Key>
+      <Value>-32704</Value>
+      <Group>D</Group>
+      <Note>GetDefaultCategory() compone la chiave con ResolutionType. In uso anche con la property ManageDefaultCategory</Note>
+      <Signature>ResolutionEnv.GetDefaultCategory</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DefaultContainer1</Key>
+      <Group>D</Group>
+      <Note>in uso anche nella funzione DefaultContainer()</Note>
+      <Signature>ResolutionEnv.ManageDefaultContainer</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DefaultContainer2</Key>
+      <Value>-32766</Value>
+      <Group>D</Group>
+      <Note>in uso anche nella funzione DefaultContainer()</Note>
+      <Signature>ResolutionEnv.ManageDefaultContainer</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DesktopDayDiff</Key>
+      <Value>30</Value>
+      <Group>Scrivania</Group>
+      <Description>Numero di giorni da considerare a partire dall'attuale nelle viste per la scrivania.</Description>
+      <Note>Se 0 o nullo di default è 30 (giorni).</Note>
+      <Signature>ResolutionEnv.DesktopDayDiff</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DesktopMaxRecords</Key>
+      <Value>300</Value>
+      <Group>Scrivania</Group>
+      <Description>Numero massimo di record da ritirare.</Description>
+      <Note>Se 0 o nullo di default è 300 (record).</Note>
+      <Signature>ResolutionEnv.DesktopMaxRecords</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Domain</Key>
+      <Value>&lt;&lt;nome del dominio&gt;&gt;</Value>
+      <Group>D</Group>
+      <Note>vedi domino di Docsuite</Note>
+      <Signature>ResolutionEnv.ResolutionDomain</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DomainBackup</Key>
+      <Value>GIOVE</Value>
+      <Group>D</Group>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>FDQEnabled</Key>
+      <Value>0</Value>
+      <Group>F</Group>
+      <Note>1</Note>
+      <Signature>ResolutionEnv.IsFDQEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>GestioneDigitaleDelibere</Key>
+      <Value>0</Value>
+      <Group>G</Group>
+      <Note>vedi anche funzione GestioneDigitale(ByVal resl As Resolution)</Note>
+      <Signature>ResolutionEnv.GestioneDigitaleDelibere</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>GestioneDigitaleDetermine</Key>
+      <Value>0</Value>
+      <Group>G</Group>
+      <Note>vedi anche funzione GestioneDigitale(ByVal resl As Resolution)</Note>
+      <Signature>ResolutionEnv.GestioneDigitaleDetermine</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>GroupExtraction</Key>
+      <Group>G</Group>
+      <Note>administrators</Note>
+      <Signature>ResolutionEnv.EnvGroupExtraction</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>GroupOmissis</Key>
+      <Value>Ds-omissis-atti</Value>
+      <Group>Diritti</Group>
+      <Note>administrators</Note>
+      <Signature>ResolutionEnv.GroupOmissis</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>GroupProposerFull</Key>
+      <Value>Ds-DD-Completa</Value>
+      <Group>Diritti</Group>
+      <Note>administrators</Note>
+      <Signature>ResolutionEnv.EnvGroupProposerFull</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>GroupPropostaAtto</Key>
+      <Value>Ds-DD-Completa</Value>
+      <Group>Diritti</Group>
+      <Signature>ResolutionEnv.EnvGroupPropostaAtto</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>GroupStatistics</Key>
+      <Value>Ds-estrazione-atti</Value>
+      <Group>G</Group>
+      <Note>administrators</Note>
+      <Signature>ResolutionEnv.EnvGroupStatistics</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>HideAlternativeProposer</Key>
+      <Value>0</Value>
+      <Group>Diritti</Group>
+      <Note>Inibisce la selezione di proponente alternativo in inserimento atti.</Note>
+      <Signature>ResolutionEnv.HideAlternativeProposer</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>InsertAdoption</Key>
+      <Value>0</Value>
+      <Group>I</Group>
+      <Note>se valore 1 ritorna true altrimenti false</Note>
+      <Signature>ResolutionEnv.IsInsertAdoption</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>InsertDisclaimer</Key>
+      <Value>0</Value>
+      <Group>I</Group>
+      <Signature>ResolutionEnv.InsertDisclaimer</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>InsertDuplicate</Key>
+      <Value>0</Value>
+      <Group>I</Group>
+      <Note>chiave già utilizzata in IsInsertDuplicateEnabled()</Note>
+      <Signature>ResolutionEnv.InsertDuplicate</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>InsertPreviewEnabled</Key>
+      <Value>0</Value>
+      <Group>I</Group>
+      <Note>0</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>InsertPreViewEnabled</Key>
+      <Value>0</Value>
+      <Group>I</Group>
+      <Note>metodo molto simile alla chiave InsertPreviewEnabled</Note>
+      <Signature>ResolutionEnv.IsInsertPreViewEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>InteropEnabled</Key>
+      <Value>1</Value>
+      <Group>I</Group>
+      <Note>1</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Location</Key>
+      <Value>9</Value>
+      <Group>L</Group>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>LogEnabled</Key>
+      <Value>0</Value>
+      <Group>L</Group>
+      <Note>abilitzione del log</Note>
+      <Signature>ResolutionEnv.IsLogEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MailSmtpServer </Key>
+      <Value>domino1.nomeserver.it</Value>
+      <Group>Mail</Group>
+      <Description>inserire il nome del server smtp</Description>
+      <Signature>ResolutionEnv.MailSmtpServer</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ManagementMailTo</Key>
+      <Value>{nome}@{Dominio}.it</Value>
+      <Group>Mail</Group>
+      <Description>indirizzo mail del Manager destinatario</Description>
+      <Signature>ResolutionEnv.ManagementMailTo</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ObjectMaxLength</Key>
+      <Value>5</Value>
+      <Group>O</Group>
+      <Note>se valore = 0 o nullo ritorna 511 altrimenti ritorna il valore impostato</Note>
+      <Signature>ResolutionEnv.ObjectMaxLength</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ObjectMinLength</Key>
+      <Value>1</Value>
+      <Group>O</Group>
+      <Note>Se vuoto ritorna 1 vuota oppure il valore. La stessa chiave è utilizzata in metodo ObjectMinLength() As Integer</Note>
+      <Signature>ResolutionEnv.ObjectMinLength</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>OCDetermMailTo</Key>
+      <Group>O</Group>
+      <Description>Indirizzo mail del destinatario</Description>
+      <Signature>ResolutionEnv.OCDetermMailTo</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PostToRemotePublicationTesterUrl</Key>
+      <Value>http://213.254.14.230/asl2tonord/atti/proc_dltest.php</Value>
+      <Group>PostToRemote</Group>
+      <Signature>ResolutionEnv.PostToRemotePublicationTesterUrl</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PostToRemoteDisablePublicationTester</Key>
+      <Value>False</Value>
+      <Group>PostToRemote</Group>
+      <Signature>ResolutionEnv.PostToRemoteDisablePublicationTester</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PostToRemoteUrl</Key>
+      <Value>http://213.254.14.230/asl2tonord/atti/proc20100000_dlasl.php</Value>
+      <Group>PostToRemote</Group>
+      <Signature>ResolutionEnv.PostToRemoteUrl</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ProposerContact</Key>
+      <Value />
+      <Group>P</Group>
+      <Description>Contatto rubrica dal quale far partire le ricerche contatti per proponenti.</Description>
+      <Note></Note>
+      <Signature>ResolutionEnv.ProposerContact</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ProposerMailTo</Key>
+      <Value>{nome}@{Dominio}.it</Value>
+      <Group>P</Group>
+      <Description>indirizzo Mail del proponente</Description>
+      <Signature>ResolutionEnv.ProposerMailTo</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ProtSecurity</Key>
+      <Value>3</Value>
+      <Group>P</Group>
+      <Note>3</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PublicationEnabled</Key>
+      <Value>0</Value>
+      <Group>P</Group>
+      <Note>1</Note>
+      <Signature>ResolutionEnv.IsPublicationEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Recipient</Key>
+      <Value>0</Value>
+      <Group>R</Group>
+      <Note>0</Note>
+      <Signature>ResolutionEnv.EnvRecipient</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Replication</Key>
+      <Value>1</Value>
+      <Group>R</Group>
+      <Note>1</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>RubricaCheckDuplicati</Key>
+      <Value>0</Value>
+      <Group>R</Group>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SearchMaxRecords</Key>
+      <Value>100</Value>
+      <Group>S</Group>
+      <Note>se valore chiave = 0 return 100 altrimenti valore chiave</Note>
+      <Signature>ResolutionEnv.SearchMaxRecords</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Security</Key>
+      <Value>0</Value>
+      <Group>S</Group>
+      <Note>1</Note>
+      <Signature>ResolutionEnv.Security</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SecurityPrint</Key>
+      <Value>true</Value>
+      <Group>S</Group>
+      <Description>Indica se controllare il diritto di adozione sul contenitore in fase di stampa</Description>
+      <Signature>ResolutionEnv.SecurityPrint</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SecurityRoles</Key>
+      <Value>1</Value>
+      <Group>Diritti</Group>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SendMailEnabled</Key>
+      <Value>0</Value>
+      <Group>S</Group>
+      <Note>1</Note>
+      <Signature>ResolutionEnv.IsSendMailEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SendMailFrom</Key>
+      <Value>{nome}@{Dominio}.it</Value>
+      <Group>S</Group>
+      <Description>posta elettronica  del mittente</Description>
+      <Signature>ResolutionEnv.SendMailFrom</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SignatureType</Key>
+      <Value>1</Value>
+      <Group>S</Group>
+      <Signature>ResolutionEnv.SignatureType</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SingleDocumentButton</Key>
+      <Value>0</Value>
+      <Group>S</Group>
+      <Signature>ResolutionEnv.SingleDocumentButton</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SupervisoryMailTo</Key>
+      <Value>{nome}@{Dominio}.it</Value>
+      <Group>Mail</Group>
+      <Description>indirizzo mail del supervisore</Description>
+      <Signature>ResolutionEnv.SupervisoryMailTo</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebAutoPublish</Key>
+      <Value>0</Value>
+      <Group>Pubblicazione Web</Group>
+      <Note>Attivazione/disattivazione della pubblicazione su SharePoint per AUSL-RE</Note>
+      <Signature>ResolutionEnv.WebAutoPublish</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishEnabled</Key>
+      <Value>0</Value>
+      <Group>WebPublish</Group>
+      <Note>Metodo in override !! inoltre compone una chiave "WebPublishEnabled" con suffisso  '_0  or  _1' a seconda dei casi</Note>
+      <Signature>ResolutionEnv.WebPublishEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishEnabled_0</Key>
+      <Value>0</Value>
+      <Group>WebPublish</Group>
+      <Note>Metodo in override !! Inoltre compone una chiave "WebPublishEnabled" con suffisso  '_0  or  _1' a seconda dei casi</Note>
+      <Signature>ResolutionEnv.WebPublishEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishEnabled_1</Key>
+      <Value>0</Value>
+      <Group>WebPublish</Group>
+      <Note>Metodo in override !! Inoltre compone una chiave "WebPublishEnabled" con suffisso  '_0  or  _1' a seconda dei casi</Note>
+      <Signature>ResolutionEnv.WebPublishEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishFolder</Key>
+      <Value>D:\Vecomp Software\Pubblicazioni DocSuiteWeb\</Value>
+      <Group>WebPublish</Group>
+      <Description>percorsi dei file differenti a seconda si tratti di produzione o test</Description>
+      <Note>c:\temp\pub\</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishHTMLBody</Key>
+      <Value>&lt;LI&gt;&lt;A href='{filename}'&gt;{type} {fullnumber} del {AdoptionDate}&lt;/A&gt; - {object} {counter}&lt;/LI&gt;</Value>
+      <Group>WebPublish</Group>
+      <Note>&lt;li&gt;&lt;a href='{filename}'&gt;{type} {year}\{number}&lt;/a&gt; - {object}&lt;/li&gt;</Note>
+      <Signature>ResolutionEnv.WebPublishHTMLBody</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishHTMLClose</Key>
+      <Value>&lt;/UL&gt;&lt;/DIV&gt;&lt;/BODY&gt;&lt;/HTML&gt;</Value>
+      <Group>WebPublish</Group>
+      <Note>&lt;/ul&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</Note>
+      <Signature>ResolutionEnv.WebPublishHTMLClose</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishHTMLFile</Key>
+      <Value>Documento_</Value>
+      <Group>WebPublish</Group>
+      <Note>documento_</Note>
+      <Signature>ResolutionEnv.WebPublishHTMLFile</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishHTMLIndex</Key>
+      <Value>index.html</Value>
+      <Group>WebPublish</Group>
+      <Note>index.html</Note>
+      <Signature>ResolutionEnv.WebPublishHTMLIndex</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishHTMLOpen</Key>
+      <Value>&lt;HTML&gt;&lt;BODY&gt;&lt;DIV&gt;Elenco documenti:&lt;/DIV&gt;&lt;UL&gt;</Value>
+      <Group>WebPublish</Group>
+      <Note>&lt;html&gt;&lt;body&gt;&lt;div&gt;elenco documenti:&lt;/div&gt;&lt;ul&gt;</Note>
+      <Signature>ResolutionEnv.WebPublishHTMLOpen</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishSign</Key>
+      <Value>{type} {fullnumber} del {AdoptionDate} (pagina) di (pagine)</Value>
+      <Group>WebPublish</Group>
+      <Note>{type} {year}\{number} del {effectivenessdate} (pagina) di (pagine)</Note>
+      <Signature>ResolutionEnv.WebPublishSign</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishSignTag</Key>
+      <Value>&lt;Label&gt;&lt;Text&gt;{0}&lt;/Text&gt;&lt;Font Face='Arial' Size='12' Style='Bold,Italic' /&gt;&lt;/Label&gt;</Value>
+      <Group>WebPublish</Group>
+      <Note>&lt;label&gt;&lt;text&gt;{0}&lt;/text&gt;&lt;font face='arial' size='12' style='bold,italic' /&gt;&lt;/label&gt;</Note>
+      <Signature>ResolutionEnv.WebPublishSignTag</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishWatermark</Key>
+      <Value></Value>
+      <Group>WebPublish</Group>
+      <Signature>ResolutionEnv.WebPublishWatermark</Signature>
+      <Container>false</Container>
+      <Customer />
+      <Note>
+        ES: &lt;Watermark&gt;&lt;Text&gt;COPIA PER LA#PUBBLICAZIONE&lt;/Text&gt;&lt;Font Color='255,128,128' Face='Arial' Size='72' Style='Bold,Italic' /&gt;&lt;WatermarkConfig WatermarkRotation='60' FillOpacity='40' /&gt;&lt;/Watermark&gt;
+      </Note>
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ConservationWorkflowStep</Key>
+      <Value>Esecutività</Value>
+      <Group>Estrattore Informatici</Group>
+      <Description>Indica in quale step del workflow destinato all'estrazione degli informatici.</Description>
+      <Note>Attenzione! Il filtro viene eseguito sul campo "Description" della tabella TabWorkflow. Da non confondersi con il campo "CustomDescription" destinato alla visualizzazione a video.</Note>
+      <Signature>ResolutionEnv.ConservationWorkflowStep</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ConservationFieldDocument</Key>
+      <Value>idResolutionFile</Value>
+      <Group>Estrattore Informatici</Group>
+      <Description>Indica il nome della colonna della tabella FileResolution contentente l'id catena dei documenti destinato all'estrazione degli informatici.</Description>
+      <Note>
+        Da valorizzarsi coerentemente con il valore riportato in TabWorkflow.
+        Es.
+        select FieldDocument from TabWorkflow
+        where WorkflowType='W01' and Description='Esecutività'
+      </Note>
+      <Signature>ResolutionEnv.ConservationFieldDocument</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ConservationFieldAttachment</Key>
+      <Value>idAttachements</Value>
+      <Group>Estrattore Informatici</Group>
+      <Description>Indica il nome della colonna della tabella FileResolution contentente l'id catena degli allegati destinato all'estrazione degli informatici.</Description>
+      <Note>
+        Da valorizzarsi coerentemente con il valore riportato in TabWorkflow.
+        Es.
+        select FieldAttachment from TabWorkflow
+        where WorkflowType='W01' and Description='Esecutività'.
+        Attenzione! Il nome del campo in FileResolution è scritto in Inglese maccheronico.
+      </Note>
+      <Signature>ResolutionEnv.ConservationFieldAttachment</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>UseContainerResolutionType</Key>
+      <Value>0</Value>
+      <Group>Business Logic</Group>
+      <Description>Abilita la gestione del tipo Atto per Contenitore.</Description>
+      <Note>Deve esistere ed essere compilata la tabella ContainerResolutionType</Note>
+      <Signature>ResolutionEnv.UseContainerResolutionType</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ResolutionJournalGroup</Key>
+      <Group>Registro Provvedimenti Adottati</Group>
+      <Description>Gruppo di utenti abilitati ad accedere al registro dei provvedimenti adottati</Description>
+      <Note>stringa separata da pipe</Note>
+      <Signature>ResolutionEnv.ResolutionJournalGroup</Signature>
+      <Version>7.2.2</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ResolutionJournalSigners</Key>
+      <Group>Registro Provvedimenti Adottati</Group>
+      <Description>Gruppi che possono eseguire la firma nei registri dei provvedimenti adottati</Description>
+      <Note>Stringa separata da pipe</Note>
+      <Signature>ResolutionEnv.ResolutionJournalSigners</Signature>
+      <Version>7.2.2</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ServiceCodeEnabled</Key>
+      <Value>0</Value>
+      <Group>Adozione</Group>
+      <Description>Abilita la gestione del Numero di Servizio del Settore.</Description>
+      <Note>Se 0 taglia il nodo ServiceCode di Role.</Note>
+      <Signature>ResolutionEnv.ServiceCodeEnabled</Signature>
+      <Version>8.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>EmailCollegioSindacale</Key>
+      <Group>CollegioSindacaleTorino</Group>
+      <Description>Elenco di email alle quali verrà mandata la PEC con le delibere adottate</Description>
+      <Note>Formato standard per l'invio delle email "Nome"&amp;lt;indirizzo@email.mail&amp;gt;;"Nome2"&amp;lt;indirizzo2@email.mail&amp;gt;</Note>
+      <Signature>ResolutionEnv.EmailCollegioSindacale</Signature>
+      <Version>7.2.4</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>OggettoCollegioSindacale</Key>
+      <Group>CollegioSindacaleTorino</Group>
+      <Description>Oggetto della PEC con le delibere adottate</Description>
+      <Note>Deve essere abilitata la PEC</Note>
+      <Signature>ResolutionEnv.OggettoCollegioSindacale</Signature>
+      <Version>7.2.4</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>TestoCollegioSindacale</Key>
+      <Group>CollegioSindacaleTorino</Group>
+      <Description>Testo della PEC con le delibere adottate</Description>
+      <Note>Deve essere abilitata la PEC</Note>
+      <Signature>ResolutionEnv.TestoCollegioSindacale</Signature>
+      <Version>7.2.4</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MailBoxCollegioSindacale</Key>
+      <Group>CollegioSindacaleTorino</Group>
+      <Description>Identificativo della MailBox dove risiedono le PEC inviate al collegio sindacale.</Description>
+      <Note>Deve essere abilitata la PEC e il database dei protocolli.</Note>
+      <Signature>ResolutionEnv.TestoCollegioSindacale</Signature>
+      <Version>7.2.4</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>GruppiCollegioSindacale</Key>
+      <Group>CollegioSindacaleTorino</Group>
+      <Description>Gruppi abilitati alla funzionalità PEC all'organo di controllo</Description>
+      <Note>Deve essere abilitata la PEC</Note>
+      <Signature>ResolutionEnv.GruppiCollegioSindacale</Signature>
+      <Version>7.2.4</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ParerEnabled</Key>
+      <Value>0</Value>
+      <Group>Parer</Group>
+      <Description>Attiva il modulo Parer in Atti</Description>
+      <Signature>ResolutionEnv.ParerEnabled</Signature>
+      <Version>7.2.4</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MailBoxBozze</Key>
+      <Group>CollegioSindacaleTorino</Group>
+      <Description>Identificativo della PECMailBox da usare per parcheggiare una PEC in attesa di essere spedita</Description>
+      <Note>Deve essere abilitata la PEC e il database dei protocolli. Creata per la funzione del collegio sindacale torino, può essere usata per parcheggiare qualsiasi PEC relativa agli atti.</Note>
+      <Signature>ResolutionEnv.MailBoxBozze</Signature>
+      <Version>7.2.4</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPubblicationServer</Key>
+      <Value>http://sviluppo/AUSLPCPUBBLICAZIONE/WebService.svc</Value>
+      <Group>WebPublish</Group>
+      <Description>URL del web service di pubblicazione</Description>
+      <Signature>ResolutionEnv.WebPubblicationServer</Signature>
+      <Version>7.2.5</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublishPanel</Key>
+      <Value>0</Value>
+      <Group>Environment</Group>
+      <Description>Parametro che se settato a 0 non visualizza il pannello con data di affissione all'albo in visualizzazione (Resolution).</Description>
+      <Signature>ProtocolEnv.WebPublishPanel</Signature>
+      <Version>7.2.7</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PastYearsEnumerationEnabled</Key>
+      <Value>0</Value>
+      <Group>Environment</Group>
+      <Description>Abilita la numerazione degli atti per gli anni antecedenti quello correntemente in gestione.</Description>
+      <Signature>ResolutionEnv.PastYearsEnumerationEnabled</Signature>
+      <Version>7.2.8</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>RitiraAttiGroups</Key>
+      <Group>Ritira Atti</Group>
+      <Description>Abilita la funzione di firma per il ritiro degli Atti ai gruppi</Description>
+      <Note>Gruppi separati da pipe</Note>
+      <Signature>ResolutionEnv.RitiraAttiGroups</Signature>
+      <Version>7.2.8</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublicationPrint</Key>
+      <Value>0</Value>
+      <Group>Stampe</Group>
+      <Description>Abilita la stampa Registro delle Pubblicazioni</Description>
+      <Signature>ResolutionEnv.WebPublicationPrint</Signature>
+      <Version>7.2.8</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebPublicationPrintBaseAddress</Key>
+      <Group>WebPublication</Group>
+      <Description>Definisce il link da utilizzare per aprire gli elementi della tabella WebPublication.</Description>
+      <Note>Il formato è il solito [http://...]</Note>
+      <Signature>ResolutionEnv.WebPublicationPrintBaseAddress</Signature>
+      <Version>7.2.9</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ReslJournalOnlyActive</Key>
+      <Value>0</Value>
+      <Group>Registro Provvedimenti Adottati</Group>
+      <Description>Attiva  o disattiva (per tutti gli utenti e per tutti i template) la visibilità delle resolution non attive.</Description>
+      <Note>0 (default) = mostra tutto; 1 = mostra solo resolution con idStatus a 0</Note>
+      <Signature>ResolutionEnv.ReslJournalOnlyActive</Signature>
+      <Version>7.2.8</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WebDocumentSourceWorkflowStep</Key>
+      <Value>2</Value>
+      <Group>WebPublish</Group>
+      <Description>(DA VERIFICARE) Indica di quale step recuperare le catene da allegare alla gestione WebDocumentSource. (Pubblicazione Torino?)</Description>
+      <Note>Il valore di default (per Torino) è lo step 2 (adozione).</Note>
+      <Signature>ResolutionEnv.WebDocumentSourceWorkflowStep</Signature>
+      <Version>8.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ReslPubJournalGroup</Key>
+      <Group>Groups</Group>
+      <Description>Gruppi abilitati alla funzionalità "Registro Pubblicazione Atti"</Description>
+      <Version>7.2.9</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WindowWidthRegistri</Key>
+      <Value>800</Value>
+      <Group>Registri</Group>
+      <Description>Larghezza della finestra di anteprima dei registri (provvedimenti adottati e pubblicazione)</Description>
+      <Signature>ResolutionEnv.WindowWidthRegistri</Signature>
+      <Version>8.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WindowHeightRegistri</Key>
+      <Value>500</Value>
+      <Group>Registri</Group>
+      <Description>Altezza della finestra di anteprima dei registri (provvedimenti adottati e pubblicazione)</Description>
+      <Signature>ResolutionEnv.WindowHeigthRegistri</Signature>
+      <Version>8.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>UseWindowPreview</Key>
+      <Value>0</Value>
+      <Group>Registri</Group>
+      <Description>Se attiva, utilizza una window per mostrare la preview del documento, altrimenti integra nella pagina</Description>
+      <Signature>ResolutionEnv.UseWindowPreview</Signature>
+      <Version>8.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ReslAllegaDefaultType</Key>
+      <Value>0</Value>
+      <Group>Modulo di upload</Group>
+      <Description>Definisce il valore di default (a livello aziendale) da selezionare per la copia da atto. [0 =&gt; Delibera, 1 =&gt; Determina]</Description>
+      <Signature>ResolutionEnv.ReslAllegaDefaultType</Signature>
+      <Version>8.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SeriesTitle</Key>
+      <Value>Amministrazione Aperta</Value>
+      <Group>Serie Documentali</Group>
+      <Description>Definisce il titolo delle Serie Documentali in Atti.</Description>
+      <Signature>ResolutionEnv.SeriesTitle</Signature>
+      <Version>8.1.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>RegistroProvvedimentiAdottatiLastSignOnly</Key>
+      <Value>0</Value>
+      <Group>Registro Provvedimenti Adottati</Group>
+      <Description>Se attivo, nella casistica di firma multipla dei registri provvedimenti adottati, mantiene solo l'ultimo registro firmato ed effettua il detach del precedente.</Description>
+      <Signature>ProtocolEnv.RegistroProvvedimentiAdottatiLastSignOnly</Signature>
+      <Version>7.2.11.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>UseSharePointPublication</Key>
+      <Value>0</Value>
+      <Group>WebPublication</Group>
+      <Description>Attiva le funzionalità di pubblicazione su SharePoint specifiche di ASMN-RE (non attivare su altri clienti)</Description>
+      <Signature>ProtocolEnv.UseSharePointPublication</Signature>
+      <Version>7.2.10</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PubblicazioneOnLineSignature</Key>
+      <Value>(Pubblicazione Albo on-line)</Value>
+      <Group>WebPublication</Group>
+      <Description>Definisce la segnatura di stampa conforme da utilizzare per il documento da pubblicare</Description>
+      <Signature>ResolutionEnv.PubblicazioneOnLineSignature</Signature>
+      <Version>7.2.10.4</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ShowCollaboration</Key>
+      <Value>false</Value>
+      <Group>Collaborazione</Group>
+      <Description>Definisce se visualizzare negli atti il collegamento alla collaborazione.</Description>
+      <Signature>ResolutionEnv.ShowCollaboration</Signature>
+      <Version>8.3.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ShowAfterPubblication</Key>
+      <Value>0</Value>
+      <Group>Diritti</Group>
+      <Description>Indica se mostrare a tutti un atto successivamente alla pubblicazione.</Description>
+      <Note>[0] disabilitato. [1] attivo.</Note>
+      <Signature>ResolutionEnv.ShowAfterPubblication</Signature>
+      <Version>8.3.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DisableCheckTuttiICodici</Key>
+      <Value>0</Value>
+      <Group>Adozione</Group>
+      <Description>Definisce se bloccare la visualizzazione del checkbox "Visualizza tutti i codici"</Description>
+      <Signature>ResolutionEnv.DisableCheckTuttiICodici</Signature>
+      <Version>8.3.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CollResolutionRole</Key>
+      <Group>Autorizzazioni</Group>
+      <Description>Elenco di ID separati da pipe. Indica i tipi di autorizzazione da auto-impostare in fase di inserimento da Collaboration.</Description>
+      <Note>I settori inseriti sono quelli per cui l'operatore è segretario.</Note>
+      <Signature>ResolutionEnv.CollResolutionRole</Signature>
+      <Version>8.3.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ProposalViewable</Key>
+      <Value>True</Value>
+      <Group>Rights</Group>
+      <Description>Se attivo indica che i diritti di visualizzazione delle proposte seguono i diritti di visualizzazione del documento. </Description>
+      <Note>Da impostare a FALSE a Torino per attivare verifica diritti di accesso a Proposta.</Note>
+      <Signature>ResolutionEnv.ProposalViewable</Signature>
+      <Version>8.3.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AuthorizInsertType</Key>
+      <Value>1</Value>
+      <Group>Autorizzazioni</Group>
+      <Description>Identificativo della ResolutionRoleType da utilizzare nell'eventuale inserimento di Autorizzazioni in inserimento Resolution.</Description>
+      <Note>Il valore di default è 1 in quanto nello script di aggiornamento dovrebbe essere stata aggiunta la prima riga alla tabella che è l'autorizzazione alla visualizzazione.</Note>
+      <Signature>ResolutionEnv.AuthorizInsertType</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DefaultResolutionRoleType</Key>
+      <Value>1</Value>
+      <Description>Identificativo della ResolutionRoleType che rappresenta l'autorizzazione di Visualizzazione.</Description>
+      <Note>Da script dovrebbe essere la prima, ma è possibile modificarla in caso avesse un ID diverso.</Note>
+      <Signature>ResolutionEnv.DefaultResolutionRoleType</Signature>
+      <Version>8.3.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DefaultSignersAdozioneServiziDigitale</Key>
+      <Value>adUser|idRole|0</Value>
+      <Description>Identificativo dell'utente e della segreteria che protocollerà la lettera di invio adozione servizi (ASL-TO).</Description>
+      <Note>Indicare le componenti (nell'ordine utenzaAD|idSettoreSegreteria|FirmaObbligatoria(0/1)) separati da pipe. Separare più utenti con ";"</Note>
+      <Signature>ResolutionEnv.DefaultSignersAdozioneServiziDigitale</Signature>
+      <Version>8.4.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PromemoriaAdozione</Key>
+      <Value>Usare stampa frontalino per stamparlo.</Value>
+      <Group>Alert</Group>
+      <Description>Definisce la scritta da visualizzare in fase di adozione di atto (Torino)</Description>
+      <Note />
+      <Signature>ResolutionEnv.PromemoriaAdozione</Signature>
+      <Version>7.2.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MainDocumentOmissisEnable</Key>
+      <Value>0</Value>
+      <Group>Catene documentali</Group>
+      <Description>Attiva la catena documentale del documento omissis</Description>
+      <Note>Da attivare a TORINO</Note>
+      <Signature>ResolutionEnv.MainDocumentOmissisEnable</Signature>
+      <Version>8.6.0.1</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AttachmentOmissisEnable</Key>
+      <Value>0</Value>
+      <Group>Catene documentali</Group>
+      <Description>Attiva la catena documentale dell'allegato omissis</Description>
+      <Note>Da attivare a TORINO</Note>
+      <Signature>ResolutionEnv.AttachmentOmissisEnable</Signature>
+      <Version>8.6.0.1</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>QuickDocumentsCheckAllChains</Key>
+      <Value>1</Value>
+      <Group>Catene documentali</Group>
+      <Description>Definisce se controllare tutte le catene documentali (1) oppure solo quella principale (0)</Description>
+      <Note>Disattivare nel caso il bottone "Documenti" del sommario di Atti risulti attivato nonostante non siano presenti documenti da visualizzare [Casistica specifica di Torino nella fase di Adozione - Utilizzare solo per test].</Note>
+      <Signature>ResolutionEnv.QuickDocumentsCheckAllChains</Signature>
+      <Version>8.7.0.1</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ReslProtocolStartYear</Key>
+      <Value>2010</Value>
+      <Group>Ricerca Flusso</Group>
+      <Description>Definisce l'anno da cui partire per selezionare protocolli da collegare in ricerca flusso.</Description>
+      <Note>Da verificare per ASL-TO [Tina Ruocco].</Note>
+      <Signature>ResolutionEnv.ReslProtocolStartYear</Signature>
+      <Version>8.8.0.1</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ReslProtocolMaxResults</Key>
+      <Value>10</Value>
+      <Group>Ricerca Flusso</Group>
+      <Description>Definisce il numero di protocolli da visualizzare nella dropdown per fare il collegamento in ricerca flusso.</Description>
+      <Note>Da verificare per ASL-TO [Tina Ruocco].</Note>
+      <Signature>ResolutionEnv.ReslProtocolMaxResults</Signature>
+      <Version>8.8.0.1</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CopyDocumentsToAdoption</Key>
+      <Value>0</Value>
+      <Group>Workflow</Group>
+      <Description>Definisce se copiare o meno i documenti in fase di adozione (relativamente al fatto che i documenti siano firmati o meno vedere "CopyOnlySignedDocumentToAdoption".</Description>
+      <Note>Da attivare in ASL-TO e AUSL-PC ed eventuali altri clienti che necessitino della copia dei documenti in adozione.</Note>
+      <Signature>ResolutionEnv.CopyDocumentsToAdoption</Signature>
+      <Version>8.8.0.2</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CopyOnlySignedDocumentsToAdoption</Key>
+      <Value>0</Value>
+      <Group>Workflow</Group>
+      <Description>Definisce, nella casistica in cui sia attivo CopyDocumentsToAdoption se copiare o meno SOLO i documenti firmati in fase di adozione.</Description>
+      <Note>Da attivare in ASL-TO ed eventuali altri clienti che necessitino della copia selettiva.</Note>
+      <Signature>ResolutionEnv.CopyOnlySignedDocumentsToAdoption</Signature>
+      <Version>8.8.0.2</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CheckAdoptionDateCommands</Key>
+      <Value>nn</Value>
+      <Group>Workflow</Group>
+      <Description>Definisce il comando da utilizzare per verificare la data di adozione di un atto.</Description>
+      <Note>Attualmente disponibile il comando ForbidFutureDates. Caricare i comandi separati da pipe.</Note>
+      <Signature>ResolutionEnv.CheckAdoptionDateCommands</Signature>
+      <Version>8.10.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CopyFromResolutionSearchByServiceNumberAsLike</Key>
+      <Value>0</Value>
+      <Group>Copia</Group>
+      <Description>Estende la ricerca dell'atto in fase di copia in protocollo utilizzando il Like al posto della ricerca puntuale.</Description>
+      <Note>Di default è spento in quanto si tratta di una richiesta specifica di AUSL-RE. Attivare solo in AUSL-RE (ed eventualmente in ASL-TO nel caso in cui non trovino gli atti in fase di ricerca per "copia da atto").</Note>
+      <Signature>ResolutionEnv.CopyFromResolutionSearchByServiceNumberAsLike</Signature>
+      <Version>8.11.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DisableButtonFrontPubblicazione</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>Disattiva il bottone Front. Pubblicazione</Description>
+      <Note>Di default è spento per retrocompatibilità. Attivare solo per AUSL-RE.</Note>
+      <Signature>ResolutionEnv.DisableButtonFrontPubblicazione</Signature>
+      <Version>8.11.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>EnableFlushAnnexed</Key>
+      <Value>0</Value>
+      <Group>Business Logic</Group>
+      <Description>Abilita il pulsante di Svuota Annessi nel sommario di Atti/Delibere.</Description>
+      <Note>[AUSLRE = 1] Per gli altri clienti deve essere abilitata solo su specifica richiesta cliente.</Note>
+      <Signature>ResolutionEnv.EnableFlushAnnexed</Signature>
+      <Version>8.17</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ResolutionKindEnabled</Key>
+      <Value>False</Value>
+      <Group>Business Logic</Group>
+      <Description>Abilita la nuova gestione della Tipologia di Atto.</Description>
+      <Note>
+        [ASL-TO = True] Per gli altri clienti deve essere abilitata solo su specifica richiesta cliente.
+        Se = true abilita la nuova gestione della Tipologia di Atto.
+        Se = false il comportamento dell'inserimento di un Atto rimane invariato da prima.
+      </Note>
+      <Signature>ResolutionEnv.ResolutionKindEnabled</Signature>
+      <Version>8.20</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ViewResolutionProposedByRoleEnabled</Key>
+      <Value>False</Value>
+      <Group>Scrivania</Group>
+      <Description>Abilita la visualizzazione di una nuova vista in Scrivania "Proposte dai singoli settori".</Description>
+      <Note>
+        [AUSL-PC = True] Per gli altri clienti deve essere abilitata solo su specifica richiesta cliente.
+        Se = true visualizzazione di una nuova vista in Scrivania "Proposte dai singoli settori".
+        Se = false la vista sarà nascosta.
+        Il funzionamento di tale vista è strettamente collegato alla configurazione del parametro .ROLEPROPOSER. in TabMaster (vedi readme.txt)
+      </Note>
+      <Signature>ResolutionEnv.ViewResolutionProposedByRoleEnabled</Signature>
+      <Version>8.20</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>EnvGroupTblRoleTypeResl</Key>
+      <Value />
+      <Group />
+      <Description>Abilita la visualizzazione del link Tipologia Atto in tabelle.</Description>
+      <Note>
+        [AUSL-TO] Gruppo prestabilito e ristretto di utenti per la visualizzazione del link Tipologia atto nella sezione tabelle.
+      </Note>
+      <Signature>ResolutionEnv.EnvGroupTblRoleTypeResl</Signature>
+      <Version>8.20</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DigitalLastPage</Key>
+      <Value>False</Value>
+      <Group>Stampe</Group>
+      <Description>Parametro che permette la firma digitale sui frontalini di ritiro/esecutività.</Description>
+      <Note>
+        [ASL-TO = True] Per gli altri clienti deve essere abilitata solo su specifica richiesta cliente.
+        Se = true permette la firma digitale sui frontalini di ritiro/esecutività nella pagina "Firma ultima pagina".
+        Se = false non visualizza la pagina nel menu degli atti
+        Da settare anche il parametro DigitalLastPageGroup che permette di stabilire i gruppi abilitati.
+      </Note>
+      <Signature>ResolutionEnv.DigitalLastPage</Signature>
+      <Version>8.20</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DigitalLastPageGroup</Key>
+      <Value />
+      <Group />
+      <Description>Abilita la visualizzazione del menu "Firma ultima pagina" ai gruppi specificati.</Description>
+      <Note>
+        [AUSL-TO] Gruppi prestabiliti per la visualizza la pagina "Firma ultima pagina".
+      </Note>
+      <Signature>ResolutionEnv.DigitalLastPageGroup</Signature>
+      <Version>8.20</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AutomaticConfirmAvcpSeries</Key>
+      <Value>True</Value>
+      <Group>Business Logic</Group>
+      <Description>Abilita la conferma automatica della serie AVCP nella casistica in cui sia presete una serie Bandi di Gara.</Description>
+      <Note>
+        [ASL-TO = True]
+        Se = true permette la conferma automatica della serie AVCP nella casistica in cui sia presente una serie Bandi di Gara.
+        Se = false la conferma della serie sarà manuale.
+      </Note>
+      <Signature>ResolutionEnv.AutomaticConfirmAvcpSeries</Signature>
+      <Version>8.20</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DeclineNoteViewIndex</Key>
+      <Value />
+      <Group>Workflow</Group>
+      <Description>Array di indici relativi alla visualizzazione del Motivo di Annullamento.</Description>
+      <Note>
+        [AUSL-PC = 0,1,2,3] Inserire i valori separati da virgola. Se vuoto verrà nascosta la colonna. Valori possibili per l'inserimento:
+        0 = Messaggio
+        1 = Numero dello step che viene arretrato
+        2 = Nome dello step che viene arretrato
+        3 = Data di arretramento
+      </Note>
+      <Signature>ResolutionEnv.DeclineNoteViewIndex</Signature>
+      <Version>8.21</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ButtonSeriesTitle</Key>
+      <Value>Aggiungi Amministrazione Trasparente</Value>
+      <Group>Serie Documentali</Group>
+      <Description>Definisce il titolo del bottone che collega gli atti alle serie documentali.</Description>
+      <Note>
+        [ASL-TO = Aggiungi Amministrazione Trasparente] Per tutti gli altri clienti impostare quanto configurato per il parametro 'SeriesTitle'
+        o il suo valore di default (Amministrazione Aperta).
+      </Note>
+      <Signature>ResolutionEnv.ButtonSeriesTitle</Signature>
+      <Version>8.25</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MustResolutionAdoptionDocumentIsSigned</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        In fase di adozione, viene abilitato un alert che indica l'obbliatorietà dei documenti firmati.
+        Il messaggio esposto è il seguente: "Il passaggio dei documenti in adozione è possibile solo se firmati digitalmente"
+      </Description>
+      <Note>
+        [AUSL-RE=1]
+        Se vero = Viene abilitato l'avviso sui documenti firmati in adozione
+        Se false = Viene disabilitato l'avviso sui documenti firmati in adozione
+      </Note>
+      <Signature>ResolutionEnv.MustResolutionAdoptionDocumentIsSigned</Signature>
+      <Version>8.26</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE</Customer>
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>LoadProposalDocumentInAdoptionState</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        In fase di adozione, viene abilitato il caricamento del documento inserito in fase di "proposta" di atto
+      </Description>
+      <Note>
+        [AUSL-RE=1]
+        Se vero = Viene abilitato riporta il documento inserito in proposta nella schermata di adozione
+        Se false = Viene disabilitato riporta il documento inserito in proposta nella schermata di adozione
+      </Note>
+      <Signature>ResolutionEnv.LoadProposalDocumentInAdoptionState</Signature>
+      <Version>8.26</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>LoadAdoptionDocumentInPublicationState</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        In fase di pubblicazione, viene abilitato il caricamento del documento inserito in fase di "adozione" di atto
+      </Description>
+      <Note>
+        [AFOL=1]
+        Se vero = Viene abilitato il comportamento che riporta in automatico il documento adottato
+        Se false = Il comportamento rimane in linea con le logiche standard del cliente
+      </Note>
+      <Signature>ResolutionEnv.LoadAdoptionDocumentInPublicationState</Signature>
+      <Version>8.53</Version>
+      <Container>false</Container>
+      <Customer>AFOL</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ResolutionObjectPrivacyLabel</Key>
+      <Value>Oggetto Privacy</Value>
+      <Group>Visualizzazione</Group>
+      <Description>
+        Imposta l'etichetta dell'Oggetto Privacy
+      </Description>
+      <Note>
+        [ASL-TO=Oggetto Integrale]
+        Imposta l'etichetta dell'Oggetto Privacy nelle pagine di Atto in DocSuite.
+      </Note>
+      <Signature>ResolutionEnv.ResolutionObjectPrivacyLabel</Signature>
+      <Version>8.54</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>GenerateFrontalinoInAdoptionState</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        In fase di adozione, genera il frontalino in Adozione
+      </Description>
+      <Note>
+        [AUSL-PC=1, ASMN=0, AUSL-RE=0, ASL-TO=0]
+        Se vero = Se Configuration = AUSL-PC allora genera il frontalino in Adozione (necessario in quanto AUSL-RE nuovo flusso atti non genera Frontalini)
+        Se false = Il comportamento rimane in linea con le logiche standard del cliente
+      </Note>
+      <Signature>ResolutionEnv.GenerateFrontalinoInAdoptionState</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CheckOCValidations</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        In fase di pubblicazione, abilita i controlli coerenza campi Organi di controllo
+      </Description>
+      <Note>
+        [AUSL-PC=1, ASMN=0, AUSL-RE=0, ASL-TO=0]
+        Se vero = Se Configuration = AUSL-PC allora verifica i controlli di coerenza dei campi invio Collegio Sindacale/ Conferenza dei Sindaci/Invio alla Regione (necessario in quanto AUSL-RE non li necessita)
+        Se false = Il comportamento rimane in linea con le logiche standard del cliente
+      </Note>
+      <Signature>ResolutionEnv.CheckOCValidations</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>HideDocumentButtons</Key>
+      <Value>1</Value>
+      <Group>Flusso</Group>
+      <Description>
+        In fase di adozione, pubblicazione e ritiro pubblicazione, nasconde i pulsanti di modifica del documento
+      </Description>
+      <Note>
+        [AUSL-PC=0, ASMN=1, AUSL-RE=1, ASL-TO=0]
+        Se vero = vengono disabilitati i pulsanti di modifica del documento (scanner, upload da file system, upload da SharePoint, elimina e firma) in fase di adozione, pubblicazione e ritiro pubblicazione
+        Se false = Il comportamento rimane in linea con le logiche standard del cliente
+      </Note>
+      <Signature>ResolutionEnv.HideDocumentButtons</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ControlCheckResolutionEnabled</Key>
+      <Value>0</Value>
+      <Group>Ricerca</Group>
+      <Description>
+        Abilita la possibilità di ricercare delibere soggette a controllo
+      </Description>
+      <Note>
+        [AUSL-PC=0, ASMN=1, AUSL-RE=1, ASL-TO=0]
+        Se vero = nella pagina di ricerca permette di filtrare solo le delibere soggette a controllo (presenti in AUSL-RE)
+        Se false = nella pagina di ricerca non viene visualizzato il pannello che restringe la ricerca alle delibere soggette a controllo
+      </Note>
+      <Signature>ResolutionEnv.ControlCheckResolutionEnabled</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CustomFrontespiecePrintEnabled</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        Abilita la generazione di una stampa Frontalino di Adozione/Ritiro custom per AUSL-PC
+      </Description>
+      <Note>
+        [AUSL-PC=1, ASMN=0, AUSL-RE=0, ASL-TO=0]
+        Se vero = Se Configuration = AUSL-PC viene generata una stampa custom dei frontalini di pubblicazione e ritiro con l'utilizzo del web service di pubblicazione (AUSL-PC)
+        Se false = viene utilizzata la stampa custom
+      </Note>
+      <Signature>ResolutionEnv.CustomFrontespiecePrintEnabled</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ForceSharePointPublication</Key>
+      <Value>0</Value>
+      <Group>WebPublication</Group>
+      <Description>
+        Forza la procedura a pubblicare un atto in Sharepoint. Questo parametro vince sui parametri WebAutoPublish e WebPublishEnabled.
+      </Description>
+      <Note>
+        [AUSL-PC=0, ASMN=1, AUSL-RE=1, ASL-TO=0]
+        Se vero = nella fase di pubblicazione di un atto, viene eseguito l'inserimento in Sharepoint anche se le chiavi WebAutoPublish e WebPublishEnabled sono disattivate.
+        Se false = vincono le vecchie logiche imposte dalle chiavi WebAutoPublish e WebPublishEnabled.
+      </Note>
+      <Signature>ResolutionEnv.ForceSharePointPublication</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>IncludeAnnexesInPubblication</Key>
+      <Value>0</Value>
+      <Group>WebPublication</Group>
+      <Description>
+        Forza la procedura ad aggiungere la catena degli annessi in pubblicazione di un atto.
+      </Description>
+      <Note>
+        [AUSL-PC=0, ASMN=1, AUSL-RE=1, ASL-TO=0]
+        Se vero = nella fase di pubblicazione di un atto, viene aggiunta la catena degli annessi nel merge per la pubblicazione online di un atto.
+        Se false = vincono le vecchie logiche che escludono la gestione degli annessi.
+      </Note>
+      <Signature>ResolutionEnv.IncludeAnnexesInPubblication</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CheckPublishDocumentSigned</Key>
+      <Value>1</Value>
+      <Group>WebPublication</Group>
+      <Description>
+        Forza la procedura a verificare che il frontespizio di pubblicazione sia firmato digitalmente.
+      </Description>
+      <Note>
+        [AUSL-PC=1, ASMN=0, AUSL-RE=0, ASL-TO=1]
+        Se vero = nella fase di pubblicazione di un atto, viene verificato che il frontespizio di pubblicazione sia firmato digitalmente.
+        Se false = non viene effettuato il controllo se il frontespizio è firmato.
+      </Note>
+      <Signature>ResolutionEnv.CheckPublishDocumentSigned</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ApplyGeneralistUserDeskRight</Key>
+      <Value>1</Value>
+      <Group>Scrivania</Group>
+      <Description>
+        Filtra i risultati delle viste di scrivania ai soli Atti in base al diritto sul contenitore dello step specifico.
+      </Description>
+      <Note>
+        [AUSL-PC=1, ASMN=0, AUSL-RE=0, ASL-TO=1]
+        Se vero = nelle viste di scrivania vengono visualizzati solo gli Atti sui quali l'utente ha il diritto specifico dello step corrente.
+        Se false = viene applicata la logica classica di sicurezza, ovvero vengono visualizzati tutti gli Atti sui quali si ha diritto di sommario.
+        NB: Nella visione precedente, nelle viste di scrivania venivano visualizzati tutti gli atti sui quali si ha diritto di sommario.
+        Disattivando il parametro si introduce una nuova logica di sicurezza, restringendo la visibilità sul diritto specifico di quella vista.
+      </Note>
+      <Signature>ResolutionEnv.ApplyGeneralistUserDeskRight</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CheckPublicationOrder</Key>
+      <Value>0</Value>
+      <Group>WebPublication</Group>
+      <Description>
+        Abilita il controllo riguardante l'ordine di pubblicazione degli Atti.
+      </Description>
+      <Note>
+        [AUSL-PC=0, ASMN=1, AUSL-RE=1, ASL-TO=0]
+        Se vero = abilita il controllo che permette di pubblicare gli atti con la verifica di sequenzialità temporale.
+        Se false = non viene abilitato il controllo sulla sequenzialità di pubblicazione.
+        NB: si può pubblicare l'atto, solo se il precedente è già stato pubblicato.
+      </Note>
+      <Signature>ResolutionEnv.CheckPublicationOrder</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CustomControllerFactoryEnabled</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        Abilita il controllo custom o di default per le funzionalità di visualizzazione e modifica degli atti
+      </Description>
+      <Note>
+        [AUSL-PC=1, ASMN=0, AUSL-RE=0, ASL-TO=1]
+        Se vero = abilita il controlli custom nelle funzionaltità specifiche di Torino e Piacenza sulla visualizzazione e modifica degli atti
+        Se false = determina il modello standard delle funzionaltià di visualizzazione e modifica degli atti
+        NB: si può pubblicare l'atto, solo se il precedente è già stato pubblicato.
+      </Note>
+      <Signature>ResolutionEnv.CustomControllerFactoryEnabled</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>HideAlternativeRecipient</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        Nasconde il pannello di destinatario alternativo in inserimento di atto.
+      </Description>
+      <Note>
+        [AUSL-PC=1, ASMN=0, AUSL-RE=0, ASL-TO=1]
+        Se vero = nasconde il pannello di destinatario alternativo in inserimento di atto.
+        Se false = mostra il pannello di destinatario alternativo in inserimento di atto.
+      </Note>
+      <Signature>ResolutionEnv.HideAlternativeRecipient</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC, ASL-TO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PublicationEndDays</Key>
+      <Value>15</Value>
+      <Group>Flusso</Group>
+      <Description>
+        Indica il numero di giorni in cui l'atto deve restare pubblicato sull'albo online a partire dalla data di invio al Collegio Sindacale,
+        tenendo conto dell'intervallo di tempo tra la data di invio al Collegio Sindacale e la data di pubblicazione.
+      </Description>
+      <Note>
+        [ASL-TO = 20]
+        L'intervallo di tempo nel quale l'atto rimane effettivamente pubblicato online è la differenza tra il valore indicato dal parametro
+        e il numero di giorni che passano dalla data di invio al Collegio Sindacale alla data di pubblicazione (per ASL-TO 5 giorni).
+        Ad esempio, se PublicationEndDays=20 -> l'atto rimane pubblicato sull'albo 15 giorni (20-5).
+      </Note>
+      <Signature>ResolutionEnv.PublicationEndDays</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyInt</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AdoptionComparisonDate</Key>
+      <Value></Value>
+      <Group>Flusso</Group>
+      <Description>
+        Indica il campo di un atto da controllare quando si seleziona la data di adozione dell'atto. La data di adozione non potrà essere precedente alla data della proprietà indicata dal parametro.
+        Se il parametro è vuoto, il controllo viene fatto rispetto alla data dello step precedente all'adozione.
+      </Description>
+      <Note>
+        [AUSL-RE, ASMN = ProposeDate]
+        Se valorizzato = la data di adozione di un atto non può essere precendete alla campo data indicato.
+        Se vuoto = la data di adozione di un atto non può essere precendete alla data dello step precedente l'adozione.
+      </Note>
+      <Signature>ResolutionEnv.AdoptionComparisonDate</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CheckRoleButtonRightsEnabled</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        Permette di legare la visibilità del pulsante Autorizzazione in sommario di Atto ai diritti specifici sul contenitore.
+      </Description>
+      <Note>
+        [ASMN=1, AUSL-RE=1]
+        Se vero = lega la visibilità del pulsante Autorizzazione in sommario di Atto ai diritti specifici sul contenitore.
+        Se falso = vince la logica esistente.
+      </Note>
+      <Signature>ResolutionEnv.CheckContainerRightsEnabled</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>IncrementalNumberEnabled</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        Permette di calcolare il ServiceNumber di una determina in modo incrementale (non legato ai settori), comme avviene per le delibere.
+      </Description>
+      <Note>
+        [AFOL=1]
+        Se vero = permette di calcolare il ServiceNumber di una determina in modo incrementale
+        Se falso = vince la logica esistente.
+        NB: E' legato alla presenza in TabMaster e in TabWorkflow della proprietà 'ServiceNumber'
+      </Note>
+      <Signature>ResolutionEnv.IncrementalNumberEnabled</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AFOL</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ViewAllExecutiveEnabled</Key>
+      <Value>0</Value>
+      <Group>Ricerca</Group>
+      <Description>
+        Permette di includere tutti gli Atti esecutivi nei risultati di ricerca degli Atti, indipendentemente dai diritti.
+      </Description>
+      <Note>
+        [AUSL-PC=1]
+        Se vero = permette di visualizzare gli atti esecutivi nei risultati della ricerca, indipendentemente dai diritti su contenitori e settori.
+        Se falso = vince la logica esistente.
+      </Note>
+      <Signature>ResolutionEnv.ViewAllExecutiveEnabled</Signature>
+      <Version>8.55</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>InclusiveNumberWithProposerCodeEnabled</Key>
+      <Value>0</Value>
+      <Group>Visualizzazione</Group>
+      <Description>
+        Permette di calcolare l'inclusive number di un atto componendo numero, codice proponente e anno.
+      </Description>
+      <Note>
+        [ASL-TO=1]
+        Se vero = permette di calcolare l'inclusive number di un atto componendo numero, codice proponente e anno.
+        Se falso = vince la logica esistente.
+      </Note>
+      <Signature>ResolutionEnv.InclusiveNumberWithProposerCodeEnabled</Signature>
+      <Version>8.57</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AuthorizInsertProposerRolesEnabled</Key>
+      <Value>0</Value>
+      <Group>Autorizzazioni</Group>
+      <Description>Abilita l'autorizzazione al settore del proponente in fase di Inserimento Resolution</Description>
+      <Note>
+        [ASL-TO = 1]
+        Se vero = autorizza automaticamente il settore del proponente
+        Se falso = vince la logica esistente.
+      </Note>
+      <Signature>ResolutionEnv.AuthorizInsertProposerRolesEnabled</Signature>
+      <Version>8.57</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ModifyExecutiveResolutionEnabled</Key>
+      <Value>0</Value>
+      <Group>Visualizzazione</Group>
+      <Description>
+        Permette di avere il pulsante Modifica abilitato in sommario di 'Delibera soggetta a controllo' Esecutiva.
+      </Description>
+      <Note>
+        [ASMN=1, AUSL-RE=1]
+        Se vero = permette di avere il pulsante Modifica abilitato in sommario di 'Delibera soggetta a controllo' Esecutiva, se l'utente ha i diritti Uff. dirigenziale sul contenitore.
+        Se falso = vince la logica esistente.
+      </Note>
+      <Signature>ResolutionEnv.ModifyExecutiveResolutionEnabled</Signature>
+      <Version>8.58</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PublishToOnlineRegisterEnabled</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        NB: Da attivare solo quando sarà attivo il nuovo albo online, per il momento non attivare il parametro.
+        Permette la pubblicazione dell'atto sul nuovo albo online.
+      </Description>
+      <Note>
+        [ASMN=1, AUSL-RE=1]
+        Se vero = permette di pubblicare l'atto sul nuovo albo online.
+        Se falso = vince la logica esistente.
+        NB: per AUSL-RE, abilitando il parametro si evita la pubblicazione su Sharepoint.
+      </Note>
+      <Signature>ResolutionEnv.PublishToOnlineRegisterEnabled</Signature>
+      <Version>8.58</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE, ASMN</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ShowMassiveResolutionSearchPageEnabled</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        Permette di vedere nel menu di Atti la pagina di Ricerca Flusso
+      </Description>
+      <Note>
+        [ASL-TO=1]
+        Se vero = permette di vedere nel menu di Atti la pagina di Ricerca Flusso.
+        Se falso = vince la logica esistente.
+      </Note>
+      <Signature>ResolutionEnv.ShowMassiveResolutionSearchPageEnabled</Signature>
+      <Version>8.58</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ShowResolutionStatisticsEnabled</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        Permette di vedere nel menu di Atti la pagina delle Statistiche
+      </Description>
+      <Note>
+        [ASL-TO=1]
+        Se vero = permette di vedere nel menu di Atti la pagina delle Statistiche.
+        Se falso = vince la logica esistente.
+      </Note>
+      <Signature>ResolutionEnv.ShowResolutionStatisticsEnabled</Signature>
+      <Version>8.58</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ShowExecutiveDocumentEnabled</Key>
+      <Value>0</Value>
+      <Group>Visualizzazione</Group>
+      <Description>
+        Forza la visibilità del pulsante Documenti nel sommario di un Atto esecutivo.
+      </Description>
+      <Note>
+        [ASL-TO=1]
+        Se vero = permette di abilitare il pulsante Documenti nel sommario di un Atto esecutivo ignorando i controlli sui diritti dell'utente.
+        Se falso = vince la logica esistente.
+      </Note>
+      <Signature>ResolutionEnv.ShowExecutiveDocumentEnabled</Signature>
+      <Version>8.59</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PrintTemplatePath</Key>
+      <Value></Value>
+      <Group>Flusso</Group>
+      <Description>
+        Indica il nome della cartella delle stampe del cliente specificio.
+      </Description>
+      <Note>
+        Indica il nome della cartella delle stampe per ogni cliente. I possibili valori sono: ASMN-RE, AUSL-PC, AUSL-RE, AUSL-TO, AUSL-TOFS, AFOL-MB.
+      </Note>
+      <Signature>ResolutionEnv.PrintTemplatePath</Signature>
+      <Version>8.60</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>UniqueLastPageGenerationEnabled</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        Inibisce la creazione dell'Ultima Pagina, se è già presente nell'Atto un'Ultima Pagina firmata.
+      </Description>
+      <Note>
+        [AUSL-PC=1]
+        Se vero = se è già stata creata e firmata l'ultima pagina dell'atto, non è possibile crearne un'altra da Ricerca Flusso.
+        Se falso = è possibile creare più volte l'ultima pagina, anche se è già presente un'ultima pagina firmata.
+      </Note>
+      <Signature>ResolutionEnv.UniqueLastPageGenerationEnabled</Signature>
+      <Version>8.60</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ExpirationDateSignatureEnabled</Key>
+      <Value>0</Value>
+      <Group>Signature</Group>
+      <Description>
+        Inserisce la dicitura 'Data di Scadenza' nella segnatura di documento di pubblicazione ed esecutività
+      </Description>
+      <Note>
+        [TUTTI=0]
+        Se vero = Inserisce la dicitura 'Data di Scadenza' nella segnatura di documento di pubblicazione ed esecutività
+        Se falso = rimangono le attuali logiche
+
+        NB: la data viene calcolata dalla data di pubblicazione o esecutività sommando il valore del parametro PublicationEndDays
+      </Note>
+      <Signature>ResolutionEnv.ExpirationDateSignatureEnabled</Signature>
+      <Version>8.60</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PanelOCDEnabled</Key>
+      <Value>0</Value>
+      <Group>Visualizzazione</Group>
+      <Description>
+        Abilita la visibilità del pannello di Organo di Controllo per le Delibere soggette a controllo
+      </Description>
+      <Note>
+        [AUSL-PC=0]
+        Se vero = Abilita la visibilità del pannello OC per le Delibere soggette a controllo
+        Se falso = Disabilita la visibilità del pannello OC per le Delibere soggette a controllo
+      </Note>
+      <Signature>ResolutionEnv.PanelOCDEnabled</Signature>
+      <Version>8.60</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CompleteTransparencyExecutiveStepEnabled</Key>
+      <Value>0</Value>
+      <Group>Serie Documentali</Group>
+      <Description>
+        Permette di impostare la data di pubblicazione delle serie documentali dell'atto con la data di esecutività dell'atto.
+      </Description>
+      <Note>
+        [AZOSP-VR=1]
+        Se vero = permette di confermare le serie documentali quando l'atto è esecutivo, impostando come data di pubblicazione delle serie quella di esecutività dell'atto
+        Se falso = rende inalterata la logica attuale
+      </Note>
+      <Signature>ResolutionEnv.CompleteTransparencyExecutiveStepEnabled</Signature>
+      <Version>8.59</Version>
+      <Container>false</Container>
+      <Customer>AZOSP-VR</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MailMassiveLastPageCreatedEnabled</Key>
+      <Value>0</Value>
+      <Group></Group>
+      <Description>
+        manda una mail di notifica sulla creazione massiva di ultime pagine ai firmatari definiti nei gruppi del parametro DigitalLastPageGroup
+      </Description>
+      <Note>
+        [AUSL-PC= 1, ASL-TO = 0]
+        Se vero = manda una mail di notifica sulla creazione massiva di ultime pagine ai firmatari definiti nei gruppi del parametro DigitalLastPageGroup
+        Se falso = non invia mail di notifica
+      </Note>
+      <Signature>ResolutionEnv.MailMassiveLastPageCreatedEnabled</Signature>
+      <Version>8.62</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ReportPrintTimer</Key>
+      <Value>30000</Value>
+      <Group>Flusso</Group>
+      <Description>Definisce il tempo massimo (in millisecondi) di generazione di un report.</Description>
+      <Note>
+        TUTTI = numero in millisecondi del tempo massimo di generazione del report.
+      </Note>
+      <Signature>ResolutionEnv.ReportPrintTimer</Signature>
+      <Version>8.62</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>PropertyInt</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DelibereSignsReportEnabled</Key>
+      <Value></Value>
+      <Group></Group>
+      <Description>
+        Se la delibera è stata generata da una collaborazione e fra i firmatari assenti ci sono direttori definiti nel parametro AbsentManagersCertificates, allora nel frontalino di adozione viene riportato un riepilogo firme dei direttori.
+      </Description>
+      <Note>
+        [AUSL-PC = 1]
+        Se vero = nel frontalino di adozione viene mostrato un riepilogo firme dei direttori, con indicato se ogni direttore ha firmato, è assente o è stato vicariato.
+        Se falso = il frontalino di adozione è standard
+      </Note>
+      <Signature>ResolutionEnv.DelibereSignsReportEnabled</Signature>
+      <Version>8.63</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>OCExecutiveModifyGroups</Key>
+      <Value></Value>
+      <Group>Gruppi</Group>
+      <Description>Definisce i gruppi utente abilitati alla modifica dei protocolli degli organi di controllo in atto esecutivo.</Description>
+      <Note>
+        TUTTI = Lista di gruppi utente (o ID SecurityGroup se abilitata) separati da |
+      </Note>
+      <Signature>ResolutionEnv.OCExecutiveModifyGroups</Signature>
+      <Version>8.63</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ResolutionJournalEffectivenessDateEnabled</Key>
+      <Value>false</Value>
+      <Group></Group>
+      <Description>Abilita la colonna Data esecutività nel registro Adozioni </Description>
+      <Note>
+        [ASL-TO=True]
+        Se true = Abilita la colonna Data esecutività nel registro Adozioni
+        Se false = Non Abilita la colonna Data esecutività nel registro Adozioni
+      </Note>
+      <Signature>ResolutionEnv.ResolutionJournalEffectivenessDateEnabled</Signature>
+      <Version>8.63</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ResolutionJournalEndPublishingDateEnabled</Key>
+      <Value>false</Value>
+      <Group></Group>
+      <Description>Abilita la colonna Data Fine Pubblicazione nel registro Pubblicazione </Description>
+      <Note>
+        [ASL-TO=True]
+        Se true = Abilita la colonna Data Fine Pubblicazione nel registro Pubblicazione
+        Se false = Non Abilita la colonna Data Fine Pubblicazione nel registro Pubblicazione
+      </Note>
+      <Signature>ResolutionEnv.ResolutionJournalEndPublishingDateEnabled</Signature>
+      <Version>8.63</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DefaulLoadLastPageEnabled</Key>
+      <Value>0</Value>
+      <Group>Flusso</Group>
+      <Description>
+        Entrando nella pagina 'Firma Ultima Pagina' vengono caricate tutte le ultime pagine da firmate.
+      </Description>
+      <Note>
+        [AUSL-PC=1]
+        Se vero = si abilita il caricamento automatico di tutte le pagine da firmare
+        Se falso = rimane inalterata la funzionalità in cui il caricamento avviene solo a fronte di filtri specificati
+      </Note>
+      <Signature>ResolutionEnv.DefaulLoadLastPageEnabled</Signature>
+      <Version>8.63</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AutomaticActivityStepEnabled</Key>
+      <Value>false</Value>
+      <Group></Group>
+      <Description>Abilita la possibilità di eseguire automaticamente i vari step di avanzamento di un atto</Description>
+      <Note>
+        [ASL-TO=True]
+        Se true = Abilita la possibilità di eseguire automaticamente i vari step di avanzamento di un atto
+        Se false = Non Abilita la possibilità di eseguire automaticamente i vari step di avanzamento di un atto
+      </Note>
+      <Signature>ResolutionEnv.AutomaticActivityStepEnabled</Signature>
+      <Version>8.64</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+  <XmlParameter>
+      <Key>ErrorAutomaticActivitiesGroup</Key>
+      <Value>0</Value>
+      <Group>Gruppi</Group>
+      <Description>Definisce il gruppo (o i gruppi) degli utenti che possono visualizzare gli errori delle attività del JeepService degli avanzamenti automatici degli atti.</Description>
+      <Note>
+        TUTTI = Lista di gruppi utente (o ID SecurityGroup se abilitata) separati da | 
+      </Note>
+      <Signature>ResolutionEnv.ErrorAutomaticActivitiesGroup</Signature>
+      <Version>8.64</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>   
+  
+    <XmlParameter>
+      <Key>UncomplianceRevokeResolutionEnabled</Key>
+      <Value>false</Value>
+      <Group></Group>
+      <Description>Abilita la possibilità di Annullare un atto in Pubblicazione</Description>
+      <Note>
+        [AUSL-RE=True]
+        Se true = Abilita la possibilità di Annullare un atto in Pubblicazione.
+        Se false = Disabilita la possibilità di Annullare un atto in Pubblicazione,come da Normativa.
+      </Note>
+      <Signature>ResolutionEnv.UncomplianceRevokeResolutionEnabled</Signature>
+      <Version>8.67</Version>
+      <Container>false</Container>
+      <Customer>AUSL-RE</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CheckResolutionStep</Key>
+      <Value></Value>
+      <Group>Atti</Group>
+      <Description>Identifica uno specifico step nella tabella 'TabWorkflow' </Description>
+      <Note>
+        [ASLTO = W04|CONTROLLOIN ]
+        Abilita per il WorkflowType 'W04' (Deliberazione) e lo step description 'CONTROLLOIN',
+        usato insieme al paramentro 'ColumnReturnFromCollaborationVisible' attivo,
+        la visualizzazione ,nella griglia dei risultati di ricerca flusso degli atti,
+        delle icone che indentificano se tale atto è stato precedentemento restituito al proponente o da una collaborazione.
+      </Note>
+      <Signature>ResolutionEnv.CheckResolutionStep</Signature>
+      <Version>8.88</Version>
+      <Container>false</Container>
+      <Customer>ASLTO</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ResolutionDeclineReasonLabel</Key>
+      <Value>Motivazione di annullamento</Value>
+      <Group>Atti</Group>
+      <Description>Definisce il nome della etichetta 'Motivazione di annullamento' nel sommario d'atto.</Description>
+      <Note>
+        [ASLTO = Restituzione al proponente,  Default = Motivazione di annullamento]
+        Imposta in nome della etichetta 'Motivazione di annullamento' nel sommario d'atto.
+      </Note>
+      <Signature>ResolutionEnv.ResolutionDeclineReasonLabel</Signature>
+      <Version>8.88</Version>
+      <Container>false</Container>
+      <Customer>ASLTO</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ResolutionDeclineTextEnabled</Key>
+      <Value>False</Value>
+      <Group>Atti</Group>
+      <Description>Abilita la visualizzazione, nel sommario d'atto, del pannello con la motivazione dell'annullamento.</Description>
+      <Note>
+        [ASLTO = true, AUSL-PC = true, AUSL-RE = true]
+        Se True = Abilita la visualizzazione, nel sommario d'atto, del pannello con la motivazione dell'annullamento se presente.
+        Se False= Nasconde la visualizzazione, nel sommario d'atto, del pannello con la motivazione dell'annullamento.
+      </Note>
+      <Signature>ResolutionEnv.ResolutionDeclineTextEnabled</Signature>
+      <Version>8.88</Version>
+      <Container>false</Container>
+      <Customer>ASLTO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+  </Parameters>
+</XmlEnvironment>

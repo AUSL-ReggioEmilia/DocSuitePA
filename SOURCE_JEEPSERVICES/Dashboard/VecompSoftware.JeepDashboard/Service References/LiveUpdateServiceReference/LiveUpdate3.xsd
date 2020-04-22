@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/JeepServiceLiveUpdate.Interfaces" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/JeepServiceLiveUpdate.Interfaces" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://wcf.jeepserviceliveupdate.fabbrisoft.it/LiveUpdate.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="UpdateDefinition">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DownloadUri" nillable="true" type="xs:anyURI" />
+      <xs:element minOccurs="0" name="ExistsUpdate" type="xs:boolean" />
+      <xs:element minOccurs="0" name="LatestReleaseNotes" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LatestUpdate" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="LatestVersion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ModuleId" type="ser:guid" />
+      <xs:element minOccurs="0" name="ModuleName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="UpdateDefinition" nillable="true" type="tns:UpdateDefinition" />
+  <xs:complexType name="ArrayOfUpdateDefinition">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="UpdateDefinition" nillable="true" type="tns:UpdateDefinition" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfUpdateDefinition" nillable="true" type="tns:ArrayOfUpdateDefinition" />
+  <xs:complexType name="ModuleRelease">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Module" nillable="true" type="tns:ZipObject" />
+      <xs:element minOccurs="0" name="ReleaseNotes" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ModuleRelease" nillable="true" type="tns:ModuleRelease" />
+  <xs:complexType name="ZipObject">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Blob" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="FileName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ZipObject" nillable="true" type="tns:ZipObject" />
+</xs:schema>

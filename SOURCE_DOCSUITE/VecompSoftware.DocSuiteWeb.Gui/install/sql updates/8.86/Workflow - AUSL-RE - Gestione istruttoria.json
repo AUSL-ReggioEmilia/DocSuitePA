@@ -1,0 +1,16 @@
+﻿{
+  "0": {
+    "Position": 0,
+    "Name": "Avvia collaborazione",
+    "AuthorizationType": "None",
+    "ActivityOperation": {
+      "Action": "ToCollaboration",
+      "Area": "Link"
+    },
+    "ActivityType": "CollaborationCreate",
+    "InputArguments": [
+    ],
+    "OutputArguments": [
+    ]
+  }
+}

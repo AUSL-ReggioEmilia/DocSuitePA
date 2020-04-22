@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EDFF1FA2-616C-45EA-9398-E80824FB3ECC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BiblosDS.API</RootNamespace>
+    <AssemblyName>BiblosDS.API</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\BiblosDS.API.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AggiornaDocumento.cs" />
+    <Compile Include="AggiungiAllegatiChiave.cs" />
+    <Compile Include="AggiungiAllegati.cs" />
+    <Compile Include="CancellaAllegatoDocumento.cs" />
+    <Compile Include="Converter\RequestConverter.cs" />
+    <Compile Include="CancellaDocumento.cs" />
+    <Compile Include="CancellaDocumentoChiave.cs" />
+    <Compile Include="AggiornaDocumentoChiave.cs" />
+    <Compile Include="CancellaLegameDocumenti.cs" />
+    <Compile Include="CancellaLegameDocumentiChiave.cs" />
+    <Compile Include="CancellaAllegatoDocumentoChiave.cs" />
+    <Compile Include="CreaLegameDocumentiChiave.cs" />
+    <Compile Include="DocumentoFacade.Preservation.cs" />
+    <Compile Include="InfoLegameDocumentoChiave.cs" />
+    <Compile Include="InfoLegameDocumento.cs" />
+    <Compile Include="DocumentoFacade.Allegato.cs" />
+    <Compile Include="CreaLegameDocumenti.cs" />
+    <Compile Include="DocumentoFacade.Immagine.cs" />
+    <Compile Include="DocumentoFacade.Links.cs" />
+    <Compile Include="DocumentoFacade.Profile.cs" />
+    <Compile Include="DocumentoFacade.Utility.cs" />
+    <Compile Include="Extension\ResponseExtension.cs" />
+    <Compile Include="ImmagineAllegatoDocumento.cs" />
+    <Compile Include="ImmagineDocumento.cs" />
+    <Compile Include="GetProfiliRequest.cs" />
+    <Compile Include="ImmagineDocumentoChiave.cs" />
+    <Compile Include="InfoAllegati.cs" />
+    <Compile Include="InfoAllegatiChiave.cs" />
+    <Compile Include="InfoDocumento.cs" />
+    <Compile Include="CreaDocumento.cs" />
+    <Compile Include="DocumentoFacade.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Exceptions\AttributoNonTrovato.cs" />
+    <Compile Include="Exceptions\ErroreChiamataAlServizioRemoto.cs" />
+    <Compile Include="Extension\RequestExtension.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="InfoDocumentoChiave.cs" />
+    <Compile Include="LoginRequest.cs" />
+    <Compile Include="MetadatoItem.cs" />
+    <Compile Include="Model\BiblosDsAPIModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BiblosDsAPIModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Base.cs" />
+    <Compile Include="Service References\DocumentServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="StatoDocumento.cs" />
+    <Compile Include="VerificaStatoConservazioneDocumento.cs" />
+    <Compile Include="VerificaStatoConservazioneDocumentoChiave.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\DocumentServiceReference\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BiblosDS.Library.Common.Objects\BiblosDS.Library.Common.Objects.csproj">
+      <Project>{BE2B09F0-D141-41B7-820E-85FE7D9A7360}</Project>
+      <Name>BiblosDS.Library.Common.Objects</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <EntityDeploy Include="Model\BiblosDsAPIModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>BiblosDsAPIModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.ArchiveStatistics.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Document.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentArchive.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentAttach.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentAttribute.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentCertificate.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentContent.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentServer.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentStorage.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentStorageArea.datasource" />
+    <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.Response.DocumentResponse.datasource" />
+    <None Include="Service References\DocumentServiceReference\Archive1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\ArchiveServerConfig.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\ArchiveStatistics.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\Attribute1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\AttributeGroup1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\AttributeMode1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\AttributeValue1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\BiblosDS.Library.Common.Exceptions.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\BiblosDS.Library.Common.Objects1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\BiblosDS1.wsdl" />
+    <None Include="Service References\DocumentServiceReference\BiblosDSObject1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\Certificate1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\Content1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\ContentFormat.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\Document1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\DocumentAttach.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\DocumentResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\DocumentServer.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\FilterOperator1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\Permission1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PermissionMode1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\Preservation1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationAlert1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationAlertType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationJournaling1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationJournalingActivity1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationRole1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationSchedule1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationScheduleTaskType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationTask1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationTaskGroup1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationTaskGroupType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationTaskType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationTaskTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationUser1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\PreservationUserRole1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\ResponseBase.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\ResponseError.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\Server.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\ServerRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\service1.wsdl" />
+    <None Include="Service References\DocumentServiceReference\service21.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\Storage1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\StorageArea1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\StorageType1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentServiceReference\Vecomp.BiblosDs.Documents.wsdl" />
+    <None Include="Service References\DocumentServiceReference\Vecomp.BiblosDs.Documents.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DocumentServiceReference\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DocumentServiceReference\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DocumentServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

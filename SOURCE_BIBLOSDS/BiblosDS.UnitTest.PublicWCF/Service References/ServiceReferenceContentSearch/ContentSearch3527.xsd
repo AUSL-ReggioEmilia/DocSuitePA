@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/PreservationSchedule" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationSchedule" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/ContentSearch.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/ContentSearch.svc?xsd=xsd37" namespace="http://BiblosDS/2009/10/PreservationScheduleTaskType" />
+  <xs:import schemaLocation="http://localhost:1526/ContentSearch.svc?xsd=xsd9" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="PreservationSchedule">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Active" type="xs:boolean" />
+          <xs:element minOccurs="0" name="Default" type="xs:boolean" />
+          <xs:element minOccurs="0" name="FrequencyType" type="xs:short" />
+          <xs:element minOccurs="0" name="IdPreservationSchedule" type="ser:guid" />
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Period" nillable="true" type="xs:string" />
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/PreservationScheduleTaskType" minOccurs="0" name="PreservationScheduleTaskTypes" nillable="true" type="q2:ArrayOfPreservationScheduleTaskType" />
+          <xs:element minOccurs="0" name="ValidWeekDays" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PreservationSchedule" nillable="true" type="tns:PreservationSchedule" />
+</xs:schema>

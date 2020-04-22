@@ -1,0 +1,69 @@
+﻿@using BiblosDS.LegalExtension.AdminPortal.Helpers
+@{
+    ViewBag.Title = "Archivi";
+}
+
+@section featured {
+    <hgroup class="title">
+        <h1><span class="fas fa-archive" style="font-size: 32px; margin-right: 10px;"></span>@ViewBag.Title</h1>
+    </hgroup>
+}
+<br />
+<div id="details"></div>
+
+@(Html.Kendo().Grid<BiblosDS.Library.Common.Objects.DocumentArchive>()
+          .Name("Grid")
+          .Columns(columns =>
+          {
+              columns.Bound(o => o.IdArchive)
+                .Template(cp =>
+                cp.IdArchive
+              )
+              .ClientTemplate("<a href='ArchivePreservationTask/#=IdArchive#' class='k-button'>Task</a>")
+              .Width(100).Title(" ");
+
+              columns.Bound(o => o.IdArchive).Hidden();
+              columns.Bound(o => o.Name).Filterable(true).HtmlAttributes(new { style = "font-weight:bold; " }).Title("Archivio");
+
+              columns.Bound(o => o.IdArchive)
+                .Template(cp =>
+                cp.IdArchive
+              )
+              .ClientTemplate("<a href='" + Url.Action("Index", "AwardBatch") + "/Index/#=IdArchive#' class='k-button'>Pacchetti di versamento</a>")
+              .Width(200).Title(" ");
+
+              columns.Bound(o => o.IdArchive)
+                .Template(cp =>
+                cp.IdArchive
+              )
+              .ClientTemplate("#if(Name != '" + ConfigurationHelper.RDVArchiveName + "') {#<a href='" + Url.Action("AwardBatchRDVSign", "AwardBatch") + "/#=IdArchive#' class='k-button'>Rapporti di versamento</a>#}#")
+              .Width(200).Title(" ");
+
+              columns.Bound(o => o.IdArchive)
+                .Template(cp =>
+                cp.IdArchive
+              )
+              .ClientTemplate("<a href='ArchivePreservation/#=IdArchive#' class='k-button'>Conservazioni</a>")
+              .Width(130)
+              .Title(" ");
+
+              columns.Bound(o => o.IdArchive)
+                .Template(cp =>
+                cp.IdArchive
+              )
+              .ClientTemplate("<a href='ArchivePreservationConfiguration/#=IdArchive#' class='k-button'>Configurazione Archivio</a>")
+              .Title(" ");
+          })
+          .Pageable(pager => pager.Refresh(true))
+          .Resizable(a => a.Columns(true))
+          .Scrollable()
+          .DataSource(dataSource => dataSource
+            .Ajax()
+            .Model(model => model.Id(p => p.IdArchive))
+            .Sort(sort => sort.Add("Name").Ascending())
+            .PageSize(10)
+            .Read(read => read.Action("GridArchives", "Home", new { id = DateTime.Now.Ticks }))
+          )
+)
+
+

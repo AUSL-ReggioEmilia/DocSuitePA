@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="9de1a031-e650-4593-9ee0-c4af481ba9f2" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.ComponentModel.BindingList`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:1526/Preservation.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Preservation.xsd" MetadataType="Schema" ID="173f9813-65ba-4db0-bdb4-f8844ac8a04c" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd9" />
+    <MetadataFile FileName="Preservation2719.xsd" MetadataType="Schema" ID="5c95e1a8-f5d0-42ab-a1f1-4718178ed40d" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd39" />
+    <MetadataFile FileName="Preservation24.xsd" MetadataType="Schema" ID="dcf4494c-8755-42a0-9fe4-b9e870953ecc" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd25" />
+    <MetadataFile FileName="Preservation27.xsd" MetadataType="Schema" ID="14487e19-8f8e-4339-94b8-972419202945" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd35" />
+    <MetadataFile FileName="Preservation271.xsd" MetadataType="Schema" ID="1d9dcbfb-4d21-433c-92cf-fb68024d592d" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd38" />
+    <MetadataFile FileName="Preservation26.xsd" MetadataType="Schema" ID="a86ab9ba-a117-4541-b75a-469552100daf" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd28" />
+    <MetadataFile FileName="Preservation272.xsd" MetadataType="Schema" ID="764b3213-409c-49fa-9136-6eca33c930b5" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd43" />
+    <MetadataFile FileName="Preservation.wsdl" MetadataType="Wsdl" ID="e63ee0f3-834e-448d-ac89-1edee86f778a" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="Preservation2.xsd" MetadataType="Schema" ID="75fdccc1-1d0d-417b-af93-97133911799a" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd18" />
+    <MetadataFile FileName="Preservation1.xsd" MetadataType="Schema" ID="863173aa-e00c-470c-a6c3-5c870b17ff12" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd15" />
+    <MetadataFile FileName="Preservation273.xsd" MetadataType="Schema" ID="83a1b952-ac3c-46ed-8a89-e31be8cb2f53" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd37" />
+    <MetadataFile FileName="Preservation3.xsd" MetadataType="Schema" ID="73685d68-15f1-4a26-876d-3ab233802e26" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd14" />
+    <MetadataFile FileName="Preservation241.xsd" MetadataType="Schema" ID="cb846f57-75df-4de6-8e0b-f854b438c708" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd24" />
+    <MetadataFile FileName="Preservation274.xsd" MetadataType="Schema" ID="a2010692-2e3c-49ed-838c-311bf26da54c" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd34" />
+    <MetadataFile FileName="Preservation4.xsd" MetadataType="Schema" ID="ee75c184-6487-44a9-a806-d6c70eba673b" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd21" />
+    <MetadataFile FileName="Preservation5.xsd" MetadataType="Schema" ID="06207ba4-f62f-46ec-b563-fd39a9ae5675" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd8" />
+    <MetadataFile FileName="Preservation275.xsd" MetadataType="Schema" ID="5e4b9936-d63b-4e75-877f-87f8540bf3d1" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd31" />
+    <MetadataFile FileName="Preservation.disco" MetadataType="Disco" ID="322f02a6-85a4-4be1-b1c0-e34647196d24" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?disco" />
+    <MetadataFile FileName="Preservation6.xsd" MetadataType="Schema" ID="90ebcb42-aa43-4ae7-9a8b-7a3c96efd44e" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd4" />
+    <MetadataFile FileName="Preservation276.xsd" MetadataType="Schema" ID="cbf1eb2c-3273-4f36-b216-8a31e4000e1a" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd44" />
+    <MetadataFile FileName="Preservation277.xsd" MetadataType="Schema" ID="76f9eb31-e988-4bd3-b44d-8393f09e4951" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd45" />
+    <MetadataFile FileName="Preservation278.xsd" MetadataType="Schema" ID="c76ff5e6-eb9e-41b4-91f5-a30011da876b" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd40" />
+    <MetadataFile FileName="Preservation279.xsd" MetadataType="Schema" ID="8dc51a02-8cde-43f6-985f-654c6e6c2fc1" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd36" />
+    <MetadataFile FileName="Preservation7.xsd" MetadataType="Schema" ID="4dd70a0c-68dc-4823-a619-3cece3466817" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd17" />
+    <MetadataFile FileName="Preservation25.xsd" MetadataType="Schema" ID="f8b8b9d9-c09f-4288-a6f1-7d7a06f17ab1" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd27" />
+    <MetadataFile FileName="Preservation8.xsd" MetadataType="Schema" ID="5aaa206a-b77d-43cb-8040-0c5f99081bed" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd10" />
+    <MetadataFile FileName="Preservation9.xsd" MetadataType="Schema" ID="92789ff4-61f8-47aa-8fd4-a05d4982bc81" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd20" />
+    <MetadataFile FileName="Preservation2710.xsd" MetadataType="Schema" ID="8ec8a19a-58f7-4a53-82d3-4ceca5725345" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd30" />
+    <MetadataFile FileName="Preservation10.xsd" MetadataType="Schema" ID="451efef7-7967-4314-9a39-6749d5b0ff36" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd11" />
+    <MetadataFile FileName="Preservation2711.xsd" MetadataType="Schema" ID="7c3e5f39-a71d-41d9-9422-bdf4dbe771f0" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd47" />
+    <MetadataFile FileName="Preservation2712.xsd" MetadataType="Schema" ID="2c1ad290-a585-4850-b236-e76360c8fc51" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd48" />
+    <MetadataFile FileName="Preservation11.xsd" MetadataType="Schema" ID="1cdddc13-c98c-41ba-8b56-a808d7d3004b" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd16" />
+    <MetadataFile FileName="Preservation12.xsd" MetadataType="Schema" ID="f55315ab-f23d-4008-b20e-cd971774ca33" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd0" />
+    <MetadataFile FileName="Preservation242.xsd" MetadataType="Schema" ID="8de36a42-69bf-4aa3-8f2a-efa6af7e1c70" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd26" />
+    <MetadataFile FileName="Preservation13.xsd" MetadataType="Schema" ID="f34e5ed7-932c-4de4-a615-8f0161aaee7a" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd1" />
+    <MetadataFile FileName="Preservation14.xsd" MetadataType="Schema" ID="8fdfc4b3-e2ec-42df-afc8-26661dd69c8c" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd13" />
+    <MetadataFile FileName="Preservation15.xsd" MetadataType="Schema" ID="fffeed99-b127-4bd0-ba08-7f21b44c3d7f" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd2" />
+    <MetadataFile FileName="Preservation16.xsd" MetadataType="Schema" ID="c709cd8c-efea-4e36-935a-c4a99080ef9f" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd23" />
+    <MetadataFile FileName="Preservation17.xsd" MetadataType="Schema" ID="712e4248-3022-4f48-803c-a184610ceddb" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd3" />
+    <MetadataFile FileName="Preservation2713.xsd" MetadataType="Schema" ID="4ce78ce5-9be2-4b13-a89d-6ea78f8eb947" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd33" />
+    <MetadataFile FileName="Preservation2714.xsd" MetadataType="Schema" ID="e8c220c8-dc0b-4b13-b0ab-08902e10e6f7" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd42" />
+    <MetadataFile FileName="Preservation2715.xsd" MetadataType="Schema" ID="99f49ff6-75e9-4089-90d9-b72b1ba5742b" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd46" />
+    <MetadataFile FileName="Preservation1.wsdl" MetadataType="Wsdl" ID="c903a509-e54b-4ade-9e12-95f415a31efa" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?wsdl" />
+    <MetadataFile FileName="Preservation18.xsd" MetadataType="Schema" ID="5789d6b2-c213-413c-aa0c-a65cb01fb090" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd5" />
+    <MetadataFile FileName="Preservation19.xsd" MetadataType="Schema" ID="719dd855-cc33-4fd6-88e5-6472ad3a4d0e" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd6" />
+    <MetadataFile FileName="Preservation23.xsd" MetadataType="Schema" ID="3c703fb2-f68c-4313-ba70-e031260cb06c" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd7" />
+    <MetadataFile FileName="Preservation21.xsd" MetadataType="Schema" ID="db4af28a-6513-4377-b547-22b2c363e4e3" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd22" />
+    <MetadataFile FileName="Preservation2716.xsd" MetadataType="Schema" ID="5bb52f9f-b8d7-49d4-ae17-12fc31b5c0fd" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd32" />
+    <MetadataFile FileName="Preservation2717.xsd" MetadataType="Schema" ID="08346164-904c-482f-a677-b62bd8b57b9f" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd49" />
+    <MetadataFile FileName="Preservation2718.xsd" MetadataType="Schema" ID="2e3dc262-1295-4ff8-b1c6-a893e5a011ed" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd41" />
+    <MetadataFile FileName="Preservation20.xsd" MetadataType="Schema" ID="70c616e0-9f62-4158-820c-35c43e3a6b0a" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd12" />
+    <MetadataFile FileName="Preservation22.xsd" MetadataType="Schema" ID="e5185bbf-9bcd-4c8d-b2c6-cb01bb061e1d" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd19" />
+    <MetadataFile FileName="Preservation2720.xsd" MetadataType="Schema" ID="3b587d1d-9f13-4489-b96a-dde35a13b93b" SourceId="1" SourceUrl="http://localhost:1526/Preservation.svc?xsd=xsd29" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

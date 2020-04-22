@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="TableLog" table="TableLog">
+    
+    <id name="Id" column="IdTableLog">
+      <generator class="assigned" />
+    </id>
+    
+    <property name="RegistrationDate" column="LogDate" />
+    <property name="SystemComputer" column="SystemComputer" type="AnsiString" />
+    <property name="RegistrationUser" column="SystemUser" type="AnsiString" />
+    <property name="TableName" column="TableName" type="AnsiString" />
+    <property name="EntityId" column="EntityId" />
+    <property name="EntityUniqueId" column="EntityUniqueId"/>
+    <property name="LogType" column="LogType" />
+    <property name="LogDescription" column="LogDescription" type="AnsiString" />
+    <property name="Hash" column="Hash" />
+    
+  </class>
+  
+</hibernate-mapping>

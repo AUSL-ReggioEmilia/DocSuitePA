@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <base href="./" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+
+  <body>
+    <my-app>
+        <style>
+            .loading-spinner {
+                position: fixed;
+                right: 0;
+                bottom: 0;
+                top: 0;
+                width: 100%;
+                background: #fff;
+                z-index: 999999;
+                opacity: 0.5;
+                filter: alpha(opacity=50);
+            }
+
+            #spinner-gif {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 100px;
+                height: 100px;
+                margin-left: -50px;
+                margin-top: -50px;
+            }
+        </style>
+        <div class="loading-spinner">
+            <img id="spinner-gif" align="middle" src="app/images/spin.gif" />
+        </div>
+    </my-app>
+  </body>
+</html>

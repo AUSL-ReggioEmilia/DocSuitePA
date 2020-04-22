@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VecompSoftware.JeepDashboard.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ServiceName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">VecompSoftware.JeepService8</Value>
+    </Setting>
+    <Setting Name="LiveUpdateServiceName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">VecompSoftware.JeepServiceLiveUpdate</Value>
+    </Setting>
+    <Setting Name="JeepServicePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\sviluppo\JS8\JeepService\JeepService\bin\Debug\JeepService.exe</Value>
+    </Setting>
+    <Setting Name="log4netConfig" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\sviluppo\JS8\JeepService\JeepService\bin\Debug\Config\log4net.config</Value>
+    </Setting>
+    <Setting Name="JeepServiceConfig" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\sviluppo\JS8\JeepService\JeepService\bin\Debug\Config\JeepConfig.xml</Value>
+    </Setting>
+    <Setting Name="LiveUpdatePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\Vecomp Software\JeepService8\LIVE UPDATE\VecompSoftware.JeepService.LiveUpdate.exe</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

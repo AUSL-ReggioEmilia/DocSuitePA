@@ -1,0 +1,8 @@
+﻿{
+  "TenantName": "ASL-TO-CITTA",
+  "TenantId": "E5ED27AA-7FEA-432F-91F4-42B9A9250908",
+  "TopicWorkflowIntegration": "workflow_integration",
+  "WorkflowStartProtocolUserAuthorizationSubscription": "WorkflowStartProtocolUserAuthorization",
+  "ExternalViewerUrl": "http://docsuite/ExternalViewer/#/MieAttivita",
+  "WorkflowRepositoryName": "AUSL-RE - Richiedi Parere"
+}​

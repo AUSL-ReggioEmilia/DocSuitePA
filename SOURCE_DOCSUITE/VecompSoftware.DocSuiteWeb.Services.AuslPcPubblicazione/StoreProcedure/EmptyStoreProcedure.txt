@@ -1,0 +1,10 @@
+-- Create empty SP
+CREATE PROCEDURE dbo.StoreProcedureVuota
+       @idDocumento int,
+       @azione int
+AS
+BEGIN
+       select * from dbo.Documenti; 
+END
+
+GO

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://Vecomp.BiblosDs.ContentSearch" elementFormDefault="qualified" targetNamespace="http://Vecomp.BiblosDs.ContentSearch" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/ContentSearch.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/Condition" />
+  <xs:import schemaLocation="http://localhost:1526/ContentSearch.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/DocumentResponse" />
+  <xs:import schemaLocation="http://localhost:1526/ContentSearch.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Document" />
+  <xs:element name="IsAlive">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsAliveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IsAliveResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchQueryPaged">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://BiblosDS/2009/10/Condition" minOccurs="0" name="AttributeConditions" nillable="true" type="q1:ArrayOfCondition" />
+        <xs:element xmlns:q2="http://BiblosDS/2009/10/Condition" minOccurs="0" name="ContentConditions" nillable="true" type="q2:ArrayOfCondition" />
+        <xs:element xmlns:q3="http://BiblosDS/2009/10/Condition" minOccurs="0" name="InferConditions" nillable="true" type="q3:ArrayOfCondition" />
+        <xs:element minOccurs="0" name="skip" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="take" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchQueryPagedResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://BiblosDS/2009/10/DocumentResponse" minOccurs="0" name="SearchQueryPagedResult" nillable="true" type="q4:DocumentResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchQuery">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://BiblosDS/2009/10/Condition" minOccurs="0" name="attributeConditions" nillable="true" type="q5:ArrayOfCondition" />
+        <xs:element xmlns:q6="http://BiblosDS/2009/10/Condition" minOccurs="0" name="contentConditions" nillable="true" type="q6:ArrayOfCondition" />
+        <xs:element xmlns:q7="http://BiblosDS/2009/10/Condition" minOccurs="0" name="inferConditions" nillable="true" type="q7:ArrayOfCondition" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchQueryResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://BiblosDS/2009/10/Document" minOccurs="0" name="SearchQueryResult" nillable="true" type="q8:ArrayOfDocument" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchQueryContext">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q9="http://BiblosDS/2009/10/Condition" minOccurs="0" name="attributeConditions" nillable="true" type="q9:ArrayOfCondition" />
+        <xs:element xmlns:q10="http://BiblosDS/2009/10/Condition" minOccurs="0" name="contentConditions" nillable="true" type="q10:ArrayOfCondition" />
+        <xs:element xmlns:q11="http://BiblosDS/2009/10/Condition" minOccurs="0" name="inferConditions" nillable="true" type="q11:ArrayOfCondition" />
+        <xs:element minOccurs="0" name="skip" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="take" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchQueryContextResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://BiblosDS/2009/10/DocumentResponse" minOccurs="0" name="SearchQueryContextResult" nillable="true" type="q12:DocumentResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllDocumentChains">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllDocumentChainsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://BiblosDS/2009/10/Document" minOccurs="0" name="GetAllDocumentChainsResult" nillable="true" type="q13:ArrayOfDocument" />
+        <xs:element minOccurs="0" name="docunentsInArchiveCount" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllDocuments">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="visible" type="xs:boolean" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllDocumentsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q14="http://BiblosDS/2009/10/Document" minOccurs="0" name="GetAllDocumentsResult" nillable="true" type="q14:ArrayOfDocument" />
+        <xs:element minOccurs="0" name="docunentsInArchiveCount" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllDocumentsWithThumbnail">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="visible" type="xs:boolean" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllDocumentsWithThumbnailResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://BiblosDS/2009/10/Document" minOccurs="0" name="GetAllDocumentsWithThumbnailResult" nillable="true" type="q15:ArrayOfDocument" />
+        <xs:element minOccurs="0" name="docunentsInArchiveCount" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

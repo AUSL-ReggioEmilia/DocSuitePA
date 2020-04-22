@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="Document" table="Document">
+    
+    <composite-id class="YearNumberCompositeKey" name="Id">
+      <key-property column="Year" name="Year" />
+      <key-property column="Number" name="Number" />
+    </composite-id>
+    
+    <property name="Year" column="Year" insert="false" update="false" />
+    <property name="Number" column="Number" insert="false" update="false" />
+    <property name="StartDate" column="StartDate" />
+    <property name="ReStartDate" column="ReStartDate" />
+    <property name="EndDate" column="EndDate" />
+    <property name="ExpiryDate" column="ExpiryDate" />
+    <property name="ArchiveDate" column="ArchiveDate" />
+    <property name="ServiceNumber" column="ServiceNumber" type="AnsiString" />
+    <property name="Name" column="Name" type="AnsiString" />
+    <property name="DocumentObject" column="Object" type="AnsiString" />
+    <property name="Manager" column="Manager" type="AnsiString" />
+    <property name="Note" column="Note" type="AnsiString" />
+    <property name="CheckPublication" column="CheckPublication" type="AnsiString" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedReason" column="LastChangedReason" type="AnsiString" />
+    <property name="ConservationStatus" column="ConservationStatus" type="AnsiChar" />
+    <property name="LastConservationDate" column="LastConservationDate" />
+    <property name="HasConservatedDocs" column="HasConservatedDocs" />
+
+    <many-to-one class="Location" name="Location" column="Location" />
+    <many-to-one class="Container" name="Container" column="idContainer" />
+    <many-to-one class="Role" name="Role" column="idRole" />
+    <many-to-one class="DocumentTabStatus" name="Status" column="idStatus" />
+    <many-to-one class="Category" name="Category" column="idCategory" />
+    <many-to-one class="Category" name="SubCategory" column="idSubCategory" />
+    
+    <bag name="Contacts" table="DocumentContact" cascade="none" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="DocumentContact" />
+    </bag>
+    <bag name="Objects" table="DocumentObject" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="DocumentObject" />
+    </bag>
+    <bag name="DocumentTokens" table="DocumentToken" order-by="Incremental" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="DocumentToken" />
+    </bag>
+    <bag name="DocumentVersionings" table="DocumentVersioning" cascade="none" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="DocumentVersioning" />
+    </bag>
+    <bag name="DocumentLogs" table="DocumentLog" cascade="none" inverse="true" fetch="select" batch-size="50">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="DocumentLog" />
+      <filter condition=":User=SystemUser" name="DocmLogUser">
+      </filter>
+    </bag>
+    <bag name="DocumentFolders" table="DocumentFolder" cascade="none" inverse="true">
+      <key>
+        <column name="Year" />
+        <column name="Number" />
+      </key>
+      <one-to-many class="DocumentFolder" />
+    </bag>
+    
+  </class>
+  
+</hibernate-mapping>

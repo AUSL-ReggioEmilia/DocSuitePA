@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="e7640d9a-eda5-4d49-b14b-aef8e3b65f7f" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://arss.demo.firma-automatica.it/ArubaSignService/ArubaSignService?wsdl" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ArubaSignServiceService.wsdl" MetadataType="Wsdl" ID="4c2ce493-6bff-4309-abe5-38a9b94eeefc" SourceId="1" SourceUrl="https://arss.demo.firma-automatica.it/ArubaSignService/ArubaSignService?wsdl" />
+    <MetadataFile FileName="ArubaSignService.xsd" MetadataType="Schema" ID="c2efcd50-5704-41a4-9e12-6267ed180c46" SourceId="1" SourceUrl="https://arss.demo.firma-automatica.it/ArubaSignService/ArubaSignService?xsd=1" />
+    <MetadataFile FileName="xmlmime.xsd" MetadataType="Schema" ID="8d43a825-2b86-464a-a3ce-dcedd4f47e00" SourceId="1" SourceUrl="http://www.w3.org/2005/05/xmlmime.xsd" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

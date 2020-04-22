@@ -1,0 +1,149 @@
+﻿body {
+    /*aggiungere una font family*/
+    padding-top: 70px;
+}
+
+/*span {
+    font-style: italic;
+}*/
+
+li {
+    list-style-type: none;
+}
+
+hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.navbar-fixed-left {
+    width: 300px;
+    border-radius: 0;
+    height: 100%;
+    min-width: 260px;
+}
+
+    .navbar-fixed-left .navbar-nav > li {
+        float: none; /* Cancel default li float: left */
+        width: 139px;
+    }
+
+.menu-container {
+    padding-left: 320px;
+    padding-right: 35px;
+}
+
+.panelbar-wrapper {
+    width: 300px;
+    position: fixed;
+    min-width: 260px;
+}
+
+.k-panelbar > .k-item > .k-link.k-state-selected:not(.k-state-active), .k-panelbar > .k-item > .k-link.k-state-selected:not(.k-state-expanded), .k-treeview .k-in.k-state-selected,
+.k-panelbar > .k-item > .k-link.k-state-selected:not(.k-state-active).k-state-hover, .k-panelbar > .k-item > .k-link.k-state-selected:not(.k-state-active):hover,
+.k-panelbar > .k-item > .k-link.k-state-selected:not(.k-state-expanded).k-state-hover, .k-panelbar > .k-item > .k-link.k-state-selected:not(.k-state-expanded):hover {
+    background-color: #5E7996;
+}
+
+.k-panelbar > .k-item > .k-link, .k-panelbar > .k-item > .k-link:hover {
+    color: #5E7996;
+}
+
+    .k-panelbar > .k-item > .k-link.k-state-selected {
+        color: #fff;
+    }
+
+.k-panelbar > .k-item.k-state-default,
+.k-panelbar > .k-item.k-state-default > .k-link:hover {
+    cursor: pointer;
+}
+
+    .k-panelbar > .k-item.k-state-default > .k-link:not(.k-state-selected) {
+        background-color: #ffb300;
+        color: #fff;
+        font-weight: bold;
+    }
+
+.k-panelbar > .k-item > .k-link:not(.k-state-selected) .k-icon {
+    color: #fff;
+}
+
+.k-disabled, .k-state-disabled {
+    font-weight: bold;
+    color: #303E4D;
+}
+
+.k-panelbar > .k-item > .k-link .k-icon {
+    margin-right: 5px;
+}
+
+.k-input::selection, .k-textbox::selection {
+    background-color: #5E7996;
+}
+
+.k-list .k-item.k-state-selected, .k-state-highlight, .k-var--accent, .k-var--selected-background {
+    background-color: #5E7996;
+}
+
+.grid-header {
+    text-align: center !important;
+    font-weight: bold !important;
+}
+
+.cell {
+    text-align: center !important;
+}
+
+.k-link k-state-selected {
+    color: #5E7996;
+}
+
+.k-pager-wrap .k-state-selected:hover {
+    background-color: #5E7996;
+}
+
+.k-pager-numbers .k-link, .k-pager-numbers .k-link:link {
+    color: #5E7996;
+}
+
+.k-state-selected {
+    background-color: #5E7996;
+}
+
+.k-form-inline .k-form-field, .k-form .k-form-field {
+    margin-bottom: 5px;
+}
+
+.k-dialog-titlebar {
+    background-color: #29598c !important;
+}
+
+.k-tabstrip-items .k-item {
+    color: black;
+    width: 50%;
+}
+
+.k-tabstrip-top > .k-tabstrip-items .k-item.k-state-active {
+    background-color: #436c98 !important;
+    border-bottom-color: transparent;
+    width: 50%;
+    color: white;
+    padding: 3px;
+}
+
+.k-a:hover {
+    text-decoration: none;
+}
+
+/*@media only screen and (max-width: 768px){
+    .navbar-fixed-left {
+        width: 0px;
+    }
+    .menu-container {
+        padding-left: 35px;
+    }
+    .panelbar-wrapper {
+        display: none;
+    }
+
+}*/

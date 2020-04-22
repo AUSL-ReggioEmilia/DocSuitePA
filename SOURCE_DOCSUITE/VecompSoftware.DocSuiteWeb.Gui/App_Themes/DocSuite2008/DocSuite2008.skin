@@ -1,0 +1,135 @@
+<%--
+Default skin template. The following skins are provided as examples only.
+
+1. Named control skin. The SkinId should be uniquely defined because
+   duplicate SkinId's per control type are not allowed in the same theme.
+
+<asp:GridView runat="server" SkinId="gridviewSkin" BackColor="White" >
+   <AlternatingRowStyle BackColor="Blue" />
+</asp:GridView>
+
+2. Default skin. The SkinId is not defined. Only one default 
+   control skin per control type is allowed in the same theme.
+
+<asp:Image runat="server" ImageUrl="~/images/image1.jpg" />
+--%>
+
+<telerik:RadEditor runat="server" ContentAreaCssFile="" RenderMode="Classic" BorderStyle="None"  NewLineMode="Br">
+    <CssFiles>   
+        <telerik:EditorCssFile Value="" />
+    </CssFiles>   
+</telerik:RadEditor>
+
+<telerik:RadMaskedTextBox Font-Names="Verdana,Helevtica,Sans-Serif" Font-Size="11px" runat="Server" />
+
+<telerik:RadWindowManager Behaviors="Close, Maximize, Reload, Resize, Move" KeepInScreenBounds="true" Localization-Cancel="Annulla" Localization-Close="Chiudi" Localization-Maximize="Ingrandisci" Localization-Minimize="Riduci a icona" Localization-PinOff="Blocca" Localization-PinOn="Blocca" Localization-Reload="Aggiorna" Localization-Restore="Ripristina" Localization-Yes="Si" ReloadOnShow="True" runat="server" VisibleStatusbar="False" />
+
+<telerik:RadWindow KeepInScreenBounds="true" Modal="True" runat="server" ShowContentDuringLoad="false" VisibleStatusbar="false" />
+
+<telerik:RadDatePicker Height="19" MinDate="1/1/1900" runat="server">
+    <Calendar runat="server" ShowRowHeaders="False">
+        <FastNavigationSettings CancelButtonCaption="Annulla" DateIsOutOfRangeMessage="Data non valida" EnableTodayButtonSelection="true" OkButtonCaption="Ok" TodayButtonCaption="Oggi" />
+        <SpecialDays>
+            <telerik:RadCalendarDay Repeatable="Today" ItemStyle-CssClass="rcToday" />
+        </SpecialDays>
+    </Calendar>
+    <DateInput DateFormat="dd/MM/yyyy" />
+    <DatePopupButton ToolTip="Selezione Data"/>
+    <HideAnimation Duration="0" />
+    <ShowAnimation Duration="0" />
+</telerik:RadDatePicker>
+<telerik:RadCalendar runat="server" />
+<telerik:RadDateInput runat="server" />
+
+<telerik:RadDropDownList runat="server"/>
+
+<telerik:RadComboBox runat="server">
+    <ExpandAnimation Type="None" />
+    <CollapseAnimation Type="None" />
+</telerik:RadComboBox>
+
+<telerik:RadTreeView CollapseAnimation-Type="none" ExpandAnimation-Type="none" LoadingStatusPosition="None" runat="server" Style="white-space: normal;"  />
+<telerik:RadTreeViewContextMenu runat="server" />
+<telerik:RadPanelBar runat="server" ExpandAnimation-Type="None" />
+
+<telerik:RadProgressManager runat="server" />
+<telerik:RadUpload runat="server" />
+<telerik:RadProgressArea runat="server" />
+<telerik:RadMenu runat="server" />
+
+<telerik:RadSlidingPane runat="server" CollapseText="Nascondi" DockText="Blocca" UndockText="Sblocca" ResizeText="Ridimensiona"></telerik:RadSlidingPane>
+<telerik:RadSplitter runat="server" BorderSize="0" />
+
+<DocSuite:BindGrid runat="server" >
+    <SelectedItemStyle CssClass="Selezionato" /> 
+	<ItemStyle CssClass="Chiaro" />
+    <AlternatingItemStyle CssClass="Scuro" />
+	<FooterStyle ForeColor="Black" BackColor="#CCCCCC" />
+    <MasterTableView runat="server">
+        <ItemStyle CssClass="Scuro" />
+        <AlternatingItemStyle CssClass="Chiaro" />
+    </MasterTableView>
+    <ClientSettings>
+        <ClientMessages DragToGroupOrReorder="Trascina per raggrupare" />
+    </ClientSettings>
+    <GroupPanel Text="Trascina qui una o più colonne per raggruppare i dati della pagina" />
+    <GroupingSettings CaseSensitive="False" />
+</DocSuite:BindGrid>
+
+<DocSuite:BaseGrid runat="server" >
+    <SelectedItemStyle CssClass="Selezionato" />
+	<ItemStyle CssClass="Chiaro" />
+    <AlternatingItemStyle CssClass="Scuro" />
+	<FooterStyle ForeColor="Black" BackColor="#CCCCCC" />
+    <MasterTableView runat="server" >
+        <ItemStyle CssClass="Scuro" />
+        <AlternatingItemStyle CssClass="Chiaro" />
+    </MasterTableView>
+    <ClientSettings>
+        <ClientMessages DragToGroupOrReorder="Trascina per raggrupare" />
+    </ClientSettings>
+    <GroupPanel Text="Trascina qui una o più colonne per raggruppare i dati della pagina" />
+    <GroupingSettings CaseSensitive="False" />
+</DocSuite:BaseGrid>
+
+<DocSuite.WebComponent:BindGrid runat="server" >
+    <SelectedItemStyle CssClass="Selezionato" /> 
+	<ItemStyle CssClass="Chiaro" />
+    <AlternatingItemStyle CssClass="Scuro" />
+	<FooterStyle ForeColor="Black" BackColor="#CCCCCC" />
+    <MasterTableView runat="server">
+        <ItemStyle CssClass="Scuro" />
+        <AlternatingItemStyle CssClass="Chiaro" />
+    </MasterTableView>
+    <ClientSettings>
+        <ClientMessages DragToGroupOrReorder="Trascina per raggrupare" />
+    </ClientSettings>
+    <GroupPanel Text="Trascina qui una o più colonne per raggruppare i dati della pagina" />
+    <GroupingSettings CaseSensitive="False" />
+</DocSuite.WebComponent:BindGrid>
+
+<telerik:RadGrid runat="server" >
+    <SelectedItemStyle CssClass="Selezionato" />
+	<ItemStyle CssClass="Chiaro" />
+    <AlternatingItemStyle CssClass="Scuro" /> 
+	<FooterStyle ForeColor="Black" BackColor="#CCCCCC" />
+    <MasterTableView runat="server">
+        <ItemStyle CssClass="Scuro" />
+        <AlternatingItemStyle CssClass="Chiaro" />
+    </MasterTableView>
+    <ClientSettings>
+        <Selecting EnableDragToSelectRows="false" />
+        <ClientMessages DragToGroupOrReorder="Trascina per raggrupare" />
+    </ClientSettings>
+    <GroupPanel Text="Trascina qui una o più colonne per raggruppare i dati della pagina" />
+    <GroupingSettings CaseSensitive="False" />
+</telerik:RadGrid>
+
+<telerik:RadTextBox  runat="server"/>
+
+<asp:TextBox runat="server" Font-Names="Verdana,Helvetica,Sans-Serif" Font-Size="11px" />
+<asp:DropDownList runat="server" Font-Names="Verdana,Helvetica,Sans-Serif" Font-Size="11px" />
+<asp:RequiredFieldValidator runat="server" Font-Names="Verdana,Helvetica,Sans-Serif" Font-Size="11px" />
+<asp:RegularExpressionValidator runat="server" Font-Names="Verdana,Helvetica,Sans-Serif" Font-Size="12px" />
+<asp:RadioButtonList runat="server" Font-Names="Verdana,Helvetica,Sans-Serif" Font-Size="11px" />
+<asp:LinkButton runat="Server" ForeColor="#2023B4" />

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolStatus" table="ProtocolStatus">
+    
+    <id name="Id" column="ProtocolStatus" type="AnsiString">
+      <generator class="assigned" />
+    </id>
+    
+    <property name="Incremental" column="Incremental" />
+    <property name="Description" column="ProtocolStatusDescription" type="AnsiString" />
+    <property name="ForeColor" column="ForeColor" type="AnsiString" />
+    <property name="BackColor" column="BackColor" type="AnsiString" />
+    
+  </class>
+
+</hibernate-mapping>

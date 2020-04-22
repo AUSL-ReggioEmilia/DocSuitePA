@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolContactIssue" table="ProtocolContactIssue">
+    
+    <composite-id class="YearNumberIdCompositeKey" name="Id">
+      <key-property column="Year" name="Year" />
+      <key-property column="Number" name="Number" />
+      <key-property column="IDContact" name="Id" />
+    </composite-id>
+
+    <property name="Incremental" column="Incremental" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+
+    <many-to-one class="Contact" name="Contact" column="IDContact" insert="false" update="false" />
+    <many-to-one name="Protocol" class="Protocol" insert="false" update="false">
+      <column name="Year" />
+      <column name="Number" />
+    </many-to-one>
+
+  </class>
+
+</hibernate-mapping>

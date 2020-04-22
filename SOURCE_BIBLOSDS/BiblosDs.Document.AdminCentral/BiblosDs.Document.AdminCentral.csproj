@@ -1,0 +1,1501 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4268A9A6-6E7D-441F-83BC-C2408B041E76}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BiblosDs.Document.AdminCentral</RootNamespace>
+    <AssemblyName>BiblosDs.Document.AdminCentral</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Itanium'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Itanium\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>Itanium</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDs.Document.AdminCentral.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Itanium'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>Itanium</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\BiblosDs.Document.AdminCentral.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDs.Document.AdminCentral.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\BiblosDs.Document.AdminCentral.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BiblosDs.Document.AdminCentral.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>biblos.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AzureDebug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AzureDebug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDs.Document.AdminCentral.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AzureDebug|Itanium'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Itanium\AzureDebug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>Itanium</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDs.Document.AdminCentral.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AzureDebug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\AzureDebug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDs.Document.AdminCentral.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SlowCheetahTargets Condition=" '$(SlowCheetahTargets)'=='' ">$(LOCALAPPDATA)\Microsoft\MSBuild\SlowCheetah\v1\SlowCheetah.Transforms.targets</SlowCheetahTargets>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telerik.WinControls, Version=8.2.0.0, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\Telerik\Telerik.WinControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.WinControls.GridView, Version=8.2.0.0, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\Telerik\Telerik.WinControls.GridView.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.WinControls.RadDock">
+      <HintPath>..\ExternalLibs\Telerik\Telerik.WinControls.RadDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.WinControls.UI, Version=8.2.0.0, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\Telerik\Telerik.WinControls.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="TelerikCommon, Version=8.2.0.0, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\Telerik\TelerikCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArchiveServerConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ArchiveServerConfiguration.Designer.cs">
+      <DependentUpon>ArchiveServerConfiguration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AttributeEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AttributeEdit.Designer.cs">
+      <DependentUpon>AttributeEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MetaDataView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MetaDataView.Designer.cs">
+      <DependentUpon>MetaDataView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ViewHistory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ViewHistory.Designer.cs">
+      <DependentUpon>ViewHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InstallerClass.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InstallerClass.Designer.cs">
+      <DependentUpon>InstallerClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ArchiveServerConfiguration.resx">
+      <DependentUpon>ArchiveServerConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AttributeEdit.resx">
+      <DependentUpon>AttributeEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MetaDataView.resx">
+      <DependentUpon>MetaDataView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ViewHistory.resx">
+      <DependentUpon>ViewHistory.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\ArchivesAdmin.resx">
+      <DependentUpon>ArchivesAdmin.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\LogsAdmin.resx">
+      <DependentUpon>LogsAdmin.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\ServerAdmin.resx">
+      <DependentUpon>ServerAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\StoragesAdmin.resx">
+      <DependentUpon>StoragesAdmin.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcArchive.resx">
+      <DependentUpon>UcArchive.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcArchiveDetail.resx">
+      <DependentUpon>UcArchiveDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcArchiveStorageRelation.resx">
+      <DependentUpon>UcArchiveStorageRelation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcAttribute.resx">
+      <DependentUpon>UcAttribute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcAttributeDetail.resx">
+      <DependentUpon>UcAttributeDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcAttributeGroup.resx">
+      <DependentUpon>UcAttributeGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcAttributeGroupDetail.resx">
+      <DependentUpon>UcAttributeGroupDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcLog.resx">
+      <DependentUpon>UcLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcServer.resx">
+      <DependentUpon>UcServer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcServerDetail.resx">
+      <DependentUpon>UcServerDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcStorageArea.resx">
+      <DependentUpon>UcStorageArea.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcStorageAreaDetail.resx">
+      <DependentUpon>UcStorageAreaDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcStorageAreaRule.resx">
+      <DependentUpon>UcStorageAreaRule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcStorageAreaRuleDetail.resx">
+      <DependentUpon>UcStorageAreaRuleDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcStorageRule.resx">
+      <DependentUpon>UcStorageRule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcStorageRuleDetail.resx">
+      <DependentUpon>UcStorageRuleDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcStorages.resx">
+      <DependentUpon>UcStorages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UAdminControls\UcStoragesDetail.resx">
+      <DependentUpon>UcStoragesDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\AlignmentWizard\FormCaricamento.resx">
+      <DependentUpon>FormCaricamento.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\AlignmentWizard\Step1.resx">
+      <DependentUpon>Step1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\AlignmentWizard\Step2.resx">
+      <DependentUpon>Step2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\AlignmentWizard\Step3.resx">
+      <DependentUpon>Step3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\AlignmentWizard\WizardStepBase.resx">
+      <DependentUpon>WizardStepBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\Pager\UcPager.resx">
+      <DependentUpon>UcPager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcAttributeEdit.resx">
+      <DependentUpon>UcAttributeEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcChainExplorer.resx">
+      <DependentUpon>UcChainExplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcConfigView.resx">
+      <DependentUpon>UcConfigView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcDocumentViewer.resx">
+      <DependentUpon>UcDocumentViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcFileUploader.resx">
+      <DependentUpon>UcFileUploader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcFileViewer.resx">
+      <DependentUpon>UcFileViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcFindAddCondition.resx">
+      <DependentUpon>UcFindAddCondition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcFindFile.resx">
+      <DependentUpon>UcFindFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcLoadFileOnStorage.resx">
+      <DependentUpon>UcLoadFileOnStorage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcStorageExplorer.resx">
+      <DependentUpon>UcStorageExplorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UControls\UcTransit.resx">
+      <DependentUpon>UcTransit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WaitForm.resx">
+      <DependentUpon>WaitForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="admincentral.system.servicemodel.client.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="app.AzureDebug.config">
+      <DependentUpon>app.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="app.Debug.config">
+      <DependentUpon>app.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
+    <None Include="app.Release.config">
+      <DependentUpon>app.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="biblosds.system.servicemodel.bindings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceAdministration\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceContentSearch\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceDocument\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceLog\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReferenceTransit\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\ArchivesAdmin.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\ArchivesAdmin.Designer.cs">
+      <DependentUpon>ArchivesAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\BaseAdmin.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\BaseAdminControls.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\LogsAdmin.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\LogsAdmin.Designer.cs">
+      <DependentUpon>LogsAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\ServerAdmin.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\ServerAdmin.Designer.cs">
+      <DependentUpon>ServerAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\StoragesAdmin.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\StoragesAdmin.designer.cs">
+      <DependentUpon>StoragesAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcArchive.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcArchive.designer.cs">
+      <DependentUpon>UcArchive.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcArchiveDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcArchiveDetail.designer.cs">
+      <DependentUpon>UcArchiveDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcArchiveStorageRelation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcArchiveStorageRelation.designer.cs">
+      <DependentUpon>UcArchiveStorageRelation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcAttribute.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcAttribute.designer.cs">
+      <DependentUpon>UcAttribute.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcAttributeDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcAttributeDetail.designer.cs">
+      <DependentUpon>UcAttributeDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcAttributeGroup.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcAttributeGroup.Designer.cs">
+      <DependentUpon>UcAttributeGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcAttributeGroupDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcAttributeGroupDetail.Designer.cs">
+      <DependentUpon>UcAttributeGroupDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcLog.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcLog.Designer.cs">
+      <DependentUpon>UcLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcServer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcServer.Designer.cs">
+      <DependentUpon>UcServer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcServerDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcServerDetail.Designer.cs">
+      <DependentUpon>UcServerDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageArea.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageArea.designer.cs">
+      <DependentUpon>UcStorageArea.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageAreaDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageAreaDetail.designer.cs">
+      <DependentUpon>UcStorageAreaDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageAreaRule.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageAreaRule.designer.cs">
+      <DependentUpon>UcStorageAreaRule.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageAreaRuleDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageAreaRuleDetail.designer.cs">
+      <DependentUpon>UcStorageAreaRuleDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageRule.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageRule.designer.cs">
+      <DependentUpon>UcStorageRule.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageRuleDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorageRuleDetail.designer.cs">
+      <DependentUpon>UcStorageRuleDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorages.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcStorages.designer.cs">
+      <DependentUpon>UcStorages.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UAdminControls\UcStoragesDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UAdminControls\UcStoragesDetail.designer.cs">
+      <DependentUpon>UcStoragesDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\AlignmentWizard\FormCaricamento.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UControls\AlignmentWizard\FormCaricamento.Designer.cs">
+      <DependentUpon>FormCaricamento.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\AlignmentWizard\Step1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\AlignmentWizard\Step1.Designer.cs">
+      <DependentUpon>Step1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\AlignmentWizard\Step2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\AlignmentWizard\Step2.Designer.cs">
+      <DependentUpon>Step2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\AlignmentWizard\Step3.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\AlignmentWizard\Step3.Designer.cs">
+      <DependentUpon>Step3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\AlignmentWizard\WizardStepBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\ChainExplorerControl.xaml.cs">
+      <DependentUpon>ChainExplorerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\Pager\UcPager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\Pager\UcPager.Designer.cs">
+      <DependentUpon>UcPager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcAttributeEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\UcAttributeEdit.Designer.cs">
+      <DependentUpon>UcAttributeEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcChainExplorer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\UcChainExplorer.Designer.cs">
+      <DependentUpon>UcChainExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcConfigView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\UcConfigView.Designer.cs">
+      <DependentUpon>UcConfigView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcDocumentViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UControls\UcDocumentViewer.Designer.cs">
+      <DependentUpon>UcDocumentViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcFileUploader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\UcFileUploader.Designer.cs">
+      <DependentUpon>UcFileUploader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcFileViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\UcFileViewer.Designer.cs">
+      <DependentUpon>UcFileViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcFindAddCondition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UControls\UcFindAddCondition.Designer.cs">
+      <DependentUpon>UcFindAddCondition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcFindFile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\UcFindFile.Designer.cs">
+      <DependentUpon>UcFindFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcLoadFileOnStorage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\UcLoadFileOnStorage.Designer.cs">
+      <DependentUpon>UcLoadFileOnStorage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcStorageExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UControls\UcStorageExplorer.designer.cs">
+      <DependentUpon>UcStorageExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UControls\UcTransit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UControls\UcTransit.Designer.cs">
+      <DependentUpon>UcTransit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WaitForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WaitForm.designer.cs">
+      <DependentUpon>WaitForm.cs</DependentUpon>
+    </Compile>
+    <None Include="Service References\ServiceReferenceAdministration\Administration.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration11.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration110.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration111.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2.wsdl" />
+    <None Include="Service References\ServiceReferenceAdministration\Administration2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration21.wsdl" />
+    <None Include="Service References\ServiceReferenceAdministration\Administration22.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration221.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2210.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2211.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2212.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2213.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2214.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2215.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2216.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2217.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2218.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2219.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration222.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2220.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2221.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2222.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2223.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2224.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2225.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2226.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2227.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2228.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2229.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration223.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2230.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2231.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2232.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2233.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2234.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration2235.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration224.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration225.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration226.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration227.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration228.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration229.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveServerConfig.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeMode.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\BiblosDs.Document.AdminCentral.ServiceReferenceContentSearch.DocumentResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch16.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch17.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch18.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch19.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch2.wsdl" />
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch20.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch21.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch22.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch23.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch24.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch25.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch26.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch27.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch28.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch29.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch3.wsdl" />
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch30.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch33.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch34.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch35.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch36.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch37.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch38.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch39.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch40.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch41.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch42.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch43.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch44.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch45.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch46.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch47.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch48.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch49.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch50.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch51.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch52.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.Archive.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.ArchiveStatistics.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.Attribute.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.Certificate.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.Content.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.Document.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.DocumentAttach.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.DocumentResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.DocumentServer.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.Storage.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\BiblosDs.Document.AdminCentral.ServiceReferenceDocument.StorageArea.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents17.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents171.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1710.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1711.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1712.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1713.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1714.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1715.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1716.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1717.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1718.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1719.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents172.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1720.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1721.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1722.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1723.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1724.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1725.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1726.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1727.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1728.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1729.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents173.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1730.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1731.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents1732.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents174.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents175.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents176.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents177.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents178.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents179.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents18.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents19.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents2.wsdl" />
+    <None Include="Service References\ServiceReferenceDocument\Documents2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents20.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents21.wsdl" />
+    <None Include="Service References\ServiceReferenceDocument\Documents21.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents22.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents23.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents24.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents25.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents26.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\Documents4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\BiblosDs.Document.AdminCentral.ServiceReferenceLog.Log.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\BiblosDs.Document.AdminCentral.ServiceReferenceLog.LogResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\Log.wsdl" />
+    <None Include="Service References\ServiceReferenceLog\Log.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\Log1.wsdl" />
+    <None Include="Service References\ServiceReferenceLog\Log1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\Log11.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\Log12.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\Log13.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\Log2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\Log21.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\Log22.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\Log23.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\BiblosDs.Document.AdminCentral.ServiceReferenceTransit.DocumentResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit13.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit14.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit15.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit16.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit17.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit18.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit19.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit2.wsdl" />
+    <None Include="Service References\ServiceReferenceTransit\Transit20.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit21.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit22.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit23.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit24.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit25.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit26.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit27.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit28.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit29.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit3.wsdl" />
+    <None Include="Service References\ServiceReferenceTransit\Transit30.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit33.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit34.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit35.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit36.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit37.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit38.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit39.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit40.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit41.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit42.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit43.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit44.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit45.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit46.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceTransit\Transit47.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BindingNavigatorAddNewItem.Image1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BindingNavigatorDeleteItem.Image1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BindingNavigatorMoveFirstItem.Image1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BindingNavigatorMoveLastItem.Image1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BindingNavigatorMoveNextItem.Image1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BindingNavigatorMovePreviousItem.Image1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Plus1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Read1.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Recycle1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\subscribe1.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+      <TransformOnBuild>true</TransformOnBuild>
+    </None>
+    <None Include="Resources\Unread1.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ServiceReferenceAdministration\" />
+    <WCFMetadataStorage Include="Service References\ServiceReferenceContentSearch\" />
+    <WCFMetadataStorage Include="Service References\ServiceReferenceDocument\" />
+    <WCFMetadataStorage Include="Service References\ServiceReferenceLog\" />
+    <WCFMetadataStorage Include="Service References\ServiceReferenceTransit\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1269554375_document-save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1269554887_orange-document-open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReferenceTransit\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReferenceTransit\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReferenceTransit\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1270712464_storage_5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="biblos.ico" />
+    <Content Include="favicon.ico" />
+    <Content Include="Resources\1270712252_Temporary.png" />
+    <Content Include="Resources\1270712252_Temporary1.png" />
+    <Content Include="Resources\1270712252_Temporary2.png" />
+    <None Include="Service References\ServiceReferenceTransit\Transit1.disco" />
+    <None Include="Service References\ServiceReferenceContentSearch\ContentSearch1.disco" />
+    <None Include="Service References\ServiceReferenceAdministration\Administration1.disco" />
+    <None Include="Service References\ServiceReferenceDocument\Documents1.disco" />
+    <None Include="Resources\Toolbar_20Documents_20Icon.jpg" />
+    <None Include="Resources\Toolbar%2520Documents%2520Icon.jpg" />
+    <None Include="Service References\ServiceReferenceLog\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceLog\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceLog\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReferenceLog\Log.disco" />
+    <None Include="Service References\ServiceReferenceDocument\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceDocument\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceDocument\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReferenceAdministration\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceAdministration\configuration91.svcinfo" />
+    <None Include="Resources\ko.png" />
+    <None Include="Properties\DataSources\BiblosDs.Document.AdminCentral.ServiceReferenceContentSearch.ConditionObj.datasource" />
+    <None Include="Resources\1270735965_kappfinder.png" />
+    <None Include="Properties\DataSources\BiblosDs.Document.AdminCentral.ServiceReferenceContentSearch.Condition.datasource" />
+    <None Include="Service References\ServiceReferenceContentSearch\BiblosDs.Document.AdminCentral.ServiceReferenceContentSearch.Document.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ServiceReferenceContentSearch\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceContentSearch\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UControls\ChainExplorerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" />
+  <PropertyGroup>
+    <SlowCheetahTargets Condition=" '$(SlowCheetahTargets)'=='' ">$(LOCALAPPDATA)\Microsoft\MSBuild\SlowCheetah\v1\SlowCheetah.Transforms.targets</SlowCheetahTargets>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

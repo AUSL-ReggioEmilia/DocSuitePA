@@ -1,0 +1,23 @@
+﻿enum ActivityAction {
+    Create = 0,
+    ToProtocol = 1,
+    ToPEC = 2,
+    ToCollaboration = 3,
+    ToDesk = 4,
+    ToResolution = 5,
+    ToSign = 6,
+    ToAssignment = 7,
+    ToSecure = 8,
+    ToFascicle = 9,
+    ToDocumentUnit = 10,
+    ToArchive = 11,
+    ToMessage = 12,
+    CancelProtocol = 13,
+    CancelArchive = 14,
+    CancelDocumentUnit = 15,
+    ToApprove = 16,
+    ToShare = 17,
+    UpdateArchive = 18
+}
+
+export = ActivityAction;

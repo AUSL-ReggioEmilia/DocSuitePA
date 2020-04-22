@@ -1,0 +1,52 @@
+﻿<div class="pec-panel">
+    <div class="row">
+        <div class="col-md-2 col-xs-4 text-right">
+            <label>Data:</label>
+        </div>
+        <div class="col-md-10 col-xs-10 text-left" *ngIf="item.date">
+            {{item.date | dateTimeFormat}}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2 col-xs-4 text-right">
+            <label>Oggetto:</label>
+        </div>
+        <div class="col-md-10 col-xs-10 text-left">
+            {{item.subject}}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2 col-xs-4 text-right">
+            <label>Mittente:</label>
+        </div>
+        <div class="col-md-10 col-xs-10 text-left">
+            {{item.senders}}
+        </div>
+    </div>
+
+    <div class="row" *ngIf="item.direction == 1">
+        <div class="col-md-2 col-xs-4 text-right">
+            <label>Destinatari:</label>
+        </div>
+        <div class="col-md-10 col-xs-10 text-left">
+            {{item.recipients}}
+        </div>
+    </div>
+
+    <div class="row" *ngIf="item.direction == 1">
+        <div class="col-md-2 col-xs-4 text-right">
+            <label>Messaggi di servizio:</label>
+        </div>
+        <div class="col-md-10 col-xs-10 text-left" >
+            <div *ngIf="item.receipts && item.receipts.length > 0" class="pec-box">
+                <pec-trace *ngFor="let receipt of item.receipts" [receipt]="receipt"></pec-trace>
+            </div>
+            <div *ngIf="!item.receipts || item.receipts.length == 0">
+                -
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>

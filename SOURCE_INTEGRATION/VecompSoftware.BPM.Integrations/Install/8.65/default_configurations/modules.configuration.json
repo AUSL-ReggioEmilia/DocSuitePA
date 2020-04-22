@@ -1,0 +1,9 @@
+﻿[
+  {
+    "Name": "VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare",
+    "Path": "C:\\Workspace\\Integration[8.65]\\Modules\\ENAV\\VecompSoftware.BPM.Integrations.Modules.ENAV.ENavigare\\bin\\Debug",
+    "Timer": "Default",
+    "ServiceWakeType": 1,
+    "Enabled": true
+  }
+]

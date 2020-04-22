@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/Certificate" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/Certificate" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="Certificate">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="CertificateVersion" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="DateExpiration" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateValidFrom" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="FiscalCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Id" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="IdCertificate" type="ser:guid" />
+          <xs:element minOccurs="0" name="Issuer" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Level" type="xs:int" />
+          <xs:element minOccurs="0" name="Role" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="SerialNumber" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="TimeStamp" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Certificate" nillable="true" type="tns:Certificate" />
+</xs:schema>

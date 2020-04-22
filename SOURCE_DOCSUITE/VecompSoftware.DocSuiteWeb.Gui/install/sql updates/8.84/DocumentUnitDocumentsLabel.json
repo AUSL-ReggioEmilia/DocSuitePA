@@ -1,0 +1,19 @@
+﻿{
+	"Miscellanea": "Miscellanea",
+	"MainChain": "Documenti",
+	"AttachmentsChain": "Allegati (parte integrante)",
+	"AnnexedChain": "Annessi (non parte integrante)",
+	"UnpublishedAnnexedChain": "Annessi da non pubblicare",
+	"ProposalChain": "Proposta",
+	"ControllerChain": "Risposta Organo Controllo",
+	"AssumedProposalChain": "Proposta assunta",
+	"FrontespizioChain": "Fronte spizio",
+	"PrivacyAttachmentChain": "Allegati riservati",
+	"FrontalinoRitiroChain": "Frontalino",
+	"PrivacyPublicationDocumentChain": "Documento di pubblicazione sulla privacy",
+	"MainOmissisChain": "Documento (omissis)",
+	"AttachmentOmissisChain": "Allegati Omissis (parte integrante)",
+	"UltimaPaginaChain": "Ultima pagina",
+	"SupervisoryBoardChain": "Consiglio di vigilanza",
+	"DematerialisationChain": "Attestazione di conformità"
+}

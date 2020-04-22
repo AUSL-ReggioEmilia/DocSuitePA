@@ -1,0 +1,89 @@
+﻿@model IEnumerable<BiblosDS.Library.Common.Objects.PreservationTask>
+
+<h2><span class="k-icon k-i-error" style="font-size: 32px;"></span> Task in errore</h2>
+<br />
+
+@(Html.Kendo().Grid<BiblosDS.Library.Common.Objects.PreservationTask>()
+    .Name("PreservationVerifyTaskGrid")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.Archive.Name).Title("Archivio");
+        columns.Bound(o => o.StartDate).ClientTemplate("<span>Documenti dal #=kendo.toString(StartDate, 'dd/MM/yyyy')# al #=kendo.toString(EndDate, 'dd/MM/yyyy')#</span>").Title("Periodo");
+        columns.Bound(o => o.VerifyPath).ClientTemplate("#if(!!VerifyPath){#" +
+            "<a href='' onclick='javascript:OpenPreservationWindows('"+@Html.Encode("#VerifyPath.replace('\', '\\\\')#")+"')'>path</a>"+
+            "#}#"
+            ).Title("Percorso");
+        columns.Bound(o => o.IdPreservation).ClientTemplate("<span id='preservationverify_ldl_#=IdPreservation#' class='k-button' style='display: none;'>Processing....</span>"+
+            "<a id='preservationverify_btn_#=IdPreservation#' href='' onclick='javascript:PreservationVerifyDoAction('#=IdPreservation#')' class='k-button'>Gestici</a>").Title("Dettaglio");
+        columns.Bound(o => o.ErrorMessages).ClientTemplate("#if(!ErrorMessages) {#" +
+              "<b>NESSUN ERRORE</b>" +
+            "#} else {#" +
+                "#=ErrorMessages.substring(0, Math.min(ErrorMessages.length, 50))#" +
+                "<a href='' onclick='javascript:OpenPreservationWindows('#=ErrorMessages#')>more...</a>" +
+            "#}#")
+            .Title("Stato");
+    })
+    .DataSource(datasource => datasource.Ajax()
+                    .Read(read => read.Action("GetPreservationVerifyTask", "Home")))
+    .NoRecords("Nessun task in errore (Preservation Verifiy)")
+)
+
+
+<script>
+
+  function OpenPreservationWindows(content) {
+
+    $("#error").html(content);
+    $("#window").data("kendoWindow").open();
+    return false;
+  }
+
+  $(document).ready(function () {
+    var window = $("#window");
+    if (!window.data("kendoWindow")) {
+      window.kendoWindow({
+        width: "500px",
+        height: "400px",
+        actions: ["Minimize", "Maximize", "Close"],
+        title: "Details",
+        close: function () {
+          $("error").html();
+        },
+        visible: false
+      });
+    }
+
+    window.data("kendoWindow").wrapper.find(".k-i-custom").click(function (e) {
+      alert("Custom action button clicked");
+      e.preventDefault();
+    });
+  });
+
+  function PreservationVerifyDoAction(id) {
+    $('#preservationverify_btn_' + id).hide();
+    $('#preservationverify_ldl_' + id).show();
+    $.ajax(
+                {
+                  type: "POST",
+                  url: '@Url.Content("~/Home/PreservationVerifyDoAction")',
+                  data: "id=" + id,
+                  success: function (result) {
+                    $('#preservationverify_ldl_' + id).hide();
+                    if (result.error != null) {
+                      $('#preservationverify_btn_' + id).show();
+                    } else {
+
+                      $('#preservationverify_' + id).hide();
+                    }
+                  },
+                  error: function (xhr, ajaxOptions, thrownError) {
+                    $('#preservationverify_btn_' + id).show();
+                  }
+                });
+  }
+
+</script>
+
+<div id="window">
+  <div id="error"></div>
+</div>  

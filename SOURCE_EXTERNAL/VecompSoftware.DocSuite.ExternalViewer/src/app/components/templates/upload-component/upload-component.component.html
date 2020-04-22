@@ -1,0 +1,16 @@
+<p class="uploadLabel">
+    <i class="k-icon k-i-upload"></i>
+    Scegli i documenti da caricare
+</p>
+
+<input type="file" multiple (change)="changeListener($event)" #input name="file" id="file" class="inputfile" />
+<label for="file">Sfoglia</label>
+
+<div *ngFor="let file of fileUpload">
+    <div class="chipsContainer">
+        <div class="label-default chips">
+            {{file.name}}
+            <i class="k-icon k-i-close-circle k-i-x-circle pointer" (click)="removeFile(file)"></i>
+        </div>
+    </div>
+</div>

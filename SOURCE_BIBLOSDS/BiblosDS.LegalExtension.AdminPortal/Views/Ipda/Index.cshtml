@@ -1,0 +1,155 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.Ipda.IpdaIndexViewModel
+@{
+    ViewBag.Title = "Conservazione IPDA per archivio ";
+}
+
+
+@section featured{
+    <hgroup class="title">
+        <h1>@ViewBag.Title <b>@Model.Preservation.Archive.Name</b></h1>
+    </hgroup>
+}
+
+<div style="padding:10px 0px 15px 0px;">
+    @Html.ActionLink("Ritorna all'elenco delle conservazioni dell'archivio", "ArchivePreservation", "Home", new { id = Model.Preservation.IdArchive }, null)
+</div>
+
+<div>
+    Questa funzione consente di elaborare un file di chiusura esistente e di creare un file xml secondo lo standard IPDA.<br />
+    Inoltre se è stato creato il file di chiusura nello standard è possibile scaricare il file, firmarlo digitalmente e caricarlo nella cartella di conservazione.
+</div>
+<br />
+
+<div class="k-block">
+    <table class="k-custom-table">
+        <tr>
+            <td align="right"><label>Conservazione</label></td>
+            <td>dal <b>@Model.Preservation.StartDate.GetValueOrDefault().ToString("dd/MM/yyyy")</b> al <b>@Model.Preservation.EndDate.GetValueOrDefault().ToString("dd/MM/yyyy")</b></td>
+        </tr>
+        <tr>
+            <td nowrap align="right"><label>Responsabile conservazione</label></td>
+            <td><b>@(Model.Preservation.User != null ? Model.Preservation.User.Name + " " + Model.Preservation.User.Surname : string.Empty)</b></td>
+        </tr>
+        @if (!Model.Preservation.CloseDate.HasValue)
+        {
+            <tr>
+                <td>&nbsp;</td>
+                <td><label>Conservazione non chiusa</label></td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td align="right"><label>Data chiusura</label></td>
+                <td><b>@Model.Preservation.CloseDate.Value.ToString("dd/MM/yyyy")</b></td>
+            </tr>
+        }
+        <tr>
+            <td align="right">Path</td>
+            <td>
+                <span id="path" class="pathLink" onclick="selectText('path');">@Model.Preservation.Path</span>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">Data Ultima Verifica</td>
+            <td><b>@(Model.Preservation.LastVerifiedDate != null ? Model.Preservation.LastVerifiedDate.Value.ToString("dd/MM/yyyy") : "#")</b></td>
+        </tr>
+        <tr>
+            <td align="right"> </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div style="padding: 10px;">
+    <div id="createStep" style="@(!Model.ToCreate ? "display: none;": "")">
+        <h3>Crea file Ipda</h3>
+        <div style="padding:15px;">
+            @Html.Kendo().Button().Name("createIpdaButton").Content("Crea file Ipda").Events(events => events.Click("createIpda"))
+            <span id="spinner" style="display:none; padding-left:20px;">
+                <img src="@Href("~/content/images/wait.gif")" alt="" style="vertical-align:middle; text-align:center; " />
+                &nbsp;
+                <b>Creazione file Ipda in corso...</b>
+            </span>
+
+        </div>
+        <div id="createResult" style="padding-top:10px; font-weight:bold; display:none;"></div>
+    </div>    
+
+    <div id="uploadStep" style="@(!Model.ToSign ? "display: none;": "")">
+        <p>
+            <b>1.</b> Scarica il file IPDA (in formato .xml) premendo il tasto<br />
+            @Html.ActionLink("Download", "DownloadXml", new { id = Model.Preservation.IdPreservation }, new { @class = "k-button", @style = "margin-top: 5px;" })
+        </p>
+        <p>
+            <b>2.</b> Firma il file IPDA che hai scaricato con l'applicazione di firma e crea il file con marca temporale in formato .tsd
+        </p>
+        <p>
+            <b>3.</b> Carica il file firmato .tsd nella cartella di conservazione premendo il tasto 'Seleziona file TSD...'
+            @(Html.Kendo().Upload()
+                        .Name("filesUpload")
+                        .HtmlAttributes("filesUpload")
+                        .Multiple(false)
+                        .Validation(validation => validation.AllowedExtensions(new string[] { ".tsd" }))
+                        .Messages(messages =>
+                        {
+                            messages.ClearSelectedFiles("Cancella");
+                            messages.UploadSelectedFiles("Avvia caricamento");
+                            messages.HeaderStatusUploaded("Attività completata");
+                            messages.HeaderStatusUploading("Caricamento...");
+                            messages.InvalidFileExtension("Il tipo di file selezionato non è corretto. Sono ammessi solo file ipda firmati (.tsd).");
+                            messages.Select("Seleziona file TSD...");
+                        })
+                        .Async(async => async
+                            .Save("UploadSignedFile", "Ipda")
+                            .RemoveUrl(@Url.Action("UploadSignedFile"))
+                            .AutoUpload(false))
+                        .Events(evt => evt.Error("onError").Success("onComplete"))
+            )
+        </p>
+        <br />
+        <div id="uploadResult"></div>
+    </div>
+
+    <div id="closeStep" style="@(!Model.ToClose ? "display: none;": "")">
+        <h3>Chiudi la conservazione</h3>
+        <div style="padding:15px;">
+            @using (Html.BeginForm("ClosePreservation", "Ipda"))
+            {
+                @Html.HiddenFor(m => m.Preservation.IdPreservation)
+                <input type="submit" id="btnClosePreservation" value="Chiudi conservazione" class="k-button" />
+            }
+        </div>
+        <br />
+    </div>
+</div>
+
+<script type="text/javascript">
+    function createIpda(e) {
+        $("#spinner").show();
+        $.post("@Url.Action("CreateIpda", "Ipda")", { id: "@Model.Preservation.IdPreservation" })
+            .done(function (result) {
+                $("#spinner").hide();
+                if (result.indexOf('Errore') == -1) {
+                    $('#createStep').hide();
+                    $('#uploadStep').show(200);
+                }
+                $('#createResult').html(result);
+                $('#createResult').show();
+            })
+            .fail(function (xhr, ajaxOptions, thrownError) {
+                $("#spinner").hide();
+                $('#createResult').html("Errore durante la creazione del file Ipda:" + thrownError);
+                $('#createResult').show();
+            });
+    }
+
+    function onError(e) {
+        $('#uploadResult').html(e.XMLHttpRequest.statusText);
+    }
+
+    function onComplete(e) {
+        $('#closeStep').show();
+        $('#uploadResult').html(e.response.status);
+    }
+</script>

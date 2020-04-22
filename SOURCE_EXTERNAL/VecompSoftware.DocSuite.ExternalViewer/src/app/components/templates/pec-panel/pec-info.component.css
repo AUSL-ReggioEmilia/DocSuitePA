@@ -1,0 +1,17 @@
+﻿.pec-panel{
+    margin-top: 10px;
+    list-style-type:none;
+    list-style-position: inside;
+    /*border-bottom: 1px dotted blue;*/
+}
+
+.pec-box{
+    margin-right: 10px;
+    border-radius: 5px;
+    border: thin solid #C0C0C0;
+}
+
+hr{
+     border-top: 1px dotted #bce8f1;
+     margin-bottom: 0px;
+}

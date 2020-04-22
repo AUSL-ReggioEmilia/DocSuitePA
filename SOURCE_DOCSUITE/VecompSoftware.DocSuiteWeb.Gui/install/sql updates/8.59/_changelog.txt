@@ -1,0 +1,8 @@
+User Story 7233: [ASL-TO] Tool per recupero frontalini di pubblicazione in catene di esecutività
+User Story 7234: [ASL-TO] Implementare funzionalità 'Liste di Contatti'
+User Story 7235: [ASL-TO] Selezione automatica di tutti i contatti figli di un contatto gruppo
+User Story 7236: [ASLTO] in inserimento protocollo creare funzionalità escludi contatti
+User Story 7239: [ASLTO] Creare elenco proposte al collegio sindacale
+
+Bug 7089: [ASL-TO] Stampa frontalino non gestice più pagine
+Bug 7227: [CTT] Anomalia in Recupero Protocollo: Si perdono informazioni

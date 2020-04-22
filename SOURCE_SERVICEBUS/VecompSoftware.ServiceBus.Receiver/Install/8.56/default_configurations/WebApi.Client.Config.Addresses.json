@@ -1,0 +1,41 @@
+﻿{
+  "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.HttpClientConfiguration, VecompSoftware.DocSuiteWeb.Model",
+  "Addresses": [
+    {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+      "AddressName": "API-WorkflowManagerAddress",
+      "Address": "http://localhost/DSW.WebAPI/api/wfm/",
+      "Timeout": "00:01:00"
+    },
+    {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+      "AddressName": "API-EntityAddress",
+      "Address": "http://localhost/DSW.WebAPI/api/entity/",
+      "Timeout": "00:01:00"
+    },
+    {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+      "AddressName": "API-ServiceBusAddress",
+      "Address": "http://localhost/DSW.WebAPI/api/sb/",
+      "Timeout": "00:01:00"
+    },
+    {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+      "AddressName": "API-UDSAddress",
+      "Address": "http://localhost/DSW.WebAPI/api/uds/",
+      "Timeout": "00:01:00"
+    },
+    {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+      "AddressName": "ODATA-EntityAddress",
+      "Address": "http://localhost/DSW.WebAPI/ODATA/",
+      "Timeout": "00:01:00"
+    },
+    {
+      "$type": "VecompSoftware.DocSuiteWeb.Model.WebAPI.Client.BaseAddress, VecompSoftware.DocSuiteWeb.Model",
+      "AddressName": "API-EnterpriseServiceBusAddress",
+      "Address": "http://localhost:81/EnterpriseBus/api/",
+      "Timeout": "00:01:00"
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+﻿{
+  "0": {
+    "Position": 0,
+    "Name": "Richiesta di parere",
+    "AuthorizationType": "None",
+    "ActivityOperation": {
+      "Action": "UpdateArchive",
+      "Area": "Build"
+    },
+    "ActivityType": "AutomaticActivity",
+    "InputArguments": [
+      {
+        "Name": "_dsw_p_Roles",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_ReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Model",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_UDSId",
+        "PropertyType": "PropertyGuid",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_UDSRepositoryId",
+        "PropertyType": "PropertyGuid",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": []
+  },
+  "1": {
+    "Position": 1,
+    "Name": "Richiesta di parere",
+    "AuthorizationType": "AllRoleUser",
+    "ActivityOperation": {
+      "Action": "ToAssignment",
+      "Area": "UDS"
+    },
+    "ActivityType": "Assignment",
+    "InputArguments": [
+      {
+        "Name": "_dsw_p_ProposerRole",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Roles",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_ReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_Acceptance",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Subject",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_p_Operation",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "EvaluationArguments": [],
+    "OutputArguments": [
+      {
+        "Name": "_dsw_e_Acceptance",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ]
+  }
+}

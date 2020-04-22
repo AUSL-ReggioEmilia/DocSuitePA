@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.UDS", "VecompSoftware.DocSuiteWeb.UDS\VecompSoftware.DocSuiteWeb.UDS.csproj", "{2E94E475-7913-4E5D-8312-4DC17876B748}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E94E475-7913-4E5D-8312-4DC17876B748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E94E475-7913-4E5D-8312-4DC17876B748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E94E475-7913-4E5D-8312-4DC17876B748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E94E475-7913-4E5D-8312-4DC17876B748}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7212B5A7-5179-426D-BDC1-B3A30F9801E0}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://dev.azure.com/docsuiteweb
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = VecompSoftware.DocSuiteWeb.UDS\\VecompSoftware.DocSuiteWeb.UDS.csproj
+		SccProjectName1 = VecompSoftware.DocSuiteWeb.UDS
+		SccLocalPath1 = VecompSoftware.DocSuiteWeb.UDS
+	EndGlobalSection
+EndGlobal

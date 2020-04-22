@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BiblosDS.UnitTest.WebService.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="BiblosDS_UnitTest_WebService_WebReferenceCompatibility_BiblosCompatibility" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost/BiblosDS.WS/BiblosDS.asmx</Value>
+    </Setting>
+    <Setting Name="BiblosDS_UnitTest_WebService_eSign_eSignEngine" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost:1530/eSignEngine.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

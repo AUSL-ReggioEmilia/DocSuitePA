@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://win-qeagqr8a746/_vti_bin/biblosdsservices/biblosdssvc.svc/mex?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:element name="GetCurrentWebUrl">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetCurrentWebUrlResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetCurrentWebUrlResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExistsDocumentSet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="storage" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="foolderName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExistsDocumentSetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ExistsDocumentSetResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateDocumentSet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="storage" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="foolderName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="contentType" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="attributes" nillable="true" type="q1:ArrayOfKeyValueOfanyTypeanyType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateDocumentSetResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddToDocumentSet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="storage" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="foolderName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="documentSetName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="contentType" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="data" nillable="true" type="xs:base64Binary" />
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="attributes" nillable="true" type="q2:ArrayOfKeyValueOfstringanyType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddToDocumentSetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="AddToDocumentSetResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="storage" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="foolderName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="documentSetName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="version" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetDocumentResult" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFileAttributes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="storage" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="foolderName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="documentSetName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="version" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFileAttributesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetFileAttributesResult" nillable="true" type="q3:ArrayOfKeyValueOfanyTypeanyType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

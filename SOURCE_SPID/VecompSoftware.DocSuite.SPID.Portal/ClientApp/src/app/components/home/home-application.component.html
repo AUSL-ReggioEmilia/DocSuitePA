@@ -1,0 +1,18 @@
+<div class="panel panel-default animated flipInX">
+    <div class="panel-body">
+        <div class="media">
+            <div class="media-left media-middle text-success">
+                <span class="fa-stack fa-2x">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-desktop fa-stack-1x fa-inverse"></i>
+                </span>
+            </div>
+            <div class="media-body media-middle">
+                <h4 class="media-heading">{{currentApplication.Name}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <a class="btn btn-sm btn-success" [routerLink]="['/applications', currentApplication.Id]"><i class="fa fa-external-link"></i>&nbsp;Dettagli...</a>
+    </div>
+</div>

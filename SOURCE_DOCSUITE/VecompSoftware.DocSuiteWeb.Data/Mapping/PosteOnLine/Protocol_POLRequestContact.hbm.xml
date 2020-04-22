@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="POLRequestContact" table="PosteOnLineContact">
+    <id name="Id" type="System.Guid">
+      <column name="Id" />
+      <generator class="guid.comb" />
+    </id>
+    <discriminator type="String">
+      <column name="Type" />
+    </discriminator>
+
+    <property name="Address" type="System.String">
+      <column name="Address" />
+    </property>
+    <property name="City" type="System.String">
+      <column name="City" />
+    </property>
+    <property name="CivicNumber" type="System.String">
+      <column name="CivicNumber" />
+    </property>
+    <property name="Name" type="System.String">
+      <column name="Name" />
+    </property>
+    <property name="PhoneNumber" type="System.String">
+      <column name="PhoneNumber" />
+    </property>
+    <property name="Province" type="System.String">
+      <column name="Province" />
+    </property>
+    <property name="ZipCode" type="System.String">
+      <column name="ZipCode" />
+    </property>
+    <property name="RegistrationDate" type="System.Nullable`1[[System.DateTime]]">
+      <column name="RegistrationDate" not-null="false" />
+    </property>
+    <property name="RegistrationUser" type="System.String">
+      <column name="RegistrationUser" />
+    </property>
+    <property name="LastChangedDate" type="System.Nullable`1[[System.DateTime]]">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <property name="LastChangedUser" type="System.String">
+      <column name="LastChangedUser" />
+    </property>
+    <property name="ExtendedProperties" type="System.String">
+        <column name="ExtendedProperties" />
+    </property>
+      
+    <many-to-one name="Request" column="RequestId" class="POLRequest" />
+
+    <subclass name="POLRequestRecipient" discriminator-value="2">
+      <property name="Status" type="POLMessageContactEnum">
+        <column name="Status" />
+      </property>
+      <property name="StatusDescrition" type="System.String">
+        <column name="StatusDescrition" />
+      </property>
+      <property name="DataSpedizione" type="System.Nullable`1[[System.DateTime]]">
+        <column name="DataSpedizione" not-null="false" />
+      </property>
+      <property name="IdRicevuta" type="System.String">
+        <column name="IdRicevuta" />
+      </property>
+      <property name="Numero" type="System.String">
+        <column name="Numero" />
+      </property>
+      <property name="Costo" type="System.Nullable`1[[System.Double]]">
+        <column name="Costo" />
+      </property>
+    </subclass>
+
+    <subclass name="POLRequestSender" discriminator-value="1">
+
+    </subclass>
+
+  </class>
+
+</hibernate-mapping>

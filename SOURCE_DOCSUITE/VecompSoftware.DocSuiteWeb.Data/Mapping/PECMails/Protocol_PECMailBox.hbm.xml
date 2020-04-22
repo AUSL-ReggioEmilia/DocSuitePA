@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="PECMailBox" table="PECMailBox">
+    
+    <id name="Id" column="IDPECMailBox">
+      <generator class="identity" />
+    </id>
+    
+    <property name="MailBoxName" column="MailBoxRecipient" />
+    <property name="IncomingServerName" column="IncomingServer" />
+    <property name="IncomingServerProtocol" column="IncomingServerProtocol" />
+    <property name="IncomingServerPort" column="IncomingServerPort" />
+    <property name="IncomingServerUseSsl" column="IncomingServerUseSsl" />
+    <property name="OutgoingServerName" column="OutgoingServer" />
+    <property name="OutgoingServerPort" column="OutgoingServerPort" />
+    <property name="OutgoingServerUseSsl" column="OutgoingServerUseSsl" />
+    <property name="Username" column="Username" />
+    <property name="Password" column="Password" />
+    <property name="IsDestinationEnabled" column="IsDestinationEnabled" />
+    <property name="IsForInterop" column="IsForInterop" />
+    <property name="Managed" column="Managed" />
+    <property name="Unmanaged" column="Unmanaged" />
+    <property name="IsHandleEnabled" column="IsHandleEnabled" />
+    <property name="IsProtocolBox" column="IsProtocolBox" />
+    <property name="IsProtocolBoxExplicit" column="IsProtocolBoxExplicit" />
+    <property name="IdJeepServiceIncomingHost" column="IdJeepServiceIncomingHost" />
+    <property name="IdJeepServiceOutgoingHost" column="IdJeepServiceOutgoingHost" />
+    <property name="RulesetDefinition" column="RulesetDefinition" />
+    <property name="InvoiceType" column="InvoiceType" not-null="false" />
+    <property name="HumanEnabled" column="HumanEnabled" not-null="true" />
+
+    <!--To do: Aggiungere la proprieta dopo il porting. Non e possibile farla ora a causa del riferimento circolare.-->
+    <!--<many-to-one class="JeepServiceHosts" name="JeepServiceHosts" column="IdJeepServiceHosts" lazy="false" />-->
+
+    <many-to-one class="Location" name="Location" column="idLocation" lazy="false" />
+    <many-to-one class="PECMailBoxConfiguration" name="Configuration" column="IdConfiguration" not-null="true" />
+    
+    <bag name="Mails" table="PECMail" cascade="none" inverse="true">
+      <key>
+        <column name="IDPECMailBox" />
+      </key>
+      <one-to-many class="PECMail" />
+    </bag>
+    <bag name="Roles" table="PECMailBoxRole" cascade="all-delete-orphan" inverse="true">
+      <key column="IDPECMailBox" />
+      <many-to-many class="Role" column="idRole" />
+    </bag>
+    <bag name="MailBoxRoles" table="PECMailBoxRole" cascade="none" inverse="true">
+      <key column="IDPECMailBox" />
+      <one-to-many class="PECMailBoxRole"/>
+    </bag>
+    
+    <filter name="humanManageable"
+						condition="HumanEnabled = 1"/>
+
+  </class>
+
+  <filter-def name="humanManageable">
+  </filter-def>
+
+</hibernate-mapping>

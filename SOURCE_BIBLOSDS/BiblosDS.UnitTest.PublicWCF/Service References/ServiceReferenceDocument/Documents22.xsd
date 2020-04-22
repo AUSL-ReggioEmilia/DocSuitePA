@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="Status">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="IdStatus" type="xs:short" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Status" nillable="true" type="tns:Status" />
+</xs:schema>

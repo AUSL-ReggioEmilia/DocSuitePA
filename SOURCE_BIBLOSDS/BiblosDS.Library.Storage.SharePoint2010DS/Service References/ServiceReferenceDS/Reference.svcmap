@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="b8245bd1-d648-4fcf-8aa6-ff3292370d08" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost/_vti_bin/BiblosDSServices/BiblosDSSvc.svc/mex" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="mex.xsd" MetadataType="Schema" ID="84de5909-746e-4e12-921f-d7b3de35f334" SourceId="1" SourceUrl="http://win-qeagqr8a746/_vti_bin/biblosdsservices/biblosdssvc.svc/mex?xsd=xsd0" />
+    <MetadataFile FileName="mex1.xsd" MetadataType="Schema" ID="93ea3e5f-1986-4ade-afa8-5715e2c2bbb2" SourceId="1" SourceUrl="http://win-qeagqr8a746/_vti_bin/biblosdsservices/biblosdssvc.svc/mex?xsd=xsd1" />
+    <MetadataFile FileName="mex2.xsd" MetadataType="Schema" ID="f297fccb-1cb8-40ea-82e8-c560774ccdfa" SourceId="1" SourceUrl="http://win-qeagqr8a746/_vti_bin/biblosdsservices/biblosdssvc.svc/mex?xsd=xsd2" />
+    <MetadataFile FileName="BiblosSvc.wsdl" MetadataType="Wsdl" ID="f904050f-3244-4902-bd59-53e9845f2c8a" SourceId="1" SourceUrl="http://localhost/_vti_bin/BiblosDSServices/BiblosDSSvc.svc/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

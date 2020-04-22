@@ -1,0 +1,122 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Admin.master.cs" Inherits="AmministrazioneTrasparente.MasterPages.Admin" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <title>Amministrazione</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="robots" content="noindex">
+
+    <link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link type="text/css" href="../css/non-responsive.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="../css/admin-custom.css" />
+    <!-- open sans font -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css' />
+    
+    <!--[if lt IE 8]>
+    <link href="../css/bootstrap-ie7.css" rel="stylesheet" />
+    <![endif]-->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 10]>
+        <style>
+            .navbar-inverse .nav li.dropdown.open > .dropdown-toggle,
+            .navbar-inverse .nav li.dropdown.active > .dropdown-toggle,
+            .navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle,
+            .navbar,
+            .navbar-inverse .navbar-inner {
+                filter: none;
+                background-image: none;
+            }
+        </style>
+    <![endif]-->
+    <!--[if lt IE 9]>        
+      <script src="../js/html5shiv.min.js"></script>
+      <script src="../js/respond.min.js"></script>
+    <![endif]-->
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <telerik:RadScriptManager ID="scmMasterPage" runat="server" EnablePartialRendering="true" EnableHistory="false" EnableSecureHistoryState="false">
+            <Scripts>
+                <telerik:RadScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.Core.js" />
+                <telerik:RadScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQuery.js" />
+            </Scripts>
+        </telerik:RadScriptManager>
+
+        <script type="text/javascript">
+            function ShowEditUser() {
+                var wnd = $find("<%=modalUser.ClientID%>");
+                wnd.open("EditUser.aspx", "UserEditing", null, 500, 500);
+                wnd.center();
+                return false;
+            }
+
+            function ShowChangePassword() {
+                var wnd = $find("<%=modalUser.ClientID%>");
+                wnd.open("EditPassword.aspx", "UserEditing", null, 500, 300);
+                wnd.center();
+                return false;
+            }
+
+            function showAlert(message, alerttype) {
+                $telerik.$("#alert-placeholder").append('<div id="alertdiv" class="alert ' + alerttype + '"><a class="close" data-dismiss="alert">×</a><span>' + message + '</span></div>');
+                setTimeout(function () {
+                    $telerik.$("#alertdiv").fadeOut("slow");
+                }, 5000);
+            };
+        </script>
+
+        <!-- navbar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Amministrazione sito
+                    </a>
+                </div>
+                <asp:Panel ID="menuNavbar" runat="server">
+                    <ul class="nav navbar-nav pull-right">
+                        <li>
+                            <a href="../Admin/Default.aspx"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</a>
+                        </li>
+                        <li>
+                            <a href="../Admin/Parameters.aspx"><span class="glyphicon glyphicon-cog"></span>&nbsp;Parametri</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" onclick="ShowEditUser()">Dati Utente</a></li>
+                                <li><a href="#" onclick="ShowChangePassword()">Modifica Password</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" runat="server" onserverclick="LogOut"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;Esci</a>
+                        </li>
+                    </ul>
+                </asp:Panel>
+            </div>
+        </nav>
+        <!-- end navbar -->
+        <div class="container">
+            <div id="alert-placeholder"></div>
+            <asp:ContentPlaceHolder ID="content" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+        <telerik:RadWindowManager ID="modalUser" Behaviors="Close, Move" ShowContentDuringLoad="True" Skin="MetroTouch" VisibleStatusbar="False" Top="-10" Left="-10" KeepInScreenBounds="False" runat="server" EnableShadow="true">
+            <Windows>
+                <telerik:RadWindow ID="UserEditing" runat="server" ReloadOnShow="true" ShowContentDuringLoad="false"
+                    Modal="true">
+                </telerik:RadWindow>
+            </Windows>
+        </telerik:RadWindowManager>
+    </form>
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+</body>
+</html>

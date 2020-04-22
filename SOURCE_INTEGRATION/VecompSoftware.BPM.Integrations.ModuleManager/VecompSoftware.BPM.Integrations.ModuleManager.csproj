@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E6E421E5-F183-4227-A2BE-F3EF4D0C2E22}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.BPM.Integrations.ModuleManager</RootNamespace>
+    <AssemblyName>VecompSoftware.BPM.Integrations.ModuleManager</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.EnterpriseLogging, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.EnterpriseLogging.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.EnterpriseLogging.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MEFModuleLoader.cs" />
+    <Compile Include="ModulesManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.BiblosDS\VecompSoftware.BPM.Integrations.Services.BiblosDS.csproj">
+      <Project>{3279e762-e123-4d8b-abc0-6cbca4489776}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Services.BiblosDS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Model\VecompSoftware.BPM.Integrations.Model.csproj">
+      <Project>{a9aa9956-35bc-4365-a8f3-3c0fe3e0d3c8}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Modules\VecompSoftware.BPM.Integrations.Modules.csproj">
+      <Project>{8430c3b8-2511-4a46-9a0a-c1044e1ddef6}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Modules</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.ServiceBus\VecompSoftware.BPM.Integrations.Services.ServiceBus.csproj">
+      <Project>{fbfed947-be1b-4c76-a530-cb9692009853}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Services.ServiceBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.SignService\VecompSoftware.BPM.Integrations.Services.SignServices.csproj">
+      <Project>{6dbd65e3-a831-4d8d-b226-a419c7a5bf15}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Services.SignServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.StampaConforme\VecompSoftware.BPM.Integrations.Services.StampaConforme.csproj">
+      <Project>{92ed11a2-2501-4309-a8c1-fb349ba8e2fd}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Services.StampaConforme</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.WebAPI\VecompSoftware.BPM.Integrations.Services.WebAPI.csproj">
+      <Project>{d819e5e7-454a-4a1e-a2d7-f4ef9991998a}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Services.WebAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.WorkflowManager\VecompSoftware.BPM.Integrations.Services.WorkflowManager.csproj">
+      <Project>{50a958ce-8ac4-4eb7-bdd9-b63b469f1d54}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Services.WorkflowManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.ServiceWake.Periodic\VecompSoftware.BPM.Integrations.ServiceWake.Periodic.csproj">
+      <Project>{5708e79b-a518-434a-98af-30c48f8d93c5}</Project>
+      <Name>VecompSoftware.BPM.Integrations.ServiceWake.Periodic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.ServiceWake.Single\VecompSoftware.BPM.Integrations.ServiceWake.Single.csproj">
+      <Project>{5414de83-7cee-424b-8522-490e8431b4b1}</Project>
+      <Name>VecompSoftware.BPM.Integrations.ServiceWake.Single</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.ServiceWake\VecompSoftware.BPM.Integrations.ServiceWake.csproj">
+      <Project>{1abfbb6d-cde0-4ed7-93e3-2db3bfb3848a}</Project>
+      <Name>VecompSoftware.BPM.Integrations.ServiceWake</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

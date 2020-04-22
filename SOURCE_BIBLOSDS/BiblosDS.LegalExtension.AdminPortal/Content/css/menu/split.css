@@ -1,0 +1,16 @@
+#ja-splitmenu{float:right;}
+#ja-splitmenu ul li {}
+#ja-splitmenu ul li a {color:#666; font-weight: normal!important;}
+
+#ja-splitmenu ul li.active {}
+#ja-splitmenu ul li.active a.active {font-weight:bold!important;}
+
+#ja-splitmenu ul li:hover, #ja-splitmenu ul li.active:hover {
+}
+
+#ja-splitmenu ul li:hover a:hover, #ja-splitmenu ul li.active:hover a.active:hover  {}
+#ja-splitmenu ul li span.menu-title {}
+
+/* Sub Nav ---*/
+#ja-subnav {display:none;}
+

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="DocumentSeriesItem" table="DocumentSeriesItem">
+
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <property name="Year" column="Year" />
+    <property name="Number" column="Number" />
+    <property name="IdMain" column="IdMain" />
+    <property name="IdAnnexed" column="IdAnnexed" />
+    <property name="IdUnpublishedAnnexed" column="IdUnpublishedAnnexed" />
+    <property name="PublishingDate" column="PublishingDate" />
+    <property name="RetireDate" column="RetireDate" />
+    <property name="Status" column="Status" />
+    <property name="Priority" column="Priority" />
+    <property name="RegistrationUser" column="RegistrationUser" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="Subject" column="Subject" />
+    <property name="DematerialisationChainId" column="DematerialisationChainId" />
+    <property name="UniqueId" column="UniqueId" unique="true" />
+    <property name="HasMainDocument" column="HasMainDocument" />
+    <property name="ConstraintValue" column="ConstraintValue" />
+
+    <many-to-one class="DocumentSeries" name="DocumentSeries" column="IdDocumentSeries" />
+    <many-to-one class="DocumentSeriesSubsection" name="DocumentSeriesSubsection" column="IdDocumentSeriesSubsection" cascade="save-update" />
+    <many-to-one class="Location" name="Location" column="IdLocation" cascade="none" />
+    <many-to-one class="Location" name="LocationAnnexed" column="IdLocationAnnexed" cascade="none" />
+    <many-to-one class="Location" name="LocationUnpublishedAnnexed" column="IdLocationUnpublishedAnnexed" cascade="none" />
+    <many-to-one class="Category" name="Category" column="IdCategory"/>
+    <many-to-one class="Category" name="SubCategory" column="IdSubCategory"/>
+    
+    <bag name="DocumentSeriesItemRoles" table="DocumentSeriesItemRole" cascade="all-delete-orphan" inverse="true">
+      <key column="IdDocumentSeriesItem" />
+      <one-to-many class="DocumentSeriesItemRole" />
+    </bag>
+    <bag name="DocumentSeriesItemLinks" table="DocumentSeriesItemLinks" cascade="all-delete-orphan" inverse="true">
+      <key column="IdDocumentSeriesItem" />
+      <one-to-many class="DocumentSeriesItemLink" />
+    </bag>
+    <bag name="Logs" table="DocumentSeriesItemLog" cascade="none" inverse="true">
+      <key column="IdDocumentSeriesItem" />
+      <one-to-many class="DocumentSeriesItemLog" />
+    </bag>
+    <bag name="Messages" table="DocumentSeriesItemMessage" cascade="none" inverse="true" fetch="select">
+      <key>
+        <column name="IdDocumentSeriesItem" />
+      </key>
+      <one-to-many class="DocumentSeriesItemMessage" />
+    </bag>
+    <bag name="ProtocolDocumentSeriesItems" table="ProtocolDocumentSeriesItems" cascade="none">
+      <key>
+        <column name="IdDocumentSeriesItem" />        
+      </key>
+      <one-to-many class="ProtocolDocumentSeriesItem" />
+    </bag>
+    
+  </class>
+
+</hibernate-mapping>

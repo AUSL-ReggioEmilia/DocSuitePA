@@ -1,0 +1,77 @@
+Feature 9052: [ENAV] Storage SQL per gestione FullText
+Feature 9237: [ENAV] Modifiche applicative Amministrazione Trasparente
+Feature 9394: [AUSL-RE AUSL-PC] Gestione Workflow per modulo Dossier
+Feature 9408: [AUSL-RE AUSL-PC] Creazione e gestione cartelle di un Dossier
+Feature 9995: [AUSL-RE] SPID - Login unificato
+Feature 9996: [AUSL-RE] SPID - Accesso civico agli atti
+Feature 10127: [AUSL-RE] Motore di gestione SAML per richieste di autenticazione SPID
+Feature 10131: [AUSL-RE] Revisione modulo Fascicoli e Workflow MASL
+Feature 10460: [AUSL-RE AUSL-PC] Nuovo layer generazione documenti PDF per public webapi
+
+
+User Story 9358: [AUSL-RE AUSL-PC] Nella scrivania di workflow gestire url dossier dell'utente
+User Story 9651: [AUSL-RE] In sommario fascicolo implementare i filtri della griglia delle UD
+User Story 9946: [AUSL-RE] Nelle fasi di avvia e completa workflow mandare mail ai destinatari
+User Story 9951: [AUSL-RE] Mettere un'indicazione che dal fascicolo è stato avviato un workflow
+User Story 9952: [AUSL-RE] Gestire la visibilità del pulsante di avvia workflow
+User Story 9955: [DSW] Bonificare la mappatura di tutte le classi typescript che usano fromJson
+User Story 9958: [YAC] Inserire validazione che l'attività non sia già chiusa quando gestisco la presa in carico
+User Story 9965: [AUSL-RE] Aggiungere proprietà AuthorizationType all'entità WorkflowInstanceRole
+User Story 9966: [AUSL-RE] Gestire completa workflow nei Dossier
+User Story 9968: [AUSL-RE] Gestire avvia workflow nei Dossier
+User Story 10059: [AUSL-RE AUSL-PC] Implementare la pagina di ricerca avanzata dei Dossier
+User Story 10083: [AUSL-RE] Mettere un'indicazione che dal Dossier è stato avviato un workflow
+User Story 10084: [AUSL-RE] Creazione relazione fascicolo e workflowInstance
+User Story 10085: [AUSL-RE] Quando si avvia un workflow da fascicolo creare una relazione
+User Story 10128: [AUSL-RE] Generazione richieste di accesso SPID tramite HTTP POST o HTTP GET
+User Story 10155: [DSW] Bonifica entità TemplateCollaborationDocumentRepositories nelle WebApi
+User Story 10170: [AUSL-RE] Gestione nuova entità WorkflowInstanceRole
+User Story 10183: [DSW] Se ho DossierEnabled il menù pratiche va tolto
+User Story 10184: [YAC] In fase di avvio di Workflow aggiungere la relazione tra WorkflowInstance e il Dossier/Fascicolo
+User Story 10194: [AUSL-RE] Indicare chi ha preso in carico il workflow associato al fascicolo
+User Story 10215: [AUSL-RE]In Inserimento fascicolo,gestire il settore Proponente come intersezione tra i settori dell'utente e quelli abilitati al classificatore (e viceversa per la Gestione del Classificatore).
+User Story 10254: [AUSL-RE] Nei Dossier quando voglio avviare workflow devo caricare automaticamente il settore responsabile del dossier nel campo settore richiedente
+User Story 10257: [ENAV] Refactor del Layout della pagina di Amministrazione Trasparente
+User Story 10258: [ENAV] Parametrizzazione della griglia di ricerca
+User Story 10259: [ENAV] Aggiunta degli annessi non pubblicati ai risultati di ricerca della pagina di Amministrazione Trasparente
+User Story 10260: [ENAV] Implementazione del campo di ricerca "full text" nella pagina di Amministrazione trasparente
+User Story 10261: [AUSL-RE AUSL-PC] Modificare la tabella DossierFolders aggiungendo l'hierarcyId
+User Story 10269: [AUSL-RE] Nei dati del Dossier rendere visibile richiedente WF, Presa in carico e nelle note la descrizione del workflow
+User Story 10276: [AUSL-RE] In inserimento di fascicolo restringere i responsabili di procedimento disponibili a quelli definiti nel classificatore selezionato
+User Story 10277: [AUSL-RE] In inserimento di fascicolo restringere i responsabili di procedimento definiti sul settore responsabile selezionato
+User Story 10278: [AUSL-RE] In inserimento di fascicolo restringere i settori responsabili in base al classificatore selezionato
+User Story 10340: [AUSL-RE AUSL-PC] Caricamento delle sottocartelle al click "Espandi nodo" nei Dossier
+User Story 10341: [AUSL-RE AUSL-PC] Permettere la creazione di sottocartelle di una cartella nella pagina dei dossier
+User Story 10342: [AUSL-RE AUSL-PC] Implementare la logica creazione di una sottocartella del Dossier
+User Story 10343: [AUSL-RE AUSL-PC] Gestire l'eliminazione di una sottocartella del Dossier nella vista di cartelle
+User Story 10346: [AUSL-RE AUSL-PC] Implementare l'eliminazione di una sottocartella del Dossier nelle WebApi
+User Story 10347: [AUSL-RE AUSL-PC] In fase di creazione di cartella di Dossier, permettere l'aggiunta di un settore autorizzato
+User Story 10348: [AUSL-RE AUSL-PC] In fase di creazione di cartella di Dossier, gestire l'aggiunta di un settore autorizzato nelle WebApi
+User Story 10349: [AUSL-RE AUSL-PC] Creare la stored procedure per l'inserimento di nuovi elementi della DossierFolder
+User Story 10400: [AUSL-RE AUSL-PC] Creare funzione che recupera le cartelle di primo livello
+User Story 10401: [AUSL-RE AUSL-PC] Creare funzione che recupera le sottocartelle figlie di una cartella
+User Story 10421: [AUSL-RE AUSL-PC] Creare le stored procedure per l'aggiornamento e la cancellazione di un record della DossierFolder
+User Story 10431: [AUSL-RE AUSL-PC] Implementare validazioni per creazione cartella con gerarchia
+User Story 10461: [AUSL-RE AUSL-PC] Nuova librera DocumentGenerator.PDF
+User Story 10462: [AUSL-RE AUSL-PC] Metodo GenerateDocumentAsync per generare i documenti
+User Story 10514: [AUSL-PC] In Firma multipla introdurre modifica massiva tipologia documento in firma
+User Story 10527: [DSW] Se ho DossierEnabled mettere a false la visibilità dei bottoni "aggiungi a pratica"
+User Story 10541: [AUSL-RE AUSL-PC] Mettere in Relazione DossierLog con Dossier Folder
+User Story 10542: [AUSL-RE AUSL-PC] Aumentare i Log dei Dossier
+User Story 10546: [AUSL-RE AUSL-PC] Implementare la possibilità di modificare una cartella
+User Story 10573: [AUSL-RE AUSL-PC] In fase di eliminazione di un fascicolo da una cartella di Dossier, gestire l'eliminazione del settore autorizzato nelle WebApi
+User Story 10574: [AUSL-RE AUSL-PC] implementare lato webAPI la modifica di una cartella
+User Story 10575: [AUSL-RE AUSL-PC] Creare un nuovo ActionType per il disassocia Fascicolo da una DossierFolder
+User Story 10578: [AUSL-RE AUSL-PC] Introdurre modelli generici per gestire le proprietà necessarie alla generazione dinamica dei documenti
+User Story 10579: [AUSL-RE AUSL-PC] Sistemazione loading delle finestre di gestione delle cartelline e del vaolre dell'anno di default nelle pagine di ricerca
+User Story 10590: [AUSL-RE] Parametro per gestire in maniera generica l'ordinamento descrescente degli elementi
+User Story 10595: [AUSL-RE AUSL-PC] Creare un nuovo ActionType per l'associa Fascicolo a una DossierFolder e fare Validation realtive all'actionType
+User Story 10605: [AUSL-RE AUSL-PC]Validation per l'associa Fascicolo ad una Cartella
+
+
+Bug 9735: [ASL-TO]Doppio invio del comando CQRS di una Serie Documentale se confermato l'atto
+Bug 10220: [DSW]In Fascicolo,se cerco di collegare un altro Fascicolo,il menù a tendina non carica correttamente i Fascicoli
+Bug 10224: [DSW] Quando viene aperta una unità documentaria referenziata,non fascicolata,la pulsantiera risulta disabilitata.
+Bug 10319: [DSW]Nel Sommario di un Dossier che contiene più cartelline,al click di una cartellina vuota non si aggiorna la pagina a destra che ne mostra il contenuto.
+Bug 10512: [AUSL-PC] Nel caricamento della pagina fascicolazione UD i diritti devono essere cercati nel primo classificatore con piano di fascicolazione attivo
+Bug 10545: [AUSL-RE]In Sommario di Atti permettere la visibilità del Log se l'utente appartiene al Gruppo speciale di Amministratore.

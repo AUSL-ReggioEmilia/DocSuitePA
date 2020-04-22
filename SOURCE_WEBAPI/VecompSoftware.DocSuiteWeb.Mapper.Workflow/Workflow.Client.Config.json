@@ -1,0 +1,14 @@
+﻿{
+    "RootScope": "https://srvazvsdev.cloudapp.net:12290",
+    /*
+        Le cartelle seguenti devono essere specificate in ordine di pubblicazione.
+        La prima cartella è quella base e sarà pubblicata per prima.
+		Le custom Activity in ogni folder devono conoscere solo le custom Activity del livello precedente o quelle del framework
+    */
+    "FolderCustomActivity": [
+        "bin\\WorkflowFramework\\XAMLBaseActivity",
+        "bin\\WorkflowFramework\\XAMLExtendedActivity"
+    ],
+  "FolderCodeActivity": "bin\\WorkflowFramework\\DSWCodeActivity",
+  "WorkflowScopeValidation" : "WorkflowScopeValidation"
+}

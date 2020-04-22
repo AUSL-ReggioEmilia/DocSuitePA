@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="TabWorkflow" table="TabWorkflow">
+    
+    <composite-id class="TabWorkflowCompositeKey" name="Id">
+      <key-property column="WorkflowType" name="WorkflowType" type="AnsiString" />
+      <key-property column="Step" name="ResStep" />
+    </composite-id>
+    
+    <property name="Description" column="Description" type="AnsiString" />
+    <property name="CustomDescription" column="CustomDescription" type="AnsiString" />
+    <property name="FieldDocument" column="FieldDocument" type="AnsiString" />
+    <property name="DocumentImageFile" column="DocumentImageFile" type="AnsiString" />
+    <property name="DocumentDescription" column="DocumentDescription" type="AnsiString" />
+    <property name="FieldDate" column="FieldDate" type="AnsiString" />
+    <property name="FieldUser" column="FieldUser" type="AnsiString" />
+    <property name="Attachment" column="Attachment" type="AnsiString" />
+    <property name="FieldAttachment" column="FieldAttachment" type="AnsiString" />
+    <property name="FieldPrivacyAttachment" column="FieldPrivacyAttachment" type="AnsiString" />
+    <property name="BiblosFileProperty" column="BiblosFileProperty" type="AnsiString" />
+    <property name="OperationStep" column="OperationStep" type="AnsiString" />
+    <property name="ViewDocumentBitRight" column="ViewDocumentBitRight" type="AnsiString" />
+    <property name="ViewAttachmentBitRight" column="ViewAttachmentBitRight" type="AnsiString" />
+    <property name="ViewOnlyActive" column="ViewOnlyActive" type="AnsiString" />
+    <property name="ViewPreStep" column="ViewPreStep" type="AnsiString" />
+    <property name="ChangeableData" column="ChangeableData" type="AnsiString" />
+    <property name="ManagedWorkflowData" column="ManagedWorkflowData" type="AnsiString" />
+    <property name="FieldFrontalinoRitiro" column="FieldFrontalinoRitiro" type="AnsiString" />
+    <property name="PubblicaRevocaPage" column="PubblicaRevocaPage" type="AnsiString" />
+    <property name="FieldAnnexed" column="FieldAnnexed" type="AnsiString" />
+    <property name="Template" column="Template" type="AnsiString" />
+    <property name="FieldProtocol" column="FieldProtocol" type="AnsiString" />
+    <property name="FieldDocumentsOmissis" column="FieldDocumentsOmissis" type="AnsiString" />
+    <property name="FieldAttachmentsOmissis" column="FieldAttachmentsOmissis" type="AnsiString" />
+    <property name="ViewCurrentDocument" column="ViewCurrentDocument" />
+    <property name="ViewCurrentAttachment" column="ViewCurrentAttachment" />
+  
+  </class>
+
+</hibernate-mapping>

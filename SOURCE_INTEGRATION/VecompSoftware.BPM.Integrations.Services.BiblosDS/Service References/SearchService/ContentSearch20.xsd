@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/Condition" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/Condition" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/FilterCondition" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/FilterOperator" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/ContentSearch.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfCondition">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Condition" nillable="true" type="tns:Condition" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCondition" nillable="true" type="tns:ArrayOfCondition" />
+  <xs:complexType name="Condition">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Conditions" nillable="true" type="tns:ArrayOfCondition" />
+      <xs:element xmlns:q1="http://BiblosDS/2009/10/FilterCondition" minOccurs="0" name="LogicalCondition" type="q1:FilterCondition" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element xmlns:q2="http://BiblosDS/2009/10/FilterOperator" minOccurs="0" name="Operator" type="q2:FilterOperator" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:anyType" />
+    </xs:sequence>
+    <xs:attribute ref="ser:Id" />
+    <xs:attribute ref="ser:Ref" />
+  </xs:complexType>
+  <xs:element name="Condition" nillable="true" type="tns:Condition" />
+</xs:schema>

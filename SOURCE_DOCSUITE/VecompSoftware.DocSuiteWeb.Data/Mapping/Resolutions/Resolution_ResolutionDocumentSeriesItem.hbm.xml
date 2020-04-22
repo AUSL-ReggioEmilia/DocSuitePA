@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ResolutionDocumentSeriesItem" table="ResolutionDocumentSeriesItem">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+    
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    <property name="IdDocumentSeriesItem" column="IdDocumentSeriesItem" />
+    <property name="LastChangedUser" column="LastChangedUser" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="RegistrationUser" column="RegistrationUser" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+
+    <property name="UniqueId" column="UniqueId" unique="true" />
+    <property name="UniqueIdResolution" column="UniqueIdResolution" not-null="true" />
+    <property name="UniqueIdDocumentSeriesItem" column="UniqueIdDocumentSeriesItem" not-null="true" />
+    
+    <many-to-one name="Resolution" column="IdResolution" class="Resolution" />
+    
+  </class>
+
+</hibernate-mapping>

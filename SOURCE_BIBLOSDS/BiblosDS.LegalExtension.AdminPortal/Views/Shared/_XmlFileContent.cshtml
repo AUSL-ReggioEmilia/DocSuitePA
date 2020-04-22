@@ -1,0 +1,23 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.WindowFileContentViewModel
+
+<script src="~/Scripts/resizesensor.js"></script>
+<script src="~/Scripts/ace/ace.min.js"></script>
+
+<div id="ace-viewer">
+    @Model.Content
+</div>
+
+<script>
+    $(function () {
+        ace.config.set("basePath", "../../Scripts/ace");
+        var editor = ace.edit("ace-viewer");
+        editor.session.setMode("ace/mode/xml");
+        editor.setAutoScrollEditorIntoView(true);
+
+        new ResizeSensor($('#ace-viewer'), function () {
+            $('.ace_editor').height($('#xmlwindow.k-window-content').height() - 5);
+            editor.resize();
+        });
+        $('.ace_editor').height($('#xmlwindow.k-window-content').height() - 5);
+    });
+</script>

@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://Vecomp.BiblosDs.IPreservationAdministration" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://Vecomp.BiblosDs.IPreservationAdministration" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://Vecomp.BiblosDs.IPreservationAdministration/Imports">
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd0" namespace="http://Vecomp.BiblosDs.IPreservationAdministration" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/Preservation" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/Archive" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Storage" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/StorageType" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/Document" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/AttributeValue" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd9" namespace="http://BiblosDS/2009/10/Attribute" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd10" namespace="http://BiblosDS/2009/10/AttributeGroup" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/FilterOperator" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd12" namespace="http://BiblosDS/2009/10/AttributeMode" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd13" namespace="http://BiblosDS/2009/10/Certificate" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd14" namespace="http://BiblosDS/2009/10/Content" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd15" namespace="http://BiblosDS/2009/10/Permission" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd16" namespace="http://BiblosDS/2009/10/PermissionMode" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd17" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd18" namespace="http://BiblosDS/2009/10/StorageArea" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd19" namespace="http://BiblosDS/2009/10/PreservationJournaling" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd20" namespace="http://BiblosDS/2009/10/PreservationJournalingActivity" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/PreservationTask" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd22" namespace="http://BiblosDS/2009/10/PreservationAlert" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd23" namespace="http://BiblosDS/2009/10/PreservationAlertType" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd24" namespace="http://BiblosDS/2009/10/PreservationRole" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd25" namespace="http://BiblosDS/2009/10/PreservationUserRole" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd26" namespace="http://BiblosDS/2009/10/PreservationUser" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd27" namespace="http://BiblosDS/2009/10/PreservationTaskType" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd28" namespace="http://BiblosDS/2009/10/PreservationScheduleTaskType" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd29" namespace="http://BiblosDS/2009/10/PreservationSchedule" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd30" namespace="http://BiblosDS/2009/10/PreservationTaskGroup" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd31" namespace="http://BiblosDS/2009/10/PreservationTaskGroupType" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd32" namespace="http://BiblosDS/2009/10/PreservationStorageDevice" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd33" namespace="http://BiblosDS/2009/10/PreservationInStorageDevice" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd34" namespace="http://BiblosDS/2009/10/PreservationStorageDeviceStatus" />
+      <xsd:import schemaLocation="http://localhost:1526/BiblosDs.WCF/PreservationAdministration.svc?xsd=xsd35" namespace="http://BiblosDS/2009/10/PreservationHoliday" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IPreservationAdministration_AddPreservationParameter_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationParameter" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationParameter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationParameterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationParameter_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationParameter" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationParameter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationParameterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationParameter_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationParameter" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationParameter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationParameterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationsFromArchive_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsFromArchive" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationsFromArchive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsFromArchiveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationTaskGroupsByScheduleAndGroupType_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationTaskGroupsByScheduleAndGroupType" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationTaskGroupsByScheduleAndGroupType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationTaskGroupsByScheduleAndGroupTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationAsSigned_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationAsSigned" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationAsSigned_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationAsSignedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationPath_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationPath" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationPath_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationPathResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationTaskGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationTaskGroup" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationTaskGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationTaskGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationTaskGroupTypeDescription_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskGroupTypeDescription" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationTaskGroupTypeDescription_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskGroupTypeDescriptionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationTaskGroupType_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskGroupType" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationTaskGroupType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskGroupTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationStorageDevices_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDevices" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationStorageDevices_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationStorageDevicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationsInStorageDevices_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsInStorageDevices" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationsInStorageDevices_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsInStorageDevicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationInStorageDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationInStorageDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationInStorageDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationInStorageDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationStorageDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationStorageDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationStorageDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationStorageDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationJournaling_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationJournaling" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationJournaling_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationJournalingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetAdministratedArchives_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAdministratedArchives" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetAdministratedArchives_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAdministratedArchivesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationUsersInArchiveByRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationUsersInArchiveByRole" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationUsersInArchiveByRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationUsersInArchiveByRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetRoles_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetRoles" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetRoles_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetRolesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationUser" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationUser" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationUserRolesByPreservationUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationUserRolesByPreservationUser" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationUserRolesByPreservationUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationUserRolesByPreservationUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationUser" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationUserRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationUserRole" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationUserRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationUserRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationSchedule_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationSchedule" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationSchedule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationScheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationSchedule_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationSchedule" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationSchedule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationScheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationSchedule_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationSchedule" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationSchedule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationScheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationSchedule_TaskTypeBySchedule_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationSchedule_TaskTypeBySchedule" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationSchedule_TaskTypeBySchedule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationSchedule_TaskTypeByScheduleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetTaskTypesByUserRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTaskTypesByUserRole" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetTaskTypesByUserRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTaskTypesByUserRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationTaskType_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskType" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationTaskType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationTaskType_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskType" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationTaskType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationTaskTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetDetailedPreservationTaskGroup_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDetailedPreservationTaskGroup" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetDetailedPreservationTaskGroup_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDetailedPreservationTaskGroupResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationTaskGroupExpiryByTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskGroupExpiryByTask" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationTaskGroupExpiryByTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationTaskGroupExpiryByTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationsByUserAndTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsByUserAndTask" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationsByUserAndTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationsByUserAndTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationHoliday_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationHoliday" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationHoliday_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationHolidayResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationHoliday_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationHoliday" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationHoliday_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationHolidayResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationHoliday_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationHoliday" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationHoliday_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationHolidayResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationAlertTypes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAlertTypes" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationAlertTypes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAlertTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationAlertType_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationAlertType" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationAlertType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationAlertTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationAlertType_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationAlertType" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationAlertType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationAlertTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationAlertType_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationAlertType" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_DeletePreservationAlertType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreservationAlertTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationAlertTypesByTaskType_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAlertTypesByTaskType" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_GetPreservationAlertTypesByTaskType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPreservationAlertTypesByTaskTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationRole" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_UpdatePreservationRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdatePreservationRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationRole" />
+  </wsdl:message>
+  <wsdl:message name="IPreservationAdministration_AddPreservationRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPreservationRoleResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IPreservationAdministration">
+    <wsdl:operation name="AddPreservationParameter">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationParameter" message="tns:IPreservationAdministration_AddPreservationParameter_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationParameterResponse" message="tns:IPreservationAdministration_AddPreservationParameter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationParameter">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationParameter" message="tns:IPreservationAdministration_UpdatePreservationParameter_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationParameterResponse" message="tns:IPreservationAdministration_UpdatePreservationParameter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationParameter">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationParameter" message="tns:IPreservationAdministration_DeletePreservationParameter_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationParameterResponse" message="tns:IPreservationAdministration_DeletePreservationParameter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationsFromArchive">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationsFromArchive" message="tns:IPreservationAdministration_GetPreservationsFromArchive_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationsFromArchiveResponse" message="tns:IPreservationAdministration_GetPreservationsFromArchive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationTaskGroupsByScheduleAndGroupType">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationTaskGroupsByScheduleAndGroupType" message="tns:IPreservationAdministration_GetPreservationTaskGroupsByScheduleAndGroupType_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationTaskGroupsByScheduleAndGroupTypeResponse" message="tns:IPreservationAdministration_GetPreservationTaskGroupsByScheduleAndGroupType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationAsSigned">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationAsSigned" message="tns:IPreservationAdministration_UpdatePreservationAsSigned_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationAsSignedResponse" message="tns:IPreservationAdministration_UpdatePreservationAsSigned_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationPath">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationPath" message="tns:IPreservationAdministration_UpdatePreservationPath_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationPathResponse" message="tns:IPreservationAdministration_UpdatePreservationPath_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationTaskGroup">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationTaskGroup" message="tns:IPreservationAdministration_DeletePreservationTaskGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationTaskGroupResponse" message="tns:IPreservationAdministration_DeletePreservationTaskGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationTaskGroupTypeDescription">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationTaskGroupTypeDescription" message="tns:IPreservationAdministration_UpdatePreservationTaskGroupTypeDescription_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationTaskGroupTypeDescriptionResponse" message="tns:IPreservationAdministration_UpdatePreservationTaskGroupTypeDescription_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationTaskGroupType">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationTaskGroupType" message="tns:IPreservationAdministration_AddPreservationTaskGroupType_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationTaskGroupTypeResponse" message="tns:IPreservationAdministration_AddPreservationTaskGroupType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationStorageDevices">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationStorageDevices" message="tns:IPreservationAdministration_GetPreservationStorageDevices_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationStorageDevicesResponse" message="tns:IPreservationAdministration_GetPreservationStorageDevices_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationsInStorageDevices">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationsInStorageDevices" message="tns:IPreservationAdministration_GetPreservationsInStorageDevices_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationsInStorageDevicesResponse" message="tns:IPreservationAdministration_GetPreservationsInStorageDevices_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationInStorageDevice">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationInStorageDevice" message="tns:IPreservationAdministration_AddPreservationInStorageDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationInStorageDeviceResponse" message="tns:IPreservationAdministration_AddPreservationInStorageDevice_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationStorageDevice">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationStorageDevice" message="tns:IPreservationAdministration_AddPreservationStorageDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationStorageDeviceResponse" message="tns:IPreservationAdministration_AddPreservationStorageDevice_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationJournaling">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationJournaling" message="tns:IPreservationAdministration_DeletePreservationJournaling_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationJournalingResponse" message="tns:IPreservationAdministration_DeletePreservationJournaling_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAdministratedArchives">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetAdministratedArchives" message="tns:IPreservationAdministration_GetAdministratedArchives_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetAdministratedArchivesResponse" message="tns:IPreservationAdministration_GetAdministratedArchives_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationUsersInArchiveByRole">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationUsersInArchiveByRole" message="tns:IPreservationAdministration_GetPreservationUsersInArchiveByRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationUsersInArchiveByRoleResponse" message="tns:IPreservationAdministration_GetPreservationUsersInArchiveByRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRoles">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetRoles" message="tns:IPreservationAdministration_GetRoles_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetRolesResponse" message="tns:IPreservationAdministration_GetRoles_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationUser">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationUser" message="tns:IPreservationAdministration_UpdatePreservationUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationUserResponse" message="tns:IPreservationAdministration_UpdatePreservationUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationUser">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationUser" message="tns:IPreservationAdministration_AddPreservationUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationUserResponse" message="tns:IPreservationAdministration_AddPreservationUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationUserRolesByPreservationUser">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationUserRolesByPreservationUser" message="tns:IPreservationAdministration_DeletePreservationUserRolesByPreservationUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationUserRolesByPreservationUserResponse" message="tns:IPreservationAdministration_DeletePreservationUserRolesByPreservationUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationUser">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationUser" message="tns:IPreservationAdministration_DeletePreservationUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationUserResponse" message="tns:IPreservationAdministration_DeletePreservationUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationUserRole">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationUserRole" message="tns:IPreservationAdministration_AddPreservationUserRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationUserRoleResponse" message="tns:IPreservationAdministration_AddPreservationUserRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationSchedule">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationSchedule" message="tns:IPreservationAdministration_AddPreservationSchedule_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationScheduleResponse" message="tns:IPreservationAdministration_AddPreservationSchedule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationSchedule">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationSchedule" message="tns:IPreservationAdministration_UpdatePreservationSchedule_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationScheduleResponse" message="tns:IPreservationAdministration_UpdatePreservationSchedule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationSchedule">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationSchedule" message="tns:IPreservationAdministration_DeletePreservationSchedule_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationScheduleResponse" message="tns:IPreservationAdministration_DeletePreservationSchedule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationSchedule_TaskTypeBySchedule">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationSchedule_TaskTypeBySchedule" message="tns:IPreservationAdministration_DeletePreservationSchedule_TaskTypeBySchedule_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationSchedule_TaskTypeByScheduleResponse" message="tns:IPreservationAdministration_DeletePreservationSchedule_TaskTypeBySchedule_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTaskTypesByUserRole">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetTaskTypesByUserRole" message="tns:IPreservationAdministration_GetTaskTypesByUserRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetTaskTypesByUserRoleResponse" message="tns:IPreservationAdministration_GetTaskTypesByUserRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationTaskType">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationTaskType" message="tns:IPreservationAdministration_UpdatePreservationTaskType_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationTaskTypeResponse" message="tns:IPreservationAdministration_UpdatePreservationTaskType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationTaskType">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationTaskType" message="tns:IPreservationAdministration_AddPreservationTaskType_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationTaskTypeResponse" message="tns:IPreservationAdministration_AddPreservationTaskType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDetailedPreservationTaskGroup">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetDetailedPreservationTaskGroup" message="tns:IPreservationAdministration_GetDetailedPreservationTaskGroup_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetDetailedPreservationTaskGroupResponse" message="tns:IPreservationAdministration_GetDetailedPreservationTaskGroup_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationTaskGroupExpiryByTask">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationTaskGroupExpiryByTask" message="tns:IPreservationAdministration_UpdatePreservationTaskGroupExpiryByTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationTaskGroupExpiryByTaskResponse" message="tns:IPreservationAdministration_UpdatePreservationTaskGroupExpiryByTask_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationsByUserAndTask">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationsByUserAndTask" message="tns:IPreservationAdministration_GetPreservationsByUserAndTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationsByUserAndTaskResponse" message="tns:IPreservationAdministration_GetPreservationsByUserAndTask_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationHoliday">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationHoliday" message="tns:IPreservationAdministration_AddPreservationHoliday_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationHolidayResponse" message="tns:IPreservationAdministration_AddPreservationHoliday_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationHoliday">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationHoliday" message="tns:IPreservationAdministration_UpdatePreservationHoliday_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationHolidayResponse" message="tns:IPreservationAdministration_UpdatePreservationHoliday_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationHoliday">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationHoliday" message="tns:IPreservationAdministration_DeletePreservationHoliday_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationHolidayResponse" message="tns:IPreservationAdministration_DeletePreservationHoliday_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationAlertTypes">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationAlertTypes" message="tns:IPreservationAdministration_GetPreservationAlertTypes_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationAlertTypesResponse" message="tns:IPreservationAdministration_GetPreservationAlertTypes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationAlertType">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationAlertType" message="tns:IPreservationAdministration_UpdatePreservationAlertType_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationAlertTypeResponse" message="tns:IPreservationAdministration_UpdatePreservationAlertType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationAlertType">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationAlertType" message="tns:IPreservationAdministration_AddPreservationAlertType_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationAlertTypeResponse" message="tns:IPreservationAdministration_AddPreservationAlertType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreservationAlertType">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationAlertType" message="tns:IPreservationAdministration_DeletePreservationAlertType_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/DeletePreservationAlertTypeResponse" message="tns:IPreservationAdministration_DeletePreservationAlertType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPreservationAlertTypesByTaskType">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationAlertTypesByTaskType" message="tns:IPreservationAdministration_GetPreservationAlertTypesByTaskType_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/GetPreservationAlertTypesByTaskTypeResponse" message="tns:IPreservationAdministration_GetPreservationAlertTypesByTaskType_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePreservationRole">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationRole" message="tns:IPreservationAdministration_UpdatePreservationRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/UpdatePreservationRoleResponse" message="tns:IPreservationAdministration_UpdatePreservationRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPreservationRole">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationRole" message="tns:IPreservationAdministration_AddPreservationRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.IPreservationAdministration/IPreservationAdministration/AddPreservationRoleResponse" message="tns:IPreservationAdministration_AddPreservationRole_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

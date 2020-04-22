@@ -1,0 +1,163 @@
+﻿{
+  "0": {
+    "Position": 0,
+    "Name": "CREA UDS - CONTRATTO",
+    "ActivityOperation": {
+      "Action": "Create",
+      "Area": "UDS"
+    },
+    "AuthorizationType": "AllRoleUser",
+    "ActivityType": "UDSCreate",
+    "InputArguments": [
+      {
+        "Name": "_dsw_e_UDSName",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": [
+      {
+        "Name": "_dsw_e_UDSNumber",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_UDSYear",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ]
+  },
+  "1": {
+    "Position": 1,
+    "Name": "PROTOCOLLA CONTRATTO",
+    "AuthorizationType": "AllRoleUser",
+    "ActivityOperation": {
+      "Action": "ToProtocol",
+      "Area": "UDS"
+    },
+    "ActivityType": 4,
+    "InputArguments": [
+      {
+        "Name": "_dsw_e_UDSName",
+        "PropertyType": "PropertyString",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_UDSNumber",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_UDSYear",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": [
+      {
+        "Name": "_dsw_e_ProtocolNumber",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ProtocolYear",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_MainChainId",
+        "PropertyType": "PropertyGuid",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ]
+  },
+  "2": {
+    "Position": 2,
+    "Name": "INVIA CONTRATTO VIA PEC",
+    "AuthorizationType": "AllRoleUser",
+    "ActivityOperation": {
+      "Action": "ToPEC",
+      "Area": "Protocol"
+    },
+    "ActivityType": "PecToProtocol",
+    "InputArguments": [
+      {
+        "Name": "_dsw_e_ProtocolNumber",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ProtocolYear",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_MainChainId",
+        "PropertyType": "PropertyGuid",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": []
+  }
+}

@@ -1,0 +1,101 @@
+Epic 18376: [ENAV] Cantiere evolutivo MyEnav - Integrazione EHC
+Epic 18885: [AUSL-RE] Modifiche richieste 8.85
+
+
+Feature 14703: [AGENAS SM] Protocollo : Nuovo componente "Rubrica Smart" in gestione contatti durante inserimento di protocollo
+Feature 18756: [SM] Fascicoli : Gestione multi classificazione delle unità documentali gestite in fascicolo
+Feature 18777: [ENAV] External Viewer : Rimozione componenti "Documenti/attività di workflow autorizzati"
+Feature 18785: [ENAV] External Viewer : Gestire la visualizzazione del PDF mediante componente nativa "Kendo-ui pdfviewer"
+Feature 18798: [ENAV] External Viewer : Creare la visualizzazione del modulo Dossier e adeguare quella del Fascicolo
+Feature 18829: [ENAV] MyEnav : Creare una nuova App Angular futura "DocSuite X"
+Feature 18830: [ENAV] MyEnav : Sviluppare le azioni di workflow "Approva\rifiuta documento"
+Feature 18831: [ENAV] MyEnav : Sviluppare le azioni di workflow "Firma documento"
+Feature 18832: [ENAV] MyEnav : Sviluppare le azioni di workflow "Rispondi"
+Feature 18833: [ENAV] MyEnav : Sviluppare le azioni di workflow "Condividi attività"
+Feature 18848: [AUSL-RE] Fascicoli: Creazione della cartellina di Fascicolo "Pubblica"
+Feature 19008: [AUSL-RE] Pannello dei collegamenti : Pannello dei collegamenti deve includere le PEC in Ingresso e Uscita
+Feature 19018: [AUSL-RE] Vista Workflow: Aggiungere modalità "Mostra come conversazioni" alla vista di scrivania di workflow
+Feature 19023: [ENAV] Private WebAPI : Bonificare i controlli ODATA delel PrivateWebAPI in preparzione DocSuite X
+Feature 19352: [SM] Protocollo : Integrazione del servizio elettronico di recapito certificato (SERC)
+Feature 19365: [ENAV] DocSuite : Sviluppare le azioni di workflow "Firma documento"/"Rispondi"/"Approva\rifiuta documento" in attività generica
+Feature 19369: [ENAV] MyEnav : Sviluppare il visualizzatore di fascicolo con lo stesso stile di come fatto in EW
+Feature 19448: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle amministrative
+
+
+User Story 18690: [AGENAS] Messa in evidenza: Mappare la colonna Note nelle entità ProtocolUser nelle WebAPI
+User Story 18706: [AGENAS SM] Protocollo : creare nuovo uscContactRest.ascx "Rubrica Smart"
+User Story 18707: [AGENAS SM] Protocollo : Creare un parametro protocollenv "ContactSmartEnabled"
+User Story 18708: [AGENAS SM] Protocollo : Adeguare comportamento dello usercontrol uscContactSel.ascx al nuovo parametro "ContactSmartEnabled"
+User Story 18709: [AGENAS SM] Protocollo : Adeguare uscContactRest.ascx per passare le informazioni allo usercontrol uscContactSel.ascx
+User Story 18710: [AGENAS SM] Protocollo : Gestione del ContactModel in sessionstorage in uscContactRest.ascx
+User Story 18778: [ENAV] External Viewer : Rimuovere tutte le componenti "MyDocSuite" - I miei documenti autorizzati
+User Story 18779: [ENAV] External Viewer : Rimuovere tutte le componenti "MyDocSuite" - Le mie attività
+User Story 18780: [ENAV] External Viewer : Rimuovere tutte le di gestione dell'autenticazione NTLM
+User Story 18783: [ENAV] External Viewer : Rimuovere tutte le componenti "MyDocSuite" - Risposta alla WorkflowActivity
+User Story 18784: [ENAV] External Viewer : Rimuovere tutte le componenti "MyDocSuite" - Condividi la WorkflowActivity
+User Story 18786: [ENAV] External Viewer : Rimuovere la vecchia gestione "IFRAME" del rendering del PDF
+User Story 18787: [ENAV] External Viewer : Aggiungere la componente "Kendo-ui pdfviewer" per la preview del PDF.
+User Story 18799: [ENAV] External Viewer : Creare sommario di Dossier 
+User Story 18815: [ENAV] External Viewer : Adeguare il sommario di Fascicolo esistente
+User Story 18816: [ENAV] External Viewer : Creare componente Tree View per visualizzazione albero delle cartelline di Dossier o Fascicolo
+User Story 18817: [ENAV] External Viewer : Adeguare il sommario di Fascicolo esistente
+User Story 18818: [ENAV] Public WebAPI : Creare i controller ODATA necessari alla gestione dei Dossier per l'utilizzo OAUTH dell'External Viewer
+User Story 18819: [ENAV] Public WebAPI : Adeguare/adattare i controller ODATA necessari alla gestione dei Fascicoli per l'utilizzo OAUTH dell'External Viewer
+User Story 18834: [ENAV] MyEnav : Creare app angular MyENAV
+User Story 18835: [ENAV] MyEnav : Realizzazione menu MyENAV
+User Story 18838: [ENAV] MyEnav : Realizzazione componente "numero di notifiche"
+User Story 18849: [AUSL-RE] Fascicoli: Mapping WebAPI della colonna VisibilityType in FascicleFolder
+User Story 18850: [AUSL-RE] Fascicoli: Modificare l'enum FascicleFolderStatus per valore "Internet"
+User Story 18851: [AUSL-RE] Fascicoli: Creare Enum FolderVisibilityType
+User Story 18852: [AUSL-RE] Fascicoli: Adeguare le store procedure di inserimento e modifica di Fascicle e FascicleFolder
+User Story 18853: [AUSL-RE] Fascicoli: Adeguare le store procedure di inserimento e modifica di Dossier e DossierFolder
+User Story 18854: [AUSL-RE] Fascicoli: Icona per indicare cartellina "Internet"o "Internal"
+User Story 18855: [AUSL-RE] Fascicoli: Icona per indicare cartellina di tipo "sotto fascicolo"
+User Story 18856: [AUSL-RE] Fascicoli: Script migrazione per aggiungere la colonna short VisibilityType in FascicleFolder e DossierFolder
+User Story 18896: [SM] Fascicoli : Creazione tabella "cqrs.DocumentUnitFascicleCategories" 
+User Story 18897: [SM] Fascicoli : Creazione tabella "cqrs.DocumentUnitFascicleHistoricizedCategories" 
+User Story 18898: [SM] Fascicoli : Creazione parametro DocSuite di protocolenv "MulticlassificationEnabled"
+User Story 18899: [SM] Fascicoli : Mappatura WebAPI entità "DocumentUnitFascicleHistoricizedCategory"
+User Story 18900: [SM] Fascicoli : Creazione comandi CQRS "CommandCreateFascicleDocumentUnit" e "CommandDeleteFascicleDocumentUnit"
+User Story 18901: [SM] Fascicoli : Modifica del listener CQRS Insert e Update per analisi delle unità documentali "referenziate"
+User Story 18902: [SM] Fascicoli : Adeguamento controller REST "FascicleDocumentUnit" per invio comandi
+User Story 18903: [SM] Fascicoli : Modifica sommario di Protocollo (uscProtocollo) per aggiunta informazioni della multiclassificazione
+User Story 18904: [SM] Fascicoli : Modifica sommario di Atti (ReslVisualizza) per aggiunta informazioni della multiclassificazione
+User Story 18905: [SM] Fascicoli : Modifica sommario di Archivio (uscUds) per aggiunta informazioni della multiclassificazione
+User Story 18906: [SM] Fascicoli : Modifica sommario di Serie Documentale (Item.aspx) per aggiunta informazioni della multiclassificazione (nel pannello del classificatore)
+User Story 18907: [SM] Fascicoli : Mappatura WebAPI entità "DocumentUnitFascicleCategory"
+User Story 18908: [SM] Fascicoli : Creazione eventi CQRS "EventCreateFascicleDocumentUnit" e "EventDeleteFascicleDocumentUnit"
+User Story 18909: [SM] Fascicoli :  Aggiungere nuova costante "FascicleUniqueId" al file CustomPropertyName
+User Story 18910: [SM] Fascicoli : Creare user control "uscMulticlassificationRest.uscx" per aggiunta informazioni della multiclassificazione
+User Story 19009: [AUSL-RE] Pannello dei collegamenti : Aggiungere proprietà per PEC in Ingresso e Uscita nello USCDocumentUnitReference
+User Story 19010: [AUSL-RE] Pannello dei collegamenti : Aggiungere gestione del caricamento "PEC Inviati" 
+User Story 19011: [AUSL-RE] Pannello dei collegamenti : Aggiungere gestione del caricamento "PEC d'origine" 
+User Story 19012: [AUSL-RE] Pannello dei collegamenti : Adeguare sommario di protocollo per la visualizzazione dei rami "PEC".
+User Story 19016: [AUSL-RE] Pannello dei collegamenti : Gestione della treeview per il disegno dei nodi PEC
+User Story 19017: [AUSL-RE] Pannello dei collegamenti : Creazione pagina PECDetails per il dettaglio delle PEC
+User Story 19019: [AUSL-RE] Vista Workflow: Togliere il flag "Attività avviate da me" 
+User Story 19020: [AUSL-RE] Vista Workflow: Gestione vista "Mostra come conversazioni" alla vista di scrivania di workflow
+User Story 19024: [ENAV] Private WebAPI : PECMailService
+User Story 19025: [ENAV] Private WebAPI : WorkflowNotifyService
+User Story 19026: [ENAV] Private WebAPI : DocumentNTLMService
+User Story 19027: [ENAV] Private WebAPI : DocumentUnitService
+User Story 19028: [ENAV] Private WebAPI : ProtocolNTLMService
+User Story 19054: [AUSL-RE] Pannello dei collegamenti : Bonifica delle Entità ResolutionDocumentSeriesItem e ResolutionMessage per renderle compatibile nelle WebAPI
+User Story 19056: [AUSL-RE] Pannello dei collegamenti : Bonifica delle Entità DocumentSeriesItemLink e DocumentSeriesItemMessage  per renderle compatibile nelle WebAPI
+User Story 19353: [SM] Framework : Creazione Service VecompSoftware.Services.TNotice
+User Story 19354: [SM] Protocollo : Creare parametro di protocollo TNoticeEnabled
+User Story 19355: [SM] JeepService : Creazione Modulo TNotice per invio protocolli a TNotice
+User Story 19359: [ENAV] DocSuite : Sviluppare le azioni di workflow "Approva documento"
+User Story 19360: [ENAV] DocSuite : Sviluppare le azioni di workflow "Rifiuta documento"
+User Story 19361: [ENAV] DocSuite : Sviluppare le azioni di workflow "Firma documento"
+User Story 19362: [ENAV] DocSuite : Sviluppare le azioni di workflow "Rispondi"
+User Story 19370: [ENAV] MyEnav : Menu laterale "Procedimenti", con la prima sotto voce "I miei fascicoli"
+User Story 19371: [ENAV] MyEnav : Griglia di ricerca dei fascicoli
+User Story 19372: [ENAV] MyEnav : Navigazione ad albero delle cartelline e unità documentali del fascicolo
+
+
+Bug 15164: [AUSL-PC]Scrivania di Workflow: Le attività in corso/da completare non si vedono ai settori autorizzati
+Bug 18826: [AUSL-RE]Fascicoli: Rendere la ricerca campo Oggetto/note  insensitive
+
+
+Issue 12975: [DSW] Togliere utilizzo metodo GetContainersCount a favore di un metodo nella CommonShared che carichi una sola volta i contenitori

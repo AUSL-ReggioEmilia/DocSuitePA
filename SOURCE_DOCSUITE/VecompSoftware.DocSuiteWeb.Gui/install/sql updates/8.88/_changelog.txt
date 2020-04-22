@@ -1,0 +1,34 @@
+Epic 16933: [ASL-TO] Delibere digitali e modifiche minori al flusso atti
+Epic 16937: [ASL-TO] Modifiche al flusso delibere digitali
+
+Feature 16934: [ASL-TO] In modifica nello step di adozione si vorrebbe poter firmare anche gli allegati
+Feature 16935: [ASL-TO] In modifica di un atto nello step di adozione si vuole modificare lo stato e la motivazione 
+Feature 16940: [ASL-TO] Migliorie gestione checkin checkout collaborazione 
+Feature 17639: [ASL-TO] Atti: Nuovo step “Agli affari generali” con annullamento atto e visibilità solo al diritto "Ufficio dirigenziale" 
+Feature 17640: [ASL-TO] Ricerca flussi atti: Nuova voce per le sole delibere “Raccolta firme per adozione” 
+Feature 17641: [ASL-TO]Collaborazione: Nuova tipologia di collaborazione per aggancio automatico "flusso atti da adottare" per la modalità atti di torino
+Feature 17642: [ASL-TO]Frontalini atti: Modifiche semplificazione nel frontalino di adozione. 
+Feature 17643: [ASL-TO]Collaborazione: Nuova gestione del proponente di collaborazione con "Settore proponente"
+Feature 20510: [ASL-TO]Gestione flussi atti: Gestione step e nuovo tasto "Conferma visione"
+Feature 20513: [ASL-TO]Collaborazione: Nuova tipologia di collaborazione, modifica firmatari e aggiunta annessi in restituzione
+
+User Story 15604: [AUSL-PC] Estrattore "Libro giornale" : Generare classe CS da XSD
+User Story 15605: [AUSL-PC] Estrattore "Libro inventari" : Generare classe CS da XSD
+User Story 15606: [AUSL-PC] Estrattore "Libro giornale" : Creare le store di lettura dei record da conservare
+User Story 15607: [AUSL-PC] Estrattore "Libro inventari" : Creare le store di lettura dei record da conservare
+User Story 15608: [AUSL-PC] Estrattore "Libro giornale" : Mappatura entity framework delle store del dataset nuovo
+User Story 15609: [AUSL-PC] Estrattore  : Mappatura entity framework la struttura Conservations dello schema Conservations
+User Story 15610: [AUSL-PC] Estrattore "Libro inventari" : Mappatura entity framework delle store del dataset nuovo
+User Story 15612: [AUSL-PC] Estrattore "Libro giornale" : Implementare Mapping da UDS a ParerModel
+User Story 15613: [AUSL-PC] Estrattore "Libro inventari" : Implementare Mapping da UDS a ParerModel
+User Story 15614: [AUSL-PC] Estrattore "Libro giornale" : Creare script SQL per il deploy
+User Story 15615: [AUSL-PC] Estrattore "Libro inventari" : Creare script SQL per il deploy
+User Story 15616: [AUSL-PC] Estrattore "Libro giornale" : Inserire parametri di attivazione/disattivazione del riversamento della unità archivistica
+User Story 15617: [AUSL-PC] Estrattore "Libro inventari" : Inserire parametri di attivazione/disattivazione del riversamento della unità archivistica
+User Story 20321: [ASLTO]Trasmissione PEC d'invio al Collegio Sindacale:aggiungere all'invio anche gli allegati
+User Story 20511: [ASL-TO] Gestione flussi Atti:abilitare retro step
+User Story 20512: [ASL-TO]Gestione flussi Atti: nuovo tasto "Conferma visione"
+
+Bug 15164: [AUSL-PC]Scrivania di Workflow: Le attività in corso/da completare non si vedono ai settori autorizzati
+Bug 19331: [UIRNET]Rimuovere la possibilità di stampare un documento se non si hanno i diritti di visualizzazione
+Bug 19534: [CTT] Funzione "sposta fattura" setta la data ricezione sdi e indirizzo PEC errati 

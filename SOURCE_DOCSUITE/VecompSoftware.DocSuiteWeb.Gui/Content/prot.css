@@ -1,0 +1,200 @@
+﻿.prot table.datatable {
+    border: 1px solid #999999;
+    background: #F5F5F5;
+}
+
+    .prot table.datatable fieldset {
+        background: #F5F5F5;
+    }
+
+    .prot table.datatable th, .prot table.datatable td.head {
+        background-image: none;
+        border-bottom: 1px solid #999999;
+        color: navy;
+        background-color: #dae9fe;
+    }
+
+    .prot table.datatable td {
+        background-color: #F5F5F5;
+    }
+
+        .prot table.datatable td.label {
+        }
+
+    .prot table.datatable .labelPanel {
+        background-color: #E5E5E5;
+    }
+
+    /*Colore Selezionato*/
+    .prot table.datatable td.selected {
+        background-color: Yellow;
+        cursor: hand;
+    }
+
+/* Eliminare datataform a favore di datatable */
+.prot table.dataform {
+    background: #F5F5F5;
+}
+
+    .prot table.dataform td {
+        background-color: #F5F5F5;
+        padding: 1px 2px 1px 2px;
+    }
+
+        .prot table.dataform td.label {
+            background-color: #E5E5E5;
+            font-size: 11px;
+        }
+/* Eliminare datataform a favore di datatable */
+
+.prot .titolo {
+    background-color: #5987d6;
+    background-image: none;
+    height: 15pt;
+    padding-top: 3px;
+}
+
+.prot tr.titolo {
+    background-image: url(../App_Themes/DocSuite2008/Images/Prot/ProtTitoloGrad.gif);
+    color: white;
+}
+
+/*Tabelle*/
+.prot .Table {
+    border-width: 0;
+    border-collapse: collapse;
+    color: black;
+    width: 100%;
+    height: 15pt;
+}
+
+    .prot .Table td {
+        padding: 2px;
+    }
+
+/*Intestazione Tabelle*/
+.prot tr.tabella {
+    font-weight: bold;
+    color: navy;
+    height: 15pt;
+    background-color: #dae9fe;
+    background-image: none;
+    /*background-image: url(Images/Prot/ProtTabellaGrad.gif);*/
+}
+
+/*Colore Scuro*/
+.prot tr.Scuro, .prot td.SXScuro {
+    background-color: #dcdcdc;
+}
+
+.prot td.SXScuro {
+    font-weight: bold;
+    text-align: right;
+}
+
+/*Colore Chiaro*/
+.prot tr.Chiaro, .prot td.DXChiaro {
+    background-color: #F5F5F5;
+    vertical-align: middle;
+}
+
+.prot tr.ChiaroNoPadding, .prot td.DXChiaroNoPadding {
+    background-color: #F5F5F5;
+    vertical-align: middle;
+    padding-bottom: 0px !important;
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+/*Colore Selezionato*/
+.prot tr.Selezionato {
+    background-color: #f1c15f;
+    cursor: hand;
+}
+
+.prot td.label {
+    vertical-align: middle;
+    font-size: 11px;
+    text-align: right;
+}
+
+
+.prot table.datatable td.DocumentSeriesLabel {
+    vertical-align: middle;
+    font-size: 11px;
+    text-align: right;
+    width: 200px;
+    font-weight: bold;
+}
+
+.window-footer-wrapper {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+}
+
+.prot .control-label {
+    background-color: #E5E5E5;
+}
+
+.prot .form-control {
+    background-color: #F5F5F5;
+}
+
+.prot .fascicleGridSpan {
+    display: block;
+    font-size: 13px;
+    height: 20px;
+    padding: 5px 0 0 5px;
+    position: relative;
+    white-space: nowrap;
+}
+
+.prot .dsw-panel .dsw-panel-title {
+    border-bottom: 1px solid #999999;
+    color: navy;
+    background-color: #dae9fe;
+}
+
+.prot .dsw-panel .dsw-panel-content {
+    color: #000;
+}
+
+.prot .form-group {
+    background: #F5F5F5;
+}
+/*
+    README: Evitare di posizionare a caso o di creare stili non generici. Controllare come funziona la pagina di stile.
+*/
+
+.prot .dsw-arrow-down {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_down.png);
+    background-position: center;
+    width: 16px;
+    height: 16px;
+}
+
+.prot .dsw-arrow-up {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_up.png);
+    width: 16px;
+    height: 16px;
+}
+
+.prot div.RadPanelBar_Office2007 .rpText {
+    line-height: 20px;
+    font-weight: bold;
+    color: navy;
+    background-color: #dae9fe;
+    background-image: none;
+}
+
+.prot div.RadPanelBar_Office2007 .font_node {
+    font-weight: bold;
+}
+
+.dsw-panel .dsw-panel-title {
+    border-bottom: 1px solid #999999;
+    color: navy;
+    background-color: #dae9fe;
+}

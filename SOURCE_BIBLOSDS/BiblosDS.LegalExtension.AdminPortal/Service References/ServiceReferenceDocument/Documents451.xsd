@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/DocumentUnitChain" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/DocumentUnitChain" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/DocumentUnit" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="ArrayOfDocumentUnitChain">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DocumentUnitChain" nillable="true" type="tns:DocumentUnitChain" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDocumentUnitChain" nillable="true" type="tns:ArrayOfDocumentUnitChain" />
+  <xs:complexType name="DocumentUnitChain">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/Document" minOccurs="0" name="Document" nillable="true" type="q2:Document" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/DocumentUnit" minOccurs="0" name="DocumentUnit" nillable="true" type="q3:DocumentUnit" />
+          <xs:element minOccurs="0" name="IdDocumentUnit" type="ser:guid" />
+          <xs:element minOccurs="0" name="IdParentBiblos" type="ser:guid" />
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DocumentUnitChain" nillable="true" type="tns:DocumentUnitChain" />
+</xs:schema>

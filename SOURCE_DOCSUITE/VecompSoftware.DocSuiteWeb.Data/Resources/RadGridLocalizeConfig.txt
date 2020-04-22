@@ -1,0 +1,19 @@
+{
+  "NoFilter":  "Nessun filtro",
+  "Contains": "Contiene",
+  "DoesNotContain": "Non contiene",
+  "StartsWith": "Inizia con",
+  "EndsWith": "Finisce con",
+  "EqualTo": "Uguale a",
+  "NotEqualTo": "Diverso da",
+  "GreaterThan": "Maggiore di",
+  "LessThan": "Minore di",
+  "GreaterThanOrEqualTo": "Maggiore o uguale a",
+  "LessThanOrEqualTo": "Minore o uguale a",
+  "Between": "Compreso",
+  "NotBetween": "Non compreso",
+  "IsEmpty": "E' vuoto",
+  "NotIsEmpty": "Non è vuoto",
+  "IsNull": "E' nullo",
+  "NotIsNull": "Non è nullo"
+}

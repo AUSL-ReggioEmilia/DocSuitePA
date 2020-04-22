@@ -1,0 +1,15 @@
+﻿<div>
+    <loading-spinner></loading-spinner>
+</div>
+<div *ngIf="isAllowedModality" class="panel panel-default">
+  <div class="panel-body">
+    <div *ngIf="resolutionTypeVisibile">
+      <resolution-type (resolutionTypeSelected)="resolutionTypeSelected($event)"></resolution-type>
+    </div>
+    <resolution-filter *ngIf="resolutionType != undefined" [model]="model" (onPanelChange)="onPanelChange($event)" (onSubmitSearch)="onSubmitSearch($event)"></resolution-filter>
+  </div>
+  <resolution-grid *ngIf="gridData" [gridData]="gridData" [paginationEnabled]="true" [serviceNumberVisible]="serviceColumnVisbile" [proposerColumnVisible]="proposerColumnVisible" [executiveDateVisible]="true" [skip]="skip" [pageSize]="pageSize" (onPageChange)="pageChange($event)"></resolution-grid>
+</div>
+
+
+

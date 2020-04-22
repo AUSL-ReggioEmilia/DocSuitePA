@@ -1,0 +1,83 @@
+/* Son of Suckerfish Dropdowns
+---------------------------------------------------------
+Originally developed by Patrick Griffiths and Dan Webb
+http://www.htmldog.com/articles/suckerfish/dropdowns/
+---------------------------------------------------------
+NOTE: After a deep research, we decide to divide this
+CSS into 2 parts. The first part will define the layout.
+The second part will define the visual look for this menu.
+---------------------------------------------------------*/
+
+/* STYLING THE MENU
+-----------------------------------*/
+/* 1st level */
+
+ul#ja-cssmenu {float:right;}
+#ja-cssmenu li {}
+#ja-cssmenu li a {color:#666; font-weight: normal!important;}
+#ja-cssmenu ul a {width: 15em;}
+#ja-cssmenu li.active a  span.menu-title {font-weight:bold!important;}
+#ja-cssmenu li a span.menu-title {
+	background: none;
+	font-weight:normal;
+}
+
+#ja-cssmenu li.havechildsfhover a{padding:7px 17px;}
+#ja-cssmenu li ul, #ja-cssmenu li.havechildsfhover a{	
+	border-radius:5px; 
+	-moz-border-radius:5px; 
+	-webkit-border-radius:5px;
+}
+
+/* 2nd level and above */
+#ja-cssmenu li ul {
+	background:#f9f9f9;
+	border: 1px solid #ddd;
+	color: #333;
+	margin-top:5px;
+	padding:8px 12px 12px 12px;
+}
+
+#ja-cssmenu ul a {
+	width: 14.6em;
+}
+
+
+#ja-cssmenu li ul li { 
+	border-top:0;
+	display: block;
+	width:15.5em;
+	
+} 
+
+#ja-cssmenu li ul li .first-item {border-top:0!important;}
+#ja-cssmenu li ul li a {
+	text-transform:none;
+	background:none!important;
+	color:#6d6d6d;
+	width:15.5em;
+	border-radius:0!important; 
+	-moz-border-radius:0!important; 
+	-webkit-border-radius:0!important; 
+	border:0!important; 
+	border-top: 1px solid #dedede!important;
+}
+
+
+#ja-cssmenu li ul li.active:hover, #ja-cssmenu li ul li.active.sfhover {
+}
+
+#ja-cssmenu li ul li.active a.active {
+	font-weight: bold;
+	padding: 5px 0px;
+}
+
+#ja-cssmenu li li a span.menu-title {
+}
+
+#ja-cssmenu li ul ul {margin-top:-38px; margin-left:195px;}
+#ja-cssmenu li.havesubchild, #ja-cssmenu li.havesubchild-active  {
+}
+
+span.menu-desc{font-size:12px!important; font-family:Arial, Helvetica, sans-serif;}
+#ja-cssmenu li ul li.last-item{border-bottom:0;}

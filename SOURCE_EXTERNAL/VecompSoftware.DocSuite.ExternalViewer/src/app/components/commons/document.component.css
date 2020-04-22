@@ -1,0 +1,21 @@
+﻿
+.document-toolbar {
+    background-color: #f6f6f6;
+    color: #fdfdfd;
+    padding: 2px 2px 6px 3px;
+    margin-left: 10px;
+    margin-top: 0px;
+    color: #656565;
+}
+
+.document-frame-border {
+    margin-top: 50px;
+}
+
+.input-number-width {
+    width: 50px;
+}
+
+.toolbar-hidden{
+    display: none;
+}

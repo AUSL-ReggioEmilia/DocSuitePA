@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Views\Saml\IdpLogout.cshtml" />
+    <None Remove="Views\Saml\LogOutFedera.cshtml" />
+    <None Remove="Views\Saml\LogOutSPID.cshtml" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="favicon.ico">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Views\Saml\IdpLogout.cshtml" />
+    <EmbeddedResource Include="Views\Saml\ACS.cshtml" />
+    <EmbeddedResource Include="Views\Saml\LogOutSPID.cshtml" />
+    <EmbeddedResource Include="Views\Saml\LogOutFedera.cshtml" />
+    <EmbeddedResource Include="Views\Saml\Auth.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.SPID.JWT\VecompSoftware.DocSuite.SPID.JWT.csproj" />
+    <ProjectReference Include="..\VecompSoftware.DocSuite.SPID.Model\VecompSoftware.DocSuite.SPID.Model.csproj" />
+    <ProjectReference Include="..\VecompSoftware.DocSuite.SPID.SAML\VecompSoftware.DocSuite.SPID.SAML.csproj" />
+  </ItemGroup>
+
+</Project>

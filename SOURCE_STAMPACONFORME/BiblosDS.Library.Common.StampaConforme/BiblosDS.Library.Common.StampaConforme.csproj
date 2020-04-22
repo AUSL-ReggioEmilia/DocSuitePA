@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C588BA60-984B-429A-A491-267B3F13E5B5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BiblosDS.Library.Common.StampaConforme</RootNamespace>
+    <AssemblyName>BiblosDS.Library.Common.StampaConforme</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>BiblosDS.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AzureDebug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AzureDebug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDS.Library.Common.StampaConforme.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CCypher, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CCypher.1.0.0.0\lib\net40\CCypher.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Mail, Version=3.0.18151.1319, Culture=neutral, PublicKeyToken=6dc438ab78a525b3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mail.3.0.18151.1319\lib\net461\Mail.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.WebForms.11.0.2802.16\lib\net20\Microsoft.ReportViewer.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.WebForms.11.0.2802.16\lib\net20\Microsoft.ReportViewer.WebForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\ExternalLibs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Commons, Version=8.79.0.0, Culture=neutral, PublicKeyToken=cd4cbb031a2ae285, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.8.79.19078.2\lib\net461\VecompSoftware.Commons.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Commons.BiblosDS.Objects, Version=8.79.0.0, Culture=neutral, PublicKeyToken=c0dbac381df9e61c, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.BiblosDS.Objects.8.79.19078.2\lib\net461\VecompSoftware.Commons.BiblosDS.Objects.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=8.80.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.8.80.19092.2\lib\net461\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=8.80.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.8.80.19092.2\lib\net461\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers, Version=8.79.0.0, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.8.79.19078.2\lib\net461\VecompSoftware.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.LimilabsMail, Version=8.79.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.LimilabsMail.8.79.19078.2\lib\net461\VecompSoftware.Helpers.LimilabsMail.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.XML, Version=8.79.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.8.79.19078.2\lib\net461\VecompSoftware.Helpers.XML.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.XML.Converters, Version=8.79.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.Converters.8.79.19078.2\lib\net461\VecompSoftware.Helpers.XML.Converters.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BoxConfig.cs" />
+    <Compile Include="BoxLineConfig.cs" />
+    <Compile Include="CompliantPrinting\CompliantPrintingHelper.cs" />
+    <Compile Include="CompliantPrinting\CompliantTransformer.cs" />
+    <Compile Include="CompliantPrinting\CompliantTransformerFactory.cs" />
+    <Compile Include="CompliantPrinting\iTextSharpEx\IPdfContentEx.cs" />
+    <Compile Include="CompliantPrinting\iTextSharpEx\ISignContentEx.cs" />
+    <Compile Include="P7Mmanager.cs" />
+    <Compile Include="PdfDraw.cs" />
+    <Compile Include="PdfLabeler.cs" />
+    <Compile Include="PrintRedirectConfigurations.cs" />
+    <Compile Include="PrintRedirected.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="ExternalRedirectService.cs" />
+    <Compile Include="Service References\ConverterServiceSvc\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConverterServiceSvc\configuration91.svcinfo" />
+    <None Include="Service References\ConverterServiceSvc\configuration.svcinfo" />
+    <None Include="Service References\ConverterServiceSvc\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="favicon.ico" />
+    <Content Include="TEMPLATE.XML" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="BiblosDS.snk" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ConverterServiceSvc\AttachConversionMode.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConverterServiceSvc\service.wsdl" />
+    <None Include="Service References\ConverterServiceSvc\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConverterServiceSvc\Vecomp.StampaConforme.Office.Converter.wsdl" />
+    <None Include="Service References\ConverterServiceSvc\Vecomp.StampaConforme.Office.Converter.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.Commons.CompEd\VecompSoftware.Commons.CompEd.csproj">
+      <Project>{296b2d42-be61-423f-8525-5cd8c8bf1677}</Project>
+      <Name>VecompSoftware.Commons.CompEd</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.Commons.Configuration\VecompSoftware.Commons.Configuration.csproj">
+      <Project>{f7bf068e-d880-44ae-8049-9959b810e053}</Project>
+      <Name>VecompSoftware.Commons.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.CompEd\VecompSoftware.CompEd.csproj">
+      <Project>{229661d4-d040-4bc4-b4d2-bfd7a6170935}</Project>
+      <Name>VecompSoftware.CompEd</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.GhostScriptSharp\VecompSoftware.GhostscriptSharp.csproj">
+      <Project>{04588831-5bd4-42e9-8190-6e3430043fd8}</Project>
+      <Name>VecompSoftware.GhostscriptSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.Helpers.iTextSharp\VecompSoftware.Helpers.iTextSharp.csproj">
+      <Project>{ee1f25af-ac21-4e9f-95d4-3af15c85fe34}</Project>
+      <Name>VecompSoftware.Helpers.iTextSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.Helpers.Reporting\VecompSoftware.Helpers.Reporting.csproj">
+      <Project>{ab23b5aa-26fb-4ad2-b9c1-4eeb1487cd4b}</Project>
+      <Name>VecompSoftware.Helpers.Reporting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.MagickNET\VecompSoftware.MagickNET.csproj">
+      <Project>{103c01fd-f7e7-4b74-85a3-e00ac7c0b653}</Project>
+      <Name>VecompSoftware.MagickNET</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.Services.Reporting\VecompSoftware.Services.Reporting.csproj">
+      <Project>{9b9c7c05-7d43-4dd6-9a92-c8eb1b3d32d2}</Project>
+      <Name>VecompSoftware.Services.Reporting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.StampaConforme.Converter.Common\VecompSoftware.StampaConforme.Converter.Common.csproj">
+      <Project>{7c82b7d1-a390-4af7-bfae-f1777c1ad703}</Project>
+      <Name>VecompSoftware.StampaConforme.Converter.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.StampaConforme.Converter.iTextSharp\VecompSoftware.StampaConforme.Converter.iTextSharp.csproj">
+      <Project>{5bd08a11-d4fe-4775-8460-2050647ba38f}</Project>
+      <Name>VecompSoftware.StampaConforme.Converter.iTextSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.StampaConforme.Interfaces.Common\VecompSoftware.StampaConforme.Interfaces.Common.csproj">
+      <Project>{98096569-326D-452C-97F2-FFD6FF7F4FA2}</Project>
+      <Name>VecompSoftware.StampaConforme.Interfaces.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.StampaConforme.Models\VecompSoftware.StampaConforme.Models.csproj">
+      <Project>{8263D33B-0BBD-4369-BA90-D08D807BBC0A}</Project>
+      <Name>VecompSoftware.StampaConforme.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.StampaConforme.Services.Common\VecompSoftware.StampaConforme.Services.Common.csproj">
+      <Project>{20bc2c73-c60f-4643-b207-183440a410a6}</Project>
+      <Name>VecompSoftware.StampaConforme.Services.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ConverterServiceSvc\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,53 @@
+﻿<%@ Master Language="VB" MasterPageFile="~/MasterPages/Base.Master" AutoEventWireup="false" CodeBehind="Nested.master.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.Nested" %>
+
+<asp:Content ContentPlaceHolderID="cphHead" runat="server">
+    <asp:PlaceHolder runat="server">
+        <%: Styles.Render("~/bundles/css")%>
+        <%: Styles.Render("~/bundles/browserConditions")%>
+    </asp:PlaceHolder>
+</asp:Content>
+
+<asp:Content ContentPlaceHolderID="cphMain" runat="server">
+    <telerik:RadScriptBlock runat="server" ID="rsbNested">
+        <script type="text/javascript">
+            <%-- Correggo dimensione del content --%>
+            function SetDivContent() {
+                var content = $get('divContent');
+                if (document.body.clientWidth > 0) {
+                    content.style.width = document.body.clientWidth - 5;
+                }
+                if (document.body.clientHeight > 0) {
+                    content.style.height = document.body.clientHeight - 75;
+                }
+            }
+        </script>
+    </telerik:RadScriptBlock>
+    <table class="page">
+        <tr>
+            <td>
+                <div id="hd" runat="server">
+                    <div class="titolo" id="divTitolo" runat="server">
+                        <asp:Label ID="lblHeader" runat="server" />
+                        <br class="Spazio" />
+                    </div>
+                    <asp:ContentPlaceHolder ID="cphHeader" runat="server" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="content-wrapper">
+                <div class="content" id="divContent">
+                    <asp:ContentPlaceHolder ID="cphContent" runat="server" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div runat="server" id="ft">
+                    <asp:ContentPlaceHolder ID="cphFooter" runat="server" />
+                </div>
+            </td>
+        </tr>
+    </table>
+    <asp:Button runat="server" ID="btnExport" Style="display: none;" />
+</asp:Content>

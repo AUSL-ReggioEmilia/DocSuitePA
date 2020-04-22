@@ -1,0 +1,54 @@
+﻿h1 {
+  color: #369;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 250%;
+}
+
+.grid-header {
+  text-align: center !important;
+  font-weight: bold !important;
+}
+
+.resolution-cell {
+  text-align: center !important;
+}
+
+.panelbar-wrapper {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.k-grouping-header {
+    display: none !important;
+}
+
+.loading-spinner {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 999999;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+#spinner-gif {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    margin-left: -50px;
+    margin-top: -50px;
+}
+
+/*sovrascrivere questa classe di stile in modo che il contenuto di autoadatti alla pagina, 
+  dal momento che con IE la scroll bar laterale si sovrappone al contenuto laterale */
+@-ms-viewport {
+    width: auto !important;
+}

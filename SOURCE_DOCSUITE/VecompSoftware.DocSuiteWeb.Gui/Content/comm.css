@@ -1,0 +1,109 @@
+﻿.comm .Table {
+    border-width: 0;
+    border-collapse: collapse;
+    color: black;
+    width: 100%;
+    height: 15pt;
+}
+
+    .comm .Table td {
+        padding: 2px;
+    }
+
+.comm tr.tabella {
+    font-weight: bold;
+    color: navy;
+    height: 15pt;
+    background-image: url(../App_Themes/DocSuite2008/Images/Comm/CommTabellaGrad.gif);
+}
+
+.comm tr.Scuro, .comm td.SXScuro {
+    background-color: Silver;
+}
+
+.comm td.SXScuro {
+    font-weight: bold;
+}
+
+.comm tr.Chiaro, .comm td.DXChiaro {
+    background-color: White;
+}
+
+.comm tr.ChiaroNoPadding, .comm td.DXChiaroNoPaading {
+    background-color: White;
+    padding-bottom: 0px !important;
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+.comm .titolo {
+    background-color: slategrey;
+    background-image: none;
+    height: 15pt;
+    padding-top: 3px;
+    color: white;
+}
+
+.comm tr.titolo {
+    background-image: url(../App_Themes/DocSuite2008/Images/Comm/CommTitoloGrad.gif);
+    color: white;
+}
+
+.comm tr.Selezionato {
+    background-color: #f1c15f;
+    cursor: hand;
+}
+
+.comm table.datatable {    
+    border: 1px solid #999999;
+    background: #F5F5F5;
+}
+
+    .comm table.datatable th, .comm table.datatable td.head {
+        background-image: none;
+        border-bottom: 1px solid #000000;
+        color: #FFFFFF;
+        background-color: slategrey;
+    }
+
+    .comm table.datatable td {
+        background-color: #F5F5F5;
+    }
+
+        .comm table.datatable td.label {
+            background-color: silver;
+        }
+/* Eliminare datataform a favore di datatable */
+.comm table.dataform {
+    background: #F5F5F5;
+}
+
+    .comm table.dataform td {
+        background-color: #F5F5F5;
+        padding: 1px 2px 1px 2px;
+    }
+
+        .comm table.dataform td.label {
+            background-color: #F5F5F5;
+        }
+/* Eliminare datataform a favore di datatable */
+
+.comm .dsw-panel .dsw-panel-title {
+    border-bottom: 1px solid #999999;
+    color: #ffffff;
+    background-color: slategrey;
+}
+
+.comm .dsw-panel .dsw-panel-content {
+    color: #000;
+}
+
+.comm .node-tree-fascicle {
+    color: #00008b;
+    font-weight: bold;
+}
+
+/*
+    README: Evitare di posizionare a caso o di creare stili non generici. Controllare come funziona la pagina di stile.
+*/

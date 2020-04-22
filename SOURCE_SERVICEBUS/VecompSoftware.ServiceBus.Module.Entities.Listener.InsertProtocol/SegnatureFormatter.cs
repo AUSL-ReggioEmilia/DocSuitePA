@@ -1,0 +1,165 @@
+﻿using System;
+using System.Linq;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Protocols;
+
+namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
+{
+    public class SegnatureFormatter : IFormatProvider, ICustomFormatter
+    {
+        public string Format(string format, object arg, IFormatProvider formatProvider)
+        {
+            string[] formatParameters = format.Split(':');
+
+            SegnatureModel formatterModel = arg as SegnatureModel;
+            if (formatterModel == null)
+            {
+                throw new ArgumentNullException("FormatterModel cannot be null");
+            }
+            switch (formatParameters[0])
+            {
+                case "Short":
+                    {
+                        return formatterModel.CorporateAcronym;
+                    }
+                case "Complete":
+                    {
+                        return formatterModel.CorporateName;
+                    }
+                case "None":
+                    {
+                        return string.Empty;
+                    }
+                case "Number":
+                    {
+                        return formatterModel.Number.ToString(formatParameters.Length > 1 ? formatParameters[1] : string.Empty);
+                    }
+                case "Year":
+                    {
+                        return formatterModel.Year.ToString();
+                    }
+                case "Date":
+                    {
+                        return formatterModel.RegistrationDate.ToLocalTime().DateTime.ToString(formatParameters.Length > 1 ? formatParameters[1] : string.Empty);
+                    }
+                case "Direction":
+                    {
+                        switch (formatParameters[1])
+                        {
+                            case "Id":
+                                {
+                                    return string.Format("{0}/{1:0000000}", formatterModel.Year, formatterModel.Number);
+                                }
+                            case "Short":
+                                {
+                                    switch (formatterModel.Typology)
+                                    {
+                                        case ProtocolTypology.Inbound:
+                                            return "I";
+                                        case ProtocolTypology.Internal:
+                                            return "I/O";
+                                        case ProtocolTypology.Outgoing:
+                                            return "O";
+                                    }
+                                    return string.Empty;
+                                }
+                            case "Complete":
+                                switch (formatterModel.Typology)
+                                {
+                                    case ProtocolTypology.Inbound:
+                                        return "ingresso";
+                                    case ProtocolTypology.Internal:
+                                        return "tra uffici";
+                                    case ProtocolTypology.Outgoing:
+                                        return "uscita";
+                                }
+                                return string.Empty;
+                        }
+                        return string.Empty;
+                    }
+                case "Container":
+                    {
+                        switch (formatParameters[1])
+                        {
+                            case "Id":
+                                {
+                                    return formatterModel.ContainerId.ToString();
+                                }
+                            case "Name":
+                                {
+                                    return formatterModel.ContainerName;
+                                }
+                            case "Note":
+                                {
+                                    return formatterModel.ContainerNote;
+                                }
+                        }
+                        return string.Empty;
+                    }
+                case "Roles":
+                    {
+                        if (formatterModel.RoleServiceCodes.Any())
+                        {
+                            return string.Concat("[{0}]", string.Join("-", formatterModel.RoleServiceCodes.Where(f => !string.IsNullOrEmpty(f)).Select(f => f.ToUpper())));
+                        }
+                        return string.Empty;
+                    }
+                case "DocumentType":
+                    {
+                        switch (formatParameters[1])
+                        {
+                            case "Short":
+                                {
+                                    switch (formatterModel.DocumentType)
+                                    {
+                                        case SegnatureDocumentType.Main:
+                                            return "P";
+                                        case SegnatureDocumentType.Attachment:
+                                            return "A";
+                                        case SegnatureDocumentType.Annexed:
+                                            return "X";
+                                    }
+                                    return string.Empty;
+                                }
+
+                            case "Long":
+                                {
+                                    switch (formatterModel.DocumentType)
+                                    {
+                                        case SegnatureDocumentType.Main:
+                                            return "Protocollo";
+                                        case SegnatureDocumentType.Attachment:
+                                            return "Allegato";
+                                        case SegnatureDocumentType.Annexed:
+                                            return "Annesso";
+                                    }
+                                    return string.Empty;
+                                }
+                        }
+                        return string.Empty;
+                    }
+                case "AttachmentsCount":
+                    {
+                        if (formatterModel.AttachmentsCount.HasValue)
+                        {
+                            return formatterModel.AttachmentsCount.ToString();
+                        }
+                        return string.Empty;
+                    }
+                case "DocumentNumber":
+                    {
+                        if (formatterModel.DocumentNumber.HasValue)
+                        {
+                            return formatterModel.DocumentNumber.ToString();
+                        }
+                        return string.Empty;
+                    }
+            }
+            return string.Empty;
+        }
+
+        public object GetFormat(Type formatType)
+        {
+            return this;
+        }
+    }
+}

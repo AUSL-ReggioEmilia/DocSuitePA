@@ -1,0 +1,26 @@
+Epic 12151: [ENPACL] Modifiche applicative ENPACL 8.71
+
+
+Feature 11396: [DSW] Gestione Fascicoli Periodici
+Feature 12152: [ENPACL] Archiviazione BiblosDS della Gestione invii e PosteWeb
+Feature 12202: [ENPACL] Flusso di assegnazione massiva da scrivania
+Feature 12263: [ENPACL] Gestione indirizzi IPA negli invii massivi da Fast Protocol Sender
+
+
+User Story 11449: [DSW] Inserimento delle UD nei fascicoli periodici
+User Story 12158: [ENPACL] Creazione di un parametro in DSW per definire una location per il salvataggio dei documenti di PosteWeb
+User Story 12159: [ENPACL] Creazione di un tool di migrazione per migrare le PosteWeb esistenti
+User Story 12160: [ENPACL] Aggiunta colonna per permettere di avere una relazione tra PosteOnLineRequest e Biblos
+User Story 12161: [ENPACL] Refactor gestione PosteWeb in DSW
+User Story 12165: [ENPACL] Refactor gestione PosteWeb nel JeepService
+User Story 12203: [ENPACL]Migliormaneto di assegna protocollo, da documenti di protocollo
+User Story 12236: [ENPACL]Assegnazione di protocolli da vista di scrivania
+User Story 12267: [ENPACL] Aggiunta contatti IPA in fase di invio massivo da FastProtocolSender
+User Story 12286: [ENPACL] Aggiunta documenti in fase di protocolla e invia da FPS
+
+
+Bug 11973: [ENPACL]Quando seleziono un contatto da rubrica Ipa non funziona correttamente l'algoritmo per la ricerca e quindi viene visualizzato errato.
+
+
+Issue 9452: [ASL-TO] Rimozione parametri DocSuite dal modulo ResolutionWorkflowManager del JeepService
+Issue 6576: [ENPACL] In Inserimento di Protocollo utente visualizza nella ricerca dei contatti nodi di rami associati a settori di cui non ha diritti

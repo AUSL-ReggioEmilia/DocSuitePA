@@ -1,0 +1,32 @@
+﻿@model BiblosDS.Library.Common.Objects.PreservationTask
+
+<h2><span class="far fa-clock"></span> Task da eseguire</h2>
+<br />
+
+@(Html.Kendo().Grid<BiblosDS.Library.Common.Objects.PreservationTask>()
+    .Name("PreservationTasksGrid")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.TaskType.Description).ClientTemplate(@"<b>#=TaskType.Description#</b>").Title("Descrizione");
+        columns.Bound(o => o.Archive.Name).Title("Archivio");
+        columns.Bound(o => o.StartDocumentDate).ClientTemplate("<span>Documenti dal #=kendo.toString(StartDocumentDate, 'dd/MM/yyyy')# al #=kendo.toString(EndDocumentDate, 'dd/MM/yyyy')#</span>").Title("Periodo");
+        columns.Bound(o => o.IdPreservationTask).ClientTemplate("<a href='"+ @Url.Action("PreservationTaskDetails", "Home") +"/#=IdPreservationTask#' class='k-button'>Dettaglio</a>").Width(90).Title(" ");
+        columns.Bound(o => o.HasError).ClientTemplate("#if(HasError == true) {#"+
+              "#if(ErrorMessages != null) {#"+
+                "#=ErrorMessages.substring(0, Math.min(ErrorMessages.length, 255))#"+
+              "#} else {#" +
+                "<b>ERRORE GENERICO</b>" +
+              "#}#" +
+            "#} else {#"+
+              "#if (EstimatedDate < new Date()) {#"+
+                "<b>DA ESEGUIRE</b>" +
+              "#}#" +
+              "#if (!Enabled) {#"+
+                "<b> DA ABILITARE</b>"+
+              "#}#" +
+            "#}#").Title("Stato");
+    })
+    .DataSource(datasource =>
+        datasource.Ajax()
+        .Read(read => read.Action("GetPreservationPendingTask", "Home")))
+    .NoRecords("Nessun task da eseguire"))

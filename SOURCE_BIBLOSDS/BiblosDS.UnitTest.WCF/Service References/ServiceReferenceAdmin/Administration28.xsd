@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/DocumentServer" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/DocumentServer" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd18" namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Server" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd15" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Storage" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd23" namespace="http://BiblosDS/2009/10/StorageArea" />
+  <xs:import schemaLocation="http://localhost:1526/Administration.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="ArrayOfDocumentServer">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DocumentServer" nillable="true" type="tns:DocumentServer" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDocumentServer" nillable="true" type="tns:ArrayOfDocumentServer" />
+  <xs:complexType name="DocumentServer">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DateCreated" nillable="true" type="xs:dateTime" />
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/Document" minOccurs="0" name="Document" nillable="true" type="q2:Document" />
+          <xs:element minOccurs="0" name="DocumentHash" nillable="true" type="xs:string" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/Server" minOccurs="0" name="Server" nillable="true" type="q3:Server" />
+          <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" minOccurs="0" name="Status" nillable="true" type="q4:Status" />
+          <xs:element xmlns:q5="http://BiblosDS/2009/10/Storage" minOccurs="0" name="Storage" nillable="true" type="q5:Storage" />
+          <xs:element xmlns:q6="http://BiblosDS/2009/10/StorageArea" minOccurs="0" name="StorageArea" nillable="true" type="q6:StorageArea" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DocumentServer" nillable="true" type="tns:DocumentServer" />
+</xs:schema>

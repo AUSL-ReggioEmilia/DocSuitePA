@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="CollaborationAggregate" table="CollaborationAggregate">
+
+    <id name="Id" column="IdCollaborationAggregate">
+      <generator class="guid.comb" />
+    </id>
+    <property name="CollaborationDocumentType" column="CollaborationDocumentType" type="AnsiString" />
+
+    <many-to-one class="Collaboration" name="CollaborationFather" column="idCollaborationFather" />
+    <many-to-one class="Collaboration" name="CollaborationChild" column="idCollaborationChild" />
+
+  </class>
+
+</hibernate-mapping>

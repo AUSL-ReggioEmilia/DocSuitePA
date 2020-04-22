@@ -1,0 +1,24 @@
+.selecter {position:relative;}
+.selecterBtns {display:block;height:55px;width:100%;}
+.selecterBtns #portfolio_category_sorter {float:right;background:#FFF;}
+.selecterBtns #portfolio_category_sorter li{list-style:none;}
+.selecterBtns li.sorter_title {padding-left:0;display:none}
+.selecterBtns li {float:left;}
+.selecterBtns li a {color:#555;padding:6px;margin-left:17px;display:block;background:#eee;border-bottom:1px solid #d0d0d0;min-width:65px;text-align:center;}
+.selecterBtns li a.active {border:1px solid #ddd;}
+.selecterBtns li a:hover, .selecterBtns li a.active:hover{text-decoration:none;color:#333;background:#ddd;}
+.itemList #TzPrimary {margin: auto;width:950px;}
+.selecterContent ul {min-height:180px;}
+#TzPrimary ul li.itemContainer {padding-bottom:20px;width:25%;}
+li.itemContainer {float: left;height:162px;overflow: hidden;list-style:none;}
+.boxgrid {box-shadow:0 0 5px #CCCCCC inset;float:left;height:150px;overflow:hidden;position:relative;width:205px;z-index:0;background:#000;}
+.boxgrid:hover{cursor: pointer;}
+#TzPrimary .catItemView {border:1px solid #CCCCCC;padding:5px;display:block;float:left;}
+.boxgrid img {border: 0 none;height: 180px;left: 0;margin: 0 !important;min-height: 150px;min-width: 205px;padding: 0 !important;position: absolute;top: 0;width: auto;}
+.content-item {display: none;position: relative;z-index: 10;}
+#TzPrimary div.catItemHeader .catItemTitles{padding:8px;}
+#TzPrimary div.catItemHeader .catItemTitles a{font: 18px/24px normal 'CartoGothicStdBook',arial,sans-serif;margin: 0;color:#eee;}
+div.catItemIntroText {font-size: inherit;font-weight: normal;line-height: inherit;padding:0;}
+#TzPrimary .catItemIntroText p {color: #EFEFEF;line-height: 15px;}
+.catItemReadMore a {display: inline-block;font-size: 12px;color: #555;}
+a.photo {float: right;height: 16px;margin-right: 20px;width: 16px;}
