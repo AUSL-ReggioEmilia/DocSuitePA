@@ -29,35 +29,19 @@ description:
     longDescription: >
       DocSuite è la soluzione per la gestione documentale, comprende le
       funzionalità per:
-
-
       - archivi e serie documentali, registri
-
       - protocollo e flussi documentali,
-
       - PEC, email e integrazione servizi di postalizzazione (PosteWeb, TNotice)
-
       - fascicoli e attività di workflow, procedimenti amministrativi e attività
-
       - Dossier, repertori, volumi di fascicoli, piano di fascicolazione e scarto
-
       - scrivania delle attività, documenti e fascicoli
-
       - integrazione con firme digitali (dispositivi di firma,remote, remote automatiche, grafometriche)
-
-      - flusso di formazione, firma, adozione, pubblicazione dei provvedimenti
-      amministrativi (Delibere, Determinazioni, Disposizioni, Verbali, ...)
-
+      - flusso di formazione, firma, adozione, pubblicazione dei provvedimenti amministrativi (Delibere, Determinazioni, Disposizioni, Verbali, ...)
       - flussi di pubblicazione sul sito amministrazione trasparente e flussi ANAC
-
       - flussi di gestione dell'accesso agli atti (FOIA)
-
-      - Integrazione con accesso SPID
-
+      - integrazione con accesso SPID
       - conservazione digitale e versamento a conservatore accreditato
-
-    
-    shortDescription: >-
+    shortDescription: >
       DocSuite PA Gestione Documentale: Protocollo e PEC, Fascicoli,
       Provvedimenti Amministrativi e Albo Online, Trasparenza 
 developmentStatus: stable
@@ -109,12 +93,20 @@ dependsOn:
       versionMax: "2019"
       optional: yes
     - name: LimiLabs Mail.dll (developer)
+      versionMin: ""
+      versionMax: ""
       optional: no
     - name: Dynamic Web Twain
+      versionMin: "8"
+      versionMax: "15"
       optional: yes
     - name: ITextSharp (developer)
+      versionMin: ""
+      versionMax: ""
       optional: no
     - name: Comped DigitaL Sign
+      versionMin: "3.x"
+      versionMax: "5.x"
       optional: yes
 
   hardware:
