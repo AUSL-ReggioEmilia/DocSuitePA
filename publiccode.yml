@@ -81,7 +81,7 @@ it:
     spid: true
   riuso:
     codiceIPA: auslre
-landingURL: 'https://github.com/AUSL-ReggioEmilia/DocSuite-PA'
+landingURL: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA'
 legal:
   authorsFile: >-
     https://raw.githubusercontent.com/AUSL-ReggioEmilia/DocSuite-PA/master/authors.txt
