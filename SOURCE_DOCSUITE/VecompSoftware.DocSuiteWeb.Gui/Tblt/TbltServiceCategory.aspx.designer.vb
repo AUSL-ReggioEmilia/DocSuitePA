@@ -41,6 +41,15 @@ Partial Public Class TbltServiceCategory
     Protected WithEvents wdEditServiceCategory As Global.Telerik.Web.UI.RadWindow
 
     '''<summary>
+    '''FolderToolBar control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FolderToolBar As Global.Telerik.Web.UI.RadToolBar
+
+    '''<summary>
     '''RadTreeViewServiceCategories control.
     '''</summary>
     '''<remarks>
@@ -57,40 +66,4 @@ Partial Public Class TbltServiceCategory
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ContextMenuRoles As Global.Telerik.Web.UI.RadTreeViewContextMenu
-
-    '''<summary>
-    '''pnlButtons control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-
-    '''<summary>
-    '''btnAggiungi control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnAggiungi As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''btnRinomina control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnRinomina As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''btnElimina control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnElimina As Global.System.Web.UI.WebControls.Button
 End Class

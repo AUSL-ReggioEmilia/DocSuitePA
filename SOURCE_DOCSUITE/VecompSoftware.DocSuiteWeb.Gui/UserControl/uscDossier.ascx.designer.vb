@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscDossier
-    
+
     '''<summary>
     '''pageContent control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pageContent As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
+
     '''<summary>
     '''lblYear control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblYear As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblNumber control.
     '''</summary>
@@ -48,7 +48,25 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNumber As Global.System.Web.UI.WebControls.Label
-    
+
+    '''<summary>
+    '''lblDossierType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDossierType As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDossierStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDossierStatus As Global.System.Web.UI.WebControls.Label
+
     '''<summary>
     '''lblStartDate control.
     '''</summary>
@@ -57,7 +75,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStartDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblDossierSubject control.
     '''</summary>
@@ -66,7 +84,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDossierSubject As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblDossierNote control.
     '''</summary>
@@ -75,7 +93,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDossierNote As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rowContact control.
     '''</summary>
@@ -84,16 +102,34 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowContact As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
-    '''uscContatto control.
+    '''uscContattiSelRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscContatto As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+    Protected WithEvents uscContattiSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelRest
+
+    '''<summary>
+    '''rowResponsableRoles control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowResponsableRoles As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''uscResponsableRoleRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscResponsableRoleRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+
     '''<summary>
     '''rowRoles control.
     '''</summary>
@@ -102,16 +138,16 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowRoles As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
-    '''uscSettori control.
+    '''uscRoleRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscSettori As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+    Protected WithEvents uscRoleRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+
     '''<summary>
     '''lblContainer control.
     '''</summary>
@@ -120,7 +156,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblContainer As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblRegistrationUser control.
     '''</summary>
@@ -129,7 +165,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRegistrationUser As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblModifiedUser control.
     '''</summary>
@@ -138,7 +174,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblModifiedUser As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rowWorkflowProposer control.
     '''</summary>
@@ -147,7 +183,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowWorkflowProposer As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''lblWorkflowProposerRole control.
     '''</summary>
@@ -156,7 +192,7 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblWorkflowProposerRole As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblWorkflowHandlerUser control.
     '''</summary>
@@ -165,7 +201,25 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblWorkflowHandlerUser As Global.System.Web.UI.WebControls.Label
-    
+
+    '''<summary>
+    '''rowCategory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowCategory As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''uscCategoryRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscCategoryRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscCategoryRest
+
     '''<summary>
     '''rowMetadata control.
     '''</summary>
@@ -174,16 +228,16 @@ Partial Public Class uscDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowMetadata As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
-    '''uscDynamicMetadataSummaryClient control.
+    '''uscDynamicMetadataSummaryRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscDynamicMetadataSummaryClient As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadataSummaryClient
-    
+    Protected WithEvents uscDynamicMetadataSummaryRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadataSummaryRest
+
     '''<summary>
     '''rptDossierMessage control.
     '''</summary>

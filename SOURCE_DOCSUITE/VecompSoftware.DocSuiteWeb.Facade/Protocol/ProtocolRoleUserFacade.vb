@@ -15,8 +15,8 @@ Public Class ProtocolRoleUserFacade
 
 #Region " Methods "
 
-    Public Function GetByUniqueIdProtocolAndAccount(uniqueIdProtocol As Guid, account As String) As IList(Of ProtocolRoleUser)
-        Return _dao.GetByUniqueIdProtocolAndAccount(uniqueIdProtocol, account)
+    Public Function GetByProtocolIdAndAccount(uniqueIdProtocol As Guid, account As String) As IList(Of ProtocolRoleUser)
+        Return _dao.GetByProtocolIdAndAccount(uniqueIdProtocol, account)
     End Function
 
 #End Region

@@ -95,12 +95,12 @@ class TbltPrivacyLevel {
         this.loadLevels();
     }
 
-    private btnAdd_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnAdd_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         let url: string = "../Tblt/TbltPrivacyLevelGes.aspx?Type=Comm&Action=Add";
         this.openWindow(url, 500, 400, "Livelli di ".concat(this.privacyLabel, " - Aggiungi"));
     }
 
-    private btnEdit_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnEdit_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
 
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._currentSelectedNode;
         if (selectedNode == undefined || selectedNode.get_value() == null || selectedNode.get_value() == "") {
@@ -113,7 +113,7 @@ class TbltPrivacyLevel {
         this.openWindow(url, 500, 400, "Livelli di ".concat(this.privacyLabel, " - Modifica"));
     }
 
-    private btnDelete_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnDelete_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._currentSelectedNode;
         if (selectedNode == undefined || selectedNode.get_value() == null || selectedNode.get_value() == "") {
             this.showWarningMessage(this.uscNotificationId, 'Nessun livello selezionato.');

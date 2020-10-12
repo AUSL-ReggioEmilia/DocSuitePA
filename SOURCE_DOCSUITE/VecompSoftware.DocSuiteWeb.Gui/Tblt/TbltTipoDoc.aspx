@@ -3,6 +3,7 @@
 <asp:Content ID="Content1" runat="server" ContentPlaceHolderID="cphContent"> 
  <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1" EnableViewState="false">
         <script language="javascript" type="text/javascript">
+
             //Apre la finestra di editazione di un nodo (aggiunta,eliminazione,modifica)
             function OpenEditWindow(name, operation) {
                 var treeView = $find("<%= RadTreeView1.ClientID %>");
@@ -12,7 +13,7 @@
                 var height = HEIGHT_EDIT_WINDOW;
 
                 var URL = '<%= ResolveUrl("~/Tblt/TbltTipoDocGes.aspx?") %>';
-                parameters = "Action=" + operation + "&Type=Comm&BottoneRefresh=" + document.getElementById("<%= btnRefresh.ClientID %>");
+                parameters = "Action=" + operation + "&Type=Comm&BottoneRefresh=" + document.getElementById("<%= FolderToolBar.FindItemByValue("recover").ClientID %>");
                 switch (operation) {
                 case "Rename":
                     parameters += "&idObject=" + selectedNode.get_value();
@@ -96,15 +97,15 @@
                 }
                 AdjustButtons(menu);
             }
-            
+
             //Allinea i pulsanti con il contextMenu
             function AdjustButtons(menu)
             {
-                AdjustButtonWithItem('<%= btnAggiungi.ClientID %>',menu,'Add');
-                AdjustButtonWithItem('<%= btnRinomina.ClientID %>',menu,'Rename');
-                AdjustButtonWithItem('<%= btnElimina.ClientID %>',menu,'Delete');
-                AdjustButtonWithItem('<%= btnRecupera.ClientID %>',menu,'Recovery');
-                AdjustButtonWithItem('<%= btnLog.ClientID %>',menu,'Log');
+                AdjustButtonWithItem('<%= FolderToolBar.FindItemByValue("create").ClientID %>',menu,'Add');
+                AdjustButtonWithItem('<%= FolderToolBar.FindItemByValue("modify").ClientID %>',menu,'Rename');
+                AdjustButtonWithItem('<%= FolderToolBar.FindItemByValue("delete").ClientID %>',menu,'Delete');
+                AdjustButtonWithItem('<%= FolderToolBar.FindItemByValue("recover").ClientID %>',menu,'Recovery');
+                AdjustButtonWithItem('<%= FolderToolBar.FindItemByValue("log").ClientID %>',menu,'Log');
             }
         </script>
 
@@ -114,22 +115,19 @@
             <telerik:RadWindow ID="windowEdit" ReloadOnShow="false" runat="server" Title="Gestione Tipologia spedizione" />
         </Windows>
     </telerik:RadWindowManager>
-    
+    <telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%">
+        <Items>
+            <telerik:RadToolBarButton ToolTip="Aggiungi" Value="create" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+            <telerik:RadToolBarButton ToolTip="Modifica" Value="modify" Text="Modifica" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+            <telerik:RadToolBarButton runat="server" ToolTip="Elimina" Value="delete" Text="Elimina" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
+            <telerik:RadToolBarButton ToolTip="Recupera" Value="recover" Text="Recupera" ImageUrl="~/App_Themes/DocSuite2008/imgset16/view_history.png" />
+            <telerik:RadToolBarButton ToolTip="Log" Value="log" Text="Log" ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_log.png" />
+            <telerik:RadToolBarButton ToolTip="Refresh" Enabled="false" Value="refresh" Text="Refresh" ImageUrl="~/Comm/Images/Refresh16.gif" />
+        </Items>
+    </telerik:RadToolBar>
     <telerik:RadTreeView ID="RadTreeView1" runat="server">
         <Nodes>
             <telerik:RadTreeNode runat="server" Text="Tipologia spedizione" Value="Root" Expanded="true"></telerik:RadTreeNode>
         </Nodes>
     </telerik:RadTreeView>
 </asp:Content>
-
-<asp:Content ID="Content2" runat="server" ContentPlaceHolderID="cphFooter">
-    <asp:Panel Runat="server" ID="pnlButtons">
-	    <asp:button id="btnAggiungi" runat="server" Text="Aggiungi" OnClientClick="OpenEditWindow('windowEdit','Add');return false;"></asp:button>
-		<asp:button id="btnRinomina" runat="server" Text="Modifica" OnClientClick="OpenEditWindow('windowEdit','Rename');return false;"></asp:button>
-		<asp:button id="btnElimina" runat="server" Text="Elimina" OnClientClick="OpenEditWindow('windowEdit','Delete');return false;"></asp:button>
-		<asp:button id="btnRecupera" runat="server" Text="Recupera" OnClientClick="OpenEditWindow('windowEdit','Recovery');return false;"></asp:button>
-		<asp:button id="btnLog" runat="server" Text="Log" OnClientClick="OpenEditWindow('windowEdit','Log');return false;"></asp:button>
-		<asp:button id="btnRefresh" runat="server" Text="Refresh"></asp:button>
-	</asp:Panel>
-</asp:Content>
-

@@ -8,7 +8,7 @@ Imports System.ComponentModel
 Public Class NHibernateProtocolContactManualFinder
     Inherits NHibernateBaseFinder(Of ProtocolContactManual, ProtocolContactManual)
 
-#Region "New"
+#Region " Constructor "
 
     Public Sub New(ByVal DbName As String)
         SessionFactoryName = DbName
@@ -16,18 +16,13 @@ Public Class NHibernateProtocolContactManualFinder
 
 #End Region
 
-#Region "Private Fields"
-    Private _year As Int16?
-    Private _number As Integer?
-
+#Region " Fields "
     Private _description As String = String.Empty
-    Private _descriptionContain As Boolean = False
-
 #End Region
 
 #Region "Finder Properties"
 
-    Property Description() As String
+    Public Property Description() As String
         Get
             Return _description.Replace("_", " ")
         End Get
@@ -36,35 +31,14 @@ Public Class NHibernateProtocolContactManualFinder
         End Set
     End Property
 
-    Property DescriptionContain() As Boolean
-        Get
-            Return _descriptionContain
-        End Get
-        Set(value As Boolean)
-            _descriptionContain = value
-        End Set
-    End Property
+    Public Property DescriptionContain As Boolean
 
-    Property Year As Int16?
-        Get
-            Return _year
-        End Get
-        Set(value As Int16?)
-            _year = value
-        End Set
-    End Property
-    Property Number As Integer?
-        Get
-            Return _number
-        End Get
-        Set(value As Integer?)
-            _number = value
-        End Set
-    End Property
+    Public Property Year As Short?
+    Public Property Number As Integer?
 
 #End Region
 
-#Region "NHibernate Properties"
+#Region " NHibernate Properties "
 
     Protected ReadOnly Property NHibernateSession() As ISession
         Get
@@ -74,6 +48,7 @@ Public Class NHibernateProtocolContactManualFinder
 
 #End Region
 
+#Region " Methods "
     Protected Overrides Function CreateCriteria() As ICriteria
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persistentType, "PCM")
         Dim recipientMatchMode As MatchMode = If(DescriptionContain, MatchMode.Anywhere, MatchMode.Start)
@@ -83,11 +58,11 @@ Public Class NHibernateProtocolContactManualFinder
         End If
 
         If Year.HasValue Then
-            criteria.Add(Restrictions.Eq("Id.Year", Year.Value))
+            criteria.Add(Restrictions.Eq("Protocol.Year", Year.Value))
         End If
 
         If Number.HasValue Then
-            criteria.Add(Restrictions.Eq("Id.Number", Number.Value))
+            criteria.Add(Restrictions.Eq("Protocol.Number", Number.Value))
         End If
 
         Return criteria
@@ -97,4 +72,5 @@ Public Class NHibernateProtocolContactManualFinder
         Dim criteria As ICriteria = CreateCriteria()
         Return criteria.List(Of ProtocolContactManual)()
     End Function
+#End Region
 End Class

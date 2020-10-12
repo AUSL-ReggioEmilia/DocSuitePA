@@ -7,6 +7,7 @@ import TemplateCollaborationService = require('App/Services/Templates/TemplateCo
 import TemplateCollaborationModel = require('App/Models/Templates/TemplateCollaborationModel');
 import TemplateCollaborationStatus = require('App/Models/Templates/TemplateCollaborationStatus');
 import CollaborationDocumentType = require('App/Models/Collaborations/CollaborationDocumentType');
+import JsonParameter = require('App/Models/Commons/JsonParameter');
 import AjaxModel = require('App/Models/AjaxModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
@@ -17,6 +18,7 @@ class TemplateUserCollGestione {
     btnConfirmUniqueId: string;
     ajaxLoadingPanelId: string;
     pnlMainPanelId: string;
+    pnlDocumentUnitDraftId: string;
     ajaxManagerId: string;
     txtNameId: string;
     txtObjectId: string;
@@ -34,7 +36,12 @@ class TemplateUserCollGestione {
     pnlButtonsId: string;
     radWindowManagerId: string;
     btnDeleteId: string;
-        uscNotificationId: string;
+    uscNotificationId: string;
+    chkDocumentUnitDraftEnabledId: string;
+    chkSecretaryViewRightEnabledId: string;
+    chkPopupDocumentNotSignedAlertEnabledId: string;
+    chkBtnCheckoutEnabledId: string;
+    rowDocumentUnitDraftId: string;
 
     private _btnConfirm: Telerik.Web.UI.RadButton;
     private _btnPublish: Telerik.Web.UI.RadButton;
@@ -50,9 +57,24 @@ class TemplateUserCollGestione {
     private _rblPriority: JQuery;
     private _currentTemplateIsLocked: boolean;
     private _manager: Telerik.Web.UI.RadWindowManager;
+    private _chkDocumentUnitDraftEnabled: JQuery;
+
+    private _chkSecretaryViewRightEnabled(): JQuery {
+        return $(`#${this.chkSecretaryViewRightEnabledId}`);
+    }
+    private _chkPopupDocumentNotSignedAlertEnabled(): JQuery {
+        return $(`#${this.chkPopupDocumentNotSignedAlertEnabledId}`);
+    }
+    private _chkBtnCheckoutEnabled(): JQuery {
+        return $(`#${this.chkBtnCheckoutEnabledId}`);
+    }
 
     static INSERT_ACTION: string = "Insert";
     static EDIT_ACTION: string = "Edit";
+    static PRECOMPILE_PARAM: string = "DocumentUnitDraftEditorEnabled";
+    static SECRETARY_PARAM: string = "SecretaryViewRightEnabled";
+    static POPUP_PARAM: string = "PopUpDocumentNotSignedAlertEnabled";
+    static BTNCHEKOUT_PARAM: string = "BtnCheckoutEnabled";
 
     /**
      * Costruttore
@@ -61,7 +83,7 @@ class TemplateUserCollGestione {
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         let serviceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "TemplateCollaboration");
         if (!serviceConfiguration) {
-            this.showNotificationMessage(this.uscNotificationId,"Errore in inizializzazione. Nessun servizio configurato per il Template di collaborazione");
+            this.showNotificationMessage(this.uscNotificationId, "Errore in inizializzazione. Nessun servizio configurato per il Template di collaborazione");
             return;
         }
 
@@ -77,7 +99,7 @@ class TemplateUserCollGestione {
      * @param sender
      * @param args
      */
-    btnConfirm_OnClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnConfirm_OnClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         if (Page_IsValid) {
             this.showLoadingPanels();
             (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequestWithTarget(this.btnConfirmUniqueId, '');
@@ -89,7 +111,7 @@ class TemplateUserCollGestione {
      * @param sender
      * @param args
      */
-    btnPublish_OnClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnPublish_OnClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         if (Page_IsValid) {
             this.showLoadingPanels();
             (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequestWithTarget(this.btnPublishUniqueId, '');
@@ -126,7 +148,7 @@ class TemplateUserCollGestione {
      * @param sender
      * @param args
      */
-    btnDelete_OnClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnDelete_OnClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._manager.radconfirm("Sei sicuro di voler eliminare il template corrente?", (arg) => {
             if (arg) {
                 this.showLoadingPanels();
@@ -151,7 +173,7 @@ class TemplateUserCollGestione {
                 }
                 catch (error) {
                     this.hideLoadingPanels();
-                    this.showNotificationMessage(this.uscNotificationId,"Errore in eliminazione del template");
+                    this.showNotificationMessage(this.uscNotificationId, "Errore in eliminazione del template");
                     console.log(JSON.stringify(error));
                 }
             }
@@ -186,7 +208,8 @@ class TemplateUserCollGestione {
         this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.radWindowManagerId);
         this._rblPriority = $("#".concat(this.rblPriorityId));
         this._currentTemplateIsLocked = false;
-
+        this._chkDocumentUnitDraftEnabled = $("#".concat(this.chkDocumentUnitDraftEnabledId));
+        $("#".concat(this.rowDocumentUnitDraftId)).hide();
         $("#specificTypeRow").hide();
 
         if (this.action == TemplateUserCollGestione.EDIT_ACTION) {
@@ -210,7 +233,7 @@ class TemplateUserCollGestione {
                             (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxmodel));
                         } catch (error) {
                             this.hideLoadingPanels();
-                            this.showNotificationMessage(this.uscNotificationId,'Errore in caricamento dati del Template');
+                            this.showNotificationMessage(this.uscNotificationId, 'Errore in caricamento dati del Template');
                             console.log(JSON.stringify(error));
                         }
                     },
@@ -221,7 +244,7 @@ class TemplateUserCollGestione {
                 );
             } catch (error) {
                 this.hideLoadingPanels();
-                this.showNotificationMessage(this.uscNotificationId,'Errore in caricamento dati del Template');
+                this.showNotificationMessage(this.uscNotificationId, 'Errore in caricamento dati del Template');
                 console.log(JSON.stringify(error));
             }
         } else {
@@ -253,6 +276,35 @@ class TemplateUserCollGestione {
             entity.IsLocked = false;
         }
         entity.Status = TemplateCollaborationStatus.Draft;
+
+        let jpars: JsonParameter[] = [];
+        let documentUnitDraftParam: JsonParameter = new JsonParameter();
+        documentUnitDraftParam.Name = TemplateUserCollGestione.PRECOMPILE_PARAM;
+        documentUnitDraftParam.PropertyType = 16;
+        documentUnitDraftParam.ValueBoolean = $("#".concat(this.chkDocumentUnitDraftEnabledId)).is(":checked");
+
+        let secretaryRightParam: JsonParameter = new JsonParameter();
+        secretaryRightParam.Name = TemplateUserCollGestione.SECRETARY_PARAM;
+        secretaryRightParam.PropertyType = 16;
+        secretaryRightParam.ValueBoolean = this._chkSecretaryViewRightEnabled().is(":checked");
+
+        let popupDocumentNotSignedAlertParam: JsonParameter = new JsonParameter();
+        popupDocumentNotSignedAlertParam.Name = TemplateUserCollGestione.POPUP_PARAM;
+        popupDocumentNotSignedAlertParam.PropertyType = 16;
+        popupDocumentNotSignedAlertParam.ValueBoolean = this._chkPopupDocumentNotSignedAlertEnabled().is(":checked");
+
+        let btncheckoutParam: JsonParameter = new JsonParameter();
+        btncheckoutParam.Name = TemplateUserCollGestione.BTNCHEKOUT_PARAM;
+        btncheckoutParam.PropertyType = 16;
+        btncheckoutParam.ValueBoolean = this._chkBtnCheckoutEnabled().is(":checked");
+
+
+        jpars.push(documentUnitDraftParam);
+        jpars.push(secretaryRightParam);
+        jpars.push(popupDocumentNotSignedAlertParam);
+        jpars.push(btncheckoutParam);
+
+        entity.JsonParameters = JSON.stringify(jpars);
         return entity;
     }
 
@@ -287,11 +339,11 @@ class TemplateUserCollGestione {
                             (exception: ExceptionDTO) => {
                                 this.resetControlState();
                                 this.hideLoadingPanels();
-                              this.showNotificationException(this.uscNotificationId, exception);
+                                this.showNotificationException(this.uscNotificationId, exception);
                             }
                         );
                     } else {
-                       alert("Template salvato correttamente");
+                        alert("Template salvato correttamente");
                         if (this.action == 'Insert') {
                             window.location.href = "../User/TemplateUserCollGestione.aspx?Action=Edit&Type=".concat(this.getPageTypeFromDocumentType(data.Environment), "&TemplateId=", data.UniqueId);
                         }
@@ -308,7 +360,7 @@ class TemplateUserCollGestione {
         }
         catch (error) {
             this.hideLoadingPanels();
-            this.showNotificationMessage(this.uscNotificationId,"Errore in esecuzione dell'attività di salvataggio.");
+            this.showNotificationMessage(this.uscNotificationId, "Errore in esecuzione dell'attività di salvataggio.");
             console.log(JSON.stringify(error));
         }
     }
@@ -355,14 +407,44 @@ class TemplateUserCollGestione {
     private fillPageFromEntity(entity: TemplateCollaborationModel): void {
         this._txtName.set_value(entity.Name);
         this._txtNote.set_value(entity.Note);
-        this._txtObject.set_value(entity.Object);
+        this._txtObject.set_value(entity.Object);        
+        if (entity.JsonParameters) {
+            let jsonParms: JsonParameter[] = JSON.parse(entity.JsonParameters);
+            let draftParm: JsonParameter[] = jsonParms.filter(f => f.Name == TemplateUserCollGestione.PRECOMPILE_PARAM);
+            if (draftParm && draftParm.length > 0) {
+                $("#".concat(this.chkDocumentUnitDraftEnabledId)).prop("checked", draftParm[0].ValueBoolean);
+            }
+
+            let secreataryParm: JsonParameter[] = jsonParms.filter(f => f.Name == TemplateUserCollGestione.SECRETARY_PARAM);
+            if (secreataryParm && secreataryParm.length > 0) {
+                this._chkSecretaryViewRightEnabled().prop("checked", secreataryParm[0].ValueBoolean);
+            }
+            let popupDocumentNotSignedAlertParam: JsonParameter[] = jsonParms.filter(f => f.Name == TemplateUserCollGestione.POPUP_PARAM);
+            if (popupDocumentNotSignedAlertParam && popupDocumentNotSignedAlertParam.length > 0) {
+                this._chkPopupDocumentNotSignedAlertEnabled().prop("checked", popupDocumentNotSignedAlertParam[0].ValueBoolean);
+            }
+            let btncheckoutParam: JsonParameter[] = jsonParms.filter(f => f.Name == TemplateUserCollGestione.BTNCHEKOUT_PARAM);
+            if (btncheckoutParam && btncheckoutParam.length > 0) {
+                this._chkBtnCheckoutEnabled().prop("checked", btncheckoutParam[0].ValueBoolean);
+            }
+
+        }
         let collaborationDocumentTypeName: string = this.getCollaborationDocumentTypeFromEntity(entity)
         this._ddlDocumentType.findItemByValue(collaborationDocumentTypeName).select();
         if (collaborationDocumentTypeName == CollaborationDocumentType[CollaborationDocumentType.UDS] && !isNaN(parseInt(entity.DocumentType))) {
             this._ddlSpecificDocumentType.findItemByValue(entity.DocumentType).select();
         }
+        this.showPanel(entity.DocumentType);
+
         $("#".concat(this.rblPriorityId, " :radio[value='", entity.IdPriority, "']")).prop("checked", true);
     }
+    private showPanel(documentType: string): void {
+        if (documentType == CollaborationDocumentType[CollaborationDocumentType.P] || !isNaN(parseInt(documentType))) {
+            $(`#${this.rowDocumentUnitDraftId}`).show();
+        }
+
+    }
+
 
     /**
      * Callback scatenato al load dei dati dalle WebAPI lato code-behind

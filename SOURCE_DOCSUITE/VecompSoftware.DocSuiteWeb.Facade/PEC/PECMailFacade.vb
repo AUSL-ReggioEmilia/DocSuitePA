@@ -4,7 +4,7 @@ Imports System.Linq
 Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Facade.PEC.Util
 Imports VecompSoftware.Helpers.ExtensionMethods
-Imports iTextSharp.text
+Imports itextsharp.text
 Imports VecompSoftware.Services.Logging
 Imports VecompSoftware.NHibernateManager
 Imports VecompSoftware.DocSuiteWeb.Data
@@ -25,6 +25,7 @@ Imports VecompSoftware.Services.Command.CQRS.Events
 Imports VecompSoftware.Services.Command.CQRS
 Imports VecompSoftware.Services.Command.CQRS.Events.Entities.PECMails
 Imports VecompSoftware.Helpers.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 
 <DataObject()>
 Public Class PECMailFacade
@@ -121,12 +122,11 @@ Public Class PECMailFacade
 
             clonedPec.Year = pec.Year
             clonedPec.Number = pec.Number
-            clonedPec.DocumentUnitType = pec.DocumentUnitType
-            clonedPec.IdUDSRepository = pec.IdUDSRepository
+            clonedPec.DocumentUnit = pec.DocumentUnit
             clonedPec.TaskHeader = Nothing
 
             clonedPec.Receipts = Nothing
-            Dim protocol As Protocol = FacadeFactory.Instance.ProtocolFacade.GetById(pec.Year.Value, pec.Number.Value)
+            Dim protocol As Protocol = FacadeFactory.Instance.ProtocolFacade.GetById(pec.DocumentUnit.Id)
             Dim contacts As List(Of Contact) = protocol.Contacts _
                 .Where(Function(f) f.ComunicationType.Eq(ProtocolContactCommunicationType.Recipient)) _
                 .Select(Function(f) f.Contact).ToList()
@@ -170,6 +170,7 @@ Public Class PECMailFacade
             If resetProtocol Then
                 clonedPec.Number = Nothing
                 clonedPec.Year = Nothing
+                clonedPec.DocumentUnit = Nothing
             End If
 
             Me.Save(clonedPec)
@@ -195,7 +196,7 @@ Public Class PECMailFacade
             doc.AddAttribute("MailDate", pec.MailDate.DefaultString())
         End If
 
-        Dim guidArchiviedChain As Guid = chain.ArchiveInBiblos(pec.Location.ConservationServer, pec.Location.ConsBiblosDSDB)
+        Dim guidArchiviedChain As Guid = chain.ArchiveInBiblos(pec.Location.ConsBiblosDSDB)
 
         If Not guidArchiviedChain = Guid.Empty Then
             pec.IDMailContent = guidArchiviedChain
@@ -209,7 +210,7 @@ Public Class PECMailFacade
         End If
     End Sub
     Public Function GetProtocol(pec As PECMail) As Protocol
-        If Not pec.DocumentUnitType.HasValue OrElse pec.DocumentUnitType.Value <> DSWEnvironment.Protocol Then
+        If pec.DocumentUnit Is Nothing OrElse pec.DocumentUnit.Environment <> DSWEnvironment.Protocol Then
             Return Nothing
         End If
 
@@ -221,7 +222,7 @@ Public Class PECMailFacade
             Return Nothing
         End If
 
-        Dim documents As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(pec.Location.ConservationServer, pec.IDMailContent)
+        Dim documents As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(pec.IDMailContent)
         If Not documents.HasSingle() Then
             Throw New DocSuiteException("Errore in fase di recupero Busta PEC.")
         End If
@@ -230,7 +231,7 @@ Public Class PECMailFacade
     End Function
 
     Private Shared Function ArchiveAttachedDocument(ByRef pec As PECMail, ByRef document As DocumentInfo) As Guid
-        Dim doc As BiblosDocumentInfo = document.ArchiveInBiblos(pec.Location.DocumentServer, pec.Location.ProtBiblosDSDB, pec.IDAttachments)
+        Dim doc As BiblosDocumentInfo = document.ArchiveInBiblos(pec.Location.ProtBiblosDSDB, pec.IDAttachments)
         pec.IDAttachments = doc.ChainId
         Return doc.DocumentId
     End Function
@@ -273,7 +274,7 @@ Public Class PECMailFacade
             Return Nothing
         End If
 
-        Return New BiblosDocumentInfo(pec.Location.DocumentServer, pec.IDSmime)
+        Return New BiblosDocumentInfo(pec.IDSmime)
     End Function
 
     Public Sub ArchiveEnvelope(ByRef pec As PECMail, data() As Byte, name As String)
@@ -351,7 +352,7 @@ Public Class PECMailFacade
         If pec.IDAttachments = Guid.Empty Then
             Return New BiblosDocumentInfo() {}
         End If
-        Return BiblosDocumentInfo.GetDocuments(pec.Location.DocumentServer, pec.IDAttachments).ToArray()
+        Return BiblosDocumentInfo.GetDocuments(pec.IDAttachments).ToArray()
     End Function
 
     Public Function GetMailStatusByXRiferimentoMessageId(ByVal xRiferimentoMessageId As String) As String
@@ -389,12 +390,12 @@ Public Class PECMailFacade
         Return _dao.Exists(uid, box)
     End Function
 
-    Public Function ChecksumExists(ByVal checksum As String, ByVal originalRecipient As String) As Boolean
-        Return _dao.ChecksumExists(checksum, originalRecipient)
+    Public Function ChecksumExists(ByVal checksum As String, ByVal originalRecipient As String, Optional includeOnError As Boolean = False) As Boolean
+        Return _dao.ChecksumExists(checksum, originalRecipient, includeOnError)
     End Function
 
-    Public Function HeaderChecksumExists(ByVal headerChecksum As String, ByVal originalRecipient As String) As Boolean
-        Return _dao.HeaderChecksumExists(headerChecksum, originalRecipient)
+    Public Function HeaderChecksumExists(ByVal headerChecksum As String, ByVal originalRecipient As String, Optional includeOnError As Boolean = False) As Boolean
+        Return _dao.HeaderChecksumExists(headerChecksum, originalRecipient, includeOnError)
     End Function
 
     Public Function GetByChecksum(checksum As String, originalRecipient As String, ByVal isActiveIn As List(Of Integer)) As IList(Of PECMail)
@@ -617,7 +618,7 @@ Public Class PECMailFacade
     Public Sub FinalizeToProtocol(mail As PECMail, protocol As Protocol)
         mail.Year = protocol.Year
         mail.Number = protocol.Number
-        mail.DocumentUnitType = DSWEnvironment.Protocol
+        mail.DocumentUnit = FacadeFactory.Instance.DocumentUnitFacade.GetById(protocol.Id)
         mail.RecordedInDocSuite = CType(1, Short)
         mail.IsActive = ActiveType.Cast(ActiveType.PECMailActiveType.Active)
         Update(mail)
@@ -989,8 +990,7 @@ Public Class PECMailFacade
         pec.RecordedInDocSuite = Nothing
         pec.Year = Nothing
         pec.Number = Nothing
-        pec.DocumentUnitType = Nothing
-        pec.IdUDSRepository = Nothing
+        pec.DocumentUnit = Nothing
         pec.Handler = Nothing
         Update(pec)
     End Sub
@@ -1046,7 +1046,7 @@ Public Class PECMailFacade
 
         '' altrimenti carico solo l'eml effettivamente inviato
         If pec.IDPostacert <> Guid.Empty Then
-            Return New BiblosDocumentInfo(pec.Location.DocumentServer, pec.IDPostacert)
+            Return New BiblosDocumentInfo(pec.IDPostacert)
         End If
 
         ' Salvo in TEMP un file di Testo con il corpo della MAIL
@@ -1178,16 +1178,16 @@ Public Class PECMailFacade
         Return mail.Id
     End Function
 
-    Public Function PairToProtocol(mail As PECMail, year As Short, number As Integer) As PECMail
+    Public Function PairToProtocol(mail As PECMail, protocol As Protocol) As PECMail
         If mail.Year.HasValue AndAlso mail.Number.HasValue Then
             Dim message As String = "Questa mail ha già un protocollo associato ({0})."
-            message = String.Format(message, ProtocolFacade.ProtocolFullNumber(year, number))
+            message = String.Format(message, protocol.FullNumber)
             Throw New InvalidOperationException(message)
         End If
 
-        mail.Year = year
-        mail.Number = number
-        mail.DocumentUnitType = DSWEnvironment.Protocol
+        mail.Year = protocol.Year
+        mail.Number = protocol.Number
+        mail.DocumentUnit = FacadeFactory.Instance.DocumentUnitFacade.GetById(protocol.Id)
 
         Me.Update(mail)
         Return mail
@@ -1200,7 +1200,8 @@ Public Class PECMailFacade
 
         Dim pecId As Integer = CInt(mailDTO.Id)
         Dim mail As PECMail = FacadeFactory.Instance.PECMailFacade.GetById(pecId)
-        Dim updated As PECMail = Me.PairToProtocol(mail, protocolDTO.Year.Value, protocolDTO.Number.Value)
+        Dim protocol As Protocol = FacadeFactory.Instance.ProtocolFacade.GetById(protocolDTO.UniqueId.Value)
+        Dim updated As PECMail = Me.PairToProtocol(mail, protocol)
         Return updated.Id
     End Function
 
@@ -1234,15 +1235,13 @@ Public Class PECMailFacade
 
         pecMail.Year = protocol.Year
         pecMail.Number = protocol.Number
-        pecMail.DocumentUnitType = DSWEnvironment.Protocol
+        pecMail.DocumentUnit = FacadeFactory.Instance.DocumentUnitFacade.GetById(protocol.Id)
         pecMail.RecordedInDocSuite = Convert.ToInt16(1)
 
         Me.Update(pecMail)
 
-        If DocSuiteContext.Current.ProtocolEnv.IsLogEnabled Then
-            FacadeFactory.Instance.PECMailLogFacade.InsertLog(pecMail, String.Format("[Collegamento] Pec collegata al protocollo {0}", protocol.Id.ToString()), PECMailLogType.Linked)
-            FacadeFactory.Instance.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.PM, String.Format("[Collegamento] Collegata PEC n.{0} del {1} con oggetto ""{2}""", pecMail.Id, pecMail.RegistrationDate.ToLocalTime().DateTime.ToShortDateString(), pecMail.MailSubject))
-        End If
+        FacadeFactory.Instance.PECMailLogFacade.InsertLog(pecMail, String.Format("[Collegamento] Pec collegata al protocollo {0}", protocol.Id.ToString()), PECMailLogType.Linked)
+        FacadeFactory.Instance.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.PM, String.Format("[Collegamento] Collegata PEC n.{0} del {1} con oggetto ""{2}""", pecMail.Id, pecMail.RegistrationDate.ToLocalTime().DateTime.ToShortDateString(), pecMail.MailSubject))
     End Sub
 
     Public Function SendInsertPECMailCommand(pecMail As PECMail) As Guid?
@@ -1257,8 +1256,8 @@ Public Class PECMailFacade
 
     Public Function SendInsertPECMailCommand(pecMail As PECMail, protocol As Protocol, collaboration As Collaboration) As Guid?
         Try
-            Dim commandInsert As ICommandCreatePECMail = PreparePECCommand(Of ICommandCreatePECMail)(pecMail, protocol, collaboration, Function(tenantName, tenantId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, identity, apiPECMail)
-                                                                                                                                           Return New CommandCreatePECMail(tenantName, tenantId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, False, identity, apiPECMail)
+            Dim commandInsert As ICommandCreatePECMail = PreparePECCommand(Of ICommandCreatePECMail)(pecMail, protocol, collaboration, Function(tenantName, tenantId, tenantAOOId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, identity, apiPECMail)
+                                                                                                                                           Return New CommandCreatePECMail(tenantName, tenantId, tenantAOOId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, False, identity, apiPECMail)
                                                                                                                                        End Function)
             CommandInsertFacade.Push(commandInsert)
             Return commandInsert.Id
@@ -1273,8 +1272,8 @@ Public Class PECMailFacade
 
         Dim protocol As Protocol = Nothing
         Dim collaboration As Collaboration = Nothing
-        If pecMail.HasDocumentUnit() AndAlso pecMail.DocumentUnitType = DSWEnvironment.Protocol Then
-            protocol = FacadeFactory.Instance.ProtocolFacade.GetById(pecMail.Year.Value, pecMail.Number.Value)
+        If pecMail.HasDocumentUnit() AndAlso pecMail.DocumentUnit.Environment = DSWEnvironment.Protocol Then
+            protocol = FacadeFactory.Instance.ProtocolFacade.GetById(pecMail.DocumentUnit.Id)
             If protocol IsNot Nothing Then
                 collaboration = FacadeFactory.Instance.CollaborationFacade.GetByProtocol(protocol)
             End If
@@ -1285,11 +1284,11 @@ Public Class PECMailFacade
 
     Public Sub SendPECMailCreatedEvent(pecMail As PECMail, protocol As Protocol, collaboration As Collaboration)
         Try
-            Dim eventCreatePECMail As IEventCreatePECMail = PreparePECEvent(Of IEventCreatePECMail)(pecMail, protocol, collaboration, Function(tenantName, tenantId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, isInvoice, identity, apiPECMail)
-                                                                                                                                          Return New EventCreatePECMail(tenantName, tenantId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, isInvoice, identity, apiPECMail, Nothing)
+            Dim eventCreatePECMail As IEventCreatePECMail = PreparePECEvent(Of IEventCreatePECMail)(pecMail, protocol, collaboration, Function(tenantName, tenantId, tenantAOOId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, isInvoice, identity, apiPECMail)
+                                                                                                                                          Return New EventCreatePECMail(tenantName, tenantId, tenantAOOId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, isInvoice, identity, apiPECMail, Nothing)
                                                                                                                                       End Function)
 
-            WebAPIHelper.SendRequest(DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration, eventCreatePECMail)
+            WebAPIImpersonatorFacade.ImpersonateSendRequest(WebAPIHelper, eventCreatePECMail, DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration)
         Catch ex As Exception
             FileLogger.Error(LoggerName, String.Concat("SendPECMailCreatedEvent => ", ex.Message), ex)
         End Try
@@ -1297,11 +1296,12 @@ Public Class PECMailFacade
     End Sub
 
     Private Function PreparePECMessage(Of T As {IMessage})(pecMail As PECMail, protocol As Protocol, collaboration As Collaboration,
-                                                          initializeFunc As Func(Of String, Guid, Guid?, Integer?, String, Guid?, Short?, Integer?, IdentityContext, APIPECMail.PECMail, T)) As T
+                                                          initializeFunc As Func(Of String, Guid, Guid, Guid?, Integer?, String, Guid?, Short?, Integer?, IdentityContext, APIPECMail.PECMail, T)) As T
         Dim apiPECMail As APIPECMail.PECMail = MapperPECMailEntity.MappingDTO(pecMail)
         Dim identity As IdentityContext = New IdentityContext(DocSuiteContext.Current.User.FullUserName)
-        Dim tenantName As String = DocSuiteContext.Current.CurrentTenant.TenantName
-        Dim tenantId As Guid = DocSuiteContext.Current.CurrentTenant.TenantId
+        Dim tenantName As String = CurrentTenant.TenantName
+        Dim tenantId As Guid = CurrentTenant.UniqueId
+        Dim tenantAOOId As Guid = CurrentTenant.TenantAOO.UniqueId
         Dim collaborationId As Integer? = Nothing
         Dim colalborationTemplateName As String = String.Empty
         Dim collaborationUniqueId As Guid?
@@ -1320,21 +1320,21 @@ Public Class PECMailFacade
             protocolYear = protocol.Year
             protocolNumber = protocol.Number
         End If
-        Return initializeFunc(tenantName, tenantId, collaborationUniqueId, collaborationId, colalborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, identity, apiPECMail)
+        Return initializeFunc(tenantName, tenantId, tenantAOOId, collaborationUniqueId, collaborationId, colalborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, identity, apiPECMail)
     End Function
 
     Private Function PreparePECCommand(Of T As {ICommand})(pecMail As PECMail, protocol As Protocol, collaboration As Collaboration,
-                                                          commandInitializeFunc As Func(Of String, Guid, Guid?, Integer?, String, Guid?, Short?, Integer?, IdentityContext, APIPECMail.PECMail, T)) As T
+                                                          commandInitializeFunc As Func(Of String, Guid, Guid, Guid?, Integer?, String, Guid?, Short?, Integer?, IdentityContext, APIPECMail.PECMail, T)) As T
 
         Return PreparePECMessage(Of T)(pecMail, protocol, collaboration, commandInitializeFunc)
     End Function
 
     Private Function PreparePECEvent(Of T As {IEvent})(pecMail As PECMail, protocol As Protocol, collaboration As Collaboration,
-                                                          eventInitializeFunc As Func(Of String, Guid, Guid?, Integer?, String, Guid?, Short?, Integer?, Boolean, IdentityContext, APIPECMail.PECMail, T)) As T
+                                                          eventInitializeFunc As Func(Of String, Guid, Guid, Guid?, Integer?, String, Guid?, Short?, Integer?, Boolean, IdentityContext, APIPECMail.PECMail, T)) As T
 
         Dim isInvoice As Boolean = IsPECMailInvoice(pecMail)
-        Return PreparePECMessage(Of T)(pecMail, protocol, collaboration, Function(tenantName, tenantId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, identity, apiPECMail)
-                                                                             Return eventInitializeFunc(tenantName, tenantId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, isInvoice, identity, apiPECMail)
+        Return PreparePECMessage(Of T)(pecMail, protocol, collaboration, Function(tenantName, tenantId, tenantAOOId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, identity, apiPECMail)
+                                                                             Return eventInitializeFunc(tenantName, tenantId, tenantAOOId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, isInvoice, identity, apiPECMail)
                                                                          End Function)
     End Function
 #End Region

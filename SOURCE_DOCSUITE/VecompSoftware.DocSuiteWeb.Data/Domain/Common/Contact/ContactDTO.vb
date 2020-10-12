@@ -20,14 +20,7 @@ Public Class ContactDTO
 
 #Region " Properties "
 
-    Public Overridable Property IdManualContact() As YearNumberIdCompositeKey
-        Get
-            Return _id
-        End Get
-        Set(ByVal value As YearNumberIdCompositeKey)
-            _id = value
-        End Set
-    End Property
+    Public Overridable Property IdManualContact As Guid?
 
     Public Overridable Property Contact() As Contact
         Get
@@ -85,13 +78,13 @@ Public Class ContactDTO
     Public Sub New()
     End Sub
 
-    Public Sub New(ByVal contact As Contact, ByVal idManualContact As YearNumberIdCompositeKey)
+    Public Sub New(ByVal contact As Contact, ByVal idManualContact As Guid)
         Me.Contact = contact
         Me.Type = ContactType.Manual
         Me.IdManualContact = idManualContact
     End Sub
 
-    Public Sub New(ByVal contact As Contact, ByVal type As ContactType, ByVal idManualContact As YearNumberIdCompositeKey)
+    Public Sub New(ByVal contact As Contact, ByVal type As ContactType, ByVal idManualContact As Guid)
         Me.Contact = contact
         Me.Id = contact.Id
         Me.Type = type

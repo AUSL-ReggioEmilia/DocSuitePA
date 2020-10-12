@@ -9,7 +9,7 @@ class UscResolutionKindDetails {
     lblStatusId: string;
     pnlInformationsId: string;
 
-    private get labelStatusControl(): JQuery {
+    private labelStatusControl(): JQuery {
         return $("#".concat(this.lblStatusId));
     }
 
@@ -36,7 +36,7 @@ class UscResolutionKindDetails {
             return;
         }
 
-        this.labelStatusControl.html((resolutionKind.IsActive) ? "Attivo" : "Disattivo");
+        this.labelStatusControl().html((resolutionKind.IsActive) ? "Attivo" : "Disattivo");
     }
 }
 export = UscResolutionKindDetails;

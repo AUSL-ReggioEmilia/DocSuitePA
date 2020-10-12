@@ -34,8 +34,6 @@ class ConservationService extends BaseService {
                 }
             }, error);
     }
+}
 
-
-
-
-} export = ConservationService;
+export = ConservationService;

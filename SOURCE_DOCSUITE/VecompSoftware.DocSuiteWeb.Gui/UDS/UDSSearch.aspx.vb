@@ -1,10 +1,6 @@
-﻿Imports System.Collections.Generic
-Imports System.Linq
-Imports Newtonsoft.Json
-Imports Telerik.Web.UI
+﻿Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Helpers.UDS
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class UDSSearch
@@ -13,12 +9,6 @@ Public Class UDSSearch
 #Region "Fields"
     Private Const PAGE_SEARCH_TITLE As String = "Ricerca Archivi"
     Private Const UDS_RESULTS_PAGE_URL As String = "~/UDS/UDSResults.aspx?Type=UDS&CopyToPEC={0}"
-
-#Region "Odata query"
-    Private Const ODATA_DOCUMENTUNIT_FILTER As String = "DocumentUnit/DocumentUnitRoles/any(r:r/{0} in ({1}))"
-    Private Const ODATA_CONTACT_FILTER As String = "Contacts/any(contacts:contacts/{0} eq {1} and contacts/ContactLabel eq '{2}')"
-    Private Const ODATA_CONTACT_MANUAL_FILTER As String = "(Contacts/any(c:contains(c/{0},'{1}') and c/ContactLabel eq '{2}') or Contacts/any(c1:contains(c1/Contact/Description,'{1}') and c1/ContactLabel eq '{2}'))"
-#End Region
 #End Region
 
 #Region "Properties"
@@ -127,6 +117,8 @@ Public Class UDSSearch
         detailsSearchModel.Subject = uscUDS.uscDataFinder.Subject
         detailsSearchModel.CategoryId = If(uscUDS.uscDataFinder.IdCategory, 0)
         detailsSearchModel.IsCancelledArchive = uscUDS.uscDataFinder.ViewDeletedUDS
+        detailsSearchModel.DocumentName = uscUDS.uscDataFinder.DocumentName
+        detailsSearchModel.GenericDocument = uscUDS.uscDataFinder.GenericDocument
         Return detailsSearchModel
     End Function
 #End Region

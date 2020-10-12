@@ -1,5 +1,6 @@
 ﻿
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 <Serializable()>
 Public Class FacadeFactory
@@ -188,6 +189,7 @@ Public Class FacadeFactory
     Private _templateProtocolFacade As TemplateProtocolFacade
     Private _unifiedDiary As UnifiedDiaryFacade
     Private _protocolUserFacade As ProtocolUserFacade
+    Private _domainUserFacade As DomainUserFacade
 #End Region
 
 #Region " PEC Facades "
@@ -310,6 +312,7 @@ Public Class FacadeFactory
 
     Private _tenderHeaderFacade As TenderHeaderFacade
     Private _tenderLotFacade As TenderLotFacade
+    Private _documentUnitFacade As DocumentUnitFacade
 
 #Region " Constructors"
 
@@ -865,6 +868,14 @@ Public Class FacadeFactory
         End Get
     End Property
 
+    Public ReadOnly Property DomainUserFacade As DomainUserFacade
+        Get
+            If _domainUserFacade Is Nothing Then
+                _domainUserFacade = New DomainUserFacade
+            End If
+            Return _domainUserFacade
+        End Get
+    End Property
 #End Region
 
 #Region " PEC Facade properties "
@@ -1739,6 +1750,15 @@ Public Class FacadeFactory
                 _protocolDocumentSeriesItemFacade = New ProtocolDocumentSeriesItemFacade()
             End If
             Return _protocolDocumentSeriesItemFacade
+        End Get
+    End Property
+
+    Public ReadOnly Property DocumentUnitFacade As DocumentUnitFacade
+        Get
+            If _documentUnitFacade Is Nothing Then
+                _documentUnitFacade = New DocumentUnitFacade()
+            End If
+            Return _documentUnitFacade
         End Get
     End Property
 End Class

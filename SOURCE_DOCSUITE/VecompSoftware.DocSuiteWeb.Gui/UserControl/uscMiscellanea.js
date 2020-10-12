@@ -52,7 +52,7 @@ define(["require", "exports", "App/DTOs/ExceptionDTO", "App/Helpers/FileHelper"]
             this._managerUploadDocument.add_close(this.closeUploadDocumentWindow);
             this._miscellaneaGrid = $find(this.miscellaneaGridId);
             this._masterTableView = this._miscellaneaGrid.get_masterTableView();
-            this._currentDocumentToSignInformations = undefined;
+            this._currentDocumentToSign = undefined;
             this.bindLoaded();
         };
         /**
@@ -134,9 +134,19 @@ define(["require", "exports", "App/DTOs/ExceptionDTO", "App/Helpers/FileHelper"]
         uscMiscellanea.prototype.openInsertWindow = function (url) {
             this.openWindow(url, "managerUploadDocument", 820, 530);
         };
-        uscMiscellanea.prototype.openSignWindow = function (serializedDoc, locationId) {
-            this._currentDocumentToSignInformations = [serializedDoc, locationId];
-            var url = '../Comm/SingleSign.aspx?'.concat(serializedDoc);
+        uscMiscellanea.prototype.initializeSign = function (idDocument) {
+            this._loadingPanel.show(this.pageId);
+            var ajaxRequest = {};
+            ajaxRequest.ActionName = "InitializeSignDocument";
+            ajaxRequest.Value = new Array();
+            ajaxRequest.Value.push(idDocument);
+            this._ajaxManager = $find(this.ajaxManagerId);
+            this._ajaxManager.ajaxRequest(JSON.stringify(ajaxRequest));
+        };
+        uscMiscellanea.prototype.openSignWindow = function (serializedDoc) {
+            this._loadingPanel.hide(this.pageId);
+            this._currentDocumentToSign = serializedDoc;
+            var url = "../Comm/SingleSign.aspx?" + serializedDoc;
             this.openWindow(url, 'signWindow', 750, 500);
         };
         uscMiscellanea.prototype.showNotification = function (uscNotificationId, error) {
@@ -151,22 +161,22 @@ define(["require", "exports", "App/DTOs/ExceptionDTO", "App/Helpers/FileHelper"]
             }
         };
         uscMiscellanea.prototype.closeSignWindow = function (sender, args) {
-            if (args.get_argument() && this._currentDocumentToSignInformations) {
+            if (args.get_argument() && this._currentDocumentToSign) {
+                this._loadingPanel.show(this.pageId);
                 var ajaxRequest = {};
-                ajaxRequest.ActionName = uscMiscellanea.SIGN_DOCUMENT;
+                ajaxRequest.ActionName = uscMiscellanea.SIGNED_DOCUMENT;
                 ajaxRequest.Value = new Array();
                 ajaxRequest.Value.push(args.get_argument());
-                ajaxRequest.Value.push(this._currentDocumentToSignInformations[0]);
-                ajaxRequest.Value.push(this._currentDocumentToSignInformations[1].toString());
+                ajaxRequest.Value.push(this._currentDocumentToSign);
                 this._ajaxManager = $find(this.ajaxManagerId);
                 this._ajaxManager.ajaxRequest(JSON.stringify(ajaxRequest));
             }
-            this._currentDocumentToSignInformations = undefined;
+            this._currentDocumentToSign = undefined;
         };
         uscMiscellanea.ON_END_LOAD_EVENT = "onEndLoad";
         uscMiscellanea.LOADED_EVENT = "onLoaded";
         uscMiscellanea.LOAD_DOCUMENTS = "LoadDocuments";
-        uscMiscellanea.SIGN_DOCUMENT = "Sign";
+        uscMiscellanea.SIGNED_DOCUMENT = "Signed";
         uscMiscellanea.UPDATE_DOCUMENTS_EVENT = "Update_Documents";
         uscMiscellanea.DELETE_DOCUMENT_EVENT = "Delete_Document";
         return uscMiscellanea;

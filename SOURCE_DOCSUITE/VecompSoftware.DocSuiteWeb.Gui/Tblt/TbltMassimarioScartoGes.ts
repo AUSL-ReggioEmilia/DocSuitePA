@@ -24,10 +24,6 @@ class TbltMassimarioScartoGes {
     splitterPageId: string;
     lblConservationPeriodId: string;
     pnlDetailsId: string;
-    btnAnnullaId: string;
-    btnAggiungiId: string;
-    btnModificaId: string;
-    btnRecoverId: string;
     rwEditMassimarioId: string;
     txtNameId: string;
     txtCodeId: string;
@@ -47,15 +43,13 @@ class TbltMassimarioScartoGes {
     rfvCodeId: string;
     rfvEndDateId: string;
     managerId: string;
+    folderToolBarId: string;
 
     private _serviceConfigurations: ServiceConfiguration[];
     private _massimarioScartoService: MassimarioScartoService;
     private _categoryService: CategoryService;
     private _uscMassimarioScarto: uscMassimarioScarto;
-    private _btnAggiungi: Telerik.Web.UI.RadButton;
-    private _btnModifica: Telerik.Web.UI.RadButton;
-    private _btnAnnulla: Telerik.Web.UI.RadButton;
-    private _btnRecover: Telerik.Web.UI.RadButton;
+    private _folderToolBar: Telerik.Web.UI.RadToolBar;
     private _txtName: Telerik.Web.UI.RadTextBox;
     private _txtCode: Telerik.Web.UI.RadNumericTextBox;
     private _txtNote: Telerik.Web.UI.RadTextBox;
@@ -67,6 +61,10 @@ class TbltMassimarioScartoGes {
     private _rdpEndDate: Telerik.Web.UI.RadDatePicker;
     private _manager: Telerik.Web.UI.RadWindowManager;
 
+    private static CREATE_OPTION = "create";
+    private static MODIFY_OPTION = "modify";
+    private static DELETE_OPTION = "delete";
+    private static RECOVER_OPTION = "recover";
     /**
      * Costruttore
      */
@@ -79,59 +77,37 @@ class TbltMassimarioScartoGes {
     /**
      *------------------------- Events -----------------------------
      */
-
-    /**
-     * Evento scatenato al click del pulsante Aggiungi
-     * @method
-     * @param sender
-     * @param eventArgs
-     * @returns
-     */
-    btnAggiungi_Clicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
-        eventArgs.set_cancel(true);
-        this.initializeInsertForm();
-        this._btnSaveMassimario.set_commandArgument("Insert");
-        this.openWindow();
-    }
-
-    /**
-     * Evento scatenato al click del pulsante Modifica
-     * @method
-     * @param sender
-     * @param eventArgs
-     * @returns
-     */
-    btnModifica_Clicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
-        eventArgs.set_cancel(true);
-        this._uscMassimarioScarto = <uscMassimarioScarto>$("#".concat(this.uscMassimarioScartoId)).data();
-        let selectedModel: MassimarioScartoModel = this._uscMassimarioScarto.getSelectedMassimario();
-        this.initializeEditForm(selectedModel);
-        this._btnSaveMassimario.set_commandArgument("Edit");
-        this.openWindow();
-    }
-
-    /**
-     * Evento scatenato al click del pulsante Annulla
-     * @method
-     * @param sender
-     * @param eventArgs
-     * @returns
-     */
-    btnCancel_Clicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
-        eventArgs.set_cancel(true);
-        this.initializeCancelForm();
-        this._btnSaveMassimario.set_commandArgument("Cancel");
-        this.openWindow();
-
-    }
-
-    btnRecover_Clicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
-        eventArgs.set_cancel(true);
-        this._uscMassimarioScarto = <uscMassimarioScarto>$("#".concat(this.uscMassimarioScartoId)).data();
-        let selectedModel: MassimarioScartoModel = this._uscMassimarioScarto.getSelectedMassimario();
-        this.initializeRecoverForm(selectedModel);
-        this._btnSaveMassimario.set_commandArgument("Recover");
-        this.openWindow();
+    folderToolBar_onClick = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
+        switch (args.get_item().get_value()) {
+            case TbltMassimarioScartoGes.CREATE_OPTION: {
+                this.initializeInsertForm();
+                this._btnSaveMassimario.set_commandArgument("Insert");
+                this.openWindow();
+                break;
+            }
+            case TbltMassimarioScartoGes.MODIFY_OPTION: {
+                this._uscMassimarioScarto = <uscMassimarioScarto>$("#".concat(this.uscMassimarioScartoId)).data();
+                let selectedModel: MassimarioScartoModel = this._uscMassimarioScarto.getSelectedMassimario();
+                this.initializeEditForm(selectedModel);
+                this._btnSaveMassimario.set_commandArgument("Edit");
+                this.openWindow();
+                break;
+            }
+            case TbltMassimarioScartoGes.DELETE_OPTION: {
+                this.initializeCancelForm();
+                this._btnSaveMassimario.set_commandArgument("Cancel");
+                this.openWindow();
+                break;
+            }
+            case TbltMassimarioScartoGes.RECOVER_OPTION: {
+                this._uscMassimarioScarto = <uscMassimarioScarto>$("#".concat(this.uscMassimarioScartoId)).data();
+                let selectedModel: MassimarioScartoModel = this._uscMassimarioScarto.getSelectedMassimario();
+                this.initializeRecoverForm(selectedModel);
+                this._btnSaveMassimario.set_commandArgument("Recover");
+                this.openWindow();
+                break;
+            }
+        }
     }
 
     /**
@@ -141,7 +117,7 @@ class TbltMassimarioScartoGes {
      * @param eventArgs
      * @returns
      */
-    btnSaveMassimario_Clicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnSaveMassimario_Clicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonCancelEventArgs) => {
         eventArgs.set_cancel(true);
         if (!Page_IsValid) {
             return false;
@@ -254,7 +230,12 @@ class TbltMassimarioScartoGes {
         this.closeLoadingPanel(this.pnlMetadataId);
         this._uscMassimarioScarto.updateSelectedNodeChildren();
         let selectedModel: MassimarioScartoModel = this._uscMassimarioScarto.getSelectedMassimario();
-        this.setButtonVisibility(selectedModel);
+        if (selectedModel.UniqueId) {
+            this.setButtonVisibility(selectedModel);
+        }
+        else {
+            this.setButtonVisibility(0, true);
+        }
         this._btnSaveMassimario.set_enabled(true);
         this.closeWindow();
     }
@@ -267,7 +248,12 @@ class TbltMassimarioScartoGes {
         this._uscMassimarioScarto.updateParentNode(() => {
             this.hideDetailsPanel();
             let selectedModel: MassimarioScartoModel = this._uscMassimarioScarto.getSelectedMassimario();
-            this.setButtonVisibility(selectedModel);
+            if (selectedModel.UniqueId) {
+                this.setButtonVisibility(selectedModel);
+            }
+            else {
+                this.setButtonVisibility(0, true);
+            }
             this._btnSaveMassimario.set_enabled(true);
             this.closeWindow();
         });
@@ -277,14 +263,8 @@ class TbltMassimarioScartoGes {
      * Metodo di inizializzazione pagina
      */
     private initialize(): void {
-        this._btnAggiungi = <Telerik.Web.UI.RadButton>$find(this.btnAggiungiId);
-        this._btnAggiungi.add_clicking(this.btnAggiungi_Clicking);
-        this._btnModifica = <Telerik.Web.UI.RadButton>$find(this.btnModificaId);
-        this._btnModifica.add_clicking(this.btnModifica_Clicking);
-        this._btnAnnulla = <Telerik.Web.UI.RadButton>$find(this.btnAnnullaId);
-        this._btnAnnulla.add_clicking(this.btnCancel_Clicking);
-        this._btnRecover = <Telerik.Web.UI.RadButton>$find(this.btnRecoverId);
-        this._btnRecover.add_clicking(this.btnRecover_Clicking);
+        this._folderToolBar = <Telerik.Web.UI.RadToolBar>$find(this.folderToolBarId);
+        this._folderToolBar.add_buttonClicked(this.folderToolBar_onClick);
         this._txtName = <Telerik.Web.UI.RadTextBox>$find(this.txtNameId);
         this._txtCode = <Telerik.Web.UI.RadNumericTextBox>$find(this.txtCodeId);
         this._txtNote = <Telerik.Web.UI.RadTextBox>$find(this.txtNoteId);
@@ -427,10 +407,10 @@ class TbltMassimarioScartoGes {
 
         this._uscMassimarioScarto = <uscMassimarioScarto>$("#".concat(this.uscMassimarioScartoId)).data();
 
-        this._btnAggiungi.set_enabled(massimarioLevel < 2 && active);
-        this._btnModifica.set_enabled(massimarioLevel > 0 && active);
-        this._btnAnnulla.set_enabled(massimarioLevel > 0 && active && this._uscMassimarioScarto.allSelectedChildrenIsCancel());
-        this._btnRecover.set_enabled(!active);
+        this._folderToolBar.findItemByValue(TbltMassimarioScartoGes.CREATE_OPTION).set_enabled(massimarioLevel < 2 && active);
+        this._folderToolBar.findItemByValue(TbltMassimarioScartoGes.MODIFY_OPTION).set_enabled(massimarioLevel > 0 && active);
+        this._folderToolBar.findItemByValue(TbltMassimarioScartoGes.DELETE_OPTION).set_enabled(massimarioLevel > 0 && active && this._uscMassimarioScarto.allSelectedChildrenIsCancel());
+        this._folderToolBar.findItemByValue(TbltMassimarioScartoGes.RECOVER_OPTION).set_enabled(!active);
     }
 
     /**               
@@ -535,29 +515,31 @@ class TbltMassimarioScartoGes {
         let wnd: Telerik.Web.UI.RadWindow = <Telerik.Web.UI.RadWindow>$find(this.rwEditMassimarioId);
         wnd.set_title("Recupera massimario di scarto");
 
-        this._txtName.set_value(model.Name);
-        (<any>this._txtName.get_element()).readOnly = true;
-        this._txtCode.set_value(model.Code.toString());
-        (<any>this._txtCode.get_element()).readOnly = true;
-        this._txtNote.set_value(model.Note);
-        (<any>this._txtNote.get_element()).readOnly = true;
-        this._rdpStartDate.set_selectedDate(moment(model.StartDate).startOf('day').toDate());
-        this._rdpStartDate.set_enabled(false);
+        if (model) {
+            this._txtName.set_value(model.Name);
+            (<any>this._txtName.get_element()).readOnly = true;
+            this._txtCode.set_value(model.Code.toString());
+            (<any>this._txtCode.get_element()).readOnly = true;
+            this._txtNote.set_value(model.Note);
+            (<any>this._txtNote.get_element()).readOnly = true;
+            this._rdpStartDate.set_selectedDate(moment(model.StartDate).startOf('day').toDate());
+            this._rdpStartDate.set_enabled(false);
 
-        (<any>this._txtPeriod.get_element()).readOnly = true;
-        if (model.ConservationPeriod != undefined) {
-            this._btnInfinite.set_checked(model.ConservationPeriod == -1);
-            this._txtPeriod.set_value(model.ConservationPeriod != -1 ? model.getPeriodLabel() : undefined);
-        } else {
-            this._txtPeriod.clear();
-            this._btnInfinite.set_checked(true);
+            (<any>this._txtPeriod.get_element()).readOnly = true;
+            if (model.ConservationPeriod != undefined) {
+                this._btnInfinite.set_checked(model.ConservationPeriod == -1);
+                this._txtPeriod.set_value(model.ConservationPeriod != -1 ? model.getPeriodLabel() : undefined);
+            } else {
+                this._txtPeriod.clear();
+                this._btnInfinite.set_checked(true);
+            }
+
+            this.displayRowsForm("Recover", model.MassimarioScartoLevel != 2);
+
+            ValidatorEnable($get(this.rfvCodeId), false);
+            ValidatorEnable($get(this.rfvNameId), false);
+            ValidatorEnable($get(this.rfvEndDateId), false);
         }
-
-        this.displayRowsForm("Recover", model.MassimarioScartoLevel != 2);
-
-        ValidatorEnable($get(this.rfvCodeId), false);
-        ValidatorEnable($get(this.rfvNameId), false);
-        ValidatorEnable($get(this.rfvEndDateId), false);
     }
 
     private displayRowsForm(commandName: string): void

@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows/WorkflowActivityModelMapper"], function (require, exports, BaseService, WorkflowActivityModelMapper) {
+define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows/WorkflowActivityModelMapper", "App/Models/Workflows/WorkflowStatus"], function (require, exports, BaseService, WorkflowActivityModelMapper, WorkflowStatus) {
     var WorkflowActivityService = /** @class */ (function (_super) {
         __extends(WorkflowActivityService, _super);
         /**
@@ -30,7 +30,7 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows
      */
         WorkflowActivityService.prototype.getWorkflowActivity = function (id, callback, error) {
             var url = this._configuration.ODATAUrl;
-            var data = "$filter=UniqueId eq ".concat(id, '&$expand=WorkflowAuthorizations, WorkflowProperties');
+            var data = "$filter=UniqueId eq " + id + "&$expand=WorkflowAuthorizations,WorkflowProperties,WorkflowInstance($expand=WorkflowRepository)";
             this.getRequest(url, data, function (response) {
                 if (callback) {
                     var instance = {};
@@ -40,10 +40,25 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows
                 }
             }, error);
         };
-        WorkflowActivityService.prototype.getWorkflowActivityById = function (id, callback, error) {
+        WorkflowActivityService.prototype.getWorkflowActivityByLogType = function (id, workflowStatus, callback, error) {
             var url = this._configuration.ODATAUrl;
-            var data = "$filter=UniqueId eq ".concat(id, '&$expand=WorkflowAuthorizations,WorkflowProperties,WorkflowInstance($expand=WorkflowRepository)');
+            var data = "$filter=UniqueId eq " + id + "&$expand=WorkflowActivityLogs($filter=LogType eq '" + WorkflowStatus[workflowStatus] + "')";
             this.getRequest(url, data, function (response) {
+                if (callback) {
+                    var instance = {};
+                    var mapper = new WorkflowActivityModelMapper();
+                    instance = mapper.Map(response.value[0]);
+                    callback(instance);
+                }
+            }, error);
+        };
+        WorkflowActivityService.prototype.getWorkflowActivityById = function (id, callback, error, expandProperties) {
+            var url = this._configuration.ODATAUrl;
+            var odataQuery = "$filter=UniqueId eq " + id;
+            if (expandProperties && expandProperties.length) {
+                odataQuery = odataQuery + "&$expand=" + (expandProperties.join(','));
+            }
+            this.getRequest(url, odataQuery, function (response) {
                 if (callback) {
                     var instance = {};
                     var mapper = new WorkflowActivityModelMapper();
@@ -111,6 +126,52 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows
                         workflowActivities_1.push(modelMapper_1.Map(value));
                     });
                     callback(workflowActivities_1);
+                }
+            }, error);
+        };
+        WorkflowActivityService.prototype.getActiveByReferenceDocumentUnitId = function (uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl.concat("?$filter=DocumentUnitReferenced/UniqueId eq " + uniqueId + " and (Status eq 'Todo' or Status eq 'Progress')");
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    var modelMapper_2 = new WorkflowActivityModelMapper();
+                    var workflowActivities_2 = [];
+                    $.each(response.value, function (i, value) {
+                        workflowActivities_2.push(modelMapper_2.Map(value));
+                    });
+                    callback(workflowActivities_2);
+                }
+            }, error);
+        };
+        WorkflowActivityService.prototype.countActiveByReferenceDocumentUnitId = function (uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var data = "/$count?$filter=DocumentUnitReferenced/UniqueId eq " + uniqueId + " and (Status eq 'Todo' or Status eq 'Progress')";
+            url = url.concat(data);
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    callback(response);
+                }
+            }, error);
+        };
+        WorkflowActivityService.prototype.getByStatusReferenceDocumentUnitId = function (status, uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl.concat("?$filter=DocumentUnitReferenced/UniqueId eq " + uniqueId + " and Status eq '" + status + "'");
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    var modelMapper_3 = new WorkflowActivityModelMapper();
+                    var workflowActivities_3 = [];
+                    $.each(response.value, function (i, value) {
+                        workflowActivities_3.push(modelMapper_3.Map(value));
+                    });
+                    callback(workflowActivities_3);
+                }
+            }, error);
+        };
+        WorkflowActivityService.prototype.countByStatusReferenceDocumentUnitId = function (status, uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var data = "/$count?$filter=DocumentUnitReferenced/UniqueId eq " + uniqueId + " and Status eq '" + status + "'";
+            url = url.concat(data);
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    callback(response);
                 }
             }, error);
         };

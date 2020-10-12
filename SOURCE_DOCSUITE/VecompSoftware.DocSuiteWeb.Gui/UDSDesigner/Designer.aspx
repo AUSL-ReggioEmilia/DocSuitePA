@@ -109,12 +109,12 @@
                         <div class="component" data-type="Number"><span aria-hidden="true"><big><b>1.</b></big></span>&nbsp; Numero</div>
                         <div class="component" data-type="Date"><span class="fa fa-calendar fa-lg" aria-hidden="true"></span>&nbsp; Data</div>
                         <div class="component" data-type="Checkbox"><span class="fa fa-check-square-o fa-lg" aria-hidden="true"></span>&nbsp; Checkbox</div>
+                        <div class="component" data-type="Enum"><span class="fa fa-list fa-lg" aria-hidden="true"></span>&nbsp; Scelta multipla</div>
+                        <div class="component" data-type="Lookup"><span class="fa fa-search fa-lg" aria-hidden="true"></span>&nbsp; Lookup</div>
+                        <div class="component" data-type="Status"><span class="fa fa-signal fa-lg" aria-hidden="true"></span>&nbsp; Stato</div>
                         <div class="component" data-type="Document"><span class="fa fa-file-text-o fa-lg" aria-hidden="true"></span>&nbsp; Documenti</div>
                         <div class="component" data-type="Contact"><span class="fa fa-user-plus fa-lg" aria-hidden="true"></span>&nbsp; Contatti</div>
                         <div class="component" data-type="Authorization"><span class="fa fa-arrow-circle-o-right fa-lg" aria-hidden="true"></span>&nbsp; Autorizzazione</div>
-                        <div class="component" data-type="Enum"><span class="fa fa-list fa-lg" aria-hidden="true"></span>&nbsp; Scelta Multipla</div>
-                        <div class="component" data-type="Lookup"><span class="fa fa-search fa-lg" aria-hidden="true"></span>&nbsp; Lookup</div>
-                        <div class="component" data-type="Status"><span class="fa fa-signal fa-lg" aria-hidden="true"></span>&nbsp; Stato</div>
                     </div>
                 </td>
 
@@ -122,11 +122,10 @@
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#editor-tab" data-toggle="tab">Form</a></li>
-                            <li><a href="#source-tab" data-toggle="tab">Sorgente</a></li>
+                            <li style="display:none"><a href="#source-tab" data-toggle="tab">Sorgente</a></li>
                         </ul>
 
                         <label for="enabledProtocol">
-                            <input type="hidden" name="dematerialisationEnabled" value="false" id="dematerialisationEnabled" runat="server" />
                             <input type="hidden" name="workflowManager" value="false" id="workflowManager" runat="server" />
                         </label>
 
@@ -344,6 +343,7 @@
                 <span class="label" rv-enabled="ctrl.copyProtocol" rv-class-btn-warning="ctrl.copyProtocol">Prot.</span>
                 <span class="label" rv-enabled="ctrl.copyResolution" rv-class-btn-warning="ctrl.copyResolution">Atti</span>
                 <span class="label" rv-enabled="ctrl.copySeries" rv-class-btn-warning="ctrl.copySeries">Serie</span>
+                <span class="label" rv-enabled="ctrl.copyUDS" rv-class-btn-warning="ctrl.copyUDS">UDS</span>
                 <span class="label" rv-enabled="ctrl.createBiblosArchive" rv-class-btn-warning="ctrl.createBiblosArchive">Crea archivio</span>
             </div>
 
@@ -409,7 +409,7 @@
 
     </div>
 
-    <script type="text/javascript" src="../Scripts/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" src="../Scripts/jquery-ui-1.11.4.min.js"></script>
     <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
     <script type="text/javascript" src="Scripts/jstree.min.js"></script>

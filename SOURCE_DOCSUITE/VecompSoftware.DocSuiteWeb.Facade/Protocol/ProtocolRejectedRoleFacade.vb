@@ -5,7 +5,7 @@ Imports VecompSoftware.DocSuiteWeb.Data
 
 <ComponentModel.DataObject()>
 Public Class ProtocolRejectedRoleFacade
-    Inherits BaseProtocolFacade(Of ProtocolRejectedRole, String, NHibernateProtocolRejectedRoleDao)
+    Inherits BaseProtocolFacade(Of ProtocolRejectedRole, Guid, NHibernateProtocolRejectedRoleDao)
 
     Public Sub New()
         MyBase.New()
@@ -30,12 +30,8 @@ Public Class ProtocolRejectedRoleFacade
                 Exit Sub
             End If
             Dim rejectedRole As ProtocolRejectedRole = New ProtocolRejectedRole()
-            rejectedRole.Year = protocolRole.Year
-            rejectedRole.Number = protocolRole.Number
-            rejectedRole.UniqueId = protocolRole.UniqueId
             rejectedRole.Role = protocolRole.Role
             rejectedRole.Protocol = protocolRole.Protocol
-            rejectedRole.UniqueIdProtocol = protocolRole.UniqueIdProtocol
             rejectedRole.Type = protocolRole.Type
             rejectedRole.NoteType = protocolRole.NoteType
             rejectedRole.DistributionType = protocolRole.DistributionType

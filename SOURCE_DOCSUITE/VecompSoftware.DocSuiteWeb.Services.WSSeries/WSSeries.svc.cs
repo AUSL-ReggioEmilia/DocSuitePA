@@ -1354,7 +1354,6 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSSeries
             DocWSO tor = new DocWSO
             {
                 Id = document.DocumentId,
-                Server = document.Server
             };
 
             if (pdf && !ExcludedExtensions.Any(x => x.Eq(document.Extension)))

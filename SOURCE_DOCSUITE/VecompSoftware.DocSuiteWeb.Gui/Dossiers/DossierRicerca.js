@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/DTOs/DossierSearchFilterDTO", "App/Helpers/ServiceConfigurationHelper", "Dossiers/DossierBase", "App/Services/Commons/ContainerService"], function (require, exports, DossierSearchFilterDTO, ServiceConfigurationHelper, DossierBase, ContainerService) {
+define(["require", "exports", "App/DTOs/DossierSearchFilterDTO", "App/Helpers/ServiceConfigurationHelper", "Dossiers/DossierBase", "App/Services/Commons/ContainerService", "App/Models/Dossiers/DossierType", "App/Helpers/EnumHelper", "App/Models/Dossiers/DossierStatus", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, DossierSearchFilterDTO, ServiceConfigurationHelper, DossierBase, ContainerService, DossierType, EnumHelper, DossierStatus, SessionStorageKeysHelper) {
     var DossierRicerca = /** @class */ (function (_super) {
         __extends(DossierRicerca, _super);
         /**
@@ -34,20 +34,19 @@ define(["require", "exports", "App/DTOs/DossierSearchFilterDTO", "App/Helpers/Se
                 var numberFilter = _this._txtNumber.get_value();
                 var subjectFilter = _this._txtSubject.get_value();
                 var noteFilter = _this._txtNote.get_value();
-                var metadataValueFilter = _this._txtMetadataValue.get_value();
-                var startDateFromFilter = "";
+                var startDateFromFilter = null;
                 if (_this._rdpStartDateFrom.get_selectedDate()) {
                     startDateFromFilter = _this._rdpStartDateFrom.get_selectedDate().format("yyyy-MM-dd").toString();
                 }
-                var startDateToFilter = "";
+                var startDateToFilter = null;
                 if (_this._rdpStartDateTo.get_selectedDate()) {
                     startDateToFilter = _this._rdpStartDateTo.get_selectedDate().format("yyyy-MM-dd").toString();
                 }
-                var endDateFromFilter = "";
+                var endDateFromFilter = null;
                 if (_this._rdpEndDateFrom.get_selectedDate()) {
                     endDateFromFilter = _this._rdpEndDateFrom.get_selectedDate().format("yyyy-MM-dd").toString();
                 }
-                var endDateToFilter = "";
+                var endDateToFilter = null;
                 if (_this._rdpEndDateTo.get_selectedDate()) {
                     endDateToFilter = _this._rdpEndDateTo.get_selectedDate().format("yyyy-MM-dd").toString();
                 }
@@ -57,22 +56,47 @@ define(["require", "exports", "App/DTOs/DossierSearchFilterDTO", "App/Helpers/Se
                 }
                 var metadataRepositoryId = "";
                 var uscMetadataRepositorySel = $("#".concat(_this.uscMetadataRepositorySelId)).data();
-                if (!jQuery.isEmptyObject(uscMetadataRepositorySel)) {
+                if (!jQuery.isEmptyObject(uscMetadataRepositorySel) && _this.metadataRepositoryEnabled) {
                     metadataRepositoryId = uscMetadataRepositorySel.getSelectedMetadataRepositoryId();
+                    var _a = uscMetadataRepositorySel.getMetadataFilterValues(), metadataValue = _a[0], metadataFinderModels = _a[1], metadataValuesAreValid = _a[2];
+                    searchDTO.MetadataValue = metadataValue;
+                    searchDTO.MetadataValues = metadataFinderModels;
+                    if (!metadataValuesAreValid) {
+                        alert("Alcuni valori di metadati non sono validi");
+                        return;
+                    }
                 }
-                searchDTO.year = yearFilter ? +yearFilter : null;
-                searchDTO.number = numberFilter ? +numberFilter : null;
-                searchDTO.subject = subjectFilter;
-                searchDTO.note = noteFilter;
-                searchDTO.idContainer = containerFilter ? +containerFilter : null;
-                searchDTO.endDateFrom = endDateFromFilter;
-                searchDTO.endDateTo = endDateToFilter;
-                searchDTO.startDateFrom = startDateFromFilter;
-                searchDTO.startDateTo = startDateToFilter;
-                searchDTO.idMetadataRepository = metadataRepositoryId ? metadataRepositoryId : null;
-                searchDTO.metadataValue = metadataValueFilter;
-                sessionStorage.setItem("DossierSearch", JSON.stringify(searchDTO));
-                window.location.href = "../Dossiers/DossierRisultati.aspx?Type=Dossier";
+                searchDTO.Year = yearFilter ? +yearFilter : null;
+                searchDTO.Number = numberFilter ? +numberFilter : null;
+                searchDTO.Subject = subjectFilter;
+                searchDTO.Note = noteFilter;
+                searchDTO.IdContainer = containerFilter ? +containerFilter : null;
+                searchDTO.EndDateFrom = endDateFromFilter;
+                searchDTO.EndDateTo = endDateToFilter;
+                searchDTO.StartDateFrom = startDateFromFilter;
+                searchDTO.StartDateTo = startDateToFilter;
+                searchDTO.IdMetadataRepository = metadataRepositoryId ? metadataRepositoryId : null;
+                var uscCategoryRest = $("#" + _this.uscCategoryRestId).data();
+                var category = uscCategoryRest.getSelectedCategory();
+                searchDTO.IdCategory = category ? category.EntityShortId : null;
+                var dossierType = _this._rcbDossierType.get_selectedItem().get_value();
+                searchDTO.DossierType = dossierType ? dossierType : null;
+                if (!_this.dossierStatusEnabled) {
+                    searchDTO.Status = DossierStatus.Open.toString();
+                }
+                else {
+                    var checkedStatus = $("#" + _this.rblDossierStatusId + " input:checked").val();
+                    searchDTO.Status = checkedStatus !== "All" ? checkedStatus : null;
+                }
+                sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIER_SEARCH, JSON.stringify(searchDTO));
+                var url = "../Dossiers/DossierRisultati.aspx?Type=Dossier";
+                if (_this.isWindowPopupEnable) {
+                    url = url + "&IsWindowPopupEnable=True";
+                }
+                if (_this.dossierStatusEnabled) {
+                    url = url + "&DossierStatusEnabled=True";
+                }
+                window.location.href = url;
             };
             /**
            * Evento scatenato al click del pulsante di svuota ricerca
@@ -86,25 +110,24 @@ define(["require", "exports", "App/DTOs/DossierSearchFilterDTO", "App/Helpers/Se
             *------------------------- Methods -----------------------------
             */
             _this.setLastSearchFilter = function () {
-                var dossierLastSearch = sessionStorage.getItem("DossierSearch");
+                var dossierLastSearch = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIER_SEARCH);
                 if (_this.hasTxtYearDefaultValue == true) {
                     _this._txtYear.set_value(new Date().getFullYear().toString());
                 }
                 if (dossierLastSearch) {
                     var lastsearchFilter = JSON.parse(dossierLastSearch);
-                    _this._txtYear.set_value(lastsearchFilter.year ? lastsearchFilter.year.toString() : null);
-                    _this._txtNumber.set_value(lastsearchFilter.number ? lastsearchFilter.number.toString() : null);
-                    _this._txtSubject.set_value(lastsearchFilter.subject);
-                    _this._txtMetadataValue.set_value(lastsearchFilter.metadataValue);
-                    if (lastsearchFilter.idContainer) {
-                        var selectedItem = _this._rdlContainer.findItemByValue(lastsearchFilter.idContainer.toString());
+                    _this._txtYear.set_value(lastsearchFilter.Year ? lastsearchFilter.Year.toString() : null);
+                    _this._txtNumber.set_value(lastsearchFilter.Number ? lastsearchFilter.Number.toString() : null);
+                    _this._txtSubject.set_value(lastsearchFilter.Subject);
+                    if (lastsearchFilter.IdContainer) {
+                        var selectedItem = _this._rdlContainer.findItemByValue(lastsearchFilter.IdContainer.toString());
                         selectedItem.set_selected(true);
                         _this._rdlContainer.trackChanges();
                     }
                 }
             };
             _this.loadContainers = function () {
-                _this._containerService.getAnyDossierAuthorizedContainers(function (data) {
+                _this._containerService.getAnyDossierAuthorizedContainers(_this.currentTenantId, function (data) {
                     if (!data)
                         return;
                     var containers = data;
@@ -127,7 +150,12 @@ define(["require", "exports", "App/DTOs/DossierSearchFilterDTO", "App/Helpers/Se
                 if (selectedContainer) {
                     selectedContainer.set_selected(false);
                 }
-                sessionStorage.removeItem("DossierSearch");
+                var uscCategoryRest = $("#" + _this.uscCategoryRestId).data();
+                uscCategoryRest.clearTree();
+                _this._rcbDossierType.get_items().getItem(0).select();
+                var openedCheckbox = $("#" + _this.rblDossierStatusId + " input:radio")[1];
+                openedCheckbox.checked = "checked";
+                sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIER_SEARCH);
             };
             _this._serviceConfigurations = serviceConfigurations;
             $(document).ready(function () {
@@ -138,6 +166,7 @@ define(["require", "exports", "App/DTOs/DossierSearchFilterDTO", "App/Helpers/Se
         * Initialize
         */
         DossierRicerca.prototype.initialize = function () {
+            this._enumHelper = new EnumHelper();
             this._btnSearch = $find(this.btnSearchId);
             this._btnSearch.add_clicking(this.btnSearch_onClick);
             this._btnClean = $find(this.btnCleanId);
@@ -146,29 +175,39 @@ define(["require", "exports", "App/DTOs/DossierSearchFilterDTO", "App/Helpers/Se
             this._txtNumber = $find(this.txtNumberId);
             this._txtSubject = $find(this.txtSubjectId);
             this._txtNote = $find(this.txtNoteId);
-            this._txtMetadataValue = $find(this.txtMetadataValueId);
             this._rdlContainer = $find(this.rdlContainerId);
             this._rdpEndDateFrom = $find(this.rdpEndDateFromId);
             this._rdpEndDateTo = $find(this.rdpEndDateToId);
             this._rdpStartDateFrom = $find(this.rdpStartDateFromId);
             this._rdpStartDateTo = $find(this.rdpStartDateToId);
             this._loadingPanel = $find(this.ajaxLoadingPanelId);
+            this._rcbDossierType = $find(this.rcbDossierTypeId);
             var containerConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Container");
             this._containerService = new ContainerService(containerConfiguration);
             this._loadingPanel.show(this.searchTableId);
             this._btnSearch.set_enabled(false);
             this._btnClean.set_enabled(false);
-            this._dossierStatusRow = $("#".concat(this.dossierStatusRowId));
-            this._dossierStatusRow.hide();
             this._rowMetadataRepository = $("#".concat(this.rowMetadataRepositoryId));
-            this._rowMetadataRepository.hide();
-            this._rowMetadataValue = $("#".concat(this.rowMetadataValueId));
-            this._rowMetadataValue.hide();
+            $("#" + this.metadataTableId).hide();
             this.loadContainers();
+            this.populateDossierTypeComboBox();
             if (this.metadataRepositoryEnabled) {
-                this._rowMetadataRepository.show();
-                this._rowMetadataValue.show();
+                $("#" + this.metadataTableId).show();
             }
+        };
+        DossierRicerca.prototype.populateDossierTypeComboBox = function () {
+            var rcbItem = new Telerik.Web.UI.RadComboBoxItem();
+            rcbItem.set_text("");
+            this._rcbDossierType.get_items().add(rcbItem);
+            for (var dossierType in DossierType) {
+                if (typeof DossierType[dossierType] === 'string') {
+                    var rcbItem_1 = new Telerik.Web.UI.RadComboBoxItem();
+                    rcbItem_1.set_text(this._enumHelper.getDossierTypeDescription(DossierType[dossierType]));
+                    rcbItem_1.set_value(DossierType[dossierType]);
+                    this._rcbDossierType.get_items().add(rcbItem_1);
+                }
+            }
+            this._rcbDossierType.get_items().getItem(0).select();
         };
         return DossierRicerca;
     }(DossierBase));

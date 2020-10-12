@@ -21,6 +21,8 @@ import ChainType = require("App/Models/DocumentUnits/ChainType");
 import FascicleModel = require("App/Models/Fascicles/FascicleModel");
 import FascicleFolderService = require("App/Services/Fascicles/FascicleFolderService");
 import Guid = require("App/Helpers/GuidHelper");
+import FascicolableActionType = require("App/Models/FascicolableActionType");
+import SessionStorageKeysHelper = require("App/Helpers/SessionStorageKeysHelper");
 
 class FascMoveItems extends FascBase {
     idFascicle: string;
@@ -35,6 +37,8 @@ class FascMoveItems extends FascBase {
     radWindowManagerId: string;
     ajaxManagerId: string;
     lblItemSelectedDescriptionId: string;
+    destinationFascicleId: string = "";
+    moveToFascicle: boolean = false;
 
     private _btnConfirm: Telerik.Web.UI.RadButton;
     private _rtvItemsToMove: Telerik.Web.UI.RadTreeView;
@@ -48,12 +52,11 @@ class FascMoveItems extends FascBase {
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
     private _miscellaneaDeferreds: JQueryDeferred<void>[] = [];
 
-    static FASC_MOVE_ITEMS_Session_key = "FascMoveItemsSessionKey";
     static MOVE_MISCELLANEA_DOCUMENT_AJAX_ACTION_NAME = "MoveMiscellaneaDocument"
     private static DOCUMENT_ITEMS_TYPE = "DocumentType";
     private static FOLDER_ITEMS_TYPE = "FolderType";
 
-    private get ItemTypeMoveActions(): Array<[string, (folderId: string) => JQueryPromise<void>]> {
+    private ItemTypeMoveActions(): Array<[string, (folderId: string) => JQueryPromise<void>]> {
         let items: Array<[string, (folderId: string) => JQueryPromise<void>]> = [
             [FascMoveItems.DOCUMENT_ITEMS_TYPE, (folderId) => this.moveDocuments(folderId)],
             [FascMoveItems.FOLDER_ITEMS_TYPE, (folderId) => this.moveFolders(folderId)]
@@ -73,9 +76,9 @@ class FascMoveItems extends FascBase {
     /**
      * Evento scatenato al click del pulsante conferma
      */
-    btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let uscFascicleFolder: uscFascicleFolders = <uscFascicleFolders>$(`#${this.uscFascicleFoldersId}`).data();
-        let selectedFolder: FascicleSummaryFolderViewModel = uscFascicleFolder.getSelectedFascicleFolder(this.idFascicle);
+        let selectedFolder: FascicleSummaryFolderViewModel = uscFascicleFolder.getSelectedFascicleFolder(this.moveToFascicle ? this.destinationFascicleId : this.idFascicle);
         if (!selectedFolder || !selectedFolder.Typology) {
             this.showWarningMessage(this.uscNotificationId, "Selezionare una cartella del Fascicolo");
             sender.enableAfterSingleClick();
@@ -88,7 +91,7 @@ class FascMoveItems extends FascBase {
             return;
         }
 
-        let moveActions: ((folderId: string) => JQueryPromise<void>)[] = this.ItemTypeMoveActions.filter((item: [string, (folderId: string) => JQueryPromise<void>]) => item[0] == this.itemsType)
+        let moveActions: ((folderId: string) => JQueryPromise<void>)[] = this.ItemTypeMoveActions().filter((item: [string, (folderId: string) => JQueryPromise<void>]) => item[0] == this.itemsType)
             .map((item: [string, (folderId: string) => JQueryPromise<void>]) => item[1]);
 
         if (!moveActions || moveActions.length == 0) {
@@ -161,7 +164,7 @@ class FascMoveItems extends FascBase {
     }
 
     private isSessionStorageReaded(): boolean {
-        let selectedItems: string = sessionStorage.getItem(FascMoveItems.FASC_MOVE_ITEMS_Session_key);
+        let selectedItems: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_FASC_MOVE_ITEMS);
         if (!selectedItems) {
             return false;
         }
@@ -200,8 +203,8 @@ class FascMoveItems extends FascBase {
         let uscFascicleFolder: uscFascicleFolders = <uscFascicleFolders>$(`#${this.uscFascicleFoldersId}`).data();
         if (!jQuery.isEmptyObject(uscFascicleFolder)) {
             uscFascicleFolder.setManageFascicleFolderVisibility(true);
-            uscFascicleFolder.setRootNode(this.idFascicle, "Cartelle del fascicolo");
-            uscFascicleFolder.loadFolders(this.idFascicle);
+            uscFascicleFolder.setRootNode(this.moveToFascicle ? this.destinationFascicleId : this.idFascicle, "Cartelle del fascicolo");
+            uscFascicleFolder.loadFolders(this.moveToFascicle ? this.destinationFascicleId : this.idFascicle);
         }
     }
 
@@ -264,8 +267,16 @@ class FascMoveItems extends FascBase {
                         (data: any) => {
                             data.FascicleFolder = {} as FascicleFolderModel;
                             data.FascicleFolder.UniqueId = folderId;
-                            this._fascicleDocumentUnitService.updateFascicleUD(data, UpdateActionType.FascicleMoveToFolder, (data: any) => promise.resolve(),
-                                (exception: ExceptionDTO) => promise.reject(exception));
+                            if (this.moveToFascicle) { // Copia in
+                                data.UniqueId = "";
+                                data.Fascicle.UniqueId = this.destinationFascicleId;
+                                this._fascicleDocumentUnitService.insertFascicleUD(data, FascicolableActionType.AutomaticDetection, (data: any) => promise.resolve(),
+                                    (exception: ExceptionDTO) => promise.reject(exception));
+                            }
+                            else {
+                                this._fascicleDocumentUnitService.updateFascicleUD(data, UpdateActionType.FascicleMoveToFolder, (data: any) => promise.resolve(),
+                                    (exception: ExceptionDTO) => promise.reject(exception));
+                            }
                         },
                         (exception: ExceptionDTO) => promise.reject(exception));
                     return promise.promise();
@@ -275,7 +286,7 @@ class FascMoveItems extends FascBase {
 
             $.when.apply(null, deferredActions)
                 .done(() => {
-                    this._fascicleDocumentService.getByFolder(this.idFascicle, folderId,
+                    this._fascicleDocumentService.getByFolder(this.moveToFascicle ? this.destinationFascicleId : this.idFascicle, folderId,
                         (data: any) => {
                             let idArchiveChain: string;
                             if (data && data.length > 0) {

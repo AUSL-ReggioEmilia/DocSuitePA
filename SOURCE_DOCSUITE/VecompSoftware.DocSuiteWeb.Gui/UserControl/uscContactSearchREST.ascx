@@ -15,6 +15,7 @@
                 <%= Me.ClientID %>_uscContactSearchRest.parentId = <%= ParentIdJString %>;
                 <%= Me.ClientID %>_uscContactSearchRest.filterByParentId = <%= If(FilterByParentId.HasValue, FilterByParentId.Value, "undefined")  %>;
                 <%= Me.ClientID %>_uscContactSearchRest.parentToExclude = <%= ParentToExcludeJString %>;
+                <%= Me.ClientID %>_uscContactSearchRest.tenantId = "<%= IdTenant%>";
                 <%= Me.ClientID %>_uscContactSearchRest.initialize();
             });
         });
@@ -23,6 +24,14 @@
                 <%= Me.ClientID %>_uscContactSearchRest.showTooltip(target);
         }
     </script>
+    <style>
+        .searchBoxButton:hover {
+            border-color: #c4ba9c;
+            color: #000;
+            background-color: #ffe18a;
+            background-image: linear-gradient(#fffce8,#ffedb3 50%,#ffd563 50%,#ffe18a);
+        }
+    </style>
 </telerik:RadScriptBlock>
 
 <asp:Panel runat="server" ID="pnlMainContent">
@@ -94,5 +103,8 @@
                 </div>               
             </ClientTemplate>
         </DropDownSettings>
+        <Buttons>
+            <telerik:SearchBoxButton runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/down_arrow.png" CommandName="searchByParent" />
+        </Buttons>
     </telerik:RadSearchBox>
 </asp:Panel>

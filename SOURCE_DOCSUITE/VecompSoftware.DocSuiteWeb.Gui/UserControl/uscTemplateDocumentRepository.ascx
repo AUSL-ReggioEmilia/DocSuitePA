@@ -37,6 +37,16 @@
     </Items>
 </telerik:RadToolBar>
 
+<telerik:RadToolBar AutoPostBack="false" EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%" RenderMode="Lightweight">
+    <Items>
+        <telerik:RadToolBarButton runat="server" ToolTip="Aggiungi" Value="create" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+        <telerik:RadToolBarButton runat="server" ToolTip="Modifica" Value="modify" Text="Modifica" Enabled="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+        <telerik:RadToolBarButton runat="server" ToolTip="Elimina" Value="delete" Text="Elimina" Enabled="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
+        <telerik:RadToolBarButton runat="server" ToolTip="Log" Value="log" Text="Log" Enabled="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_log.png" />
+        <telerik:RadToolBarButton runat="server" ToolTip="Visualizza" Value="view" Text="Visualizza" Enabled="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/watch.png" />
+    </Items>
+</telerik:RadToolBar>
+
 <telerik:RadClientDataSource runat="server" ID="racTagsDataSource"></telerik:RadClientDataSource>
 <telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="false" EnableShadows="false" ID="ToolBarTags" runat="server" Width="100%">
     <Items>

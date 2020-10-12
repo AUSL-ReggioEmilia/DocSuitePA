@@ -1,7 +1,7 @@
 <%@ Control Language="vb" AutoEventWireup="false" CodeBehind="uscFascGrid.ascx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.uscFascGrid" %>
 <div class="radGridWrapper">
     <DocSuite:BindGrid AllowMultiRowSelection="true" AutoGenerateColumns="False" Width="100%" GridLines="Both" ID="gvFascicles" runat="server" ShowGroupPanel="True" ImpersonateCurrentUser="true">
-        <MasterTableView TableLayout="Auto" NoMasterRecordsText="Nessun Fascicolo Trovato" GridLines="Both" ClientDataKeyNames="Entity.UniqueId">
+        <MasterTableView TableLayout="Auto" NoMasterRecordsText="Nessun fascicolo trovato" GridLines="Both" ClientDataKeyNames="Entity.UniqueId">
             <Columns>
                 <telerik:GridTemplateColumn AllowFiltering="false" Groupable="False" UniqueName="ClientSelectColumn">
                     <HeaderStyle HorizontalAlign="Center" Width="25px" />
@@ -33,7 +33,11 @@
                         </div>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
-                <telerik:GridDateTimeColumn DataField="Entity.RegistrationDate" HeaderText="Data <br> apertura" DataFormatString="{0:dd/MM/yyyy}" CurrentFilterFunction="EqualTo" UniqueName="RegistrationDate" SortExpression="Entity.RegistrationDate" >
+                <telerik:GridDateTimeColumn DataField="Entity.StartDate" HeaderText="Data <br> apertura" DataFormatString="{0:dd/MM/yyyy}" CurrentFilterFunction="EqualTo" UniqueName="StartDate" SortExpression="Entity.StartDate" >
+                    <HeaderStyle HorizontalAlign="Center" Wrap="false" Width="10%" />
+                    <ItemStyle HorizontalAlign="Center" Width="10%" />
+                </telerik:GridDateTimeColumn>
+                <telerik:GridDateTimeColumn DataField="Entity.LastChangedDate" Visible="false" HeaderText="Data dell'ultima <br> modifica" DataFormatString="{0:dd/MM/yyyy}" CurrentFilterFunction="EqualTo" UniqueName="LastChangedDate" SortExpression="Entity.LastChangedDate">
                     <HeaderStyle HorizontalAlign="Center" Wrap="false" Width="10%" />
                     <ItemStyle HorizontalAlign="Center" Width="10%" />
                 </telerik:GridDateTimeColumn>
@@ -48,6 +52,10 @@
                         <asp:Label ID="lblManager" runat="server"></asp:Label>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
+                <telerik:GridBoundColumn DataField="Entity.TenantAOO.Name" HeaderText="Nome della AOO" CurrentFilterFunction="Contains" UniqueName="TenantAOOName" SortExpression="Entity.TenantAOO.Name">
+                    <HeaderStyle HorizontalAlign="Left" Wrap="false" Width="20%" />
+                    <ItemStyle HorizontalAlign="Left" Width="20%" />
+                </telerik:GridBoundColumn>
             </Columns>
         </MasterTableView>
         <ClientSettings>

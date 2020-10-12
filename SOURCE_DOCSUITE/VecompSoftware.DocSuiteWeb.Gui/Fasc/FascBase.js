@@ -44,6 +44,7 @@ define(["require", "exports", "App/Services/Fascicles/FascicleService", "App/DTO
         FascBase.DOMAIN_TYPE_NAME = "DomainUserModel";
         FascBase.FASCICLE_CATEGORY_FASCICLE = "CategoryFascicle";
         FascBase.FASCICLEFOLDER_TYPE_NAME = "FascicleFolder";
+        FascBase.DOSSIERFOLDER_TYPE_NAME = "DossierFolder";
         return FascBase;
     }());
     return FascBase;

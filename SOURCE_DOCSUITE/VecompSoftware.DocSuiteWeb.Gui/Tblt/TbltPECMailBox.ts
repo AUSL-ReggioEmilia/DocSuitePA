@@ -174,7 +174,7 @@ class TbltPECMailBox extends TbltPECMailBoxBase {
     }
   }
 
-  btnPECMailBoxSetRule_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+  btnPECMailBoxSetRule_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
     this._windowSetRule.show();
     this._loadingPanel.show(this.windowSetRuleId);
     this.pecMailBoxService.getPECMailBoxes("",
@@ -200,7 +200,7 @@ class TbltPECMailBox extends TbltPECMailBoxBase {
       });
   }
 
-  btnPECMailBoxSave_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+  btnPECMailBoxSave_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
     let thisObj = this;
     let pecMailBox: PECMailBoxModel = <PECMailBoxModel>this.rtvResult.filter(function (x) {
       return x.EntityShortId === +thisObj._lblPECMailBoxId.innerText

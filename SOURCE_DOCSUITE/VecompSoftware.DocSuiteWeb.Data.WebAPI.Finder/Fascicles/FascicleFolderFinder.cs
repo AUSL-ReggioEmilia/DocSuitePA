@@ -58,7 +58,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
 
             if (IdFascicle.HasValue)
             {
-                odataQuery = odataQuery.Filter(string.Concat("Fascicle/UniqueId eq ", IdFascicle));
+                odataQuery = odataQuery.Filter(string.Concat($"Fascicle/UniqueId eq {IdFascicle}"));
             }
 
             if (ReadDefaultFolder.HasValue && ReadDefaultFolder.Value)
@@ -70,7 +70,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
             {
                 odataQuery = odataQuery.Expand("FascicleDocuments");
             }
-            return odataQuery;
+            return base.DecorateFinder(odataQuery);
         }
         #endregion
     }

@@ -120,7 +120,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Report
                     row.Protocol_ParerStatusCode = (int)Factory.ProtocolParerFacade.GetConservationStatus(protocol);
                     var parerDescription = string.Empty;
                     if (!Factory.ProtocolParerFacade.Exists(protocol))
-                        parerDescription = "Non soggetto alla conservazione anticipata.";
+                        parerDescription = "Documento non ancora versato.";
                     else
                     {
                         switch (row.Protocol_ParerStatusCode)
@@ -137,7 +137,10 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Report
                             case (int)ProtocolParerFacade.ProtocolParerConservationStatus.Undefined:
                                 parerDescription = "Stato conservazione non definito.";
                                 break;
-                        }    
+                            case (int)ProtocolParerFacade.ProtocolParerConservationStatus.NotNeeded:
+                                parerDescription = "Documento non soggetto a versamento.";
+                                break;
+                        }
                     }
                     row.Protocol_ParerStatusDescription = parerDescription;
                 }

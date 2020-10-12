@@ -25,20 +25,20 @@ Public Class NHibernatePosteOnlineRequestDao
 
 #Region " Methods "
 
-    Public Function GetByProtocol(ByVal year As Short, ByVal number As Integer) As IList(Of POLRequest)
+    Public Function GetByProtocol(idProtocol As Guid) As IList(Of POLRequest)
         criteria = NHibernateSession.CreateCriteria(persitentType)
+        criteria.CreateAlias("DocumentUnit", "DU")
         criteria.SetFetchMode("Contacts", FetchMode.Join)
-        criteria.Add(Restrictions.Eq("ProtocolYear", year))
-        criteria.Add(Restrictions.Eq("ProtocolNumber", number))
+        criteria.Add(Restrictions.Eq("DU.Id", idProtocol))
         criteria.SetResultTransformer(Transformers.DistinctRootEntity)
         Return criteria.List(Of POLRequest)()
     End Function
 
-    Public Function GetRecipientsByProtocol(ByVal year As Short, ByVal number As Integer) As IList(Of POLRequestRecipientHeader)
+    Public Function GetRecipientsByProtocol(idProtocol As Guid) As IList(Of POLRequestRecipientHeader)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of POLRequestRecipient)("PRR")
         criteria.CreateCriteria("Request", "R", JoinType.InnerJoin)
-        criteria.Add(Restrictions.Eq("R.ProtocolYear", year))
-        criteria.Add(Restrictions.Eq("R.ProtocolNumber", number))
+        criteria.CreateAlias("R.DocumentUnit", "DU")
+        criteria.Add(Restrictions.Eq("DU.Id", idProtocol))
         criteria.SetResultTransformer(Transformers.DistinctRootEntity)
         NHPosteOnlineRequestFinder.SetProjectionPOLRequestRecipientHeader(criteria)
         Return criteria.List(Of POLRequestRecipientHeader)()

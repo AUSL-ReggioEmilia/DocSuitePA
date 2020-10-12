@@ -230,7 +230,7 @@ Public Class DeskBasePage
         _currentDesk = Nothing
     End Sub
 
-    Protected Function GetControlTemplateDocumentVisibility(chainType As ChainType) As Boolean
+    Protected Function GetControlTemplateDocumentVisibility(chainType As Entity.DocumentUnits.ChainType) As Boolean
         If Not ProtocolEnv.TemplateDocumentVisibilities.Any(Function(x) x.Name.Eq(NameOf(Desk))) Then
             Return False
         End If

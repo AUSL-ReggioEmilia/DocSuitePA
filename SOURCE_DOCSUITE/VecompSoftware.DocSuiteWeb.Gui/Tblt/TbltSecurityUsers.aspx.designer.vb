@@ -113,6 +113,33 @@ Partial Public Class TbltSecurityUsers
     Protected WithEvents btnDeleteUser As Global.Telerik.Web.UI.RadToolBarButton
 
     '''<summary>
+    '''rtvUsers control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rtvUsers As Global.Telerik.Web.UI.RadTreeView
+
+    '''<summary>
+    '''pnlDetails control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlDetails As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ToolbarActions control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ToolbarActions As Global.Telerik.Web.UI.RadToolBar
+
+    '''<summary>
     '''btnGroupsAdd control.
     '''</summary>
     '''<remarks>
@@ -156,24 +183,6 @@ Partial Public Class TbltSecurityUsers
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnPrivacy As Global.Telerik.Web.UI.RadToolBarButton
-
-    '''<summary>
-    '''rtvUsers control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rtvUsers As Global.Telerik.Web.UI.RadTreeView
-
-    '''<summary>
-    '''pnlDetails control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlDetails As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
     '''rpbGroups control.

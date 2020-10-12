@@ -72,7 +72,7 @@ Public Class ParerDetail
 
         lblCaption.Text = "Protocollo"
 
-        Dim item As ProtocolParer = Facade.ProtocolParerFacade.GetById(New YearNumberCompositeKey(Year, Number))
+        Dim item As ProtocolParer = Facade.ProtocolParerFacade.GetByProtocol(Year, Number)
 
         lblProtocol.Text = String.Format("{0}/{1:000000}", Year, Number)
         If item.ArchivedDate.HasValue Then

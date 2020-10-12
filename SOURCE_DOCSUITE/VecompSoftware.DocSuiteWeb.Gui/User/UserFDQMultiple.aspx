@@ -173,7 +173,7 @@
             <Pdf PageHeight="297mm" PageWidth="210mm" PaperSize="A4" />
             <Excel Format="ExcelML" />
         </ExportSettings>
-        <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Decrescente" SortToolTip="Ordina" />
+        <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine Decrescente" SortToolTip="Ordina" />
     </DocSuite:BindGrid>
     </div>
     <textarea id="risultati" rows="8" style="width: 100%"></textarea>

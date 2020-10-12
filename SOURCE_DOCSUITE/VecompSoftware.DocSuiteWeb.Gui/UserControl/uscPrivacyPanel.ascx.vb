@@ -159,7 +159,7 @@ Partial Public Class uscPrivacyPanel
             fileDocumentInfo.Signature = Facade.ResolutionFacade.ResolutionSignature(CurrentResolution, ResolutionType.UploadDocumentType.Pubblicazione)
             fileDocumentInfo.Name = "Documento Privacy.pdf"
 
-            Dim savedDocument As BiblosDocumentInfo = fileDocumentInfo.ArchiveInBiblos(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB)
+            Dim savedDocument As BiblosDocumentInfo = fileDocumentInfo.ArchiveInBiblos(CurrentResolution.Location.ReslBiblosDSDB)
             Dim idDocumentoPubblicazionePrivacy As Integer = savedDocument.BiblosChainId
 
             If DocSuiteContext.Current.PrivacyLevelsEnabled Then

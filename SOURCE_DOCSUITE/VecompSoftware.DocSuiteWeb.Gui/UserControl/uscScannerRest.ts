@@ -1,4 +1,6 @@
-﻿class UscScannerRest {
+﻿import SessionStorageKeysHelper = require("App/Helpers/SessionStorageKeysHelper");
+
+class UscScannerRest {
 
     btnScanId: string;
     rwScannerId: string;
@@ -39,8 +41,8 @@
 
 
     onScanWindowClosed(sender, args) {
-        if (sessionStorage.getItem("component.scanner.upload.scan") !== null) {
-            let encodedScans = JSON.parse(sessionStorage.getItem("component.scanner.upload.scan"));
+        if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_COMPONENT_SCANNER) !== null) {
+            let encodedScans = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_COMPONENT_SCANNER));
             $("#scan-items").empty();
 
             for (let i = 0; i < encodedScans.length; i++) {

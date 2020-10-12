@@ -27,13 +27,14 @@ Partial Class TbltClassificatore
     Private Const CATEGORY_METADATA_DETAILS_CALLBACK As String = "tbltClassificatore.loadMetadataName('{0}');"
     Private Const SET_VISIBILITY_PANEL As String = "tbltClassificatore.setVisibilityPanel('{0}');"
     Private Const SEND_AJAX_REQUEST As String = "tbltClassificatore.sendAjaxRequest('{0}');"
+    Private Const LOAD_CUSTOM_ACTIONS As String = "tbltClassificatore.loadCustomActions({0}, '{1}')"
 
 #End Region
 
 #Region " Properties "
     Public ReadOnly Property IsCategoryManager As Boolean
         Get
-            Return CommonShared.HasGroupTblCategoryRight And DocSuiteContext.IsFullApplication
+            Return CommonShared.HasGroupTblCategoryRight
         End Get
     End Property
 
@@ -89,6 +90,7 @@ Partial Class TbltClassificatore
             ViewState("CategoriesProcedureFascicles") = value
         End Set
     End Property
+
     Public Property CategorySubFascicles As IList(Of Integer)
         Get
             If ViewState("CategorySubFascicles") Is Nothing Then
@@ -152,7 +154,7 @@ Partial Class TbltClassificatore
     Private ReadOnly Property CurrentMassimarioScartoFacade As MassimarioScartoFacade
         Get
             If _currentMassimarioScartoFacade Is Nothing Then
-                _currentMassimarioScartoFacade = New MassimarioScartoFacade(DocSuiteContext.Current.Tenants)
+                _currentMassimarioScartoFacade = New MassimarioScartoFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
             End If
             Return _currentMassimarioScartoFacade
         End Get
@@ -160,8 +162,10 @@ Partial Class TbltClassificatore
 
     Private ReadOnly Property CurrentCategoryFinder As CategoryFinder
         Get
-            Dim categoryFinder As CategoryFinder = New CategoryFinder(New MapperCategoryModel(), DocSuiteContext.Current.User.FullUserName)
-            categoryFinder.EnablePaging = False
+            Dim categoryFinder As CategoryFinder = New CategoryFinder(New MapperCategoryModel(), DocSuiteContext.Current.User.FullUserName) With {
+                .EnablePaging = False,
+                .IncludeZeroLevel = False
+            }
             Return categoryFinder
         End Get
     End Property
@@ -189,6 +193,7 @@ Partial Class TbltClassificatore
             Initialize()
             pnlInfo.Visible = False
             pnlDetails.Visible = False
+            pnlCustomActions.Visible = False
             FillComboBoxCategorySchemas()
             LoadNodes(rtvCategories.Nodes(0))
         End If
@@ -222,7 +227,12 @@ Partial Class TbltClassificatore
             uscSettori.IdCategorySelected = selectedCategory.Id
         End If
         uscSettori.DataBind()
-        divProcedureType.Visible = categories.Any(Function(x) x.FascicleType = FascicleType.Procedure)
+        divProcedureType.Visible = False
+        pnlCustomActions.Visible = False
+        If categories.Any(Function(x) x.FascicleType = FascicleType.Procedure) Then
+            divProcedureType.Visible = True
+            pnlCustomActions.Visible = True
+        End If
         pnlSettori.Visible = categories.Count > 0
         divSubFascicleType.Visible = categories.Any(Function(x) x.FascicleType = FascicleType.SubFascicle)
         lblRegistrationDate.Text = If(divProcedureType.Visible, categories.Where(Function(x) x.FascicleType = FascicleType.Procedure OrElse x.FascicleType = FascicleType.SubFascicle).First.RegistrationDate.ToString("dd/MM/yyyy"), "")
@@ -251,6 +261,12 @@ Partial Class TbltClassificatore
             End If
         End If
         AjaxManager.ResponseScripts.Add(String.Format(SET_VISIBILITY_PANEL, roles.Count))
+
+        uscCustomActionsRest.IsSummary = Not IsCategoryManager
+        Dim categoryFascicle As CategoryFascicle = categories.FirstOrDefault(Function(x) x.FascicleType = FascicleType.Procedure)
+        If categoryFascicle IsNot Nothing Then
+            AjaxManager.ResponseScripts.Add(String.Format(LOAD_CUSTOM_ACTIONS, pnlCustomActions.Visible.ToString().ToLower(), categoryFascicle.CustomActions))
+        End If
     End Sub
 
     Protected Sub TbltClassificatore_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
@@ -300,14 +316,14 @@ Partial Class TbltClassificatore
                     LoadNodes(node)
                 End If
             Case "uscSettori"
-                Dim categoryFascicleRight As New CategoryFascicleRight
+                Dim categoryFascicleRight As CategoryFascicleRight = New CategoryFascicleRight()
                 Dim selectedCategory As Category = Facade.CategoryFacade.GetById(CurrentCategorySelected.Value)
                 AddRole(IdCategory.Value)
                 SetDefaultAllUserRole()
                 LoadRoleUsers(selectedCategory.Id)
                 AjaxManager.ResponseScripts.Add(String.Format(SET_VISIBILITY_PANEL, 1))
             Case "ReloadRoleUsers"
-                Dim categoryFascicleRight As New CategoryFascicleRight
+                Dim categoryFascicleRight As CategoryFascicleRight = New CategoryFascicleRight()
                 Dim selectedCategory As Category = Facade.CategoryFacade.GetById(CurrentCategorySelected.Value)
                 LoadRoleUsers(selectedCategory.Id)
             Case "ResetPeriodicCategoryFascicles"
@@ -342,7 +358,16 @@ Partial Class TbltClassificatore
                         AjaxManager.RaisePostBackEvent(String.Concat("ReloadNodes|", currentCategory.Id.ToString()))
                     End If
                 End If
-                Exit Select
+            Case "UpdateCustomActions"
+                If ajaxModel.Value IsNot Nothing Then
+                    Dim selectedCategory As Category = Facade.CategoryFacade.GetById(Integer.Parse(rtvCategories.SelectedNode.Value))
+                    Dim categories As ICollection(Of CategoryFascicle) = CurrentCategoryFascicleFacade.GetByIdCategory(selectedCategory.Id)
+                    Dim categoryFascicle As CategoryFascicle = categories.FirstOrDefault(Function(x) x.FascicleType = FascicleType.Procedure)
+                    categoryFascicle.CustomActions = ajaxModel.Value(0)
+                    CurrentCategoryFascicleFacade.Update(categoryFascicle)
+                    uscCustomActionsRest.IsSummary = Not IsCategoryManager
+                    AjaxManager.ResponseScripts.Add(String.Format(LOAD_CUSTOM_ACTIONS, pnlCustomActions.Visible.ToString().ToLower(), categoryFascicle.CustomActions))
+                End If
         End Select
 
     End Sub
@@ -406,7 +431,7 @@ Partial Class TbltClassificatore
             btnAggiungi.Visible = True
             btnModifica.Visible = True
             btnElimina.Visible = True
-            btnLog.Visible = DocSuiteContext.Current.ProtocolEnv.IsLogEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight)
+            btnLog.Visible = CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight
 
             SearchOnlyFascicolable.Visible = DocSuiteContext.Current.ProtocolEnv.FascicleEnabled
             btnMassimari.Visible = True
@@ -432,33 +457,30 @@ Partial Class TbltClassificatore
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlDetails)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlSettori)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlInfo)
+        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlCustomActions)
 
 
         AjaxManager.AjaxSettings.AddAjaxSetting(rtvCategories, pnlDetails, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(rtvCategories, pnlSettori, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(rtvCategories, pnlInfo)
+        AjaxManager.AjaxSettings.AddAjaxSetting(rtvCategories, pnlCustomActions)
 
         AjaxManager.AjaxSettings.AddAjaxSetting(uscSettori, uscSettori)
         AjaxManager.AjaxSettings.AddAjaxSetting(ToolBarSearch, splPage, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(ToolBarStatus, splPage, MasterDocSuite.AjaxDefaultLoadingPanel)
 
         AjaxManager.AjaxSettings.AddAjaxSetting(btnModifica, pnlInfo, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnModifica, pnlCustomActions, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnModifica, rtvCategories, MasterDocSuite.AjaxDefaultLoadingPanel)
     End Sub
 
     Private Sub CreateContextMenu(ByRef tree As RadTreeView)
-        If Not DocSuiteContext.IsFullApplication Then
-            Exit Sub
-        End If
-
         Dim menu As RadTreeViewContextMenu = New RadTreeViewContextMenu()
         menu.Items.Add(TreeViewUtils.CreateMenuItem("Aggiungi", "Add", Unit.Pixel(200)))
         menu.Items.Add(TreeViewUtils.CreateMenuItem("Modifica", "Rename", Unit.Pixel(200)))
         menu.Items.Add(TreeViewUtils.CreateMenuItem("Elimina", "Delete", Unit.Pixel(200)))
         menu.Items.Add(TreeViewUtils.CreateMenuItem("Recupera", "Recovery", Unit.Pixel(200)))
-        If DocSuiteContext.Current.ProtocolEnv.IsLogEnabled Then
-            menu.Items.Add(TreeViewUtils.CreateMenuItem("Log", "Log", Unit.Pixel(200)))
-        End If
+        menu.Items.Add(TreeViewUtils.CreateMenuItem("Log", "Log", Unit.Pixel(200)))
         tree.ContextMenus.Add(menu)
         tree.OnClientContextMenuItemClicked = "OnContextMenuItemClicked"
         tree.OnClientContextMenuShowing = "OnContextMenuShowing"
@@ -497,7 +519,7 @@ Partial Class TbltClassificatore
             categoryFinder.IsActive = False
         End If
 
-        categoryFinder.SortExpressions.Add(New SortExpression(Of Category) With {.Direction = SortDirection.Ascending, .Expression = Function(x) x.Code})
+        categoryFinder.SortExpressions.Add(New SortExpression(Of Category) With {.Direction = SortDirection.Ascending, .Expression = Function(x) x.FullCode})
         Dim categories As ICollection(Of Category) = categoryFinder.DoSearch()
         For Each item As Category In categories
             AddNode(item, currentSchema)
@@ -515,7 +537,7 @@ Partial Class TbltClassificatore
         End If
 
         Dim father As RadTreeNode
-        If category.Parent IsNot Nothing Then
+        If category.Parent IsNot Nothing AndAlso category.Parent.Code > 0 Then
             father = rtvCategories.FindNodeByValue(category.Parent.Id.ToString())
             If father Is Nothing Then
                 father = AddNode(category.Parent, categorySchema)
@@ -725,9 +747,10 @@ Partial Class TbltClassificatore
         End If
         Dim periodicFascicles As ICollection(Of CategoryFascicle) = categories.Where(Function(x) x.FascicleType = FascicleType.Period).ToList()
         For Each periodicFascicle As CategoryFascicle In periodicFascicles.Where(Function(f) Not CurrentCategoryFascicleRightFacade.HasCategoryFascicleRight(f.Id, selectedRole.Id))
-            categoryFascicleRight = New CategoryFascicleRight()
-            categoryFascicleRight.Role = selectedRole
-            categoryFascicleRight.CategoryFascicle = periodicFascicle
+            categoryFascicleRight = New CategoryFascicleRight With {
+                .Role = selectedRole,
+                .CategoryFascicle = periodicFascicle
+            }
             CurrentCategoryFascicleRightFacade.Save(categoryFascicleRight)
         Next
     End Sub
@@ -751,9 +774,10 @@ Partial Class TbltClassificatore
             Next
 
             If ProtocolEnv.FascicleContainerEnabled Then
-                specialRight = New CategoryFascicleRight()
-                specialRight.Role = selectedRole
-                specialRight.CategoryFascicle = periodicFascicle
+                specialRight = New CategoryFascicleRight With {
+                    .Role = selectedRole,
+                    .CategoryFascicle = periodicFascicle
+                }
                 CurrentCategoryFascicleRightFacade.Save(specialRight)
             End If
         Next

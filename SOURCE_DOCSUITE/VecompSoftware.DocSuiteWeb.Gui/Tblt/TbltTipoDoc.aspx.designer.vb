@@ -41,6 +41,15 @@ Partial Public Class TbltTipoDoc
     Protected WithEvents windowEdit As Global.Telerik.Web.UI.RadWindow
 
     '''<summary>
+    '''FolderToolBar control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FolderToolBar As Global.Telerik.Web.UI.RadToolBar
+
+    '''<summary>
     '''RadTreeView1 control.
     '''</summary>
     '''<remarks>
@@ -48,67 +57,4 @@ Partial Public Class TbltTipoDoc
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadTreeView1 As Global.Telerik.Web.UI.RadTreeView
-
-    '''<summary>
-    '''pnlButtons control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-
-    '''<summary>
-    '''btnAggiungi control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnAggiungi As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''btnRinomina control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnRinomina As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''btnElimina control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnElimina As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''btnRecupera control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnRecupera As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''btnLog control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnLog As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''btnRefresh control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnRefresh As Global.System.Web.UI.WebControls.Button
 End Class

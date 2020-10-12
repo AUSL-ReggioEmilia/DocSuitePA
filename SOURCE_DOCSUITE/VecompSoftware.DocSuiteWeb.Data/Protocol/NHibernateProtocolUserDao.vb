@@ -14,9 +14,9 @@ Public Class NHibernateProtocolUserDao
         MyBase.New()
     End Sub
 
-    Public Function GetProtocolUserByProtocolUniqueId(protocolId As Guid, accountUser As String) As ProtocolUser
+    Public Function GetProtocolUserByProtocol(protocolId As Guid, accountUser As String) As ProtocolUser
         Dim puCriteria As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolUser)
-        puCriteria.Add(Restrictions.Eq("UniqueIdProtocol", protocolId))
+        puCriteria.Add(Restrictions.Eq("Protocol.Id", protocolId))
         puCriteria.Add(Restrictions.Eq("Account", accountUser))
 
         Dim pu As ProtocolUser = puCriteria.UniqueResult(Of ProtocolUser)()

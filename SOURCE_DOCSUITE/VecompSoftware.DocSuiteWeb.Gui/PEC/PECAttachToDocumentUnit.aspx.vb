@@ -452,21 +452,17 @@ Public Class PECAttachToDocumentUnit
         For Each pec As PECMail In CurrentPecMailList
             pec.Year = selectedProtocol.Year
             pec.Number = selectedProtocol.Number
-            pec.DocumentUnitType = DSWEnvironment.Protocol
+            pec.DocumentUnit = Facade.DocumentUnitFacade.GetById(selectedProtocol.Id)
             pec.RecordedInDocSuite = CType(1, Short)
 
-            'Memorizzo l'aggiunta
-            If DocSuiteContext.Current.ProtocolEnv.IsLogEnabled Then
-                'Log della PEC
-                Facade.PECMailLogFacade.InsertLog(pec, String.Format("Pec collegata al protocollo {0}", selectedProtocol.Id.ToString()), PECMailLogType.Linked)
-                'Log del protocollo
-                Facade.ProtocolLogFacade.Insert(selectedProtocol, ProtocolLogEvent.PM, String.Format("Collegata PEC n.{0} del {1} con oggetto ""{2}""", pec.Id, pec.RegistrationDate.ToLocalTime().DateTime.ToShortDateString(), pec.MailSubject))
-            End If
+            Facade.PECMailLogFacade.InsertLog(pec, String.Format("Pec collegata al protocollo {0}", selectedProtocol.Id.ToString()), PECMailLogType.Linked)
+            'Log del protocollo
+            Facade.ProtocolLogFacade.Insert(selectedProtocol, ProtocolLogEvent.PM, String.Format("Collegata PEC n.{0} del {1} con oggetto ""{2}""", pec.Id, pec.RegistrationDate.ToLocalTime().DateTime.ToShortDateString(), pec.MailSubject))
 
             Facade.PECMailFacade.Update(pec)
         Next
 
-        Dim parameters As String = String.Format("Type=Prot&Year={0}&Number={1}", selectedProtocol.Year, selectedProtocol.Number)
+        Dim parameters As String = String.Format("Type=Prot&UniqueId={0}", selectedProtocol.Id)
         Response.Redirect(String.Concat("../Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(parameters)), True)
     End Sub
 
@@ -489,8 +485,10 @@ Public Class PECAttachToDocumentUnit
             'Inserisco ogni documento nella catena degli annessi del protocollo selezionato
             Dim docs As ICollection(Of DocumentInfo) = AllDocuments.Where(Function(x) CheckDocument(x.Name).GetValueOrDefault(True)).ToList()
             Dim documents As ICollection(Of DocumentInstance) = New List(Of DocumentInstance)
-            For Each doc As DocumentInfo In docs
-                documents.Add(New DocumentInstance() With {.DocumentContent = Convert.ToBase64String(doc.Stream), .DocumentName = doc.Name})
+            Dim documentStored As BiblosDocumentInfo = Nothing
+            For Each document As DocumentInfo In docs
+                documentStored = document.ArchiveInBiblos(CommonShared.CurrentWorkflowLocation.ProtBiblosDSDB, Guid.Empty)
+                documents.Add(New DocumentInstance() With {.IdDocumentToStore = documentStored.DocumentId.ToString(), .DocumentName = document.Name})
             Next
 
             Dim pecInstances As List(Of PECInstance) = New List(Of PECInstance)

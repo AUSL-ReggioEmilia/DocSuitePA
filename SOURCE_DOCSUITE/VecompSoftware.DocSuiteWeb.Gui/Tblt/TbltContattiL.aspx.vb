@@ -6,6 +6,7 @@ Partial Class TbltContattiL
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
         MasterDocSuite.TitleVisible = False
+
         If Not IsPostBack Then
             Initialize()
         End If

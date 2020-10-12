@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/Commons/CategoryModelMapper", "App/Mappers/Commons/ContainerModelMapper", "App/Mappers/BaseMapper"], function (require, exports, CategoryModelMapper, ContainerModelMapper, BaseMapper) {
+define(["require", "exports", "App/Mappers/Commons/CategoryModelMapper", "App/Mappers/Commons/ContainerModelMapper", "App/Mappers/BaseMapper", "App/Mappers/UDS/UDSDocumentModelMapper"], function (require, exports, CategoryModelMapper, ContainerModelMapper, BaseMapper, UDSDocumentModelMapper) {
     var UDSModelMapper = /** @class */ (function (_super) {
         __extends(UDSModelMapper, _super);
         function UDSModelMapper() {
@@ -29,6 +29,7 @@ define(["require", "exports", "App/Mappers/Commons/CategoryModelMapper", "App/Ma
             toMap.RegistrationDate = source.RegistrationDate;
             toMap.Category = source.Category ? new CategoryModelMapper().Map(source.Category) : null;
             toMap.Container = source.Container ? new ContainerModelMapper().Map(source.Container) : null;
+            toMap.Documents = source.Documents && source.Documents.$values ? new UDSDocumentModelMapper().MapCollection(source.Documents.$values) : null;
             return toMap;
         };
         return UDSModelMapper;

@@ -1,11 +1,5 @@
 ﻿Imports System.Collections.Generic
-Imports Newtonsoft.Json
-Imports Telerik.Web.UI
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
-Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.Extensions
-Imports VecompSoftware.Helpers
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Partial Class TbltUDSTypology
     Inherits CommonBasePage
@@ -19,6 +13,11 @@ Partial Class TbltUDSTypology
 
 #Region "Events"
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
+
         InitializeAjax()
         If Not IsPostBack Then
             Initialize()

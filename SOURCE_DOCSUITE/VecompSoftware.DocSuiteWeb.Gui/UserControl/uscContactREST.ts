@@ -72,6 +72,7 @@ class uscContactRest {
     spidEnabeld: boolean;
     contactNationalityEnabled: boolean;
     callerId: string;
+    createManualContactEnabled: boolean;
 
     private _contactService: ContactService;
     private _contactTitleService: ContactTitleService;
@@ -100,99 +101,99 @@ class uscContactRest {
     private _btnCollapseInformations: Telerik.Web.UI.RadButton;
     private _toolbar: Telerik.Web.UI.RadToolBar;
     private _btnNewContact: Telerik.Web.UI.RadButton;
-    private _ajaxLoadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;    
+    private _ajaxLoadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
 
-    private get _pnlMain(): JQuery {
+    private _pnlMain(): JQuery {
         return $(`#${this.pnlMainId}`);
     }
 
-    private get _pnlToolbar(): JQuery {
+    private _pnlToolbar(): JQuery {
         return $(`#${this.pnlToolbarId}`);
     }
 
-    private get _rowDescription(): JQuery {
+    private _rowDescription(): JQuery {
         return $(`#${this.rowDescriptionId}`);
     }
 
-    private get _rowName(): JQuery {
+    private _rowName(): JQuery {
         return $(`#${this.rowNameId}`);
     }
 
-    private get _rowSurname(): JQuery {
+    private _rowSurname(): JQuery {
         return $(`#${this.rowSurnameId}`);
     }
 
-    private get _rowBirthdate(): JQuery {
+    private _rowBirthdate(): JQuery {
         return $(`#${this.rowBirthdateId}`);
     }
 
-    private get _rowTitle(): JQuery {
+    private _rowTitle(): JQuery {
         return $(`#${this.rowTitleId}`);
     }
 
-    private get _rowCertifiedMail(): JQuery {
+    private _rowCertifiedMail(): JQuery {
         return $(`#${this.rowCertifiedMailId}`);
     }
 
-    private get _rowCode(): JQuery {
+    private _rowCode(): JQuery {
         return $(`#${this.rowCodeId}`);
     }
 
-    private get _rowPiva(): JQuery {
+    private _rowPiva(): JQuery {
         return $(`#${this.rowPivaId}`);
     }
 
-    private get _rowAddressType(): JQuery {
+    private _rowAddressType(): JQuery {
         return $(`#${this.rowAddressTypeId}`);
     }
 
-    private get _rowAddress(): JQuery {
+    private _rowAddress(): JQuery {
         return $(`#${this.rowAddressId}`);
     }
 
-    private get _rowCivicNumber(): JQuery {
+    private _rowCivicNumber(): JQuery {
         return $(`#${this.rowCivicNumberId}`);
     }
 
-    private get _rowZipCode(): JQuery {
+    private _rowZipCode(): JQuery {
         return $(`#${this.rowZipCodeId}`);
     }
 
-    private get _rowCity(): JQuery {
+    private _rowCity(): JQuery {
         return $(`#${this.rowCityId}`);
     }
 
-    private get _rowCityCode(): JQuery {
+    private _rowCityCode(): JQuery {
         return $(`#${this.rowCityCodeId}`);
     }
 
-    private get _rowBirthplace(): JQuery {
+    private _rowBirthplace(): JQuery {
         return $(`#${this.rowBirthplaceId}`);
     }
 
-    private get _rowNationality(): JQuery {
+    private _rowNationality(): JQuery {
         return $(`#${this.rowNationalityId}`);
     }
 
-    private get _rowLanguage(): JQuery {
+    private _rowLanguage(): JQuery {
         return $(`#${this.rowLanguageId}`);
     }
 
-    private get _rowTreeContact(): JQuery {
+    private _rowTreeContact(): JQuery {
         return $(`#${this.rowTreeContactId}`);
     }
 
-    private get _rcbPersistanceType(): Telerik.Web.UI.RadComboBox {
+    private _rcbPersistanceType(): Telerik.Web.UI.RadComboBox {
         let toolbarItem: Telerik.Web.UI.RadToolBarItem = this._toolbar.findItemByValue("persistanceType");
         return toolbarItem.findControl("rcbPersistanceType") as Telerik.Web.UI.RadComboBox;
     }
 
-    private get _rcbContactType(): Telerik.Web.UI.RadComboBox {
+    _rcbContactType(): Telerik.Web.UI.RadComboBox {
         let toolbarItem: Telerik.Web.UI.RadToolBarItem = this._toolbar.findItemByValue("contactType");
         return toolbarItem.findControl("rcbContactType") as Telerik.Web.UI.RadComboBox;
     }
 
-    private get _rcbRoleContact(): Telerik.Web.UI.RadComboBox {
+    private _rcbRoleContact(): Telerik.Web.UI.RadComboBox {
         let toolbarItem: Telerik.Web.UI.RadToolBarItem = this._toolbar.findItemByValue("roleContact");
         return toolbarItem.findControl("rcbRoleContact") as Telerik.Web.UI.RadComboBox;
     }
@@ -214,7 +215,7 @@ class uscContactRest {
         this._contactTitleService = new ContactTitleService(contactTitleServiceConfiguration);
 
         let contactPlaceNameServiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "ContactPlaceName");
-        this._contactPlaceNameService= new ContactPlaceNameService(contactPlaceNameServiceConfiguration);
+        this._contactPlaceNameService = new ContactPlaceNameService(contactPlaceNameServiceConfiguration);
     }
 
     /**
@@ -232,17 +233,17 @@ class uscContactRest {
                     let contact: ContactModel = data as ContactModel;
                     this.setLastSearchedContactModel(contact);
                     this.bindContactToPage(contact);
-                    this.setContactVisibilityBehaviour(contact);                    
+                    this.setContactVisibilityBehaviour(contact);
                     this.drawContactTree(idContact)
                         .done(() => {
-                            this._rowTreeContact.show();
+                            this._rowTreeContact().show();
                             this.resetCollapseButton();
                             this.setFormControlEnableState(false);
                             this.hideToolbar();
                             this.showMainPanel();
                         })
-                        .fail((exception: ExceptionDTO) => {                            
-                            this.showNotificationException(exception);                            
+                        .fail((exception: ExceptionDTO) => {
+                            this.showNotificationException(exception);
                         })
                         .always(() => this._ajaxLoadingPanel.hide(this.pnlContentId));
                 } catch (error) {
@@ -251,16 +252,16 @@ class uscContactRest {
                     exception.statusText = "E' avvenuto un errore durante il caricamento dei dati del contatto";
                     this._ajaxLoadingPanel.hide(this.pnlContentId);
                     this.showNotificationException(exception);
-                }                       
+                }
             },
             (exception: ExceptionDTO) => {
                 this._ajaxLoadingPanel.hide(this.pnlContentId);
-                this.showNotificationException(exception);                
+                this.showNotificationException(exception);
             }
         )
     }
 
-    btnCollapseInformations_onClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnCollapseInformations_onClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         switch (sender.get_commandArgument()) {
             case uscContactRest.ALL_INFORMATIONS_ARGUMENT: {
                 sender.set_commandArgument(uscContactRest.SIMPLE_INFORMATIONS_ARGUMENT);
@@ -276,12 +277,12 @@ class uscContactRest {
         this.toggleMetadataVisibility();
     }
 
-    btnNewContact_onClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnNewContact_onClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.setLastSearchedContactModel(null);
-        let emptyContact: ContactModel = {Description: ""} as ContactModel;
-        this._rowTreeContact.hide();
-        this.bindContactToPage(emptyContact);        
-        this.setContactVisibilityBehaviour(emptyContact);            
+        let emptyContact: ContactModel = { Description: "" } as ContactModel;
+        this._rowTreeContact().hide();
+        this.bindContactToPage(emptyContact);
+        this.setContactVisibilityBehaviour(emptyContact);
         this.resetCollapseButton();
         this.setFormControlEnableState(true);
         this.showToolbar();
@@ -295,7 +296,7 @@ class uscContactRest {
 
     rcbPersistanceType_onSelectedIndexChanged = (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
         this.hideToolbarRoleElements();
-        if (this._rcbPersistanceType.get_selectedItem().get_value() == uscContactRest.RUBRICA_ADDRESS_TYPE) {
+        if (this._rcbPersistanceType().get_selectedItem().get_value() == uscContactRest.RUBRICA_ADDRESS_TYPE) {
             this.showToolbarRoleElements();
         }
     }
@@ -330,8 +331,9 @@ class uscContactRest {
         this._toolbar = $find(this.toolbarId) as Telerik.Web.UI.RadToolBar;
         this._btnNewContact = $find(this.btnNewContactId) as Telerik.Web.UI.RadButton;
         this._btnNewContact.add_clicked(this.btnNewContact_onClicked);
-        this._rcbContactType.add_selectedIndexChanged(this.rcbContactType_onSelectedIndexChanged);
-        this._rcbPersistanceType.add_selectedIndexChanged(this.rcbPersistanceType_onSelectedIndexChanged);
+        this._btnNewContact.set_visible(this.createManualContactEnabled);
+        this._rcbContactType().add_selectedIndexChanged(this.rcbContactType_onSelectedIndexChanged);
+        this._rcbPersistanceType().add_selectedIndexChanged(this.rcbPersistanceType_onSelectedIndexChanged);
         this._ajaxLoadingPanel = $find(this.ajaxLoadingPanelId) as Telerik.Web.UI.RadAjaxLoadingPanel;
 
         this._selectedContactsSessionKey = `${this.callerId}_selectedContactsSessionKey`;
@@ -341,7 +343,7 @@ class uscContactRest {
 
         $(`#${this.uscContactSearchRestId}`).on(uscContactSearchRest.SELECTED_CONTACT_EVENT, this.uscContactSearchRest_selectedContact);
 
-        this._ajaxLoadingPanel.show(this.pnlContentId);        
+        this._ajaxLoadingPanel.show(this.pnlContentId);
         this.initializeControls();
         this.loadUserData()
             .fail((exception: ExceptionDTO) => {
@@ -350,19 +352,19 @@ class uscContactRest {
             .always(() => {
                 this._ajaxLoadingPanel.hide(this.pnlContentId);
                 this.bindLoaded();
-            });        
+            });
     }
 
     private initializeControls(): void {
-        this._rowBirthplace.hide();
-        this._rowNationality.hide();
-        this._rowLanguage.hide();
+        this._rowBirthplace().hide();
+        this._rowNationality().hide();
+        this._rowLanguage().hide();
         if (this.spidEnabeld) {
-            this._rowBirthplace.show();
+            this._rowBirthplace().show();
         }
         if (this.contactNationalityEnabled) {
-            this._rowNationality.show();
-            this._rowLanguage.show();
+            this._rowNationality().show();
+            this._rowLanguage().show();
         }
     }
 
@@ -382,8 +384,8 @@ class uscContactRest {
             (data: any) => {
                 if (!data || data.length == 0) {
                     this.hideToolbarRoleElements();
-                    let toDeleteItem: Telerik.Web.UI.RadComboBoxItem = this._rcbPersistanceType.findItemByText(uscContactRest.RUBRICA_ADDRESS_TYPE);
-                    this._rcbPersistanceType.get_items().remove(toDeleteItem);
+                    let toDeleteItem: Telerik.Web.UI.RadComboBoxItem = this._rcbPersistanceType().findItemByText(uscContactRest.RUBRICA_ADDRESS_TYPE);
+                    this._rcbPersistanceType().get_items().remove(toDeleteItem);
                     promise.resolve();
                     return;
                 }
@@ -394,11 +396,11 @@ class uscContactRest {
                     comboItem.set_imageUrl(ImageHelper.getContactTypeImageUrl("Sector"))
                     comboItem.set_text(contactTitle.Description);
                     comboItem.set_value(contactTitle.Id.toString());
-                    this._rcbRoleContact.get_items().add(comboItem);
+                    this._rcbRoleContact().get_items().add(comboItem);
                 }
 
                 if (data.length == 1) {
-                    this._rcbRoleContact.get_items().getItem(0).select();
+                    this._rcbRoleContact().get_items().getItem(0).select();
                     this.hideToolbarRoleElements();
                 }
                 promise.resolve();
@@ -435,8 +437,8 @@ class uscContactRest {
                     comboItem = new Telerik.Web.UI.RadComboBoxItem();
                     comboItem.set_text(contactTitle.Description);
                     comboItem.set_value(contactTitle.EntityId.toString());
-                    this._rcbContactType.get_items().add(comboItem);
-                }                
+                    this._rcbContactType().get_items().add(comboItem);
+                }
                 promise.resolve();
             },
             (exception: ExceptionDTO) => promise.reject(exception)
@@ -527,16 +529,22 @@ class uscContactRest {
             }
         }
 
-        let item: Telerik.Web.UI.RadComboBoxItem = this._rcbPersistanceType.findItemByValue(uscContactRest.RUBRICA_ADDRESS_TYPE);
-        item.select();
+        let item: Telerik.Web.UI.RadComboBoxItem = this._rcbPersistanceType().findItemByValue(uscContactRest.RUBRICA_ADDRESS_TYPE);
+        if (item) {
+            item.select();
+        } else {
+            let mitem: Telerik.Web.UI.RadComboBoxItem = this._rcbPersistanceType().findItemByValue(uscContactRest.MANUALE_ADDRESS_TYPE);
+            mitem.select();
+        }
+
         switch (contact.IdContactType) {
-            case uscContactRest.PERSONA_CONTACT_TYPE: {                
-                let item: Telerik.Web.UI.RadComboBoxItem = this._rcbContactType.findItemByValue(uscContactRest.PERSONA_CONTACT_TYPE);
+            case uscContactRest.PERSONA_CONTACT_TYPE: {
+                let item: Telerik.Web.UI.RadComboBoxItem = this._rcbContactType().findItemByValue(uscContactRest.PERSONA_CONTACT_TYPE);
                 item.select();
                 break;
             }
             default: {
-                let item: Telerik.Web.UI.RadComboBoxItem = this._rcbContactType.findItemByValue(uscContactRest.AZIENDA_CONTACT_TYPE);
+                let item: Telerik.Web.UI.RadComboBoxItem = this._rcbContactType().findItemByValue(uscContactRest.AZIENDA_CONTACT_TYPE);
                 item.select();
             }
         }
@@ -548,34 +556,34 @@ class uscContactRest {
         this.toggleMetadataVisibility();
     }
 
-    private toggleMetadataVisibility(): void {
+    private toggleAction(control: JQuery) {
         let toExpand: boolean = this._btnCollapseInformations.get_commandArgument() == uscContactRest.ALL_INFORMATIONS_ARGUMENT;
-        let toggleAction: Function = (control: JQuery) => {
-            control.hide();
-            if (toExpand) {
-                control.show();
-            }
-        };
+        control.hide();
+        if (toExpand) {
+            control.show();
+        }
+    }
 
+    private toggleMetadataVisibility(): void {
         if (this.isCitizenContact()) {
-            toggleAction(this._rowBirthdate);
-            toggleAction(this._rowTitle);
+            this.toggleAction(this._rowBirthdate());
+            this.toggleAction(this._rowTitle());
             if (this.spidEnabeld) {
-                toggleAction(this._rowBirthplace);
-            }            
-        }        
-        toggleAction(this._rowCode);
-        toggleAction(this._rowPiva);
-        toggleAction(this._rowAddressType);
-        toggleAction(this._rowAddress);
-        toggleAction(this._rowCivicNumber);
-        toggleAction(this._rowZipCode);
-        toggleAction(this._rowCity);
-        toggleAction(this._rowCityCode);
+                this.toggleAction(this._rowBirthplace());
+            }
+        }
+        this.toggleAction(this._rowCode());
+        this.toggleAction(this._rowPiva());
+        this.toggleAction(this._rowAddressType());
+        this.toggleAction(this._rowAddress());
+        this.toggleAction(this._rowCivicNumber());
+        this.toggleAction(this._rowZipCode());
+        this.toggleAction(this._rowCity());
+        this.toggleAction(this._rowCityCode());
         if (this.contactNationalityEnabled) {
-            toggleAction(this._rowNationality);
-            toggleAction(this._rowLanguage);
-        }        
+            this.toggleAction(this._rowNationality());
+            this.toggleAction(this._rowLanguage());
+        }
     }
 
     private isCitizenContact(): boolean {
@@ -584,18 +592,18 @@ class uscContactRest {
             return lastSearchedContact.IdContactType == uscContactRest.PERSONA_CONTACT_TYPE;
         }
 
-        return this._rcbContactType.get_selectedItem().get_value() == uscContactRest.PERSONA_CONTACT_TYPE;
+        return this._rcbContactType().get_selectedItem().get_value() == uscContactRest.PERSONA_CONTACT_TYPE;
     }
 
     private setContactVisibilityBehaviour(contact: ContactModel): void
     private setContactVisibilityBehaviour(contactType: string): void
     private setContactVisibilityBehaviour(contactOrContactType: any): void {
-        this._rowName.hide();
-        this._rowSurname.hide();
-        this._rowDescription.hide();
-        this._rowBirthdate.hide();
-        this._rowBirthplace.hide();
-        this._rowTitle.hide();
+        this._rowName().hide();
+        this._rowSurname().hide();
+        this._rowDescription().hide();
+        this._rowBirthdate().hide();
+        this._rowBirthplace().hide();
+        this._rowTitle().hide();
 
         let contactType: string = "";
         if (typeof contactOrContactType == "string") {
@@ -606,17 +614,17 @@ class uscContactRest {
 
         switch (contactType) {
             case uscContactRest.PERSONA_CONTACT_TYPE: {
-                this._rowName.show();
-                this._rowSurname.show();
-                this._rowBirthdate.show();
+                this._rowName().show();
+                this._rowSurname().show();
+                this._rowBirthdate().show();
                 if (this.spidEnabeld) {
-                    this._rowBirthplace.show();
-                }                
-                this._rowTitle.show();
+                    this._rowBirthplace().show();
+                }
+                this._rowTitle().show();
                 break;
             }
             default: {
-                this._rowDescription.show();                
+                this._rowDescription().show();
             }
         }
     }
@@ -630,7 +638,7 @@ class uscContactRest {
                 }
             } else {
                 control.set_enabled(state);
-            }           
+            }
         }
 
         changeStateAction(this._txtName);
@@ -696,12 +704,12 @@ class uscContactRest {
             }
 
             let contactAction: () => JQueryPromise<ContactModel> = () => $.Deferred<ContactModel>().resolve(contactFromPage).promise();
-            if (this._rcbPersistanceType.get_selectedItem().get_value() == uscContactRest.RUBRICA_ADDRESS_TYPE) {
-                if (!this._rcbRoleContact.get_selectedItem()) {
+            if (this._rcbPersistanceType().get_selectedItem().get_value() == uscContactRest.RUBRICA_ADDRESS_TYPE) {
+                if (!this._rcbRoleContact().get_selectedItem()) {
                     return promise.reject("E' necessario selezionare un contatto di rubrica che conterrà il nuovo contatto");
                 }
 
-                contactFromPage.IncrementalFather = +this._rcbRoleContact.get_selectedItem().get_value();
+                contactFromPage.IncrementalFather = +this._rcbRoleContact().get_selectedItem().get_value();
                 contactAction = () => {
                     let promise: JQueryDeferred<ContactModel> = $.Deferred<ContactModel>();
                     this._contactService.insertContact(contactFromPage,
@@ -715,7 +723,7 @@ class uscContactRest {
             contactAction()
                 .done((contact) => {
                     this.addSelectedContactToSession(contact);
-                    promise.resolve([this._rcbPersistanceType.get_selectedItem().get_value(), contact]);
+                    promise.resolve([this._rcbPersistanceType().get_selectedItem().get_value(), contact]);
                 })
                 .fail((exception: ExceptionDTO) => promise.reject(exception));
         } catch (error) {
@@ -735,12 +743,12 @@ class uscContactRest {
         if (this.isCitizenContact()) {
             contact.IdContactType = "P";
             if (this._txtName.get_value() || this._txtSurname.get_value()) {
-                contact.Description = `${this._txtName.get_value()}|${this._txtSurname.get_value()}`;   
-            }            
+                contact.Description = `${this._txtName.get_value()}|${this._txtSurname.get_value()}`;
+            }
             if (this._rdpBirthdate.get_selectedDate()) {
                 contact.BirthDate = moment(this._rdpBirthdate.get_selectedDate()).endOf("day").toDate();
             }
-        }        
+        }
 
         contact.isActive = 1;
         contact.BirthPlace = this._txtBirthplace.get_value();
@@ -810,23 +818,23 @@ class uscContactRest {
         this.resetCollapseButton();
         this.hideToolbar();
         this.hideMainPanel();
-        this._rcbRoleContact.clearSelection();
+        this._rcbRoleContact().clearSelection();
     }
 
     private showMainPanel(): void {
-        this._pnlMain.show();
+        this._pnlMain().show();
     }
 
     private hideMainPanel(): void {
-        this._pnlMain.hide();
+        this._pnlMain().hide();
     }
 
     private showToolbar(): void {
-        this._pnlToolbar.show();
+        this._pnlToolbar().show();
     }
 
     private hideToolbar(): void {
-        this._pnlToolbar.hide();
+        this._pnlToolbar().hide();
     }
 
     private addSelectedContactToSession(contact: ContactModel): void {

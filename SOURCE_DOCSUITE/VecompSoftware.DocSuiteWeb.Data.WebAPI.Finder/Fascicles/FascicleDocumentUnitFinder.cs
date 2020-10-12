@@ -20,6 +20,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
         public bool ExpandFascicle { get; set; }
         public ReferenceType? ReferenceType { get; set; }
         public bool? ExpandProperties { get; set; }
+        public Guid? IdDocumentUnitTenantAOO { get; set; }
         #endregion
 
         #region [ Constructor ]
@@ -53,7 +54,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
         {
             if (ExpandProperties.HasValue && ExpandProperties.Value)
             {
-                odataQuery.Expand("DocumentUnit")
+                odataQuery
+                    .Expand("DocumentUnit")
                     .Expand("FascicleFolder");
             }
 
@@ -80,6 +82,11 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
             if (IdFascicleFolder.HasValue)
             {
                 odataQuery = odataQuery.Filter(string.Concat("FascicleFolder/UniqueId eq ", IdFascicleFolder.Value));
+            }
+
+            if (IdDocumentUnitTenantAOO.HasValue)
+            {
+                odataQuery = odataQuery.Filter(string.Format("DocumentUnit/TenantAOO/UniqueId eq {0}", IdDocumentUnitTenantAOO.Value));
             }
             return odataQuery;
         }

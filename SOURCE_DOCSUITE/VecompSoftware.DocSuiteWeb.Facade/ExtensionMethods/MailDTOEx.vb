@@ -22,7 +22,12 @@ Public Module MailDTOEx
 
         pol.Id = Guid.NewGuid()
         pol.Status = POLRequestStatusEnum.RequestQueued
-        pol.StatusDescrition = "In attesa di Invio a Poste Online"
+
+        If DocSuiteContext.Current.ProtocolEnv.TNoticeEnabled Then
+            pol.StatusDescrition = "In attesa di Invio a TNotice"
+        Else
+            pol.StatusDescrition = "In attesa di Invio a Poste Online"
+        End If
 
         pol.Sender = FacadeFactory.Instance.PosteOnLineContactFacade.GetDefaultSender()
         pol.Sender.Request = pol
@@ -30,6 +35,9 @@ Public Module MailDTOEx
         Dim posteWebLocation As Location = FacadeFactory.Instance.LocationFacade.GetById(DocSuiteContext.Current.ProtocolEnv.PosteWebRequestLocation)
         If posteWebLocation Is Nothing Then
             Throw New BiblosServiceException("Attenzione! Nessuna Location definita per la gestione delle PosteWebOnline")
+        End If
+        If source.Mailbox Is Nothing OrElse Not source.Mailbox.Id.HasValue Then
+            Throw New BiblosServiceException("Attenzione! L'account delle PosteWeb non è stato definito nel tracciato.")
         End If
 
         For Each item As API.ContactDTO In source.Recipients
@@ -48,7 +56,7 @@ Public Module MailDTOEx
 
         pol.Account = FacadeFactory.Instance.PosteOnLineAccountFacade.GetById(source.Mailbox.Id.Value)
 
-        Dim currentProtocol As Protocol = FacadeFactory.Instance.ProtocolFacade.GetById(New YearNumberCompositeKey(protocol.Year, protocol.Number))
+        Dim currentProtocol As Protocol = FacadeFactory.Instance.ProtocolFacade.GetById(protocol.UniqueId.Value)
         Dim mergedDocuments As MergeDocumentResult = New MergeDocumentResult()
         If source.IncludeAttachments Then
             Dim attachments As ICollection(Of BiblosDocumentInfo) = ProtocolFacade.GetAttachments(currentProtocol).Where(Function(x) source.PolAttachments.Any(Function(xx) xx.Name.Eq(x.Name))).ToList()
@@ -68,7 +76,7 @@ Public Module MailDTOEx
         protocolDocuments.Add(mergedDocuments.MergedDocument)
         Dim rq As LOLRequest = DirectCast(pol, LOLRequest)
         Dim chain As BiblosChainInfo = New BiblosChainInfo(protocolDocuments)
-        rq.IdArchiveChain = chain.ArchiveInBiblos(posteWebLocation.DocumentServer, posteWebLocation.ProtBiblosDSDB)
+        rq.IdArchiveChain = chain.ArchiveInBiblos(posteWebLocation.ProtBiblosDSDB)
 
         Dim md5Service As MD5CryptoServiceProvider = New MD5CryptoServiceProvider()
         rq.DocumentMD5 = BitConverter.ToString(md5Service.ComputeHash(mergedDocuments.MergedDocument.Stream)).Replace("-", String.Empty)

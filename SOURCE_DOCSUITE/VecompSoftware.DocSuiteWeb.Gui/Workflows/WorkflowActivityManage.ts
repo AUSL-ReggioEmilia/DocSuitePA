@@ -20,6 +20,10 @@ import WorkflowAuthorizationService = require('App/Services/Workflows/WorkflowAu
 import UDSRepositoryService = require('App/Services/UDS/UDSRepositoryService');
 import UDSRepositoryModel = require('App/Models/UDS/UDSRepositoryModel');
 import FascicleFolderService = require('App/Services/Fascicles/FascicleFolderService');
+import WorkflowProperty = require('App/Models/Workflows/WorkflowProperty');
+import WorkflowReferenceModel = require('App/Models/Workflows/WorkflowReferenceModel');
+import Environment = require('App/Models/Environment');
+import FascicleSummaryFolderViewModel = require('App/ViewModels/Fascicles/FascicleSummaryFolderViewModel');
 
 declare var ValidatorEnable: any;
 class WorkflowActivityManage {
@@ -57,7 +61,12 @@ class WorkflowActivityManage {
     ddlUDSArchivesUniqueId: string;
     panelDocumentUnitSelectId: string;
     panelManageId: string;
+
     private static INSERT_MISCELLANEA: string = "InsertMiscellanea";
+    private static WORKFLOW_ACTIVITY_EXPAND_PROPERTIES: string[] =
+        [
+            "WorkflowProperties"
+        ];
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _serviceConfigurations: ServiceConfiguration[];
@@ -72,43 +81,43 @@ class WorkflowActivityManage {
     private _fascicleFolderService: FascicleFolderService;
     private _btnConfirm: Telerik.Web.UI.RadButton;
 
-    private get pnlFascicleSelect(): JQuery {
+    private pnlFascicleSelect(): JQuery {
         return $(`#${this.pnlFascicleSelectId}`);
     }
 
-    private get pnlArchives(): JQuery {
+    private pnlArchives(): JQuery {
         return $(`#${this.pnlUDSID}`);
     }
 
-    private get lblProponente(): JQuery {
+    private lblProponente(): JQuery {
         return $(`#${this.lblProponenteId}`);
     }
 
-    private get lblDestinatario(): JQuery {
+    private lblDestinatario(): JQuery {
         return $(`#${this.lblDestinatarioId}`);
     }
 
-    private get lblRegistrationDate(): JQuery {
+    private lblRegistrationDate(): JQuery {
         return $(`#${this.lblRegistrationDateId}`);
     }
 
-    private get lblSubject(): JQuery {
+    private lblSubject(): JQuery {
         return $(`#${this.lblSubjectId}`);
     }
 
-    private get rblDocumentUnit(): JQuery {
+    private rblDocumentUnit(): JQuery {
         return $(`#${this.rblDocumentUnitId}`);
     }
 
-    private get rfvUDSArchives(): JQuery {
+    private rfvUDSArchives(): JQuery {
         return $(`#${this.rfvUDSArchivesId}`);
     }
 
-    private get panelDocumentUnitSelect(): JQuery {
+    private panelDocumentUnitSelect(): JQuery {
         return $(`#${this.panelDocumentUnitSelectId}`);
     }
 
-    private get panelManage(): JQuery {
+    private panelManage(): JQuery {
         return $(`#${this.panelManageId}`);
     }
 
@@ -121,15 +130,15 @@ class WorkflowActivityManage {
      */
 
     protected radioListButtonChanged = () => {
-        let checkedChoice: string = this.rblDocumentUnit.find('input:checked').val();
+        let checkedChoice: string = this.rblDocumentUnit().find('input:checked').val();
 
-        this.rfvUDSArchives.hide();
-        this.pnlArchives.hide();
-        this.pnlFascicleSelect.hide();
-        this.panelManage.hide();
+        this.rfvUDSArchives().hide();
+        this.pnlArchives().hide();
+        this.pnlFascicleSelect().hide();
+        this.panelManage().hide();
 
-        this.panelDocumentUnitSelect.addClass(" t-col-12");
-        this.panelDocumentUnitSelect.removeClass(" t-col-4");
+        this.panelDocumentUnitSelect().addClass(" t-col-12");
+        this.panelDocumentUnitSelect().removeClass(" t-col-4");
 
 
 
@@ -139,23 +148,23 @@ class WorkflowActivityManage {
 
         switch (checkedChoice) {
             case "Archivi": {
-                this.panelManage.show();
-                this.pnlArchives.show();
-                this.rfvUDSArchives.show();
+                this.panelManage().show();
+                this.pnlArchives().show();
+                this.rfvUDSArchives().show();
 
-                this.panelDocumentUnitSelect.addClass(" t-col-4");
-                this.panelDocumentUnitSelect.removeClass(" t-col-12");
+                this.panelDocumentUnitSelect().addClass(" t-col-4");
+                this.panelDocumentUnitSelect().removeClass(" t-col-12");
 
 
                 ValidatorEnable(document.getElementById(this.rfvUDSArchivesId), true);
                 break;
             }
             case "Fascicolo": {
-                this.pnlFascicleSelect.show();
-                this.panelManage.show();
+                this.pnlFascicleSelect().show();
+                this.panelManage().show();
 
-                this.panelDocumentUnitSelect.addClass(" t-col-4");
-                this.panelDocumentUnitSelect.removeClass(" t-col-12");
+                this.panelDocumentUnitSelect().addClass(" t-col-4");
+                this.panelDocumentUnitSelect().removeClass(" t-col-12");
 
                 this._gridUD.get_masterTableView().hideColumn(3);
                 break;
@@ -209,8 +218,9 @@ class WorkflowActivityManage {
         this._btnConfirm = $find(this.btnConfirmId) as Telerik.Web.UI.RadButton;
         this._gridUD = $find(this.grdUDId) as Telerik.Web.UI.RadGrid;
 
-        this.rblDocumentUnit.find("input:first").prop("checked", true);
-        this.rblDocumentUnit.on('change', this.radioListButtonChanged);
+        this.rblDocumentUnit().find("input:first").prop("checked", true);
+        this.rblDocumentUnit().on('change', this.radioListButtonChanged);
+
 
         this._loadingPanel.show(this.currentPageId);
         this.checkUserRights()
@@ -232,13 +242,13 @@ class WorkflowActivityManage {
             .fail((exception: any) => {
                 this._loadingPanel.hide(this.currentPageId);
                 this.showNotificationException(this.uscNotificationId, exception);
-            });        
+            });
     }
 
     private initializeArchivePanel(): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
-        this.pnlArchives.hide();
-        this.rfvUDSArchives.hide();
+        this.pnlArchives().hide();
+        this.rfvUDSArchives().hide();
 
         ValidatorEnable(document.getElementById(this.rfvUDSArchivesId), false);
 
@@ -270,7 +280,7 @@ class WorkflowActivityManage {
             },
             (exception: ExceptionDTO) => promise.reject(exception)
         );
-        
+
         return promise.promise();
     }
 
@@ -299,16 +309,39 @@ class WorkflowActivityManage {
                 try {
                     let workflowActivity: WorkflowActivityModel = data as WorkflowActivityModel;
                     let workflowProponenteJson = workflowActivity.WorkflowProperties.filter(x => x.Name === WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER)[0];
-                    let workflowProponente: WorkflowAccountModel = JSON.parse(workflowProponenteJson.ValueString);
-                    this.lblProponente.html(workflowProponente.DisplayName);
+
+                    if (workflowProponenteJson && workflowProponenteJson.ValueString) {
+                        let workflowProponente: WorkflowAccountModel = JSON.parse(workflowProponenteJson.ValueString);
+                        this.lblProponente().html(workflowProponente.DisplayName);
+                    }
 
                     let workflowNoteJson = workflowActivity.WorkflowProperties.filter(x => x.Name === WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION)[0];
                     if (workflowNoteJson) {
-                        this.lblSubject.html(workflowNoteJson.ValueString);
-                    }                    
+                        this.lblSubject().html(workflowNoteJson.ValueString);
+                    }
 
-                    this.lblDestinatario.html(this.currentUser);
-                    this.lblRegistrationDate.html(moment(workflowActivity.RegistrationDate).format("DD/MM/YYYY"));
+                    this.lblDestinatario().html(this.currentUser);
+                    this.lblRegistrationDate().html(moment(workflowActivity.RegistrationDate).format("DD/MM/YYYY"));
+
+                    let defaultProperty: WorkflowProperty = workflowActivity.WorkflowProperties.filter(x => x.Name === WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_ACTIVITY_MANAGE_DEFAULT_TYPE)[0];
+
+                    if (defaultProperty) {
+                        this.rblDocumentUnit().find(`[value=${defaultProperty.ValueString}]`).prop("checked", true);
+
+                        this.radioListButtonChanged();
+                        let referenceModel: WorkflowProperty = workflowActivity.WorkflowProperties.filter(x => x.Name === WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL)[0];
+
+                        if (defaultProperty.ValueString === "Fascicolo" && referenceModel) {
+                            let fascicleReferenceModel: WorkflowReferenceModel = JSON.parse(referenceModel.ValueString);
+                            if (fascicleReferenceModel.ReferenceType === Environment.Fascicle) {
+                                let fascicleModel: FascicleModel = JSON.parse(fascicleReferenceModel.ReferenceModel);
+                                let uscFascicleSearch: uscFascicleSearch = $(`#${this.uscFascicleSearchId}`).data() as uscFascicleSearch;
+                                uscFascicleSearch.loadFascicle(fascicleModel.UniqueId, true);
+                                uscFascicleSearch._loadFascFoldersData(fascicleModel.UniqueId);
+                                uscFascicleSearch.showContentPanel();
+                            }
+                        }
+                    }
 
                     let ajaxModel: AjaxModel = <AjaxModel>{};
                     ajaxModel.Value = new Array<string>();
@@ -323,8 +356,7 @@ class WorkflowActivityManage {
                     promise.reject("E' avvenuto un errore durante il caricamento delle informazioni dell'attività");
                 }
             },
-            (exception: ExceptionDTO) => promise.reject(exception)
-        );
+            (exception: ExceptionDTO) => promise.reject(exception), WorkflowActivityManage.WORKFLOW_ACTIVITY_EXPAND_PROPERTIES);
         return promise.promise();
     }
 
@@ -368,10 +400,17 @@ class WorkflowActivityManage {
         if (!jQuery.isEmptyObject(uscFascicleSearch)) {
             let selectedFascicle: FascicleModel = uscFascicleSearch.getSelectedFascicle();
             if (selectedFascicle) {
+                let selectedFascicleFolder: FascicleSummaryFolderViewModel = uscFascicleSearch.getSelectedFascicleFolder();
                 let ajaxModel: AjaxModel = <AjaxModel>{};
                 ajaxModel.Value = new Array<string>();
                 ajaxModel.Value.push(selectedFascicle.UniqueId);
+                ajaxModel.Value.push(selectedFascicleFolder.UniqueId);
                 ajaxModel.ActionName = WorkflowActivityManage.INSERT_MISCELLANEA;
+                if (!selectedFascicleFolder) {
+                    this.showNotificationException(this.uscNotificationId, "Nessuna cartella fascicolo selezionata");
+                    return;
+                }
+
                 (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
             } else {
                 this._btnConfirm.enableAfterSingleClick();
@@ -380,12 +419,13 @@ class WorkflowActivityManage {
         }
     }
 
-    confirmCallback(idChain: string, idFascicle: string, isNewArchiveChain: boolean, errorMessage: string) {
+    confirmCallback(idChain: string, idFascicle: string, isNewArchiveChain: boolean, idFasciclefolder: string, errorMessage: string) {
         if (errorMessage) {
             this.showNotificationException(this.uscNotificationId, errorMessage);
             this._loadingPanel.hide(this.currentPageId);
             this._btnConfirm = $find(this.btnConfirmId) as Telerik.Web.UI.RadButton;
             this._btnConfirm.enableAfterSingleClick();
+
             return;
         }
 
@@ -395,7 +435,7 @@ class WorkflowActivityManage {
             fascicleDocumentModel.IdArchiveChain = idChain;
             fascicleDocumentModel.Fascicle = new FascicleModel();
             fascicleDocumentModel.Fascicle.UniqueId = idFascicle;
-            this._fascicleFolderService.getDefaultFascicleFolder(idFascicle,
+            this._fascicleFolderService.getById(idFasciclefolder,
                 (data: any) => {
                     if (!data) {
                         this._loadingPanel.hide(this.currentPageId);
@@ -416,7 +456,7 @@ class WorkflowActivityManage {
                     this._loadingPanel.hide(this.currentPageId);
                     this.showNotificationException(this.uscNotificationId, exception);
                 }
-            ); 
+            );
         } else {
             window.location.href = `../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=${idFascicle}`;
         }

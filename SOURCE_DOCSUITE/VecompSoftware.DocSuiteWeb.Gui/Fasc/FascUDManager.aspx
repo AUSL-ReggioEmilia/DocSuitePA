@@ -1,6 +1,6 @@
-﻿<%@ Page Title="Gestione Fascicolo" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="FascUDManager.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.FascUDManager" %>
+﻿<%@ Page Title="Gestione fascicolo" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="FascUDManager.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.FascUDManager" %>
 
-<%@ Register Src="../UserControl/uscFascicleSearch.ascx" TagName="uscFascicleSearch" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscFascicleSearch.ascx" TagName="uscFascicleSearch" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cphHeader" runat="server">
@@ -37,6 +37,8 @@
                     fascUDManager.maxNumberElements = "<%= ProtocolEnv.MaxNumberDropdownElements %>";
                     fascUDManager.currentSelectedFascicle = "<%= CurrentFascicle %>";
                     fascUDManager.uscFascicleSearchId = "<%= uscFascicleSearch.PageControl.ClientID %>";
+                    fascUDManager.processEnabled = <%= ProtocolEnv.ProcessEnabled.ToString().ToLower() %>;
+                    fascUDManager.folderSelectionEnabled = <%= FolderSelectionEnabled.ToString().ToLower() %>;
                     fascUDManager.initialize();
                 });
             });

@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/DossierSummaryFolderViewModelMapper", "../../Mappers/Processes/ProcessFascicleTemplateModelMapper", "../../Mappers/Dossiers/DossierFolderModelMapper"], function (require, exports, BaseService, DossierSummaryFolderViewModelMapper, ProcessFascicleTemplateModelMapper, DossierFolderModelMapper) {
+define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/DossierSummaryFolderViewModelMapper", "../../Mappers/Processes/ProcessFascicleTemplateModelMapper", "../../Mappers/Dossiers/DossierFolderModelMapper", "App/Mappers/Dossiers/DossierModelMapper"], function (require, exports, BaseService, DossierSummaryFolderViewModelMapper, ProcessFascicleTemplateModelMapper, DossierFolderModelMapper, DossierModelMapper) {
     var DossierFolderService = /** @class */ (function (_super) {
         __extends(DossierFolderService, _super);
         /**
@@ -25,6 +25,21 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/
         DossierFolderService.prototype.getChildren = function (uniqueId, status, callback, error) {
             var url = this._configuration.ODATAUrl.concat("/DossierFolderService.GetChildrenByParent(idDossierFolder=", uniqueId, ",status=", status.toString(), ")");
             var data = "$orderby=Name asc";
+            this.getRequest(url, data, function (response) {
+                if (callback) {
+                    var mapper = new DossierSummaryFolderViewModelMapper();
+                    var dossierFolders = [];
+                    if (response) {
+                        dossierFolders = mapper.MapCollection(response.value);
+                        callback(dossierFolders);
+                    }
+                }
+            }, error);
+        };
+        DossierFolderService.prototype.getProcessFascicleChildren = function (uniqueId, status, callback, error) {
+            var baseUrl = this._configuration.ODATAUrl;
+            var url = baseUrl + "/DossierFolderService.GetChildrenByParent(idDossierFolder=" + uniqueId + ",status=" + status.toString() + ")";
+            var data = "$orderby=Name asc&$filter=Status in ('InProgress','Folder')";
             this.getRequest(url, data, function (response) {
                 if (callback) {
                     var mapper = new DossierSummaryFolderViewModelMapper();
@@ -66,9 +81,6 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/
             }
             this.putRequest(url, JSON.stringify(dossierFolder), callback, error);
         };
-        /*
-        *
-        */
         DossierFolderService.prototype.getDossierFolder = function (uniqueId, callback, error) {
             var url = this._configuration.ODATAUrl;
             var data = "$filter=UniqueId eq ".concat(uniqueId, "&$expand=Category,Fascicle,DossierFolderRoles($expand=Role)");
@@ -83,7 +95,7 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/
         };
         DossierFolderService.prototype.getFullDossierFolder = function (uniqueId, callback, error) {
             var url = this._configuration.ODATAUrl;
-            var data = "$filter=UniqueId eq ".concat(uniqueId, "&$expand=Category,Dossier($expand=MetadataRepository),DossierFolderRoles($expand=Role)");
+            var data = "$filter=UniqueId eq ".concat(uniqueId, "&$expand=Fascicle,Category,Dossier($expand=MetadataRepository),DossierFolderRoles($expand=Role)");
             this.getRequest(url, data, function (response) {
                 if (callback && response) {
                     callback(response.value[0]);
@@ -92,14 +104,16 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/
         };
         DossierFolderService.prototype.getFascicleTemplatesByDossierFolderId = function (uniqueId, callback, error) {
             var url = this._configuration.ODATAUrl;
-            var data = "$expand=FascicleTemplates&$filter=UniqueId eq " + uniqueId + "&$select=FascicleTemplates";
+            var data = "$expand=FascicleTemplates&$filter=UniqueId eq " + uniqueId + "&$select=FascicleTemplates&$orderby=Name";
             this.getRequest(url, data, function (response) {
                 if (callback && response) {
                     var mapper = new ProcessFascicleTemplateModelMapper();
                     var results = [];
-                    for (var _i = 0, _a = response.value[0].FascicleTemplates; _i < _a.length; _i++) {
-                        var item = _a[_i];
-                        results.push(mapper.Map(item));
+                    if (response.value.length) {
+                        for (var _i = 0, _a = response.value[0].FascicleTemplates; _i < _a.length; _i++) {
+                            var item = _a[_i];
+                            results.push(mapper.Map(item));
+                        }
                     }
                     callback(results);
                 }
@@ -109,7 +123,7 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/
             if (name) {
                 name = "'" + name + "'";
             }
-            var url = this._configuration.ODATAUrl + "/DossierFolderService.GetProcessFolders(name=" + name + ",idProcess=" + idProcess + ",loadOnlyActive=" + loadOnlyActive + ",loadOnlyMy=" + loadOnlyMy + ")";
+            var url = this._configuration.ODATAUrl + "/DossierFolderService.GetProcessFolders(name=" + name + ",idProcess=" + idProcess + ",loadOnlyActive=" + loadOnlyActive + ",loadOnlyMy=" + loadOnlyMy + ")?$filter=Status ne 'Fascicle'&$orderby=Name";
             this.getRequest(url, null, function (response) {
                 if (callback && response) {
                     callback(response.value);
@@ -117,11 +131,82 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/
             }, error);
         };
         DossierFolderService.prototype.getDossierFolderById = function (uniqueId, callback, error) {
-            var url = this._configuration.ODATAUrl + "?$filter=UniqueId eq " + uniqueId + "&$expand=DossierFolderRoles($expand=Role)";
+            var url = this._configuration.ODATAUrl + "?$filter=UniqueId eq " + uniqueId + "&$expand=Dossier,DossierFolderRoles($expand=Role($expand=Father)),Category";
             this.getRequest(url, null, function (response) {
                 if (callback && response) {
                     var mapper = new DossierFolderModelMapper();
-                    callback(mapper.MapCollection(response.value));
+                    var dossierMapper_1 = new DossierModelMapper();
+                    var dossierFolderModels = mapper.MapCollection(response.value);
+                    dossierFolderModels.forEach((function (dossierFolderModel) { return dossierFolderModel.Dossier = dossierMapper_1.Map(dossierFolderModel.Dossier); }));
+                    callback(dossierFolderModels);
+                }
+            }, error);
+        };
+        DossierFolderService.prototype.checkIfDossierFolderFascicleIsActive = function (dossierFolderId, callback, error) {
+            var url = this._configuration.ODATAUrl + "?$filter=UniqueId eq " + dossierFolderId + "&$expand=Fascicle";
+            this.getRequest(url, null, function (response) {
+                if (callback && response) {
+                    var mapper = new DossierFolderModelMapper();
+                    var dossierFolderModel = mapper.Map(response.value[0]);
+                    var dossierFolderFascicleIsActive = !dossierFolderModel.Fascicle.EndDate;
+                    callback(dossierFolderFascicleIsActive);
+                }
+            }, error);
+        };
+        DossierFolderService.prototype.getAllParentsOfFascicle = function (idDossier, idFascicle, callback, error) {
+            var url = this._configuration.ODATAUrl + "/DossierFolderService.GetAllParentsOfFascicle(idDossier=" + idDossier + ", idFascicle=" + idFascicle + ")";
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    var mapper = new DossierSummaryFolderViewModelMapper();
+                    var dossierFolders = [];
+                    if (response) {
+                        dossierFolders = mapper.MapCollection(response.value);
+                        callback(dossierFolders);
+                    }
+                }
+            }, error);
+        };
+        DossierFolderService.prototype.getLinkedDossierByFascicleId = function (idFascicle, callback, error) {
+            var url = this._configuration.ODATAUrl + "?$expand=Category,Fascicle,Dossier($expand=Container)&$filter=Fascicle/uniqueid eq " + idFascicle;
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    callback(response.value);
+                }
+            }, error);
+        };
+        DossierFolderService.prototype.hasAssociatedFascicles = function (idDossier, callback, error) {
+            var url = this._configuration.ODATAUrl + "/DossierFolderService.HasAssociatedFascicles(idDossier=" + idDossier + ")";
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    callback(response.value);
+                }
+            }, error);
+        };
+        DossierFolderService.prototype.getProcessByFascicleId = function (uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var data = "$filter=Dossier/DossierType eq 'Process' and Fascicle/UniqueId eq " + uniqueId + "&$expand=Dossier($expand=DossierFolders)";
+            this.getRequest(url, data, function (response) {
+                if (callback) {
+                    callback(response.value);
+                }
+            }, error);
+        };
+        DossierFolderService.prototype.getByFascicleId = function (uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var data = "$filter=Dossier/DossierType ne 'Process' and Fascicle/UniqueId eq " + uniqueId + "&$expand=Dossier";
+            this.getRequest(url, data, function (response) {
+                if (callback) {
+                    callback(response.value);
+                }
+            }, error);
+        };
+        DossierFolderService.prototype.countByFascicleId = function (uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var data = "/$count?$filter=Dossier/DossierType ne 'Process' and Fascicle/UniqueId eq " + uniqueId;
+            url = url.concat(data);
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    callback(response);
                 }
             }, error);
         };

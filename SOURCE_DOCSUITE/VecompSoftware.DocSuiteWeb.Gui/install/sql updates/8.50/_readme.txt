@@ -128,11 +128,14 @@ USARE QUESTO STANDARD SUI TENANT ID
 	"TenantId": "11D69D07-8314-451A-884C-E7CCF45E587F",
 	"TenantName": "Li-nea"
 
+	"TenantId": "6219628E-B6AC-45FC-8B9B-CB8C064CE73E"
+	"TenantName": "LAND"
+
 	"TenantId": "91EB5DF6-B39A-4416-ADFB-BCDE83B18E93"
 	"TenantName": "ENEA"
 
 	"TenantId": 9BA38CE7-6717-410F-8CBF-59E352C1E340"
-	"TenantName": "OrdineConsulentiLavoro"
+	"TenantName": "CNOCDL"
 
 	"TenantId": "FE1A737D-34D8-40AB-9A01-8B089758B4C3"
 	"TenantName": "RSM"

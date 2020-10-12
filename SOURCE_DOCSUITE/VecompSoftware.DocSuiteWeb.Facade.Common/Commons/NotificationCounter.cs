@@ -8,6 +8,7 @@ using VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows;
 using VecompSoftware.DocSuiteWeb.DTO.Commons;
 using VecompSoftware.DocSuiteWeb.EntityMapper.Workflow;
 using VecompSoftware.DocSuiteWeb.Facade.Common.Hubs;
+using VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI;
 using VecompSoftware.Services.Logging;
 using WebAPIFinder = VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder;
 
@@ -17,6 +18,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
     {
         #region [ Fields ]
         private readonly NotificationHub _notificationHub = null;
+        private readonly Guid _idTenantAOO;
         #endregion
 
         #region [ Properties ]
@@ -24,9 +26,10 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
         #endregion
 
         #region [ Constructor ]
-        public NotificationCounter(NotificationHub notificationHub)
+        public NotificationCounter(NotificationHub notificationHub, Guid idTenantAOO)
         {
             _notificationHub = notificationHub;
+            _idTenantAOO = idTenantAOO;
         }
 
         #endregion
@@ -116,6 +119,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 Notification model = new Notification();
                 CommonUtil cutil = new CommonUtil();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
+                _protocolFinder.IdTenantAOO = _idTenantAOO;
                 _protocolFinder.LoadFetchModeFascicleEnabled = false;
                 _protocolFinder.LoadFetchModeProtocolLogs = false;
                 _protocolFinder.IdStatus = (int)ProtocolStatusId.Attivo;               
@@ -172,6 +176,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 Notification model = new Notification();
                 CommonUtil cutil = new CommonUtil();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
+                _protocolFinder.IdTenantAOO = _idTenantAOO;
                 _protocolFinder.RestrictionOnlyRoles = true;
                 _protocolFinder.OnlyExplicitRoles = true;
                 _protocolFinder.ProtocolRoleStatus = ProtocolRoleStatus.ToEvaluate;
@@ -197,6 +202,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 Notification model = new Notification();
                 CommonUtil cutil = new CommonUtil();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
+                _protocolFinder.IdTenantAOO = _idTenantAOO;
                 _protocolFinder.ProtocolRoleStatus = ProtocolRoleStatus.Refused;
                 _protocolFinder.IsInRefusedProtocolRoleGroup = true;
                 DateTime dateFrom = DateTime.Today.AddDays(-DocSuiteContext.Current.ProtocolEnv.DesktopDayDiff);
@@ -221,6 +227,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 Notification model = new Notification();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
                 CommonUtil cutil = new CommonUtil();
+                _protocolFinder.IdTenantAOO = _idTenantAOO;
                 _protocolFinder.LoadFetchModeFascicleEnabled = false;
                 _protocolFinder.LoadFetchModeProtocolLogs = false;
                 _protocolFinder.NotDistributed = true;
@@ -248,6 +255,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 Notification model = new Notification();
                 CommonUtil cutil = new CommonUtil();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
+                _protocolFinder.IdTenantAOO = _idTenantAOO;
                 _protocolFinder.LoadFetchModeFascicleEnabled = false;
                 _protocolFinder.LoadFetchModeProtocolLogs = false;
                 _protocolFinder.IdStatus = (int)ProtocolStatusId.Attivo;
@@ -274,6 +282,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 Notification model = new Notification();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
                 CommonUtil cutil = new CommonUtil();
+                _protocolFinder.IdTenantAOO = _idTenantAOO;
                 _protocolFinder.LoadFetchModeFascicleEnabled = false;
                 _protocolFinder.LoadFetchModeProtocolLogs = false;
                 _protocolFinder.IdStatus = (int)ProtocolStatusId.Rejected;
@@ -318,13 +327,18 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
             {
                 Notification model = new Notification();
                 WebAPIFinder.Collaborations.CollaborationFinder _collaborationFinder = InitCollaborationFinder();
-                _collaborationFinder.UserName = DocSuiteContext.Current.User.UserName;
-                _collaborationFinder.Domain = DocSuiteContext.Current.User.Domain;
-                _collaborationFinder.CollaborationFinderActionType = WebAPIFinder.Collaborations.CollaborationFinderActionType.ToManage;
 
-                model.NotificationName = NotificationType.CollaborazioniDaProtocollare.ToString();
-                _collaborationFinder.DoSearchHeader();
-                model.NotificationCount = _collaborationFinder.Count();
+                WebAPIImpersonatorFacade.ImpersonateFinder(_collaborationFinder,
+                    (impersonationType, finder) =>
+                    {
+                        finder.UserName = DocSuiteContext.Current.User.UserName;
+                        finder.Domain = DocSuiteContext.Current.User.Domain;
+                        finder.CollaborationFinderActionType = WebAPIFinder.Collaborations.CollaborationFinderActionType.ToManage;
+
+                        model.NotificationName = NotificationType.CollaborazioniDaProtocollare.ToString();
+                        finder.DoSearchHeader();
+                        model.NotificationCount = finder.Count();
+                    });
                 return model;
             }
             catch (Exception ex)
@@ -340,14 +354,19 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
             {
                 Notification model = new Notification();
                 WebAPIFinder.Collaborations.CollaborationFinder _collaborationFinder = InitCollaborationFinder();
-                _collaborationFinder.UserName = DocSuiteContext.Current.User.UserName;
-                _collaborationFinder.Domain = DocSuiteContext.Current.User.Domain;
-                _collaborationFinder.CollaborationFinderActionType = WebAPIFinder.Collaborations.CollaborationFinderActionType.ToVisionSign;
-                _collaborationFinder.CollaborationFinderFilterType = WebAPIFinder.Collaborations.CollaborationFinderFilterType.AllCollaborations;
 
-                model.NotificationName = NotificationType.CollaborazioniDaVisionare.ToString();
-                _collaborationFinder.DoSearchHeader();
-                model.NotificationCount = _collaborationFinder.Count();
+                WebAPIImpersonatorFacade.ImpersonateFinder(_collaborationFinder,
+                    (impersonationType, finder) =>
+                    {
+                        finder.UserName = DocSuiteContext.Current.User.UserName;
+                        finder.Domain = DocSuiteContext.Current.User.Domain;
+                        finder.CollaborationFinderActionType = WebAPIFinder.Collaborations.CollaborationFinderActionType.ToVisionSign;
+                        finder.CollaborationFinderFilterType = WebAPIFinder.Collaborations.CollaborationFinderFilterType.AllCollaborations;
+
+                        model.NotificationName = NotificationType.CollaborazioniDaVisionare.ToString();
+                        finder.DoSearchHeader();
+                        model.NotificationCount = finder.Count();
+                    });
                 return model;
             }
             catch (Exception ex)
@@ -364,7 +383,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 Notification model = new Notification();
                 WorkflowActivityFinder _wfFinder = new WorkflowActivityFinder(new MapperWorkflowActivity(), DocSuiteContext.Current.User.FullUserName);
                 _wfFinder.WorkflowActivityStatus = new Collection<WorkflowStatus> { WorkflowStatus.Active, WorkflowStatus.Progress };
-
+                _wfFinder.IdTenant = FacadeFactory.Instance.UserLogFacade.GetByUser(DocSuiteContext.Current.User.FullUserName).CurrentTenantId;
                 model.NotificationName = NotificationType.WorkflowUtenteCorrente.ToString();
                 model.NotificationCount = _wfFinder.Count();
                 return model;

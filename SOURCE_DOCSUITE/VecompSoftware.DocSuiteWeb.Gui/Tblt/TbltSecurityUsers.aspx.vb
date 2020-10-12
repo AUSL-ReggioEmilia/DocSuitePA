@@ -15,6 +15,7 @@ Public Class TbltSecurityUsers
 
 #Region " Fields "
     Private Const USERS_INITIALIZE_DETAILS_CALLBACK As String = "tbltSecurityUsers.initializeDetailsCallback('{0}');"
+    Private Const INITIALIZE_SPECIAL_TOOLBAR_ACTION As String = "tbltSecurityUsers.initializeSpecialToolbarAction();"
 #End Region
 
 #Region " Properties "
@@ -57,8 +58,14 @@ Public Class TbltSecurityUsers
         End If
     End Sub
 
-    Protected Sub toolBarSearch_OnClick(sender As Object, e As EventArgs) Handles ToolBarSearch.ButtonClick
-        LoadUsers()
+    Protected Sub ToolBarSearch_ButtonClick(ByVal sender As Object, ByVal e As RadToolBarEventArgs) Handles ToolBarSearch.ButtonClick
+        Dim btn As RadToolBarButton = TryCast(e.Item, RadToolBarButton)
+
+        If btn.Value = "search" Then
+            LoadUsers()
+        Else
+            LoadUsersFromUserlog()
+        End If
     End Sub
 
     Protected Sub TbltSecurityUsers_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
@@ -76,6 +83,7 @@ Public Class TbltSecurityUsers
                         RefreshDetails()
                     End If
                 End If
+                AjaxManager.ResponseScripts.Add(String.Format(USERS_INITIALIZE_DETAILS_CALLBACK, String.Empty))
             Case "groups"
                 If Not String.IsNullOrEmpty(arguments(1)) Then
                     Dim errorGroups As List(Of String) = New List(Of String)()
@@ -107,6 +115,7 @@ Public Class TbltSecurityUsers
                     End If
                     RefreshDetails()
                 End If
+                AjaxManager.ResponseScripts.Add(String.Format(USERS_INITIALIZE_DETAILS_CALLBACK, String.Empty))
             Case "delete"
                 If rtvGroups.CheckedNodes() Is Nothing OrElse rtvGroups.CheckedNodes().Count() = 0 Then
                     Exit Sub
@@ -118,6 +127,7 @@ Public Class TbltSecurityUsers
                     RefreshDetails()
                 End If
 
+                AjaxManager.ResponseScripts.Add(String.Format(USERS_INITIALIZE_DETAILS_CALLBACK, String.Empty))
             Case "deleteuser"
                 Dim allUserGroups As IList(Of SecurityGroups) = Facade.SecurityGroupsFacade.GetByUser(SelectedUser.Attributes("Account"), SelectedUser.Attributes("Domain"))
 
@@ -132,6 +142,7 @@ Public Class TbltSecurityUsers
                     AjaxAlert("L'utente è già stato configurato.")
                     Exit Sub
                 End If
+                AjaxManager.ResponseScripts.Add(String.Format(USERS_INITIALIZE_DETAILS_CALLBACK, String.Empty))
                 Response.Redirect(String.Format("~/Tblt/TbltSecurityGroupWizard.aspx?Type=Comm&DomainAD={0}&AccountAD={1}", asUser.Domain, asUser.Account))
         End Select
     End Sub
@@ -284,14 +295,28 @@ Public Class TbltSecurityUsers
     Private Sub LoadUsers()
         rtvUsers.Nodes(0).Nodes.Clear()
         Dim users As IList(Of SecurityUsers) = Facade.SecurityUsersFacade _
-            .GetUsersByAccountOrDescription(SearchAccountTextBox.Text, DomainOptionsCombobox.SelectedValue) _
-            .ToList()
+        .GetUsersByAccountOrDescription(SearchAccountTextBox.Text, DomainOptionsCombobox.SelectedValue) _
+        .ToList()
         For Each user As SecurityUsers In users
             Dim fullUserName As String = String.Concat(user.UserDomain, "\", user.Account)
             Dim newNode As RadTreeNode = CreateNode(String.Concat(fullUserName, " (", user.Description, ")"), fullUserName, "~/App_Themes/DocSuite2008/imgset16/user.png")
             newNode.Attributes.Add("Account", user.Account)
             newNode.Attributes.Add("Domain", user.UserDomain)
             newNode.Attributes.Add("DisplayName", user.Description)
+            rtvUsers.Nodes(0).Nodes.Add(newNode)
+        Next
+    End Sub
+
+    Private Sub LoadUsersFromUserlog()
+        rtvUsers.Nodes(0).Nodes.Clear()
+        Dim users As IList(Of UserLog) = Facade.UserLogFacade.GetUnconfiguredUsers().Distinct().ToList()
+        For Each user As UserLog In users
+            Dim fullUserName As String = user.Id
+            Dim newNode As RadTreeNode = CreateNode(fullUserName, "~/App_Themes/DocSuite2008/imgset16/user.png", String.Empty)
+            Dim token As String() = fullUserName.Split("\"c)
+            newNode.Attributes.Add("Account", token.Last())
+            newNode.Attributes.Add("Domain", token.First())
+            newNode.Attributes.Add("DisplayName", fullUserName)
             rtvUsers.Nodes(0).Nodes.Add(newNode)
         Next
     End Sub
@@ -374,13 +399,13 @@ Public Class TbltSecurityUsers
         Dim docRights As String = String.Empty
         If CommonInstance.DocmEnabled Then
             docType = DocSuiteContext.Current.DossierAndPraticheLabel
-            If (Diritti(roleGroup.DocumentRights, DocumentRoleRightPositions.Enabled)) Then
+            If (Diritti(roleGroup.DocumentRights, DossierRoleRightPositions.Enabled)) Then
                 docRights = String.Concat(docRights, "Abilitato")
             End If
-            If (Diritti(roleGroup.DocumentRights, DocumentRoleRightPositions.Workflow)) Then
+            If (Diritti(roleGroup.DocumentRights, DossierRoleRightPositions.Workflow)) Then
                 docRights = String.Concat(docRights, If(String.IsNullOrEmpty(docRights), "Workflow", ", Workflow"))
             End If
-            If (Diritti(roleGroup.DocumentRights, DocumentRoleRightPositions.Manager)) Then
+            If (Diritti(roleGroup.DocumentRights, DossierRoleRightPositions.Manager)) Then
                 docRights = String.Concat(docRights, If(String.IsNullOrEmpty(docRights), "Manager", ", Manager"))
             End If
             If Not String.IsNullOrEmpty(docRights) Then

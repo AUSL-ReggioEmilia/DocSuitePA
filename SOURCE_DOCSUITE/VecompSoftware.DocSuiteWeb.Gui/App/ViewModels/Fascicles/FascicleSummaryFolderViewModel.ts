@@ -1,4 +1,5 @@
 ﻿import CategoryModel = require('App/Models/Commons/CategoryModel');
+import FascicleDocumentModel = require('../../Models/Fascicles/FascicleDocumentModel');
 
 interface FascicleSummaryFolderViewModel {
     UniqueId: string;
@@ -11,6 +12,7 @@ interface FascicleSummaryFolderViewModel {
     hasChildren: boolean;   
     idParent: boolean;
     FascicleFolderLevel: number;
+    FascicleDocuments: FascicleDocumentModel[];
 }
 
 export = FascicleSummaryFolderViewModel

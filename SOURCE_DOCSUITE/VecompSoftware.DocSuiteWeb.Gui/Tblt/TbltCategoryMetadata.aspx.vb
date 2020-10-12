@@ -2,6 +2,7 @@
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Services.Logging
 
 Public Class TbltCategoryMetadata
@@ -37,6 +38,9 @@ Public Class TbltCategoryMetadata
 #Region "Events"
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Not CommonShared.HasGroupTblCategoryRight Then
+            Throw New DocSuiteException("Utente non autorizzato alla visualizzazione della Versione del Classificatore.")
+        End If
         InitializeAjax()
         If Not Page.IsPostBack Then
             MasterDocSuite.TitleVisible = False

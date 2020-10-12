@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/BaseMapper", "App/Mappers/Commons/CategoryModelMapper", "App/Mappers/Commons/ContactModelMapper", "App/Mappers/Fascicles/FascicleRoleModelMapper", "App/Mappers/Fascicles/FascicleDocumentModelMapper", "App/Mappers/Fascicles/FascicleLinkModelMapper", "App/Mappers/Fascicles/FascicleDocumentUnitModelMapper", "App/Helpers/RequireJSHelper", "App/Mappers/Commons/ContainerModelMapper", "../Dossiers/DossierFolderModelMapper"], function (require, exports, BaseMapper, CategoryModelMapper, ContactModelMapper, FascicleRoleModelMapper, FascicleDocumentModelMapper, FascicleLinkModelMapper, FascicleDocumentUnitModelMapper, RequireJSHelper, ContainerModelMapper, DossierFolderModelMapper) {
+define(["require", "exports", "App/Mappers/BaseMapper", "App/Mappers/Commons/CategoryModelMapper", "App/Mappers/Commons/ContactModelMapper", "App/Mappers/Fascicles/FascicleRoleModelMapper", "App/Mappers/Fascicles/FascicleDocumentModelMapper", "App/Mappers/Fascicles/FascicleLinkModelMapper", "App/Mappers/Fascicles/FascicleDocumentUnitModelMapper", "App/Helpers/RequireJSHelper", "App/Mappers/Commons/ContainerModelMapper", "App/Mappers/Dossiers/DossierFolderModelMapper", "App/Mappers/Tenants/TenantAOOModelMapper", "App/Mappers/Commons/MetadataRepositoryModelMapper"], function (require, exports, BaseMapper, CategoryModelMapper, ContactModelMapper, FascicleRoleModelMapper, FascicleDocumentModelMapper, FascicleLinkModelMapper, FascicleDocumentUnitModelMapper, RequireJSHelper, ContainerModelMapper, DossierFolderModelMapper, TenantAOOModelMapper, MetadataRepositoryModelMapper) {
     var FascicleModelMapper = /** @class */ (function (_super) {
         __extends(FascicleModelMapper, _super);
         function FascicleModelMapper() {
@@ -24,19 +24,22 @@ define(["require", "exports", "App/Mappers/BaseMapper", "App/Mappers/Commons/Cat
             }
             var _fascicleDocumentUnitModelMapper = RequireJSHelper.getModule(FascicleDocumentUnitModelMapper, 'App/Mappers/Fascicles/FascicleDocumentUnitModelMapper');
             var _fascicleDocumentModelMapper = RequireJSHelper.getModule(FascicleDocumentModelMapper, 'App/Mappers/Fascicles/FascicleDocumentModelMapper');
+            var _dossierFolderModelMapper = RequireJSHelper.getModule(DossierFolderModelMapper, 'App/Mappers/Dossiers/DossierFolderModelMapper');
+            var _tenantAOOModelMapper = RequireJSHelper.getModule(TenantAOOModelMapper, 'App/Mappers/Tenants/TenantAOOModelMapper');
+            var _metadataRepositoryModelMapper = RequireJSHelper.getModule(MetadataRepositoryModelMapper, 'App/Mappers/Commons/MetadataRepositoryModelMapper');
+            toMap.TenantAOO = source.TenantAOO ? _tenantAOOModelMapper.Map(source.TenantAOO) : null;
             toMap.Category = source.Category ? new CategoryModelMapper().Map(source.Category) : null;
             toMap.Container = source.Container ? new ContainerModelMapper().Map(source.Container) : null;
-            toMap.Conservation = source.Conservation;
             toMap.Contacts = source.Contacts ? new ContactModelMapper().MapCollection(source.Contacts) : null;
-            toMap.EndDate = source.EndDate;
             toMap.FascicleDocuments = source.FascicleDocuments ? _fascicleDocumentModelMapper.MapCollection(source.FascicleDocuments) : null;
             toMap.FascicleDocumentUnits = source.FascicleDocumentUnits ? _fascicleDocumentUnitModelMapper.MapCollection(source.FascicleDocumentUnits) : null;
             toMap.FascicleLinks = source.FascicleLinks ? new FascicleLinkModelMapper().MapCollection(source.FascicleLinks) : null;
-            toMap.FascicleObject = source.FascicleObject;
             toMap.FascicleRoles = source.FascicleRoles ? new FascicleRoleModelMapper().MapCollection(source.FascicleRoles) : null;
-            toMap.FascicleType = source.FascicleType;
             toMap.LinkedFascicles = source.LinkedFascicles ? new FascicleLinkModelMapper().MapCollection(source.LinkedFascicles) : null;
-            toMap.DossierFolders = source.DossierFolders ? new DossierFolderModelMapper().MapCollection(source.DossierFolders) : null;
+            toMap.DossierFolders = source.DossierFolders ? _dossierFolderModelMapper.MapCollection(source.DossierFolders) : [];
+            toMap.MetadataRepository = source.MetadataRepository ? _metadataRepositoryModelMapper.Map(source.MetadataRepository) : null;
+            toMap.FascicleObject = source.FascicleObject;
+            toMap.FascicleType = source.FascicleType;
             toMap.Manager = source.Manager;
             toMap.Name = source.Name;
             toMap.Note = source.Note;
@@ -52,6 +55,10 @@ define(["require", "exports", "App/Mappers/BaseMapper", "App/Mappers/Commons/Cat
             toMap.VisibilityType = source.VisibilityType;
             toMap.Year = source.Year;
             toMap.MetadataValues = source.MetadataValues;
+            toMap.MetadataDesigner = source.MetadataDesigner;
+            toMap.CustomActions = source.CustomActions;
+            toMap.EndDate = source.EndDate;
+            toMap.Conservation = source.Conservation;
             return toMap;
         };
         return FascicleModelMapper;

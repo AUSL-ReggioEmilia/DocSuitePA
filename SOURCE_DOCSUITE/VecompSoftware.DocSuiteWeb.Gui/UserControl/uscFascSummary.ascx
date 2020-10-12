@@ -32,7 +32,10 @@
                 uscFascSummary.fascCaptionId = "<%=fascCaption.ClientID%>";
                 uscFascSummary.containerRowId = "<%= containerRow.ClientID %>";
                 uscFascSummary.lblContainerId = "<%= lblContainer.ClientID %>";
+                uscFascSummary.serieLabelId = "<%= lblSerieName.ClientID %>";
                 uscFascSummary.fascicleContainerEnabled = <%= ProtocolEnv.FascicleContainerEnabled.ToString().ToLower() %>;
+                uscFascSummary.processEnabled = <%= ProtocolEnv.ProcessEnabled.ToString().ToLower() %>;
+                uscFascSummary.serieLabelRowId = "<%= lblSerieNameRow.ClientID %>";
                 uscFascSummary.initialize();
             });
         });
@@ -86,7 +89,17 @@
                                             <asp:Label ID="lblEndDate" runat="server"></asp:Label>
                                         </telerik:LayoutColumn>
                                     </Columns>
-                                </telerik:LayoutRow>                                
+                                </telerik:LayoutRow>      
+                                <telerik:LayoutRow HtmlTag="Div" ID="lblSerieNameRow" Style="display: none;"> 
+                                    <Columns>
+                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
+                                            <b>Serie:</b>
+                                        </telerik:LayoutColumn>
+                                        <telerik:LayoutColumn Span="9" CssClass="t-col-left-padding">
+                                            <asp:Label ID="lblSerieName" runat="server"></asp:Label>
+                                        </telerik:LayoutColumn>
+                                    </Columns>
+                                </telerik:LayoutRow>      
                                 <telerik:LayoutRow HtmlTag="Div">
                                     <Columns>
                                         <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">

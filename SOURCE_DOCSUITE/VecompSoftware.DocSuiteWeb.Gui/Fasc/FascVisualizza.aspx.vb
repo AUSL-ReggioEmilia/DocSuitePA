@@ -21,6 +21,7 @@ Partial Public Class FascVisualizza
 
     Private Const FASCICLE_INITIALIZE_CALLBACK As String = "fascVisualizza.initializeCallback({0});"
     Private Const FASCICLE_REFRESH_UD_REQUEST As String = "fascVisualizza.sendRefreshUDRequest(null,null,true);"
+    Private Const FASCICLE_REFRESH_UD_REQUEST_NO_UPDATE As String = "fascVisualizza.sendRefreshUDRequest(null,null,false);"
     Private Const FASCICLE_OPEN_SIGN_WINDOW As String = "fascVisualizza.openSignWindow('{0}');"
     Private Const SIGNED_DOCUMENT As String = "Signed"
     Private Const INITIALIZE_SIGN_DOCUMENT As String = "InitializeSignDocument"
@@ -44,6 +45,7 @@ Partial Public Class FascVisualizza
             Return _idWorkflowActivity
         End Get
     End Property
+
     Protected ReadOnly Property WorkflowEnabled As Boolean
         Get
             Return DocSuiteContext.Current.ProtocolEnv.WorkflowManagerEnabled
@@ -52,7 +54,7 @@ Partial Public Class FascVisualizza
 
     Protected ReadOnly Property ButtonLogVisible As Boolean
         Get
-            Return ProtocolEnv.IsLogEnabled AndAlso (CommonShared.HasGroupAdministratorRight() OrElse (If(String.IsNullOrEmpty(ProtocolEnv.EnvGroupLogView), False, CommonShared.HasGroupLogViewRight())))
+            Return CommonShared.HasGroupAdministratorRight() OrElse If(String.IsNullOrEmpty(ProtocolEnv.EnvGroupLogView), False, CommonShared.HasGroupLogViewRight())
         End Get
     End Property
 
@@ -140,19 +142,19 @@ Partial Public Class FascVisualizza
                 If ajaxModel.Value IsNot Nothing AndAlso ajaxModel.Value.Count > 0 Then
                     DeleteDocument(ajaxModel.Value)
                 End If
-                AjaxManager.ResponseScripts.Add(FASCICLE_REFRESH_UD_REQUEST)
+                AjaxManager.ResponseScripts.Add(FASCICLE_REFRESH_UD_REQUEST_NO_UPDATE)
             Case INITIALIZE_SIGN_DOCUMENT
                 Dim documentId As Guid = Guid.Empty
                 If String.IsNullOrEmpty(ajaxModel.Value(0)) OrElse Not Guid.TryParse(ajaxModel.Value(0), documentId) Then
-                    AjaxManager.ResponseScripts.Add(FASCICLE_REFRESH_UD_REQUEST)
+                    AjaxManager.ResponseScripts.Add(FASCICLE_REFRESH_UD_REQUEST_NO_UPDATE)
                     Return
                 End If
-                Dim documents As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentInfo(String.Empty, documentId, Nothing, True)
+                Dim documents As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentInfo(documentId, Nothing, True)
                 Dim items As NameValueCollection = documents.FirstOrDefault().ToQueryString()
                 AjaxManager.ResponseScripts.Add(String.Format(FASCICLE_OPEN_SIGN_WINDOW, items.AsEncodedQueryString()))
             Case SIGNED_DOCUMENT
                 If String.IsNullOrEmpty(ajaxModel.Value(0)) OrElse String.IsNullOrEmpty(ajaxModel.Value(1)) Then
-                    AjaxManager.ResponseScripts.Add(FASCICLE_REFRESH_UD_REQUEST)
+                    AjaxManager.ResponseScripts.Add(FASCICLE_REFRESH_UD_REQUEST_NO_UPDATE)
                     Return
                 End If
 
@@ -179,7 +181,7 @@ Partial Public Class FascVisualizza
             If result Then
                 FileLogger.Debug(LoggerName, String.Format("FascVisualizza_AjaxRequest -> IdFascicle {0} - Delete document with Id: {1}", IdFascicle, idDocument))
                 Try
-                    Service.DetachDocument(FascMiscellaneaLocation.ProtBiblosDSDB, idDocument)
+                    Service.DetachDocument(idDocument)
                 Catch ex As Exception
                     FileLogger.Warn(LoggerName, "Errore in eliminazione documento inserti: " & ex.Message, ex)
                     errorCounter += 1
@@ -199,7 +201,7 @@ Partial Public Class FascVisualizza
 
         Dim originalDocument As BiblosDocumentInfo = DirectCast(DocumentInfoFactory.BuildDocumentInfo(originalDocumentSerialized), BiblosDocumentInfo)
         Dim cloned As MemoryDocumentInfo = New MemoryDocumentInfo(originalDocument.Stream, originalDocument.Name)
-        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = cloned.ArchiveInBiblos(String.Empty, originalDocument.ArchiveName, originalDocument.ChainId)
+        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = cloned.ArchiveInBiblos(originalDocument.ArchiveName, originalDocument.ChainId)
 
         originalDocument.Stream = signedFile.Stream
         originalDocument.IsSigned = True

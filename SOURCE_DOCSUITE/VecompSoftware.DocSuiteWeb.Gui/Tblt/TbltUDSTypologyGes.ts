@@ -58,7 +58,7 @@ class TbltUDSTypologyGes {
      /**
      *------------------------- Events -----------------------------
      */
-    private btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         if (!this._txtName.get_value()) {
             return;
         }

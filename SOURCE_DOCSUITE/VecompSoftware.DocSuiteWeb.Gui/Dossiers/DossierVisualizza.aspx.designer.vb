@@ -140,6 +140,24 @@ Partial Public Class DossierVisualizza
     Protected WithEvents btnModifica As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
+    '''btnSendToRoles control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSendToRoles As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''btnSendToSecretaries control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSendToSecretaries As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
     '''btnClose control.
     '''</summary>
     '''<remarks>
@@ -167,15 +185,6 @@ Partial Public Class DossierVisualizza
     Protected WithEvents btnWorkflow As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
-    '''btnLog control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnLog As Global.Telerik.Web.UI.RadButton
-
-    '''<summary>
     '''btnCompleteWorkflow control.
     '''</summary>
     '''<remarks>
@@ -192,6 +201,15 @@ Partial Public Class DossierVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnInserti As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''btnLog control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnLog As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''fascPane control.

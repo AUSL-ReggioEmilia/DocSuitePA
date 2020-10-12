@@ -61,7 +61,7 @@ class CommonSelContactOmniBus {
      * @param sender
      * @param args
      */
-    private btnFind_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs): void => {
+    private btnFind_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs): void => {
         this._ajaxManager.ajaxRequestWithTarget(this.btnFindUniqueId, '');
     }
 
@@ -70,7 +70,7 @@ class CommonSelContactOmniBus {
      * @param sender
      * @param args
      */
-    private btnConfirm_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs): void => {
+    private btnConfirm_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs): void => {
         this._rtvResults = <Telerik.Web.UI.RadTreeView>$find(this.rtvResultsId);
         let selectedContact: Telerik.Web.UI.RadTreeNode = this._rtvResults.get_selectedNode();
         if (selectedContact == undefined || selectedContact.get_value() == "root") {
@@ -87,7 +87,7 @@ class CommonSelContactOmniBus {
      * @param sender
      * @param args
      */
-    private btnConfirmAndNew_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs): void => {
+    private btnConfirmAndNew_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs): void => {
         this._rtvResults = <Telerik.Web.UI.RadTreeView>$find(this.rtvResultsId);
         let selectedContact: Telerik.Web.UI.RadTreeNode = this._rtvResults.get_selectedNode();
         if (selectedContact == undefined || selectedContact.get_value() == "root") {

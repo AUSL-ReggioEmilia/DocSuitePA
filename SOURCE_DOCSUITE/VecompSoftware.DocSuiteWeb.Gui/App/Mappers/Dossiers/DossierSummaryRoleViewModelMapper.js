@@ -11,21 +11,23 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/BaseMapper", "App/ViewModels/BaseEntityViewModel"], function (require, exports, BaseMapper, BaseEntityViewModel) {
+define(["require", "exports", "App/Mappers/BaseMapper", "App/ViewModels/BaseEntityRoleViewModel"], function (require, exports, BaseMapper, BaseEntityRoleViewModel) {
     var DossierSummaryRoleViewModelMapper = /** @class */ (function (_super) {
         __extends(DossierSummaryRoleViewModelMapper, _super);
         function DossierSummaryRoleViewModelMapper() {
             return _super.call(this) || this;
         }
         DossierSummaryRoleViewModelMapper.prototype.Map = function (source) {
-            var toMap = new BaseEntityViewModel();
+            var toMap = new BaseEntityRoleViewModel();
             if (!source) {
                 return null;
             }
-            toMap.UniqueId = source.Role ? source.Role.UniqueId : null;
+            toMap.UniqueId = source.UniqueId;
             toMap.EntityShortId = source.Role.IdRole ? source.Role.IdRole : null;
             toMap.Name = source.Role.Name;
             toMap.Type = source.Type;
+            toMap.IsMaster = source.IsMaster;
+            toMap.IsActive = source.IsActive;
             return toMap;
         };
         return DossierSummaryRoleViewModelMapper;

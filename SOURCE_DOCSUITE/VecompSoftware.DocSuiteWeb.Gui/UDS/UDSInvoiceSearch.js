@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/UDSInvoiceSearchFilterDTO", "App/Helpers/EnumHelper", "App/Models/UDS/UDSInvoiceDirection", "App/Services/UDS/UDSService"], function (require, exports, UDSInvoiceBase, ServiceConfigurationHelper, UDSInvoiceSearchFilterDTO, EnumHelper, UDSInvoiceDirection, UDSService) {
+define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/UDSInvoiceSearchFilterDTO", "App/Models/UDS/UDSInvoiceDirection", "App/Services/UDS/UDSService", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, UDSInvoiceBase, ServiceConfigurationHelper, UDSInvoiceSearchFilterDTO, UDSInvoiceDirection, UDSService, SessionStorageKeysHelper) {
     var UDSInvoiceSearch = /** @class */ (function (_super) {
         __extends(UDSInvoiceSearch, _super);
         function UDSInvoiceSearch(serviceConfigurations) {
@@ -21,43 +21,28 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             _this.cmdRepositoriName_OnSelectedIndexChange = function (sender, args) {
                 var selectedItem = sender.get_selectedItem();
                 if (selectedItem != null && selectedItem.get_value() != "") {
-                    _this.loadUDSInvoiceTipologyByID(selectedItem.get_value());
-                    var isReceivableInvoice = selectedItem.get_text().endsWith(InvoiceRepositories.B2BReceivable.toString());
-                    _this._ltlLabelPecMail.hide();
-                    _this._ltlchktxtPecMail.hide();
-                    if (isReceivableInvoice) {
-                        _this._ltlLabelPecMail.show();
-                        _this._ltlchktxtPecMail.show();
-                    }
-                    document.getElementById("ltlSupplier").hidden = !isReceivableInvoice;
-                    document.getElementById("ltlCustomer").hidden = isReceivableInvoice;
-                    if (_this._btnInvoiceMove) {
-                        _this._btnInvoiceMove.set_enabled(isReceivableInvoice);
-                    }
-                    _this._btnInvoiceDelete.set_visible(!isReceivableInvoice);
-                    return;
+                    _this.loadUDSInvoiceTipologyByID(selectedItem.get_value()).done(function () {
+                        var isReceivableInvoice = selectedItem.get_text().endsWith(InvoiceRepositories.B2BReceivable.toString());
+                        _this._ltlLabelPecMail.hide();
+                        _this._ltlchktxtPecMail.hide();
+                        if (isReceivableInvoice) {
+                            _this._ltlLabelPecMail.show();
+                            _this._ltlchktxtPecMail.show();
+                        }
+                        document.getElementById("ltlSupplier").hidden = !isReceivableInvoice;
+                        document.getElementById("ltlCustomer").hidden = isReceivableInvoice;
+                        if (_this._btnInvoiceMove) {
+                            _this._btnInvoiceMove.set_enabled(isReceivableInvoice);
+                        }
+                        _this._btnInvoiceDelete.set_visible(!isReceivableInvoice);
+                        var tipoarchivioName = selectedItem.get_text();
+                        _this.setLastSearchFilter(tipoarchivioName);
+                        return;
+                    });
                 }
             };
             _this.btnSearch_onClick = function (sender, args) {
                 _this.loadResults(0);
-            };
-            _this.btnDocuments_onClick = function (sender, args) {
-                //showGridLoadingPanel();
-                //var selectedItems = getSelectedItems();
-                //if (!selectedItems || selectedItems.length == 0) {
-                //    hideGridLoadingPanel();
-                //    alert("Nessun archivio selezionato.");
-                //    return;
-                //}
-                //var selection = selectedItems.reduce(function (prev, curr) {
-                //    prev[curr.getDataKeyValue("UDSId")] = curr.getDataKeyValue("IdUDSRepository");
-                //    return prev;
-                //}, {});
-                //window.location.href = "../Viewers/UDSViewer.aspx?UDSIds=".concat(encodeURIComponent(JSON.stringify(selection)));
-            };
-            _this.btnSelectAll_onClick = function (sender, args) {
-            };
-            _this.btnDeselectAll_onClick = function (sender, args) {
             };
             _this.btnUpload_onClick = function (sender, args) {
                 var url = 'UDSInvoicesUpload.aspx?Type=UDS';
@@ -75,12 +60,13 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
                 _this.cleanSearchFilters();
             };
             _this.cleanSearchFilters = function () {
+                _this._clearSessionFilterCache();
                 _this._dpStartDate.clear();
                 _this._dpEndDate.clear();
-                _this._cmdRepositoriName.clearSelection();
-                _this._cmdRepositoriName.enable();
-                _this._cmbStato.clearSelection();
-                _this._cmbStato.enable();
+                if (_this._cmdRepositoriName.get_enabled()) {
+                    _this._cmdRepositoriName.clearSelection();
+                    _this._cmbStato.clearSelection();
+                }
                 _this._txtNumeroFattura.clear();
                 _this._txtImporto.clear();
                 _this._txtYear.clear();
@@ -91,10 +77,10 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
                 _this._dtpDataIvaTo.clear();
                 _this._dtpDataReciveSDIFrom.clear();
                 _this._dtpDataReciveSDITo.clear();
-                sessionStorage.removeItem(_this._cmdRepositoriName.get_selectedItem().get_text());
+                _this._txtPecMail.clear();
+                _this._emptyPecMailCheckbox.prop("checked", false);
             };
             _this._serviceConfiguration = serviceConfigurations;
-            _this._enumHelper = new EnumHelper();
             $(document).ready(function () { });
             return _this;
         }
@@ -115,12 +101,6 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             this._cmbStato = $find(this.cmbStatoId);
             this._btnSearch = $find(this.btnSearchId);
             this._btnSearch.add_clicking(this.btnSearch_onClick);
-            //this._btnDocuments = <Telerik.Web.UI.RadButton>$find(this.btnDocumentsId);
-            //this._btnDocuments.add_clicking(this.btnDocuments_onClick);
-            //this._btnSelectAll = <Telerik.Web.UI.RadButton>$find(this.btnSelectAllId);
-            //this._btnSelectAll.add_clicking(this.btnSelectAll_onClick);
-            //this._btnDeselectAll = <Telerik.Web.UI.RadButton>$find(this.btnDeselectAllId);
-            //this._btnDeselectAll.add_clicking(this.btnDeselectAll_onClick);
             this._btnUpload = $find(this.btnUploadId);
             this._btnUpload.add_clicking(this.btnUpload_onClick);
             this._btnInvoiceMove = $find(this.btnInvoiceMovedId);
@@ -137,7 +117,6 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             this._cmdRepositoriName.add_selectedIndexChanged(this.cmdRepositoriName_OnSelectedIndexChange);
             this._txtNumeroFattura = $find(this.txtNumeroFatturaId);
             this._txtImporto = $find(this.txtImportoId);
-            this._txtPIVACF = $find(this.txtPIVACFId);
             this._txtDenominazioneManual = $find(this.txtDenominazioneManualId);
             this._txtYear = $find(this.txtYearId);
             this._dtpDataIvaFrom = $find(this.dtpDataIvaFromId);
@@ -146,12 +125,11 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             this._dtpDataReciveSDITo = $find(this.dtpDataReciveSDIToId);
             this._dtpDataAcceptFrom = $find(this.dtpDataAcceptFromId);
             this._dtpDataAcceptTo = $find(this.dtpDataAcceptToId);
-            this._txtIDSDI = $find(this.txtIDSDIId);
-            this._txtProgressIDSDIId = $find(this.txtProgressIDSDIId);
             this._txtPecMail = $find(this.txtIndirizzoPECId);
             this._ltlLabelPecMail = $("#ltlPecMail");
             this._ltlchktxtPecMail = $("#ltlchktxtPecMail");
-            this._gridTemplateColumn = $find("IndirizzoPec");
+            this._emptyPecMailCheckbox = $("#chktxtPecMail");
+            this.cleanSearchFilters();
             this.invoiceSelections = [];
             this.loadData();
         };
@@ -233,7 +211,7 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             ddlRepositoriName = thisCmbRepositoriName.findItemByText(tipoarchiviofinder);
             var enablerepository = true;
             if (tipoarchivioName == "") {
-                this.setLastRepositoriSearchFilter("UdsInvoiceSearch");
+                this.setLastRepositoriSearchFilter(UDSInvoiceSearch.UDSINVOICE_FILTER_KEY);
                 if (this._cmdRepositoriName && this._cmdRepositoriName.get_selectedItem() !== null) {
                     tipoarchivioId = this._cmdRepositoriName.get_selectedItem().get_value();
                     tipoarchivioName = this._cmdRepositoriName.get_selectedItem().get_text();
@@ -242,7 +220,9 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             }
             else {
                 ddlRepositoriName = this._cmdRepositoriName.findItemByText(tipoarchiviofinder);
-                ddlRepositoriName.select();
+                if (ddlRepositoriName) {
+                    ddlRepositoriName.select();
+                }
                 enablerepository = false;
             }
             if (tipoarchivioName != "" && ddlRepositoriName != null) {
@@ -268,7 +248,9 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
         };
         UDSInvoiceSearch.prototype.setComboState = function (valore) {
             var selectedItem = this._cmbStato.findItemByText(valore);
-            selectedItem.select();
+            if (selectedItem) {
+                selectedItem.select();
+            }
             this._cmbStato.trackChanges();
         };
         UDSInvoiceSearch.prototype.loadUDSInvoiceTipologyByID = function (udsid) {
@@ -291,6 +273,8 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
                 }, function (exception) {
                     _this._loadingPanel.hide(_this.cmdRepositoriNameId);
                     $("#".concat(_this.cmdRepositoriNameId)).hide();
+                    _this.showNotificationException(_this.cmdRepositoriNameId, exception, "Errore nel caricamento dei dati.");
+                    promise.reject(exception);
                 });
             }
             catch (error) {
@@ -344,13 +328,23 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             }
             return promise.promise();
         };
+        UDSInvoiceSearch.prototype._buildUdsService = function () {
+            var selectedInvoiceItem = this._cmdRepositoriName.get_selectedItem();
+            if (!selectedInvoiceItem) {
+                return undefined;
+            }
+            var UDSInvoice_TYPE_NAME = selectedInvoiceItem.get_text();
+            var UDSInvoiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfiguration, UDSInvoice_TYPE_NAME);
+            return new UDSService(UDSInvoiceConfiguration);
+            ;
+        };
         UDSInvoiceSearch.prototype.loadResults = function (skip) {
             var _this = this;
-            var UDSInvoice_TYPE_NAME = this._cmdRepositoriName.get_selectedItem().get_text();
-            var udsService;
-            var UDSInvoiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfiguration, UDSInvoice_TYPE_NAME);
-            udsService = new UDSService(UDSInvoiceConfiguration);
-            this._loadingPanel.show(this.udsInvoiceGridId);
+            var udsService = this._buildUdsService();
+            if (!udsService) {
+                alert("Nessun nome di archivio selezionato");
+                return;
+            }
             var cmdRepositoryName = "";
             var cmdRepositoryId = "";
             if (this._cmdRepositoriName && this._cmdRepositoriName.get_selectedItem() !== null) {
@@ -372,9 +366,6 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             var numerofatturafilter = this._txtNumeroFattura.get_value();
             var numerofatturafilterEq = !$("#chkNumeroFatturafilter").is(":checked");
             var importoFilter = this._txtImporto.get_value();
-            //let importoFilterEq: boolean = !$("#rbltxtImportofilter").is(":checked");
-            //let pivacfFilter: string = this._txtPIVACF.get_textBoxValue();
-            //let pivacfFilterEq: boolean = !$("#rbltxtPIVACFfilter").is(":checked");
             var denomiazioneFilter = this._txtDenominazioneManual.get_value();
             var denomiazioneFilterEq = !$("#chkDenominazioneManualfilter").is(":checked");
             var annoivaFilter = this._txtYear.get_value();
@@ -402,12 +393,8 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             if (this._dtpDataAcceptTo && this._dtpDataAcceptTo.get_selectedDate()) {
                 dataacceptToFilter = moment(this._dtpDataAcceptTo.get_selectedDate()).add(1, 'days').add(-1, 'seconds').format("YYYY-MM-DDTHH:mm:ss[Z]");
             }
-            //let identificativoSdiFilter: string = this._txtIDSDI.get_textBoxValue();
-            //let identificativoSdiFilterEq: boolean = !$("#rbltxtIDSDIfilter").is(":checked");
-            //let progressIDSDIFilter: string = this._txtProgressIDSDIId.get_textBoxValue();
-            //let progressIDSDIFilterEq: boolean = !$("#rbltxtProgressIDSDIfilter").is(":checked");
             var pecMailBoxFilter = this._txtPecMail.get_textBoxValue();
-            var pecMailBoxFilterEq = $("#chktxtPecMail").is(":checked");
+            var pecMailBoxFilterEq = this._emptyPecMailCheckbox.is(":checked");
             var searchDTO = new UDSInvoiceSearchFilterDTO();
             searchDTO.cmdRepositoriName = cmdRepositoryId;
             searchDTO.startDateFromFilter = startDateFromFilter;
@@ -415,9 +402,6 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             searchDTO.numerofatturafilter = numerofatturafilter;
             searchDTO.numerofatturafilterEq = numerofatturafilterEq;
             searchDTO.importoFilter = importoFilter;
-            //searchDTO.importoFilterEq = importoFilterEq;
-            //searchDTO.pivacfFilter = pivacfFilter;
-            //searchDTO.pivacfFilterEq = pivacfFilterEq;
             searchDTO.denomiazioneFilter = denomiazioneFilter;
             searchDTO.denomiazioneFilterEq = denomiazioneFilterEq;
             searchDTO.annoivaFilter = annoivaFilter;
@@ -427,15 +411,11 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             searchDTO.dataIvaToFilter = dataIvaToFilter;
             searchDTO.dataacceptFromFilter = dataacceptFromFilter;
             searchDTO.dataacceptToFilter = dataacceptToFilter;
-            //searchDTO.identificativoSdiFilter = identificativoSdiFilter;
-            //searchDTO.identificativoSdiFilterEq = identificativoSdiFilterEq;
-            //searchDTO.progressIDSDIFilter = progressIDSDIFilter;
-            //searchDTO.progressIDSDIFilterEq = progressIDSDIFilterEq;
             searchDTO.statofatturaFilter = statofatturafilter;
             searchDTO.pecMailBoxFilter = pecMailBoxFilter;
             searchDTO.pecMailBoxFilterEq = pecMailBoxFilterEq;
-            sessionStorage.setItem(cmdRepositoryName, JSON.stringify(searchDTO));
-            sessionStorage.setItem("UdsInvoiceSearch", JSON.stringify(searchDTO));
+            this._saveValueToSessionStorage(cmdRepositoryName, JSON.stringify(searchDTO));
+            this._saveValueToSessionStorage(UDSInvoiceSearch.UDSINVOICE_FILTER_KEY, JSON.stringify(searchDTO));
             var sortExpressions = this._masterTableView.get_sortExpressions();
             var orderbyExpressions;
             orderbyExpressions = sortExpressions.toString();
@@ -456,6 +436,7 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
                 this._masterTableView.hideColumn(13); //colonna indirizzo pec
             }
             try {
+                this._loadingPanel.show(this.udsInvoiceGridId);
                 udsService.getUDSInvoices(searchDTO, top, skip, orderbyExpressions, function (data) {
                     if (!data)
                         return;
@@ -473,10 +454,18 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
                 this._loadingPanel.hide(this.udsInvoiceGridId);
             }
         };
+        UDSInvoiceSearch.prototype._saveValueToSessionStorage = function (identifier, value) {
+            var cachedItemKey = UDSInvoiceSearch.FILTER_CACHE_KEY + "_" + identifier;
+            sessionStorage.setItem(cachedItemKey, value);
+        };
+        UDSInvoiceSearch.prototype._getCachedValueFromSession = function (identifier) {
+            var cachedItemKey = UDSInvoiceSearch.FILTER_CACHE_KEY + "_" + identifier;
+            return sessionStorage.getItem(cachedItemKey);
+        };
         UDSInvoiceSearch.prototype.setLastRepositoriSearchFilter = function (tipoarchivioName) {
-            var UDSinvoiceLastSearch = sessionStorage.getItem(tipoarchivioName);
+            var UDSinvoiceLastSearch = this._getCachedValueFromSession(tipoarchivioName);
             if (UDSinvoiceLastSearch == null) {
-                UDSinvoiceLastSearch = sessionStorage.getItem("UdsInvoiceSearch");
+                UDSinvoiceLastSearch = this._getCachedValueFromSession(UDSInvoiceSearch.UDSINVOICE_FILTER_KEY);
             }
             if (UDSinvoiceLastSearch) {
                 var lastsearchFilter = JSON.parse(UDSinvoiceLastSearch);
@@ -488,9 +477,9 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
             }
         };
         UDSInvoiceSearch.prototype.setLastSearchFilter = function (tipoarchivioName) {
-            var UDSinvoiceLastSearch = sessionStorage.getItem(tipoarchivioName);
+            var UDSinvoiceLastSearch = this._getCachedValueFromSession(tipoarchivioName);
             if (UDSinvoiceLastSearch == null) {
-                UDSinvoiceLastSearch = sessionStorage.getItem("UdsInvoiceSearch");
+                UDSinvoiceLastSearch = this._getCachedValueFromSession(UDSInvoiceSearch.UDSINVOICE_FILTER_KEY);
             }
             if (UDSinvoiceLastSearch) {
                 var lastsearchFilter = JSON.parse(UDSinvoiceLastSearch);
@@ -518,6 +507,14 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
         UDSInvoiceSearch.prototype.onPageChanged = function () {
             var skip = this._masterTableView.get_currentPageIndex() * this._masterTableView.get_pageSize();
             this.loadResults(skip);
+        };
+        UDSInvoiceSearch.prototype._clearSessionFilterCache = function () {
+            var sessionStorageKeys = Object.keys(sessionStorage);
+            sessionStorageKeys.forEach(function (sessionKey) {
+                if (sessionKey.startsWith(UDSInvoiceSearch.FILTER_CACHE_KEY)) {
+                    sessionStorage.removeItem(sessionKey);
+                }
+            });
         };
         //region [ Grid Configuration Methods ]
         UDSInvoiceSearch.prototype.onGridDataBound = function () {
@@ -562,8 +559,10 @@ define(["require", "exports", "./UDSInvoiceBase", "App/Helpers/ServiceConfigurat
                     this.invoiceSelections.splice(index, 1);
                 }
             }
-            sessionStorage.setItem("InvoiceSelections", JSON.stringify(this.invoiceSelections));
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_INVOICE_SELECTIONS, JSON.stringify(this.invoiceSelections));
         };
+        UDSInvoiceSearch.FILTER_CACHE_KEY = "udsInvoiceFilter";
+        UDSInvoiceSearch.UDSINVOICE_FILTER_KEY = "UdsInvoiceSearch";
         UDSInvoiceSearch.LOADED_EVENT = "onLoaded";
         UDSInvoiceSearch.PAGE_CHANGED_EVENT = "onPageChanged";
         return UDSInvoiceSearch;

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Data;
-using VecompSoftware.DocSuiteWeb.Data.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Templates;
 using VecompSoftware.DocSuiteWeb.DTO.UDS;
 using VecompSoftware.DocSuiteWeb.Entity.Templates;
+using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Protocols;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
@@ -24,7 +24,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Protocols
         {
             return SaveStream(owner, new DocumentModel()
             {
-                FileName = filename, 
+                FileName = filename,
                 ContentStream = content,
             });
         }
@@ -34,6 +34,10 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Protocols
             string fileName = Path.GetFileName(FileHelper.ReplaceUnicode(document.FileName));
             string targetFileName = FileHelper.UniqueFileNameFormat(fileName, owner);
             string targetPath = Path.Combine(CommonUtil.GetInstance().AppTempPath, targetFileName);
+            if (document.ContentStream == null && document.DocumentId.HasValue)
+            {
+                document.ContentStream = new BiblosDocumentInfo(document.DocumentId.Value).Stream;
+            }
             FileInfo file = FileHelper.SaveStreamToDisk(targetPath, document.ContentStream);
             return new TempFileDocumentInfo(document.FileName, file);
         }
@@ -51,47 +55,65 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Protocols
             return results;
         }
 
-        public ProtocolInitializer GetProtocolInitializer(IReadOnlyCollection<TenantModel> tenantModels, ProtocolModel protocolModel, 
-            Collaboration collaboration, WorkflowProperty dsw_a_CollaborationSignSummaryTemplateId, WorkflowProperty dsw_a_Collaboration_GenerateSignSummary,
+        public ProtocolInitializer GetProtocolInitializer(IReadOnlyCollection<TenantModel> tenantModels, ProtocolModel protocolModel,
+            Collaboration collaboration, WorkflowProperty dsw_p_CollaborationSignSummaryTemplateId, WorkflowProperty dsw_a_Collaboration_GenerateSignSummary,
             WorkflowProperty dsw_p_ProposerRole, UDSDto udsDto)
         {
             ProtocolInitializer protInitializer = new ProtocolInitializer();
             // Oggetto
             protInitializer.Subject = protocolModel.Object;
+            // Protocol Type
             protInitializer.ProtocolType = protocolModel.ProtocolType.EntityShortId;
+            //Note
+            protInitializer.Notes = protocolModel.Note;
+            //Protocollo
+            protInitializer.DocumentProtocol = protocolModel.DocumentProtocol;
+            //Date
+            protInitializer.DocumentDate = protocolModel.DocumentDate;
             // Classificazione
             if (protocolModel.Category != null && protocolModel.Category.IdCategory.HasValue)
             {
                 protInitializer.Category = FacadeFactory.Instance.CategoryFacade.GetById(protocolModel.Category.IdCategory.Value);
             }
-
+            if (protocolModel.Container != null && protocolModel.Container.IdContainer.HasValue)
+            {
+                protInitializer.Containers = new List<Data.Container> { FacadeFactory.Instance.ContainerFacade.GetById(Convert.ToInt32(protocolModel.Container.IdContainer)) };
+            }
+            if (protocolModel.DocumentTypeCode != null  )
+            {      
+                protInitializer.DocumentTypeLabel = FacadeFactory.Instance.TableDocTypeFacade.GetByCode(protocolModel.DocumentTypeCode).Description;
+            }
+      
             string owner = DocSuiteContext.Current.User.UserName;
             // Gestione documenti        
-            if (protocolModel.MainDocument != null && !string.IsNullOrEmpty(protocolModel.MainDocument.FileName) && protocolModel.MainDocument.ContentStream != null)
+            if (protocolModel.MainDocument != null && !string.IsNullOrEmpty(protocolModel.MainDocument.FileName)
+                && (protocolModel.MainDocument.ContentStream != null || protocolModel.MainDocument.DocumentId.HasValue))
             {
                 protInitializer.MainDocument = SaveStream(owner, protocolModel.MainDocument);
             }
 
             // Allegati
             IEnumerable<DocumentModel> results = null;
-            if (protocolModel.Attachments != null && (results = protocolModel.Attachments.Where(f=> !string.IsNullOrEmpty(f.FileName) && f.ContentStream != null)).Any())
+            if (protocolModel.Attachments != null && (results = protocolModel.Attachments.Where(f => !string.IsNullOrEmpty(f.FileName) && (f.ContentStream != null || f.DocumentId.HasValue))).Any())
             {
                 protInitializer.Attachments = SaveStream(owner, results);
             }
 
-            if (collaboration != null && dsw_a_CollaborationSignSummaryTemplateId != null && dsw_a_Collaboration_GenerateSignSummary != null &&
+            if (collaboration != null && dsw_p_CollaborationSignSummaryTemplateId != null && dsw_a_Collaboration_GenerateSignSummary != null &&
                 dsw_a_Collaboration_GenerateSignSummary.ValueBoolean.HasValue && dsw_a_Collaboration_GenerateSignSummary.ValueBoolean.Value &&
-                dsw_a_CollaborationSignSummaryTemplateId.ValueGuid.HasValue && dsw_a_CollaborationSignSummaryTemplateId.ValueGuid.Value != Guid.Empty)
+                dsw_p_CollaborationSignSummaryTemplateId.ValueGuid.HasValue && dsw_p_CollaborationSignSummaryTemplateId.ValueGuid.Value != Guid.Empty)
             {
-                TemplateDocumentRepositoryFinder templateDocumentRepositoryFinder = new TemplateDocumentRepositoryFinder(tenantModels)
-                {
-                    UniqueId = dsw_a_CollaborationSignSummaryTemplateId.ValueGuid.Value,
-                    EnablePaging = false,
-                };
-                TemplateDocumentRepository templateDocumentRepository = templateDocumentRepositoryFinder.DoSearch().SingleOrDefault()?.Entity;
+                TemplateDocumentRepository templateDocumentRepository = WebAPIImpersonatorFacade.ImpersonateFinder(new TemplateDocumentRepositoryFinder(tenantModels),
+                    (impersonationType, finder) =>
+                    {
+                        finder.UniqueId = dsw_p_CollaborationSignSummaryTemplateId.ValueGuid.Value;
+                        finder.EnablePaging = false;
+                        return finder.DoSearch().SingleOrDefault()?.Entity;
+                    });
+
                 if (templateDocumentRepository != null)
                 {
-                    BiblosChainInfo biblosChainInfo = new BiblosChainInfo(string.Empty, templateDocumentRepository.IdArchiveChain);
+                    BiblosChainInfo biblosChainInfo = new BiblosChainInfo(templateDocumentRepository.IdArchiveChain);
                     DocumentInfo biblosDocumentInfo = biblosChainInfo.Documents.Single(f => !f.IsRemoved);
                     List<BuildValueModel> buildValueModels = new List<BuildValueModel>();
                     buildValueModels.Add(new BuildValueModel()
@@ -125,11 +147,11 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Protocols
             }
             // Annessi
             results = null;
-            if (protocolModel.Annexes != null && (results = protocolModel.Annexes.Where(f => !string.IsNullOrEmpty(f.FileName) && f.ContentStream != null)).Any())
+            if (protocolModel.Annexes != null && (results = protocolModel.Annexes.Where(f => !string.IsNullOrEmpty(f.FileName) && (f.ContentStream != null || f.DocumentId.HasValue))).Any())
             {
                 protInitializer.Annexed = SaveStream(owner, results);
             }
-            
+
             // Contatti
             protInitializer.Senders = new List<Data.ContactDTO>();
             protInitializer.Recipients = new List<Data.ContactDTO>();
@@ -147,7 +169,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Protocols
                         contact.Address = new Data.Address();
                         contact.Address.Address = protocolContactManualModel.Address;
                     }
-                    
+
                     if (protocolContactManualModel.ComunicationType == ComunicationType.Sender)
                     {
                         protInitializer.Senders.Add(new Data.ContactDTO(contact, Data.ContactDTO.ContactType.Manual));
@@ -222,7 +244,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Protocols
                 StatusField rField = field as StatusField;
                 if (!string.IsNullOrEmpty(rField.Value))
                 {
-                    ret = string.Join(", ", JsonConvert.DeserializeObject<string[]>(rField.Value));
+                    ret = rField.Value;
                 }
                 return ret;
             }

@@ -7,6 +7,7 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao.UDS;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS;
 using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Mapper.Model.UDS;
 using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
@@ -37,8 +38,8 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
         #endregion [ Properties ]
 
         #region [ Constructor ]
-        public UDSRepositoryFacade(ICollection<TenantModel> model)
-            :base(model.Select(s => new WebAPITenantConfiguration<UDSRepository, UDSRepositoryDao>(s)).ToList())
+        public UDSRepositoryFacade(ICollection<TenantModel> model, Tenant currentTenant)
+            :base(model.Select(s => new WebAPITenantConfiguration<UDSRepository, UDSRepositoryDao>(s)).ToList(), currentTenant)
         {
 
         }
@@ -69,12 +70,16 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
             string tenantName = DocSuiteContext.Current.ProtocolEnv.CorporateAcronym;
             Guid tenantId = DocSuiteContext.Current.CurrentTenant.TenantId;
 
-            Currentfinder.UniqueId = idRepository;
-            Currentfinder.EnablePaging = false;
-            Currentfinder.ExpandProperties = true;
-            Currentfinder.ActionType = UDSRepositoryFinderActionType.FindElement;
-            WebAPIDto<UDSRepository> resultDto = Currentfinder.DoSearch().FirstOrDefault();
-            Currentfinder.ResetDecoration();
+            WebAPIDto<UDSRepository> resultDto = null;
+            WebAPIImpersonatorFacade.ImpersonateFinder(Currentfinder, (impersonationType, finder) =>
+            {
+                finder.UniqueId = idRepository;
+                finder.EnablePaging = false;
+                finder.ExpandProperties = true;
+                finder.ActionType = UDSRepositoryFinderActionType.FindElement;
+                resultDto = finder.DoSearch().FirstOrDefault();
+                finder.ResetDecoration();
+            });
 
             UDSRepository repository = resultDto.Entity;
             commandModel.UDSRepository = repositoryModelMapper.Map(repository, new UDSRepositoryModel());
@@ -84,13 +89,13 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
 
             if (repository.Version > 0)
             {
-                ICommandUpdateUDS commandUpdate = new CommandUpdateUDS(tenantName, tenantId, identity, commandModel);
+                ICommandUpdateUDS commandUpdate = new CommandUpdateUDS(CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, identity, commandModel);
                 CommandFacade<ICommandUpdateUDS> commandUpdateFacade = new CommandFacade<ICommandUpdateUDS>();
                 commandUpdateFacade.Push(commandUpdate);
             }
             else
             {
-                ICommandCreateUDS commandInsert = new CommandCreateUDS(tenantName, tenantId, identity, commandModel);
+                ICommandCreateUDS commandInsert = new CommandCreateUDS(CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, identity, commandModel);
                 CommandFacade<ICommandCreateUDS> commandCreateFacade = new CommandFacade<ICommandCreateUDS>();
                 commandCreateFacade.Push(commandInsert);
             }
@@ -106,19 +111,22 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
             UDSRepository savedRepository = null;
             if (!idRepository.Equals(Guid.Empty))
             {
-                //Se il repository recuperato è in stato Bozza allora procedo alla modifica del medesimo oggetto,
-                //viceversa creo sempre una nuova Bozza.
-                Currentfinder.UniqueId = idRepository;
-                Currentfinder.EnablePaging = false;
-                Currentfinder.ExpandProperties = true;
-                Currentfinder.ActionType = UDSRepositoryFinderActionType.FindElement;
-                WebAPIDto<UDSRepository> resultDto = Currentfinder.DoSearch().FirstOrDefault();
-                Currentfinder.ResetDecoration();
-                if (resultDto != null && resultDto.Entity != null)
+                WebAPIImpersonatorFacade.ImpersonateFinder(Currentfinder, (impersonationType, finder) =>
                 {
-                    savedRepository = resultDto.Entity;
-                    repository = (savedRepository.Status.Equals(Entity.UDS.UDSRepositoryStatus.Draft)) ? savedRepository : null;
-                }                
+                    //Se il repository recuperato è in stato Bozza allora procedo alla modifica del medesimo oggetto,
+                    //viceversa creo sempre una nuova Bozza.
+                    finder.UniqueId = idRepository;
+                    finder.EnablePaging = false;
+                    finder.ExpandProperties = true;
+                    finder.ActionType = UDSRepositoryFinderActionType.FindElement;
+                    WebAPIDto<UDSRepository> resultDto = finder.DoSearch().FirstOrDefault();
+                    finder.ResetDecoration();
+                    if (resultDto != null && resultDto.Entity != null)
+                    {
+                        savedRepository = resultDto.Entity;
+                        repository = (savedRepository.Status.Equals(Entity.UDS.UDSRepositoryStatus.Draft)) ? savedRepository : null;
+                    }
+                });                               
             }
 
             short idContainer = -1;

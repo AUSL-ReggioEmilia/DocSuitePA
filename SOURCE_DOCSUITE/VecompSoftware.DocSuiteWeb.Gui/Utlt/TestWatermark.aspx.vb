@@ -17,7 +17,7 @@ Public Class TestWatermark
         Dim lbl As String = ParseString(DocSuiteContext.Current.ResolutionEnv.WebPublishSign, currentResolution)
         Dim label As String = String.Format(DocSuiteContext.Current.ResolutionEnv.WebPublishSignTag, lbl)
 
-        Dim doc As New BiblosDocumentInfo(currentResolution.Location.DocumentServer, currentResolution.Location.ReslBiblosDSDB, documents.IdResolutionFile)
+        Dim doc As New BiblosDocumentInfo(currentResolution.Location.ReslBiblosDSDB, documents.IdResolutionFile)
 
         Dim data As Byte() = doc.GetPdfLocked(doc.Signature, label)
 

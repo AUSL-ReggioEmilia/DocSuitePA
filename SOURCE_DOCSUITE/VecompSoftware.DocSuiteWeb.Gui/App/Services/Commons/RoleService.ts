@@ -6,7 +6,8 @@ import RoleModel = require('App/Models/Commons/RoleModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import IRoleService = require('App/Services/Commons/IRoleService');
 import RoleModelMapper = require('App/Mappers/Commons/RoleModelMapper');
-import RoleSearchFilterDTO = require('../../DTOs/RoleSearchFilterDTO');
+import RoleSearchFilterDTO = require('App/DTOs/RoleSearchFilterDTO');
+import CategoryModelMapper = require('App/Mappers/Commons/CategoryModelMapper');
 
 
 class RoleService extends BaseService implements IRoleService {
@@ -93,12 +94,12 @@ class RoleService extends BaseService implements IRoleService {
         }, error);
     }
 
-  getAllRoles(name: string, topElement: string,
-    skipElement: number,
-    callback?: (data: any) => any,
-    error?: (exception: ExceptionDTO) => any): void {
-    let url: string = this._configuration.ODATAUrl;
-    let qs: string = `$filter=contains(Name,'${name}')&$count=true&$top=${topElement}&$skip=${skipElement.toString()}`;
+    getAllRoles(name: string, topElement: string,
+        skipElement: number,
+        callback?: (data: any) => any,
+        error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        let qs: string = `$filter=contains(Name,'${name}')&$count=true&$top=${topElement}&$skip=${skipElement.toString()}`;
 
         this.getRequest(url,
             qs,
@@ -126,5 +127,13 @@ class RoleService extends BaseService implements IRoleService {
         }, error);
     }
 
+    hasCategoryFascicleRole(idCategory: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}/RoleService.HasCategoryFascicleRole(idCategory=${idCategory})`;
+        this.getRequest(url, null, (response: any) => {
+            if (callback && response) {
+                callback(response.value);
+            }
+        }, error);
+    }
 
 } export = RoleService;

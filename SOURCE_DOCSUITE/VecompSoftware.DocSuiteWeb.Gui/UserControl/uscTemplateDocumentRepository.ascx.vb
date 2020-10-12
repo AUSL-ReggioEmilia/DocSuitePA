@@ -11,7 +11,6 @@ Public Class uscTemplateDocumentRepository
     Inherits DocSuite2008BaseControl
 
 #Region "Fields"
-
 #End Region
 
 #Region "Properties"
@@ -26,6 +25,11 @@ Public Class uscTemplateDocumentRepository
     Protected ReadOnly Property OnlyPublishedTemplateSerializedValue As String
         Get
             Return JsonConvert.SerializeObject(OnlyPublishedTemplate)
+        End Get
+    End Property
+    Public ReadOnly Property FolderToolBar_Grid As RadToolBar
+        Get
+            Return FolderToolBar
         End Get
     End Property
 #End Region

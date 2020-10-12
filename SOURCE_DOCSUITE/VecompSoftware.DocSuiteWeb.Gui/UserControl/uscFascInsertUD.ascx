@@ -30,6 +30,7 @@
                 uscFascInsertUD.chbCategoryChildId = "<%= chbCategoryChild.ClientID%>";
                 uscFascInsertUD.radWindowManagerId = "<%= RadWindowManager.ClientID %>";
                 uscFascInsertUD.idFascicleFolder = "<%= IdFascicleFolder %>";
+                uscFascInsertUD.currentTenantAOOId = "<%= BasePage.CurrentTenant.TenantAOO.UniqueId %>";
                 uscFascInsertUD.initialize();
             });
         });

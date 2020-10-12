@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscFascicleFinder
-    
+
     '''<summary>
     '''ctrlAjaxManager control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ctrlAjaxManager As Global.Telerik.Web.UI.RadAjaxManagerProxy
-    
+
     '''<summary>
     '''rsb control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rsb As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''txtYear control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtYear As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''vYear control.
     '''</summary>
@@ -48,7 +48,16 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents vYear As Global.System.Web.UI.WebControls.RegularExpressionValidator
-    
+
+    '''<summary>
+    '''txtNumber control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNumber As Global.System.Web.UI.WebControls.TextBox
+
     '''<summary>
     '''rblFascicleState control.
     '''</summary>
@@ -57,7 +66,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rblFascicleState As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''trVisibility control.
     '''</summary>
@@ -66,7 +75,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trVisibility As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''Accessible control.
     '''</summary>
@@ -75,7 +84,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Accessible As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''Confidential control.
     '''</summary>
@@ -84,7 +93,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Confidential As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''txtStartDateFrom control.
     '''</summary>
@@ -93,7 +102,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtStartDateFrom As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtStartDateTo control.
     '''</summary>
@@ -102,7 +111,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtStartDateTo As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtEndDateFrom control.
     '''</summary>
@@ -111,7 +120,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtEndDateFrom As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtEndDateTo control.
     '''</summary>
@@ -120,7 +129,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtEndDateTo As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtObjectProtocol control.
     '''</summary>
@@ -129,7 +138,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtObjectProtocol As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''rblClausola control.
     '''</summary>
@@ -138,7 +147,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rblClausola As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''txtNote control.
     '''</summary>
@@ -147,7 +156,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNote As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''rowContainer control.
     '''</summary>
@@ -156,7 +165,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowContainer As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''rdlContainers control.
     '''</summary>
@@ -165,7 +174,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdlContainers As Global.Telerik.Web.UI.RadDropDownList
-    
+
     '''<summary>
     '''UscClassificatore1 control.
     '''</summary>
@@ -174,7 +183,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UscClassificatore1 As Global.VecompSoftware.DocSuiteWeb.Gui.uscClassificatore
-    
+
     '''<summary>
     '''rowCategorySearch control.
     '''</summary>
@@ -183,7 +192,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowCategorySearch As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''chbCategoryChild control.
     '''</summary>
@@ -192,7 +201,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chbCategoryChild As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''sett control.
     '''</summary>
@@ -201,7 +210,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents sett As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''uscSettori control.
     '''</summary>
@@ -210,7 +219,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSettori As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''lblRP control.
     '''</summary>
@@ -219,7 +228,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRP As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rowInterop control.
     '''</summary>
@@ -228,7 +237,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowInterop As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''UscRiferimentoSel1 control.
     '''</summary>
@@ -237,7 +246,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UscRiferimentoSel1 As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''pnlMetadata control.
     '''</summary>
@@ -246,7 +255,7 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlMetadata As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''uscMetadataRepositorySel control.
     '''</summary>
@@ -255,13 +264,4 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscMetadataRepositorySel As Global.VecompSoftware.DocSuiteWeb.Gui.uscMetadataRepositorySel
-    
-    '''<summary>
-    '''txtMetadataValue control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtMetadataValue As Global.System.Web.UI.WebControls.TextBox
 End Class

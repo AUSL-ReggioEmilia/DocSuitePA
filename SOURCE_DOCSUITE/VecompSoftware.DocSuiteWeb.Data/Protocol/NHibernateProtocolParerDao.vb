@@ -19,25 +19,47 @@ Public Class NHibernateProtocolParerDao
 #End Region
 
     Public Function GetByProtocol(protocol As Protocol) As ProtocolParer
-        Return GetById(protocol.Id, False)
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
+        criteria.CreateAlias("Protocol", "P")
+        criteria.Add(Restrictions.Eq("P.Id", protocol.Id))
+        Return criteria.UniqueResult(Of ProtocolParer)()
     End Function
 
-    Public Function Exists(id As YearNumberCompositeKey) As Boolean
+    Public Function GetByProtocol(year As Short, number As Integer) As ProtocolParer
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
+        criteria.CreateAlias("Protocol", "P")
+        criteria.Add(Restrictions.Eq("P.Year", year))
+        criteria.Add(Restrictions.Eq("P.Number", number))
+        Return criteria.UniqueResult(Of ProtocolParer)()
+    End Function
+
+    Public Function ExistsProtocol(idProtocol As Guid) As Boolean
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType, "PP")
+        criteria.CreateAlias("PP.Protocol", "P")
+        criteria.Add(Restrictions.Eq("P.Id", idProtocol))
+        criteria.SetProjection(Projections.Count("PP.Id"))
+        Dim results As Integer = criteria.UniqueResult(Of Integer)()
 
-        criteria.Add(Restrictions.Eq("PP.Id.Year", id.Year))
-        criteria.Add(Restrictions.Eq("PP.Id.Number", id.Number))
-
-        Dim items As IList(Of ProtocolParer) = criteria.List(Of ProtocolParer)()
-        If items.Count = 1 Then
-            Return True
+        If results > 1 Then
+            ' In caso ci sia più di un record lancio l'eccezione
+            Throw New DocSuiteException("ProtocolParer", String.Format("Errore in recupero ProtocolParer per Id Protocollo [{0}].", idProtocol))
         End If
-        If items.Count = 0 Then
-            Return False
-        End If
+        Return results = 1
+    End Function
 
-        ' In caso ci sia più di un record lancio l'eccezione
-        Throw New DocSuiteException("ProtocolParer", String.Format("Errore in recupero ProtocolParer per Year [{0}] e Number [{1}].", id.Year, id.Number))
+    Public Function ExistsProtocol(year As Short, number As Integer) As Boolean
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType, "PP")
+        criteria.CreateAlias("PP.Protocol", "P")
+        criteria.Add(Restrictions.Eq("P.Year", year))
+        criteria.Add(Restrictions.Eq("P.Number", number))
+        criteria.SetProjection(Projections.Count("PP.Id"))
+        Dim results As Integer = criteria.UniqueResult(Of Integer)()
+
+        If results > 1 Then
+            ' In caso ci sia più di un record lancio l'eccezione
+            Throw New DocSuiteException("ProtocolParer", String.Format("Errore in recupero ProtocolParer per il Protocollo con anno [{0}] e numero [{1}].", year, number))
+        End If
+        Return results = 1
     End Function
 
 End Class

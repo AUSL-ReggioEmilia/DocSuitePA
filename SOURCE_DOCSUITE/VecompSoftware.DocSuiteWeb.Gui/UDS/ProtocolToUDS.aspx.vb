@@ -41,7 +41,7 @@ Public Class ProtocolToUDS
     Public ReadOnly Property CurrentProtocol As Protocol
         Get
             If _currentProtocol Is Nothing AndAlso ProtocolUniqueId.HasValue Then
-                _currentProtocol = Facade.ProtocolFacade.GetByUniqueId(ProtocolUniqueId.Value)
+                _currentProtocol = Facade.ProtocolFacade.GetById(ProtocolUniqueId.Value)
             End If
             Return _currentProtocol
         End Get

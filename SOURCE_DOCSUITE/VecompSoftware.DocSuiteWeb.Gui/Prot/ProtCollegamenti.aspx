@@ -10,10 +10,8 @@
                 var url = "../Prot/ProtCollegamentiGes.aspx?Titolo=Aggiungi Collegamento&";
                 var treeView = $find("<%= tvwProtocolLink.ClientID %>");
                 var selectedNode = treeView.get_selectedNode();
-                var value = selectedNode.get_value().split("/");
-                var year = value[0];
-                var number = value[1];
-                url += "year=" + year + "&number=" + number;
+                var uniqueIdProtocol = selectedNode.get_value();
+                url += "UniqueId=" + uniqueIdProtocol;
                 return OpenWindow(url, name, width, height);
             }
 
@@ -137,7 +135,7 @@
         <tr>
             <th>
                 <telerik:RadScriptBlock runat="server" ID="rsb1" EnableViewState="false">
-                Protocollo:<%=CurrentProtocol.Id.ToString()%> 
+                Protocollo:<%=CurrentProtocol.FullNumber%> 
                 </telerik:RadScriptBlock>
             </th>
         </tr>

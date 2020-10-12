@@ -5,13 +5,21 @@ import BaseEntityViewModel = require('App/ViewModels/BaseEntityViewModel');
 import DossierSummaryViewModel = require('App/ViewModels/Dossiers/DossierSummaryViewModel');
 import AjaxModel = require('App/Models/AjaxModel');
 import DossierBase = require('Dossiers/DossierBase');
-import WindowHelper = require('App/Helpers/WindowHelper');
 import DossierService = require('App/Services/Dossiers/DossierService');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import DossierDocumentService = require('App/Services/Dossiers/DossierDocumentService');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
-import UscDynamicMetadataClient = require('UserControl/uscDynamicMetadataClient');
+import UscDynamicMetadataRest = require('UserControl/uscDynamicMetadataRest');
+import uscSetiContactSel = require('UserControl/uscSetiContactSel');
+import UscMetadataRepositorySel = require('UserControl/uscMetadataRepositorySel');
+import SetiContactModel = require('App/Models/Commons/SetiContactModel');
+import MetadataDesignerViewModel = require('App/ViewModels/Metadata/MetadataDesignerViewModel');
+import uscContattiSelRest = require('UserControl/uscContattiSelRest');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import DossierStatus = require('App/Models/Dossiers/DossierStatus');
+import EnumHelper = require('App/Helpers/EnumHelper');
+import DossierType = require('App/Models/Dossiers/DossierType');
 
 declare var Page_IsValid: any;
 
@@ -36,6 +44,12 @@ class DossierModifica extends DossierBase {
     uscDynamicMetadataId: string;
     metadataRepositoryEnabled: boolean;
     rowMetadataId: string;
+    setiContactEnabledId: boolean;
+    uscSetiContactSelId: string;
+    uscContattiSelRestId: string;
+    contacts: ContactModel[] = [];
+    contactInsertId: number[] = [];
+    rcbDossierStatusId: string;
 
     private _serviceConfigurations: ServiceConfiguration[];
     private _dossierService: DossierService;
@@ -53,7 +67,9 @@ class DossierModifica extends DossierBase {
     private _lblYear: JQuery;
     private _lblContainer: JQuery;
     private _rowMetadataRepository: JQuery;
-
+    private _uscContattiSelRest: uscContattiSelRest;
+    private _rcbDossierStatus: Telerik.Web.UI.RadComboBox;
+    private _enumHelper: EnumHelper;
     /**
 * Costruttore
 * @param serviceConfiguration
@@ -80,6 +96,7 @@ class DossierModifica extends DossierBase {
     */
     initialize() {
         super.initialize();
+        this._enumHelper = new EnumHelper();
         this._ajaxManager = (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId))
         this._btnConfirm = <Telerik.Web.UI.RadButton>$find(this.btnConfirmId);
         this._txtNote = <Telerik.Web.UI.RadTextBox>$find(this.txtNoteId);
@@ -92,24 +109,35 @@ class DossierModifica extends DossierBase {
         this._lblYear = $("#".concat(this.lblYearId));
         this._lblNumber = $("#".concat(this.lblNumberId));
         this._lblContainer = $("#".concat(this.lblContainerId));
+        this._rcbDossierStatus = <Telerik.Web.UI.RadComboBox>$find(this.rcbDossierStatusId);
         this._btnConfirm.set_enabled(false);
         this._loadingPanel.show(this.dossierPageContentId);
         this._rowMetadataRepository = $("#".concat(this.rowMetadataId));
         this._rowMetadataRepository.hide();
 
+        this._uscContattiSelRest = <uscContattiSelRest>$(`#${this.uscContattiSelRestId}`).data();
+
         (<DossierService>this.service).hasModifyRight(this.currentDossierId,
             (data: any) => {
                 if (data == null) return;
                 if (data) {
-
                     $.when(this.loadDossier(), this.loadContacts()).done(() => {
                         this._DossierModel.Contacts = this._DossierContacts;
                         this.fillPageFromModel(this._DossierModel);
-
                         if (this.metadataRepositoryEnabled) {
-
-                            this.loadMetadata(this._DossierModel.JsonMetadata);
+                            this.loadMetadata(this._DossierModel.MetadataDesigner, this._DossierModel.MetadataValues);
                         }
+                        if (this._DossierModel && this._DossierModel.MetadataDesigner) {
+                            let metadata: MetadataDesignerViewModel = JSON.parse(this._DossierModel.MetadataDesigner);
+                            if (metadata && metadata.SETIFieldEnabled) {
+                                $("#".concat(this.uscSetiContactSelId)).triggerHandler(uscSetiContactSel.SHOW_SETI_CONTACT_BUTTON, metadata.SETIFieldEnabled && this.setiContactEnabledId);
+                            }
+                        }
+
+                        this.registerUscContactRestEventHandlers();
+                        this._btnConfirm.set_enabled(true);
+                        this._btnConfirm.add_clicked(this.btnConfirm_clicked);
+                        this._loadingPanel.hide(this.dossierPageContentId);
                     }).fail((exception) => {
                         this._btnConfirm.set_enabled(false);
                         this._loadingPanel.hide(this.dossierPageContentId);
@@ -131,8 +159,18 @@ class DossierModifica extends DossierBase {
                 this.showNotificationException(this.uscNotificationId, exception);
             }
         );
+
+        /*event for filing out the fields with the chosen Seti contact*/
+        $("#".concat(this.uscDynamicMetadataId)).on(UscMetadataRepositorySel.SELECTED_SETI_CONTACT_EVENT, (sender, args: SetiContactModel) => {
+            let uscDynamicMetadataRest: UscDynamicMetadataRest = <UscDynamicMetadataRest>$("#".concat(this.uscDynamicMetadataId)).data();
+            uscDynamicMetadataRest.populateMetadataRepository(args, this._DossierModel.MetadataDesigner);
+        });
+
     }
 
+    btnConfirm_clicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
+        this.updateCallback();
+    }
 
     /*
     * Carico il dossier corrente senza navigation properties
@@ -174,6 +212,20 @@ class DossierModifica extends DossierBase {
                             return;
                         }
                         this._DossierContacts = data;
+                        for (let contact of this._DossierContacts) {
+                            let newContact: ContactModel = <ContactModel>{
+                                UniqueId: contact.UniqueId,
+                                EntityId: contact.EntityShortId,
+                                Description: contact.Name,
+                                IdContactType: contact.Type,
+                                IncrementalFather: contact.IncrementalFather
+                            };
+                            this.contactInsertId.push(newContact.EntityId);
+                            this.contacts.push(newContact);
+                        }
+                        PageClassHelper.callUserControlFunctionSafe<uscContattiSelRest>(this.uscContattiSelRestId)
+                            .done((instance) => instance.renderContactsTree(this.contacts));
+
                         promise.resolve();
                     } catch (error) {
                         console.log(JSON.stringify(error));
@@ -201,6 +253,12 @@ class DossierModifica extends DossierBase {
         this._lblStartDate.html(model.FormattedStartDate);
         this._rdpStartDate.set_selectedDate(new Date(model.StartDate.toString()));
 
+        (<DossierService>this.service).allFasciclesAreClosed(model.UniqueId, (data: boolean) => {
+            this.populateDossierStatusComboBox(data, model.Status);
+        }, (exception: ExceptionDTO) => {
+            console.error(exception);
+        });
+
         let txtObject: Telerik.Web.UI.RadTextBox = <Telerik.Web.UI.RadTextBox>$find(this.txtObjectId);
         txtObject.set_value(model.Subject);
         this._txtNote.set_value(model.Note);
@@ -212,15 +270,19 @@ class DossierModifica extends DossierBase {
 
         (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
     }
-    
-    /**
-    * Callback da code-behind per chiusura caricamento pagina
-    * @param contact
-    * @param category
-    */
-    endLoadingDataCallback(): void {
-        this._btnConfirm.set_enabled(true);
-        this._loadingPanel.hide(this.dossierPageContentId);
+
+    private registerUscContactRestEventHandlers(): void {
+        PageClassHelper.callUserControlFunctionSafe<uscContattiSelRest>(this.uscContattiSelRestId)
+            .done((instance) => {
+                instance.registerEventHandler(instance.uscContattiSelRestEvents.ContactDeleted, (contactIdToDelete: number) => {
+                    this.contactInsertId = this.contactInsertId.filter(x => x != contactIdToDelete);
+                    return $.Deferred<void>().resolve();
+                });
+                instance.registerEventHandler(instance.uscContattiSelRestEvents.NewContactsAdded, (newAddedContact: ContactModel) => {
+                    this.contactInsertId.push(newAddedContact.EntityId);
+                    return $.Deferred<void>().resolve();
+                });
+            });
     }
 
     /**
@@ -228,17 +290,28 @@ class DossierModifica extends DossierBase {
     * @param contact
     * @param category
     */
-    updateCallback(contact: string): void {
+    updateCallback(): void {
         let dossierModel: DossierModel = <DossierModel>{};
 
         //riferimento
-        this.fillContacts(contact, dossierModel);
+        this.fillContacts(JSON.stringify(this.contactInsertId), dossierModel);
         this.fillModelFromPage(dossierModel);
 
-        if (this.metadataRepositoryEnabled){
-            let uscDynamicMetadataClient: UscDynamicMetadataClient = <UscDynamicMetadataClient>$("#".concat(this.uscDynamicMetadataId)).data();
-            if (!jQuery.isEmptyObject(uscDynamicMetadataClient)) {
-                dossierModel.JsonMetadata = uscDynamicMetadataClient.bindModelFormPage();
+        if (this.metadataRepositoryEnabled) {
+            let uscDynamicMetadataRest: UscDynamicMetadataRest = <UscDynamicMetadataRest>$("#".concat(this.uscDynamicMetadataId)).data();
+            if (!jQuery.isEmptyObject(uscDynamicMetadataRest)) {
+                let metadata: MetadataDesignerViewModel = JSON.parse(this._DossierModel.MetadataDesigner);
+                if (metadata) {
+                    let setiIntegrationField = metadata.SETIFieldEnabled;
+                    let result = uscDynamicMetadataRest.bindModelFormPage(setiIntegrationField);
+                    if (!result) {
+                        this._btnConfirm = <Telerik.Web.UI.RadButton>$find(this.btnConfirmId);
+                        this._btnConfirm.set_enabled(true);
+                        return;
+                    }
+                    dossierModel.MetadataDesigner = result[0];
+                    dossierModel.MetadataValues = result[1];
+                }
             }
         }
 
@@ -265,6 +338,7 @@ class DossierModifica extends DossierBase {
         model.Note = this._txtNote.get_value();
         model.Year = Number(this._lblYear.text());
         model.Number = this._lblNumber.text();
+        model.DossierType = DossierType[this._DossierModel.DossierType];
 
         let containerModel: ContainerModel = <ContainerModel>{};
         containerModel.EntityShortId = Number(this._DossierModel.ContainerId);
@@ -273,18 +347,43 @@ class DossierModifica extends DossierBase {
         let selectedDate = new Date(this._rdpStartDate.get_selectedDate().getTime() - this._rdpStartDate.get_selectedDate().getTimezoneOffset() * 60000);
         model.StartDate = selectedDate;
 
+        model.Status = DossierStatus[this._DossierModel.Status];
+        let selectedDossierStatus: string = this._rcbDossierStatus.get_selectedItem().get_value();
+        if (selectedDossierStatus) {
+            model.Status = DossierStatus[selectedDossierStatus];
+        }
+
         return model;
     }
 
 
-    private loadMetadata(metadatas: string) {
+    private loadMetadata(metadatas: string, metadataValues: string) {
         if (metadatas) {
             this._rowMetadataRepository.show();
-            let uscDynamicMetadataClient: UscDynamicMetadataClient = <UscDynamicMetadataClient>$("#".concat(this.uscDynamicMetadataId)).data();
-            if (!jQuery.isEmptyObject(uscDynamicMetadataClient)) {
-                uscDynamicMetadataClient.loadPageItems(metadatas);
+            let uscDynamicMetadataRest: UscDynamicMetadataRest = <UscDynamicMetadataRest>$("#".concat(this.uscDynamicMetadataId)).data();
+            if (!jQuery.isEmptyObject(uscDynamicMetadataRest)) {
+                uscDynamicMetadataRest.loadPageItems(metadatas, metadataValues);
             }
         }
+    }
+
+    private populateDossierStatusComboBox(allFasciclesAreClosed: boolean, currentDossierStatus: string): void {
+        let rcbItem: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
+        rcbItem.set_text("");
+        this._rcbDossierStatus.get_items().add(rcbItem);
+        for (let dossierStatus in DossierStatus) {
+            //if I have at least one fascicle opened I don't add Closed option in combobox
+            if (dossierStatus === DossierStatus.Closed.toString() && !allFasciclesAreClosed) {
+                continue;
+            }
+            if (typeof DossierStatus[dossierStatus] === 'string' && dossierStatus !== DossierStatus[currentDossierStatus].toString()) {
+                let rcbItem: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
+                rcbItem.set_text(this._enumHelper.getDossierStatusDescription(DossierStatus[dossierStatus]));
+                rcbItem.set_value(DossierStatus[dossierStatus]);
+                this._rcbDossierStatus.get_items().add(rcbItem);
+            }
+        }
+        this._rcbDossierStatus.get_items().getItem(0).select();
     }
 
 }

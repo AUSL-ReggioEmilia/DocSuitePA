@@ -1,14 +1,11 @@
 ﻿Imports System.Collections.Generic
 Imports System.Linq
-Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Templates
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.Templates
 Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.Extensions
-Imports VecompSoftware.DocSuiteWeb.Model.WebAPI.Client
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
@@ -106,11 +103,18 @@ Public Class TbltTemplateCollaborationManager
             Initialize()
         End If
     End Sub
+
+    Private Sub ImpersonationFinderDelegate(ByVal source As Object, ByVal e As EventArgs)
+        grdTemplateCollaboration.SetImpersonationAction(AddressOf ImpersonateGridCallback)
+        grdTemplateCollaboration.SetImpersonationCounterAction(AddressOf ImpersonateGridCallback)
+    End Sub
 #End Region
 
 #Region "Methods"
     Private Sub InitializeAjax()
         AjaxManager.AjaxSettings.AddAjaxSetting(grdTemplateCollaboration, grdTemplateCollaboration, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AddHandler grdTemplateCollaboration.NeedImpersonation, AddressOf ImpersonationFinderDelegate
+
     End Sub
 
     Private Sub Initialize()
@@ -125,6 +129,13 @@ Public Class TbltTemplateCollaborationManager
         grdTemplateCollaboration.Finder = CurrentTemplateCollaborationFinder
         grdTemplateCollaboration.DataBindFinder()
     End Sub
+
+    Private Function ImpersonateGridCallback(Of TResult)(finder As IFinder, callback As Func(Of TResult)) As TResult
+        Return WebAPIImpersonatorFacade.ImpersonateFinder(Of TemplateCollaborationFinder, TResult)(finder,
+                        Function(impersonationType, wfinder)
+                            Return callback()
+                        End Function)
+    End Function
 #End Region
 
 End Class

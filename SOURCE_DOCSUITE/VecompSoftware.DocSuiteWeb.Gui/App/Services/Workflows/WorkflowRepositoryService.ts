@@ -42,9 +42,9 @@ class WorkflowRepositoryService extends BaseService {
         }, error);
     }
 
-    getByEnvironment(environment: number, filters: string, anyEnv: boolean, documentRequired: boolean, showOnlyNoInstanceWorkflows: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getByEnvironment(environment: number, filters: string, anyEnv: boolean, documentRequired: boolean, showOnlyNoInstanceWorkflows: boolean, showOnlyHasIsFascicleClosedRequired: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        url = url.concat(`/WorkflowRepositoryService.GetAuthorizedActiveWorkflowRepositories(environment=${environment},anyEnv=${anyEnv},documentRequired=${documentRequired},showOnlyNoInstanceWorkflows=${showOnlyNoInstanceWorkflows})?$orderby=Name`);
+        url = url.concat(`/WorkflowRepositoryService.GetAuthorizedActiveWorkflowRepositories(environment=${environment},anyEnv=${anyEnv},documentRequired=${documentRequired},showOnlyNoInstanceWorkflows=${showOnlyNoInstanceWorkflows},showOnlyHasIsFascicleClosedRequired=${showOnlyHasIsFascicleClosedRequired})?$orderby=Name`);
         if (!String.isNullOrEmpty(filters)) {
             url = url.concat("&$filter=contains(tolower(Name), '", filters.toLowerCase(), "')");
         }

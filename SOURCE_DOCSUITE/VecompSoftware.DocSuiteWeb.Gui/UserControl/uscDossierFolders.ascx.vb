@@ -17,12 +17,15 @@ Public Class uscDossierFolders
     Public Property PersistanceDisabled As Boolean
     Public Property HideFascicleAssociateButton As Boolean
     Public Property HideStatusToolbar As Boolean
+    Public Property IsWindowPopupEnable As Boolean
+    Public Property FascicleModifyButtonEnable As Boolean = True
 #End Region
 
 #Region " Events"
 
     Protected Sub uscDossierFolders_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         InitializeAjax()
+        btnSelectDossierFolder.Visible = IsWindowPopupEnable
     End Sub
 
     Protected Sub uscDossierFoldersAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)

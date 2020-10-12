@@ -243,6 +243,10 @@ class DossierFolderLocalService implements IDossierFolderService {
             error(exception);
         }
     }
+
+    getAllParentsOfFascicle(idDossier: string, idFascicle: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        throw new Error("Method not implemented.");
+    }
 }
 
 export = DossierFolderLocalService;

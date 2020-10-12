@@ -9,7 +9,7 @@ define(["require", "exports", "App/DTOs/ExceptionDTO", "App/DTOs/ValidationMessa
                 exceptionDto.statusText = XMLHttpRequest.statusText;
                 switch (exceptionDto.statusCode) {
                     case ExceptionStatusCode.BadRequest: {
-                        exceptionDto.statusText = "Anomalia critica nell'esecuzione della richiesta. Contattare l'assistenza.";
+                        exceptionDto.statusText = ErrorHelper.DEFAULT_ERROR_MESSAGE;
                         if (XMLHttpRequest.responseJSON) {
                             var jsonHelper = new JSONHelper();
                             var validation = jsonHelper.resolveReferences(XMLHttpRequest.responseJSON);
@@ -30,20 +30,22 @@ define(["require", "exports", "App/DTOs/ExceptionDTO", "App/DTOs/ValidationMessa
                         break;
                     }
                     case ExceptionStatusCode.Unauthorized: {
-                        exceptionDto.statusText = "Non si è autorizzati ad effetturare la richiesta. Contattare l'assistenza.";
+                        exceptionDto.statusText = ErrorHelper.DEFAULT_UNAUTHORIZED_MESSAGE;
                         break;
                     }
                     case ExceptionStatusCode.InternalServerError: {
-                        exceptionDto.statusText = "Anomalia critica nell'esecuzione della richiesta. Contattare l'assistenza.";
+                        exceptionDto.statusText = ErrorHelper.DEFAULT_ERROR_MESSAGE;
                         break;
                     }
                     default: {
-                        exceptionDto.statusText = "Anomalia critica nell'esecuzione della richiesta. Contattare l'assistenza.";
+                        exceptionDto.statusText = ErrorHelper.DEFAULT_ERROR_MESSAGE;
                     }
                 }
                 return exceptionDto;
             }
         };
+        ErrorHelper.DEFAULT_ERROR_MESSAGE = "Anomalia critica nell'esecuzione della richiesta. Contattare l'assistenza.";
+        ErrorHelper.DEFAULT_UNAUTHORIZED_MESSAGE = "Non si è autorizzati ad effetturare la richiesta. Verificare di avere i permessi necessari.";
         return ErrorHelper;
     }());
     return ErrorHelper;

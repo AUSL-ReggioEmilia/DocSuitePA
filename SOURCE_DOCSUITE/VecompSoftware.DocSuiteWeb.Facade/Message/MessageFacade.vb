@@ -40,10 +40,10 @@ Public Class MessageFacade
         Dim l As Location = fl.GetById(DocSuiteContext.Current.ProtocolEnv.MessageLocation)
 
         If (l IsNot Nothing) Then
-            Dim saved As BiblosDocumentInfo = document.ArchiveInBiblos(l.DocumentServer, l.ProtBiblosDSDB)
+            Dim saved As BiblosDocumentInfo = document.ArchiveInBiblos(l.ProtBiblosDSDB)
             Dim ext As String = If(convertToPdf, "pdf", Nothing)
-            Dim indexPosition As Integer = BiblosDocumentInfo.GetInChainPosition(l.DocumentServer, saved.DocumentParentId.Value, saved.DocumentId)
-            Dim temp As New MessageAttachment(saved.Server, saved.ArchiveName, saved.BiblosChainId, indexPosition, ext)
+            Dim indexPosition As Integer = BiblosDocumentInfo.GetInChainPosition(saved.DocumentParentId.Value, saved.DocumentId)
+            Dim temp As New MessageAttachment(saved.ArchiveName, saved.BiblosChainId, indexPosition, ext)
             AddAttachment(message, temp)
         Else
             Throw New Exception("Location per l'invio e-mail non definita. Verificare il parametro ""MessageLocation""")

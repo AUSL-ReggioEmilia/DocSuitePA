@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Models/Commons/AuthorizationRoleType", "App/Models/Fascicles/FascicleType", "App/Services/Fascicles/FascicleRoleService", "Fasc/FascBase", "UserControl/uscFascicolo", "App/Helpers/ServiceConfigurationHelper"], function (require, exports, AuthorizationRoleType, FascicleType, FascicleRoleService, FascicleBase, UscFascicolo, ServiceConfigurationHelper) {
+define(["require", "exports", "App/Models/Commons/AuthorizationRoleType", "App/Models/Fascicles/FascicleType", "App/Services/Fascicles/FascicleRoleService", "Fasc/FascBase", "UserControl/uscFascicolo", "App/Helpers/ServiceConfigurationHelper", "App/Helpers/PageClassHelper"], function (require, exports, AuthorizationRoleType, FascicleType, FascicleRoleService, FascicleBase, UscFascicolo, ServiceConfigurationHelper, PageClassHelper) {
     var FascAutorizza = /** @class */ (function (_super) {
         __extends(FascAutorizza, _super);
         /**
@@ -39,13 +39,25 @@ define(["require", "exports", "App/Models/Commons/AuthorizationRoleType", "App/M
                     return;
                 }
                 _this._btnConfirm.set_enabled(false);
-                _this._loadingPanel.show(_this.fasciclePageContentId);
                 if (Page_IsValid) {
-                    $find(_this.ajaxManagerId).ajaxRequest("Authorized");
+                    PageClassHelper.callUserControlFunctionSafe(_this.uscFascicoloId)
+                        .done(function (instance) {
+                        instance.getRaciRoles().done(function (raciRoles) {
+                            _this._loadingPanel.show(_this.pageContentId);
+                            $.when(_this.insertFascicleRoles(instance.getAddedRolesIds(), raciRoles, instance.getRemovedRolesIds()), _this.removeFascicleRoles(instance.getRemovedRolesIds()), _this.setRaciRole(raciRoles, "", instance.getRemovedRolesIds()), _this.updateFascicleVisibilityType(instance.getSelectedVisibilityType()))
+                                .done(function () {
+                                _this._loadingPanel.hide(_this.pageContentId);
+                                window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=" + _this._fascicleModel.UniqueId;
+                            })
+                                .fail(function (exception) {
+                                _this._loadingPanel.hide(_this.pageContentId);
+                                _this.showNotificationException(_this.uscNotificationId, exception, "E' avvenuto un errore durante la fase di salvataggio delle autorizzazioni.");
+                            });
+                        });
+                    });
                     args.set_cancel(true);
                     return;
                 }
-                _this._loadingPanel.hide(_this.fasciclePageContentId);
                 _this._btnConfirm.set_enabled(true);
                 args.set_cancel(true);
             };
@@ -80,6 +92,11 @@ define(["require", "exports", "App/Models/Commons/AuthorizationRoleType", "App/M
                     return;
                 }
                 _this._fascicleModel = data;
+                PageClassHelper.callUserControlFunctionSafe(_this.uscFascicoloId)
+                    .done(function (instance) {
+                    UscFascicolo.masterRole = _this._fascicleModel.FascicleRoles.filter(function (x) { return x.IsMaster === true; }).map(function (x) { return x.Role; })[0];
+                    instance.setFascicleVisibilityTypeButtonCheck(_this._fascicleModel.VisibilityType);
+                });
                 _this.checkFascicleRight(data.UniqueId)
                     .done(function (result) {
                     if (!result) {
@@ -110,56 +127,28 @@ define(["require", "exports", "App/Models/Commons/AuthorizationRoleType", "App/M
          * Inizializza lo user control del sommario di fascicolo
          */
         FascAutorizza.prototype.loadFascicoloSummary = function () {
-            var uscFascicolo = $("#".concat(this.uscFascicoloId)).data();
-            if (!jQuery.isEmptyObject(uscFascicolo)) {
-                $("#".concat(this.uscFascicoloId)).bind(UscFascicolo.DATA_LOADED_EVENT, function (args) {
-                });
-                uscFascicolo.loadData(this._fascicleModel);
-            }
-        };
-        FascAutorizza.prototype.insertCallback = function (rolesAdded, rolesRemoved) {
             var _this = this;
-            if (this._fascicleModel.FascicleType != FascicleType.Procedure) {
-                this.manageRoles(rolesAdded, rolesRemoved);
-                return;
-            }
-            var uscFascicolo = $("#".concat(this.uscFascicoloId)).data();
-            if (!jQuery.isEmptyObject(uscFascicolo)) {
-                this._fascicleModel.VisibilityType = uscFascicolo.getSelectedAccountedVisibilityType();
-                this.service.updateFascicle(this._fascicleModel, null, function (data) {
-                    _this.manageRoles(rolesAdded, rolesRemoved);
-                }, function (exception) {
-                    _this._loadingPanel.hide(_this.pageContentId);
-                    _this.showNotificationException(_this.uscNotificationId, exception);
-                });
-            }
-        };
-        FascAutorizza.prototype.manageRoles = function (rolesAdded, rolesRemoved) {
-            var _this = this;
-            if (!rolesAdded && !rolesRemoved) {
-                window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(this._fascicleModel.UniqueId);
-            }
-            $.when(this.insertFascicleRoles(rolesAdded), this.removeFascicleRoles(rolesRemoved))
-                .done(function () { return window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(_this._fascicleModel.UniqueId); })
-                .fail(function (exception) {
-                _this._loadingPanel.hide(_this.pageContentId);
-                _this.showNotificationException(_this.uscNotificationId, exception, "E' avvenuto un errore durante la fase di salvataggio delle autorizzazioni.");
+            PageClassHelper.callUserControlFunctionSafe(this.uscFascicoloId)
+                .done(function (instance) {
+                instance.loadDataWithoutFolders(_this._fascicleModel);
             });
         };
-        FascAutorizza.prototype.insertFascicleRoles = function (roles) {
+        FascAutorizza.prototype.insertFascicleRoles = function (roleAddedIds, raciRole, removedRoleIds) {
             var promise = $.Deferred();
-            if (!roles) {
+            if (!roleAddedIds || !roleAddedIds.length) {
                 return promise.resolve();
             }
             try {
                 var role = void 0;
                 var fascicleRole = void 0;
-                var roleAddedIds = JSON.parse(roles);
                 var authorizationType = void 0;
                 if (this._fascicleModel.FascicleType == FascicleType.Procedure) {
                     authorizationType = AuthorizationRoleType.Accounted;
                 }
                 var ajaxPromises = [];
+                if (removedRoleIds) {
+                    roleAddedIds = roleAddedIds.filter(function (roleAddedId) { return !removedRoleIds.some(function (removedRoleId) { return roleAddedId === removedRoleId; }); });
+                }
                 for (var _i = 0, roleAddedIds_1 = roleAddedIds; _i < roleAddedIds_1.length; _i++) {
                     var roleId = roleAddedIds_1[_i];
                     role = {};
@@ -168,7 +157,7 @@ define(["require", "exports", "App/Models/Commons/AuthorizationRoleType", "App/M
                     fascicleRole.AuthorizationRoleType = authorizationType;
                     fascicleRole.Role = role;
                     fascicleRole.Fascicle = this._fascicleModel;
-                    ajaxPromises.push(this.insertFascicleRole(fascicleRole));
+                    ajaxPromises.push(this.insertFascicleRole(fascicleRole, raciRole));
                 }
                 $.when.apply(null, ajaxPromises)
                     .done(function () { return promise.resolve(); })
@@ -179,11 +168,21 @@ define(["require", "exports", "App/Models/Commons/AuthorizationRoleType", "App/M
             }
             return promise.promise();
         };
-        FascAutorizza.prototype.insertFascicleRole = function (fascicleRole) {
+        FascAutorizza.prototype.insertFascicleRole = function (fascicleRole, raciRole) {
+            var _this = this;
             var promise = $.Deferred();
             try {
                 this._fascicleRoleService.insertFascicleRole(fascicleRole, function (data) {
-                    promise.resolve();
+                    if (raciRole && raciRole.some(function (x) { return x.EntityShortId === fascicleRole.Role.EntityShortId; })) {
+                        _this.setRaciRole(raciRole, data.UniqueId, null).then(function () {
+                            promise.resolve();
+                        }, function (exception) {
+                            promise.reject(exception);
+                        });
+                    }
+                    else {
+                        promise.resolve();
+                    }
                 }, function (exception) {
                     promise.reject(exception);
                 });
@@ -193,20 +192,21 @@ define(["require", "exports", "App/Models/Commons/AuthorizationRoleType", "App/M
             }
             return promise.promise();
         };
-        FascAutorizza.prototype.removeFascicleRoles = function (roles) {
+        FascAutorizza.prototype.removeFascicleRoles = function (roleRemovedIds) {
             var promise = $.Deferred();
-            if (!roles) {
+            if (!roleRemovedIds || !roleRemovedIds.length) {
                 return promise.resolve();
             }
             try {
                 var role = void 0;
                 var fascicleRole = void 0;
-                var roleRemovedIds = JSON.parse(roles);
                 var ajaxPromises = [];
                 var _loop_1 = function (roleId) {
                     role = {};
                     fascicleRole = this_1._fascicleModel.FascicleRoles.filter(function (x) { return x.Role.EntityShortId == roleId; })[0];
-                    ajaxPromises.push(this_1.removeFascicleRole(fascicleRole));
+                    if (fascicleRole) {
+                        ajaxPromises.push(this_1.removeFascicleRole(fascicleRole));
+                    }
                 };
                 var this_1 = this;
                 for (var _i = 0, roleRemovedIds_1 = roleRemovedIds; _i < roleRemovedIds_1.length; _i++) {
@@ -242,6 +242,53 @@ define(["require", "exports", "App/Models/Commons/AuthorizationRoleType", "App/M
      */
         FascAutorizza.prototype.setButtonEnable = function (value) {
             this._btnConfirm.set_enabled(value);
+        };
+        FascAutorizza.prototype.setRaciRole = function (raciRoles, fascicleRoleId, removedRoleIds) {
+            var promise = $.Deferred();
+            if (!raciRoles || !raciRoles.length) {
+                return promise.resolve();
+            }
+            if (removedRoleIds) {
+                raciRoles = raciRoles.filter(function (raciRole) { return !removedRoleIds.some(function (removedRoleId) { return raciRole.EntityShortId === removedRoleId; }); });
+            }
+            var _loop_2 = function (role) {
+                var fascicleRole = fascicleRoleId !== ""
+                    ? {
+                        UniqueId: fascicleRoleId,
+                        IsMaster: false,
+                        Role: role
+                    }
+                    : this_2._fascicleModel.FascicleRoles.filter(function (x) { return x.Role.EntityShortId == role.EntityShortId; })[0];
+                if (!fascicleRole) {
+                    return { value: promise.resolve() };
+                }
+                fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Responsible;
+                this_2._fascicleRoleService.updateFascicleRole(fascicleRole, function (data) {
+                    promise.resolve();
+                }, function (exception) {
+                    promise.reject(exception);
+                });
+            };
+            var this_2 = this;
+            for (var _i = 0, raciRoles_1 = raciRoles; _i < raciRoles_1.length; _i++) {
+                var role = raciRoles_1[_i];
+                var state_1 = _loop_2(role);
+                if (typeof state_1 === "object")
+                    return state_1.value;
+            }
+            return promise.promise();
+        };
+        FascAutorizza.prototype.updateFascicleVisibilityType = function (fascicleVisibilityType) {
+            var promise = $.Deferred();
+            if (this._fascicleModel.FascicleType === FascicleType.Procedure) {
+                this._fascicleModel.VisibilityType = fascicleVisibilityType;
+                this.service.updateFascicle(this._fascicleModel, null, function (data) {
+                    promise.resolve();
+                }, function (exception) {
+                    promise.reject(exception);
+                });
+            }
+            return promise.promise();
         };
         return FascAutorizza;
     }(FascicleBase));

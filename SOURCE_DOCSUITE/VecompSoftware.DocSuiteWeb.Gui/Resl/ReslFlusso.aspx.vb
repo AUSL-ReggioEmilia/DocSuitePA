@@ -442,7 +442,7 @@ Partial Public Class ReslFlusso
                         ResolutionEnv.Configuration.Eq(ConfAuslPc) AndAlso (workStep.Description.Eq(WorkflowStep.ESECUTIVA) OrElse workStep.Description.Eq(WorkflowStep.FrontalinoEsecutiva))
                         )) AndAlso ResolutionEnv.CheckPublishDocumentSigned Then
                     If uscUploadDocumenti.HasDocuments AndAlso _fileResolution.IdProposalFile.HasValue Then
-                        Dim fileProtoposta As New BiblosDocumentInfo(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB, _fileResolution.IdProposalFile.Value)
+                        Dim fileProtoposta As New BiblosDocumentInfo(CurrentResolution.Location.ReslBiblosDSDB, _fileResolution.IdProposalFile.Value)
                         If fileProtoposta.IsSigned Then
                             Dim resolutionWorkflow As TabWorkflow = Facade.TabWorkflowFacade.GetByResolution(CurrentResolution.Id)
                             Facade.TabWorkflowFacade.GetByStep(
@@ -454,7 +454,7 @@ Partial Public Class ReslFlusso
                             Dim fileEffettivo As DocumentInfo
                             If fieldDocumentProperty IsNot Nothing Then
                                 'Verifico se esista un file che è già stato caricato per il field document
-                                fileEffettivo = New BiblosDocumentInfo(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB, fieldDocumentProperty.Value)
+                                fileEffettivo = New BiblosDocumentInfo(CurrentResolution.Location.ReslBiblosDSDB, fieldDocumentProperty.Value)
                             Else
                                 'Se non c'è documento caricato effettuo il controllo legacy
                                 fileEffettivo = uscUploadDocumenti.DocumentInfosAdded().First()
@@ -524,7 +524,7 @@ Partial Public Class ReslFlusso
                 b = True
             Else
                 If workStep.Description = WorkflowStep.ADOZIONE AndAlso CurrentResolution.File.IdAttachements.HasValue Then
-                    Dim attachments As IEnumerable(Of DocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB, CurrentResolution.File.IdAttachements.Value)
+                    Dim attachments As IEnumerable(Of DocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentResolution.Location.ReslBiblosDSDB, CurrentResolution.File.IdAttachements.Value)
                     idAllegati = InsertFileToBiblos(attachments.ToList(), CurrentResolution.File.IdAttachements.Value, "A", append, workStep.Description, String.Empty)
                     b = True
                 End If
@@ -551,7 +551,7 @@ Partial Public Class ReslFlusso
                 b = True
             Else
                 If workStep.Description = WorkflowStep.ADOZIONE AndAlso Not CurrentResolution.File.IdAnnexes.Equals(Guid.Empty) Then
-                    Dim annexed As IEnumerable(Of DocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentResolution.Location.DocumentServer, CurrentResolution.File.IdAnnexes)
+                    Dim annexed As IEnumerable(Of DocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentResolution.File.IdAnnexes)
                     idAnnexes = InsertFileToBiblosWithGuid(annexed.ToList(), CurrentResolution.File.IdAnnexes, "AN", append, workStep.Description, String.Empty)
                     b = True
                 End If
@@ -602,9 +602,9 @@ Partial Public Class ReslFlusso
 
                 ''Se il documento principale non è stato caricato, allora lo carico
                 If (_fileResolution.IdResolutionFile Is Nothing AndAlso DocSuiteContext.Current.ResolutionEnv.ForceSharePointPublication AndAlso workStep.Description.Eq(WorkflowStep.ADOZIONE)) Then
-                    Dim idResolutionFileDocumentInfo As DocumentInfo = New BiblosDocumentInfo(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB, _fileResolution.IdProposalFile.Value)
+                    Dim idResolutionFileDocumentInfo As DocumentInfo = New BiblosDocumentInfo(CurrentResolution.Location.ReslBiblosDSDB, _fileResolution.IdProposalFile.Value)
                     idResolutionFileDocumentInfo.Signature = GetSignature("D", workStep.Description)
-                    Dim biblosDoc As BiblosDocumentInfo = idResolutionFileDocumentInfo.ArchiveInBiblos(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB)
+                    Dim biblosDoc As BiblosDocumentInfo = idResolutionFileDocumentInfo.ArchiveInBiblos(CurrentResolution.Location.ReslBiblosDSDB)
                     idResolutionFileDocumentInfo = biblosDoc
 
                     If DocSuiteContext.Current.PrivacyLevelsEnabled Then
@@ -818,7 +818,7 @@ Partial Public Class ReslFlusso
         If gestioneDigitale AndAlso workStep.Description.Eq("ADOZIONE") _
             AndAlso Not addedDocuments.IsNullOrEmpty() _
             AndAlso _fileResolution IsNot Nothing AndAlso _fileResolution.IdFrontespizio.HasValue Then
-            frontespizi = BiblosDocumentInfo.GetDocuments(Me.CurrentResolution.Location.DocumentServer, Me.CurrentResolution.Location.ReslBiblosDSDB, Me._fileResolution.IdFrontespizio.Value)
+            frontespizi = BiblosDocumentInfo.GetDocuments(Me.CurrentResolution.Location.ReslBiblosDSDB, Me._fileResolution.IdFrontespizio.Value)
 
             addedDocuments.Insert(0, frontespizi.First())
             FacadeFactory.Instance.ResolutionLogFacade.Log(Me.CurrentResolution, ResolutionLogType.RP, "Frontalino aggiunto automaticamente.")
@@ -925,9 +925,11 @@ Partial Public Class ReslFlusso
                         frontispieceResolution.Number = number
                         frontispieceResolution.AdoptionDate = adoptionDate
                         frontispieceResolution.Container = DirectCast(CurrentResolution.Container.Clone(), Container)
-                        Dim reslContact As ResolutionContact = New ResolutionContact()
-                        reslContact.Contact = DirectCast(CurrentResolution.ResolutionContactProposers(0).Contact.Clone(), Contact)
-                        frontispieceResolution.ResolutionContactProposers = New List(Of ResolutionContact)() From {reslContact}
+                        Dim reslContacts As IList(Of ResolutionContact) = New List(Of ResolutionContact)()
+                        For Each resolutionContactProposer As ResolutionContact In CurrentResolution.ResolutionContactProposers
+                            reslContacts.Add(New ResolutionContact() With {.Contact = DirectCast(resolutionContactProposer.Contact.Clone(), Contact)})
+                        Next
+                        frontispieceResolution.ResolutionContactProposers = reslContacts
                         If Not numServ.Eq("N") AndAlso Not String.IsNullOrEmpty(numServ) Then
                             frontispieceResolution.ServiceNumber = numServ
                         End If
@@ -1031,7 +1033,7 @@ Partial Public Class ReslFlusso
                     Dim oldIdAnnessi As Guid = idAnnessi.Value
                     Dim addedDocuments As IList(Of DocumentInfo) = uscUploadAnnexes.DocumentInfosAdded
                     If ResolutionEnv.GestioneDigitale(CurrentResolution) Then
-                        If CurrentResolution.Container.Privacy Then
+                        If CurrentResolution.Container.Privacy.Value = 1 Then
                             'Se ho il frontalino
                             If _fileResolution IsNot Nothing AndAlso _fileResolution.IdFrontespizio.HasValue Then
                                 ' Se ci sono documenti (anche fittizi)
@@ -1043,7 +1045,7 @@ Partial Public Class ReslFlusso
                                             oldIdAnnessi = Guid.Empty
 
                                             ' Recupero il Frontalino Privacy
-                                            Dim doc As New BiblosDocumentInfo(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB, _fileResolution.IdFrontespizio.Value)
+                                            Dim doc As New BiblosDocumentInfo(CurrentResolution.Location.ReslBiblosDSDB, _fileResolution.IdFrontespizio.Value)
                                             addedDocuments.Insert(0, doc)
                                         End If
                                     End If
@@ -1060,8 +1062,7 @@ Partial Public Class ReslFlusso
                         idAnnessi = InsertFileToBiblosWithGuid(addedDocuments, Guid.Empty, "AN", True, workStep.Description, signature)
                         '' Se è stata creata una nuova catena, aggiungo in coda 
                         If (oldIdAnnessi <> Guid.Empty AndAlso idAnnessi.Value <> oldIdAnnessi) Then
-                            Service.CopyDocuments(CurrentResolution.Location.DocumentServer, oldIdAnnessi,
-                                              CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB, idAnnessi.Value, signature)
+                            Service.CopyDocuments(oldIdAnnessi, CurrentResolution.Location.ReslBiblosDSDB, idAnnessi.Value, signature)
                         End If
                     End If
 
@@ -1577,6 +1578,8 @@ Partial Public Class ReslFlusso
                         Select Case workNext.Description.Trim
                             Case WorkflowStep.ADOZIONE
                                 pnlFrontalino.Visible = True
+                                Dim isDefaultFrontalinoDigitale As Boolean = TabWorkflowFacade.TestManagedWorkflowDataProperty(workNext.ManagedWorkflowData, "Frontespizio", "SEL", "Digitale")
+                                radioFrontalino.SelectedValue = If(isDefaultFrontalinoDigitale, "frontalinodigitale", "frontalinocartaceo")
                             Case WorkflowStep.PUBBLICAZIONE
                                 'Invio CS + 5 gg + 1 gg (solo TO) 
                                 If CurrentResolution.SupervisoryBoardWarningDate.HasValue Then
@@ -1905,6 +1908,7 @@ Partial Public Class ReslFlusso
             'parametro allegati obbligatori
             uscUploadDocumentiOmissis.IsDocumentRequired = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "DocumentsOmissis", "OBB", "")
             uscUploadDocumentiOmissis.ButtonCopyProtocol.Visible = DocSuiteContext.Current.ProtocolEnv.CopyProtocolDocumentsEnabled
+            uscUploadDocumentiOmissis.ButtonCopyUDS.Visible = DocSuiteContext.Current.ProtocolEnv.UDSEnabled
             'parametro firma allegato consentita: si abilita in TabWorkflow con INS-SIGN (per l'inserimento) o MOD-SIGN per la modifica
             uscUploadDocumentiOmissis.SignButtonEnabled = ResolutionEnv.IsFDQEnabled AndAlso TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "DocumentsOmissis", sProp, "SIGN")
 
@@ -1916,6 +1920,7 @@ Partial Public Class ReslFlusso
             'parametro allegati obbligatori
             uscUploadAllegati.IsDocumentRequired = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Attachment", "OBB", "")
             uscUploadAllegati.ButtonCopyProtocol.Visible = DocSuiteContext.Current.ProtocolEnv.CopyProtocolDocumentsEnabled
+            uscUploadAllegati.ButtonCopyUDS.Visible = DocSuiteContext.Current.ProtocolEnv.UDSEnabled
             'parametro firma allegato consentita: si abilita in TabWorkflow con INS-SIGN (per l'inserimento) o MOD-SIGN per la modifica
             uscUploadAllegati.SignButtonEnabled = ResolutionEnv.IsFDQEnabled AndAlso TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Attachment", sProp, "SIGN")
             If ResolutionEnv.HideDocumentButtons AndAlso workNext.Description.Eq("Adozione") Then
@@ -1932,6 +1937,7 @@ Partial Public Class ReslFlusso
             'parametro allegati obbligatori
             uscUploadAllegatiOmissis.IsDocumentRequired = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "AttachmentOmissis", "OBB", "")
             uscUploadAllegatiOmissis.ButtonCopyProtocol.Visible = DocSuiteContext.Current.ProtocolEnv.CopyProtocolDocumentsEnabled
+            uscUploadAllegatiOmissis.ButtonCopyUDS.Visible = DocSuiteContext.Current.ProtocolEnv.UDSEnabled
             'parametro firma allegato consentita: si abilita in TabWorkflow con INS-SIGN (per l'inserimento) o MOD-SIGN per la modifica
             uscUploadAllegatiOmissis.SignButtonEnabled = ResolutionEnv.IsFDQEnabled AndAlso TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "AttachmentOmissis", sProp, "SIGN")
 
@@ -1943,6 +1949,8 @@ Partial Public Class ReslFlusso
             'parametro annessi obbligatori
             uscUploadAnnexes.IsDocumentRequired = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Annexed", "OBB", "")
             uscUploadAnnexes.ButtonCopyProtocol.Visible = DocSuiteContext.Current.ProtocolEnv.CopyProtocolDocumentsEnabled
+            uscUploadAnnexes.ButtonCopyUDS.Visible = DocSuiteContext.Current.ProtocolEnv.UDSEnabled
+            uscUploadAnnexes.SignButtonEnabled = ResolutionEnv.IsFDQEnabled AndAlso TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Annexed", sProp, "SIGN")
             If ResolutionEnv.HideDocumentButtons AndAlso workNext.Description.Eq("Adozione") Then
                 uscUploadAnnexes.ButtonPreviewEnabled = True
                 uscUploadAnnexes.ButtonRemoveEnabled = StringHelper.InStrTest(workNext.BiblosFileProperty, ".DEL.")
@@ -1962,16 +1970,6 @@ Partial Public Class ReslFlusso
             'parametro firma allegato riservato consentita: si abilita in TabWorkflow con INS-SIGN (per l'inserimento) o MOD-SIGN per la modifica
             uscUploadPrivacyAttachment.SignButtonEnabled = ResolutionEnv.IsFDQEnabled AndAlso TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "PrivacyAttachment", sProp, "SIGN")
 
-            'ANNESSI
-            'parametro pannello annessi visibile
-            PnlAnnexesVisible = StringHelper.InStrTest(workflowData, "Annexed")
-            'parametro annessi in sola lettura
-            uscUploadAnnexes.ReadOnly = Not (Not String.IsNullOrEmpty(sProp) AndAlso TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Annexed", sProp, ""))
-            'parametro annessi obbligatori
-            uscUploadAnnexes.IsDocumentRequired = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Annexed", "OBB", "")
-            uscUploadAnnexes.ButtonCopyProtocol.Visible = DocSuiteContext.Current.ProtocolEnv.CopyProtocolDocumentsEnabled
-            'parametro firma allegato consentita: si abilita in TabWorkflow con INS-SIGN (per l'inserimento) o MOD-SIGN per la modifica
-            uscUploadAnnexes.SignButtonEnabled = ResolutionEnv.IsFDQEnabled AndAlso TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Annexed", sProp, "SIGN")
 
             '11-02-2008: Gestione pagine documenti
             'pannello numero di pagine documento visibile solo se AUSL-PC
@@ -2028,7 +2026,7 @@ Partial Public Class ReslFlusso
         ' Carica documenti di default in fase di adozione
         If ResolutionEnv.LoadProposalDocumentInAdoptionState AndAlso StepDescription.Eq(WorkflowStep.ADOZIONE) Then
             If _fileResolution.IdProposalFile.HasValue AndAlso _fileResolution.IdProposalFile.Value <> 0 Then
-                Dim proposal As New BiblosDocumentInfo(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB, _fileResolution.IdProposalFile.Value)
+                Dim proposal As New BiblosDocumentInfo(CurrentResolution.Location.ReslBiblosDSDB, _fileResolution.IdProposalFile.Value)
                 uscUploadDocumenti.LoadDocumentInfo(proposal, proposal.IsSigned, True, True, True)
             End If
         End If
@@ -2037,7 +2035,7 @@ Partial Public Class ReslFlusso
         ' Carica documenti di default in fase di pubblicazione
         If ResolutionEnv.LoadAdoptionDocumentInPublicationState AndAlso StepDescription.Eq(WorkflowStep.PUBBLICAZIONE) Then
             If _fileResolution.IdAssumedProposal.HasValue AndAlso _fileResolution.IdAssumedProposal.Value <> 0 Then
-                Dim adoption As New BiblosDocumentInfo(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB, _fileResolution.IdAssumedProposal.Value)
+                Dim adoption As New BiblosDocumentInfo(CurrentResolution.Location.ReslBiblosDSDB, _fileResolution.IdAssumedProposal.Value)
                 uscUploadDocumenti.LoadDocumentInfo(adoption, adoption.IsSigned, True, True, True)
             End If
         End If
@@ -2083,7 +2081,7 @@ Partial Public Class ReslFlusso
             Throw New DocSuiteException("IdCatena errato")
         End If
 
-        Dim documents As List(Of BiblosDocumentInfo) = (From biblosDocumentInfo1 In BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idCatena) Where Not onlySigned OrElse biblosDocumentInfo1.IsSigned).ToList()
+        Dim documents As List(Of BiblosDocumentInfo) = (From biblosDocumentInfo1 In BiblosDocumentInfo.GetDocuments(resl.Location.ReslBiblosDSDB, idCatena) Where Not onlySigned OrElse biblosDocumentInfo1.IsSigned).ToList()
         AddDocumentInfos(documents, documentControl, append, signature)
         idCatena = 0
     End Sub
@@ -2093,7 +2091,7 @@ Partial Public Class ReslFlusso
             Throw New DocSuiteException("Guid Catena non valorizzato")
         End If
 
-        Dim documents As List(Of BiblosDocumentInfo) = (From biblosDocumentInfo1 In BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, guidCatena) Where Not onlySigned OrElse biblosDocumentInfo1.IsSigned).ToList()
+        Dim documents As List(Of BiblosDocumentInfo) = (From biblosDocumentInfo1 In BiblosDocumentInfo.GetDocuments(guidCatena) Where Not onlySigned OrElse biblosDocumentInfo1.IsSigned).ToList()
         AddDocumentInfos(documents, documentControl, append, signature)
 
         guidCatena = Guid.Empty
@@ -2237,7 +2235,7 @@ Partial Public Class ReslFlusso
         Dim savedDocument As BiblosDocumentInfo
         For Each doc As DocumentInfo In docs
             doc.Signature = signature
-            savedDocument = doc.ArchiveInBiblos(location.DocumentServer, location.ReslBiblosDSDB, newCatena)
+            savedDocument = doc.ArchiveInBiblos(location.ReslBiblosDSDB, newCatena)
             newCatena = savedDocument.BiblosChainId
             If DocSuiteContext.Current.PrivacyLevelsEnabled Then
                 Facade.ResolutionFacade.ResolutionInsertedDocumentPrivacyLevel(CurrentResolution, savedDocument, signatureType)
@@ -2276,7 +2274,7 @@ Partial Public Class ReslFlusso
         Dim savedDocument As BiblosDocumentInfo
         For Each doc As DocumentInfo In docs
             doc.Signature = signature
-            savedDocument = doc.ArchiveInBiblos(location.DocumentServer, location.ReslBiblosDSDB, newCatena)
+            savedDocument = doc.ArchiveInBiblos(location.ReslBiblosDSDB, newCatena)
             newCatena = savedDocument.ChainId
 
             If DocSuiteContext.Current.PrivacyLevelsEnabled Then
@@ -2297,7 +2295,7 @@ Partial Public Class ReslFlusso
                 Dim tw As TabWorkflow = Facade.TabWorkflowFacade.GetByResolution(CurrentResolution.Id)
                 Dim fileRes As FileResolution = Facade.FileResolutionFacade.GetByResolution(CurrentResolution)(0)
                 Dim docChain As Integer = Convert.ToInt32(ReflectionHelper.GetPropertyCase(fileRes, tw.FieldDocument))
-                Dim description As String = Service.GetDocumentName(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB, docChain, 0)
+                Dim description As String = Service.GetDocumentName(CurrentResolution.Location.ReslBiblosDSDB, docChain, 0)
 
                 Dim strXmlDoc As String = CurrentResolutionWPFacade.GetXMLSPFrontespizio(
                 uscUploadDocumenti.DocumentInfos.ToDictionary(Function(d) DirectCast(d, TempFileDocumentInfo).FileInfo.Name, Function(d) d.Serialized),
@@ -2464,13 +2462,13 @@ Partial Public Class ReslFlusso
     Private Sub AddToEndDocument(ByVal idCatenaFrom As Integer, ByRef idCatenaTo As Integer)
         Dim location As Location = Facade.LocationFacade.GetById(Integer.Parse(txtIdLocation.Text))
 
-        Dim loc As New UIDLocation() With {.Server = location.DocumentServer, .Archive = location.ReslBiblosDSDB}
+        Dim loc As New UIDLocation() With {.Archive = location.ReslBiblosDSDB}
 
         Dim sources As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(New UIDChain(loc, idCatenaFrom))
 
         For i As Integer = 0 To sources.Count - 1
             Dim doc As BiblosDocumentInfo = sources(i)
-            doc.ArchiveInBiblos(location.DocumentServer, location.ReslBiblosDSDB, idCatenaTo)
+            doc.ArchiveInBiblos(location.ReslBiblosDSDB, idCatenaTo)
         Next
     End Sub
 

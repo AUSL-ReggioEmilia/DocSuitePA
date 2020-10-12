@@ -12,26 +12,29 @@ import WorkflowRepositoryService = require('App/Services/Workflows/WorkflowRepos
 import DomainUserService = require('App/Services/Securities/DomainUserService');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import WorkflowAuthorizationType = require('App/Models/Workflows/WorkflowAuthorizationType');
-import WorkflowStatus = require('App/Models/Workflows/WorkflowStatus');
 import ActivityModel = require('App/Models/Workflows/ActivityModel');
 import DomainUserModel = require('App/Models/Securities/DomainUserModel');
 import WorkflowActivityViewModel = require('App/ViewModels/Workflows/WorkflowActivityViewModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
 import WorkflowEvaluationPropertyService = require('App/Services/Workflows/WorkflowEvaluationPropertyService');
-import WorkflowStep = require('../App/Models/Workflows/WorkflowStep');
-import WorkflowArgumentModel = require('../App/Models/Workflows/WorkflowArgumentModel');
-import WorkflowEvaluationPropertyType = require('../App/Models/Workflows/WorkflowEvaluationPropertyType');
-import WorkflowPropertyHelper = require('../App/Models/Workflows/WorkflowPropertyHelper');
-import WorkflowTreeNodeType = require('../App/Models/Workflows/WorkflowTreeNodeType');
-import OpenWindowOperationType = require('../App/Models/Workflows/OpenWindowOperationType');
-import WorkflowArgumentType = require('../App/Models/Workflows/WorkflowArgumentType');
-import DSWEnvironmentType = require('../App/Models/Workflows/WorkflowDSWEnvironmentType');
-import uscRoleRest = require('../UserControl/uscRoleRest');
-import WorkflowRoleModel = require('../App/Models/Workflows/WorkflowRoleModel');
-import RoleModel = require('../App/Models/Commons/RoleModel');
-import RoleModelMapper = require('../App/Mappers/Commons/RoleModelMapper');
-
+import WorkflowStep = require('App/Models/Workflows/WorkflowStep');
+import WorkflowArgumentModel = require('App/Models/Workflows/WorkflowArgumentModel');
+import ArgumentType = require('App/Models/Workflows/ArgumentType');
+import WorkflowTreeNodeType = require('App/Models/Workflows/WorkflowTreeNodeType');
+import OpenWindowOperationType = require('App/Models/Workflows/OpenWindowOperationType');
+import WorkflowArgumentType = require('App/Models/Workflows/WorkflowArgumentType');
+import DSWEnvironmentType = require('App/Models/Workflows/WorkflowDSWEnvironmentType');
+import uscRoleRest = require('UserControl/uscRoleRest');
+import RoleModel = require('App/Models/Commons/RoleModel');
+import RoleModelMapper = require('App/Mappers/Commons/RoleModelMapper');
+import WorkflowRepositoryStatus = require('App/Models/Workflows/WorkflowRepositoryStatus');
+import EnumHelper = require('App/Helpers/EnumHelper');
+import ActivityType = require('App/Models/Workflows/ActivityType');
+import ActivityArea = require('App/Models/Workflows/ActivityArea');
+import QueryParameters = require('App/Models/Workflows/QueryStringModels/QueryParametersWorkflowEvaluationProperty')
+import WorkflowPropertyHelper = require('App/Models/Workflows/WorkflowPropertyHelper');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class TbltWorkflowRepository {
     ajaxManagerId: string;
@@ -41,6 +44,7 @@ class TbltWorkflowRepository {
     mappingDataSourceId: string;
     uscNotificationId: string;
     uscRoleRestId: string;
+    workflowEnvironment: string;
 
     //radGrids
     rgvStepInputPropertiesId: string;
@@ -107,15 +111,22 @@ class TbltWorkflowRepository {
     private static COMMANDNAME_ADD: string = "ADD";
     private static COMMANDNAME_EDIT: string = "EDIT";
     private static COMMANDNAME_REMOVE: string = "REMOVE";
-    private static WORKFLOW_REPOSITORY: string = "WorkflowRepository";
-    private static WORKFLOW_STEP: string = "WorkflowStep";
-    private static WORKFLOW_STEP_ARGUMENT: string = "WorkflowStepArgument";
     private static TAG_PANEL: string = "Tag";
     private static STARTUP_PANEL: string = "Startup";
     private static INPUT_ARG_PANEL: string = "Input";
     private static EVALUATION_ARG_PANEL: string = "Evaluation";
     private static OUTPUT_ARG_PANEL: string = "Output";
 
+    //_dsw_p_WorkflowStartProposer - Proponente Di Avio (values 0<Settore> or 1<Utente>)
+    private static PROPERTY_NAME_WORKFLOW_START_PROPOSER = WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_START_PROPOSER;
+    //_dsw_p_WorkflowStartRecipient - Destinatario Di Avio (values 0<Settore> or 1<Utente>)
+    private static PROPERTY_NAME_WORKFLOW_START_RECIPIENT = WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_START_RECIPIENT;
+    //_dsw_p_WorkflowDefaultProposer - Proponente Di Default
+    private static PROPERTY_NAME_WORKFLOW_DEFAULT_PROPOSER = WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_DEFAULT;
+    //_dsw_p_WorkflowDefaultRecipient - Destinatario Di Default
+    private static PROPERTY_NAME_WORKFLOW_DEFAULT_RECIPIENT = WorkflowPropertyHelper.DSW_PROPERTY_RECIPIENT_DEFAULT;
+
+    private _enumHelper: EnumHelper;
     private _windowAddWorkflowRoleMapping: Telerik.Web.UI.RadWindow;
     private _rtvWorkflowRepository: Telerik.Web.UI.RadTreeView;
     private _rgvWorkflowRoleMappings: Telerik.Web.UI.RadGrid;
@@ -165,12 +176,16 @@ class TbltWorkflowRepository {
 
     private _uscRoleRest: uscRoleRest;
     private _currentWorkflowRepositoryId: string;
+
+    private _currentWorkflowRepositoryModel: WorkflowRepositoryModel;
+
     /**
      * Costruttore
      * @param serviceConfigurations
      */
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         this._serviceConfigurations = serviceConfigurations;
+        this._enumHelper = new EnumHelper();
     }
 
     /**
@@ -181,7 +196,6 @@ class TbltWorkflowRepository {
         $('#'.concat(this.btnAggiungiId)).hide();
         $('#'.concat(this.btnModificaId)).hide();
         $('#'.concat(this.btnEliminaId)).hide();
-
         this._uscRoleRest = <uscRoleRest>$(`#${this.uscRoleRestId}`).data();
 
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
@@ -297,7 +311,9 @@ class TbltWorkflowRepository {
         if (nodeType === WorkflowTreeNodeType.Workflow) {
             this.registerUscRoleRestEventHandlers();
             this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_ADD).set_enabled(true);
+            this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_ADD).set_toolTip("Aggiungi workflow step");
             this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_EDIT).set_enabled(true);
+            this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_EDIT).set_toolTip("Modifica workflow repository");
             this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_REMOVE).set_enabled(false);
             $('#'.concat(this.pnlRepositoryInformationsId)).show();
             $('#'.concat(this.pnlStepInformationsId)).hide();
@@ -330,9 +346,12 @@ class TbltWorkflowRepository {
             this._pnlBarDetails.findItemByValue(TbltWorkflowRepository.INPUT_ARG_PANEL).show();
             this._pnlBarDetails.findItemByValue(TbltWorkflowRepository.EVALUATION_ARG_PANEL).show();
             this._pnlBarDetails.findItemByValue(TbltWorkflowRepository.OUTPUT_ARG_PANEL).show();
+            this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_EDIT).set_toolTip("Modifica workflow step");
+            this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_REMOVE).set_toolTip("Elimina workflow step");
         }
         else {
             this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_ADD).set_enabled(true);
+            this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_ADD).set_toolTip("Aggiungi workflow repository");
             this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_EDIT).set_enabled(false);
             this._toolbarStep.findButtonByCommandName(TbltWorkflowRepository.COMMANDNAME_REMOVE).set_enabled(false);
             $('#'.concat(this.pnlRepositoryInformationsId)).hide();
@@ -350,7 +369,7 @@ class TbltWorkflowRepository {
      * @param sender
      * @param args
      */
-    private btnAggiungi_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnAggiungi_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.openManagementWindow('Add');
         return false;
     }
@@ -360,7 +379,7 @@ class TbltWorkflowRepository {
      * @param sender
      * @param args
      */
-    private btnModifica_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnModifica_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.openManagementWindow('Edit');
         return false;
     }
@@ -370,7 +389,7 @@ class TbltWorkflowRepository {
      * @param sender
      * @param args
      */
-    private btnDelete_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnDelete_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
         let isXamlRepository: boolean = selectedNode.get_attributes().getAttribute('isXaml');
         let selectedMappingTags: Telerik.Web.UI.GridDataItem[];
@@ -403,8 +422,6 @@ class TbltWorkflowRepository {
             }
         );
     }
-
-
 
     /**
      * Evento scatenato al click del pulsante di ricerca workflow
@@ -457,14 +474,32 @@ class TbltWorkflowRepository {
                 this._confirmWindowManager.set_cssClass("remove");
                 this._confirmWindowManager.radconfirm("Sei sicuro di voler eliminare il workflow step dal repository selezionato?", (arg) => {
                     if (arg) {
-                        this.deleteWorkflowRepositoryStep(selectedNode.get_value(), selectedNodeParent.get_value());
-                        selectedNodeParent.get_nodes().remove(selectedNode);
+                        let workflowSteps: WorkflowStep[] = this.deleteWorkflowRepositoryStep(selectedNode.get_index(), selectedNodeParent.get_value());
+                        this.redrawNodeWithPositions(selectedNodeParent, selectedNode, workflowSteps);
                     }
                 });
                 $('#'.concat(this.pnlDetailsId)).hide();
                 break;
         }
-        
+
+    }
+
+    private redrawNodeWithPositions(selectedNodeParent: Telerik.Web.UI.RadTreeNode, selectedNode: Telerik.Web.UI.RadTreeNode, workflowSteps: WorkflowStep[]) {
+        let nodeLength = selectedNodeParent.get_allNodes().length - 1;
+
+        for (let i = nodeLength; i >= 0; i--) {
+            selectedNodeParent.get_nodes().remove(selectedNodeParent.get_nodes().getNode(i));
+        }
+
+        for (let i = 0; i < workflowSteps.length; i++) {
+            let stepNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+            stepNode.set_text(workflowSteps[i].Name);
+            stepNode.set_value(workflowSteps[i].Position);
+            stepNode.set_imageUrl('../Comm/Images/DocSuite/Resolution16.gif');
+            stepNode.get_attributes().setAttribute(TbltWorkflowRepository.NODETYPE_ATTRNAME, WorkflowTreeNodeType.Step);
+            selectedNodeParent.get_nodes().add(stepNode);
+        }
+
     }
 
     private updateWorkflowRepositoryStep(workflowStep: WorkflowStep, uniqueId: string): void {
@@ -503,13 +538,13 @@ class TbltWorkflowRepository {
         this._workflowRepositoryService.updateWorkflowRepository(workflowRepositoryToUpdate);
     }
 
-    private deleteWorkflowRepositoryStep(workflowStepPosition: number, uniqueId: string): void {
+    private deleteWorkflowRepositoryStep(workflowStepPosition: number, uniqueId: string): WorkflowStep[] {
         let workflowRepository: WorkflowRepositoryModel = this.repositories.filter(repository => repository.UniqueId == uniqueId)[0];
         let json: WorkflowStep[] = JSON.parse(workflowRepository.Json);
         let workflowSteps: WorkflowStep[] = Object.keys(json).map(function (i) { return json[i]; });
         workflowSteps = workflowSteps.filter(step => step.Position != workflowStepPosition);
 
-        this.updateWorkflowStepsPositions(workflowSteps, workflowStepPosition);
+        workflowSteps = this.updateWorkflowStepsPositions(workflowSteps, workflowStepPosition);
 
         let updatedJson = {};
         workflowSteps.forEach((step: WorkflowStep, idx: number) => {
@@ -519,6 +554,7 @@ class TbltWorkflowRepository {
         workflowRepository.Json = JSON.stringify(updatedJson);
 
         this._workflowRepositoryService.updateWorkflowRepository(workflowRepository);
+        return workflowSteps;
     }
 
     private updateWorkflowStepsPositions(workflowSteps: WorkflowStep[], startPosition: number): WorkflowStep[] {
@@ -535,7 +571,7 @@ class TbltWorkflowRepository {
         let workflowStepToUpdate: WorkflowStep = JsonToUpdate.filter(step => step.Position == stepPosition)[0];
         switch (type) {
             case WorkflowArgumentType.Input: {
-                let inputArguments: WorkflowArgumentModel[] = workflowStepToUpdate.InputArguments;
+                let inputArguments: WorkflowArgumentModel[] = workflowStepToUpdate.InputArguments ? workflowStepToUpdate.InputArguments : new Array<WorkflowArgumentModel>();
                 let argumentToUpdate: WorkflowArgumentModel = inputArguments.filter(arg => arg.Name == argument.Name)[0];
                 if (inputArguments.indexOf(argumentToUpdate) >= 0) {
                     inputArguments[inputArguments.indexOf(argumentToUpdate)] = argument;
@@ -549,7 +585,7 @@ class TbltWorkflowRepository {
                 break;
             }
             case WorkflowArgumentType.Evaluation: {
-                let evaluationArguments: WorkflowArgumentModel[] = workflowStepToUpdate.EvaluationArguments;
+                let evaluationArguments: WorkflowArgumentModel[] = workflowStepToUpdate.EvaluationArguments ? workflowStepToUpdate.EvaluationArguments : new Array<WorkflowArgumentModel>();
                 let argumentToUpdate: WorkflowArgumentModel = evaluationArguments.filter(arg => arg.Name == argument.Name)[0];
                 if (evaluationArguments.indexOf(argumentToUpdate) >= 0) {
                     evaluationArguments[evaluationArguments.indexOf(argumentToUpdate)] = argument;
@@ -563,7 +599,7 @@ class TbltWorkflowRepository {
                 break;
             }
             case WorkflowArgumentType.Output: {
-                let outputArguments: WorkflowArgumentModel[] = workflowStepToUpdate.OutputArguments;
+                let outputArguments: WorkflowArgumentModel[] = workflowStepToUpdate.OutputArguments ? workflowStepToUpdate.OutputArguments : new Array<WorkflowArgumentModel>();
                 let argumentToUpdate: WorkflowArgumentModel = outputArguments.filter(arg => arg.Name == argument.Name)[0];
                 if (outputArguments.indexOf(argumentToUpdate) >= 0) {
                     outputArguments[outputArguments.indexOf(argumentToUpdate)] = argument;
@@ -577,7 +613,7 @@ class TbltWorkflowRepository {
                 break;
             }
         }
-            
+
         let updatedJson = {};
 
         JsonToUpdate.forEach((step: WorkflowStep, idx: number) => {
@@ -639,7 +675,7 @@ class TbltWorkflowRepository {
     }
 
     private updateWorkflowStepArgumentsTableView(argumentsCollection: WorkflowArgumentModel[], uniqueId: string, argumentType: number) {
-        let agumentsModel = this.populatetArgumentsMasterViewTable(argumentsCollection, uniqueId);
+        let agumentsModel = this.populateArgumentsMasterViewTable(argumentsCollection, uniqueId);
         let workflowStepArgumentsTableView: Telerik.Web.UI.GridTableView;
         switch (argumentType) {
             case WorkflowArgumentType.Input:
@@ -705,6 +741,8 @@ class TbltWorkflowRepository {
             this.fillWorkflowRepositoryInformations(workflowRepository);
 
             this._workflowRepositoryService.insertWorkflowRepository(workflowRepository);
+
+            this.repositories.push(workflowRepository);
         }
         else {
             //edit workflow
@@ -716,15 +754,15 @@ class TbltWorkflowRepository {
         }
     }
 
-    btnAddInputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnAddInputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.openWorkflowPropertyGesWindow(OpenWindowOperationType.Add, WorkflowArgumentType.Input);
     }
 
-    btnEditInputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnEditInputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.openWorkflowPropertyGesWindow(OpenWindowOperationType.Edit, WorkflowArgumentType.Input);
     }
 
-    btnDeleteInputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnDeleteInputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
         let selectedItem: Telerik.Web.UI.GridDataItem = this._rgvStepInputProperties.get_selectedItems()[0];
         let argumentName: string = selectedItem.get_dataItem().Name;
@@ -734,15 +772,15 @@ class TbltWorkflowRepository {
         this.deleteWorkflowStepArgument(argumentName, uniqueId, stepPosition, argumentType);
     }
 
-    btnAddEvaluationArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnAddEvaluationArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.openWorkflowPropertyGesWindow(OpenWindowOperationType.Add, WorkflowArgumentType.Evaluation);
     }
 
-    btnEditEvaluationArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnEditEvaluationArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.openWorkflowPropertyGesWindow(OpenWindowOperationType.Edit, WorkflowArgumentType.Evaluation);
     }
 
-    btnDeleteEvaluationArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnDeleteEvaluationArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
         let selectedItem: Telerik.Web.UI.GridDataItem = this._rgvStepEvaluationProperties.get_selectedItems()[0];
         let argumentName: string = selectedItem.get_dataItem().Name;
@@ -752,15 +790,15 @@ class TbltWorkflowRepository {
         this.deleteWorkflowStepArgument(argumentName, uniqueId, stepPosition, argumentType);
     }
 
-    btnAddOutputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnAddOutputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.openWorkflowPropertyGesWindow(OpenWindowOperationType.Add, WorkflowArgumentType.Output);
     }
 
-    btnEditOutputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnEditOutputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.openWorkflowPropertyGesWindow(OpenWindowOperationType.Edit, WorkflowArgumentType.Output);
     }
 
-    btnDeleteOutputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnDeleteOutputArguments_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
         let selectedItem: Telerik.Web.UI.GridDataItem = this._rgvStepOutputProperties.get_selectedItems()[0];
         let argumentName: string = selectedItem.get_dataItem().Name;
@@ -777,34 +815,59 @@ class TbltWorkflowRepository {
 
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
         let parentNodeId: string = operation === OpenWindowOperationType.Add ? selectedNode.get_value() : selectedNode.get_parent().get_value();
-       
         let workflowRepository: WorkflowRepositoryModel;
         this._workflowRepositoryService.getById(parentNodeId, (data: WorkflowRepositoryModel) => {
             workflowRepository = data;
-            sessionStorage[WorkflowTreeNodeType.Workflow] = JSON.stringify(workflowRepository);
+            if (workflowRepository.Json === "{}") { /*If it's step 0*/
+                workflowRepository.Json = this.initializeFirstStep();
+            }
+            sessionStorage.setItem(WorkflowTreeNodeType.Workflow.toString(), JSON.stringify(workflowRepository));
+
             if (operation === OpenWindowOperationType.Edit) {
                 let steps = JSON.parse(workflowRepository.Json);
                 let workflowSteps: WorkflowStep[] = Object.keys(steps).map(function (i) { return steps[i]; });
                 let workflowStep: WorkflowStep = workflowSteps.filter(step => step.Position == selectedNode.get_value())[0];
-                sessionStorage[WorkflowTreeNodeType.Step] = JSON.stringify(workflowStep);
+                sessionStorage.setItem(WorkflowTreeNodeType.Step.toString(), JSON.stringify(workflowStep));
+                this._rwmWorkflowStep.set_modal(true);
+                this._rwmWorkflowStep.open(url, "windowWorkflowStep", undefined);
             }
         });
+        if (operation === OpenWindowOperationType.Add) {
+            this._rwmWorkflowStep.set_modal(true);
+            this._rwmWorkflowStep.open(url, "windowWorkflowStep", undefined);
+        }
 
-        this._rwmWorkflowStep.set_modal(true);
-        this._rwmWorkflowStep.open(url, "windowWorkflowStep", undefined);
+    }
+
+    private initializeFirstStep(): string {
+        let wfStep = new Array<WorkflowStep>();
+        let firstStep: WorkflowStep = {
+            Position: -1, //it will be incresed to 0 when user presses confirm button.
+            Name: "",
+            AuthorizationType: null,
+            ActivityType: null,
+            ActivityOperation: {
+                Action: null,
+                Area: null
+            },
+            EvaluationArguments: new Array<WorkflowArgumentModel>(),
+            InputArguments: new Array<WorkflowArgumentModel>(),
+            OutputArguments: new Array<WorkflowArgumentModel>()
+        };
+        wfStep.push(firstStep);
+        return JSON.stringify(wfStep);
     }
 
     openWorkflowPropertyGesWindow(operation: number, argumentType: number) {
         this._rwWorkflowProperty.setSize(650, 400);
-        let validation: boolean = argumentType == WorkflowArgumentType.Evaluation ? false : true;
+        const validation: boolean = argumentType === WorkflowArgumentType.Evaluation;
+        const url = `../Tblt/TbltWorkflowPropertyGes.aspx?Type=Comm&Action=${OpenWindowOperationType[operation]}&Argument=${WorkflowArgumentType[argumentType]}&Validation=${validation}`;
 
-        let url: string = `../Tblt/TbltWorkflowPropertyGes.aspx?Type=Comm&Action=${OpenWindowOperationType[operation]}&Argument=${WorkflowArgumentType[argumentType]}&Validation=${validation}`;
+        const selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
+        const parentNodeId: string = selectedNode.get_parent().get_value();
 
-        let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
-        let parentNodeId: string = selectedNode.get_parent().get_value();
-
-        sessionStorage[TbltWorkflowRepository.WORKFLOW_REPOSITORY] = parentNodeId;
-        sessionStorage[TbltWorkflowRepository.WORKFLOW_STEP] = selectedNode.get_value();
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_REPOSITORY, parentNodeId);
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_STEP, selectedNode.get_value());
 
         let selectedItem;
 
@@ -820,7 +883,8 @@ class TbltWorkflowRepository {
                     selectedItem = this._rgvStepOutputProperties.get_selectedItems()[0].get_dataItem();
                     break;
             }
-            sessionStorage[TbltWorkflowRepository.WORKFLOW_STEP_ARGUMENT] = JSON.stringify({ Name: selectedItem.Name, Value: selectedItem.Value, UniqueId: selectedItem.UniqueId });
+
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_STEP_ARGUMENT, JSON.stringify({ Name: selectedItem.Name, Value: selectedItem.Value, UniqueId: selectedItem.UniqueId }));
         }
 
         this._rwWorkflowProperty.set_modal(true);
@@ -837,20 +901,22 @@ class TbltWorkflowRepository {
             let workflowRepository: WorkflowRepositoryModel;
             this._workflowRepositoryService.getById(parentNodeId, (data: WorkflowRepositoryModel) => {
                 workflowRepository = data;
-                sessionStorage[WorkflowTreeNodeType.Workflow] = JSON.stringify(workflowRepository);
+                sessionStorage.setItem(WorkflowTreeNodeType.Workflow.toString(), JSON.stringify(workflowRepository));
+                this._rwWorkflowRepository.set_modal(true);
+                this._rwWorkflowRepository.open(url, "windowWorkflowRepository", undefined);
             });
         }
-
-        this._rwWorkflowRepository.set_modal(true);
-        this._rwWorkflowRepository.open(url, "windowWorkflowRepository", undefined);
-
+        if (operation === OpenWindowOperationType.Add) {
+            this._rwWorkflowRepository.set_modal(true);
+            this._rwWorkflowRepository.open(url, "windowWorkflowRepository", undefined);
+        }
     }
     /**
      * Evento scatenato al click del pulsante di ricerca Tag per workflow di tipo XAML
      * @param sender
      * @param args
      */
-    private btnSelectMappingTag_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnSelectMappingTag_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedMappingText: string = this._rcbSelectMappingTag.get_text();
         if (String.isNullOrEmpty(selectedMappingText) || selectedMappingText == this._rcbSelectMappingTag.get_emptyMessage()) return;
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
@@ -1001,7 +1067,6 @@ class TbltWorkflowRepository {
 
     private deleteWorkflowRolePromise = (roleIdToDelete: number, instanceId?: string): JQueryPromise<any> => {
         let promise: JQueryDeferred<any> = $.Deferred<any>();
-
         if (!roleIdToDelete) {
             return promise.promise();
         }
@@ -1023,8 +1088,8 @@ class TbltWorkflowRepository {
         }
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
         let currentWorkflowRepository: WorkflowRepositoryModel = this.repositories.filter(r => r.UniqueId == selectedNode.get_value())[0];
-            currentWorkflowRepository.Roles = [...currentWorkflowRepository.Roles, ...rolesToAdd];
-      
+        currentWorkflowRepository.Roles = [...currentWorkflowRepository.Roles, ...rolesToAdd];
+
         this._workflowRepositoryService.updateWorkflowRepository(currentWorkflowRepository, (data) => {
             promise.resolve(data);
         },
@@ -1059,28 +1124,28 @@ class TbltWorkflowRepository {
         let repositoryId: string = nodeType === WorkflowTreeNodeType.Workflow ? selectedNode.get_value() : selectedNode.get_parent().get_value();
 
         this._workflowRoleMappingService.getByName('', repositoryId,
-                (response: any) => {
-                    if (response == undefined) return result.resolve();
-                    try {
-                        let models: WorkflowRoleMappingModel[] = <WorkflowRoleMappingModel[]>response;
-                        if (models.length > 0) {
-                            (<any>this._mappingDataSource).set_data(models);
-                        } else {
-                            (<any>this._mappingDataSource).set_data('[{}]');
-                        }
-                        (<any>this._mappingDataSource).fetch();
-                        return result.resolve();
+            (response: any) => {
+                if (response == undefined) return result.resolve();
+                try {
+                    let models: WorkflowRoleMappingModel[] = <WorkflowRoleMappingModel[]>response;
+                    if (models.length > 0) {
+                        (<any>this._mappingDataSource).set_data(models);
+                    } else {
+                        (<any>this._mappingDataSource).set_data('[{}]');
                     }
-                    catch (error) {
-                        console.log(JSON.stringify(error));
-                        return result.reject(error);
-                    }
-                },
-                (exception: ExceptionDTO) => {
-                    return result.reject(exception);
+                    (<any>this._mappingDataSource).fetch();
+                    return result.resolve();
                 }
-            );
-        
+                catch (error) {
+                    console.log(JSON.stringify(error));
+                    return result.reject(error);
+                }
+            },
+            (exception: ExceptionDTO) => {
+                return result.reject(exception);
+            }
+        );
+
         return result.promise();
     }
 
@@ -1112,31 +1177,31 @@ class TbltWorkflowRepository {
         let nodeType: WorkflowTreeNodeType = selectedNode.get_attributes().getAttribute(TbltWorkflowRepository.NODETYPE_ATTRNAME);
         let repositoryId: string = nodeType === WorkflowTreeNodeType.Workflow ? selectedNode.get_value() :
             nodeType === WorkflowTreeNodeType.Step ? selectedNode.get_parent().get_value() : null;
-            this._workflowRepositoryService.getById(repositoryId,
-                (response: any) => {
-                    if (response == undefined) return result.reject();
-                    try {
-                        let model: WorkflowRepositoryModel = <WorkflowRepositoryModel>response;
-                        if (selectedNode.get_attributes().getAttribute(TbltWorkflowRepository.NODETYPE_ATTRNAME) === WorkflowTreeNodeType.Step) {
-                            let jsonModel: WorkflowStep[] = JSON.parse(model.Json);
-                            let workflowSteps: WorkflowStep[] = Object.keys(jsonModel).map(function (i) { return jsonModel[i]; });
-                            let workflowStepModel: WorkflowStep = workflowSteps.filter(step => step.Position == selectedNode.get_value())[0];
-                            this.fillWorkflowStepInformations(workflowStepModel);
-                        }
-                        this.fillWorkflowRepositoryInformations(model);
-                        this.clearDataSources();
-                        this.setDetailsVisibility(model);
-                        return result.resolve(model);
+        this._workflowRepositoryService.getById(repositoryId,
+            (response: any) => {
+                if (response == undefined) return result.reject();
+                try {
+                    let model: WorkflowRepositoryModel = <WorkflowRepositoryModel>response;
+                    if (selectedNode.get_attributes().getAttribute(TbltWorkflowRepository.NODETYPE_ATTRNAME) === WorkflowTreeNodeType.Step) {
+                        let jsonModel: WorkflowStep[] = JSON.parse(model.Json);
+                        let workflowSteps: WorkflowStep[] = Object.keys(jsonModel).map(function (i) { return jsonModel[i]; });
+                        let workflowStepModel: WorkflowStep = workflowSteps.filter(step => step.Position == selectedNode.get_value())[0];
+                        this.fillWorkflowStepInformations(workflowStepModel);
                     }
-                    catch (error) {
-                        console.log(JSON.stringify(error));
-                        return result.reject(error);
-                    }
-                },
-                (exception: ExceptionDTO) => {
-                    return result.reject(exception);
+                    this.fillWorkflowRepositoryInformations(model);
+                    this.clearDataSources();
+                    this.setDetailsVisibility(model);
+                    return result.resolve(model);
                 }
-            );
+                catch (error) {
+                    console.log(JSON.stringify(error));
+                    return result.reject(error);
+                }
+            },
+            (exception: ExceptionDTO) => {
+                return result.reject(exception);
+            }
+        );
         return result.promise();
     }
 
@@ -1152,6 +1217,8 @@ class TbltWorkflowRepository {
         } else {
             $('#'.concat(this.lblTipoligiaId)).html(workflowRepositoryModel.DSWEnvironment.toString());
         }
+
+        this.workflowEnvironment = workflowRepositoryModel.DSWEnvironment.toString();
     }
 
     private fillWorkflowStepInformations(workflowStepModel: WorkflowStep): void {
@@ -1160,11 +1227,28 @@ class TbltWorkflowRepository {
         let authType: string = workflowStepModel.AuthorizationType != undefined ? workflowStepModel.AuthorizationType.toString() : "";
         $('#'.concat(this.lblAutorizationTypeId)).html(authType);
         let activityType: string = workflowStepModel.ActivityType != undefined ? workflowStepModel.ActivityType.toString() : "";
-        $('#'.concat(this.lblActivityTypeId)).html(activityType);
+        if (Number(activityType)) {
+            $('#'.concat(this.lblActivityTypeId)).html(this._enumHelper.getActivityTypeDescription(ActivityType[activityType]));
+        }
+        else {
+            $('#'.concat(this.lblActivityTypeId)).html(this._enumHelper.getActivityTypeDescription(activityType));
+        }
+
         let area: string = workflowStepModel.ActivityOperation.Area != undefined ? workflowStepModel.ActivityOperation.Area.toString() : "";
-        $('#'.concat(this.lblAreaId)).html(area);
+        if (Number(area)) {
+            $('#'.concat(this.lblAreaId)).html(this._enumHelper.getActivityAreaDescription(ActivityArea[area]));
+        }
+        else {
+            $('#'.concat(this.lblAreaId)).html(this._enumHelper.getActivityAreaDescription(area));
+        }
+
         let action: string = workflowStepModel.ActivityOperation.Action != undefined ? workflowStepModel.ActivityOperation.Action.toString() : "";
-        $('#'.concat(this.lblActionId)).html(action);
+        if (Number(action)) {
+            $('#'.concat(this.lblActionId)).html(this._enumHelper.getWorkflowActivityActionDescription(Number(action)));
+        }
+        else {
+            $('#'.concat(this.lblActionId)).html(action);
+        }
     }
 
     /**
@@ -1179,7 +1263,6 @@ class TbltWorkflowRepository {
                 workflowRoleMappingsMasterTableView.set_dataSource(model.WorkflowRoleMappings);
                 workflowRoleMappingsMasterTableView.clearSelectedItems();
                 workflowRoleMappingsMasterTableView.dataBind();
-
 
                 let startupModel = this.populateStartupMasterViewTable(model.WorkflowEvaluationProperties);
                 let workflowStartupMasterTableView: Telerik.Web.UI.GridTableView = this._rgvWorkflowStartUp.get_masterTableView();
@@ -1206,7 +1289,7 @@ class TbltWorkflowRepository {
                     let outputArguments: WorkflowArgumentModel[] = workflowStep.OutputArguments ? workflowStep.OutputArguments : new Array<WorkflowArgumentModel>();;
                     this.updateWorkflowStepArgumentsTableView(outputArguments, model.UniqueId, WorkflowArgumentType.Output);
                 }
-                
+
             }
         }
         catch (error) {
@@ -1239,29 +1322,34 @@ class TbltWorkflowRepository {
         return customModel;
     }
 
-    private populatetArgumentsMasterViewTable(model: WorkflowArgumentModel[], repositoryId: string) {
+    private populateArgumentsMasterViewTable(model: WorkflowArgumentModel[], repositoryId: string) {
         let customModel: any[] = new Array();
-        for (let argument of model) {
-            switch (argument.PropertyType.toString()) {
-                case WorkflowEvaluationPropertyType.Integer.toString():
+        if (!model || model.length < 1 || Object.keys(model[0]).length < 1) {
+            return customModel;
+        }
+        for (const argument of model) {
+            let argumentPropertyType: ArgumentType = this._enumHelper.fixEnumValue(argument.PropertyType, ArgumentType);
+            
+            switch (argumentPropertyType) {
+                case ArgumentType.PropertyInt:
                     customModel.push({ Name: argument.Name, Value: argument.ValueInt, UniqueId: repositoryId });
                     break;
-                case WorkflowEvaluationPropertyType.Date.toString():
+                case ArgumentType.PropertyDate:
                     customModel.push({ Name: argument.Name, Value: argument.ValueDate, UniqueId: repositoryId });
                     break;
-                case WorkflowEvaluationPropertyType.Double.toString():
+                case ArgumentType.PropertyDouble:
                     customModel.push({ Name: argument.Name, Value: argument.ValueDouble, UniqueId: repositoryId });
                     break;
-                case WorkflowEvaluationPropertyType.Boolean.toString():
+                case ArgumentType.PropertyBoolean:
                     customModel.push({ Name: argument.Name, Value: argument.ValueBoolean, UniqueId: repositoryId });
                     break;
-                case WorkflowEvaluationPropertyType.Guid.toString():
+                case ArgumentType.PropertyGuid:
                     customModel.push({ Name: argument.Name, Value: argument.ValueGuid, UniqueId: repositoryId });
                     break;
-                case WorkflowEvaluationPropertyType.String.toString():
+                case ArgumentType.PropertyString:
                     customModel.push({ Name: argument.Name, Value: argument.ValueString, UniqueId: repositoryId });
                     break;
-                case WorkflowEvaluationPropertyType.Json.toString():
+                case ArgumentType.Json:
                     customModel.push({ Name: argument.Name, Value: argument.ValueJson, UniqueId: repositoryId });
             }
         }
@@ -1332,14 +1420,29 @@ class TbltWorkflowRepository {
      */
     loadDetails() {
         this._loadingPanel.show(this.pnlDetailsId);
+
         //Gestito JQueryPromise che simula la gestion async dei metodi (IE8 supportato)     
         $.when(this.fillDetailsPanel()).done((model) => {
             let activities: ActivityModel[] = !String.isNullOrEmpty(model.CustomActivities) ? JSON.parse(model.CustomActivities) : [];
             let selectedTag: string = (!String.isNullOrEmpty(this._rcbSelectMappingTag.get_text()) && this._rcbSelectMappingTag.get_text() != this._rcbSelectMappingTag.get_emptyMessage()) ? this._rcbSelectMappingTag.get_text() : '';
-            $.when(this.fillMappingSelection(), this.fillJsonMappings(model), this.fillXamlMappings(model, activities, selectedTag)).always(() => {
+            this._currentWorkflowRepositoryModel = model;
+
+            //- changing ProponenteDiAvio/DestinatarioDiAvio will invalidate ProponenteDiDefault/DestinatarioDiDefault
+            //- when changing ProponenteDiAvio/DestinatarioDiAvio, after closing the edit window, this method is called
+            //- final values are updated after fillDetailsPanel
+            if (this.updateDefaultOnStartDependencyValue()) {
                 this._loadingPanel.hide(this.pnlDetailsId);
-            }).fail((exception: ExceptionDTO) => { this.showNotificationException(this.uscNotificationId, exception); });
+                this.loadDetails();
+            } else {
+                $.when(this.fillMappingSelection(), this.fillJsonMappings(model), this.fillXamlMappings(model, activities, selectedTag)).always(() => {
+                    this._loadingPanel.hide(this.pnlDetailsId);
+                }).fail((exception: ExceptionDTO) => {
+                    this._currentWorkflowRepositoryModel = null;
+                    this.showNotificationException(this.uscNotificationId, exception);
+                });
+            }
         }).fail((exception) => {
+            this._currentWorkflowRepositoryModel = null;
             this._loadingPanel.hide(this.pnlDetailsId);
             this.showNotificationException(this.uscNotificationId, exception, "Errore nel caricamento dell'attività.");
         });
@@ -1385,21 +1488,16 @@ class TbltWorkflowRepository {
      * @param status
      */
     getStatusDescription(status: string): string {
-        switch (WorkflowStatus[status]) {
-            case WorkflowStatus.Done:
-                return 'Eseguita';
-            case WorkflowStatus.Error:
-                return 'In errore';
-            case WorkflowStatus.Progress:
-                return 'In esecuzione';
-            case WorkflowStatus.Suspended:
-                return 'Sospesa';
-            case WorkflowStatus.Todo:
-                return 'Attiva';
+        switch (WorkflowRepositoryStatus[status]) {
+            case WorkflowRepositoryStatus.Draft:
+                return 'Bozza';
+            case WorkflowRepositoryStatus.Published:
+                return 'Pubblicato';
             default:
-                return status;
+                return '';
         }
     }
+
     protected showNotificationException(uscNotificationId: string, exception: ExceptionDTO, customMessage?: string) {
         if (exception && exception instanceof ExceptionDTO) {
             let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(uscNotificationId)).data();
@@ -1412,12 +1510,14 @@ class TbltWorkflowRepository {
         }
 
     }
+
     protected showNotificationMessage(uscNotificationId: string, customMessage: string) {
         let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(uscNotificationId)).data();
         if (!jQuery.isEmptyObject(uscNotification)) {
             uscNotification.showNotificationMessage(customMessage)
         }
     }
+
     protected showWarningMessage(uscNotificationId: string, customMessage: string) {
         let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(uscNotificationId)).data();
         if (!jQuery.isEmptyObject(uscNotification)) {
@@ -1425,15 +1525,15 @@ class TbltWorkflowRepository {
         }
     }
 
-    private btnAdd_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnAdd_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.openWorkflowEvaluationPropertiesManagementWindow("Add");
     }
 
-    private btnEdit_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnEdit_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.openWorkflowEvaluationPropertiesManagementWindow("Edit");
     }
 
-    private btnDeleteStartup_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnDeleteStartup_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedEvaluationPropertyId = this._rgvWorkflowStartUp.get_selectedItems();
         if (selectedEvaluationPropertyId == undefined || selectedEvaluationPropertyId.length == 0) {
             this.showWarningMessage(this.uscNotificationId, 'Nessun proprietà selezionata');
@@ -1449,22 +1549,25 @@ class TbltWorkflowRepository {
         let workflowEvaluationModelUniqueId: string = (<WorkflowEvaluationProperty>selectedEvaluationPropertyId[0].get_dataItem()).UniqueId;
 
         workflowEvaluationModel = <WorkflowEvaluationProperty>{ UniqueId: workflowEvaluationModelUniqueId };
-      
+
         this._workflowEvaluationPropertyService.deleteWorkflowEvaluationProperty(workflowEvaluationModel, (data) => {
             this.loadDetails();
         }, (exception: ExceptionDTO) => {
             console.log(exception);
         });
-
-
     }
 
     openWorkflowEvaluationPropertiesManagementWindow(operation: string) {
         this._windowAddWorkflowRoleMapping.setSize(600, 250);
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
+        const _this = this;
 
         if (operation === "Add") {
-            this._windowAddWorkflowRoleMapping.setUrl(`TbltWorkflowEvaluationPropertyGes.aspx?Action=${operation}&WorkflowRepositoryId=${selectedNode.get_value()}`);
+
+            let openUrl = `TbltWorkflowEvaluationPropertyGes.aspx?Action=${operation}&WorkflowRepositoryId=${selectedNode.get_value()}&WorkflowEnv=${this.workflowEnvironment}`;
+            openUrl = this.makeStartQueryParameters(openUrl);
+
+            this._windowAddWorkflowRoleMapping.setUrl(openUrl);
         }
         else if (operation === "Edit") {
 
@@ -1481,13 +1584,120 @@ class TbltWorkflowRepository {
             }
 
             let workflowEvaluationModel = (<WorkflowEvaluationProperty>selectedEvaluationPropertyId[0].get_dataItem()).UniqueId;
-            this._windowAddWorkflowRoleMapping.setUrl(`TbltWorkflowEvaluationPropertyGes.aspx?Action=${operation}&WorkflowRepositoryId=${selectedNode.get_value()}&WorkflowEvaluationPropertyId=${workflowEvaluationModel}`);
+            let openUrl = `TbltWorkflowEvaluationPropertyGes.aspx`;
+            openUrl += `?${QueryParameters.QUERY_PARAM_ACTION}=${operation}`;
+            openUrl += `&${QueryParameters.QUERY_PARAM_WORKFLOW_REPOSITORY_ID}=${selectedNode.get_value()}`;
+            openUrl += `&${QueryParameters.QUERY_PARAM_WORKFLOW_EVALUATION_PROPERTY_ID}=${workflowEvaluationModel}`;
+            openUrl += `&WorkflowEnv=${this.workflowEnvironment}`;
+
+            openUrl = this.makeStartQueryParameters(openUrl);
+
+            this._windowAddWorkflowRoleMapping.setUrl(openUrl);
         }
+
         this._windowAddWorkflowRoleMapping.set_modal(true);
         this._windowAddWorkflowRoleMapping.show();
     }
 
+    /**
+     * If the WorflowRepositoryModel has the properties _dsw_p_WorkflowStartProposer (ProponenteDiAvio) and 
+     * _dsw_p_WorkflowStartRecipient (Destinatario Di Avio) it will create extra query parameters and add them to the query
+     * @param url
+     */
+    private makeStartQueryParameters(url: string): string {
+        //TODO: refactor below
+        let startProposer: WorkflowEvaluationProperty = this._currentWorkflowRepositoryModel
+            .WorkflowEvaluationProperties
+            .filter(x => x.Name == TbltWorkflowRepository.PROPERTY_NAME_WORKFLOW_START_PROPOSER)[0];
 
+        let startReceiver: WorkflowEvaluationProperty = this._currentWorkflowRepositoryModel
+            .WorkflowEvaluationProperties
+            .filter(x => x.Name == TbltWorkflowRepository.PROPERTY_NAME_WORKFLOW_START_RECIPIENT)[0];
+
+        if (startProposer !== null && startProposer !== undefined) {
+            url += `&${QueryParameters.QUERY_PARAM_START_PROPOSER}=${startProposer.ValueInt}`;
+        }
+
+        if (startReceiver !== null && startReceiver !== undefined) {
+            url += `&${QueryParameters.QUERY_PARAM_START_RECEIVER}=${startReceiver.ValueInt}`;
+        }
+
+        return url;
+    }
+
+
+    /**
+     * If the workflow repositort has the properties  _dsw_p_WorkflowStartProposer(ProponenteDiAvio) and _dsw_p_WorkflowDefaultProposer (ProponenteDiDefault)
+     * then there is a strict dependency on their values. 
+     *   If ProponenteDiAvio=0 the ProponenteDiDefault = Settore
+     *   If ProponenteDiAvio=1 the ProponenteDiDefault = Account/Utente
+     * Same logic applies for _dsw_p_WorkflowStartRecipient (DestinatarioDiAvio) and _dsw_p_WorkflowDefaultRecipient (DestinatarioDiDefault)
+     **/
+    private updateDefaultOnStartDependencyValue(): boolean {
+        let mustReload: boolean = false;
+
+        let defaultProposer: WorkflowEvaluationProperty = this._currentWorkflowRepositoryModel
+            .WorkflowEvaluationProperties
+            .filter(x => x.Name == TbltWorkflowRepository.PROPERTY_NAME_WORKFLOW_DEFAULT_PROPOSER)[0];
+
+        let startProposer: WorkflowEvaluationProperty = this._currentWorkflowRepositoryModel
+            .WorkflowEvaluationProperties
+            .filter(x => x.Name == TbltWorkflowRepository.PROPERTY_NAME_WORKFLOW_START_PROPOSER)[0];
+
+        if (startProposer !== null && startProposer !== undefined
+            && defaultProposer !== null && defaultProposer !== undefined) {
+
+            //if avio demands settore but contains Account. 
+            //Note: do not check proponenteDiDefault.ValueString.indexOf("Role") < 0 because if fails if string is empty
+            if (startProposer.ValueInt === 0 && defaultProposer.ValueString.indexOf("Account") > -1) {
+                defaultProposer.ValueString = "";
+                this._workflowEvaluationPropertyService.updateWorkflowEvaluationProperty(defaultProposer);
+                mustReload = true;
+                //this.loadDetails();
+            }
+
+            //if avio demands utente but contains Role. 
+            //Note: do not check proponenteDiDefault.ValueString.indexOf("Account") < 0 because if fails if string is empty
+            if (startProposer.ValueInt === 1 && defaultProposer.ValueString.indexOf("Role") > -1) {
+                defaultProposer.ValueString = "";
+                this._workflowEvaluationPropertyService.updateWorkflowEvaluationProperty(defaultProposer);
+                mustReload = true;
+                //this.loadDetails();
+            }
+        }
+
+        let defaultReceiver: WorkflowEvaluationProperty = this._currentWorkflowRepositoryModel
+            .WorkflowEvaluationProperties
+            .filter(x => x.Name === TbltWorkflowRepository.PROPERTY_NAME_WORKFLOW_DEFAULT_RECIPIENT)[0];
+
+        let startReceiver: WorkflowEvaluationProperty = this._currentWorkflowRepositoryModel
+            .WorkflowEvaluationProperties
+            .filter(x => x.Name === TbltWorkflowRepository.PROPERTY_NAME_WORKFLOW_START_RECIPIENT)[0];
+
+        if (startReceiver !== null && startReceiver !== undefined
+            && defaultReceiver !== null && defaultReceiver !== undefined) {
+
+            //if avio demands settore but contains Account. 
+            //Note: do not check proponenteDiDefault.ValueString.indexOf("Role") < 0 because if fails if string is empty
+            if (startReceiver.ValueInt === 0 && defaultReceiver.ValueString.indexOf("Account") > -1) {
+                defaultReceiver.ValueString = "";
+                this._workflowEvaluationPropertyService.updateWorkflowEvaluationProperty(defaultReceiver);
+                mustReload = true;
+                //this.loadDetails();
+            }
+
+            //if avio demands utente but contains Role. 
+            //Note: do not check proponenteDiDefault.ValueString.indexOf("Account") < 0 because if fails if string is empty
+            if (startReceiver.ValueInt === 1 && defaultReceiver.ValueString.indexOf("Role") > -1) {
+                defaultReceiver.ValueString = "";
+                this._workflowEvaluationPropertyService.updateWorkflowEvaluationProperty(defaultReceiver);
+                mustReload = true;
+                this.loadDetails();
+            }
+        }
+
+        return mustReload;
+    }
 }
 
 export = TbltWorkflowRepository;

@@ -8,6 +8,8 @@ Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Commons
 Imports APIEntity = VecompSoftware.DocSuiteWeb.Entity.Commons
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 
 Partial Class TbltContenitoriGes
     Inherits CommonBasePage
@@ -52,7 +54,7 @@ Partial Class TbltContenitoriGes
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         MasterDocSuite.TitleVisible = False
 
-        If Not CommonUtil.HasGroupAdministratorRight AndAlso Not CommonShared.HasGroupTblContainerAdminRight Then
+        If Not CommonShared.HasGroupAdministratorRight AndAlso Not CommonShared.HasGroupTblContainerAdminRight Then
             AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
             AjaxManager.ResponseScripts.Add("CloseWindow();")
             Exit Sub
@@ -83,6 +85,13 @@ Partial Class TbltContenitoriGes
                 End If
                 FillContainer(CurrentContainer)
                 Facade.ContainerFacade.Save(CurrentContainer)
+
+                Dim currentTenant As Tenant = CType(Session("CurrentTenant"), Tenant)
+                currentTenant.Containers.Add(New APIEntity.Container With {.EntityShortId = CType(CurrentContainer.Id, Short)})
+                Dim currentTenantFacade As WebAPI.Tenants.TenantFacade = New WebAPI.Tenants.TenantFacade(DocSuiteContext.Current.Tenants, currentTenant)
+                currentTenantFacade.Update(currentTenant, UpdateActionType.TenantContainerAdd.ToString())
+                currentTenant.Containers.Clear()
+
                 FillDocumentSeries(CurrentContainer)
                 FillFrontalino(CurrentContainer)
                 Facade.ContainerFacade.Update(CurrentContainer)
@@ -164,12 +173,6 @@ Partial Class TbltContenitoriGes
         txtHeadingFrontalino.DisableFilter(Telerik.Web.UI.EditorFilters.MozEmStrong)
         txtHeadingLetter.DisableFilter(Telerik.Web.UI.EditorFilters.ConvertTags)
         txtHeadingLetter.DisableFilter(Telerik.Web.UI.EditorFilters.MozEmStrong)
-
-        pnlSecureDocument.Visible = False
-        If ProtocolEnv.SecureDocumentEnabled Then
-            pnlSecureDocument.Visible = True
-            chkSecureDocument.Checked = CurrentContainer.ManageSecureDocument
-        End If
 
         pnlPrivacy.Visible = False
         If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso CommonShared.HasGroupAdministratorRight Then
@@ -308,12 +311,16 @@ Partial Class TbltContenitoriGes
     End Sub
 
     Private Sub LoadLevels()
-        CurrentPrivacyLevelFinder.EnablePaging = False
-        If CurrentContainer IsNot Nothing AndAlso CurrentContainer.ContainerGroups IsNot Nothing AndAlso CurrentContainer.ContainerGroups.Count() > 0 AndAlso CurrentContainer.ContainerGroups.Max(Function(p) p.PrivacyLevel) > 0 Then
-            CurrentPrivacyLevelFinder.MaximumLevel = CurrentContainer.ContainerGroups.Max(Function(p) p.PrivacyLevel)
-        End If
-        Dim PrivacyLevelsDTO As ICollection(Of WebAPIDto(Of APIEntity.PrivacyLevel)) = New List(Of WebAPIDto(Of APIEntity.PrivacyLevel))
-        PrivacyLevelsDTO = CurrentPrivacyLevelFinder.DoSearch()
+        Dim PrivacyLevelsDTO As ICollection(Of WebAPIDto(Of APIEntity.PrivacyLevel)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentPrivacyLevelFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.EnablePaging = False
+                        If CurrentContainer IsNot Nothing AndAlso CurrentContainer.ContainerGroups IsNot Nothing AndAlso CurrentContainer.ContainerGroups.Count() > 0 AndAlso CurrentContainer.ContainerGroups.Max(Function(p) p.PrivacyLevel) > 0 Then
+                            finder.MaximumLevel = CurrentContainer.ContainerGroups.Max(Function(p) p.PrivacyLevel)
+                        End If
+                        Return finder.DoSearch()
+                    End Function)
+
         Dim privacyLevels As IList(Of APIEntity.PrivacyLevel) = New List(Of APIEntity.PrivacyLevel)
         For Each PrivacyLevelDTO As WebAPIDto(Of APIEntity.PrivacyLevel) In PrivacyLevelsDTO
             privacyLevels.Add(PrivacyLevelDTO.Entity)
@@ -333,9 +340,6 @@ Partial Class TbltContenitoriGes
         container.DeskLocation = uscDeskLocation.Location
         container.UDSLocation = uscUDSLocation.Location
         container.Conservation = Convert.ToByte(chkConservation.Checked)
-        If ProtocolEnv.SecureDocumentEnabled Then
-            container.ManageSecureDocument = chkSecureDocument.Checked
-        End If
         If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso CommonShared.HasGroupAdministratorRight Then
             If Not container.PrivacyEnabled = chkIsPrivacy.Checked OrElse Not container.PrivacyLevel = Int16.Parse(ddlPrivacyLevel.SelectedValue) Then
                 Dim message As String = String.Concat("Modificato il contenitore ", container.Id, ": ")
@@ -354,7 +358,7 @@ Partial Class TbltContenitoriGes
                 FacadeFactory.Instance.TableLogFacade.Insert("Container", LogEvent.PR, message, container.UniqueId)
             End If
             container.PrivacyEnabled = chkIsPrivacy.Checked
-            container.PrivacyLevel = Int16.Parse(ddlPrivacyLevel.SelectedValue)
+            container.PrivacyLevel = Short.Parse(ddlPrivacyLevel.SelectedValue)
         End If
     End Sub
     Private Sub FillFrontalino(ByVal container As Container)

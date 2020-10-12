@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using VecompSoftware.DocSuiteWeb.API.Helpers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Facade;
 using VecompSoftware.Helpers;
@@ -10,7 +12,7 @@ using VecompSoftware.Services.Logging;
 namespace VecompSoftware.DocSuiteWeb.API
 {
     public class FastInvoiceProtocolService : IFastInvoiceProtocolService
-    {
+    {        
         #region Service Methods
         public bool IsAlive()
         {
@@ -157,7 +159,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             try
             {
                 var protocol = protocolDTO.Deserialize<ProtocolDTO>();
-
+                protocol.IdTenantAOO = ConfigurationHelper.CurrentTenantAOOId;
                 switch (protocol.Direction)
                 {
                     case 1:
@@ -264,7 +266,7 @@ namespace VecompSoftware.DocSuiteWeb.API
                 var protocol = protocolDTO.Deserialize<ProtocolDTO>();
                 if (!protocol.HasAnyDocument() && protocol.HasId())
                 {
-                    var domain = FacadeFactory.Instance.ProtocolFacade.GetById(protocol.Year.Value, protocol.Number.Value);
+                    var domain = FacadeFactory.Instance.ProtocolFacade.GetById(protocol.UniqueId.Value);
                     protocol.CopyFrom(domain);
                 }
                 mail.CopyFrom(protocol);

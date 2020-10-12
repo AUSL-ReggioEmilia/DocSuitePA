@@ -105,6 +105,12 @@ define(["require", "exports", "App/Services/Commons/MetadataRepositoryService", 
             listElement.appendChild(node);
         };
         MetadataRepositoryBase.METADATA_REPOSITORY_NAME = "MetadataRepository";
+        MetadataRepositoryBase.CONTROL_TEXT_FIELD = "TextFields";
+        MetadataRepositoryBase.CONTROL_DATE_FIELD = "DateFields";
+        MetadataRepositoryBase.CONTROL_NUMBER_FIELD = "NumberFields";
+        MetadataRepositoryBase.CONTROL_BOOL_FIELD = "BoolFields";
+        MetadataRepositoryBase.CONTROL_ENUM_FIELD = "EnumFields";
+        MetadataRepositoryBase.CONTROL_DISCUSION_FIELD = "DiscussionFields";
         return MetadataRepositoryBase;
     }());
     return MetadataRepositoryBase;

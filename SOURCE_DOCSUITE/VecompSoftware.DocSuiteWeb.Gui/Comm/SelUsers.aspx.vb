@@ -68,19 +68,21 @@ Partial Public Class SelUsers
             Exit Sub
         End If
 
-        Dim root As New RadTreeNode()
-        root.Text = String.Format("Utenti ({0})", found.Count)
-        root.Value = String.Empty
-        root.Expanded = True
+        Dim root As RadTreeNode = New RadTreeNode With {
+            .Text = $"Utenti ({found.Count})",
+            .Value = String.Empty,
+            .Expanded = True
+        }
         RadTreeUsers.Nodes.Clear()
         RadTreeUsers.Nodes.Add(root)
         Dim node As RadTreeNode = New RadTreeNode
         For Each user As AccountModel In found.OrderBy(Function(f) f.Name)
             user.RelatedGroupName = RelatedGroupName
-            node = New RadTreeNode()
-            node.Text = user.GetLabel()
-            node.Value = JsonConvert.SerializeObject(user)
-            node.ImageUrl = "../App_Themes/DocSuite2008/imgset16/GroupMembers.png"
+            node = New RadTreeNode With {
+                .Text = user.GetLabel(),
+                .Value = JsonConvert.SerializeObject(user),
+                .ImageUrl = "../App_Themes/DocSuite2008/imgset16/GroupMembers.png"
+            }
             RadTreeUsers.Nodes(0).Nodes.Add(node)
         Next
 
@@ -90,7 +92,7 @@ Partial Public Class SelUsers
 
         If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
             lbMultiDomain.Visible = True
-            Dim tenantModels As IList(Of TenantModel) = DocSuiteContext.Current.Tenants
+            Dim tenantModels As IList(Of TenantModel) = DocSuiteContext.Current.Tenants.ToList()
             lbMultiDomain.Items.Add(New ListItem("Tutti domini", "-"))
             For Each tenatnModel As TenantModel In tenantModels
                 lbMultiDomain.Items.Add(New ListItem(tenatnModel.DomainName, tenatnModel.DomainAddress))

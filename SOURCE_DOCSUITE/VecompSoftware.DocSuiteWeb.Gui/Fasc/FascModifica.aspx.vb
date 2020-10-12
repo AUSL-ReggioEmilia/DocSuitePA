@@ -1,18 +1,19 @@
-﻿Imports VecompSoftware.DocSuiteWeb.Data
-Imports System.Collections.Generic
-Imports Telerik.Web.UI
+﻿Imports System.Collections.Generic
 Imports System.Linq
 Imports Newtonsoft.Json
-Imports VecompSoftware.Services.Logging
+Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Metadata
+Imports VecompSoftware.Services.AnagraficaANAS.Models
+Imports VecompSoftware.Services.Logging
 
 Partial Class FascModifica
     Inherits FascBasePage
 
 #Region "Fields"
     Private Const FASCICLE_INITIALIZE_CALLBACK As String = "fascModifica.initializeCallback();"
-    Private Const FASCICLE_UPDATE_CALLBACK As String = "fascModifica.updateCallback('{0}', '{1}');"
+    Private Const FASCICLE_UPDATE_CALLBACK As String = "fascModifica.updateCallback('{0}');"
 #End Region
 
 #Region "Properties"
@@ -26,12 +27,16 @@ Partial Class FascModifica
 #Region "Events"
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        uscSetiContact.MetadataEditId = UscDynamicMetadataRest.PageContent.ClientID
+
         InitializeAjax()
         If Not IsPostBack Then
+            uscFascicolo.UscDocumentReference.Visible = False
             uscFascicolo.CurrentFascicleId = IdFascicle
             uscContattiResp.Caption = DocSuiteContext.Current.ProtocolEnv.FascicleRoleRPLabel
             uscContattiResp.RequiredErrorMessage = $"Inserire un {DocSuiteContext.Current.ProtocolEnv.FascicleRoleRPLabel}"
         End If
+        uscContact.FilterByParentId = ProtocolEnv.FascicleContactId
     End Sub
 
     Protected Sub FascModifica_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
@@ -55,14 +60,9 @@ Partial Class FascModifica
                     Case "Update"
                         If ajaxModel.Value IsNot Nothing AndAlso ajaxModel.Value.Count > 0 Then
                             Dim contact As ContactDTO = uscContattiResp.GetContacts(False).FirstOrDefault()
-                            Dim metadataModel As MetadataModel = Nothing
-                            If ProtocolEnv.MetadataRepositoryEnabled Then
-                                metadataModel = uscDynamicMetadata.GetControlValues()
-                            End If
-
-                            AjaxManager.ResponseScripts.Add(String.Format(FASCICLE_UPDATE_CALLBACK, contact?.Contact?.Id,
-                                                                          If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel), Nothing)))
+                            AjaxManager.ResponseScripts.Add(String.Format(FASCICLE_UPDATE_CALLBACK, contact?.Contact?.Id))
                         End If
+
                 End Select
             Catch ex As Exception
                 FileLogger.Error(LoggerName, "Errore nel caricamento dei dati del fascicolo.", ex)
@@ -92,13 +92,6 @@ Partial Class FascModifica
             uscContattiResp.CategoryContactsProcedureType = RoleUserType.RP.ToString()
             uscContattiResp.Initialize()
         End If
-
-        If ProtocolEnv.MetadataRepositoryEnabled AndAlso Not String.IsNullOrEmpty(fascicle.MetadataValues) Then
-            Dim metadataModel As MetadataModel = JsonConvert.DeserializeObject(Of MetadataModel)(fascicle.MetadataValues)
-            uscDynamicMetadata.LoadControls(metadataModel)
-            uscDynamicMetadata.SetControlValue(metadataModel)
-        End If
-
         AjaxManager.ResponseScripts.Add(FASCICLE_INITIALIZE_CALLBACK)
     End Sub
 

@@ -56,7 +56,7 @@ Public Class RoleGroupFacade
         Select Case environment
             Case DSWEnvironment.Document
                 codedRights = group.DocumentRights
-                enumType = GetType(DocumentRoleRightPositions)
+                enumType = GetType(DossierRoleRightPositions)
             Case DSWEnvironment.Protocol
                 codedRights = group.ProtocolRightsString
                 enumType = GetType(ProtocolRoleRightPositions)

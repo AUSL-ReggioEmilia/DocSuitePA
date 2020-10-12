@@ -52,6 +52,8 @@
 \VecompSoftware.DocSuiteWeb.Gui\App\Core\Extensions\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Core\Serialization\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Core\Serialization\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\Core\WorkflowStorage\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\Core\WorkflowStorage\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Managers\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Managers\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\DTOs\*.js
@@ -82,6 +84,10 @@
 \VecompSoftware.DocSuiteWeb.Gui\App\Mappers\PECMails\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Mappers\Processes\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Mappers\Processes\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\Mappers\PosteWeb\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\Mappers\PosteWeb\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\Mappers\PosteWeb\ExtendedProperties\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\Mappers\PosteWeb\ExtendedProperties\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Mappers\Protocols\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Mappers\Protocols\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Mappers\Reports\*.js
@@ -124,6 +130,10 @@
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\PECMails\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\Processes\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\Processes\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\Models\PosteWeb\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\Models\PosteWeb\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\Models\PosteWeb\ExtendedProperties\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\Models\PosteWeb\ExtendedProperties\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\Protocols\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\Protocols\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\Reports\*.js
@@ -150,6 +160,10 @@
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\Validations\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\Workflows\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\Workflows\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\Models\Workflows\JsonModels\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\Models\Workflows\JsonModels\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\Models\Workflows\QueryStringModels\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\Models\Workflows\QueryStringModels\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\ZenDesk\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Models\ZenDesk\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Rules\*.js
@@ -174,6 +188,8 @@
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\Dossiers\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\Fascicles\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\Fascicles\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\Services\Handlers\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\Services\Handlers\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\JeepServiceHosts\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\JeepServiceHosts\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\MassimariScarto\*.js
@@ -186,6 +202,8 @@
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\PECMails\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\Processes\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\Processes\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\Services\PosteWeb\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\Services\PosteWeb\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\Protocols\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\Protocols\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Services\Resolutions\*.js
@@ -208,6 +226,8 @@
 \VecompSoftware.DocSuiteWeb.Gui\App\ViewModels\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\ViewModels\Commons\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\ViewModels\Commons\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\ViewModels\DocumentUnits\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\ViewModels\DocumentUnits\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\ViewModels\Dossiers\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\ViewModels\Dossiers\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\ViewModels\Fascicles\*.js
@@ -270,6 +290,8 @@
 \VecompSoftware.DocSuiteWeb.Gui\UserControl\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\Workflows\*.js
 \VecompSoftware.DocSuiteWeb.Gui\Workflows\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\Processes\*.js
+\VecompSoftware.DocSuiteWeb.Gui\Processes\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\Prot\*.js
 \VecompSoftware.DocSuiteWeb.Gui\Prot\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\Resl\*.js

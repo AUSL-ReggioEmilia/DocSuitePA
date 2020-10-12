@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
 
 Public Class ProtImportResult
@@ -102,8 +103,9 @@ Public Class ProtImportResult
             Dim year As Short = Nothing
             Dim number As Integer = Nothing
             ProtocolFacade.ProtNumber(protocol, year, number)
-            Dim params As String = String.Format("Year={0}&Number={1}", year, number)
-            Response.Redirect("../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(params))
+            Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(year, number)
+            Dim params As String = $"UniqueId={currentProtocol.Id}&Type=Prot"
+            Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck(params)}")
         End If
     End Sub
 

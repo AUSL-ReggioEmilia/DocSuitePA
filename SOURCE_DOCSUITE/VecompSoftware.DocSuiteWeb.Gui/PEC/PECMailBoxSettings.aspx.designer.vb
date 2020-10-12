@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class PecMailBoxSettings
-    
+
     '''<summary>
     '''RadCodeBlock control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class PecMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadCodeBlock As Global.Telerik.Web.UI.RadCodeBlock
-    
+
     '''<summary>
     '''pnlPageContent control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class PecMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlPageContent As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblPecMailBoxTitle control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class PecMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblPecMailBoxTitle As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''grdPecMailBoxes control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class PecMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents grdPecMailBoxes As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''pnlButtons control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class PecMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''cmdUpdatePEC control.
     '''</summary>
@@ -65,8 +65,8 @@ Partial Public Class PecMailBoxSettings
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents cmdUpdatePEC As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents cmdUpdatePEC As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''cmdAddPECMailBox control.
     '''</summary>
@@ -74,5 +74,5 @@ Partial Public Class PecMailBoxSettings
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents cmdAddPECMailBox As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents cmdAddPECMailBox As Global.Telerik.Web.UI.RadButton
 End Class

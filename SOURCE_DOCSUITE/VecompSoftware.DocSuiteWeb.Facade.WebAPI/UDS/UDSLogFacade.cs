@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao.UDS;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
 
@@ -14,8 +15,8 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
         #endregion
 
         #region [ Constructor ]
-        public UDSLogFacade(ICollection<TenantModel> model)
-            : base(model.Select(s => new WebAPITenantConfiguration<UDSLog, UDSLogDao>(s)).ToList())
+        public UDSLogFacade(ICollection<TenantModel> model, Tenant currentTenant)
+            : base(model.Select(s => new WebAPITenantConfiguration<UDSLog, UDSLogDao>(s)).ToList(), currentTenant)
         {
         }
         #endregion

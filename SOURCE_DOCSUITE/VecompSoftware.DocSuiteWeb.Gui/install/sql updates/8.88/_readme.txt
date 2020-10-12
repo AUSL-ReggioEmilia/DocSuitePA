@@ -10,7 +10,21 @@ L'ordine da rispettare è il seguente:
 		01. ProtocolloDB_migrations.sql
 		02. PraticheDB_migrations.sql
 		03. AttiDB_migrations.sql
-	
+
+ATTENZIONE PER I CLIENTI "STORICO" : Verificare l'esistenza della tabella PosteOnLineAccountRole nel database di protocollo.
+
+Eventualmente ri-crearla a mano
+		CREATE TABLE [dbo].[PosteOnLineAccountRole](
+			   [IdPosteOnLineAccount] [smallint] NOT NULL,
+			   [idRole] [smallint] NOT NULL,
+		CONSTRAINT [PK_PosteOnLineAccountRole] PRIMARY KEY CLUSTERED 
+		(
+			   [IdPosteOnLineAccount] ASC,
+			   [idRole] ASC
+		)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+		) ON [PRIMARY]
+		GO
+
 #FL
 ######################################################################################################
 SOLO PER ASLTO: 
@@ -209,6 +223,103 @@ ASLTO: True
 AUSL-PC: True
 AUSL-RE: True
 Default: False
+
+#MF
+######################################################################################################
+Il modello xls relativo all'importazione dei contatti manuali è stato modificato.
+Ora la lista delle colonne del documento sono:
+
+ - RagioneSociale
+ - PEC
+ - Cognome
+ - Nome
+ - DataNascita
+ - e-mail
+ - CodFisc/PIVA
+ - TitoloStudio
+ - Via/Piazza/Corso
+ - Indirizzo
+ - NCivico
+ - CAP
+ - Citta
+ - Provincia
+ - Telefono
+ - Fax
+ - Note
+
+#AC
+######################################################################################################
+E' stata introdotta la possibilità di visualizzare lo stato di conservazione verso ParER di un archivio nello stile
+di protocollo.
+Il pannello è visualizzato solamente se l'archivio è configurato per la conservazione, ossia se nell'xml dell'archivio il parametro
+"ConservationEnabled" risulta attivato (ConservationEnabled = "true").
+Per AUSL-PC verificare che gli archivi Libro Giornale e Libro Inventario abbiano attivo il parametro "ConservationEnabled".
+
+#AC
+######################################################################################################
+
+E' stata introdotta la possibilità di far vedere i protocolli creati dal WSProt nella vista di scrivania "da leggere". 
+Il comportamento è parametrizzato a livello locale del WSProt, mediante chiave nel file wsprot.appsettings.config
+
+  <add key="DocSuite.WSProt.CreateLogToRead" value="false"/>
+
+ Di default è settato su false in quanto è il comportamento Standard. 
+ 
+ Ci potrebbero essere intallazioni complesse, come ad esempio a PIACENZA che prevede due WSProt :
+	1 - Nel server pubblico per l'integrazione SIRER, il paranetro DocSuite.WSProt.CreateLogToRead va settato a true
+	2 - Il mentre uno interno per Syntech, il paranetro DocSuite.WSProt.CreateLogToRead va mantenuto a false.
+
+E' necessario essere certi che per tutti i clienti venga inserito il valore nell file wsprot.appsettings.config
+  <add key="DocSuite.WSProt.CreateLogToRead" value="false"/>
+
+#FL
+######################################################################################################
+Introdotto nuovo parametro di ProtocolEnv 'RemoteSignDelegateEnabled',di default a false,
+Tale parametro abilita la firma delle collaborazioni agli utenti delegati senza la necessità di effettuare il cambio responsabile.
+
+Per
+CTT: True
+
+#MF
+######################################################################################################
+INVIA ECCEZZIONALE
+lanciare lo script per la creazione della seguente SQL function
+
+CREATE FUNCTION [webapiprivate].[Collaboration_FX_CollaborationsDeletationSigning](
+	@Signers string_list_tbltype READONLY,
+	@IsRequired bit)
+	RETURNS TABLE
+AS 
+	RETURN
+	(
+		SELECT CAST(Collaboration.IdCollaboration AS int) as IdCollaboration, Collaboration.DocumentType, Collaboration.IdPriority, Collaboration.IdStatus, Collaboration.SignCount,
+			   Collaboration.MemorandumDate, Collaboration.Object as Subject, Collaboration.Note, Collaboration.Year, Collaboration.Number, Collaboration.IdResolution,
+			   Collaboration.PublicationUser, Collaboration.PublicationDate, Collaboration.RegistrationName, Collaboration.RegistrationEmail, Collaboration.SourceProtocolYear,
+			   Collaboration.SourceProtocolNumber, Collaboration.AlertDate, Collaboration.UniqueId, Collaboration.RegistrationUser, Collaboration.RegistrationDate, Collaboration.LastChangedUser,
+			   Collaboration.LastChangedDate, Collaboration.TemplateName,
+			   
+			   C_CS.Incremental as CollaborationSign_Incremental, C_CS.IdCollaborationSign as CollaborationSign_IdCollaborationSign, C_CS.IsActive as CollaborationSign_IsActive, C_CS.IsRequired as CollaborationSign_IsRequired, C_CS.SignName as CollaborationSign_SignName, C_CS.SignUser as CollaborationSign_SignUser, C_CS.SignDate as CollaborationSign_SignDate, C_CS.IsAbsent as CollaborationSign_IsAbsent,
+			   C_CU.IdCollaborationUser as CollaborationUser_IdCollaborationUser, C_CU.DestinationFirst as CollaborationUser_DestinationFirst, C_CU.DestinationName as CollaborationUser_DestinationName,
+			   C_CV.IdCollaborationVersioning as CollaborationVersioning_IdCollaborationVersioning, C_CV.DocumentName as CollaborationVersioning_DocumentName, C_CV.CollaborationIncremental as CollaborationVersioning_CollaborationIncremental, C_CV.RegistrationUser as CollaborationVersioning_RegistrationUser, C_CV.Incremental as CollaborationVersioning_Incremental,
+			   r2_.IdResolution as Resolution_IdResolution, r2_.Year as Resolution_Year, r2_.Number as Resolution_Number, r2_.ServiceNumber as Resolution_ServiceNumber, r2_.AdoptionDate as Resolution_AdoptionDate, r2_.PublishingDate as Resolution_PublishingDate,
+			   dsi3_.Id as DocumentSeriesItem_IdDocumentSeriesItem, dsi3_.Number as DocumentSeriesItem_Number, dsi3_.Year as DocumentSeriesItem_Year
+		
+		FROM   dbo.Collaboration Collaboration
+			inner join dbo.CollaborationSigns C_CS on Collaboration.IdCollaboration = C_CS.IdCollaboration			
+			inner join dbo.CollaborationUsers C_CU on Collaboration.IdCollaboration = C_CU.IdCollaboration
+			inner join dbo.CollaborationVersioning C_CV on Collaboration.IdCollaboration = C_CV.IdCollaboration
+			left outer join dbo.Resolution r2_ on Collaboration.IdResolution = r2_.idResolution
+			left outer join dbo.DocumentSeriesItem dsi3_ on Collaboration.idDocumentSeriesItem = dsi3_.Id
+			right outer join dbo.CollaborationSigns CC_CS on Collaboration.IdCollaboration = CC_CS.IdCollaboration				
+				and CC_CS.SignUser IN (SELECT val FROM @Signers)
+				and CC_CS.IsActive = 1
+				and ((@IsRequired is null and CC_CS.IsRequired in (1,0)) or (@IsRequired is not null and CC_CS.IsRequired = @IsRequired))
+		WHERE			
+			Collaboration.IdStatus = 'IN'
+			and Collaboration.IdCollaboration not in (SELECT CA.idCollaborationChild
+												 FROM   dbo.CollaborationAggregate CA)
+												 );
+
 
 #MF
 ######################################################################################################

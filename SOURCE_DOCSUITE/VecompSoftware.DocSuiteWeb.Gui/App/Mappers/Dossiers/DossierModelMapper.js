@@ -15,10 +15,8 @@ define(["require", "exports", "./DossierFolderModelMapper", "App/Mappers/BaseMap
     var DossierModelMapper = /** @class */ (function (_super) {
         __extends(DossierModelMapper, _super);
         function DossierModelMapper() {
-            return _super !== null && _super.apply(this, arguments) || this;
+            return _super.call(this) || this;
         }
-        DossierModelMapper.prototype.construnctor = function () {
-        };
         DossierModelMapper.prototype.Map = function (source) {
             var toMap = {};
             toMap.UniqueId = source.UniqueId;
@@ -31,7 +29,8 @@ define(["require", "exports", "./DossierFolderModelMapper", "App/Mappers/BaseMap
             toMap.RegistrationDate = source.RegistrationDate;
             toMap.StartDate = source.StartDate;
             toMap.EndDate = source.EndDate;
-            toMap.JsonMetadata = source.JsonMetadata;
+            toMap.MetadataDesigner = source.MetadataDesigner;
+            toMap.MetadataValues = source.MetadataValues;
             toMap.LastChangedUser = source.LastChangedUser;
             toMap.LastChangedDate = source.LastChangedDate;
             toMap.Contacts = source.Contacts;

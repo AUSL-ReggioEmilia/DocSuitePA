@@ -23,6 +23,8 @@
                     fascMoveItems.pnlPageId = "<%= pnlPage.ClientID %>";
                     fascMoveItems.ajaxManagerId = "<%= AjaxManager.ClientID %>";
                     fascMoveItems.lblItemSelectedDescriptionId = "<%= lblItemSelectedDescription.ClientID %>";
+                    fascMoveItems.destinationFascicleId = "<%= DestinationFascicleId %>";
+                    fascMoveItems.moveToFascicle = "<%= MoveToFascicle %>".toLocaleLowerCase();
                     fascMoveItems.initialize();
                 });
             });

@@ -14,6 +14,7 @@ class DossierSummaryContactViewModelMapper implements IMapper<BaseEntityViewMode
         toMap.EntityShortId = source.IdContact;
         toMap.Name = source.Description;
         toMap.Type = source.ContactType;
+        toMap.IncrementalFather = source.IncrementalFather;
 
         return toMap;
     }

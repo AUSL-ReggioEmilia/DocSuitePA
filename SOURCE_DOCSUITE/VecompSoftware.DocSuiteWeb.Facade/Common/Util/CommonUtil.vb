@@ -338,7 +338,8 @@ Public Class CommonUtil
     Public Sub OnlyInvoiceContainer(ByRef finder As NHibernateProtocolFinder)
         If DocSuiteContext.Current.ProtocolEnv.InvoiceProtocolContainerIdentifiers.Any() Then
             Dim securityContainers As List(Of Integer) = finder.SecurityContainers?.Split(","c).[Select](AddressOf Integer.Parse).ToList()
-
+            finder.SecurityNonManageableRoles = String.Empty
+            finder.SecurityRoles = String.Empty
             If securityContainers IsNot Nothing Then
                 finder.SecurityContainers = String.Join(",", securityContainers.Where(Function(f) DocSuiteContext.Current.ProtocolEnv.InvoiceProtocolContainerIdentifiers.Contains(f)))
             End If
@@ -485,7 +486,7 @@ Public Class CommonUtil
         End If
 
         If String.IsNullOrEmpty(CommonShared.GroupPaperworkSelected) Then
-            Dim roles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DocumentRoleRightPositions.Workflow, True)
+            Dim roles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True)
             sRoles = String.Join(",", roles.Select(Function(x) x.Id.ToString()))
         Else
             sRoles = Replace(CommonShared.GroupPaperworkSelected, "|", "")

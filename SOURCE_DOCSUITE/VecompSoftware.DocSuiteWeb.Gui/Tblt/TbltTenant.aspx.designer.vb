@@ -500,6 +500,60 @@ Partial Public Class TbltTenant
     Protected WithEvents btnTenantSelectorCancel As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
+    '''txtTenantAOOName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtTenantAOOName As Global.Telerik.Web.UI.RadTextBox
+
+    '''<summary>
+    '''txtTenantAOONameValidator control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtTenantAOONameValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
+    '''txtCategorySuffix control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCategorySuffix As Global.Telerik.Web.UI.RadTextBox
+
+    '''<summary>
+    '''txtTenantAOONote control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtTenantAOONote As Global.Telerik.Web.UI.RadTextBox
+
+    '''<summary>
+    '''btnTenantAOOSelectorOk control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnTenantAOOSelectorOk As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''btnTenantAOOSelectorCancel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnTenantAOOSelectorCancel As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
     '''uscNotification control.
     '''</summary>
     '''<remarks>
@@ -536,13 +590,13 @@ Partial Public Class TbltTenant
     Protected WithEvents ToolBarSearch As Global.Telerik.Web.UI.RadToolBar
 
     '''<summary>
-    '''ToolBarStatus control.
+    '''rtbCompanyOptions control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ToolBarStatus As Global.Telerik.Web.UI.RadToolBar
+    Protected WithEvents rtbCompanyOptions As Global.Telerik.Web.UI.RadToolBar
 
     '''<summary>
     '''rtvTenants control.
@@ -570,6 +624,33 @@ Partial Public Class TbltTenant
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDetails As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''txtTenantAOONameInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtTenantAOONameInfo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtTenantAOOSuffixInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtTenantAOOSuffixInfo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtTenantAOONoteInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtTenantAOONoteInfo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblCompanyName control.
@@ -705,22 +786,4 @@ Partial Public Class TbltTenant
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscContattiSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelRest
-
-    '''<summary>
-    '''btnTenantInsert control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnTenantInsert As Global.Telerik.Web.UI.RadButton
-
-    '''<summary>
-    '''btnTenantUpdate control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnTenantUpdate As Global.Telerik.Web.UI.RadButton
 End Class

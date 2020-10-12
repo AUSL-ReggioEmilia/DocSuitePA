@@ -370,11 +370,13 @@ Public Class CollaborationToUDS
     Private Function GetDocumentInstances(documents As IList(Of DocumentInfo)) As DocumentInstance()
         Dim documentInstances As IList(Of DocumentInstance) = New List(Of DocumentInstance)
         If documents.Any() Then
+            Dim documentStored As BiblosDocumentInfo = Nothing
             For Each document As DocumentInfo In documents
                 If TypeOf document Is BiblosPdfDocumentInfo Then
-                    documentInstances.Add(New DocumentInstance() With {.DocumentContent = Convert.ToBase64String(document.Stream), .DocumentName = document.Name})
+                    documentStored = document.ArchiveInBiblos(CommonShared.CurrentWorkflowLocation.ProtBiblosDSDB, Guid.Empty)
+                    documentInstances.Add(New DocumentInstance() With {.IdDocumentToStore = documentStored.DocumentId.ToString(), .DocumentName = document.Name})
                 Else
-                    documentInstances.Add(New DocumentInstance() With {.IdDocument = DirectCast(document, BiblosDocumentInfo).DocumentId.ToString()})
+                    documentInstances.Add(New DocumentInstance() With {.StoredChainId = DirectCast(document, BiblosDocumentInfo).DocumentId.ToString()})
                 End If
             Next
         End If

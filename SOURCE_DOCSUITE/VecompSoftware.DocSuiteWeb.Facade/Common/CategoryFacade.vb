@@ -40,12 +40,16 @@ Public Class CategoryFacade
     End Sub
 
     Private Sub CalculateFullCode(ByRef obj As Category)
-        If obj.Parent Is Nothing Then
+        If obj.Parent Is Nothing OrElse (obj.Parent IsNot Nothing AndAlso String.IsNullOrEmpty(obj.Parent.FullCode)) Then
             obj.FullCode = Format(obj.Code, "0000")
         Else
             obj.FullCode = String.Concat(obj.Parent.FullCode, "|", Format(obj.Code, "0000"))
         End If
     End Sub
+
+    Public Function GetRootAOOCategory(idtenantAOO As Guid) As Category
+        Return _dao.GetRootAOOCategory(idtenantAOO)
+    End Function
 
     Public Function GetRootCategory(Optional ByVal isActive As Boolean = False) As IList(Of Category)
         Return _dao.GetRootCategory(isActive)
@@ -200,10 +204,10 @@ Public Class CategoryFacade
     End Function
 
     Public Function GetFullIncrementalName(category As Category) As String
-        If category.Parent Is Nothing Then
+        If category.Parent Is Nothing OrElse category.Parent.Code.Equals(0) Then
             Return category.GetFullName()
         End If
-        Return String.Format("{0}, {1}", GetFullIncrementalName(category.Parent), category.GetFullName())
+        Return $"{GetFullIncrementalName(category.Parent)}, {category.GetFullName()}"
     End Function
 
     Public Function GetCodeDotted(category As Category) As String

@@ -3,10 +3,11 @@
 <%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="uscContattiSel" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscOggetto.ascx" TagName="uscOggetto" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscCategoryRest.ascx" TagName="uscCategoryRest" TagPrefix="usc" %>
-<%@ Register Src="~/UserControl/uscSettori.ascx" TagName="uscSettori" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscRoleRest.ascx" TagName="uscRoleRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscMetadataRepositorySel.ascx" TagName="uscMetadataRepositorySel" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscDynamicMetadata.ascx" TagName="uscDynamicMetadata" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscCustomActionsRest.ascx" TagName="uscCustomActionsRest" TagPrefix="usc" %>
 
 <telerik:RadScriptBlock runat="server" EnableViewState="false">
     <script type="text/javascript">        
@@ -14,6 +15,7 @@
         require(["UserControl/uscFascicleInsert"], function (UscFascicleInsert) {
             $(function () {
                 uscFascicleInsert = new UscFascicleInsert(tenantModelConfiguration.serviceConfiguration);
+                uscFascicleInsert.clientId = "<%= ClientID %>";
                 uscFascicleInsert.ajaxManagerId = "<%= AjaxManager.ClientID %>";
                 uscFascicleInsert.fasciclePageContentId = "<%= PageContentDiv.ClientID %>";
                 uscFascicleInsert.fascicleDataRowId = "<%= fascicleDataRow.ClientID %>";
@@ -25,8 +27,8 @@
                 uscFascicleInsert.activityFascicleEnabled = JSON.parse("<%=ProtocolEnv.ActivityFascicleEnabled%>".toLowerCase());
                 uscFascicleInsert.isMasterRowId = "<%= isMasterRow.ClientID %>";
                 uscFascicleInsert.uscClassificatoreId = "<%= uscClassificatore.MainContent.ClientID%>";
-                uscFascicleInsert.uscSettoriId = "<%= uscSettori.TableContentControl.ClientID%>";
-                uscFascicleInsert.uscMasterRolesId = "<%= uscSettoreMaster.TableContentControl.ClientID%>";
+                uscFascicleInsert.uscRoleMasterId = "<%= uscRoleMaster.TableContentControl.ClientID %>";
+                uscFascicleInsert.uscRoleId = "<%= uscRole.TableContentControl.ClientID %>";
                 uscFascicleInsert.uscContattiRespId = "<%= uscContattiResp.TableContent.ClientID%>";
                 uscFascicleInsert.txtNoteId = "<%= txtNote.ClientID %>";
                 uscFascicleInsert.radStartDateId = "<%= radStartDate.ClientID%>";
@@ -45,6 +47,7 @@
                 uscFascicleInsert.ddlContainerId = "<%= ddlContainer.ClientID %>";
                 uscFascicleInsert.fascicleContainerEnabled = <%= ProtocolEnv.FascicleContainerEnabled.ToString().ToLower() %>;
                 uscFascicleInsert.rfvContainerId = "<%= rfvContainer.ClientID %>";
+                uscFascicleInsert.uscCustomActionsRestId = "<%= uscCustomActionsRest.PageContent.ClientID %>";
 
                 uscFascicleInsert.initialize();
             });
@@ -103,18 +106,18 @@
                 <telerik:LayoutRow runat="server" HtmlTag="Div" ID="contattiRespRow">
                     <Content>
                         <usc:uscContattiSel ID="uscContattiResp" ButtonImportVisible="false" ButtonManualVisible="false" ButtonSelectDomainVisible="false" FascicleContactEnabled="true"
-                            ButtonPropertiesVisible="false" EnableCC="false" ForceAddressBook="true" ButtonSelectOChartVisible="false" HeaderVisible="true" IsFiscalCodeRequired="true" 
+                            ButtonPropertiesVisible="false" EnableCC="false" ForceAddressBook="true" ButtonSelectOChartVisible="false" HeaderVisible="true" IsFiscalCodeRequired="true"
                             Multiple="false" MultiSelect="false" runat="server" Type="Prot" ExcludeRoleRoot="true" />
                     </Content>
                 </telerik:LayoutRow>
                 <telerik:LayoutRow runat="server" HtmlTag="Div" ID="isMasterRow">
                     <Content>
-                        <usc:uscSettori runat="server" ID="uscSettoreMaster" Caption="Settore Responsabile" Required="False" UseSessionStorage="true" />
+                        <usc:uscRoleRest runat="server" ID="uscRoleMaster" Expanded="true" ReadOnlyMode="false" Caption="Settore responsabile" Required="true" OnlyMyRoles="true" Collapsable="true" RequiredMessage="Campo settore responsabile obbligatorio" FascicleVisibilityTypeButtonEnabled="true" />
                     </Content>
                 </telerik:LayoutRow>
                 <telerik:LayoutRow runat="server" HtmlTag="Div">
                     <Content>
-                        <usc:uscSettori runat="server" ID="uscSettori" Caption="Settori con Autorizzazioni" Required="False" UseSessionStorage="true" />
+                        <usc:uscRoleRest runat="server" ID="uscRole" ReadOnlyMode="false" Expanded="true" MultipleRoles="true" Caption="Settori con autorizzazioni" Required="false" OnlyMyRoles="false" Collapsable="true" RequiredMessage="Campo settori con autorizzazioni obbligatorio" RACIButtonEnabled="true" />
                     </Content>
                 </telerik:LayoutRow>
 
@@ -197,6 +200,18 @@
                                     </Rows>
                                 </telerik:RadPageLayout>
                                 <usc:uscDynamicMetadata runat="server" ID="uscDynamicMetadata" Required="False" UseSessionStorage="true" />
+                            </div>
+                        </div>
+                    </Content>
+                </telerik:LayoutRow>
+                <telerik:LayoutRow runat="server" HtmlTag="Div" ID="customActionsRow">
+                    <Content>
+                        <div class="dsw-panel">
+                            <div class="dsw-panel-title">
+                                Azioni personalizzate
+                            </div>
+                            <div class="dsw-panel-content">
+                                <usc:uscCustomActionsRest runat="server" ID="uscCustomActionsRest" IsFromInsertPage="true" />
                             </div>
                         </div>
                     </Content>

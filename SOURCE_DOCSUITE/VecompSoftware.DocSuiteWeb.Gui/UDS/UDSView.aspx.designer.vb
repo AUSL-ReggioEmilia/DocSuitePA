@@ -50,15 +50,6 @@ Partial Public Class UDSView
     Protected WithEvents windowDuplica As Global.Telerik.Web.UI.RadWindow
 
     '''<summary>
-    '''windowRequestStatement control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents windowRequestStatement As Global.Telerik.Web.UI.RadWindow
-
-    '''<summary>
     '''windowUdsSearch control.
     '''</summary>
     '''<remarks>
@@ -237,15 +228,6 @@ Partial Public Class UDSView
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnDuplica As Global.Telerik.Web.UI.RadButton
-
-    '''<summary>
-    '''btnRequestStatement control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnRequestStatement As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''pnlFunctionalityButtons control.

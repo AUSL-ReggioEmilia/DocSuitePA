@@ -77,7 +77,7 @@ User Story 9902: [AUSL-RE] Aggiornare stato dell'attività quando viene presa in 
 User Story 9918: [AULS-RE] modifiche alla scrivania di workflow
 User Story 9921: [AUSL-RE] modifica finestre avvia e completa workflow
 User Story 9872: [AUSL-PC] Modificare visibilità pulsante 'Fascicolo' in sommario Protocollo
-User Story 9873: [AUSL-PC] In gestione fascicolo da protocollo, aggiungere pulsante 'Cambia classificatore'
+User Story 9873: [AUSL-PC] In Gestione fascicolo da protocollo, aggiungere pulsante 'Cambia classificatore'
 User Story 9837: [AUSL-RE] Modifiche grafiche alla pagina di visualizzazione dei Workflow
 User Story 9677: [AUSL-RE] Aggiungere colonna indicante la presa in carico alla tabella WorkflowAuthorizations
 User Story 9687: [AUSL-RE] Scrivania di Workflow modificare filtri e label

@@ -6,7 +6,6 @@ Partial Public Class CommonSelLocation
     Inherits CommBasePage
 
 #Region " Fields "
-
     Private _locations As IList(Of Location)
 
 #End Region
@@ -53,7 +52,7 @@ Partial Public Class CommonSelLocation
 
     Private Sub Initialize()
         Dim node As RadTreeNode
-        Dim biblosDSDB As String = ""
+        Dim biblosDSDB As String = String.Empty
         For Each location As Location In Locations
             node = New RadTreeNode()
             Select Case Type
@@ -64,9 +63,9 @@ Partial Public Class CommonSelLocation
                 Case "Resl"
                     biblosDSDB = location.ReslBiblosDSDB
             End Select
-            node.Text = String.Format("{0} {1} ({2} {3})", location.Id, location.Name, location.DocumentServer, biblosDSDB)
+            node.Text = $"{location.Id} {location.Name} ({biblosDSDB})"
             node.Value = location.Id.ToString()
-            node.Attributes.Add("Description", location.Id.ToString() & " " & location.Name)
+            node.Attributes.Add("Description", $"{location.Id} {location.Name}")
             node.ImageUrl = "../Comm/images/BiblosDS.gif"
             RadTreeViewLocation.Nodes(0).Nodes.Add(node)
         Next

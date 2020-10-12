@@ -13,7 +13,6 @@ Public Class ScannerLight
 
     Private _currentConfiguration As ScannerConfiguration
     Private _fileNameInsert As String
-    Private Const CheckDematerialisationComplianceQueryItem As String = "checkcompl"
 #End Region
 
 #Region " Properties "
@@ -63,18 +62,6 @@ Public Class ScannerLight
             _fileNameInsert = value
         End Set
     End Property
-    Private ReadOnly Property ChkCheckDematerialisationCompliance As RadButton
-        Get
-            Dim controlCompliance As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("CheckDematerialisationCompliance"), RadToolBarButton)
-            Return DirectCast(controlCompliance.FindControl("chkDematerialisationCompliance"), RadButton)
-        End Get
-    End Property
-    Private ReadOnly Property IsInCompliance As Boolean
-        Get
-            Return Request.QueryString.GetValueOrDefault(Of Boolean)(CheckDematerialisationComplianceQueryItem, False)
-        End Get
-    End Property
-
 
 #End Region
 
@@ -97,12 +84,10 @@ Public Class ScannerLight
         If Not FileHelper.MatchExtension(FileNameInsert, FileHelper.PDF) Then
             FileNameInsert += FileHelper.PDF
         End If
-        Dim dict As New Dictionary(Of String, String)()
 
-        dict.Add(DocumentName, FileNameInsert)
-        If ChkCheckDematerialisationCompliance.Visible Then
-            dict.Add("CheckDematerialisationCompliance", ChkCheckDematerialisationCompliance.Checked.ToString())
-        End If
+        Dim dict As New Dictionary(Of String, String) From {
+            {DocumentName, FileNameInsert}
+        }
         AjaxManager.ResponseScripts.Add(String.Format("CloseWindow('{0}');", JsonConvert.SerializeObject(dict)))
     End Sub
 
@@ -117,13 +102,7 @@ Public Class ScannerLight
         Dim actionPage As String = Page.ResolveUrl("~/UserControl/ScannerLightSave.aspx")
 
         btnUpload.OnClientClicking = String.Format("function (button,args){{ btnUpload_onclick(button, args, '{0}', '{1}', '{2}', '{3}', '{4}');}}", host, port, Request.IsSecureConnection, actionPage, DocumentName)
-
         maxPagesToScan.Text = MaxImagesToScan
-
-        ChkCheckDematerialisationCompliance.Visible = False
-        If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso (IsInCompliance) Then
-            ChkCheckDematerialisationCompliance.Visible = True
-        End If
 
         If Not DocSuiteContext.Current.ProtocolEnv.ScannerConfigurationEnabled Then
             divScannerConfiguration.Visible = False

@@ -122,7 +122,9 @@ Public Class ResolutionsPrintTO
 
         tbl.CurrentRow.CreateEmpytCell()
         CreateProposerCellStyle(tbl.CurrentRow.CurrentCell, False)
-        If resl.ResolutionContactProposers IsNot Nothing AndAlso resl.ResolutionContactProposers.Count > 0 Then tbl.CurrentRow.CurrentCell.Text = resl.ResolutionContactProposers.ElementAt(0).Contact.Code
+        If resl.ResolutionContactProposers IsNot Nothing AndAlso resl.ResolutionContactProposers.Count > 0 Then
+            tbl.CurrentRow.CurrentCell.Text = String.Join(", ", resl.ResolutionContactProposers.Select(Function(x) x.Contact.Code))
+        End If
 
         'crea cella Oggetto
         tbl.CurrentRow.CreateEmpytCell()

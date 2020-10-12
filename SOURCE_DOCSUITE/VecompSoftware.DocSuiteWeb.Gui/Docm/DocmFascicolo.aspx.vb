@@ -115,7 +115,7 @@ Partial Public Class DocmFascicolo
                 Title = "Inserimento Collegamento Fasicolo"
                 btnInserimento.Visible = True
             Case "Modify"
-                If DocSuiteContext.IsFullApplication AndAlso Add = "ON" Then
+                If Add = "ON" Then
                     Title = "Modifica Collegamento Fascicolo"
                 Else
                     Title = "Visualizza Collegamento Fascicolo"
@@ -224,7 +224,7 @@ Partial Public Class DocmFascicolo
         Dim documentObject As DocumentObject = Facade.DocumentObjectFacade.GetById(New YearNumberIncrCompositeKey(CurrentDocumentYear, CurrentDocumentNumber, IncrementalObject))
         If documentObject IsNot Nothing Then
             BindData(documentObject)
-            If DocSuiteContext.IsFullApplication AndAlso Add.Eq("ON") AndAlso documentObject.idObjectStatus <> "A" Then
+            If Add.Eq("ON") AndAlso documentObject.idObjectStatus <> "A" Then
                 btnChange.Visible = True
                 btnDetele.Visible = True
                 txtReason.Focus()

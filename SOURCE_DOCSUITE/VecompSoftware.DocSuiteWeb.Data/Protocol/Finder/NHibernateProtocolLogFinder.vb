@@ -23,11 +23,11 @@ Public Class NHibernateProtocolLogFinder
         End Get
     End Property
 
-    ''' <summary> Anno del protocollo da ricercare. </summary>
-    Public Property ProtocolYear As Short
+    Public Property ProtocolYear As Short?
 
-    ''' <summary> Numero del protocollo da ricercare. </summary>
-    Public Property ProtocolNumber As Integer
+    Public Property ProtocolNumber As Integer?
+
+    Public Property UniqueIdProtocol As Guid?
 
 #End Region
 
@@ -44,13 +44,17 @@ Public Class NHibernateProtocolLogFinder
     ''' <summary> Aggiunta dei filtri anno e numero ai criteri di ricerca comuni. </summary>
     Protected Overrides Function CreateCriteria() As ICriteria
         Dim criteria As ICriteria = MyBase.CreateCriteria()
-
-        If ProtocolYear <> 0 Then
-            criteria.Add(Restrictions.Eq("D.Year", ProtocolYear))
+        criteria.CreateAlias("D.Protocol", "P")
+        If UniqueIdProtocol.HasValue Then
+            criteria.Add(Restrictions.Eq("P.Id", UniqueIdProtocol.Value))
         End If
 
-        If ProtocolNumber <> 0 Then
-            criteria.Add(Restrictions.Eq("D.Number", ProtocolNumber))
+        If ProtocolYear.HasValue Then
+            criteria.Add(Restrictions.Eq("P.Year", ProtocolYear.Value))
+        End If
+
+        If ProtocolNumber.HasValue Then
+            criteria.Add(Restrictions.Eq("P.Number", ProtocolNumber.Value))
         End If
 
         If Not String.IsNullOrEmpty(LogType) Then
@@ -82,8 +86,8 @@ Public Class NHibernateProtocolLogFinder
         projList.Add(Projections.Property("D.Program"), "Program")
         projList.Add(Projections.Property("D.LogType"), "LogType")
         projList.Add(Projections.Property("D.LogDescription"), "LogDescription")
-        projList.Add(Projections.Property("D.Year"), "Year")
-        projList.Add(Projections.Property("D.Number"), "Number")
+        projList.Add(Projections.Property("P.Year"), "Year")
+        projList.Add(Projections.Property("P.Number"), "Number")
 
         criteria.SetProjection(projList)
         criteria.SetResultTransformer(New Transform.AliasToBeanResultTransformer(GetType(ProtocolLog)))

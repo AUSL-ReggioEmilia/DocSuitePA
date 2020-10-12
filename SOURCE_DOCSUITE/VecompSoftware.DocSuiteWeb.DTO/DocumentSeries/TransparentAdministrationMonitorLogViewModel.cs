@@ -1,4 +1,4 @@
-using VecompSoftware.DocSuiteWeb.Model.Entities.Monitors;
+﻿using VecompSoftware.DocSuiteWeb.Model.Entities.Monitors;
 
 namespace VecompSoftware.DocSuiteWeb.DTO.DocumentSeries
 {

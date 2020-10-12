@@ -1,8 +1,8 @@
-﻿import ServiceConfiguration = require("../App/Services/ServiceConfiguration");
-import ServiceConfigurationHelper = require("../App/Helpers/ServiceConfigurationHelper");
-import DocumentUnitFascicleCategoriesService = require("../App/Services/DocumentUnits/DocumentUnitFascicleCategoriesService");
-import DocumentUnitModel = require("../App/Models/DocumentUnits/DocumentUnitModel");
-import FascicleDocumentUnitCategoryModel = require("../App/Models/Fascicles/FascicleDocumentUnitCategoryModel");
+﻿import ServiceConfiguration = require("App/Services/ServiceConfiguration");
+import ServiceConfigurationHelper = require("App/Helpers/ServiceConfigurationHelper");
+import DocumentUnitFascicleCategoriesService = require("App/Services/DocumentUnits/DocumentUnitFascicleCategoriesService");
+import DocumentUnitModel = require("App/Models/DocumentUnits/DocumentUnitModel");
+import FascicleDocumentUnitCategoryModel = require("App/Models/Fascicles/FascicleDocumentUnitCategoryModel");
 
 
 class UscMulticlassificationRest {

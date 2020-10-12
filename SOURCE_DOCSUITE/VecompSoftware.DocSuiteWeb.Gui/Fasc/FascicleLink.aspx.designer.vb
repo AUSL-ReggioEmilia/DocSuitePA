@@ -14,6 +14,24 @@ Option Explicit On
 Partial Public Class FascicleLink
 
     '''<summary>
+    '''RadWindowManagerFascicleLink control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents RadWindowManagerFascicleLink As Global.Telerik.Web.UI.RadWindowManager
+
+    '''<summary>
+    '''windowOpenDossierRicerca control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents windowOpenDossierRicerca As Global.Telerik.Web.UI.RadWindow
+
+    '''<summary>
     '''frmDecorator control.
     '''</summary>
     '''<remarks>
@@ -41,6 +59,33 @@ Partial Public Class FascicleLink
     Protected WithEvents uscFascSummary As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascSummary
 
     '''<summary>
+    '''splContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents splContent As Global.Telerik.Web.UI.RadSplitter
+
+    '''<summary>
+    '''radPane control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents radPane As Global.Telerik.Web.UI.RadPane
+
+    '''<summary>
+    '''rtsFascicleLink control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rtsFascicleLink As Global.Telerik.Web.UI.RadTabStrip
+
+    '''<summary>
     '''uscFascicleSearch control.
     '''</summary>
     '''<remarks>
@@ -48,6 +93,15 @@ Partial Public Class FascicleLink
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscFascicleSearch As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascicleSearch
+
+    '''<summary>
+    '''fascicoliCollegati control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fascicoliCollegati As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 
     '''<summary>
     '''rgvLinkedFascicles control.
@@ -59,22 +113,76 @@ Partial Public Class FascicleLink
     Protected WithEvents rgvLinkedFascicles As Global.Telerik.Web.UI.RadGrid
 
     '''<summary>
-    '''cmbOpenClose control.
+    '''dossierDisponibili control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents cmbOpenClose As Global.Telerik.Web.UI.RadComboBox
+    Protected WithEvents dossierDisponibili As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 
     '''<summary>
-    '''txtObject control.
+    '''btnSearchDossier control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents txtObject As Global.Telerik.Web.UI.RadTextBox
+    Protected WithEvents btnSearchDossier As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''dossierSummaryContainer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents dossierSummaryContainer As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''uscDossierSummary control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscDossierSummary As Global.VecompSoftware.DocSuiteWeb.Gui.uscDossierSummary
+
+    '''<summary>
+    '''dossierFolderCotainer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents dossierFolderCotainer As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''uscDossierFolder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscDossierFolder As Global.VecompSoftware.DocSuiteWeb.Gui.uscDossierFolders
+
+    '''<summary>
+    '''dossierCollegati control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents dossierCollegati As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''rgvLinkedDossiers control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rgvLinkedDossiers As Global.Telerik.Web.UI.RadGrid
 
     '''<summary>
     '''uscNotification control.

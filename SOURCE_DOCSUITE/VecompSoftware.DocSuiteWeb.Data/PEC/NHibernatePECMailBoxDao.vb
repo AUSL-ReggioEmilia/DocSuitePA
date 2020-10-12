@@ -101,7 +101,10 @@ Public Class NHibernatePECMailBoxDao
         Return CType(crit.UniqueResult(), Integer)
     End Function
 
-    Public Sub SetHumanManageableFilter()
-        NHibernateSession.EnableFilter("humanManageable")
-    End Sub
+    Public Function CountLoginErrorPECBoxes() As Integer
+        Dim crit As ICriteria = NHibernateSession.CreateCriteria(persitentType)
+        crit.Add(Restrictions.Eq("LoginError", True))
+        crit.SetProjection(Projections.RowCount())
+        Return CType(crit.UniqueResult(), Integer)
+    End Function
 End Class

@@ -113,6 +113,33 @@ Partial Public Class FascModifica
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
 
     '''<summary>
+    '''processPanelContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents processPanelContent As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''processesDDL control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents processesDDL As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
+    '''rtvProcessFolders control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rtvProcessFolders As Global.Telerik.Web.UI.RadTreeView
+
+    '''<summary>
     '''rowDynamicMetadata control.
     '''</summary>
     '''<remarks>
@@ -122,13 +149,58 @@ Partial Public Class FascModifica
     Protected WithEvents rowDynamicMetadata As Global.Telerik.Web.UI.LayoutRow
 
     '''<summary>
-    '''uscDynamicMetadata control.
+    '''uscSetiContact control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscDynamicMetadata As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadata
+    Protected WithEvents uscSetiContact As Global.VecompSoftware.DocSuiteWeb.Gui.uscSetiContactSel
+
+    '''<summary>
+    '''UscDynamicMetadataRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents UscDynamicMetadataRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadataRest
+
+    '''<summary>
+    '''rowTransformIntoProcessFascicle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowTransformIntoProcessFascicle As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''chkTransformIntoProcessFascicle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkTransformIntoProcessFascicle As Global.System.Web.UI.HtmlControls.HtmlInputCheckBox
+
+    '''<summary>
+    '''uscContactDiv control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscContactDiv As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''uscContact control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscContact As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelRest
 
     '''<summary>
     '''uscNotification control.

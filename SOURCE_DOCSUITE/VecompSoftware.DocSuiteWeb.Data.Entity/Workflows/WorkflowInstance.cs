@@ -16,8 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
         public WorkflowInstance(string userName)
             : this()
         {
-            this.WorkflowProperties = new Collection<WorkflowProperty>();
-            this.WorkflowActivities = new Collection<WorkflowActivity>();
+            WorkflowActivities = new Collection<WorkflowActivity>();
             RegistrationDate = DateTimeOffset.UtcNow;
             RegistrationUser = userName;
         }
@@ -31,8 +30,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
 
         public virtual string RegistrationUser { get; set; }
 
-        public virtual string Json { get; set; }
-
         public virtual DateTimeOffset RegistrationDate { get; set; }
 
         public virtual string LastChangedUser { get; set; }
@@ -44,8 +41,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
         #region [ Navigation Properties ]
 
         public virtual WorkflowRepository WorkflowRepository { get; set; }
-
-        public virtual ICollection<WorkflowProperty> WorkflowProperties { get; set; }
 
         public virtual ICollection<WorkflowActivity> WorkflowActivities { get; set; } 
 

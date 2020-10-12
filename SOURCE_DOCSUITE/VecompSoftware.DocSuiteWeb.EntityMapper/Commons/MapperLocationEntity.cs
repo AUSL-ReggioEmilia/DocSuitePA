@@ -29,7 +29,6 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Commons
             apiCategory.UniqueId = entity.UniqueId;
             apiCategory.EntityShortId = Convert.ToInt16(entity.Id);
             apiCategory.Name = entity.Name;
-            apiCategory.DocumentServer = entity.DocumentServer;
             apiCategory.ProtocolArchive = entity.ProtBiblosDSDB;
             apiCategory.DossierArchive = entity.DocmBiblosDSDB;
             apiCategory.ResolutionArchive = entity.ReslBiblosDSDB;

@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/BaseMapper", "App/Mappers/Fascicles/FascicleModelMapper", "App/Helpers/RequireJSHelper"], function (require, exports, BaseMapper, FascicleModelMapper, RequireJSHelper) {
+define(["require", "exports", "App/Mappers/BaseMapper", "App/Mappers/Fascicles/FascicleModelMapper", "App/Helpers/RequireJSHelper", "App/Helpers/FileHelper"], function (require, exports, BaseMapper, FascicleModelMapper, RequireJSHelper, FileHelper) {
     var FascicleDocumentModelMapper = /** @class */ (function (_super) {
         __extends(FascicleDocumentModelMapper, _super);
         function FascicleDocumentModelMapper() {
@@ -28,6 +28,8 @@ define(["require", "exports", "App/Mappers/BaseMapper", "App/Mappers/Fascicles/F
             toMap.Fascicle = source.Fascicle ? _fascicleModelMapper.Map(source.Fascicle) : null;
             toMap.IdArchiveChain = source.IdArchiveChain;
             toMap.UniqueId = source.UniqueId;
+            toMap.FileName = source.FileName;
+            toMap.ImageUrl = source.FileName ? FileHelper.getImageByFileName(source.FileName, true) : null;
             return toMap;
         };
         return FascicleDocumentModelMapper;

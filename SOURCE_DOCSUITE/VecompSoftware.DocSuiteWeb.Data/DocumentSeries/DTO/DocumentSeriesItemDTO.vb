@@ -45,11 +45,6 @@ Public Class DocumentSeriesItemDTO(Of T)
     Public Overridable Property IdDocumentSeriesSubsection As Integer?
     Public Overridable Property IdContainer As Integer
     Public Overridable Property ContainerName As String
-
-    Public Overridable Property LocationServer As String
-    Public Overridable Property LocationAnnexedServer As String
-    Public Overridable Property LocationUnpublishedAnnexedServer As String
-
     Public Overridable Property IdLocation As Integer
     Public Overridable Property IdLocationAnnexed As Integer
 

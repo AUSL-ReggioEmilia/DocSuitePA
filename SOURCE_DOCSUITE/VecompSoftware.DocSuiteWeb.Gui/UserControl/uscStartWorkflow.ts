@@ -14,7 +14,6 @@ import WorkflowStartModel = require('App/Models/Workflows/WorkflowStartModel');
 import WorkflowPropertyHelper = require('App/Models/Workflows/WorkflowPropertyHelper');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
-import UscSettori = require('UserControl/uscSettori');
 import RoleModel = require('App/Models/Commons/RoleModel');
 import WorkflowRoleModel = require('App/Models/Workflows/WorkflowRoleModel');
 import WorkflowReferenceModel = require('App/Models/Workflows/WorkflowReferenceModel');
@@ -25,26 +24,31 @@ import FascicleModel = require('App/Models/Fascicles/FascicleModel');
 import FascicleRoleModel = require('App/Models/Fascicles/FascicleRoleModel');
 import DossierSummaryViewModel = require('App/ViewModels/Dossiers/DossierSummaryViewModel');
 import BaseEntityViewModel = require('App/ViewModels/BaseEntityViewModel')
-import DossierRoleModel = require('App/Models/Dossiers/DossierRoleModel');
-import WorkflowAuthorizationType = require('App/Models/Workflows/WorkflowAuthorizationType');
 import WorkflowAccountModel = require('App/Models/Workflows/WorkflowAccountModel');
-import UscContattiSel = require('UserControl/uscContattiSel');
 import UscUploadDocumentRest = require('UserControl/uscUploadDocumentRest');
 import DocumentModel = require('App/Models/Commons/DocumentModel');
 import WorkflowEvaluationProperty = require('App/Models/Workflows/WorkflowEvaluationProperty');
-import WorkflowStep = require('App/Models/Workflows/WorkflowStep');
 import ContactModel = require('App/Models/Commons/ContactModel');
-import WorkflowNotifyModel = require('App/Models/Workflows/WorkflowNotifyModel');
 import DocumentUnitModel = require('App/Models/DocumentUnits/DocumentUnitModel');
 import TemplateCollaborationService = require('App/Services/Templates/TemplateCollaborationService');
 import TemplateCollaborationModel = require('App/Models/Templates/TemplateCollaborationModel');
 import WorkflowReferenceBiblosModel = require('App/Models/Workflows/WorkflowReferenceBiblosModel');
 import ChainType = require("App/Models/DocumentUnits/ChainType");
 import EnumHelper = require('App/Helpers/EnumHelper');
+import TenantModelSelection = require('App/Models/Tenants/TenantModelSelection');
+import uscTenantsSelRest = require('./uscTenantsSelRest');
+import uscRoleRest = require('./uscRoleRest');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import UscRoleRestEventType = require('App/Models/Commons/UscRoleRestEventType');
+import uscDomainUserSelRest = require('./uscDomainUserSelRest');
+import uscWorkflowFolderSelRest = require('./uscWorkflowFolderSelRest');
+import DSWEnvironmentType = require('App/Models/Workflows/WorkflowDSWEnvironmentType');
+import WorfklowFolderPropertiesModel = require('App/Models/Workflows/WorfklowFolderPropertiesModel');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
+import FascicleBuildModel = require("App/Models/Fascicles/FascicleBuildModel");
+import Guid = require("App/Helpers/GuidHelper");
 
 declare var Page_ClientValidate: any;
-declare var Page_Validators: any;
-declare var ValidatorEnable: any;
 class uscStartWorkflow {
 
     contentId: string;
@@ -59,14 +63,13 @@ class uscStartWorkflow {
     tenantId: string;
     ctrlTxtWfId: string;
 
-    uscProposerRoleId: string;
-    uscProposerContactId: string;
     proposerRoleRowId: string;
     proposerContactRowId: string;
     proposerContactRowLabelId: string;
+    tenantRowId: string;
 
-    uscRecipientRoleId: string;
-    uscRecipientContactId: string;
+    uscRecipientContactRestId: string;
+    uscProposerContactRestId: string;
     recipientRoleRowId: string;
     recipientContactRowId: string;
     recipientContactRowLabelId: string;
@@ -89,20 +92,31 @@ class uscStartWorkflow {
     redirectToProtocol: boolean;
     redirectToCollaboration: boolean;
     redirectToFascicleSingDocument: boolean;
+    rdlCCDocumentId: string;
+    copiaConformeRowId: string;
+    documentOriginalTypeRequired: boolean;
+    workflowStartTenantRequired: boolean;
 
     showOnlyNoInstanceWorkflows: boolean;
     docSuiteVersion: string;
+    tenantAOOId: string;
+    uscTenantsSelRestId: string;
+    showOnlyHasIsFascicleClosedRequired: boolean;
+
+    uscRoleProposerRestId: string;
+    uscRoleRecipientRestId: string;
+
+    uscWorkflowFolderSelRestId: string;
+    lrUscWorkflowFolderSelRestId: string;
+    lblDossierTitleId: string;
+
+    roleInsertId: number[];
+    sourceProposerRoles: RoleModel[];
+    sourceRecipientRoles: RoleModel[];
+
 
     public static LOADED_EVENT: string = "onLoaded";
     public static DATA_LOADED_EVENT: string = "onDataLoaded";
-    public static SESSION_KEY_DOCUMENTS_REFERENCE_MODEL = "DocumentsReferenceModel";
-    public static SESSION_KEY_REFERENCE_MODEL = "ReferenceModel";
-    public static SESSION_KEY_REFERENCE_ID = "ReferenceId";
-    public static SESSION_KEY_REFERENCE_TITLE = "ReferenceTitle";
-    public static SESSION_KEY_WORKFLOW_REFERENCE_MODEL = "WorkflowReferenceModel";
-    public static SESSION_KEY_WORKFLOW_START_MODEL = "WorkflowStartModel";
-    public static SESSION_KEY_DOCUMENT_METADATAS = "DocumentMetadatas";
-    public static SESSION_KEY_UDS_MODEL = "UDSModel";
 
     private static WORKFLOWSTART_TYPE_NAME: string = "WorkflowStart";
     private static LOAD_EXTERNAL_DATA: string = "LoadExternalData";
@@ -137,6 +151,13 @@ class uscStartWorkflow {
     private _templateCollaborationService: TemplateCollaborationService;
     private _rgvDocumentLists: Telerik.Web.UI.RadGrid;
     private _rgvDocumentMasterTableView: Telerik.Web.UI.GridTableView;
+
+    private _uscRoleProposerRest: uscRoleRest;
+    private _uscRoleRecipientRest: uscRoleRest;
+    private _uscRecipientContactRest: uscDomainUserSelRest;
+    private _uscProposerContactRest: uscDomainUserSelRest;
+    private _uscWorkflowFolderSelRest: uscWorkflowFolderSelRest;
+
     /**
     * Costruttore
          * @param serviceConfiguration
@@ -158,18 +179,23 @@ class uscStartWorkflow {
         * @param eventArgs
         * @returns
     */
-    btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         this._loadingPanel.show(this.contentId);
         this._btnConfirm.set_enabled(false);
         let selectedWorkflowRepository: Telerik.Web.UI.RadComboBoxItem = this._rdlWorkflowRepository.get_selectedItem();
 
         this.setRecipientValidation();
         this.setProposerValidation();
+        this.setUscWorkflowFolderValidation();
 
         let isValid = Page_ClientValidate('');
         let documentTypeRequired: boolean = this.documentHasSelectedType();
 
-        if (!isValid || selectedWorkflowRepository == null || String.isNullOrEmpty(selectedWorkflowRepository.get_value()) || documentTypeRequired === false) {
+        let uscTenantSelRest: uscTenantsSelRest = <uscTenantsSelRest>$(`#${this.uscTenantsSelRestId}`).data();
+        if (!isValid || selectedWorkflowRepository == null
+            || String.isNullOrEmpty(selectedWorkflowRepository.get_value())
+            || documentTypeRequired === false
+            || (this.workflowStartTenantRequired && !uscTenantSelRest.hasValue())) {
             args.set_cancel(true);
             if (selectedWorkflowRepository == null && !String.isNullOrEmpty(this._rdlWorkflowRepository.get_text())) {
                 this.onError("Selezionare una attività valida");
@@ -177,8 +203,12 @@ class uscStartWorkflow {
             if (documentTypeRequired === false) {
                 this.onError("E' necessario specificare il tipo di documento per tutti i documenti");
             }
+            if (this.workflowStartTenantRequired && !uscTenantSelRest.hasValue()) {
+                this.onError("E' necessario selezionare una UO");
+            }
             this._loadingPanel.hide(this.contentId);
             this._btnConfirm.set_enabled(true);
+            args.set_cancel(true);
             return;
         }
 
@@ -188,7 +218,7 @@ class uscStartWorkflow {
     private documentHasSelectedType(): boolean {
         if (this.chainTypeRequired) {
             let workflowReferenceModel: WorkflowReferenceModel = <WorkflowReferenceModel>{};
-            workflowReferenceModel.Documents = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
+            workflowReferenceModel.Documents = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
             let documentTypeSelected: boolean;
             workflowReferenceModel.Documents.forEach(function (item: WorkflowReferenceBiblosModel) {
                 let val: string = $(`input:radio[name='${item.ArchiveDocumentId}_chainTypes']:checked`).val();
@@ -224,10 +254,18 @@ class uscStartWorkflow {
         this._btnConfirm.add_clicking(this.btnConfirm_OnClick);
         this._ddlTemplateCollaboration = <Telerik.Web.UI.RadComboBox>$find(this.ddlTemplateCollaborationId);
 
+        this.clearSessionStorage();
+
         this._rgvDocumentLists = <Telerik.Web.UI.RadGrid>$find(this.rgvDocumentListsId);
         this._rgvDocumentMasterTableView = this._rgvDocumentLists.get_masterTableView();
         this._rgvDocumentMasterTableView.set_currentPageIndex(0);
         this._rgvDocumentMasterTableView.set_virtualItemCount(0);
+
+
+        this._uscRoleProposerRest = <uscRoleRest>$(`#${this.uscRoleProposerRestId}`).data();
+        this._uscRoleRecipientRest = <uscRoleRest>$(`#${this.uscRoleRecipientRestId}`).data();
+        this._uscRecipientContactRest = <uscDomainUserSelRest>$(`#${this.uscRecipientContactRestId}`).data();
+        this._uscProposerContactRest = <uscDomainUserSelRest>$(`#${this.uscProposerContactRestId}`).data();
 
         let templateCollaborationConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "TemplateCollaboration");
         this._templateCollaborationService = new TemplateCollaborationService(templateCollaborationConfiguration);
@@ -253,7 +291,8 @@ class uscStartWorkflow {
         this._masterRoles = new Array<RoleModel>();
         switch (env) {
             case DSWEnvironment.Fascicle: {
-                let fascicle: FascicleModel = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_MODEL))
+                let fascicle: FascicleModel = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL))
+                this._txtObject.set_value(fascicle.FascicleObject);
                 let fascicleMasterRoles: FascicleRoleModel[] = $.grep(fascicle.FascicleRoles, (r) => r.IsMaster);
                 for (let role of fascicleMasterRoles) {
                     this._masterRoles.push(role.Role);
@@ -261,7 +300,7 @@ class uscStartWorkflow {
                 break;
             }
             case DSWEnvironment.Dossier: {
-                let dossier: DossierSummaryViewModel = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_MODEL))
+                let dossier: DossierSummaryViewModel = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL))
                 //per ora so che le api ritornano solo quello attivo (che è uno solo)
                 let dossierRoles: BaseEntityViewModel[] = dossier.Roles;
                 for (let role of dossierRoles) {
@@ -277,8 +316,8 @@ class uscStartWorkflow {
         }
 
         if (env >= 100) {
-            let documentUnit: DocumentUnitModel = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_MODEL));
-            this._txtObject.set_textBoxValue(documentUnit.Subject);
+            let documentUnit: DocumentUnitModel = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL));
+            this._txtObject.set_value(documentUnit.Subject);
             let documentUnitRoles: RoleModel[] = documentUnit.Roles;
             for (let role of documentUnitRoles) {
                 let roleModel: RoleModel = <RoleModel>{};
@@ -295,18 +334,6 @@ class uscStartWorkflow {
         ajaxModel.Value.push(uscStartWorkflow.UPDATE_CALLBACK);
         (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
 
-        $("#".concat(this.uscRecipientContactId)).bind(UscContattiSel.LOADED_EVENT, () => {
-            this.setRecipientValidation();
-        });
-        $("#".concat(this.uscRecipientRoleId)).bind(UscSettori.LOADED_EVENT, () => {
-            this.setRecipientValidation();
-        });
-        $("#".concat(this.uscProposerContactId)).bind(UscContattiSel.LOADED_EVENT, () => {
-            this.setProposerValidation();
-        });
-        $("#".concat(this.uscProposerRoleId)).bind(UscSettori.LOADED_EVENT, () => {
-            this.setProposerValidation();
-        });
         this.setRecipientValidation();
         this.setProposerValidation();
         this.bindLoaded();
@@ -329,12 +356,12 @@ class uscStartWorkflow {
             env = DSWEnvironment[this.dswEnvironment];
         }
         let onlyDocumentWorkflows: boolean = false;
-        let sessionStorageValue: string = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
+        let sessionStorageValue: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
         if (sessionStorageValue && sessionStorageValue !== "[]") {
             onlyDocumentWorkflows = true;
         }
         //il false dovrà essere gestito da un checkbox
-        this._workflowRepositoryService.getByEnvironment(env, args.get_text(), false, onlyDocumentWorkflows, this.showOnlyNoInstanceWorkflows,
+        this._workflowRepositoryService.getByEnvironment(env, args.get_text(), false, onlyDocumentWorkflows, this.showOnlyNoInstanceWorkflows, this.showOnlyHasIsFascicleClosedRequired,
             (data: any) => {
                 this._rdlWorkflowRepository.clearItems();
                 let repositories: WorkflowRepositoryModel[] = <WorkflowRepositoryModel[]>data;
@@ -354,6 +381,9 @@ class uscStartWorkflow {
             let defaultTemplate: Array<WorkflowEvaluationProperty> = this._workflowEvaluationProperties.filter(function (item) {
                 return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_DEFAULT;
             });
+            let readonlyTemplate: Array<WorkflowEvaluationProperty> = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_READONLY;
+            });
             for (let templateCollaboration of templateCollaborations) {
                 item = new Telerik.Web.UI.RadComboBoxItem();
                 item.set_text(templateCollaboration.Name);
@@ -366,7 +396,19 @@ class uscStartWorkflow {
                     }
                 }
             }
+            this._ddlTemplateCollaboration.enable();
+            if (readonlyTemplate && readonlyTemplate.length > 0
+                && readonlyTemplate[0].ValueBoolean && this._ddlTemplateCollaboration.get_selectedItem()) {
+                this._ddlTemplateCollaboration.disable();
+            }
         });
+    }
+
+    setToolbarRoleVisibility(isReadOnly: boolean, uscID: string) {
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(uscID)
+            .done((instance) => {
+                instance.setToolbarRoleVisibility(isReadOnly);
+            });
     }
 
     /**
@@ -403,17 +445,17 @@ class uscStartWorkflow {
         if (this._rdlWorkflowRepository.get_selectedItem() == null) {
             return;
         }
+
         this._loadingPanel.show(this.contentId);
-        this.dswEnvironment = DSWEnvironment[this._rdlWorkflowRepository.get_selectedItem().get_attributes().getAttribute(uscStartWorkflow.ENVIRONMENT)];
-        this.setAvailableRoles(this.dswEnvironment);
+        this.setPageVisibilities();
         this.clearSessionContacts();
     }
 
     clearSessionContacts() {
-        let uscRecipientContact: UscContattiSel = <UscContattiSel>$("#".concat(this.uscRecipientContactId)).data();
-        uscRecipientContact.clearSessionStorage();
-        let uscProposerContact: UscContattiSel = <UscContattiSel>$("#".concat(this.uscProposerContactId)).data();
-        uscProposerContact.clearSessionStorage();
+        let uscRecipientDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscRecipientContactRestId)).data();
+        uscRecipientDomainUserContacts.clearDomainUsersContactsTree();
+        let uscProposerDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscRecipientContactRestId)).data();
+        uscProposerDomainUserContacts.clearDomainUsersContactsTree();
     }
 
     setPageVisibilities = () => {
@@ -428,17 +470,19 @@ class uscStartWorkflow {
                     this._workflowEvaluationProperties = [];
                 }
 
+                let varStr: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL);
+                let fascicle: FascicleModel = new FascicleModel();
+                if (varStr) {
+                    fascicle = JSON.parse(varStr);
+                }
+
                 this.checkWorkflowEvaluationPropertyValues();
                 if (this.redirectToFascicleSingDocument) {
-                    let varStr: string = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_MODEL);
-                    if (varStr) {
-                        let fascicle: FascicleModel = JSON.parse(varStr);
-                        if (fascicle) {
-                            varStr = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
-                            if (varStr) {
-                                let documents: WorkflowReferenceBiblosModel[] = JSON.parse(varStr);
-                                window.location.href = `../Fasc/FascDocumentsInsert.aspx?Type=Fasc&IdFascicle=${fascicle.UniqueId}&OnlySignEnabled=true&FilterByArchiveDocumentId=${documents[0].ArchiveDocumentId}`
-                            }
+                    if (fascicle) {
+                        varStr = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
+                        if (varStr) {
+                            let documents: WorkflowReferenceBiblosModel[] = JSON.parse(varStr);
+                            window.location.href = `../Fasc/FascDocumentsInsert.aspx?Type=Fasc&IdFascicle=${fascicle.UniqueId}&OnlySignEnabled=true&FilterByArchiveDocumentId=${documents[0].ArchiveDocumentId}`
                         }
                     }
                 }
@@ -448,11 +492,64 @@ class uscStartWorkflow {
                 if (this.templateCollaborationRequired) {
                     this.loadTemplateCollaborations();
                 }
+
+                this.setUscWorkflowFolderProperties(fascicle.UniqueId);
+
+                this._loadingPanel.hide(this.contentId);
             },
             (exception: ExceptionDTO) => {
                 this._loadingPanel.hide(this.contentId);
                 this.showNotificationException(this.uscNotificationId, exception, "Anomalia nel recupero della definizione dell'attività.");
             });
+    }
+
+    private setUscWorkflowFolderProperties(fascicleId: string) {
+        this._uscWorkflowFolderSelRest = <uscWorkflowFolderSelRest>$(`#${this.uscWorkflowFolderSelRestId}`).data();
+        let worfklowFolderProperties: WorfklowFolderPropertiesModel = <WorfklowFolderPropertiesModel>{};
+
+        let dossierFolderEnable = this._workflowEvaluationProperties.filter(function (item) {
+            return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_DOSSIER_FOLDER;
+        });
+
+        let dossierType = this._workflowEvaluationProperties.filter(function (item) {
+            return item.Name == WorkflowPropertyHelper.DSW_ACTION_DOSSIER_FILTER_TYPE;
+        });
+
+        let onlyFolderHasTemplate = this._workflowEvaluationProperties.filter(function (item) {
+            return item.Name == WorkflowPropertyHelper.DSW_ACTION_DOSSIERFOLDER_FILTER_HASTEMPLATE;
+        });
+
+        let setResponsibleRole = this._workflowEvaluationProperties.filter(function (item) {
+            return item.Name == WorkflowPropertyHelper.DSW_ACTION_FASCICLE_SET_RESPONSIBLE_ROLE;
+        });
+
+        if (this.dswEnvironment == DSWEnvironmentType.Fascicle.toString()) {
+            worfklowFolderProperties.IdFascicle = fascicleId;
+        }
+
+        if (dossierFolderEnable.length > 0 && <boolean>dossierFolderEnable[0].ValueBoolean) {
+            worfklowFolderProperties.DossierEnable = true;
+        }
+
+        if (dossierType.length > 0 && dossierType[0].ValueInt) {
+            worfklowFolderProperties.DossierType = Number(dossierType[0].ValueInt);
+        }
+
+        if (setResponsibleRole.length > 0 && <boolean>setResponsibleRole[0].ValueBoolean) {
+            worfklowFolderProperties.SetRecipientRole = true;
+        }
+
+        if (onlyFolderHasTemplate.length > 0 && <boolean>onlyFolderHasTemplate[0].ValueBoolean) {
+            worfklowFolderProperties.OnlyFolderHasTemplate = true;
+        }
+        if (worfklowFolderProperties.DossierEnable && worfklowFolderProperties.IdFascicle) {
+            PageClassHelper.callUserControlFunctionSafe<uscWorkflowFolderSelRest>(this.uscWorkflowFolderSelRestId)
+                .done((instance) => {
+                    instance.populateTreeByProperties(worfklowFolderProperties);
+                });
+            $(`#${this.lrUscWorkflowFolderSelRestId}`).show();
+            $(`#${this.lblDossierTitleId}`).show();
+        }
     }
 
     checkWorkflowEvaluationPropertyValues = () => {
@@ -463,6 +560,8 @@ class uscStartWorkflow {
         let recipientRoleRow: any = $('#'.concat(this.recipientRoleRowId));
         let recipientContactRow: any = $('#'.concat(this.recipientContactRowId));
         let lblRecipientContact: any = $('#'.concat(this.recipientContactRowLabelId));
+        let lrUscWorkflowFolderSelRest: any = $(`#${this.lrUscWorkflowFolderSelRestId}`);
+        let lblDossierTitle: any = $(`#${this.lblDossierTitleId}`);
 
         //motivazione avvia workflow obbligatorietà
         let startMotivationRequired: boolean = false;
@@ -479,6 +578,14 @@ class uscStartWorkflow {
         this.templateCollaborationRequired = false;
         if (results && results.length > 0) {
             this.templateCollaborationRequired = <boolean>results[0].ValueBoolean;
+        }
+
+        results = this._workflowEvaluationProperties.filter(function (item) {
+            return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_DOCUMENT_ORIGINAL_TYPE_SELECTION;
+        });
+        this.documentOriginalTypeRequired = false;
+        if (results && results.length > 0) {
+            this.documentOriginalTypeRequired = <boolean>results[0].ValueBoolean;
         }
 
         results = this._workflowEvaluationProperties.filter(function (item) {
@@ -539,6 +646,11 @@ class uscStartWorkflow {
             lblRecipientContact.hide();
         }
 
+        if (lrUscWorkflowFolderSelRest) {
+            lrUscWorkflowFolderSelRest.hide();
+            lblDossierTitle.hide();
+        }
+
         if (isProposerRoleType && proposerRoleRow) {
             proposerRoleRow.show();
         }
@@ -570,7 +682,9 @@ class uscStartWorkflow {
         results = this._workflowEvaluationProperties.filter(function (item) {
             return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_DOCUMENT_CHAIN_TYPE_SELECTION;
         });
-        let documents: WorkflowReferenceBiblosModel[] = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
+
+        this.chainTypeRequired = false;
+        let documents: WorkflowReferenceBiblosModel[] = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
         if (results && results.length > 0 && documents) {
             this._rgvDocumentMasterTableView.set_dataSource(documents);
             this._rgvDocumentMasterTableView.set_virtualItemCount(documents.length);
@@ -583,6 +697,24 @@ class uscStartWorkflow {
             $('#'.concat(this.chainTypeRowId)).show();
             this.chainTypeRequired = true;
 
+        }
+
+        if (this.documentOriginalTypeRequired) {
+            $('#'.concat(this.copiaConformeRowId)).show();
+        }
+
+        results = this._workflowEvaluationProperties.filter(function (item) {
+            return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_START_TENANT_REQUIRED;
+        });
+        this.workflowStartTenantRequired = false;
+        if (results && results.length > 0) {
+            this.workflowStartTenantRequired = <boolean>results[0].ValueBoolean;
+        }
+
+        if (this.workflowStartTenantRequired) {
+            $('#'.concat(this.tenantRowId)).show();
+        } else {
+            $('#'.concat(this.tenantRowId)).hide();
         }
     }
 
@@ -636,16 +768,11 @@ class uscStartWorkflow {
 
         if (isProposerContact) {
             proposerType = uscStartWorkflow.USC_PROPOSER_ACCOUNT
-            let uscContacts: UscContattiSel = <UscContattiSel>$("#".concat(this.uscProposerContactId)).data();
+            let uscProposerDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscProposerContactRestId)).data();
+            uscProposerDomainUserContacts.setImageButtonsVisibility(!proposerDisabled);
+
             proposerModel = new Array<WorkflowAccountModel>();
-            let contactsModel: ContactModel[] = JSON.parse(uscContacts.getContacts());
-            if (!contactsModel || contactsModel.length === 0) {
-                contactsModel = new Array<ContactModel>();
-                let currentUser: ContactModel = uscContacts.getCurrentUser();
-                if (currentUser) {
-                    contactsModel.push(currentUser);
-                }
-            }
+            let contactsModel: ContactModel[] = uscProposerDomainUserContacts.getContacts();
 
             for (let contactModel of contactsModel) {
                 let workflowAccount: WorkflowAccountModel = {
@@ -666,15 +793,14 @@ class uscStartWorkflow {
             }
         }
 
+        let roles: RoleModel[] = proposerModel;
+        this.sourceProposerRoles = roles;
+        this._uscRoleProposerRest.renderRolesTree(roles);
+        this.registerUscProposerRoleRestEventHandlers();
+
         if (isProposerContact || isProposerRole) {
-            let ajaxModel: AjaxModel = <AjaxModel>{};
-            ajaxModel.Value = new Array<string>();
-            ajaxModel.Value.push(JSON.stringify(proposerDisabled));
-            ajaxModel.Value.push(proposerType);
-            ajaxModel.Value.push(JSON.stringify(proposerModel));
-            ajaxModel.Value.push(uscStartWorkflow.SET_WORKFLOW_RECIPIENT);
-            ajaxModel.ActionName = uscStartWorkflow.LOAD_EXTERNAL_DATA;
-            (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel))
+            this.setToolbarRoleVisibility(!proposerDisabled, this.uscRoleProposerRestId);
+            this.setWorkflowRecipient();
         }
         this._loadingPanel.hide(this.contentId);
     }
@@ -698,7 +824,7 @@ class uscStartWorkflow {
         role.Name = workflowRole.Role.Name;
         role.TenantId = workflowRole.Role.TenantId;
         role.IdRoleTenant = workflowRole.Role.IdRole;
-
+        role.UniqueId = workflowRole.Role.UniqueId;
         return role;
     }
 
@@ -724,7 +850,8 @@ class uscStartWorkflow {
         let isRecipientRole: boolean = this.hasCurrentWorkflowRecipientRole();
 
         if (isRecipientContact) {
-            ajaxModel.Value.push(uscStartWorkflow.USC_RECIPIENT_ACCOUNT);
+            let uscDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscRecipientContactRestId)).data();
+            uscDomainUserContacts.setImageButtonsVisibility(!recipientDisabled);
 
             let accountRecipient: Array<WorkflowEvaluationProperty> = this._workflowEvaluationProperties.filter(function (item) {
                 return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_RECIPIENT_DEFAULT;
@@ -734,12 +861,22 @@ class uscStartWorkflow {
             workflowRecipients = new Array<WorkflowAccountModel>();
             if (accountRecipient != null && accountRecipient[0] != null) {
                 let account: WorkflowAccountModel = this.buildContactDefault(accountRecipient[0].ValueString);
+                let contacts: ContactModel[] = [];
+                let contactModel: ContactModel = <ContactModel>{
+                    Description: account.DisplayName,
+                    Code: account.AccountName.split("\\")[1],
+                    EmailAddress: account.EmailAddress,
+
+                };
+                contacts.push(contactModel);
+
+                let uscDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscRecipientContactRestId)).data();
+                uscDomainUserContacts.createDomainUsersContactsTree(contacts);
                 workflowRecipients.push(account);
             }
         }
         if (isRecipientRole) {
-            ajaxModel.Value.push(uscStartWorkflow.USC_RECIPIENT_ROLE);
-
+            this.setToolbarRoleVisibility(!recipientDisabled, this.uscRoleRecipientRestId);
             let rolesProp: Array<WorkflowEvaluationProperty> = this._workflowEvaluationProperties.filter(function (item) {
                 return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_RECIPIENT_DEFAULT;
             });
@@ -752,21 +889,13 @@ class uscStartWorkflow {
             }
         }
 
+        let roles: RoleModel[] = workflowRecipients;
+
+        this.sourceRecipientRoles = roles;
+        this._uscRoleRecipientRest.renderRolesTree(roles);
+        this.registerUscRecipientRoleRestEventHandlers();
+
         ajaxModel.Value.push(JSON.stringify(workflowRecipients));
-
-        (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
-    }
-
-    /**
-    * Caricamento dei settori disponibili per il workflow selezionato
-    */
-    setAvailableRoles = (env: string) => {
-        this._loadingPanel.hide(this.contentId);
-        let ajaxModel: AjaxModel = <AjaxModel>{};
-        ajaxModel.Value = new Array<string>();
-        ajaxModel.Value.push(JSON.stringify(this.dswEnvironment));
-        ajaxModel.Value.push(uscStartWorkflow.SET_PAGE_VISIBILITIES);
-        ajaxModel.ActionName = "EnvironmentChanged";
 
         (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
     }
@@ -790,7 +919,6 @@ class uscStartWorkflow {
     * Callback
     */
     updateCallback = () => {
-        //this.setRecipientValidation();
         this._loadingPanel.hide(this.contentId);
     }
 
@@ -798,37 +926,50 @@ class uscStartWorkflow {
         let isRecipientContactType: boolean = this.hasCurrentWorkflowRecipientContact();
         let isRecipientRoleType: boolean = this.hasCurrentWorkflowRecipientRole();
 
-        let uscWorkflowAuthRole: UscSettori = <UscSettori>$("#".concat(this.uscRecipientRoleId)).data();
-        if (!jQuery.isEmptyObject(uscWorkflowAuthRole)) {
-            uscWorkflowAuthRole.enableValidators(isRecipientRoleType);
-        }
-
-        let uscWorkflowAuthContacts: UscContattiSel = <UscContattiSel>$("#".concat(this.uscRecipientContactId)).data();
-        if (!jQuery.isEmptyObject(uscWorkflowAuthContacts)) {
-            uscWorkflowAuthContacts.enableValidators(isRecipientContactType);
-        }
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRecipientRestId)
+            .done((instance) => {
+                instance.forceBehaviourValidationState(isRecipientRoleType);
+                instance.enableValidators(isRecipientRoleType);
+            });
     }
 
     setProposerValidation = () => {
         let isProposerContactType: boolean = this.hasCurrentWorkflowProposerContact();
         let isProposerRoleType: boolean = this.hasCurrentWorkflowProposerRole();
 
-        let uscWorkflowAuthRole: UscSettori = <UscSettori>$("#".concat(this.uscProposerRoleId)).data();
-        if (!jQuery.isEmptyObject(uscWorkflowAuthRole)) {
-            uscWorkflowAuthRole.enableValidators(isProposerRoleType);
-        }
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleProposerRestId)
+            .done((instance) => {
+                instance.forceBehaviourValidationState(isProposerRoleType);
+                instance.enableValidators(isProposerRoleType);
+            });
+    }
 
-        let uscWorkflowAuthContacts: UscContattiSel = <UscContattiSel>$("#".concat(this.uscProposerContactId)).data();
-        if (!jQuery.isEmptyObject(uscWorkflowAuthContacts)) {
-            uscWorkflowAuthContacts.enableValidators(isProposerContactType);
+    setUscWorkflowFolderValidation = () => {
+        PageClassHelper.callUserControlFunctionSafe<uscWorkflowFolderSelRest>(this.uscWorkflowFolderSelRestId)
+            .done((instance) => {
+                instance.enableValidator($(`#${this.uscWorkflowFolderSelRestId}`).is(":visible"));
+                return;
+            });
+
+        let nodeSelectedFromUscWorkflowFolder: boolean;
+        PageClassHelper.callUserControlFunctionSafe<uscWorkflowFolderSelRest>(this.uscWorkflowFolderSelRestId)
+            .done((instance) => {
+                nodeSelectedFromUscWorkflowFolder = instance.getSelectedNode();
+                instance.enableTemplateValidator(!nodeSelectedFromUscWorkflowFolder);
+            });
+
+        if ($(`#${this.uscWorkflowFolderSelRestId}`).is(":visible") && !nodeSelectedFromUscWorkflowFolder) {
+            this._loadingPanel.hide(this.contentId);
+            this._btnConfirm.set_enabled(true);
+            return;
         }
     }
 
     hasCurrentWorkflowPropValueInt = (propName: string, intValue: number): boolean => {
-        let isProperty: boolean = false
+        let isProperty = false;
         if (this._workflowEvaluationProperties) {
-            let property: WorkflowEvaluationProperty[] = this._workflowEvaluationProperties.filter(function (item) {
-                return item.Name == propName;
+            const property: WorkflowEvaluationProperty[] = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name === propName;
             });
             if (property && property.length > 0 && property[0].ValueInt === intValue) {
                 isProperty = true;
@@ -837,6 +978,18 @@ class uscStartWorkflow {
         return isProperty;
     }
 
+    hasCurrentWorkflowPropValueBool = (propName: string): boolean => {
+        let isProperty = false;
+        if (this._workflowEvaluationProperties) {
+            const property: WorkflowEvaluationProperty[] = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name === propName;
+            });
+            if (property && property.length > 0 && property[0].ValueBoolean === true) {
+                isProperty = true;
+            }
+        }
+        return isProperty;
+    }
     /**
     * Metodo che determina se il workflow ha il destinatario di tipo "contatto"
     */
@@ -866,6 +1019,12 @@ class uscStartWorkflow {
     }
 
     /**
+    * Metodo che determina se il workflow richiede la costruzione del FascicleBuildModel
+    */
+    hasCurrentWorkflowFascicleBuildModel = (): boolean => {
+        return this.hasCurrentWorkflowPropValueBool(WorkflowPropertyHelper.DSW_PROPERTY_BUILD_MODEL_CREATE);
+    }
+    /**
     * Metodo che completa il modello per avviare un workflow e spedisce il comando di avvio
     */
     startWorkflow = () => {
@@ -878,26 +1037,49 @@ class uscStartWorkflow {
         this._workflowStartModel.Arguments = {};
         this._workflowStartModel.StartParameters = {};
 
-        let selectedWorkflowRepository: Telerik.Web.UI.RadComboBoxItem = this._rdlWorkflowRepository.get_selectedItem();
+        const currentTenantModelSelection: TenantModelSelection[] = JSON.parse(sessionStorage.getItem(uscTenantsSelRest.SESSION_TENANT_SELECTION_MODEL));
+
+        const selectedWorkflowRepository: Telerik.Web.UI.RadComboBoxItem = this._rdlWorkflowRepository.get_selectedItem();
+        if (!currentTenantModelSelection || currentTenantModelSelection.length === 0) {
+            this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, ArgumentType.PropertyString, this.tenantName);
+            this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, ArgumentType.PropertyGuid, this.tenantId);
+            this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, ArgumentType.PropertyGuid, this.tenantAOOId);
+        } else {
+            for (let i = 0; i < currentTenantModelSelection.length; i++) {
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, ArgumentType.PropertyString, currentTenantModelSelection[i].TenantName);
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, ArgumentType.PropertyGuid, currentTenantModelSelection[i].IdTenant);
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, ArgumentType.PropertyGuid, currentTenantModelSelection[i].IdTenantAOO);
+            }
+        }
         this._workflowStartModel.WorkflowName = selectedWorkflowRepository.get_text();
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, ArgumentType.PropertyString, this.tenantName);
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, ArgumentType.PropertyGuid, this.tenantId);
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME, ArgumentType.PropertyString, "DocSuite");
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION, ArgumentType.PropertyString, this.docSuiteVersion);
+        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_REFERENCE_UNIQUEID] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_REFERENCE_UNIQUEID, ArgumentType.PropertyGuid, sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_UNIQUEID));
+        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_REFERENCE_ENVIRONMENT] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_REFERENCE_ENVIRONMENT, ArgumentType.PropertyInt, this.dswEnvironment);
+        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ROLES] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_ROLES, ArgumentType.Json, sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_RECIPIENT_ROLES));
 
         //Priority
-        let rblPriorityVal: string = $(`input:radio[name='${this.rblPriorityId}']:checked`).val();
+        const rblPriorityVal: string = $(`input:radio[name='${this.rblPriorityId}']:checked`).val();
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PRIORITY] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PRIORITY, ArgumentType.PropertyInt, rblPriorityVal);
 
         //Date
-        let dueDateVal: string = this._dueDate.val();
+        const dueDateVal: string = this._dueDate.val();
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_DUEDATE] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_DUEDATE, ArgumentType.PropertyDate, dueDateVal);
+
+        if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_PROPOSER_ROLES)) {
+            const workflowProposerRoleModel: WorkflowRoleModel = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_PROPOSER_ROLES));
+            if (workflowProposerRoleModel) {
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_ROLE] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_ROLE, ArgumentType.Json, JSON.stringify(workflowProposerRoleModel));
+            }
+        }
+
+        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_FOLDER_SELECTED] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_FOLDER_SELECTED, ArgumentType.Json, sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_SELECTED_FASCICLE_FOLDER_ID));
 
         if (isProposerRole) {
             let workflowProposerRole: WorkflowRoleModel = <WorkflowRoleModel>{};
             let proposerRoleFromUscRole: Array<WorkflowRoleModel> = new Array<WorkflowRoleModel>();
             //settore proponente
-            proposerRoleFromUscRole = this.getUscRoles(this.uscProposerRoleId);
+            proposerRoleFromUscRole = this.getUscRoles(this.sourceProposerRoles);
             if (proposerRoleFromUscRole.length > 0) {
                 //ce ne sarà solo uno
                 proposerRoleFromUscRole.forEach(function (item) {
@@ -909,10 +1091,9 @@ class uscStartWorkflow {
                 this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_ROLE] = argumentProposer;
             }
         }
-
         if (isProposerContact) {
-            let uscProposerContact: UscContattiSel = <UscContattiSel>$("#".concat(this.uscProposerContactId)).data();
-            let contactsModel: ContactModel[] = JSON.parse(uscProposerContact.getContacts());
+            let uscProposerDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscProposerContactRestId)).data();
+            let contactsModel: ContactModel[] = uscProposerDomainUserContacts.getContacts();
             let accountName: string = "";
             let displayName: string = "";
             let emailAddress: string = "";
@@ -928,35 +1109,52 @@ class uscStartWorkflow {
                 EmailAddress: emailAddress,
                 Required: false
             };
-            let argumentProposer: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER, ArgumentType.Json, JSON.stringify(workflowAccountModel));
+            const argumentProposer: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER, ArgumentType.Json, JSON.stringify(workflowAccountModel));
             this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER] = argumentProposer;
         }
-
         if (isRecipientRole) {
             this.setStartWorkflowRecipientRoles()
         }
         if (isRecipientContact) {
             this.setStartWorkflowRecipientContacts();
         }
+        if (this.hasCurrentWorkflowFascicleBuildModel()) {
+            const fascicleBuildModel: FascicleBuildModel = {
+                WorkflowAutoComplete: true,
+                Fascicle: JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL)),
+                WorkflowName: selectedWorkflowRepository.get_text()
+            };
+            fascicleBuildModel.Fascicle.UniqueId = Guid.newGuid();
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID, fascicleBuildModel.Fascicle.UniqueId);
+            if (fascicleBuildModel.Fascicle.Category) {
+                fascicleBuildModel.Fascicle.Category.IdCategory = fascicleBuildModel.Fascicle.Category.EntityShortId;
+            }
+            if (fascicleBuildModel.Fascicle.MetadataRepository) {
+                fascicleBuildModel.Fascicle.MetadataRepository.Id = fascicleBuildModel.Fascicle.MetadataRepository.UniqueId;
+            }
 
-        let workflowReferenceModel: WorkflowReferenceModel = <WorkflowReferenceModel>{};
-        let env: number = parseInt(this.dswEnvironment);
-        workflowReferenceModel.ReferenceId = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_ID);
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(fascicleBuildModel));
+        }
+
+        const workflowReferenceModel: WorkflowReferenceModel = {} as WorkflowReferenceModel;
+        const env: number = parseInt(this.dswEnvironment);
+        workflowReferenceModel.ReferenceId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID);
         workflowReferenceModel.ReferenceType = DSWEnvironment[this.dswEnvironment];
         if (env >= 100) {
             workflowReferenceModel.ReferenceType = DSWEnvironment.UDS;
         }
-        workflowReferenceModel.ReferenceModel = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_MODEL);
-        workflowReferenceModel.Documents = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
-        workflowReferenceModel.Title = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_TITLE);
+        workflowReferenceModel.ReferenceModel = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL);
+        workflowReferenceModel.Documents = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
+        workflowReferenceModel.DocumentUnits = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENT_UNITS_REFERENCE_MODEL));
+        workflowReferenceModel.Title = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_TITLE);
         workflowReferenceModel.WorkflowReferenceType = WorkflowReferenceType.Json;
-        let argumentReferenceModel: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL, ArgumentType.Json, JSON.stringify(workflowReferenceModel));
+        const argumentReferenceModel: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL, ArgumentType.Json, JSON.stringify(workflowReferenceModel));
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL] = argumentReferenceModel;
 
         //oggetto
-        let argumentSubject: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT, ArgumentType.PropertyString, this._txtObject.get_textBoxValue());
+        const argumentSubject: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT, ArgumentType.PropertyString, this._txtObject.get_value());
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT] = argumentSubject;
-        let startMotivation: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION, ArgumentType.PropertyString, this._txtObject.get_textBoxValue());
+        const startMotivation: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION, ArgumentType.PropertyString, this._txtObject.get_value());
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION] = startMotivation;
 
         //evaluationProperties
@@ -965,39 +1163,45 @@ class uscStartWorkflow {
         }, this._workflowStartModel);
 
         if (env >= 100) {
-            let documentUnit: DocumentUnitModel = JSON.parse(workflowReferenceModel.ReferenceModel);
-            let idUDS: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_UDS_ID, ArgumentType.PropertyGuid, documentUnit.UniqueId);
+            const documentUnit: DocumentUnitModel = JSON.parse(workflowReferenceModel.ReferenceModel);
+            const idUDS: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_UDS_ID, ArgumentType.PropertyGuid, documentUnit.UniqueId);
             this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_UDS_ID] = idUDS;
-            let idUDSRepository: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID, ArgumentType.PropertyGuid, documentUnit.UDSRepository.UniqueId);
+            const idUDSRepository: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID, ArgumentType.PropertyGuid, documentUnit.UDSRepository.UniqueId);
             this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID] = idUDSRepository;
-            let udsModel: string = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_UDS_MODEL);
+            const udsModel: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_UDS_MODEL);
             if (udsModel) {
-                let dsw_p_Model: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_MODEL, ArgumentType.Json, udsModel);
+                const dsw_p_Model: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_MODEL, ArgumentType.Json, udsModel);
                 this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_MODEL] = dsw_p_Model;
             }
         }
 
-        let documentMetadataValues: string = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_DOCUMENT_METADATAS);
+        const documentMetadataValues: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENT_METADATAS);
         if (documentMetadataValues) {
             let documentMetadatas: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_GENERATE_DOCUMENT_METADATAS, ArgumentType.Json, documentMetadataValues);
             this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_GENERATE_DOCUMENT_METADATAS] = documentMetadatas;
         }
 
         if (this.templateCollaborationRequired) {
-            let templateCollaboration: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION, ArgumentType.PropertyGuid, this._ddlTemplateCollaboration.get_selectedItem().get_value());
+            const templateCollaboration: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION, ArgumentType.PropertyGuid, this._ddlTemplateCollaboration.get_selectedItem().get_value());
             this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION] = templateCollaboration;
         }
 
+        if (this.documentOriginalTypeRequired) {
+            const documentOriginal: string = $(`input:radio[name='${this.rdlCCDocumentId}']:checked`).val();
+            this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_DOCUMENT_ORIGINAL_TYPE_SELECTION] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_DOCUMENT_ORIGINAL_TYPE_SELECTION, ArgumentType.PropertyBoolean, (documentOriginal === "1"));
+        }
+
         if (this.chainTypeRequired) {
-            let enumHelper: EnumHelper = new EnumHelper();
+            const enumHelper: EnumHelper = new EnumHelper();
             workflowReferenceModel.Documents.forEach(function (item: WorkflowReferenceBiblosModel) {
                 let val: string = $(`input:radio[name='${item.ArchiveDocumentId}_chainTypes']:checked`).val();
                 item.ChainType = enumHelper.getChainType(val);
             });
         }
+
         if (this.redirectToCollaboration) {
-            sessionStorage.setItem(uscStartWorkflow.SESSION_KEY_WORKFLOW_REFERENCE_MODEL, JSON.stringify(workflowReferenceModel));
-            sessionStorage.setItem(uscStartWorkflow.SESSION_KEY_WORKFLOW_START_MODEL, JSON.stringify(this._workflowStartModel));
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_REFERENCE_MODEL, JSON.stringify(workflowReferenceModel));
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_START_MODEL, JSON.stringify(this._workflowStartModel));
             let defaultTemplateId: string
             let defaultTemplate: Array<WorkflowEvaluationProperty> = this._workflowEvaluationProperties.filter(function (item) {
                 return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_DEFAULT;
@@ -1014,8 +1218,8 @@ class uscStartWorkflow {
             return;
         }
         if (this.redirectToProtocol) {
-            sessionStorage.setItem(uscStartWorkflow.SESSION_KEY_WORKFLOW_REFERENCE_MODEL, JSON.stringify(workflowReferenceModel));
-            sessionStorage.setItem(uscStartWorkflow.SESSION_KEY_WORKFLOW_START_MODEL, JSON.stringify(this._workflowStartModel));
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_REFERENCE_MODEL, JSON.stringify(workflowReferenceModel));
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_START_MODEL, JSON.stringify(this._workflowStartModel));
             this._loadingPanel.hide(this.contentId);
             let result: AjaxModel = <AjaxModel>{};
             result.ActionName = "redirect";
@@ -1083,20 +1287,16 @@ class uscStartWorkflow {
         }
     }
 
-    getUscRoles = (uscId: string) => {
+    getUscRoles = (roles: RoleModel[]) => {
         let workflowRoles: Array<WorkflowRoleModel> = new Array<WorkflowRoleModel>();
-        let uscRoles: UscSettori = <UscSettori>$("#".concat(uscId)).data();
 
-        if (!jQuery.isEmptyObject(uscRoles)) {
-
-            let source: any = JSON.parse(uscRoles.getRoles());
-            if (source != null) {
-                for (let s of source) {
-                    let role: WorkflowRoleModel = <WorkflowRoleModel>{};
-                    role.IdRole = s.EntityShortId;
-                    role.TenantId = s.TenantId;
-                    workflowRoles.push(role);
-                }
+        let source: any = roles;
+        if (source != null) {
+            for (let s of source) {
+                let role: WorkflowRoleModel = <WorkflowRoleModel>{};
+                role.IdRole = s.EntityShortId;
+                role.TenantId = s.TenantId;
+                workflowRoles.push(role);
             }
         }
         return workflowRoles;
@@ -1104,15 +1304,15 @@ class uscStartWorkflow {
 
     setStartWorkflowRecipientRoles(): void {
         let workflowAuthorizedRoles: Array<WorkflowRoleModel> = new Array<WorkflowRoleModel>();
-        workflowAuthorizedRoles = this.getUscRoles(this.uscRecipientRoleId);
+        workflowAuthorizedRoles = this.getUscRoles(this.sourceRecipientRoles);
         let argumentRoles: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_ROLES, ArgumentType.Json, JSON.stringify(workflowAuthorizedRoles));
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ROLES] = argumentRoles;
     }
 
     setStartWorkflowRecipientContacts(): void {
-        let uscContacts: UscContattiSel = <UscContattiSel>$("#".concat(this.uscRecipientContactId)).data();
+        let uscDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscRecipientContactRestId)).data();
+        let contactsModel: ContactModel[] = uscDomainUserContacts.getContacts();
         let workflowAccounts: WorkflowAccountModel[] = [];
-        let contactsModel: ContactModel[] = JSON.parse(uscContacts.getContacts());
 
         for (let contactModel of contactsModel) {
             let workflowAccount: WorkflowAccountModel = {
@@ -1193,6 +1393,39 @@ class uscStartWorkflow {
 
     }
 
+    private clearSessionStorage(): void {
+        sessionStorage.removeItem(uscTenantsSelRest.SESSION_TENANT_SELECTION_MODEL);
+    }
+
+    private registerUscProposerRoleRestEventHandlers(): void {
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleProposerRestId)
+            .done((instance) => {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, (roleId: number) => {
+                    return $.Deferred<void>().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, (newAddedRoles: RoleModel[]) => {
+                    let existedRole: RoleModel;
+                    this.roleInsertId = [newAddedRoles[0].IdRole];
+                    this.sourceProposerRoles = newAddedRoles;
+                    return $.Deferred<RoleModel>().resolve(existedRole);
+                });
+            });
+    }
+
+    private registerUscRecipientRoleRestEventHandlers(): void {
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRecipientRestId)
+            .done((instance) => {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, (roleId: number) => {
+                    return $.Deferred<void>().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, (newAddedRoles: RoleModel[]) => {
+                    let existedRole: RoleModel;
+                    this.roleInsertId = [newAddedRoles[0].IdRole];
+                    this.sourceRecipientRoles = newAddedRoles;
+                    return $.Deferred<RoleModel>().resolve(existedRole);
+                });
+            });
+    }
 }
 
 export = uscStartWorkflow;

@@ -83,9 +83,22 @@
             function OnClientClose(sender, eventArgs) {
                 sender.remove_close(OnClientClose);
                 if (eventArgs.get_argument() !== null) {
+                    var currentArgument = sender.argument;
+                    var ajaxAction = 'ABSENTMANAGERS';
+                    if (currentArgument && isNaN(currentArgument)) {
+                        // Ricevuta stringa come argomento di chiusura
+                        var tokens = currentArgument.split("|");
+                        switch (tokens[0]) {
+                            case 'DOCUMENTUNITDRAFT':
+                                ajaxAction = 'DOCUMENTUNITDRAFT';
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                     ShowLoadingPanel()
                     var manager = $find("<%= AjaxManager.ClientID%>");
-                    manager.ajaxRequest('ABSENTMANAGERS' + '|' + eventArgs.get_argument());
+                    manager.ajaxRequest(ajaxAction + '|' + eventArgs.get_argument());
                 }
             }
 
@@ -189,6 +202,7 @@
     <telerik:RadWindowManager EnableViewState="False" ID="rwmDialogManager" runat="server">
         <Windows>
             <telerik:RadWindow ID="rwAbsentManager" OnClientClose="OnClientClose" runat="server" Title="Direttori assenti" />
+            <telerik:RadWindow ID="rwPrecompilerProtocol" OnClientClose="OnClientClose" runat="server" Title="Bozza protocollo" />
         </Windows>
     </telerik:RadWindowManager>
     <div runat="server" id="pnlFilterPanel">
@@ -209,8 +223,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="label" style="width: 20%">Tipologia documento/attività
-                    :
+                <td class="label" style="width: 20%">Tipologia documento/attività:
                 </td>
                 <td>
                     <telerik:RadDropDownList AppendDataBoundItems="true" AutoPostBack="True" CausesValidation="False" ID="ddlDocumentType" Width="350px" runat="server" />
@@ -222,6 +235,7 @@
                 </td>
                 <td>
                     <telerik:RadDropDownList AppendDataBoundItems="true" AutoPostBack="True" CausesValidation="False" Width="350px" ID="ddlSpecificDocumentType" runat="server" />
+                    <asp:RequiredFieldValidator ControlToValidate="ddlSpecificDocumentType" Display="Dynamic" ErrorMessage="Campo tipologia specifica documento obbligatorio" ID="rfvSpecificDocumentType" Enabled="false" runat="server" />
                 </td>
             </tr>
         </table>
@@ -265,8 +279,9 @@
         <%--Documenti Omissis--%>
         <table class="datatable" id="tblDocumentoOmissis" runat="server" style="display: none;">
             <tr>
-                <th colspan="2" style="text-align: left"><asp:Label ID="lblDocumentoOmissisCaption" runat="server" />
-                <asp:Label ID="lblDocumentoOmissis" runat="server" />
+                <th colspan="2" style="text-align: left">
+                    <asp:Label ID="lblDocumentoOmissisCaption" runat="server" />
+                    <asp:Label ID="lblDocumentoOmissis" runat="server" />
                 </th>
             </tr>
             <tr>
@@ -429,7 +444,7 @@
             <tr>
                 <th colspan="4">Dati</th>
             </tr>
-            <%-- Priorità --%>                        
+            <%-- Priorità --%>
             <tr id="tPriority" runat="server">
                 <td class="label" style="width: 20%">Priorità:</td>
                 <td>
@@ -490,6 +505,7 @@
                     <telerik:RadTextBox ID="txtObject" Rows="3" runat="server" TextMode="MultiLine" Width="100%">
                         <ClientEvents OnBlur="ChangeStrWithValidCharacterHandler" />
                     </telerik:RadTextBox>
+                    <asp:HiddenField ID="hdfLastTemplateObject" runat="server" />
                 </td>
             </tr>
             <%-- Note --%>
@@ -499,6 +515,7 @@
                     <telerik:RadTextBox ID="txtNote" runat="server" Rows="3" TextMode="MultiLine" Width="100%">
                         <ClientEvents OnBlur="ChangeStrWithValidCharacterHandler" />
                     </telerik:RadTextBox>
+                    <asp:HiddenField ID="hdfLastTemplateNote" runat="server" />
                 </td>
             </tr>
             <tr id="tEditCollaborationData" runat="server">
@@ -509,6 +526,16 @@
             </tr>
         </table>
     </div>
+    <asp:Panel ID="pnlDocumentUnitDraftEditor" runat="server" Visible="false">
+        <table class="datatable">
+            <tr>
+                <td class="label" style="width: 20%">
+                    <asp:Button ID="btnDocumentUnitDraftEditor" runat="server" Text="Bozza di protocollo" Width="150px"  CausesValidation="false"  />
+                </td>
+            </tr>
+        </table>
+    </asp:Panel>
+ 
     <asp:Panel ID="pnlUDS" runat="server">
         <table class="datatable">
             <tr>
@@ -521,7 +548,7 @@
             </tr>
             <tr>
                 <td>
-                    <usc:UDS runat="server" ID="uscUDS" HideParerPanel="True" ActionType="View" />
+                    <usc:UDS runat="server" ID="uscUDS" ActionType="View" />
                 </td>
             </tr>
         </table>
@@ -543,7 +570,7 @@
         <asp:Button ID="btnProtocolla" runat="server" Text="Protocolla" Visible="False" Width="120px" />
         <asp:Button ID="btnVisioneProtocolla" runat="server" Text="Protocolla" Visible="False" Width="120px" />
         <asp:Button ID="btnInoltra" runat="server" Text="Prosegui" Visible="False" Width="120px" />
-        <asp:Button ID="btnEditUDS" runat="server" Text="Modifica archivio" Visible="False" Width="120px" OnClientClick="ShowLoadingPanel();"  />
+        <asp:Button ID="btnEditUDS" runat="server" Text="Modifica archivio" Visible="False" Width="120px" OnClientClick="ShowLoadingPanel();" />
         <asp:Button ID="btnAbsence" runat="server" Text="Direttori assenti" Visible="false" Width="150px" />
         <asp:Button CausesValidation="False" ID="btnVersioning" runat="server" Text="Versioning" Visible="False" Width="120px" />
         <asp:Button CausesValidation="False" ID="btnRichiamo" runat="server" Text="Richiamo" Visible="False" Width="120px" />

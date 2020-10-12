@@ -93,8 +93,6 @@ Public Class ResolutionDisplayControllerTO
         _uscReslBar.ButtonDuplicate.Visible = False
         _uscReslBar.ButtonConfirmView.Visible = False
 
-        'Pulsante Richiedi Attestazione
-        '_uscReslBar.ButtonRequestStatement.Visible = DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso DocSuiteContext.IsFullApplication AndAlso CurrentResolutionRights.CanInsertInContainer AndAlso CurrentResolutionRights.IsExecutive
         _uscReslBar.ButtonLog.Visible = ResolutionEnv.IsLogEnabled AndAlso (CommonShared.HasGroupAdministratorRight() OrElse (If(String.IsNullOrEmpty(DocSuiteContext.Current.ProtocolEnv.EnvGroupLogView), False, CommonShared.HasGroupLogViewRight())))
 
         Dim currentResolution As Resolution = _uscReslDisplay.CurrentResolution

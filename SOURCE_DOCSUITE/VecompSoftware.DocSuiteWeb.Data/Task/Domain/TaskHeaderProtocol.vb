@@ -4,6 +4,10 @@
 
 #Region " Properties "
 
+    Public Overridable Property Year As Short?
+
+    Public Overridable Property Number As Integer?
+
     Public Overridable Property Header As TaskHeader
 
     Public Overridable Property Protocol As Protocol

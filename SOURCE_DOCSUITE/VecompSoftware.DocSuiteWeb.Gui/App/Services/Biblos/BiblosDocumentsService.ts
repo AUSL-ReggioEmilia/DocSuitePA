@@ -1,6 +1,6 @@
-﻿import ServiceConfiguration = require("../ServiceConfiguration");
-import ExceptionDTO = require("../../DTOs/ExceptionDTO");
-import BaseService = require("../BaseService");
+﻿import ServiceConfiguration = require("App/Services/ServiceConfiguration");
+import ExceptionDTO = require("App/DTOs/ExceptionDTO");
+import BaseService = require("App/Services/BaseService");
 
 class BiblosDocumentsService extends BaseService {
     _configuration: ServiceConfiguration;

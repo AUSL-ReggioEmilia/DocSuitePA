@@ -9,6 +9,10 @@ class DossierRoleModelMapper implements IMapper<DossierRoleModel>{
         let toMap: DossierRoleModel = <DossierRoleModel>{};
         toMap.UniqueId = source.UniqueId;
         toMap.AuthorizationRoleType = source.AuthorizationRoleType;
+        toMap.IsMaster = source.IsMaster;
+        toMap.EntityShortId = source.EntityShortId;
+        toMap.Dossier = source.Dossier;
+        toMap.Status = source.Status;
 
         return toMap;
     }

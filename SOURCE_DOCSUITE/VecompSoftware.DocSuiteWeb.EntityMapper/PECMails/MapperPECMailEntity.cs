@@ -1,9 +1,10 @@
-﻿using DSW = VecompSoftware.DocSuiteWeb.Data;
-using NHibernate;
+﻿using NHibernate;
 using System;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
 using VecompSoftware.DocSuiteWeb.EntityMapper.Commons;
+using VecompSoftware.DocSuiteWeb.EntityMapper.DocumentUnits;
+using DSW = VecompSoftware.DocSuiteWeb.Data;
 
 namespace VecompSoftware.DocSuiteWeb.EntityMapper.PECMails
 {
@@ -13,6 +14,7 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.PECMails
         private readonly MapperLocationEntity _mapperLocation;
         private readonly MapperPECMailBoxEntity _mapperPECMailBox;
         private readonly MapperPECMailAttachment _mapperPECMailAttachment;
+        private readonly MapperDocumentUnit _mapperDocumentUnit;
         #endregion
 
         #region [ Constructor ]
@@ -21,6 +23,7 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.PECMails
             _mapperLocation = new MapperLocationEntity();
             _mapperPECMailBox = new MapperPECMailBoxEntity();
             _mapperPECMailAttachment = new MapperPECMailAttachment();
+            _mapperDocumentUnit = new MapperDocumentUnit();
         }
         #endregion
 
@@ -37,64 +40,66 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.PECMails
                 throw new ArgumentException("Impossibile trasformare PECMail se l'entità non è inizializzata");
             }
 
-            PECMail apiPECMail = new PECMail();
-            apiPECMail.Checksum = entity.Checksum;
-            apiPECMail.DestinationNote = entity.DestinationNote;
-            apiPECMail.Direction = (PECMailDirection)entity.Direction;
-            apiPECMail.EntityId = entity.Id;
-            apiPECMail.Handler = entity.Handler;
-            apiPECMail.HeaderChecksum = entity.HeaderChecksum;
-            apiPECMail.IDAttachments = entity.IDAttachments;
-            apiPECMail.IDDaticert = entity.IDDaticert;
-            apiPECMail.IDEnvelope = entity.IDEnvelope;
-            apiPECMail.IDMailContent = entity.IDMailContent;
-            apiPECMail.IDPostacert = entity.IDPostacert;
-            apiPECMail.IDSegnatura = entity.IDSegnatura;
-            apiPECMail.IDSmime = entity.IDSmime;
-            apiPECMail.IdUDS = entity.IdUDS;
-            apiPECMail.IsActive = (PECMailActiveType)entity.IsActive;
-            apiPECMail.IsDestinated = entity.IsDestinated;
-            apiPECMail.IsToForward = entity.IsToForward;
-            apiPECMail.IsValidForInterop = entity.IsValidForInterop;
-            apiPECMail.LastChangedDate = entity.LastChangedDate;
-            apiPECMail.LastChangedUser = entity.LastChangedUser;
-            apiPECMail.MailBody = entity.MailBody;
-            apiPECMail.MailContent = entity.MailContent;
-            apiPECMail.MailDate = entity.MailDate;
-            apiPECMail.MailError = entity.MailError;
-            apiPECMail.MailPriority = (PECMailPriority?)entity.MailPriority;
-            apiPECMail.MailRecipients = entity.MailRecipients;
-            apiPECMail.MailRecipientsCc = entity.MailRecipientsCc;
-            apiPECMail.MailSenders = entity.MailSenders;
-            apiPECMail.MailStatus = entity.MailStatus;
-            apiPECMail.MailSubject = entity.MailSubject;
-            apiPECMail.MailType = entity.MailType;
-            apiPECMail.MailUID = entity.MailUID;
-            apiPECMail.MessageID = entity.MessageID;
-            apiPECMail.MessaggioRitornoName = entity.MessaggioRitornoName;
-            apiPECMail.MessaggioRitornoStream = entity.MessaggioRitornoStream;
-            apiPECMail.Multiple = entity.Multiple;
-            apiPECMail.MultipleType = (PECMailMultipleType?)entity.MultipleType;
-            apiPECMail.Number = entity.Number;
-            apiPECMail.OriginalRecipient = entity.OriginalRecipient;
-            apiPECMail.PECType = (PECType?)entity.PECType;
-            apiPECMail.ProcessStatus = (PECMailProcessStatus?)entity.ProcessStatus;
-            apiPECMail.ReceivedAsCc = entity.ReceivedAsCc;
-            apiPECMail.RecordedInDocSuite = Convert.ToByte(entity.RecordedInDocSuite);
-            apiPECMail.RegistrationDate = entity.RegistrationDate;
-            apiPECMail.RegistrationUser = entity.RegistrationUser;
-            apiPECMail.Segnatura = entity.Segnatura;
-            apiPECMail.Size = entity.Size;
-            apiPECMail.SplittedFrom = entity.SplittedFrom;
-            apiPECMail.Timestamp = entity.Timestamp;
-            apiPECMail.UniqueId = entity.UniqueId;
-            apiPECMail.XRiferimentoMessageID = entity.XRiferimentoMessageID;
-            apiPECMail.XTrasporto = entity.XTrasporto;
-            apiPECMail.Year = entity.Year;
-            apiPECMail.InvoiceStatus = (InvoiceStatus?)entity.InvoiceStatus;
-            apiPECMail.Location = entity.Location != null ? _mapperLocation.MappingDTO(entity.Location) : null;
-            apiPECMail.PECMailBox = entity.MailBox != null ? _mapperPECMailBox.MappingDTO(entity.MailBox) : null;
-            apiPECMail.Attachments = entity.Attachments.Select(f => _mapperPECMailAttachment.MappingDTO(f)).ToList();
+            PECMail apiPECMail = new PECMail
+            {
+                Checksum = entity.Checksum,
+                DestinationNote = entity.DestinationNote,
+                Direction = (PECMailDirection)entity.Direction,
+                EntityId = entity.Id,
+                Handler = entity.Handler,
+                HeaderChecksum = entity.HeaderChecksum,
+                IDAttachments = entity.IDAttachments,
+                IDDaticert = entity.IDDaticert,
+                IDEnvelope = entity.IDEnvelope,
+                IDMailContent = entity.IDMailContent,
+                IDPostacert = entity.IDPostacert,
+                IDSegnatura = entity.IDSegnatura,
+                IDSmime = entity.IDSmime,
+                IsActive = (PECMailActiveType)entity.IsActive,
+                IsDestinated = entity.IsDestinated,
+                IsToForward = entity.IsToForward,
+                IsValidForInterop = entity.IsValidForInterop,
+                LastChangedDate = entity.LastChangedDate,
+                LastChangedUser = entity.LastChangedUser,
+                MailBody = entity.MailBody,
+                MailContent = entity.MailContent,
+                MailDate = entity.MailDate,
+                MailError = entity.MailError,
+                MailPriority = (PECMailPriority?)entity.MailPriority,
+                MailRecipients = entity.MailRecipients,
+                MailRecipientsCc = entity.MailRecipientsCc,
+                MailSenders = entity.MailSenders,
+                MailStatus = entity.MailStatus,
+                MailSubject = entity.MailSubject,
+                MailType = entity.MailType,
+                MailUID = entity.MailUID,
+                MessageID = entity.MessageID,
+                MessaggioRitornoName = entity.MessaggioRitornoName,
+                MessaggioRitornoStream = entity.MessaggioRitornoStream,
+                Multiple = entity.Multiple,
+                MultipleType = (PECMailMultipleType?)entity.MultipleType,
+                Number = entity.Number,
+                OriginalRecipient = entity.OriginalRecipient,
+                PECType = (PECType?)entity.PECType,
+                ProcessStatus = (PECMailProcessStatus?)entity.ProcessStatus,
+                ReceivedAsCc = entity.ReceivedAsCc,
+                RecordedInDocSuite = Convert.ToByte(entity.RecordedInDocSuite),
+                RegistrationDate = entity.RegistrationDate,
+                RegistrationUser = entity.RegistrationUser,
+                Segnatura = entity.Segnatura,
+                Size = entity.Size,
+                SplittedFrom = entity.SplittedFrom,
+                Timestamp = entity.Timestamp,
+                UniqueId = entity.UniqueId,
+                XRiferimentoMessageID = entity.XRiferimentoMessageID,
+                XTrasporto = entity.XTrasporto,
+                Year = entity.Year,
+                InvoiceStatus = (InvoiceStatus?)entity.InvoiceStatus,
+                Location = entity.Location != null ? _mapperLocation.MappingDTO(entity.Location) : null,
+                DocumentUnit = entity.DocumentUnit != null ? _mapperDocumentUnit.MappingDTO(entity.DocumentUnit) : null,
+                PECMailBox = entity.MailBox != null ? _mapperPECMailBox.MappingDTO(entity.MailBox) : null,
+                Attachments = entity.Attachments.Select(f => _mapperPECMailAttachment.MappingDTO(f)).ToList()
+            };
             return apiPECMail;
         }
         #endregion

@@ -62,6 +62,11 @@ Public Class DeskSummary
             Return String.Format(DESK_SUMMARY_PATH, CurrentDeskId)
         End Get
     End Property
+    Public ReadOnly Property SignAction As String Implements ISignMultipleDocuments.SignAction
+        Get
+            Return String.Empty
+        End Get
+    End Property
 #End Region
 
 #Region "Events"
@@ -447,7 +452,7 @@ Public Class DeskSummary
         'Inizializzo user control documenti
         Dim documentDtos As IList(Of DeskDocumentResult) = New List(Of DeskDocumentResult)
         For Each deskDocument As DeskDocument In CurrentDesk.DeskDocuments.Where(Function(x) x.IsActive = 0)
-            Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentDesk.Container.DeskLocation.DocumentServer, deskDocument.IdDocument.Value)
+            Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(deskDocument.IdDocument.Value)
             If Not docInfos.Any() Then
                 Exit Sub
             End If

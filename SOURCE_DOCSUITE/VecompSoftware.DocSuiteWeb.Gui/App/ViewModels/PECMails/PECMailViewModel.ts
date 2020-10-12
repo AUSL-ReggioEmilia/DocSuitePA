@@ -50,8 +50,7 @@ class PECMailViewModel {
     ReceivedAsCc?: boolean;
     Size?: number;
     MultipleType?: number;
-    DocumentUnitType?: number;
-    IdUDS?: string;
+    IdDocumentUnit?: string;
     InvoiceStatus: string;
     InvoiceStatusDescription: string;
     EntityId: number;

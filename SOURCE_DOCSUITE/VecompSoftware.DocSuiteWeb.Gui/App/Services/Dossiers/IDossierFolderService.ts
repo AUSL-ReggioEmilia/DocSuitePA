@@ -10,6 +10,7 @@ interface IDossierFolderService {
     updateDossierFolder(dossierFolder: DossierFolderModel, updateAction?: UpdateActionType, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void;
     getDossierFolder(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void;
     getFullDossierFolder(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void;
+    getAllParentsOfFascicle(idDossier: string, idFascicle: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void;
 }
 
 export = IDossierFolderService;

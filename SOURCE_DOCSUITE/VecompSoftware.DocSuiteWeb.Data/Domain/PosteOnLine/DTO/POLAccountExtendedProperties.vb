@@ -1,6 +1,8 @@
 ﻿Imports Newtonsoft.Json
 
 Public Class POLAccountExtendedProperties
+    <JsonProperty("SercAuth")>
+    Public Property SercAuth As PolAccountSercAuth
 
     <JsonProperty("SercExtra")>
     Public Property SercExtra As PolAccountSercExtendedProperties

@@ -35,14 +35,6 @@ Public Class NHProtocolFinder
             Return Criteria.List(Of Protocol)()
         End Using
     End Function
-    Public Overridable Function ListKeys() As IList(Of YearNumberCompositeKey)
-        Using session As ISession = NHibernateSessionManager.Instance.OpenSession("ProtDB")
-            Criteria = session.CreateCriteria(Of Protocol)("P")
-            Decorate()
-            Criteria.SetProjection(Projections.Property("P.Id"))
-            Return Criteria.List(Of YearNumberCompositeKey)()
-        End Using
-    End Function
 
     Public Overridable Function RowCount() As Integer
         Using session As ISession = NHibernateSessionManager.Instance.OpenSession("ProtDB")

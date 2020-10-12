@@ -8,8 +8,6 @@ Public Class MessageAttachment
 
     Public Overridable Property Message As DSWMessage
 
-    Public Overridable Property Server As String
-
     Public Overridable Property Archive As String
 
     Public Overridable Property ChainId As Integer
@@ -26,8 +24,7 @@ Public Class MessageAttachment
 
     End Sub
 
-    Public Sub New(server As String, archive As String, chainId As Integer, documentEnum As Integer?, extension As String)
-        Me.Server = server
+    Public Sub New(archive As String, chainId As Integer, documentEnum As Integer?, extension As String)
         Me.Archive = archive
         Me.ChainId = chainId
         Me.DocumentEnum = documentEnum

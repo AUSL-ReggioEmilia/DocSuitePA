@@ -99,7 +99,7 @@
                         ID="rcbContainer"
                         ItemRequestTimeout="500"
                         runat="server"
-                        Width="250px"
+                        Width="500px"
                         Style="display: none;"
                         OnItemsRequested="RcbContainer_ItemsRequested" />
                     <input type="hidden" id="rcbContainerValue" runat="server" value="" />

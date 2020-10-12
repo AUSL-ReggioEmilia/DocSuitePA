@@ -33,6 +33,16 @@ Public Class FascMoveItems
             Return _miscellaneaLocation
         End Get
     End Property
+    Protected ReadOnly Property DestinationFascicleId As Guid?
+        Get
+            Return GetKeyValueOrDefault(Of Guid?)("DestinationFascicleId", Nothing)
+        End Get
+    End Property
+    Protected ReadOnly Property MoveToFascicle As Boolean?
+        Get
+            Return GetKeyValueOrDefault(Of Boolean?)("MoveToFascicle", Nothing)
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
@@ -83,7 +93,7 @@ Public Class FascMoveItems
     End Sub
 
     Private Function MoveMiscellaneaDocument(idDocument As Guid, idFascicleFolderChain As Guid?) As Guid
-        Dim document As BiblosDocumentInfo = New BiblosDocumentInfo(MiscellaneaLocation.DocumentServer, idDocument)
+        Dim document As BiblosDocumentInfo = New BiblosDocumentInfo(idDocument)
         idFascicleFolderChain = AddMiscellaneaDocumentToFolder(document, idFascicleFolderChain)
         RemoveMiscellaneaDocumentFromFolder(idDocument)
         Return idFascicleFolderChain.Value
@@ -94,12 +104,12 @@ Public Class FascMoveItems
             Throw New Exception("Nessun location presente per gli inserti di Fascicolo. Errore di configurazione, contattatare Assistenza.")
         End If
 
-        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(MiscellaneaLocation.DocumentServer, MiscellaneaLocation.ProtBiblosDSDB, idFascicleFolderChain)
+        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(MiscellaneaLocation.ProtBiblosDSDB, idFascicleFolderChain)
         Return storedBiblosDocumentInfo.ChainId
     End Function
 
     Private Sub RemoveMiscellaneaDocumentFromFolder(idDocument As Guid)
-        Service.DetachDocument(MiscellaneaLocation.DocumentServer, idDocument)
+        Service.DetachDocument(idDocument)
     End Sub
 #End Region
 

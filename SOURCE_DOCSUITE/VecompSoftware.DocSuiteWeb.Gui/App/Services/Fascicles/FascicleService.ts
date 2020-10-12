@@ -32,17 +32,21 @@ class FascicleService extends BaseService implements IFascicleService {
      * @param callback
      * @param error
      */
-    insertFascicle(model: FascicleModel, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    insertFascicle(model: FascicleModel, actionType?: InsertActionType, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.WebAPIUrl;
-        switch (model.FascicleType) {
-            case FascicleType.Activity:
-                url = url.concat("?actionType=", InsertActionType.InsertActivityFascicle.toString())
-                break;
-            case FascicleType.Period:
-                url = url.concat("?actionType=", InsertActionType.InsertPeriodicFascicle.toString())
-                break;
-            case FascicleType.Procedure:
-                break;
+        if (!actionType) {
+            switch (model.FascicleType) {
+                case FascicleType.Activity:
+                    url = url.concat("?actionType=", InsertActionType.InsertActivityFascicle.toString())
+                    break;
+                case FascicleType.Period:
+                    url = url.concat("?actionType=", InsertActionType.InsertPeriodicFascicle.toString())
+                    break;
+                case FascicleType.Procedure:
+                    break;
+            }
+        } else {
+            url = url.concat("?actionType=", actionType.toString())
         }
         this.postRequest(url, JSON.stringify(model), callback, error);
     }
@@ -55,7 +59,7 @@ class FascicleService extends BaseService implements IFascicleService {
      */
     updateFascicle(model: FascicleModel, actionType?: UpdateActionType, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.WebAPIUrl;
-        if (model.FascicleType == FascicleType.Activity) {
+        if (model.FascicleType == FascicleType.Activity && actionType !== UpdateActionType.ChangeFascicleType) {
             actionType = UpdateActionType.ActivityFascicleUpdate;
         }
         if (actionType) {
@@ -101,7 +105,7 @@ class FascicleService extends BaseService implements IFascicleService {
      */
     getFascicle(id: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        let data: string = "$filter=UniqueId eq ".concat(id, '&$expand=Category,Container,Contacts,FascicleDocumentUnits,FascicleDocuments,FascicleRoles($expand=Role)');
+        let data: string = `$filter=UniqueId eq ${id}&$expand=Category($expand=CategoryFascicles($expand=CategoryFascicleRights)),Container,Contacts,FascicleDocumentUnits,FascicleDocuments,MetadataRepository,DossierFolders,FascicleRoles($expand=Role($expand=Father))`;
         this.getRequest(url, data,
             (response: any) => {
                 if (callback) {
@@ -232,8 +236,8 @@ class FascicleService extends BaseService implements IFascicleService {
             error);
     }
 
-    getFascicleByCategory(idCategory: number, name: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.concat("/FascicleService.GetFasciclesByCategory(idCategory=", idCategory.toString(), ",name='", name, "')");
+    getFascicleByCategory(idCategory: number, name: string, hasProcess?: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}/FascicleService.GetFasciclesByCategory(idCategory=${idCategory}, name='${name}', hasProcess=${hasProcess})`;
         this.getRequest(url, null,
             (response: any) => {
                 if (callback) {
@@ -250,7 +254,7 @@ class FascicleService extends BaseService implements IFascicleService {
         )
     }
 
-             hasInsertRight(fascicleType: FascicleType, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    hasInsertRight(fascicleType: FascicleType, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl.concat(`/FascicleService.HasInsertRight(fascicleType=VecompSoftware.DocSuiteWeb.Entity.Fascicles.FascicleType'${FascicleType[fascicleType]}')`);
         this.getRequest(url, null,
             (response: any) => {
@@ -325,18 +329,29 @@ class FascicleService extends BaseService implements IFascicleService {
             }, error);
     }
 
-    getDossiersById(uniqueId: string, onlyProcess: boolean, exludeProcess: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl;
-        let data: string = `$expand=DossierFolders($expand=Dossier)&$filter=UniqueId eq ${uniqueId}`;
-        if (onlyProcess && onlyProcess === true) {
-            data = `${data} and DossierFolders/any(d:d/Dossier/Processes/any())`
-        }
-        if (exludeProcess && exludeProcess === true) {
-            data = `${data} and not DossierFolders/any(d:d/Dossier/Processes/any())`
-        }
-        this.getRequest(url, data,
+    getAuthorizedFasciclesFromDocumentUnit(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat("/FascicleService.AuthorizedFasciclesFromDocumentUnit(uniqueIdDocumentUnit=", uniqueId, ")");
+        this.getRequest(url, null,
             (response: any) => {
                 if (callback) {
+                    let instances: Array<FascicleModel> = new Array<FascicleModel>();
+                    let mapper = new FascicleModelMapper();
+                    instances = mapper.MapCollection(response.value);
+                    callback(instances);
+                }
+            }, error);
+    }
+
+    countAuthorizedFasciclesFromDocumentUnit(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat("/FascicleService.CountAuthorizedFasciclesFromDocumentUnit(uniqueIdDocumentUnit=", uniqueId, ")");
+        this.getRequest(url, null,
+            (response: any) => {
+                if (callback) {
+                    if (!response) {
+                        callback(undefined);
+                        return;
+                    }
+
                     callback(response.value);
                 }
             }, error);

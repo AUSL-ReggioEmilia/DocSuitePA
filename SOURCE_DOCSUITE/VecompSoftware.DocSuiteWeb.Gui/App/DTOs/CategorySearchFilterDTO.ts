@@ -13,6 +13,7 @@ interface CategorySearchFilterDTO {
     FullCode: string;
     FascicleFilterEnabled?: boolean;
     ParentAllDescendants?: boolean;
+    IdTenantAOO: string;
 }
 
 export = CategorySearchFilterDTO;

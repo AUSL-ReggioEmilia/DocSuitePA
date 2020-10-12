@@ -6,6 +6,13 @@ import ContainerService = require('App/Services/Commons/ContainerService');
 import ContainerModel = require('App/Models/Commons/ContainerModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import UscMetadataRepositorySel = require('UserControl/uscMetadataRepositorySel');
+import MetadataFinderViewModel = require("App/ViewModels/Metadata/MetadataFinderViewModel");
+import DossierType = require("App/Models/Dossiers/DossierType");
+import EnumHelper = require('App/Helpers/EnumHelper');
+import uscCategoryRest = require('UserControl/uscCategoryRest');
+import CategoryModel = require("App/Models/Commons/CategoryModel");
+import DossierStatus = require("App/Models/Dossiers/DossierStatus");
+import SessionStorageKeysHelper = require("App/Helpers/SessionStorageKeysHelper");
 
 class DossierRicerca extends DossierBase {
 
@@ -23,20 +30,24 @@ class DossierRicerca extends DossierBase {
     ajaxLoadingPanelId: string;
     searchTableId: string;
     btnCleanId: string;
-    dossierStatusRowId: string;
     hasTxtYearDefaultValue: boolean;
     uscMetadataRepositorySelId: string;
     metadataRepositoryEnabled: boolean;
-    rowMetadataValueId: string;
     rowMetadataRepositoryId: string;
-    txtMetadataValueId: string;
+    currentTenantId: string;
+    metadataTableId: string;
+    isWindowPopupEnable: boolean;
+    uscCategoryRestId: string;
+    rcbDossierTypeId: string;
+    rblDossierStatusId: string;
+    dossierStatusEnabled: boolean;
+    dossierStatusRowId: string;
 
     private _btnSearch: Telerik.Web.UI.RadButton;
     private _txtYear: Telerik.Web.UI.RadTextBox;
     private _txtNumber: Telerik.Web.UI.RadTextBox;
     private _txtSubject: Telerik.Web.UI.RadTextBox;
     private _txtNote: Telerik.Web.UI.RadTextBox;
-    private _txtMetadataValue: Telerik.Web.UI.RadTextBox;
     private _rdlContainer: Telerik.Web.UI.RadDropDownList;
     private _rdpStartDateFrom: Telerik.Web.UI.RadDatePicker;
     private _rdpStartDateTo: Telerik.Web.UI.RadDatePicker;
@@ -46,9 +57,9 @@ class DossierRicerca extends DossierBase {
     private _containerService: ContainerService;
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _btnClean: Telerik.Web.UI.RadButton;
-    private _dossierStatusRow: JQuery;
     private _rowMetadataRepository: JQuery;
-    private _rowMetadataValue: JQuery;
+    private _rcbDossierType: Telerik.Web.UI.RadComboBox;
+    private _enumHelper: EnumHelper;
 
     /**
  * Costruttore
@@ -66,6 +77,7 @@ class DossierRicerca extends DossierBase {
     * Initialize
     */
     initialize() {
+        this._enumHelper = new EnumHelper();
         this._btnSearch = <Telerik.Web.UI.RadButton>$find(this.btnSearchId);
         this._btnSearch.add_clicking(this.btnSearch_onClick);
         this._btnClean = <Telerik.Web.UI.RadButton>$find(this.btnCleanId);
@@ -74,29 +86,26 @@ class DossierRicerca extends DossierBase {
         this._txtNumber = <Telerik.Web.UI.RadTextBox>$find(this.txtNumberId);
         this._txtSubject = <Telerik.Web.UI.RadTextBox>$find(this.txtSubjectId);
         this._txtNote = <Telerik.Web.UI.RadTextBox>$find(this.txtNoteId);
-        this._txtMetadataValue = <Telerik.Web.UI.RadTextBox>$find(this.txtMetadataValueId);
         this._rdlContainer = <Telerik.Web.UI.RadDropDownList>$find(this.rdlContainerId);
         this._rdpEndDateFrom = <Telerik.Web.UI.RadDatePicker>$find(this.rdpEndDateFromId);
         this._rdpEndDateTo = <Telerik.Web.UI.RadDatePicker>$find(this.rdpEndDateToId);
         this._rdpStartDateFrom = <Telerik.Web.UI.RadDatePicker>$find(this.rdpStartDateFromId);
         this._rdpStartDateTo = <Telerik.Web.UI.RadDatePicker>$find(this.rdpStartDateToId);
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
+        this._rcbDossierType = <Telerik.Web.UI.RadComboBox>$find(this.rcbDossierTypeId);
+
         let containerConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Container");
         this._containerService = new ContainerService(containerConfiguration);
         this._loadingPanel.show(this.searchTableId);
         this._btnSearch.set_enabled(false);
         this._btnClean.set_enabled(false);
-        this._dossierStatusRow = $("#".concat(this.dossierStatusRowId));
-        this._dossierStatusRow.hide();
         this._rowMetadataRepository = $("#".concat(this.rowMetadataRepositoryId));
-        this._rowMetadataRepository.hide();
-        this._rowMetadataValue = $("#".concat(this.rowMetadataValueId));
-        this._rowMetadataValue.hide();
+        $(`#${this.metadataTableId}`).hide();
         this.loadContainers();
+        this.populateDossierTypeComboBox();
 
         if (this.metadataRepositoryEnabled) {
-            this._rowMetadataRepository.show();
-            this._rowMetadataValue.show();
+            $(`#${this.metadataTableId}`).show();
         }
     }
 
@@ -111,27 +120,26 @@ class DossierRicerca extends DossierBase {
      * @param args
      */
 
-    btnSearch_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnSearch_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
 
         let searchDTO: DossierSearchFilterDTO = new DossierSearchFilterDTO();
         let yearFilter: string = this._txtYear.get_value();
         let numberFilter: string = this._txtNumber.get_value();
         let subjectFilter: string = this._txtSubject.get_value();
         let noteFilter: string = this._txtNote.get_value();
-        let metadataValueFilter: string = this._txtMetadataValue.get_value();
-        let startDateFromFilter: string = "";
+        let startDateFromFilter: string = null;
         if (this._rdpStartDateFrom.get_selectedDate()) {
             startDateFromFilter = this._rdpStartDateFrom.get_selectedDate().format("yyyy-MM-dd").toString();
         }
-        let startDateToFilter: string = "";
+        let startDateToFilter: string = null;
         if (this._rdpStartDateTo.get_selectedDate()) {
             startDateToFilter = this._rdpStartDateTo.get_selectedDate().format("yyyy-MM-dd").toString();
         }
-        let endDateFromFilter: string = "";
+        let endDateFromFilter: string = null;
         if (this._rdpEndDateFrom.get_selectedDate()) {
             endDateFromFilter = this._rdpEndDateFrom.get_selectedDate().format("yyyy-MM-dd").toString();
         }
-        let endDateToFilter: string = ""
+        let endDateToFilter: string = null;
         if (this._rdpEndDateTo.get_selectedDate()) {
             endDateToFilter = this._rdpEndDateTo.get_selectedDate().format("yyyy-MM-dd").toString();
         }
@@ -143,25 +151,54 @@ class DossierRicerca extends DossierBase {
 
         let metadataRepositoryId: string = "";
         let uscMetadataRepositorySel: UscMetadataRepositorySel = <UscMetadataRepositorySel>$("#".concat(this.uscMetadataRepositorySelId)).data();
-        if (!jQuery.isEmptyObject(uscMetadataRepositorySel)) {
+        if (!jQuery.isEmptyObject(uscMetadataRepositorySel) && this.metadataRepositoryEnabled) {
             metadataRepositoryId = uscMetadataRepositorySel.getSelectedMetadataRepositoryId();
+            let [metadataValue, metadataFinderModels, metadataValuesAreValid]: [string, MetadataFinderViewModel[], boolean] = uscMetadataRepositorySel.getMetadataFilterValues();
+            searchDTO.MetadataValue = metadataValue;
+            searchDTO.MetadataValues = metadataFinderModels;
+
+            if (!metadataValuesAreValid) {
+                alert("Alcuni valori di metadati non sono validi");
+                return;
+            }
         }
 
-        searchDTO.year = yearFilter ? +yearFilter : null;
-        searchDTO.number = numberFilter ? +numberFilter : null;
-        searchDTO.subject = subjectFilter;
-        searchDTO.note = noteFilter;
-        searchDTO.idContainer = containerFilter ? +containerFilter : null;
-        searchDTO.endDateFrom = endDateFromFilter;
-        searchDTO.endDateTo = endDateToFilter;
-        searchDTO.startDateFrom = startDateFromFilter;
-        searchDTO.startDateTo = startDateToFilter;
-        searchDTO.idMetadataRepository = metadataRepositoryId ? metadataRepositoryId : null;
-        searchDTO.metadataValue = metadataValueFilter;
+        searchDTO.Year = yearFilter ? +yearFilter : null;
+        searchDTO.Number = numberFilter ? +numberFilter : null;
+        searchDTO.Subject = subjectFilter;
+        searchDTO.Note = noteFilter;
+        searchDTO.IdContainer = containerFilter ? +containerFilter : null;
+        searchDTO.EndDateFrom = endDateFromFilter;
+        searchDTO.EndDateTo = endDateToFilter;
+        searchDTO.StartDateFrom = startDateFromFilter;
+        searchDTO.StartDateTo = startDateToFilter;
+        searchDTO.IdMetadataRepository = metadataRepositoryId ? metadataRepositoryId : null;
 
-        sessionStorage.setItem("DossierSearch", JSON.stringify(searchDTO));
+        let uscCategoryRest: uscCategoryRest = <uscCategoryRest>$(`#${this.uscCategoryRestId}`).data();
+        let category: CategoryModel = uscCategoryRest.getSelectedCategory();
+        searchDTO.IdCategory = category ? category.EntityShortId : null;
 
-        window.location.href = "../Dossiers/DossierRisultati.aspx?Type=Dossier";
+        let dossierType: string = this._rcbDossierType.get_selectedItem().get_value();
+        searchDTO.DossierType = dossierType ? dossierType : null;
+
+        if (!this.dossierStatusEnabled) {
+            searchDTO.Status = DossierStatus.Open.toString();
+        }
+        else {
+            let checkedStatus: string = $(`#${this.rblDossierStatusId} input:checked`).val();
+            searchDTO.Status = checkedStatus !== "All" ? checkedStatus : null;
+        }
+
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIER_SEARCH, JSON.stringify(searchDTO));
+
+        let url: string = "../Dossiers/DossierRisultati.aspx?Type=Dossier";
+        if (this.isWindowPopupEnable) {
+            url = `${url}&IsWindowPopupEnable=True`;
+        }
+        if (this.dossierStatusEnabled) {
+            url = `${url}&DossierStatusEnabled=True`;
+        }
+        window.location.href = url;
 
     }
 
@@ -171,7 +208,7 @@ class DossierRicerca extends DossierBase {
    * @param args
    */
 
-    btnClean_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnClean_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.cleanSearchFilters();
     }
 
@@ -181,18 +218,17 @@ class DossierRicerca extends DossierBase {
     */
 
     setLastSearchFilter = () => {
-        let dossierLastSearch: string = sessionStorage.getItem("DossierSearch");
+        let dossierLastSearch: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIER_SEARCH);
         if (this.hasTxtYearDefaultValue == true) {
             this._txtYear.set_value(new Date().getFullYear().toString());
         }
         if (dossierLastSearch) {
             let lastsearchFilter: DossierSearchFilterDTO = <DossierSearchFilterDTO>JSON.parse(dossierLastSearch);
-            this._txtYear.set_value(lastsearchFilter.year ? lastsearchFilter.year.toString() : null);
-            this._txtNumber.set_value(lastsearchFilter.number ? lastsearchFilter.number.toString() : null);
-            this._txtSubject.set_value(lastsearchFilter.subject);
-            this._txtMetadataValue.set_value(lastsearchFilter.metadataValue);
-            if (lastsearchFilter.idContainer) {
-                let selectedItem: Telerik.Web.UI.DropDownListItem = this._rdlContainer.findItemByValue(lastsearchFilter.idContainer.toString());
+            this._txtYear.set_value(lastsearchFilter.Year ? lastsearchFilter.Year.toString() : null);
+            this._txtNumber.set_value(lastsearchFilter.Number ? lastsearchFilter.Number.toString() : null);
+            this._txtSubject.set_value(lastsearchFilter.Subject);
+            if (lastsearchFilter.IdContainer) {
+                let selectedItem: Telerik.Web.UI.DropDownListItem = this._rdlContainer.findItemByValue(lastsearchFilter.IdContainer.toString());
                 selectedItem.set_selected(true);
                 this._rdlContainer.trackChanges();
             }
@@ -200,15 +236,16 @@ class DossierRicerca extends DossierBase {
     }
 
     loadContainers = () => {
-        this._containerService.getAnyDossierAuthorizedContainers((data: any) => {
-            if (!data) return;
-            let containers: ContainerModel[] = <ContainerModel[]>data;
-            this.addContainers(containers, this._rdlContainer);
-            this.setLastSearchFilter();
-            this._loadingPanel.hide(this.searchTableId);
-            this._btnSearch.set_enabled(true);
-            this._btnClean.set_enabled(true);
-        },
+        this._containerService.getAnyDossierAuthorizedContainers(this.currentTenantId,
+            (data: any) => {
+                if (!data) return;
+                let containers: ContainerModel[] = <ContainerModel[]>data;
+                this.addContainers(containers, this._rdlContainer);
+                this.setLastSearchFilter();
+                this._loadingPanel.hide(this.searchTableId);
+                this._btnSearch.set_enabled(true);
+                this._btnClean.set_enabled(true);
+            },
             (exception: ExceptionDTO) => {
                 this._loadingPanel.hide(this.searchTableId);
                 this._btnSearch.set_enabled(false);
@@ -220,11 +257,36 @@ class DossierRicerca extends DossierBase {
         this._txtYear.set_value('');
         this._txtNumber.set_value('');
         this._txtSubject.set_value('');
+
         let selectedContainer: Telerik.Web.UI.DropDownListItem = this._rdlContainer.get_selectedItem();
         if (selectedContainer) {
             selectedContainer.set_selected(false);
         }
-        sessionStorage.removeItem("DossierSearch");
+
+        let uscCategoryRest: uscCategoryRest = <uscCategoryRest>$(`#${this.uscCategoryRestId}`).data();
+        uscCategoryRest.clearTree();
+
+        this._rcbDossierType.get_items().getItem(0).select();
+
+        let openedCheckbox: any = $(`#${this.rblDossierStatusId} input:radio`)[1];
+        openedCheckbox.checked = "checked";
+
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIER_SEARCH);
+    }
+
+    private populateDossierTypeComboBox(): void {
+        let rcbItem: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
+        rcbItem.set_text("");
+        this._rcbDossierType.get_items().add(rcbItem);
+        for (let dossierType in DossierType) {
+            if (typeof DossierType[dossierType] === 'string') {
+                let rcbItem: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
+                rcbItem.set_text(this._enumHelper.getDossierTypeDescription(DossierType[dossierType]));
+                rcbItem.set_value(DossierType[dossierType]);
+                this._rcbDossierType.get_items().add(rcbItem);
+            }
+        }
+        this._rcbDossierType.get_items().getItem(0).select();
     }
 }
 export = DossierRicerca;

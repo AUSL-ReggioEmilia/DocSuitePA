@@ -84,7 +84,7 @@ Public Class UscMiscellanea
                     AjaxManager.ResponseScripts.Add(INITIALIZE_CALLBACK)
                     Return
                 End If
-                Dim documents As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentInfo(String.Empty, documentId, Nothing, True)
+                Dim documents As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentInfo(documentId, Nothing, True)
                 Dim items As NameValueCollection = documents.FirstOrDefault().ToQueryString()
                 AjaxManager.ResponseScripts.Add(String.Format(OPEN_SIGN_WINDOW, items.AsEncodedQueryString()))
 
@@ -115,9 +115,9 @@ Public Class UscMiscellanea
         Dim location As Location = Facade.LocationFacade.GetById(locationId)
         If location IsNot Nothing Then
             If FilterByArchiveDocumentId.HasValue Then
-                documents = BiblosDocumentInfo.GetDocumentInfo(location.DocumentServer, FilterByArchiveDocumentId.Value, Nothing, True)
+                documents = BiblosDocumentInfo.GetDocumentInfo(FilterByArchiveDocumentId.Value, Nothing, True)
             Else
-                documents = BiblosDocumentInfo.GetDocuments(location.DocumentServer, idArchiveChain)
+                documents = BiblosDocumentInfo.GetDocuments(idArchiveChain)
             End If
 
             Dim noteAttribute As KeyValuePair(Of String, String)

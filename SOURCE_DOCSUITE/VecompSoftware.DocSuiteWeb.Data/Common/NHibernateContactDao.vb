@@ -691,6 +691,12 @@ Public Class NHibernateContactDao
         Return criteria.List(Of Contact)()
     End Function
 
+    Public Function GetByIdRole(ByVal idRole As Integer) As Contact
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
+        criteria.Add(Restrictions.Eq("Role.Id", idRole))
+        Return criteria.List(Of Contact)().FirstOrDefault()
+    End Function
+
     Public Sub BatchChangeContactActiveState(contact As Contact, isActive As Boolean, Optional recursiveChildren As Boolean = False)
         NHibernateSession.Query(Of Contact)() _
                         .Where(Function(x) x.Id = contact.Id) _

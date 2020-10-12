@@ -11,12 +11,18 @@ import ActivityType = require("App/Models/Workflows/ActivityType");
 import TenantConfigurationTypeEnum = require('App/Models/Tenants/TenantConfigurationTypeEnum');
 import TenantWorkflowRepositoryTypeEnum = require('App/Models/Tenants/TenantWorkflowRepositoryTypeEnum');
 import WorkflowPropertyType = require('App/Models/Workflows/WorkflowPropertyType');
-import WorkflowEvaluationPropertyType = require('App/Models/Workflows/WorkflowEvaluationPropertyType');
+import ArgumentType = require('App/Models/Workflows/ArgumentType');
 import FascicleType = require("App/Models/Fascicles/FascicleType");
 import FascicleLogType = require("App/Models/Fascicles/FascicleLogType");
 import ActivityAction = require("App/Models/Workflows/ActivityAction");
 import ProviderSignType = require("App/Models/SignDocuments/ProviderSignType");
 import ChainType = require("App/Models/DocumentUnits/ChainType");
+import ActivityArea = require("App/Models/Workflows/ActivityArea");
+import AUSSubjectType = require("App/Models/Commons/AUSSubjectType");
+import WorkflowAuthorizationType = require("App/Models/Workflows/WorkflowAuthorizationType");
+import DossierType = require("App/Models/Dossiers/DossierType");
+import DossierStatus = require("App/Models/Dossiers/DossierStatus");
+import WorkflowValidationRulesType = require("App/Models/Commons/WorkflowValidationRulesType");
 
 class EnumHelper {
 
@@ -147,7 +153,7 @@ class EnumHelper {
             default: {
                 return "";
             }
-        }        
+        }
     }
 
     getWorkflowStatusDescription(type: string): string {
@@ -506,26 +512,25 @@ class EnumHelper {
         }
     }
 
-    getWorkflowStartupDescription(workflowStartup: WorkflowEvaluationPropertyType): WorkflowPropertyType {
+    getWorkflowStartupDescription(workflowStartup: ArgumentType): WorkflowPropertyType {
         switch (workflowStartup) {
-            case WorkflowEvaluationPropertyType.Boolean:
+            case ArgumentType.PropertyBoolean:
                 return WorkflowPropertyType.PropertyBoolean;
-            case WorkflowEvaluationPropertyType.Integer:
+            case ArgumentType.PropertyInt:
                 return WorkflowPropertyType.PropertyInt;
-            case WorkflowEvaluationPropertyType.String:
+            case ArgumentType.PropertyString:
                 return WorkflowPropertyType.PropertyString;
-            case WorkflowEvaluationPropertyType.Json:
+            case ArgumentType.Json:
                 return WorkflowPropertyType.Json;
-            case WorkflowEvaluationPropertyType.Date:
+            case ArgumentType.PropertyDate:
                 return WorkflowPropertyType.PropertyDate;
-            case WorkflowEvaluationPropertyType.Double:
+            case ArgumentType.PropertyDouble:
                 return WorkflowPropertyType.PropertyDouble;
-            case WorkflowEvaluationPropertyType.Guid:
+            case ArgumentType.PropertyGuid:
                 return WorkflowPropertyType.PropertyGuid;
-
-            case WorkflowEvaluationPropertyType.RelationGuid:
+            case ArgumentType.RelationGuid:
                 return WorkflowPropertyType.RelationGuid;
-            case WorkflowEvaluationPropertyType.RelationInt:
+            case ArgumentType.RelationInt:
                 return WorkflowPropertyType.RelationInt;
         }
     }
@@ -549,12 +554,20 @@ class EnumHelper {
         switch (description) {
             case "Attività":
                 return FascicleType.Activity;
+            case "Activity":
+                return FascicleType.Activity;
             case "Periodico":
+                return FascicleType.Period;
+            case "Period":
                 return FascicleType.Period;
             case "Procedimento":
                 return FascicleType.Procedure;
+            case "Procedure":
+                return FascicleType.Procedure;
             case "Sottofascicolo":
-                return FascicleType.Legacy;
+                return FascicleType.SubFascicle;
+            case "SubFascicle":
+                return FascicleType.SubFascicle;
         }
     }
 
@@ -579,22 +592,106 @@ class EnumHelper {
             case ActivityAction.ToSecure:
                 return "ToSecure";
             case ActivityAction.ToFascicle:
-                return "ToFascsicle";
+                return "ToFascicle";
             case ActivityAction.ToDocumentUnit:
                 return "ToDocumentUnit";
             case ActivityAction.ToArchive:
                 return "ToArchive";
             case ActivityAction.ToMessage:
                 return "ToMessage";
+            case ActivityAction.CancelProtocol:
+                return "CancelProtocol";
             case ActivityAction.CancelArchive:
                 return "CancelArchive";
             case ActivityAction.CancelDocumentUnit:
                 return "CancelDocumentUnit";
             case ActivityAction.ToApprove:
                 return "ToApprove";
+            case ActivityAction.ToShare:
+                return "ToShare";
+            case ActivityAction.UpdateArchive:
+                return "UpdateArchive";
+            case ActivityAction.UpdateFascicle:
+                return "UpdateFascicle";
+            case ActivityAction.ToIntegration:
+                return "ToIntegration";
+            case ActivityAction.GenerateReport:
+                return "GenerateReport";
+            case ActivityAction.CopyFascicleContents:
+                return "CopyFascicleContents";
             default: {
                 return "";
             }
+        }
+    }
+
+    getActivityAreaDescription(type: string): string {
+        switch (<ActivityArea>ActivityArea[type.toString()]) {
+            case ActivityArea.Build: {
+                return "Build";
+            }
+            case ActivityArea.Collaboration: {
+                return "Collaboration";
+            }
+            case ActivityArea.Desk: {
+                return "Desk";
+            }
+            case ActivityArea.Dossier: {
+                return "Dossier";
+            }
+            case ActivityArea.Fascicle: {
+                return "Fascicle";
+            }
+            case ActivityArea.Link: {
+                return "Link";
+            }
+            case ActivityArea.Message: {
+                return "Message";
+            }
+            case ActivityArea.PEC: {
+                return "PEC";
+            }
+            case ActivityArea.Protocol: {
+                return "Protocol";
+            }
+            case ActivityArea.Resolution: {
+                return "Resolution";
+            }
+            case ActivityArea.UDS: {
+                return "UDS";
+            }
+            default: {
+                return "";
+            }
+        }
+    }
+
+    getWorkflowAuthorizationType(type: WorkflowAuthorizationType): string {
+        switch (type) {
+            case WorkflowAuthorizationType.AllRoleUser:
+                return "AllRoleUser";
+            case WorkflowAuthorizationType.AllSecretary:
+                return "AllSecretary";
+            case WorkflowAuthorizationType.AllSigner:
+                return "AllSigner";
+            case WorkflowAuthorizationType.AllManager:
+                return "AllManager";
+            case WorkflowAuthorizationType.AllOChartRoleUser:
+                return "AllOChartRoleUser";
+            case WorkflowAuthorizationType.AllOChartManager:
+                return "AllOChartManager";
+            case WorkflowAuthorizationType.AllOChartHierarchyManager:
+                return "AllOChartHierarchyManager";
+            case WorkflowAuthorizationType.UserName:
+                return "UserName";
+            case WorkflowAuthorizationType.ADGroup:
+                return "ADGroup";
+            case WorkflowAuthorizationType.MappingTags:
+                return "MappingTags";
+            case WorkflowAuthorizationType.AllDematerialisationManager:
+                return "AllDematerialisationManager";
+            default:
+                return "";
         }
     }
 
@@ -631,6 +728,142 @@ class EnumHelper {
             default: {
                 return "";
             }
+        }
+    }
+
+    getAUSSubjectTypeDescription(type: AUSSubjectType): string {
+        switch (type) {
+            case AUSSubjectType.NaturalPersons: {
+                return "Persone fisiche";
+            }
+            case AUSSubjectType.EconomicOperators: {
+                return "Operatori economici";
+            }
+            default: {
+                return "";
+            }
+        }
+    }
+
+    getCustomActionDescription(propertyName: string): string {
+        switch (propertyName) {
+            case "AutoClose": {
+                return "Chiusura amministrativa a 60 giorni";
+            }
+            case "AutoCloseAndClone": {
+                return "Chiusura amministrativa a fine anno e riapertura automatica";
+            }
+            default: {
+                return "";
+            }
+        }
+    }
+
+    getDossierTypeDescription(type: string): string {
+        switch (<DossierType>DossierType[type.toString()]) {
+            case DossierType.Person: {
+                return "Persona fisica o giuridica";
+            }
+            case DossierType.PhysicalObject: {
+                return "Oggetto fisico";
+            }
+            case DossierType.Procedure: {
+                return "Procedimento";
+            }
+            case DossierType.Process: {
+                return "Serie archivistica";
+            }
+            default: {
+                return "";
+            }
+        }
+    }
+
+    getDossierStatusDescription(type: string): string {
+        switch (<DossierStatus>DossierStatus[type.toString()]) {
+            case DossierStatus.Open: {
+                return "Aperto";
+            }
+            case DossierStatus.Canceled: {
+                return "Annullato";
+            }
+            case DossierStatus.Closed: {
+                return "Chiuso";
+            }
+            default: {
+                return "";
+            }
+        }
+    }
+
+    getValidationRuleType(description: string): string {
+        switch (description) {
+            case "Esiste cartella di fascicolo":
+                return "IsExist";
+            case "La cartella contiene almeno un file/inserto":
+                return "HasFile";
+            case "La cartella contiene almeno una unità documentale":
+                return "HasDocumentUnit";
+            case "La cartella contiene almeno un file/inserto firmato digitalmente":
+                return "HasSignedFile";
+            default: {
+                return "";
+            }
+        }
+    }
+
+    getValidationRuleDescription(type: string): string {
+        switch (<WorkflowValidationRulesType>WorkflowValidationRulesType[type.toString()]) {
+            case WorkflowValidationRulesType.IsExist: {
+                return "Esiste cartella di fascicolo";
+            }
+            case WorkflowValidationRulesType.HasFile: {
+                return "La cartella contiene almeno un file/inserto";
+            }
+            case WorkflowValidationRulesType.HasDocumentUnit: {
+                return "La cartella contiene almeno una unità documentale";
+            }
+            case WorkflowValidationRulesType.HasSignedFile: {
+                return "La cartella contiene almeno un file/inserto firmato digitalmente";
+            }
+            default: {
+                return "";
+            }
+        }
+    }
+
+    /**
+     * Returns the correct enum value as number from input of type number | string | misspelled-string | number-as-string
+     */
+    fixEnumValue<T>(model: T | string | number, _type: any): T {
+        if (typeof model === "string") {
+            try {
+                // if value is a number passed as a string
+                let parsed = parseInt(model, 10);
+                if (parsed) {
+                    return _type[_type[parsed]];
+                }
+            } catch{ }
+            //if it's a string and is correctly spelled, we will imediately have a value
+            let value = (<any>_type)[model];
+            if (value !== undefined && value !== null) {
+                return value;
+            } else {
+                // string enum value but misspelled (lower/upper case)
+                let keys = Object
+                    .keys(_type).map(key => _type[key])
+                    .filter(value => typeof value === 'string')
+                    .filter(value => value.toLowerCase() === model.toLowerCase())
+
+                if (keys.length > 0) {
+                    value = _type[keys[0]]
+                } else {
+                    throw new Error(`Enum value ${model} is invalid`)
+                }
+                return value;
+            }
+        } else {
+            return <T>model;
         }
     }
 }

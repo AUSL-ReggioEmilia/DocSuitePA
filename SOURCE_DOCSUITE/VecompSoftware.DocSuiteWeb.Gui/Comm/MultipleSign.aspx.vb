@@ -61,7 +61,7 @@ Public Class MultipleSign
     Private ReadOnly Property CurrentUserLog As UserLog
         Get
             If _currentUserLog Is Nothing Then
-                _currentUserLog = Facade.UserLogFacade.GetByUser(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
+                _currentUserLog = Facade.UserLogFacade.GetByUser(DocSuiteContext.Current.User.FullUserName)
             End If
             Return _currentUserLog
         End Get
@@ -136,7 +136,7 @@ Public Class MultipleSign
             e.Item.Selected = True
             Dim cb As CheckBox = CType(CType(e.Item, GridDataItem)("SelectColumn").Controls(0), CheckBox)
             cb.Checked = True
-            cb.Enabled = False
+            cb.Enabled = bound.MandatorySelectable
         End If
 
         Dim documentImage As ImageButton = DirectCast(e.Item.FindControl("documentType"), ImageButton)
@@ -191,7 +191,7 @@ Public Class MultipleSign
                 padesToggle.Visible = False
             End If
         End If
-        If ProtocolEnv.DefaultSignType.Eq(Helpers.Signer.SignType.CAdES.ToString()) Then
+        If ProtocolEnv.DefaultSignType.Eq(Helpers.Signer.CAdES.SignType.CAdES.ToString()) Then
             originalToggle.Checked = True
             pdfToggle.Checked = False
             cadesToggle.Checked = True
@@ -210,7 +210,7 @@ Public Class MultipleSign
                 End If
 
                 FileLogger.Debug(LoggerName, "Begin multiple sign")
-                If selectedProvider <> Signs.ProviderSignType.Smartcard AndAlso Not ValidateSubmit(selectedProvider) Then
+                If selectedProvider <> Signs.ProviderSignType.Smartcard AndAlso Not SignAction.Eq(CollaborationMainAction.DaFirmareInDelega) AndAlso Not SignAction.Eq(CollaborationSubAction.DaFirmareInDelega) AndAlso Not ValidateSubmit(selectedProvider) Then
                     Return
                 End If
 
@@ -240,6 +240,8 @@ Public Class MultipleSign
                 Dim originalToggle As RadButton
                 Dim newName As String
                 Dim inFilename As String
+                Dim documentTosigns As Dictionary(Of String, List(Of FileInfo)) = New Dictionary(Of String, List(Of FileInfo))()
+                Dim docFileInfo As FileInfo
                 For Each dataGridItem As GridDataItem In DocumentListGrid.SelectedItems
                     ' Documento interessato
                     document = New MultiSignDocumentInfo(HttpUtility.ParseQueryString(dataGridItem.GetDataKeyValue("Serialized").ToString()))
@@ -256,6 +258,7 @@ Public Class MultipleSign
                     End If
                     document.DocumentInfo.Name = newName
 
+                    inDocuments = New List(Of FileInfo)()
                     ' Salvo nella cartella
                     If originalToggle.Checked Then
                         inFilename = $"{document.IdOwner}§{document.DocumentInfo.Name}"
@@ -266,9 +269,14 @@ Public Class MultipleSign
                     End If
 
                     OriginalDocumentInfos.Add(document.DocumentInfo)
-                    inDocuments.Add(New FileInfo(Path.Combine(inDir.FullName, inFilename)))
+                    If Not documentTosigns.ContainsKey(document.EffectiveSigner) Then
+                        documentTosigns.Add(document.EffectiveSigner, New List(Of FileInfo)())
+                    End If
+                    docFileInfo = New FileInfo(Path.Combine(inDir.FullName, inFilename))
+                    inDocuments.Add(docFileInfo)
+                    documentTosigns(document.EffectiveSigner).Add(docFileInfo)
                     ' Compongo la lista delle tipologie di firma da effettuare
-                    signTypes.Add(If(cadesToggle.Checked, Helpers.Signer.SignType.CAdES.ToString("D"), Helpers.Signer.SignType.PAdES.ToString("D")))
+                    signTypes.Add(If(cadesToggle.Checked, Helpers.Signer.CAdES.SignType.CAdES.ToString("D"), Helpers.Signer.CAdES.SignType.PAdES.ToString("D")))
                 Next
 
                 Dim outDir As DirectoryInfo = tempDir.CreateSubdirectory("Out")
@@ -281,7 +289,17 @@ Public Class MultipleSign
                     'Use ActiveX for smartcard sign
                     AjaxManager.ResponseScripts.Add(String.Format("riseSign('{0}','{1}','{2}','{3}')", inDir.FullName.Replace("\", "\\"), outDir.FullName.Replace("\", "\\"), String.Join(",", signTypes), comment))
                 Else
-                    Sign(selectedProvider, signTypes, inDocuments, outDir)
+                    Dim defaultRemoteSignProperty As RemoteSignProperty = GetSelectedUserProfile(selectedProvider).Value.Value
+                    Dim selectRemoteSignProperty As RemoteSignProperty
+                    Dim pinPassword As String = PinTextbox.Text
+                    For Each listdocuments As KeyValuePair(Of String, List(Of FileInfo)) In documentTosigns
+                        selectRemoteSignProperty = defaultRemoteSignProperty
+                        If Not (String.IsNullOrEmpty(listdocuments.Key)) Then
+                            selectRemoteSignProperty = GetSpecificUserProfile(listdocuments.Key)
+                            pinPassword = selectRemoteSignProperty.Password
+                        End If
+                        Sign(selectedProvider, selectRemoteSignProperty, signTypes, listdocuments.Value, outDir, pinPassword)
+                    Next
                 End If
 
             Case "undo"
@@ -379,7 +397,7 @@ Public Class MultipleSign
         End If
 
         Dim documentsToSign As ICollection(Of MultiSignDocumentInfo) = sourcePage.DocumentsToSign
-        OriginalDocuments = documentsToSign.Where(Function(x) Not x.Signers.Any(Function(xx) xx.Eq(DocSuiteContext.Current.User.FullUserName))).ToList()
+        OriginalDocuments = documentsToSign.Where(Function(x) Not x.Signers.Any(Function(xx) xx.Eq(DocSuiteContext.Current.User.FullUserName) OrElse xx.Eq(x.EffectiveSigner))).ToList()
         If OriginalDocuments.IsNullOrEmpty() Then
             Throw New InformationException("Firma Multipla", "Nessun documento da firmare.")
         End If
@@ -388,6 +406,7 @@ Public Class MultipleSign
             AjaxAlert("Alcuni documenti risultano già firmati dall'utente e sono stati scartati")
         End If
 
+        SignAction = sourcePage.SignAction
         DocumentListGrid.DataSource = OriginalDocuments
         DocumentListGrid.DataBind()
 
@@ -475,6 +494,20 @@ Public Class MultipleSign
             End If
         End If
 
+        If SignAction.Eq(CollaborationMainAction.DaFirmareInDelega) OrElse SignAction.Eq(CollaborationSubAction.DaFirmareInDelega) Then
+            PopulatePin("")
+            PinTextbox.Visible = False
+            ChkAddComment.Checked = True
+            ChkAddComment.Enabled = False
+            signTypeDropdown.Enabled = False
+
+            If DocSuiteContext.Current.HasInfocertProxySign Then
+                signTypeDropdown.SelectedValue = Convert.ToString(ProviderSignType.InfocertAutomatic)
+            End If
+            If DocSuiteContext.Current.HasArubaActalisSign Then
+                signTypeDropdown.SelectedValue = Convert.ToString(ProviderSignType.ArubaAutomatic)
+            End If
+        End If
     End Sub
 
     Private Sub PopulatePin(pin As String)
@@ -521,13 +554,13 @@ Public Class MultipleSign
         Return True
     End Function
 
-    Private Sub Sign(selectedSignType As ProviderSignType, signTypes As List(Of String), inDocuments As List(Of FileInfo), outDir As DirectoryInfo)
+    Private Sub Sign(selectedSignType As ProviderSignType, remoteSignProperty As RemoteSignProperty, signTypes As List(Of String), inDocuments As List(Of FileInfo), outDir As DirectoryInfo, pinPassword As String)
         Dim documents As New List(Of MultiSignDocumentInfo)
         Dim newFilename As String
         Dim pathFilename As String
         Dim extension As String
         Dim signService As SignService = New SignService(Sub(f) FileLogger.Info(LoggerName, f), Sub(f) FileLogger.Error(LoggerName, f))
-        Dim remoteSignProperty As RemoteSignProperty = GetSelectedUserProfile(selectedSignType).Value.Value
+
         Dim signParameter As ISignParameter = Nothing
         Dim signatureType As SignatureType = SignatureType.ArubaSign
 
@@ -550,19 +583,18 @@ Public Class MultipleSign
             signParameter = New ProxySignModel With {
                     .Alias = remoteSignProperty.Alias,
                     .OTPPassword = remoteSignProperty.OTP,
-                    .PINPassword = PinTextbox.Text,
+                    .PINPassword = pinPassword,
                     .SignType = If(selectedSignType = ProviderSignType.InfocertRemote, SignModel.SignType.Remote, SignModel.SignType.Automatic),
                     .RequestType = SignModel.SignRequestType.Cades
                     }
         End If
 
-        Dim results As ICollection(Of FileModel) = signService.SignDocuments(signParameter, inDocuments.Select(Function(f) New FileModel() With {.Filename = f.Name, .Document = File.ReadAllBytes(f.FullName)}), signatureType)
         For Each document As FileInfo In inDocuments
             Try
                 newFilename = $"{document.Name}{FileHelper.P7M}"
                 pathFilename = Path.Combine(outDir.FullName, newFilename)
                 extension = document.Extension
-                File.WriteAllBytes(pathFilename, results.Single(Function(f) f.Filename.Equals(newFilename, StringComparison.CurrentCultureIgnoreCase)).Document)
+                File.WriteAllBytes(pathFilename, signService.SignDocument(signParameter, File.ReadAllBytes(document.FullName), newFilename, signatureType))
                 documents.Add(New MultiSignDocumentInfo(New FileInfo(pathFilename)))
 
             Catch ex As PathTooLongException
@@ -609,6 +641,21 @@ Public Class MultipleSign
         ToolBar.Items.FindItemByValue("signTypeDropdown").SetDisplay(False)
     End Sub
 
+    Private Function GetSpecificUserProfile(effectiveSigner As String) As RemoteSignProperty
+        Dim selectedSignOption As Signs.RemoteSignProperty = Nothing
+        Dim effectiveUserLog As UserLog = Facade.UserLogFacade.GetByUser(effectiveSigner)
+        If Not String.IsNullOrEmpty(effectiveUserLog.UserProfile) Then
+            Dim specificUserProfile As Model.Documents.Signs.UserProfile = JsonConvert.DeserializeObject(Of Model.Documents.Signs.UserProfile)(effectiveUserLog.UserProfile)
+            ' da migliorare
+            If DocSuiteContext.Current.HasInfocertProxySign Then
+                selectedSignOption = specificUserProfile.Value.FirstOrDefault(Function(x) x.Key = ProviderSignType.InfocertAutomatic).Value
+            End If
+            If DocSuiteContext.Current.HasArubaActalisSign Then
+                selectedSignOption = specificUserProfile.Value.FirstOrDefault(Function(x) x.Key = ProviderSignType.ArubaAutomatic).Value
+            End If
+        End If
+        Return selectedSignOption
+    End Function
 #End Region
 
 End Class

@@ -60,6 +60,20 @@ class ContactService extends BaseService {
         }, error);
     }
 
+    getByParentId(contactParentId: number, top?: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}/ContactService.GetContactsByParentId(idContact=${contactParentId})`;
+        if (top && top > 0) {
+            url = `${url}?$top=${top}`;
+        }
+        this.getRequest(url, undefined, (response: any) => {
+            if (callback) {
+                if (callback) {
+                    callback(response.value);
+                }
+            }
+        }, error);
+    }
+
     /**
      * metodo per l'inserimento di un nuovo contatto
      * @param categoryFascicle

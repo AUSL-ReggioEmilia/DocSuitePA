@@ -9,12 +9,12 @@ Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Workflows
+Imports VecompSoftware.DocSuiteWeb.Model.Workflow
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Compress
 Imports VecompSoftware.Helpers.ExtensionMethods
@@ -22,6 +22,7 @@ Imports VecompSoftware.Helpers.LimilabsMail
 Imports VecompSoftware.Helpers.Signer.Security
 Imports VecompSoftware.Helpers.UDS
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Helpers.WebAPI
 Imports VecompSoftware.Helpers.Workflow
 Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.Services.Logging
@@ -39,7 +40,6 @@ Public Class PECInsert
     Private _currentMailBox As PECMailBox
     Private _currentProtocol As Protocol
     Private _currentProtocolRights As ProtocolRights
-    Private _protocolsKeys As List(Of YearNumberCompositeKey) = Nothing
     Private _currentUDS As UDSDto
     Private _UDSRepositoryFacade As UDSRepositoryFacade
     Private _signalRServerAddress As String
@@ -57,6 +57,8 @@ Public Class PECInsert
     Public Const COMMAND_SUCCESS As String = "Attendere il termine dell'attività di {0}."
     Public Const COMMAND_ERROR As String = "Errore nella fase di aggiornamento archivio, la PEC è stata comunque spedita correttamente: {0}"
     Public Const CALLBACK As String = "udsEditCallback"
+    Private Const VALID_MAILBOX_IMGURL As String = "../App_Themes/DocSuite2008/images/green-dot-document.png"
+    Private Const INTEROP_IMGURL As String = "../App_Themes/DocSuite2008/imgset16/user.png"
     Private _passwordGenerator As PasswordGenerator
 
 
@@ -67,37 +69,12 @@ Public Class PECInsert
     Public ReadOnly Property CurrentProtocol As Protocol
         Get
             If _currentProtocol Is Nothing AndAlso Not IdUDS.HasValue Then
-                Dim year As Short? = Request.QueryString.GetValueOrDefault(Of Short?)("Year", Nothing)
-                Dim number As Integer? = Request.QueryString.GetValueOrDefault(Of Integer?)("Number", Nothing)
-                If year.HasValue AndAlso number.HasValue Then
-                    _currentProtocol = Facade.ProtocolFacade.GetById(year.Value, number.Value, False)
+                Dim uniqueIdProtocol As Guid? = Request.QueryString.GetValueOrDefault(Of Guid?)("UniqueIdProtocol", Nothing)
+                If uniqueIdProtocol.HasValue Then
+                    _currentProtocol = Facade.ProtocolFacade.GetById(uniqueIdProtocol.Value, False)
                 End If
             End If
             Return _currentProtocol
-        End Get
-    End Property
-    Private ReadOnly Property ProtocolsKeys As List(Of YearNumberCompositeKey)
-        Get
-            If _protocolsKeys.IsNullOrEmpty() Then
-                If ViewState("ProtocolsKeys") Is Nothing Then
-                    _protocolsKeys = HttpContext.Current.Request.QueryString.GetValue(Of List(Of YearNumberCompositeKey))("keys")
-                    ViewState("ProtocolsKeys") = _protocolsKeys
-                Else
-                    _protocolsKeys = ViewState("ProtocolsKeys")
-                End If
-            End If
-            Return _protocolsKeys
-        End Get
-    End Property
-
-    Private ReadOnly Property ProtocolList As List(Of Protocol)
-        Get
-            If Not Me.ProtocolsKeys.IsNullOrEmpty() Then
-                Dim protocols As IEnumerable(Of Protocol) = ProtocolsKeys.Select(Function(k) FacadeFactory.Instance.ProtocolFacade.GetById(k.Year, k.Number))
-                Return protocols.ToList()
-            End If
-
-            Return Nothing
         End Get
     End Property
 
@@ -137,7 +114,7 @@ Public Class PECInsert
         Get
             If _mailboxes Is Nothing Then
                 _mailboxes = New List(Of PECMailBox)
-                For Each mailbox As PECMailBox In Facade.PECMailboxFacade.GetHumanManageable().GetVisibleSendingMailBoxes()
+                For Each mailbox As PECMailBox In Facade.PECMailboxFacade.GetVisibleSendingMailBoxes()
                     If Facade.PECMailboxFacade.IsRealPecMailBox(mailbox) Then
                         _mailboxes.Add(mailbox)
                     End If
@@ -155,9 +132,9 @@ Public Class PECInsert
 
             If _allmailboxes.Count = 0 Then
                 If ProtocolBoxEnabled Then
-                    _allmailboxes = Facade.PECMailboxFacade.GetHumanManageable().GetVisibleProtocolMailBoxes()
+                    _allmailboxes = Facade.PECMailboxFacade.GetVisibleProtocolMailBoxes()
                 Else
-                    _allmailboxes = Facade.PECMailboxFacade.GetHumanManageable().GetVisibleMailBoxes()
+                    _allmailboxes = Facade.PECMailboxFacade.GetVisibleMailBoxes()
                 End If
             End If
 
@@ -170,7 +147,7 @@ Public Class PECInsert
         Get
             If _interopMailBoxes Is Nothing Then
                 _interopMailBoxes = New List(Of PECMailBox)
-                For Each mailbox As PECMailBox In Facade.PECMailboxFacade.GetHumanManageable().GetVisibleSendingMailBoxes()
+                For Each mailbox As PECMailBox In Facade.PECMailboxFacade.GetVisibleSendingMailBoxes()
                     If Facade.PECMailboxFacade.IsRealPecMailBox(mailbox) AndAlso mailbox.IsForInterop Then
                         _interopMailBoxes.Add(mailbox)
                     End If
@@ -237,7 +214,7 @@ Public Class PECInsert
                 If SelectedMailboxId.HasValue Then
                     _currentMailBox = Facade.PECMailboxFacade.GetById(SelectedMailboxId.Value)
                 End If
-                If _currentMailBox Is Nothing Then
+                If _currentMailBox Is Nothing AndAlso ddlMailFrom.SelectedItem IsNot Nothing AndAlso Not String.IsNullOrEmpty(ddlMailFrom.SelectedItem.Value) Then
                     _currentMailBox = Facade.PECMailboxFacade.GetById(Short.Parse(ddlMailFrom.SelectedItem.Value))
                 End If
             End If
@@ -366,7 +343,7 @@ Public Class PECInsert
         InitializeAjax()
 
         uscDestinatari.SimpleMode = SimpleMode
-        uscDestinatari.ButtonIPAVisible = Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa)
+        uscDestinatari.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
         If ProtocolEnv.SelectCheckRecipientEnabled Then
             uscDestinatari.EnableCheck = True
         End If
@@ -382,7 +359,7 @@ Public Class PECInsert
             uscDestinatariCc.Visible = False
         Else
             uscDestinatariCc.SimpleMode = SimpleMode
-            uscDestinatariCc.ButtonIPAVisible = Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa)
+            uscDestinatariCc.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
         End If
 
         If Not IsPostBack Then
@@ -400,6 +377,7 @@ Public Class PECInsert
             chkMultiPec.Enabled = uscDestinatari.GetContacts(False).Count > 0
             ' Carico le mailbox e seleziono se possibile quella in querystring
             LoadMailboxes()
+            UpdatePECMailBoxInputColor()
 
             Dim previous As ISendMail = Nothing
             If SendFromViewer Then
@@ -426,7 +404,7 @@ Public Class PECInsert
                     Case CurrentProtocol IsNot Nothing
                         uscAttachmentList.Caption = "Documenti del protocollo"
                         ' Se presente un protocollo
-                        Title = String.Format("{0} - Invia Protocollo {1}", PecLabel, CurrentProtocol.Id)
+                        Title = String.Format("{0} - Invia Protocollo {1}", PecLabel, CurrentProtocol.FullNumber)
                         chkSetPecInteroperable.Visible = True
                         InitializeFromProtocol(CurrentProtocol)
                     Case CurrentUDS IsNot Nothing
@@ -454,6 +432,7 @@ Public Class PECInsert
 
             uscAttachment.ButtonCopyProtocol.Visible = ProtocolEnv.CopyProtocolDocumentsEnabled
             uscAttachment.ButtonCopySeries.Visible = ProtocolEnv.CopyFromSeries
+            uscAttachment.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
             If (DocSuiteContext.Current.IsResolutionEnabled) Then
                 uscAttachment.ButtonCopyResl.Visible = ResolutionEnv.CopyReslDocumentsEnabled
             End If
@@ -481,6 +460,14 @@ Public Class PECInsert
                 End If
                 uscAttachmentList.SetDocument(String.Concat("La dimensione del messaggio (massima di ", pecSize.ToByteFormattedString(0), ") può essere influenzata dalla generazione delle copie pdf."))
             End If
+        End If
+    End Sub
+
+    Private Sub UpdatePECMailBoxInputColor()
+        Dim selectedItem As RadComboBoxItem = ddlMailFrom.SelectedItem
+
+        If selectedItem.ForeColor = Drawing.Color.Red Then
+            ddlMailFrom.InputCssClass = "text-red"
         End If
     End Sub
 
@@ -549,6 +536,12 @@ Public Class PECInsert
     End Sub
 
     Private Sub ddlMailbox_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles ddlMailFrom.SelectedIndexChanged
+        If CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError Then
+            AjaxAlert("La casella PEC ha un problema di configurazione. Avvisare il responsabile per la corretta configurazione")
+        End If
+
+        ddlMailFrom.InputCssClass = If(CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError, "text-red", "text-black")
+
         Dim selectedId As Short
         If Short.TryParse(ddlMailFrom.SelectedValue, selectedId) Then
             CommonShared.SelectedPecMailBoxId = selectedId
@@ -711,8 +704,7 @@ Public Class PECInsert
             Else
                 ' La casella e valida e la posso inserire
                 Dim mailbox As PECMailBox = MailBoxes.First(Function(m) m.Id.Equals(required.Id))
-                Dim label As String = FacadeFactory.Instance.PECMailboxFacade.MailBoxRecipientLabel(mailbox)
-                ddlMailFrom.Items.Add(New ListItem(label, mailbox.Id.ToString()))
+                ddlMailFrom.Items.Add(CreateRadComboboxItem(mailbox))
             End If
         ElseIf ProtocolBoxEnabled Then
             If Not MailBoxes.IsNullOrEmpty() Then
@@ -720,7 +712,7 @@ Public Class PECInsert
 
                 For Each item As PECMailBox In AllMailBoxes
                     Dim label As String = FacadeFactory.Instance.PECMailboxFacade.MailBoxRecipientLabel(item)
-                    ddlMailFrom.Items.Add(New ListItem(label, item.Id.ToString()))
+                    ddlMailFrom.Items.Add(CreateRadComboboxItem(item))
                 Next
             End If
 
@@ -731,7 +723,7 @@ Public Class PECInsert
 
                 For Each item As PECMailBox In MailBoxes
                     Dim label As String = FacadeFactory.Instance.PECMailboxFacade.MailBoxRecipientLabel(item)
-                    ddlMailFrom.Items.Add(New ListItem(label, item.Id.ToString()))
+                    ddlMailFrom.Items.Add(CreateRadComboboxItem(item))
                 Next
             End If
         End If
@@ -740,7 +732,7 @@ Public Class PECInsert
         ddlMailFrom.Enabled = editableMailbox
         If Not String.IsNullOrEmpty(mailBoxIdToSelect) Then
             ' Devo selezionare una mailbox
-            If ddlMailFrom.Items.FindByValue(mailBoxIdToSelect) IsNot Nothing Then
+            If ddlMailFrom.Items.FindItemByValue(mailBoxIdToSelect) IsNot Nothing Then
                 ddlMailFrom.SelectedValue = mailBoxIdToSelect
             Else
                 ' in caso di errori permetto la modifica
@@ -749,8 +741,12 @@ Public Class PECInsert
         End If
 
         If DocSuiteContext.Current.ProtocolEnv.PECMailboxSelectEnabled AndAlso ddlMailFrom.Items.Count() > 1 Then
-            ddlMailFrom.Items.Insert(0, New ListItem(String.Empty, String.Empty))
+            ddlMailFrom.Items.Insert(0, New RadComboBoxItem(String.Empty, String.Empty))
             ddlMailFrom.SelectedIndex = 0
+        End If
+
+        If CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError Then
+            AjaxAlert("La casella PEC ha un problema di configurazione. Avvisare il responsabile per la corretta configurazione")
         End If
 
         ' Attivo il bottone di invio solo se ci sono caselle effettivamente utilizzabili
@@ -789,7 +785,7 @@ Public Class PECInsert
         If CurrentProtocolRights.IsInteroperable Then
             ' Il protocollo può essere spedito come interoperabile
             For Each pecMailBox As PECMailBox In InteropMailBoxes
-                ddlMailFrom.Items.Add(New ListItem(Facade.PECMailboxFacade.MailBoxRecipientLabel(pecMailBox), pecMailBox.Id.ToString()))
+                ddlMailFrom.Items.Add(CreateRadComboboxItem(pecMailBox))
             Next
             'Attivo il bottone di invio solo se ci sono caselle effettivamente utilizzabili
             cmdSend.Enabled = ddlMailFrom.Items.Count > 0
@@ -1160,14 +1156,12 @@ Public Class PECInsert
                 'Significa che la mail che viene creata proviene da un protocollo
                 pec.Year = CurrentProtocol.Year
                 pec.Number = CurrentProtocol.Number
-                pec.DocumentUnitType = DSWEnvironment.Protocol
+                pec.DocumentUnit = Facade.DocumentUnitFacade.GetById(CurrentProtocol.Id)
             Case CurrentUDS IsNot Nothing
                 'Significa che la mail che viene creata proviene da una UDS
                 pec.Year = Convert.ToInt16(CurrentUDS.Year)
                 pec.Number = CurrentUDS.Number
-                pec.DocumentUnitType = DSWEnvironment.UDS
-                pec.IdUDSRepository = IdUDSRepository.Value
-                pec.IdUDS = IdUDS.Value
+                pec.DocumentUnit = Facade.DocumentUnitFacade.GetById(CurrentUDS.Id)
         End Select
 
         pec.Direction = PECMailDirection.Outgoing
@@ -1306,15 +1300,13 @@ Public Class PECInsert
             Facade.PECMailFacade.SendInsertPECMailCommand(pecMail)
 
             'Registro che il protocollo è stato inviato per PEC
-            If (CurrentProtocol IsNot Nothing) Then
+            If CurrentProtocol IsNot Nothing Then
                 Dim logMessage As String = String.Format("Protocollo inviato tramite PEC {0} a {1}", If(Not String.IsNullOrEmpty(pecMail.Segnatura), "Interoperabile", ""), pecMail.MailRecipients)
-                If (logMessage.Length > 254) Then
+                If logMessage.Length > 254 Then
                     logMessage = logMessage.Substring(0, 254)
                 End If
                 Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PO, logMessage)
-                If IsWorkflowOperation Then
-                    AddWorkflowProperties(pecMail)
-                End If
+                PushWorkflowNotify(pecMail)
             End If
         Catch ex As Exception
             Throw New DocSuiteException("Invio PEC", ex) With {.Descrizione = String.Format("Errore durante l'inserimento nella coda di invio del messaggio: {0}.", ex.Message), .User = DocSuiteContext.Current.User.FullUserName}
@@ -1588,6 +1580,10 @@ Public Class PECInsert
 
     Private Sub SendPecFunction(ByVal ajaxRequestCommand As String)
         Try
+            If CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError Then
+                AjaxAlert("La casella PEC selezionata presenta un problema di configurazione. Informare la persona responsabile della corretta configurazione")
+            End If
+
             If (ddlMailFrom.SelectedItem Is Nothing OrElse String.IsNullOrEmpty(ddlMailFrom.SelectedValue)) Then
                 AjaxAlert("E' necessario specificare un mittente")
                 Exit Sub
@@ -1634,11 +1630,11 @@ Public Class PECInsert
 
     Private Sub RedirectToSource()
         If RedirectToProtocolSummary Then
-            Response.Redirect("~/Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(String.Concat("Type=Prot&Year=", CurrentProtocol.Year, "&Number=", CurrentProtocol.Number)))
+            Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"Type=Prot&UniqueId={CurrentProtocol.Id}")}")
         End If
 
         If IsWorkflowOperation Then
-            Response.Redirect(String.Format("~/Prot/ProtVisualizza.aspx?Year={0}&Number={1}&Type=Prot&Action=FromPEC&IsWorkflowOperation=True&IdWorkflowActivity={2}", CurrentProtocol.Year, CurrentProtocol.Number, CurrentIdWorkflowActivity))
+            Response.Redirect(String.Format("~/Prot/ProtVisualizza.aspx?UniqueId={0}&Type=Prot&Action=FromPEC&IsWorkflowOperation=True&IdWorkflowActivity={1}", CurrentProtocol.Id, CurrentIdWorkflowActivity))
         End If
 
         If OriginalMailToReply IsNot Nothing Then
@@ -1740,21 +1736,20 @@ Public Class PECInsert
         End If
     End Sub
 
-    Private Sub AddWorkflowProperties(pecMail As PECMail)
-        If IsWorkflowOperation Then
-            Dim workflowActivityFacade As WorkflowActivityFacade = New WorkflowActivityFacade(DocSuiteContext.Current.User.FullUserName)
-            Dim activity As WorkflowActivity = workflowActivityFacade.GetById(CurrentIdWorkflowActivity)
+    Private Sub PushWorkflowNotify(pecMail As PECMail)
+        If IsWorkflowOperation AndAlso CurrentIdWorkflowActivity.HasValue Then
+            Dim worklowAcyivity As WorkflowActivity = GetWorkflowActivity(CurrentIdWorkflowActivity.Value)
+            Dim workflowNotify As WorkflowNotify = New WorkflowNotify(CurrentIdWorkflowActivity.Value) With {
+                    .WorkflowName = worklowAcyivity?.WorkflowInstance?.WorkflowRepository?.Name}
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PEC_ID, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_FIELD_PEC_ID,
+                                                   .PropertyType = ArgumentType.PropertyInt,
+                                                   .ValueInt = pecMail.Id})
 
-            Dim propertyPecId As WorkflowProperty = New WorkflowProperty(DocSuiteContext.Current.User.FullUserName) With {
-                .Name = WorkflowPropertyHelper.DSW_FIELD_PEC_ID,
-                .PropertyType = WorkflowPropertyType.PropertyInt,
-                .WorkflowType = WorkflowType.Activity,
-                .ValueInt = pecMail.Id
-            }
-
-            activity.WorkflowProperties.Add(propertyPecId)
-            activity.Status = WorkflowStatus.Progress
-            workflowActivityFacade.Save(activity)
+            Dim webApiHelper As WebAPIHelper = New WebAPIHelper()
+            If Not WebAPIImpersonatorFacade.ImpersonateSendRequest(webApiHelper, workflowNotify, DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration) Then
+                Throw New Exception("Settaggio proprietà workflow non riuscita.")
+            End If
         End If
     End Sub
 
@@ -1764,10 +1759,10 @@ Public Class PECInsert
         End If
         Dim docInfos As IList(Of BiblosDocumentInfo) = New List(Of BiblosDocumentInfo)
         For Each instance As DocumentInstance In document.Instances
-            Dim bibDocs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(document.BiblosArchive, Guid.Parse(instance.IdDocument))
+            Dim bibDocs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(Guid.Parse(instance.StoredChainId))
             'Verifico se è stato passato l'ID document invece dell'ID chain
             If bibDocs.Count = 0 Then
-                bibDocs = BiblosDocumentInfo.GetDocumentInfo(document.BiblosArchive, Guid.Parse(instance.IdDocument), Nothing, True)
+                bibDocs = BiblosDocumentInfo.GetDocumentInfo(Guid.Parse(instance.StoredChainId), Nothing, True)
             End If
             For Each doc As BiblosDocumentInfo In bibDocs
                 docInfos.Add(doc)
@@ -1807,6 +1802,19 @@ Public Class PECInsert
         Facade.PECMailFacade.SendInsertPECMailCommand(protectedPec)
         FileLogger.Info(LoggerName, String.Concat("PECInsert - SendPECWithPassword - PEC con password inserita in coda di invio"))
     End Sub
+
+    Private Function CreateRadComboboxItem(pecMailBox As PECMailBox) As RadComboBoxItem
+        Dim comboboxItem As RadComboBoxItem = New RadComboBoxItem()
+        comboboxItem.Text = pecMailBox.MailBoxName
+        comboboxItem.Value = pecMailBox.Id.ToString()
+        comboboxItem.ImageUrl = If(pecMailBox.IsForInterop, INTEROP_IMGURL, VALID_MAILBOX_IMGURL)
+        If pecMailBox.LoginError Then
+            comboboxItem.AddAttribute("hasLoginError", pecMailBox.LoginError.ToString())
+            comboboxItem.ForeColor = Drawing.Color.Red
+        End If
+
+        Return comboboxItem
+    End Function
 #End Region
 
 End Class

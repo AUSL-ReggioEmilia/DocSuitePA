@@ -4,7 +4,7 @@
   <class name="ServiceCategory" table="ServiceCategory">
     
     <id name="Id" column="idServiceCategory">
-      <generator class="identity" />
+      <generator class="increment" />
     </id>
     
     <property name="Code" column="Code" type="AnsiString" />

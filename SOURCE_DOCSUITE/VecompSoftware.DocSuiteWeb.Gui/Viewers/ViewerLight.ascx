@@ -3,7 +3,6 @@
 <telerik:RadCodeBlock ID="RadCodeBlock1" runat="server">
     <link rel="Stylesheet" media="screen" type="text/css" href="<%=ResolveUrl("~/Viewers/css/ViewerLight.css")%>" />
     <script type="text/javascript">
-
         function getTreeView() {
             var baseTreeView = $find("<%= rtvListDocument.ClientID%>");
             if (baseTreeView != null) { return baseTreeView; }
@@ -46,14 +45,6 @@
                 tree.set_enabled(false);
             else
                 tree.set_enabled(true);
-        }
-
-        function RequestStart(sender, args) {
-            ToggleToolBar(getToolBar(), false);
-        }
-
-        function ResponseEnd() {
-            ToggleToolBar(getToolBar(), true);
         }
 
         function HidePDFActivex() {
@@ -196,17 +187,19 @@
                     }
                 }
 
+                if (!lastClickedNode) {
+                    var tree = getTreeView();
+                    lastClickedNode = tree.findNodeByAttribute("HasDownload", "true");
+                }
+
                 var isInvoice = node.get_attributes().getAttribute("IsInvoice");
                 if (isInvoice && isInvoice == "<%= True.ToString() %>") {
+                    node.highlight();
+                    lastClickedNode = node;
                     AjaxRequest(getAjaxManager(), "ViewerLight_LoadInvoiceStylesheets");
                     return;
                 }
 
-                if (lastClickedNode !== null) {
-                    lastClickedNode.unhighlight();
-                }
-                node.highlight();
-                lastClickedNode = node;
                 var viewLinkAttribute = node.get_attributes().getAttribute("ViewLink");
                 if (viewLinkAttribute) {
                     $get("pdfViewer").src = viewLinkAttribute;
@@ -214,6 +207,17 @@
                         var object = $("#pdfViewer").clone();
                         object.attr("data", viewLinkAttribute);
                         $("#pdfViewer").replaceWith(object);
+                    }
+                    if (lastClickedNode !== null) {
+                        lastClickedNode.unhighlight();
+                    }
+                    node.highlight();
+                    lastClickedNode = node;
+                } else {
+                    node.unhighlight();
+                    if (lastClickedNode !== null) {
+                        lastClickedNode.highlight();
+                        lastClickedNode.select();
                     }
                 }
             }
@@ -230,6 +234,21 @@
                 for (var i = 0; i < allNodes.length; i++) {
                     var node = allNodes[i];
                     node.set_checked(v);
+                }
+            }
+
+            var treeView = $find("<%= rtvListDocument.ClientID %>");
+
+            for (var i = 0; i < treeView.get_allNodes().length; i++) {
+                var node = treeView.get_allNodes()[i];
+
+                if (node.get_checked() == true && node.get_value() === "DOCUMENT") {
+                    $find("<%= Button_StartWorklow %>").set_enabled(true);
+                    break;
+                }
+
+                if (node.get_checked() == false && node.get_value() === "DOCUMENT") {
+                    $find("<%= Button_StartWorklow %>").set_enabled(false);
                 }
             }
         }
@@ -344,10 +363,55 @@
                 }
             }
         }
+
+        function SetWorkflowSessionStorage() {
+            var archiveChainId;
+            var archiveDocumentId;
+            var documentName;
+            var environment;
+            var dtos = [];
+            var environment_document_value = "3";
+            var treeView = $find("<%= rtvListDocument.ClientID %>");
+
+            for (var i = 0; i < treeView.get_allNodes().length; i++) {
+                var node = treeView.get_allNodes()[i];
+                if (node.get_checked() == false) {
+                    continue;
+                }
+                environment = node.get_attributes().getAttribute("Environment");
+
+                if (environment != environment_document_value) {
+                    continue;
+                }
+
+                archiveChainId = node.get_attributes().getAttribute("BiblosChainId");
+                archiveDocumentId = node.get_attributes().getAttribute("BiblosDocumentId");
+                documentName = node.get_attributes().getAttribute("BiblosDocumentName");
+
+                var dto = {
+                    ArchiveChainId: archiveChainId,
+                    ChainType: -1,
+                    ArchiveDocumentId: archiveDocumentId,
+                    ArchiveName: "",
+                    DocumentName: documentName,
+                    ReferenceDocument: null
+                };
+
+                dtos.push(dto);
+            }
+
+            $find("<%= Button_StartWorklow %>").set_enabled(true);
+            sessionStorage.setItem("DocumentsReferenceModel", JSON.stringify(dtos));
+        }
+
+        function DisplayViewer() {
+            document.getElementById("ctl00_cphContent_ViewerLight_PDFPane").style.display = "block";
+        }
     </script>
 
     <telerik:RadWindowManager EnableViewState="false" ID="RadWindowManager" runat="server">
         <Windows>
+            <telerik:RadWindow Height="450" ID="windowStartWorkflow" runat="server" Title="Avvia attività" Width="600" OnClientActivate="SetWorkflowSessionStorage" OnClientClose="DisplayViewer"/>
             <telerik:RadWindow ID="windowModifyPrivacyLevel" ReloadOnShow="false" runat="server" OnClientClose="CloseFunction" />
         </Windows>
     </telerik:RadWindowManager>
@@ -382,7 +446,7 @@
     </telerik:RadPane>
     <telerik:RadPane runat="server" Width="100%" Height="100%" Scrolling="None">
         <telerik:RadSplitter ID="RadPageSplitter" runat="server" Width="100%" Height="100%" BorderSize="0" ResizeWithParentPane="True" ResizeWithBrowserWindow="true">
-            <telerik:RadPane Collapsed="True" ID="LeftPane" runat="server" CssClass="PanePosition" Width="30%">
+            <telerik:RadPane Collapsed="True" ID="LeftPane" runat="server" CssClass="PanePosition">
                 <telerik:RadTreeView CssClass="TreeViewFullHeight DocumentTreeContainer rtvListDocumentContainerAligned" ID="rtvListDocument" OnClientNodeChecked="ClientNodeChecked" OnClientNodeClicked="ClientNodeClicked" runat="server" SingleExpandPath="False" />
                 <telerik:RadSplitter runat="server" ID="multiPages" Visible="false" Height="100%" Orientation="Horizontal">
                     <telerik:RadPane runat="server" Height="100%" Scrolling="Y">
@@ -396,9 +460,9 @@
                 </telerik:RadSplitter>
             </telerik:RadPane>
 
-            <telerik:RadSplitBar runat="server" />
+            <telerik:RadSplitBar runat="server" ID="SplitBar" />
 
-            <telerik:RadPane runat="server" CssClass="PDFContainer" ID="PDFPane" Scrolling="None" Width="70%" Height="100%">
+            <telerik:RadPane runat="server" CssClass="PDFContainer" ID="PDFPane" Scrolling="None" Height="100%">
                 <object id="pdfViewer" name="pdfViewer" type="application/pdf" width="100%" height="100%" style="display: block;">
                     <noembed>Your browser does not support embedded PDF files.</noembed>
                     <div>

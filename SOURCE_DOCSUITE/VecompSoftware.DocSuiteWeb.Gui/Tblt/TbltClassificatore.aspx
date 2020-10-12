@@ -3,6 +3,7 @@
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscFasciclePlan.ascx" TagName="uscFasciclePlan" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscSettori.ascx" TagName="Settori" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscCustomActionsRest.ascx" TagName="uscCustomActionsRest" TagPrefix="usc" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1" EnableViewState="false">
@@ -29,6 +30,8 @@
                 tbltClassificatore.fascicleContainerEnabled = <%= ProtocolEnv.FascicleContainerEnabled.ToString().ToLower() %>;
                 tbltClassificatore.metadataRepositoryEnabled = JSON.parse("<%=ProtocolEnv.MetadataRepositoryEnabled%>".toLowerCase());
                 tbltClassificatore.actionsToolbarId = "<%= ActionsToolbar.ClientID %>";
+                tbltClassificatore.uscCustomActionsRestId = "<%= uscCustomActionsRest.PageContent.ClientID %>";
+                tbltClassificatore.btnUpdateCustomActionsId = "<%= btnUpdateCustomActions.ClientID %>";
                 tbltClassificatore.initialize();
             });
 
@@ -143,76 +146,18 @@
                                 </telerik:RadToolBarButton>
                             </Items>
                         </telerik:RadToolBar>
-                        <telerik:RadToolBar AutoPostBack="false"
-                            CssClass="ToolBarContainer"
-                            RenderMode="Lightweight"
-                            EnableRoundedCorners="False"
-                            EnableShadows="False"
-                            ID="ActionsToolbar" runat="server" Width="100%">
+                        <telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="ActionsToolbar" runat="server" Width="100%">
                             <Items>
-                                <telerik:RadToolBarButton ID="btnAggiungi"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png"
-                                    AutoPostBack="false"
-                                    CommandName="AddCategory"
-                                    ToolTip="Aggiungi classificatore" />
-                                <telerik:RadToolBarButton ID="btnModifica"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png"
-                                    AutoPostBack="false"
-                                    CommandName="EditCategory"
-                                    ToolTip="Modifica classificatore"
-                                    Enabled="false" />
-                                <telerik:RadToolBarButton ID="btnElimina"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png"
-                                    AutoPostBack="false"
-                                    CommandName="DeleteCategory"
-                                    ToolTip="Elimina classificatore" 
-                                    Enabled="false" />
-                                <telerik:RadToolBarButton ID="btnRecovery"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/view_history.png"
-                                    AutoPostBack="false"
-                                    CommandName="RecoverCategory"
-                                    ToolTip="Recupera classificatore" 
-                                    Enabled="false" />
-                                <telerik:RadToolBarButton ID="btnLog"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_log.png"
-                                    AutoPostBack="false"
-                                    CommandName="LogCategory"
-                                    ToolTip="Log" 
-                                    Enabled="false" />
-                                <telerik:RadToolBarButton ID="btnMassimari"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/pencil_add.png"
-                                    AutoPostBack="false"
-                                    CommandName="AddMassimario"
-                                    ToolTip="Associa Massimario di scarto" 
-                                    Enabled="false" />
-                                <telerik:RadToolBarButton ID="btnMetadata"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/page_add.png"
-                                    AutoPostBack="false"
-                                    CommandName="AddMetadata"
-                                    ToolTip="Associa Metadati"
-                                    Enabled="false" />
+                                <telerik:RadToolBarButton ID="btnAggiungi" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" AutoPostBack="false" CommandName="AddCategory" ToolTip="Aggiungi classificatore" Text="Aggiungi"/>
+                                <telerik:RadToolBarButton ID="btnModifica" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" AutoPostBack="false" CommandName="EditCategory" ToolTip="Modifica classificatore" Enabled="false" Text="Modifica"/>
+                                <telerik:RadToolBarButton ID="btnElimina" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" AutoPostBack="false" CommandName="DeleteCategory" ToolTip="Elimina classificatore" Enabled="false" Text="Elimina"/>
+                                <telerik:RadToolBarButton ID="btnMassimari" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/pencil_add.png" AutoPostBack="false" CommandName="AddMassimario" ToolTip="Associa massimario di scarto" Enabled="false" Text="Scarto"/>
+                                <telerik:RadToolBarButton ID="btnRecovery" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/view_history.png" AutoPostBack="false" CommandName="RecoverCategory" ToolTip="Recupera classificatore" Enabled="false" Text="Recupera"/>
+                                <telerik:RadToolBarButton ID="btnMetadata" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/page_add.png" AutoPostBack="false" CommandName="AddMetadata" ToolTip="Associa metadati" Enabled="false" Text="Metadati"/>
+                                <telerik:RadToolBarButton ID="btnLog" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_log.png" AutoPostBack="false" CommandName="LogCategory" ToolTip="Log" Enabled="false" Text="Log"/>
                                 <telerik:RadToolBarButton IsSeparator="true" />
-                               <telerik:RadToolBarButton ID="btnRunFasciclePlan"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/fascicle_procedure.png"
-                                    AutoPostBack="false"
-                                    CommandName="RunFasciclePlan"
-                                    ToolTip="Attiva piano di procedimento" 
-                                    Enabled="false"/>
-                               <telerik:RadToolBarButton ID="btnCloseFasciclePlan"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/remove_fascicle.png"
-                                    AutoPostBack="false"
-                                    CommandName="CloseFasciclePlan"
-                                    ToolTip="Annulla piano di procedimento" 
-                                    Enabled="false"/>
+                               <telerik:RadToolBarButton ID="btnRunFasciclePlan" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/fascicle_procedure.png" AutoPostBack="false" CommandName="RunFasciclePlan" ToolTip="Attiva piano di procedimento" Enabled="false" Text="Attiva piano"/>
+                               <telerik:RadToolBarButton ID="btnCloseFasciclePlan" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/remove_fascicle.png" AutoPostBack="false" CommandName="CloseFasciclePlan" ToolTip="Annulla piano di procedimento" Enabled="false" Text="Anulla piano"/>
                             </Items>
                         </telerik:RadToolBar>
                         <telerik:RadTreeView ID="rtvCategories" LoadingStatusPosition="BeforeNodeText" OnClientNodeClicked="treeView_ClientNodeClicked" PersistLoadOnDemandNodes="false" OnClientNodeExpanding="treeView_ClientNodeExpanding" OnClientNodeExpanded="treeView_ClientNodeExpanded" runat="server" Style="margin-top: 10px;" Width="100%">
@@ -296,6 +241,20 @@
                         <asp:Panel runat="server" ID="pnlFasciclePlan" CssClass="dsw-panel">
                             <div class="dsw-panel-content">
                                 <usc:uscFasciclePlan runat="server" style="height: 100%; width: 100%; border: none 0;" ID="uscFascPlan" EditMode="true" />
+                            </div>
+                        </asp:Panel>
+                        <asp:Panel runat="server" ID="pnlCustomActions" CssClass="dsw-panel">
+                            <div class="dsw-panel-content">
+                                <telerik:RadPanelBar runat="server" AllowCollapseAllItems="true" ExpandMode="MultipleExpandedItems" Width="100%">
+                                    <Items>
+                                        <telerik:RadPanelItem Text="Azioni personalizzate" Expanded="true">
+                                            <ContentTemplate>
+                                                <usc:uscCustomActionsRest runat="server" ID="uscCustomActionsRest" IsSummary="true" />
+                                                <telerik:RadButton runat="server" ID="btnUpdateCustomActions" AutoPostBack="false" Text="Aggiorna" />
+                                            </ContentTemplate>
+                                        </telerik:RadPanelItem>
+                                    </Items>
+                                </telerik:RadPanelBar>
                             </div>
                         </asp:Panel>
                         <asp:Panel runat="server" ID="pnlDetails" CssClass="dsw-panel">

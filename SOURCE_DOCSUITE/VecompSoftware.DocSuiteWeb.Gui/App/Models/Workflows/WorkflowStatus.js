@@ -6,6 +6,7 @@ define(["require", "exports"], function (require, exports) {
         WorkflowStatus[WorkflowStatus["Suspended"] = 4] = "Suspended";
         WorkflowStatus[WorkflowStatus["Done"] = 8] = "Done";
         WorkflowStatus[WorkflowStatus["Error"] = 16] = "Error";
+        WorkflowStatus[WorkflowStatus["LogicalDelete"] = 32] = "LogicalDelete";
     })(WorkflowStatus || (WorkflowStatus = {}));
     return WorkflowStatus;
 });

@@ -14,7 +14,6 @@
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphContent">
-
     <telerik:RadSplitter runat="server" ID="Splitter1" Width="100%" Height="100%">
         <telerik:RadPane runat="server" ID="Pane1" Width="100%" Height="100%">
             <telerik:RadSplitter runat="server" Height="100%" Width="100%">
@@ -31,7 +30,7 @@
                                 </ItemTemplate>
                             </telerik:RadToolBarButton>
                             <telerik:RadToolBarButton IsSeparator="true" />
-                            <telerik:RadToolBarButton Text="Aggiorna" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
+                            <telerik:RadToolBarButton Text="Cerca" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
                         </Items>
                     </telerik:RadToolBar>
                     <telerik:RadToolBar AutoPostBack="false"
@@ -47,44 +46,29 @@
                                 ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png"
                                 AutoPostBack="false"
                                 CommandName="Add"
-                                ToolTip="Aggiungi gruppo" />
+                                ToolTip="Aggiungi gruppo"
+                                Text="Aggiungi"/>
                             <telerik:RadToolBarButton ID="btnRenameGroup"
                                 runat="server"
                                 ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png"
                                 AutoPostBack="false"
                                 CommandName="Rename"
-                                ToolTip="Rinomina gruppo" />
+                                ToolTip="Rinomina gruppo"
+                                Text="Modifica"/>
                             <telerik:RadToolBarButton ID="btnDeleteGroup"
                                 runat="server"
                                 ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png"
                                 AutoPostBack="false"
                                 CommandName="Delete"
-                                ToolTip="Elimina gruppo" />
+                                ToolTip="Elimina gruppo"
+                                Text="Elimina"/>
                             <telerik:RadToolBarButton ID="btnLogGroup"
                                 runat="server"
                                 ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_log.png"
                                 AutoPostBack="false"
                                 CommandName="Log"
-                                ToolTip="Log" />
-                            <telerik:RadToolBarButton IsSeparator="true" />
-                            <telerik:RadToolBarButton ID="btnAddUser"
-                                runat="server"
-                                ImageUrl="~/App_Themes/DocSuite2008/imgset16/user_add.png"
-                                AutoPostBack="false"
-                                CommandName="AddUser"
-                                ToolTip="Aggiungi utente" />
-                            <telerik:RadToolBarButton ID="btnDeleteUser"
-                                runat="server"
-                                ImageUrl="~/App_Themes/DocSuite2008/imgset16/user_delete.png"
-                                AutoPostBack="false"
-                                CommandName="DeleteUser"
-                                ToolTip="Elimina utente" />
-                            <telerik:RadToolBarButton ID="btnImportFrom"
-                                runat="server"
-                                ImageUrl="~/App_Themes/DocSuite2008/imgset16/copyleft.png"
-                                AutoPostBack="false"
-                                CommandName="CopyFromUser"
-                                ToolTip="Importa da gruppo" />
+                                ToolTip="Log"
+                                Text="Log"/>
                         </Items>
                     </telerik:RadToolBar>
                     <telerik:RadTreeView ID="RadTreeViewGroups" 

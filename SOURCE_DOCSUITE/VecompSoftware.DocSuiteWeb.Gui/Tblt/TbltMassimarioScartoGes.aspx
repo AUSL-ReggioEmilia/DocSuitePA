@@ -15,14 +15,11 @@
                     tbltMassimarioScartoGes.splitterPageId = "<%= splContent.ClientID %>";
                     tbltMassimarioScartoGes.lblConservationPeriodId = "<%= lblConservationPeriod.ClientID %>";
                     tbltMassimarioScartoGes.pnlDetailsId = "<%= pnlDetails.ClientID %>";
-                    tbltMassimarioScartoGes.btnAggiungiId = "<%= btnAggiungi.ClientID %>";
-                    tbltMassimarioScartoGes.btnModificaId = "<%= btnModifica.ClientID %>";
-                    tbltMassimarioScartoGes.btnAnnullaId = "<%= btnAnnulla.ClientID %>";
+                    tbltMassimarioScartoGes.folderToolBarId = "<%= uscMassimarioScarto.FolderToolBar_Grid.ClientID %>";
                     tbltMassimarioScartoGes.txtNameId = "<%= txtName.ClientID %>";
                     tbltMassimarioScartoGes.txtCodeId = "<%= txtCode.ClientID %>";
                     tbltMassimarioScartoGes.txtNoteId = "<%= txtNote.ClientID %>";
                     tbltMassimarioScartoGes.btnInfiniteId = "<%= btnInfinite.ClientID %>";
-                    tbltMassimarioScartoGes.btnRecoverId = "<%= btnRecover.ClientID %>";
                     tbltMassimarioScartoGes.txtPeriodId = "<%= txtPeriod.ClientID %>";
                     tbltMassimarioScartoGes.btnSaveMassimarioId = "<%= btnSaveMassimario.ClientID %>";
                     tbltMassimarioScartoGes.rwEditMassimarioId = "<%= rwEditMassimario.ClientID %>";
@@ -172,11 +169,4 @@
         </telerik:RadSplitter>
     </div>
      <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
-</asp:Content>
-
-<asp:Content ContentPlaceHolderID="cphFooter" runat="server">
-    <telerik:RadButton ID="btnAggiungi" runat="server" Text="Aggiungi" UseSubmitBehavior="false" CausesValidation="false" />
-    <telerik:RadButton Enabled="false" ID="btnModifica" runat="server" UseSubmitBehavior="false" Text="Modifica" />
-    <telerik:RadButton Enabled="false" ID="btnAnnulla" runat="server" UseSubmitBehavior="false" Text="Elimina" />
-    <telerik:RadButton Enabled="false" ID="btnRecover" runat="server" UseSubmitBehavior="false" Text="Recupera" />
 </asp:Content>

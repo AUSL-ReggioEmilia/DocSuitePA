@@ -242,6 +242,10 @@ body, html {
     display: inline-block;
 }
 
+.dsw-display-block {
+    display: block;
+}
+
 .dsw-vertical-middle {
     vertical-align: middle;
 }
@@ -1147,7 +1151,7 @@ span.RadInput.RadInput_Office2007 textarea {
     [33. RadSearchBox]
 */
 
-.RadSearchBox input:hover{
+.RadSearchBox input:hover {
     border: 0 !important;
 }
 
@@ -1400,9 +1404,17 @@ tr.titolo {
     margin-bottom: 60px;
 }
 
-.intro-panel {
-    margin-top: 40px;
-}
+    .topLogo img {
+        width: 40%;
+        border-radius: 8px;
+        box-shadow: 0 8px 6px -6px rgba(0,0,0,.10);
+        height: auto;
+        padding-bottom: 25px;
+    }
+
+    .intro-panel {
+        margin-bottom: 20px;
+    }
 
 .intro-button {
     position: absolute;
@@ -1557,6 +1569,44 @@ table.monitorLog td.label {
 
 .labelPadding-7 {
     padding-left: 7%;
+}
+
+.add-icon {
+    visibility: hidden;
+    background-image: none !important;
+}
+
+    .add-icon > input {
+        background: url(../App_Themes/DocSuite2008/images/search-transparent.png) !important;
+        background-repeat: no-repeat !important;
+        margin-left: 2px !important;
+        margin-top: 2px !important;
+        padding-left: 21px !important;
+        font-size: 13px !important;
+        line-height: 8px !important;
+    }
+
+.draggable-icon {
+    margin-right: 0 !important;
+    float: right;
+    height: 3% !important;
+    width: 17px !important;
+}
+
+.error-tree-node {
+    color: red;
+}
+
+.text-black {
+    color: black !important;
+}
+
+.text-red{
+    color: red !important;
+}
+
+div.RadTreeView_Office2007 .rtIn.font_node {
+    font-weight: bold;
 }
 
 /*

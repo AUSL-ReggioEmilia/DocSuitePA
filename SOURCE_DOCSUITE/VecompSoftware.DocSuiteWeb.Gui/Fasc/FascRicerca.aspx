@@ -12,6 +12,34 @@
                     e.preventDefault();
                 }
             });
+
+            $(document).ready(function() {
+                var btnSearch = $find("<%= btnSearch.ClientID %>");
+                btnSearch.add_clicked(btnSearch_onClick);
+            });
+
+            function btnSearch_onClick() {
+                var ajaxModel = {};
+                ajaxModel.ActionName = "Search";
+                ajaxModel.Value = [];
+
+                var uscMetadataRepositorySel = $("#<%= uscFascicleFinder.UscMetadataRepositorySelId %>").data();
+                if (!jQuery.isEmptyObject(uscMetadataRepositorySel)) {
+                    var metadataResult = uscMetadataRepositorySel.getMetadataFilterValues();
+                    var metadataValue = metadataResult[0],
+                        metadataFinderModels = metadataResult[1],
+                        metadataValuesAreValid = metadataResult[2];
+
+                    if (!metadataValuesAreValid) {
+                        alert("Alcuni valori di metadati non sono validi");
+                        return;
+                    }                    
+                    ajaxModel.Value.push(metadataValue);
+                    ajaxModel.Value.push(JSON.stringify(metadataFinderModels));
+                }
+
+                $find("<%= AjaxManager.ClientID %>").ajaxRequest(JSON.stringify(ajaxModel));
+            }
         </script>
     </telerik:RadScriptBlock>
     <telerik:RadPageLayout runat="server" HtmlTag="Div" ID="pageContent" Height="100%">
@@ -26,5 +54,5 @@
 </asp:Content>
 
 <asp:Content ID="Content1" runat="server" ContentPlaceHolderID="cphFooter">
-    <telerik:RadButton ID="btnSearch" Text="Ricerca" Width="150px" runat="server" TabIndex="1" />
+    <telerik:RadButton ID="btnSearch" Text="Ricerca" Width="150px" runat="server" TabIndex="1" AutoPostBack="false" />
 </asp:Content>

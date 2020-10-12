@@ -26,8 +26,8 @@ Public Class UnifiedDiaryFacade
 
 #Region "Methods"
 
-    Public Function GetEntitiesLastLogs(ByVal fromDate As Date, ByVal toDate As Date, ByVal userName As String, Optional type As Integer? = Nothing, Optional subject As String = "") As IList(Of UnifiedDiary)
-        _lastResult = _dao.GetLastLogsEntities(type, fromDate, toDate.AddDays(1).AddSeconds(-1), userName, subject)
+    Public Function GetEntitiesLastLogs(ByVal fromDate As Date, ByVal toDate As Date, ByVal userName As String, currentTenantAOOId As Guid, Optional type As Integer? = Nothing, Optional subject As String = "") As IList(Of UnifiedDiary)
+        _lastResult = _dao.GetLastLogsEntities(type, fromDate, toDate.AddDays(1).AddSeconds(-1), userName, currentTenantAOOId, subject)
         Dim cc As String
         'ATTENZIONE SERVE PER IMPEDIRE L'ERRORE DI NO-SESSION/LASY LOADING ERROR DURANTE LA PAGINAZIONE DELLA GRID.
         For Each log As UnifiedDiary In _lastResult
@@ -51,12 +51,12 @@ Public Class UnifiedDiaryFacade
         Return _lastResult
     End Function
 
-    Public Function GetEntityLogDetails(ByVal type As Integer, ByVal fromDate As Date, ByVal toDate As Date, ByVal userName As String, ByVal idEntity As Integer, udsId As Guid?) As IList(Of UnifiedDiary)
-        Return GetEntityLogDetails(type, fromDate, toDate.AddDays(1).AddSeconds(-1), userName, idEntity, Nothing, udsId)
+    Public Function GetEntityLogDetails(ByVal type As Integer, ByVal fromDate As Date, ByVal toDate As Date, ByVal userName As String, ByVal idEntity As Integer, udsId As Guid?, currentTenantAOOId As Guid) As IList(Of UnifiedDiary)
+        Return GetEntityLogDetails(type, fromDate, toDate.AddDays(1).AddSeconds(-1), userName, idEntity, Nothing, udsId, currentTenantAOOId)
     End Function
 
-    Public Function GetEntityLogDetails(ByVal type As Integer, ByVal fromDate As Date, ByVal toDate As Date, ByVal userName As String, ByVal year As Integer, ByVal number As Integer?, udsId As Guid?) As IList(Of UnifiedDiary)
-        _lastResult = _dao.GetLogDetailsByEntity(type, fromDate, toDate.AddDays(1).AddSeconds(-1), userName, year, number, udsId)
+    Public Function GetEntityLogDetails(ByVal type As Integer, ByVal fromDate As Date, ByVal toDate As Date, ByVal userName As String, ByVal year As Integer, ByVal number As Integer?, udsId As Guid?, currentTenantAOOId As Guid) As IList(Of UnifiedDiary)
+        _lastResult = _dao.GetLogDetailsByEntity(type, fromDate, toDate.AddDays(1).AddSeconds(-1), userName, year, number, udsId, currentTenantAOOId)
         Return _lastResult
     End Function
 

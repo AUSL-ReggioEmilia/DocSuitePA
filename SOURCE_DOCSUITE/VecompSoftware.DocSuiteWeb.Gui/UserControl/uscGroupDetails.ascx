@@ -85,9 +85,48 @@
 </telerik:RadWindowManager>
 
 <asp:Panel runat="server" ID="pnlDetail" Style="visibility: hidden">
+                        <telerik:RadToolBar AutoPostBack="false"
+                            CssClass="ToolBarContainer"
+                            RenderMode="Lightweight"
+                            EnableRoundedCorners="False"
+                            EnableShadows="False"
+                            OnClientButtonClicked="toolbarbtn_Clicked"
+                            ID="ActionsToolbar" runat="server" Width="100%">
+                            <Items>
+                                <telerik:RadToolBarButton ID="btnAddUser"
+                                    runat="server"
+                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/user_add.png"
+                                    AutoPostBack="false"
+                                    CommandName="AddUser"
+                                    ToolTip="Aggiungi utente"
+                                    Text="Aggiungi"
+                                    Value="addUser"/>
+                                <telerik:RadToolBarButton ID="btnDeleteUser"
+                                    runat="server"
+                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/user_delete.png"
+                                    AutoPostBack="false"
+                                    CommandName="DeleteUser"
+                                    ToolTip="Elimina utente"
+                                    Text="Elimina"
+                                    value="deleteUser"/>
+                                <telerik:RadToolBarButton ID="btnImportFrom"
+                                    runat="server"
+                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/copyleft.png"
+                                    AutoPostBack="false"
+                                    CommandName="CopyFromUser"
+                                    ToolTip="Importa da gruppo"
+                                    Text="Importa"
+                                    value="importUser"/>
+                            </Items>
+                        </telerik:RadToolBar>
     <telerik:RadPanelBar runat="server" AllowCollapseAllItems="true" ExpandMode="MultipleExpandedItems" Width="100%" ID="rpbGroups">
         <Items>
-            <telerik:RadPanelItem Value="rpiUsers" Text="Utenti" Expanded="true" runat="server">
+            <telerik:RadPanelItem Value="rpiToolbar" runat="server" Visible="false">
+                <ContentTemplate>
+                    
+                </ContentTemplate>
+            </telerik:RadPanelItem>
+            <telerik:RadPanelItem Value="rpiUsers" Text="Utenti" Expanded="true" runat="server" Visible="false">
                 <ContentTemplate>
                     <telerik:RadTreeView ID="RadTreeViewUsers" MultipleSelect="true" CheckBoxes="True" OnClientContextMenuItemClicked="currentUscGroupDetailsScripts.ContextMenuItemClicked_Users" OnClientContextMenuShowing="currentUscGroupDetailsScripts.ContextMenuShowing_Users" runat="server">
                         <ContextMenus>
@@ -102,9 +141,9 @@
                     </telerik:RadTreeView>
                 </ContentTemplate>
             </telerik:RadPanelItem>
-            <telerik:RadPanelItem Text="Contenitori" Expanded="true">
+            <telerik:RadPanelItem Text="Contenitori" Expanded="true" Value="rpiContainers" Visible="false">
                 <ContentTemplate>
-                    <telerik:RadGrid runat="server" ID="grdContainers" AllowMultiRowSelection="true" AutoGenerateColumns="False" Style="margin-top: 2px;" GridLines="none" ItemStyle-BackColor="LightGray" expa>
+                    <telerik:RadGrid runat="server" ID="grdContainers" AllowMultiRowSelection="true" AutoGenerateColumns="False" Style="margin-top: 2px;" GridLines="none" ItemStyle-BackColor="LightGray">
                         <MasterTableView Width="100%" DataKeyNames="id" NoMasterRecordsText="Nessun contenitore presente">
                             <DetailTables>
                                 <telerik:GridTableView runat="server" Width="100%" ShowHeader="false" AlternatingItemStyle-BackColor="WhiteSmoke" ItemStyle-BackColor="Snow" ItemStyle-BorderWidth="2px">
@@ -129,7 +168,7 @@
                 </ContentTemplate>
             </telerik:RadPanelItem>
 
-            <telerik:RadPanelItem Text="Settori" Expanded="true">
+            <telerik:RadPanelItem Text="Settori" Expanded="true" Value="rpiRoles" Visible="false">
                 <ContentTemplate>
                     <telerik:RadGrid runat="server" ID="grdRoles" AllowMultiRowSelection="true" ClientSettings-Selecting-AllowRowSelect="true" AutoGenerateColumns="False" Style="margin-top: 2px;" GridLines="none" ItemStyle-BackColor="LightGray" expa>
                         <MasterTableView Width="100%" DataKeyNames="id" NoMasterRecordsText="Nessun settore presente">

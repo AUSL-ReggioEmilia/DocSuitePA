@@ -61,7 +61,7 @@ class DossierMiscellanea extends DossierBase {
     /**
     *------------------------- Events -----------------------------
     */
-    btnUploadDocument_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnUploadDocument_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         let uscMiscellanea: UscMiscellanea = <UscMiscellanea>$("#".concat(this.uscMiscellaneaId)).data();
         if (!jQuery.isEmptyObject(uscMiscellanea)) {
             let url: string = '../UserControl/CommonSelMiscellanea.aspx?Action=Add&Type=Dossier&IdLocation='.concat(this.locationId,'&ArchiveName=', this.archiveName);

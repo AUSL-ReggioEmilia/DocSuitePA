@@ -10,6 +10,7 @@ Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Tenants
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Model.Documents.Signs
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Analytics.Models.AdaptiveSearches
@@ -25,6 +26,7 @@ Public Class uscUserProfile
     Private Const PAGE_TITLE_FORMAT As String = "Configurazione profilo dell'utente {0}"
     Private Const USER_CONFIGURATION_TAB_NAME As String = "UserConfigurationTab"
     Private Const ADAPTIVE_PROTOCOL_SEARCH_TAB_NAME As String = "AdaptiveProtSearchConfigurationTab"
+
     Dim _currentADEmail As String
     Private _currentUserLog As UserLog
     Private _adaptiveSearchControls As ICollection(Of AdaptiveSearchMappingControl)
@@ -35,7 +37,13 @@ Public Class uscUserProfile
     Private ReadOnly Property CurrentADEmail As String
         Get
             If String.IsNullOrEmpty(_currentADEmail) Then
-                _currentADEmail = Facade.UserLogFacade.EmailOfUser(Account.Split("\"c)(1), Account.Split("\"c)(0), False)
+                Dim domain As String = DocSuiteContext.Current.CurrentDomainName
+                Dim username As String = Account
+                If Account.Contains("\"c) Then
+                    domain = Account.Split("\"c)(0)
+                    username = Account.Split("\"c)(1)
+                End If
+                _currentADEmail = Facade.UserLogFacade.EmailOfUser(username, domain, False)
             End If
             Return _currentADEmail
         End Get
@@ -44,7 +52,7 @@ Public Class uscUserProfile
     Private ReadOnly Property CurrentUserLog As UserLog
         Get
             If _currentUserLog Is Nothing Then
-                _currentUserLog = Facade.UserLogFacade.GetByUser(Account.Split("\"c)(1), Account.Split("\"c)(0))
+                _currentUserLog = Facade.UserLogFacade.GetByUser(Account)
             End If
             Return _currentUserLog
         End Get
@@ -108,33 +116,29 @@ Public Class uscUserProfile
         InitializeAjax()
         If Not Page.IsPostBack Then
             Initialize()
-            If ProtocolEnv.MultiTenantEnabled Then
-                LoadUserTenants()
-            End If
+            LoadUserTenants()
         End If
         If ProtocolEnv.SMSPecNotificationEnabled AndAlso ProtocolEnv.SMSUserProfileReadOnly AndAlso Not String.IsNullOrEmpty(txtMobilePhone.Text) Then
             txtMobilePhone.Enabled = False
         End If
-        If SignSaveModalityDisabled Then
+
+        If SignSaveModalityDisabled OrElse ProtocolEnv.RemoteSignDelegateEnabled Then
             rlbSignSaveModality.SelectedValue = "2"
             rlbSignSaveModality.Enabled = False
         End If
     End Sub
 
-    Protected Sub ChangeCompany(sender As Object, e As DropDownListEventArgs)
+    Protected Sub rlbSelectCompany_ItemSelected(sender As Object, e As DropDownListEventArgs) Handles rlbSelectCompany.ItemSelected
         CurrentUserLog.CurrentTenantId = New Guid(e.Value)
         Try
             Facade.UserLogFacade.Update(CurrentUserLog)
             Dim tenantFacade As TenantFacade = New TenantFacade()
             CurrentTenant = tenantFacade.GetCurrentTenant()
-
-            FrameSet.CompanyName = e.Text
             ScriptManager.RegisterClientScriptBlock(Page, GetType(Page), "changeCompany", String.Format("changeCompanyDisplay('{0}');", MakeReload), True)
         Catch ex As Exception
             FileLogger.Error(LoggerName, "ConsoleUser: Errore nell'inserimento dati in UserLog", ex)
             AjaxAlert("Errore nel salvataggio dati utente")
         End Try
-
     End Sub
 
     Private Sub BtnSalva_Click(sender As Object, e As EventArgs) Handles btnSalva.Click
@@ -156,21 +160,19 @@ Public Class uscUserProfile
 
                 Dim selectedControls As ICollection(Of String) = treeControls.CheckedNodes.Select(Function(d) d.Value).ToList()
                 model.AddSafe(UserLogFacade.PROTOCOL_ADAPTIVE_SEARCH_KEY, selectedControls)
-
                 If Not String.IsNullOrEmpty(CurrentUserLog.AdaptiveSearchEvaluated) Then
                     Dim evaluatedModel As IDictionary(Of String, UserSearchModel) = JsonConvert.DeserializeObject(Of IDictionary(Of String, UserSearchModel))(CurrentUserLog.AdaptiveSearchEvaluated)
                     If evaluatedModel.ContainsKey(UserLogFacade.PROTOCOL_ADAPTIVE_SEARCH_KEY) Then
                         evaluatedModel(UserLogFacade.PROTOCOL_ADAPTIVE_SEARCH_KEY).SearchControls = evaluatedModel(UserLogFacade.PROTOCOL_ADAPTIVE_SEARCH_KEY).SearchControls _
-                                                                                                .Where(Function(x) selectedControls.Contains(x.Key)) _
-                                                                                                .Select(Function(s) New With {.Key = s.Key, .Value = s.Value}) _
-                                                                                                .ToDictionary(Function(d) d.Key, Function(d) d.Value)
+                                                                                            .Where(Function(x) selectedControls.Contains(x.Key)) _
+                                                                                            .Select(Function(s) New With {.Key = s.Key, .Value = s.Value}) _
+                                                                                            .ToDictionary(Function(d) d.Key, Function(d) d.Value)
 
                         evaluatedModel(UserLogFacade.PROTOCOL_ADAPTIVE_SEARCH_KEY).CreatedDate = DateTime.UtcNow.Date
                         CurrentUserLog.AdaptiveSearchEvaluated = JsonConvert.SerializeObject(evaluatedModel)
                     End If
                 End If
                 CurrentUserLog.DefaultAdaptiveSearchControls = JsonConvert.SerializeObject(model)
-
             End If
         End If
 
@@ -207,9 +209,14 @@ Public Class uscUserProfile
     Protected Sub btnChangePassword_Click(sender As Object, e As EventArgs) Handles btnChangePassword.Click
         Page.Validate("changePassordValidatorGroup")
         If Not Page.IsValid Then AjaxAlert("Errore nella validazione dei dati")
-
         Try
-            Dim pwdChanged As Boolean = CommonAD.ChangeAdUserPassword(Account.Split("\"c)(1), Account.Split("\"c)(0), txtOldPassword.Text, txtNewPassword.Text)
+            Dim domain As String = DocSuiteContext.Current.CurrentDomainName
+            Dim username As String = Account
+            If Account.Contains("\"c) Then
+                domain = Account.Split("\"c)(0)
+                username = Account.Split("\"c)(1)
+            End If
+            Dim pwdChanged As Boolean = CommonAD.ChangeAdUserPassword(username, domain, txtOldPassword.Text, txtNewPassword.Text)
             If pwdChanged Then
                 AjaxAlert("Password modificata con successo. Eseguire nuovamente l'accesso al PC.")
             Else
@@ -228,16 +235,15 @@ Public Class uscUserProfile
     Protected Sub rlbSignType_SelectedIndexChanged(sender As Object, e As DropDownListEventArgs) Handles rlbSignType.SelectedIndexChanged
         ChangeSelectedSignType(False)
     End Sub
-
 #End Region
 
 #Region "Methods"
-
     Private Sub Initialize()
         If CurrentUserLog Is Nothing Then
-            FileLogger.Warn(LoggerName, String.Format("Utente {0} non configurato in UserLog. Creo l'utente in fase di inizializzazione.", Account.Split("\"c)(1)))
+            FileLogger.Warn(LoggerName, String.Format("Utente {0} non configurato in UserLog. Creo l'utente in fase di inizializzazione.", Account))
             Dim userLog As UserLog = New UserLog With {
-                .Id = Account
+                .Id = Account,
+                .CurrentTenantId = Guid.Empty
             }
             Facade.UserLogFacade.Save(userLog)
             _currentUserLog = Nothing
@@ -255,11 +261,16 @@ Public Class uscUserProfile
         txtEmail.ReadOnly = mailExist AndAlso Not ProtocolEnv.EnableUserProfile
 
         btnRetrieveADEmail.Visible = ProtocolEnv.EnableUserProfile
-
         btnSalva.Enabled = (Not mailExist OrElse ProtocolEnv.EnableUserProfile) OrElse ProtocolEnv.SMSPecNotificationEnabled OrElse ProtocolEnv.ProtocolSearchAdaptiveEnabled
 
         If ProtocolEnv.SMSPecNotificationEnabled Then
-            txtMobilePhone.Text = Facade.UserLogFacade.MobilePhoneOfUser(Account.Split("\"c)(1), Account.Split("\"c)(0))
+            Dim domain As String = DocSuiteContext.Current.CurrentDomainName
+            Dim username As String = Account
+            If Account.Contains("\"c) Then
+                domain = Account.Split("\"c)(0)
+                username = Account.Split("\"c)(1)
+            End If
+            txtMobilePhone.Text = Facade.UserLogFacade.MobilePhoneOfUser(username, domain)
         End If
 
         pnlPasswordChange.Visible = ProtocolEnv.UserChangePasswordEnabled
@@ -284,7 +295,6 @@ Public Class uscUserProfile
                 rlbSignType.FindItemByValue("1").Remove()
                 rlbSignType.FindItemByValue("3").Remove()
             End If
-
         End If
 
         If Not ProtocolEnv.EnableUserProfile Then
@@ -306,18 +316,16 @@ Public Class uscUserProfile
     Private Sub HandleSignOptionSave()
         Dim signOption As RemoteSignProperty = New RemoteSignProperty()
 
-        If CurrentUserLog.UserProfile IsNot Nothing Then
+        If CurrentUserLog.UserProfile IsNot Nothing AndAlso cbSignDefault.Checked Then
             Dim currentUserProfile As Model.Documents.Signs.UserProfile = JsonConvert.DeserializeObject(Of Model.Documents.Signs.UserProfile)(CurrentUserLog.UserProfile)
-
             For Each userProfileRemoteSignProperty As RemoteSignProperty In currentUserProfile.Value.Values
                 userProfileRemoteSignProperty.IsDefault = False
             Next
-
             CurrentUserLog.UserProfile = JsonConvert.SerializeObject(currentUserProfile)
         End If
 
         signOption.IsDefault = cbSignDefault.Checked
-
+        RemoveSignDelegations()
         Select Case rlbSignType.SelectedValue
             Case "1", "2"
                 signOption.Alias = txtSignAlias.Text
@@ -347,7 +355,10 @@ Public Class uscUserProfile
                     signOption.CustomProperties.Add(RemoteSignProperty.ARUBA_OTP_AUTHTYPE, txtArubaOTPAuthType.Text)
                     signOption.CustomProperties.Add(RemoteSignProperty.ARUBA_USER, txtArubaUser.Text)
                     signOption.OTP = txtArubaOTPPassword.Text
+                    signOption.Alias = txtArubaUser.Text
                 End If
+                signOption.Delegations = RemoteDelegations()
+                signOption.BeenDelegated = RemoteBeenDelegated()
         End Select
 
         Dim userProfile As Model.Documents.Signs.UserProfile
@@ -374,12 +385,142 @@ Public Class uscUserProfile
         CurrentUserLog.UserProfile = JsonConvert.SerializeObject(userProfile)
     End Sub
 
+    Private Sub RemoveSignDelegations()
+        Dim newListRemoteDelegate As IList(Of ContactDTO) = uscRemoteDelegations.GetContacts(True)
+        Dim listRemoteDelegateToRemove As IDictionary(Of String, DelegateUser) = Nothing
+        Dim userProfile As Model.Documents.Signs.UserProfile
+        Dim provider As ProviderSignType = CType(Convert.ToInt32(rlbSignType.SelectedValue), ProviderSignType)
+        If Not String.IsNullOrEmpty(CurrentUserLog.UserProfile) Then
+            userProfile = JsonConvert.DeserializeObject(Of Model.Documents.Signs.UserProfile)(CurrentUserLog.UserProfile)
+            userProfile.DefaultProvider = provider
+            Dim existingSignOption As KeyValuePair(Of ProviderSignType, RemoteSignProperty)? = Nothing
+            If userProfile.Value.Any(Function(x) x.Key = provider) Then
+                existingSignOption = userProfile.Value.First(Function(x) x.Key = provider)
+            End If
+            If existingSignOption.HasValue Then
+                If Not existingSignOption.Value.Value.Delegations Is Nothing Then
+                    listRemoteDelegateToRemove = existingSignOption.Value.Value.Delegations
+                    For Each contactDTO As ContactDTO In newListRemoteDelegate
+                        listRemoteDelegateToRemove.Remove(contactDTO.Contact.Code)
+                    Next
+                End If
+            End If
+            If Not listRemoteDelegateToRemove Is Nothing Then
+                For Each contactDelegate As KeyValuePair(Of String, DelegateUser) In listRemoteDelegateToRemove
+                    Dim delegateUser As UserLog = Facade.UserLogFacade.GetByUser(contactDelegate.Key)
+                    Dim delegateUserProfile As Model.Documents.Signs.UserProfile
+                    Dim delegateUserprovider As ProviderSignType = CType(Convert.ToInt32(rlbSignType.SelectedValue), ProviderSignType)
+                    If Not String.IsNullOrEmpty(delegateUser.UserProfile) Then
+                        delegateUserProfile = JsonConvert.DeserializeObject(Of Model.Documents.Signs.UserProfile)(delegateUser.UserProfile)
+                        If delegateUserProfile.Value.Any(Function(x) x.Key = delegateUserprovider) Then
+                            existingSignOption = delegateUserProfile.Value.First(Function(x) x.Key = delegateUserprovider)
+                            If existingSignOption.HasValue Then
+                                If Not existingSignOption.Value.Value.BeenDelegated Is Nothing Then
+                                    Dim userListRemoteDelegate As IDictionary(Of String, DelegateUser) = existingSignOption.Value.Value.BeenDelegated
+                                    userListRemoteDelegate.Remove(DocSuiteContext.Current.User.FullUserName)
+                                    existingSignOption.Value.Value.BeenDelegated = userListRemoteDelegate
+                                    delegateUserProfile.Value(existingSignOption.Value.Key) = existingSignOption.Value.Value
+                                End If
+                            End If
+                        End If
+                        delegateUser.UserProfile = JsonConvert.SerializeObject(delegateUserProfile)
+                        Facade.UserLogFacade.Update(delegateUser)
+                    End If
+                Next
+            End If
+        End If
+    End Sub
+
+    Private Function RemoteBeenDelegated() As IDictionary(Of String, DelegateUser)
+        Dim userProfile As Model.Documents.Signs.UserProfile = JsonConvert.DeserializeObject(Of Model.Documents.Signs.UserProfile)(CurrentUserLog.UserProfile)
+        Dim provider As ProviderSignType = CType(Convert.ToInt32(rlbSignType.SelectedValue), ProviderSignType)
+        Dim remoteSingFromDelegate As IDictionary(Of String, DelegateUser) = Nothing
+        Dim existingSignOption As KeyValuePair(Of ProviderSignType, RemoteSignProperty)? = Nothing
+        If userProfile.Value.Any(Function(x) x.Key = provider) Then
+            existingSignOption = userProfile.Value.First(Function(x) x.Key = provider)
+            If existingSignOption.HasValue Then
+                If Not existingSignOption.Value.Value.BeenDelegated Is Nothing Then
+                    remoteSingFromDelegate = existingSignOption.Value.Value.BeenDelegated
+                End If
+            End If
+        End If
+        Return remoteSingFromDelegate
+    End Function
+
+    Private Function RemoteDelegations() As IDictionary(Of String, DelegateUser)
+        Dim dicDelegateUser As New Dictionary(Of String, DelegateUser)
+        Dim whoDelegate As New DelegateUser
+        whoDelegate.Account = DocSuiteContext.Current.User.FullUserName
+        whoDelegate.DisplayName = DocSuiteContext.Current.User.UserName
+        For Each contact As ContactDTO In uscRemoteDelegations.GetContacts(True)
+            Dim contactDelegateModel As New DelegateUser
+            contactDelegateModel.Account = contact.Contact.Code
+            contactDelegateModel.DisplayName = contact.Contact.Description
+            contactDelegateModel.DelegatedByUser = DocSuiteContext.Current.User.FullUserName
+            dicDelegateUser.Add(contact.Contact.Code, contactDelegateModel)
+
+            Dim delegateUser As UserLog = Facade.UserLogFacade.GetByUser(contact.Contact.Code)
+            Dim delegateUserProfile As Model.Documents.Signs.UserProfile
+            Dim delegateUserprovider As ProviderSignType = CType(Convert.ToInt32(rlbSignType.SelectedValue), ProviderSignType)
+            Dim existingSignOption As KeyValuePair(Of ProviderSignType, RemoteSignProperty)? = Nothing
+            Dim listDelegateFromUserModel As IDictionary(Of String, DelegateUser)
+
+            If String.IsNullOrEmpty(delegateUser.UserProfile) Then
+                delegateUserProfile = New Model.Documents.Signs.UserProfile
+                delegateUserProfile.Value = New Dictionary(Of ProviderSignType, RemoteSignProperty)()
+                delegateUserProfile.DefaultProvider = delegateUserprovider
+                AddDelegateCustomProperty(whoDelegate, delegateUserProfile, delegateUserprovider)
+            Else
+                delegateUserProfile = JsonConvert.DeserializeObject(Of Model.Documents.Signs.UserProfile)(delegateUser.UserProfile)
+                If delegateUserProfile.Value.Any(Function(x) x.Key = delegateUserprovider) Then
+                    existingSignOption = delegateUserProfile.Value.First(Function(x) x.Key = delegateUserprovider)
+                End If
+                If existingSignOption.HasValue Then
+                    If existingSignOption.Value.Value.BeenDelegated Is Nothing Then
+                        listDelegateFromUserModel = New Dictionary(Of String, DelegateUser)
+                        listDelegateFromUserModel.Add(whoDelegate.Account, whoDelegate)
+                        existingSignOption.Value.Value.BeenDelegated = listDelegateFromUserModel
+                    Else
+                        listDelegateFromUserModel = existingSignOption.Value.Value.BeenDelegated
+                        If Not listDelegateFromUserModel.ContainsKey(whoDelegate.Account) Then
+                            listDelegateFromUserModel.Add(whoDelegate.Account, whoDelegate)
+                        End If
+                    End If
+                    existingSignOption.Value.Value.BeenDelegated = listDelegateFromUserModel
+                    delegateUserProfile.Value(existingSignOption.Value.Key) = existingSignOption.Value.Value
+                Else
+                    AddDelegateCustomProperty(whoDelegate, delegateUserProfile, delegateUserprovider)
+                End If
+            End If
+            delegateUser.UserProfile = JsonConvert.SerializeObject(delegateUserProfile)
+            Facade.UserLogFacade.Update(delegateUser)
+        Next
+        Return dicDelegateUser
+    End Function
+
+    Private Sub AddDelegateCustomProperty(whoDelegate As DelegateUser, ByRef delegateUserProfile As Model.Documents.Signs.UserProfile, delegateUserprovider As ProviderSignType)
+        Dim dicDelegateUser As New Dictionary(Of String, DelegateUser)
+        dicDelegateUser.Add(whoDelegate.Account, whoDelegate)
+        Dim signOptionDelegate As RemoteSignProperty = New RemoteSignProperty()
+        signOptionDelegate.OTPType = CType(Convert.ToInt32(rlbOTPType.SelectedValue), OTPType)
+        signOptionDelegate.BeenDelegated = dicDelegateUser
+        delegateUserProfile.Value.Add(delegateUserprovider, signOptionDelegate)
+    End Sub
+
     Private Sub SetValuesForDefaultSignType(defaultSignType As KeyValuePair(Of ProviderSignType, RemoteSignProperty)?)
         If Not defaultSignType.HasValue OrElse (defaultSignType.HasValue AndAlso defaultSignType.Value.Value Is Nothing) Then
+            uscRemoteDelegations.DataSource = Nothing
+            uscRemoteBeenDelegated.DataSource = Nothing
+            uscRemoteDelegations.DataBind()
+            uscRemoteBeenDelegated.DataBind()
+
             txtSignAlias.Text = String.Empty
             txtSignPin.Text = String.Empty
             txtSignPassword.Text = String.Empty
             cbSignDefault.Checked = False
+            If rlbSignType.SelectedValue = ProviderSignType.ArubaAutomatic OrElse rlbSignType.SelectedValue = ProviderSignType.InfocertAutomatic Then
+                trRemoteSignDelegate.Visible = ProtocolEnv.RemoteSignDelegateEnabled
+            End If
             Return
         End If
 
@@ -404,6 +545,7 @@ Public Class uscUserProfile
             rlbSignSaveModality.SelectedValue = signProperty.Value.StorageInformationType.ToString("D")
             GetByStorageType(defaultSignType, "signOptionPassword", txtSignPassword)
             txtArubaOTPPassword.Text = signProperty.Value.OTP
+            trRemoteSignDelegate.Visible = ProtocolEnv.RemoteSignDelegateEnabled
         End If
 
         If signProperty.Key = ProviderSignType.ArubaAutomatic OrElse signProperty.Key = ProviderSignType.ArubaRemote Then
@@ -434,9 +576,41 @@ Public Class uscUserProfile
                 txtArubaUser.Text = signProperty.Value.CustomProperties(RemoteSignProperty.ARUBA_USER)
             End If
         End If
+
+        uscRemoteDelegations.DataSource = Nothing
+        uscRemoteBeenDelegated.DataSource = Nothing
+
+        If Not signProperty.Value.Delegations Is Nothing AndAlso signProperty.Value.Delegations.Any Then
+            uscRemoteDelegations.DataSource = ListUserDelegate(signProperty.Value.Delegations)
+        End If
+
+        If Not signProperty.Value.BeenDelegated Is Nothing AndAlso signProperty.Value.BeenDelegated.Any Then
+            uscRemoteBeenDelegated.DataSource = ListUserDelegate(signProperty.Value.BeenDelegated)
+        End If
+
+        uscRemoteBeenDelegated.DataBind()
+        uscRemoteDelegations.DataBind()
     End Sub
 
+    Private Function ListUserDelegate(listContactDelegate As IDictionary(Of String, DelegateUser)) As List(Of ContactDTO)
+        Dim listUsersDelegate As New List(Of ContactDTO)
+        For Each contactDelegate As KeyValuePair(Of String, DelegateUser) In listContactDelegate
+            Dim contactDTO As New ContactDTO
+            Dim contact As New Contact()
+            With contact
+                .Description = contactDelegate.Value.DisplayName
+                .Code = contactDelegate.Value.Account
+                .ContactType = New ContactType(ContactType.Aoo)
+            End With
+            contactDTO.Contact = contact
+            contactDTO.Type = contactDTO.ContactType.Manual
+            listUsersDelegate.Add(contactDTO)
+        Next
+        Return listUsersDelegate
+    End Function
+
     Private Sub ChangeSelectedSignType(isInit As Boolean)
+        trRemoteSignDelegate.Visible = False
         Dim defaultSignOption As KeyValuePair(Of ProviderSignType, RemoteSignProperty)? = Nothing
         Dim provider As ProviderSignType
         If Not String.IsNullOrEmpty(CurrentUserLog.UserProfile) Then
@@ -470,8 +644,14 @@ Public Class uscUserProfile
         Else
             mail = CurrentADEmail
             If String.IsNullOrEmpty(mail) Then
+                Dim domain As String = DocSuiteContext.Current.CurrentDomainName
+                Dim username As String = Account
+                If Account.Contains("\"c) Then
+                    domain = Account.Split("\"c)(0)
+                    username = Account.Split("\"c)(1)
+                End If
                 ' Recupero da UserLog
-                mail = Facade.UserLogFacade.EmailOfUser(Account.Split("\"c)(1), Account.Split("\"c)(0), True)
+                mail = Facade.UserLogFacade.EmailOfUser(username, domain, True)
             End If
         End If
         Return mail
@@ -494,22 +674,22 @@ Public Class uscUserProfile
     Public Function GetAdaptiveSearchControls() As ICollection(Of AdaptiveSearchMappingControl)
         Dim controls As ICollection(Of AdaptiveSearchMappingControl) = DocSuiteContext.Current.ProtocolDefaultAdaptiveSearchConfigurations
         controls = controls.Where(Function(x) Not x.Id.Eq("chbContactChild") AndAlso Not x.Id.Eq("chbCategoryChild")) _
-                .Where(Function(x) (Not ProtocolEnv.ProtocolSearchLocationEnabled AndAlso Not x.Id.Eq("ddlLocation")) OrElse ProtocolEnv.ProtocolSearchLocationEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.RolesUserProfileEnabled AndAlso Not x.Id.Eq("uscSettore")) OrElse ProtocolEnv.RolesUserProfileEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.ProtParzialeEnabled AndAlso Not x.Id.Eq("cbIncomplete")) OrElse ProtocolEnv.ProtParzialeEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.IsClaimEnabled AndAlso Not x.Id.Eq("rblClaim")) OrElse ProtocolEnv.IsClaimEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.IsInteropEnabled AndAlso Not x.Id.Eq("UscContattiSel1")) OrElse ProtocolEnv.IsInteropEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.IsTableDocTypeEnabled AndAlso Not x.Id.Eq("idDocType")) OrElse ProtocolEnv.IsTableDocTypeEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.IsStatusEnabled AndAlso Not x.Id.Eq("ProtocolStatus")) OrElse ProtocolEnv.IsStatusEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.IsPackageEnabled AndAlso Not x.Id.Eq("Origin") AndAlso Not x.Id.Eq("Lot") AndAlso Not x.Id.Eq("Package") AndAlso Not x.Id.Eq("Incremental")) OrElse ProtocolEnv.IsPackageEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.IsInvoiceEnabled AndAlso Not x.Id.Eq("InvoiceNumber") AndAlso Not x.Id.Eq("InvoiceDateFrom") AndAlso Not x.Id.Eq("InvoiceDateTo") _
-                                            AndAlso Not x.Id.Eq("AccountingSectional") AndAlso Not x.Id.Eq("AccountingYear") AndAlso Not x.Id.Eq("AccountingNumber")) OrElse ProtocolEnv.IsInvoiceEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.IsProtSearchTitleEnabled AndAlso Not x.Id.Eq("cmbTitoliStudio") AndAlso Not x.Id.Eq("txtBirthDateFrom") AndAlso Not x.Id.Eq("txtBirthDateTo") _
-                                            AndAlso Not x.Id.Eq("txtCity")) OrElse ProtocolEnv.IsProtSearchTitleEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.IsLogStatusEnabled AndAlso Not x.Id.Eq("chbNoRead")) OrElse ProtocolEnv.IsLogStatusEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.IsPECEnabled AndAlso Not x.Id.Eq("hasIngoingPec")) OrElse ProtocolEnv.IsPECEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.IsDistributionEnabled AndAlso Not x.Id.Eq("IsProtocolDistribution")) OrElse ProtocolEnv.IsDistributionEnabled) _
-                .Where(Function(x) (Not ProtocolEnv.ProtocolHighlightEnabled AndAlso Not x.Id.Eq("cbProtocolHighlight")) OrElse ProtocolEnv.ProtocolHighlightEnabled).ToList()
+            .Where(Function(x) (Not ProtocolEnv.ProtocolSearchLocationEnabled AndAlso Not x.Id.Eq("ddlLocation")) OrElse ProtocolEnv.ProtocolSearchLocationEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.RolesUserProfileEnabled AndAlso Not x.Id.Eq("uscSettore")) OrElse ProtocolEnv.RolesUserProfileEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.ProtParzialeEnabled AndAlso Not x.Id.Eq("cbIncomplete")) OrElse ProtocolEnv.ProtParzialeEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.IsClaimEnabled AndAlso Not x.Id.Eq("rblClaim")) OrElse ProtocolEnv.IsClaimEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.IsInteropEnabled AndAlso Not x.Id.Eq("UscContattiSel1")) OrElse ProtocolEnv.IsInteropEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.IsTableDocTypeEnabled AndAlso Not x.Id.Eq("idDocType")) OrElse ProtocolEnv.IsTableDocTypeEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.IsStatusEnabled AndAlso Not x.Id.Eq("ProtocolStatus")) OrElse ProtocolEnv.IsStatusEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.IsPackageEnabled AndAlso Not x.Id.Eq("Origin") AndAlso Not x.Id.Eq("Lot") AndAlso Not x.Id.Eq("Package") AndAlso Not x.Id.Eq("Incremental")) OrElse ProtocolEnv.IsPackageEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.IsInvoiceEnabled AndAlso Not x.Id.Eq("InvoiceNumber") AndAlso Not x.Id.Eq("InvoiceDateFrom") AndAlso Not x.Id.Eq("InvoiceDateTo") _
+                                        AndAlso Not x.Id.Eq("AccountingSectional") AndAlso Not x.Id.Eq("AccountingYear") AndAlso Not x.Id.Eq("AccountingNumber")) OrElse ProtocolEnv.IsInvoiceEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.IsProtSearchTitleEnabled AndAlso Not x.Id.Eq("cmbTitoliStudio") AndAlso Not x.Id.Eq("txtBirthDateFrom") AndAlso Not x.Id.Eq("txtBirthDateTo") _
+                                        AndAlso Not x.Id.Eq("txtCity")) OrElse ProtocolEnv.IsProtSearchTitleEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.IsLogStatusEnabled AndAlso Not x.Id.Eq("chbNoRead")) OrElse ProtocolEnv.IsLogStatusEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.IsPECEnabled AndAlso Not x.Id.Eq("hasIngoingPec")) OrElse ProtocolEnv.IsPECEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.IsDistributionEnabled AndAlso Not x.Id.Eq("IsProtocolDistribution")) OrElse ProtocolEnv.IsDistributionEnabled) _
+            .Where(Function(x) (Not ProtocolEnv.ProtocolHighlightEnabled AndAlso Not x.Id.Eq("cbProtocolHighlight")) OrElse ProtocolEnv.ProtocolHighlightEnabled).ToList()
 
         Return controls
     End Function
@@ -526,56 +706,45 @@ Public Class uscUserProfile
     End Sub
 
     Private Sub LoadUserTenants()
-        Dim wi As WindowsIdentity = DirectCast(Context.User.Identity, WindowsIdentity)
-        Using wic As WindowsImpersonationContext = wi.Impersonate()
-            Using ExecutionContext.SuppressFlow()
-                rlbSelectCompany.Visible = True
-                Try
-                    Dim finder As UserTenantFinder = New UserTenantFinder(DocSuiteContext.Current.Tenants)
-                    finder.EnablePaging = False
+        rlbSelectCompany.Visible = True
+        Try
+            Dim results As ICollection(Of WebAPIDto(Of Tenant)) = WebAPIImpersonatorFacade.ImpersonateFinder(New UserTenantFinder(DocSuiteContext.Current.Tenants),
+                    Function(impersonationType, finder)
+                        finder.OnlyInternalTenants = True
+                        finder.ResetDecoration()
+                        finder.EnablePaging = False
+                        Return finder.DoSearch()
+                    End Function)
 
-                    Dim results As ICollection(Of WebAPIDto(Of Tenant)) = finder.DoSearch()
-                    Dim tenants As ICollection(Of Tenant)
+            If results IsNot Nothing AndAlso results.Count > 0 Then
+                For Each item As Tenant In results.Select(Function(r) r.Entity)
+                    rlbSelectCompany.Items.Add(New DropDownListItem(item.CompanyName, item.UniqueId.ToString()))
+                Next
+            Else
+                Dim resultDefault As WebAPIDto(Of Tenant) = WebAPIImpersonatorFacade.ImpersonateFinder(New TenantFinder(DocSuiteContext.Current.Tenants),
+                    Function(impersonationType, finder)
+                        finder.IncludeContainers = False
+                        finder.IncludeTenantAOO = True
+                        finder.ResetDecoration()
+                        finder.EnablePaging = False
+                        Return finder.DoSearch()
+                    End Function).FirstOrDefault()
+                rlbSelectCompany.Items.Add(New DropDownListItem(resultDefault.Entity.CompanyName, resultDefault.Entity.UniqueId.ToString()))
+                rlbSelectCompany.Enabled = False
+            End If
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, "ConsoleUser: LoadUserTenants ", ex)
+        End Try
 
-                    If results IsNot Nothing Then
-                        tenants = results.Select(Function(r) r.Entity).ToList()
-                        For Each item As Tenant In tenants
-                            rlbSelectCompany.Items.Add(New DropDownListItem(item.CompanyName, item.UniqueId.ToString()))
-                        Next
-                        If (tenants.Count = 1) Then
-                            If CurrentUserLog.CurrentTenantId Is Nothing Then
-                                WriteCurrentTenantIdInDatabase(tenants(0))
-                            End If
-                            rlbSelectCompany.SelectedIndex = 0
-                            rlbSelectCompany.Enabled = False
-                        End If
-                        If CurrentUserLog.CurrentTenantId Is Nothing Then
-                            WriteCurrentTenantIdInDatabase(tenants(0))
-                            rlbSelectCompany.SelectedIndex = 0
-                        Else
-                            rlbSelectCompany.SelectedValue = CurrentUserLog.CurrentTenantId.ToString()
-
-                        End If
-                    End If
-                Catch ex As Exception
-                    FileLogger.Error(LoggerName, "ConsoleUser: LoadUserTenants ", ex)
-                End Try
-            End Using
-        End Using
-
-    End Sub
-
-    Private Sub WriteCurrentTenantIdInDatabase(tenant As Tenant)
-        CurrentUserLog.CurrentTenantId = tenant.UniqueId
-        Facade.UserLogFacade.Update(CurrentUserLog)
-
-        Dim tenantFinder As TenantFinder = New TenantFinder(DocSuiteContext.Current.Tenants) With {
-                                .IncludeContainers = True,
-                                .UniqueId = tenant.UniqueId,
-                                .EnablePaging = False
-                            }
-        Dim fullTenant As Tenant = tenantFinder.DoSearch().Select(Function(s) s.Entity).FirstOrDefault()
-        CurrentTenant = fullTenant
+        If CurrentUserLog.CurrentTenantId = Guid.Empty Then
+            Exit Sub
+        End If
+        Dim tenantId As String = CurrentUserLog.CurrentTenantId.ToString()
+        Dim dd As DropDownListItem = rlbSelectCompany.Items.FirstOrDefault(Function(f) f.Value = tenantId)
+        If dd IsNot Nothing Then
+            dd.Selected = True
+        End If
+        rlbSelectCompany.Enabled = rlbSelectCompany.Items.Count > 0
     End Sub
 
     Private Function SelectStorageType(signOptionProperty As RemoteSignProperty, sessionVariable As String, controlTextBox As TextBox) As RemoteSignProperty
@@ -599,8 +768,10 @@ Public Class uscUserProfile
         If defaultSignType.Value.Value.StorageInformationType = StorageInformationType.Forever Then
             If sessionVariable = "signOptionPin" Then
                 controlTextBox.Text = defaultSignType.Value.Value.PIN
+                controlTextBox.Attributes.Add("value", defaultSignType.Value.Value.PIN)
             Else
                 controlTextBox.Text = defaultSignType.Value.Value.Password
+                controlTextBox.Attributes.Add("value", defaultSignType.Value.Value.Password)
             End If
         ElseIf defaultSignType.Value.Value.StorageInformationType = StorageInformationType.Session Then
             Dim signOption As IDictionary(Of String, String)
@@ -630,5 +801,4 @@ Public Class uscUserProfile
         End If
     End Sub
 #End Region
-
 End Class

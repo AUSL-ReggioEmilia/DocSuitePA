@@ -24,10 +24,10 @@ Partial Public Class FascInserimento
     Dim _protocolYear As Short?
     Dim _protocolNumber As Integer?
     Dim _currentCategory As Category
-    Private Const FASCICLE_INSERT_CALLBACK As String = "fascInserimento.insertCallback('{0}', '{1}');"
+    Private Const FASCICLE_INSERT_CALLBACK As String = "fascInserimento.insertCallback('{0}', '{1}', '{2}');"
     Private Const INITIALIZE_CALLBACK As String = "fascInserimento.initializeCallback({0});"
     Private _currentMassimarioScartoFacade As MassimarioScartoFacade
-    Private _currentUDId As Guid?
+    Private _idDocumentUnit As Guid?
     Private _environment As Integer?
     Private _currentIdUDSRepository As Guid?
     Private _contactFacade As ContactFacade
@@ -44,12 +44,12 @@ Partial Public Class FascInserimento
         End Get
     End Property
 
-    Public ReadOnly Property CurrentUDId As Guid?
+    Public ReadOnly Property IdDocumentUnit As Guid?
         Get
-            If Not _currentUDId.HasValue Then
-                _currentUDId = Request.QueryString.GetValueOrDefault(Of Guid?)("IdUD", Nothing)
+            If Not _idDocumentUnit.HasValue Then
+                _idDocumentUnit = Request.QueryString.GetValueOrDefault(Of Guid?)("IdDocumentUnit", Nothing)
             End If
-            Return _currentUDId
+            Return _idDocumentUnit
         End Get
     End Property
 
@@ -113,13 +113,14 @@ Partial Public Class FascInserimento
                         contactId = uscFascicleInsert.RespContactDTO.Contact.Id
                     End If
 
-                    Dim metadataModel As MetadataModel = Nothing
+                    Dim metadataModel As Tuple(Of MetadataDesignerModel, ICollection(Of MetadataValueModel)) = Nothing
                     If ProtocolEnv.MetadataRepositoryEnabled Then
                         metadataModel = uscFascicleInsert.GetDynamicValues()
                     End If
 
                     AjaxManager.ResponseScripts.Add(String.Format(FASCICLE_INSERT_CALLBACK, JsonConvert.SerializeObject(contactId),
-                                                                                            If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel).Replace("'", "\'"), Nothing)))
+                                                                                            If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item1).Replace("'", "\'"), Nothing),
+                                                                                            If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item2).Replace("'", "\'"), Nothing)))
                     Exit Select
             End Select
         Catch

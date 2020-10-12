@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Services/Securities/DomainUserService", "Dossiers/DossierBase", "App/Services/Workflows/WorkflowActivityService", "App/Models/Workflows/WorkflowPropertyHelper", "App/Mappers/Workflows/WorkflowRoleModelMapper"], function (require, exports, ServiceConfigurationHelper, DomainUserService, DossierBase, WorkflowActivityService, WorkflowPropertyHelper, WorkflowRoleModelMapper) {
+define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Services/Securities/DomainUserService", "Dossiers/DossierBase", "App/Services/Workflows/WorkflowActivityService", "App/Models/Workflows/WorkflowPropertyHelper", "App/Mappers/Workflows/WorkflowRoleModelMapper", "App/Helpers/EnumHelper", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, ServiceConfigurationHelper, DomainUserService, DossierBase, WorkflowActivityService, WorkflowPropertyHelper, WorkflowRoleModelMapper, EnumHelper, SessionStorageKeysHelper) {
     var uscDossier = /** @class */ (function (_super) {
         __extends(uscDossier, _super);
         /**
@@ -38,6 +38,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
         * Inizializzazione
         */
         uscDossier.prototype.initialize = function () {
+            this._enumHelper = new EnumHelper();
             this._lblDossierSubject = $("#".concat(this.lblDossierSubjectId));
             this._lblStartDate = $("#".concat(this.lblStartDateId));
             this._lblRegistrationUser = $("#".concat(this.lblRegistrationUserId));
@@ -50,9 +51,15 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             this._lblWorkflowHandlerUser = $("#".concat(this.lblWorkflowHandlerUserId));
             this._ajaxManager = $find(this.ajaxManagerId);
             this._loadingPanel = $find(this.ajaxLoadingPanelId);
+            this._lblDossierType = $("#" + this.lblDossierTypeId);
+            this._lblDossierStatus = $("#" + this.lblDossierStatusId);
             this._loadingPanel.show(this.pageId);
             this._rowMetadataRepository = $("#".concat(this.rowMetadataId));
             this._rowMetadataRepository.hide();
+            $("#" + this.uscCategoryRestId).hide();
+            this._uscRoleRest = $("#" + this.uscRoleRestId).data();
+            this._uscResponsableRoleRest = $("#" + this.uscResponsableRoleRestId).data();
+            this._uscContattiSelRest = $("#" + this.uscContattiSelRestId).data();
             var domainUserConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DomainUserModel");
             this._domainUserService = new DomainUserService(domainUserConfiguration);
             var workflowActivityConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowActivity');
@@ -72,6 +79,48 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             var _this = this;
             if (dossier == null)
                 return;
+            var roles = [];
+            var responsableRole = [];
+            for (var _i = 0, _a = dossier.Roles; _i < _a.length; _i++) {
+                var role = _a[_i];
+                var newRole = {
+                    UniqueId: role.UniqueId,
+                    Name: role.Name,
+                    EntityShortId: role.EntityShortId
+                };
+                if (role.IsMaster == true) {
+                    responsableRole.push(newRole);
+                }
+                else {
+                    roles.push(newRole);
+                }
+            }
+            this._uscResponsableRoleRest.renderRolesTree(responsableRole);
+            if (roles.length == 0) {
+                $("#" + this.uscRoleRestId).hide();
+            }
+            else {
+                this._uscRoleRest.renderRolesTree(roles);
+            }
+            var contacts = [];
+            for (var _b = 0, _c = dossier.Contacts; _b < _c.length; _b++) {
+                var contact = _c[_b];
+                var newContact = {
+                    UniqueId: contact.UniqueId,
+                    EntityId: contact.EntityShortId,
+                    Description: contact.Name,
+                    IdContactType: contact.Type,
+                    IncrementalFather: contact.IncrementalFather
+                };
+                contacts.push(newContact);
+            }
+            this._uscContattiSelRest.renderContactsTree(contacts);
+            if (dossier.Category.IdParent) {
+                $("#" + this.uscCategoryRestId).show();
+                var uscCategoryRest_1 = $("#" + this.uscCategoryRestId).data();
+                uscCategoryRest_1.setToolbarVisibilityButtons();
+                uscCategoryRest_1.populateCategotyTree(dossier.Category);
+            }
             this._domainUserService.getUser(dossier.RegistrationUser, function (user) {
                 _this.setSummaryData(dossier);
                 if (user) {
@@ -89,14 +138,15 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                     console.log("Anomalia nel recupero del LastChangedUser del dossier.");
                 });
             }
-            if (this.metadataRepositoryEnabled && dossier.JsonMetadata) {
+            if (this.metadataRepositoryEnabled && dossier.MetadataDesigner) {
                 this._rowMetadataRepository.show();
-                var uscDynamicMetadataSummaryClient = $("#".concat(this.uscDynamicMetadataSummaryClientId)).data();
-                if (!jQuery.isEmptyObject(uscDynamicMetadataSummaryClient)) {
-                    uscDynamicMetadataSummaryClient.loadMetadatas(dossier.JsonMetadata);
-                    sessionStorage.setItem("CurrentMetadataValues", dossier.JsonMetadata);
+                var uscDynamicMetadataSummaryRest = $("#".concat(this.uscDynamicMetadataSummaryRestId)).data();
+                if (!jQuery.isEmptyObject(uscDynamicMetadataSummaryRest)) {
+                    uscDynamicMetadataSummaryRest.loadMetadatas(dossier.MetadataDesigner, dossier.MetadataValues);
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_CURRENT_METADATA_VALUES, dossier.MetadataDesigner);
                 }
             }
+            this.hideLoadingPanel();
         };
         /**
      * Imposta i dati nel sommario
@@ -110,6 +160,8 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             this._lblNumber.html(dossier.Number);
             this._lblContainer.html(dossier.ContainerName);
             this._lblStartDate.html(dossier.FormattedStartDate);
+            this._lblDossierType.html(this._enumHelper.getDossierTypeDescription(dossier.DossierType));
+            this._lblDossierStatus.html(this._enumHelper.getDossierStatusDescription(dossier.Status));
             this._lblWorkflowHandlerUser.html("");
             this._lblWorkflowProposerRole.html("");
             $("#".concat(this.rowWorkflowProposerId)).hide();
@@ -170,9 +222,6 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
         uscDossier.prototype.bindLoaded = function () {
             $("#".concat(this.pageId)).data(this);
             $("#".concat(this.pageId)).triggerHandler(uscDossier.LOADED_EVENT);
-        };
-        uscDossier.prototype.loadExternalDataCallback = function () {
-            this.hideLoadingPanel();
         };
         uscDossier.LOADED_EVENT = "onLoaded";
         uscDossier.DATA_LOADED_EVENT = "onDataLoaded";

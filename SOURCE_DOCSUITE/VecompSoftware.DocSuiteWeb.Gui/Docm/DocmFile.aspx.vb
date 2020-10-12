@@ -200,7 +200,7 @@ Partial Public Class DocmFile
             Exit Sub
         End If
 
-        Dim idBiblos As Long = documentobject.idBiblos
+        Dim idBiblos As Integer = documentobject.idBiblos
 
         Dim impersonator As Impersonator = Nothing
         Try
@@ -301,7 +301,7 @@ Partial Public Class DocmFile
 
         Dim idCatena As Integer
         Try
-            idCatena = doc.ArchiveInBiblos(CurrentDocument.Location.ProtBiblosDSDB, CurrentDocument.Location.DocumentServer).BiblosChainId
+            idCatena = doc.ArchiveInBiblos(CurrentDocument.Location.DocmBiblosDSDB).BiblosChainId
         Catch ex As Exception
             FileLogger.Warn(LoggerName, "Errore in checkin", ex)
             AjaxAlert("Errore in fase di archiviazione del documento, contattare l'assistenza.")
@@ -387,7 +387,7 @@ Partial Public Class DocmFile
                     UscDocumentUpload1.Caption = "Documenti"
                 End If
             Case "Modify"
-                If DocSuiteContext.IsFullApplication AndAlso Add Then
+                If Add Then
                     Title = "Modifica Documento"
                 Else
                     Title = "Visualizza Documento"
@@ -420,7 +420,7 @@ Partial Public Class DocmFile
                     Exit Sub
                 End If
 
-                If DocSuiteContext.IsFullApplication AndAlso Add Then
+                If Add Then
                     If Not obj.idObjectStatus.Eq("A") Then
                         btnModifica.Visible = True
                         btnCancella.Visible = True
@@ -521,7 +521,7 @@ Partial Public Class DocmFile
         End If
     End Sub
 
-    Public Sub CheckOutDocument(ByVal idLocation As Integer, ByVal biblosDsChain As Long, ByVal prefisso As String, ByRef nomeFile As String, Optional ByVal security As Boolean = False)
+    Public Sub CheckOutDocument(ByVal idLocation As Integer, ByVal biblosDsChain As Integer, ByVal prefisso As String, ByRef nomeFile As String, Optional ByVal security As Boolean = False)
         If String.IsNullOrEmpty(DocSuiteContext.Current.ProtocolEnv.VersioningShare) Then
             Throw New DocSuiteException("Estrazione documento", "In ParameterENV (Protocollo) non è definita la chiave VersioningShare.")
         End If
@@ -537,7 +537,7 @@ Partial Public Class DocmFile
             Throw New DocSuiteException("Estrazione documento", String.Format("Location [{0}] mancante o non valida.", idLocation))
         End If
 
-        Dim doc As New BiblosDocumentInfo(location.DocumentServer, location.DocmBiblosDSDB, biblosDsChain)
+        Dim doc As New BiblosDocumentInfo(location.DocmBiblosDSDB, biblosDsChain)
         nomeFile = String.Format("{0}-{1}{2}", prefisso, CommonUtil.UserDocumentName, Path.GetExtension(doc.Name))
         Dim file As FileInfo = doc.SaveToDisk(dir, nomeFile)
 

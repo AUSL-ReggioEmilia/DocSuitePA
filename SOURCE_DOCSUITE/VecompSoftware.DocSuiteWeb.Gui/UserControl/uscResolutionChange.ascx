@@ -620,7 +620,7 @@
                 <telerik:RadAjaxPanel runat="server" Width="100%" style="margin: 2px;" ID="pnlProponente">
                     <usc:UscContact ID="uscContactProp" runat="server" TreeViewCaption="Proponente" ButtonImportVisible="false"
                         ButtonIPAVisible="false" ButtonManualVisible="false" ButtonPropertiesVisible="false"
-                        HeaderVisible="false" IsRequired="false" Type="Resl" />
+                        HeaderVisible="false" IsRequired="false" Type="Resl" Multiple="true" />
                     <telerik:RadTextBox ID="txtAlternativeProp" runat="server" Width="100%" MaxLength="500"></telerik:RadTextBox>
                     <%-- Settore proponente --%>
                     <usc:Settori HeaderVisible="False" MultipleRoles="False" Environment="Resolution" RoleRestictions="OnlyMine" ID="uscRoleProposer" ReadOnly="False" runat="server" />

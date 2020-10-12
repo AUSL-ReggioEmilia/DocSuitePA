@@ -4,12 +4,11 @@
 
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import MetadataRepositoryService = require('App/Services/Commons/MetadataRepositoryService');
-import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import ReportInformationViewModel = require('App/ViewModels/Reports/ReportInformationViewModel');
 import Environment = require('App/Models/Environment');
 import UscMetadataRepositorySel = require('UserControl/uscMetadataRepositorySel');
 import MetadataRepositoryModel = require('App/Models/Commons/MetadataRepositoryModel');
-import MetadataViewModel = require('App/ViewModels/Metadata/MetadataViewModel');
+import MetadataDesignerViewModel = require('App/ViewModels/Metadata/MetadataDesignerViewModel');
 import ReportBuilderPropertyModel = require('App/Models/Reports/ReportBuilderPropertyModel');
 import ReportBuilderPropertyType = require('App/Models/Reports/ReportBuilderPropertyType');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
@@ -55,7 +54,7 @@ class uscReportDesignerInformation {
         }
     }
 
-    private BtnLoad_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private BtnLoad_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         if (Page_ClientValidate("ReportData")) {
             let selectedEntity: Telerik.Web.UI.RadComboBoxItem = this._rdlEntity.get_selectedItem();
             if (!selectedEntity || !selectedEntity.get_value()) {
@@ -148,7 +147,7 @@ class uscReportDesignerInformation {
 
                     if (model) {
                         returnModel.SelectedMetadata = model.UniqueId;
-                        let metadatas: MetadataViewModel = JSON.parse(model.JsonMetadata);
+                        let metadatas: MetadataDesignerViewModel = JSON.parse(model.JsonMetadata);
                         returnModel.MetadataProperties = this.fillMetadataProperties(metadatas);
                     }
 
@@ -170,7 +169,7 @@ class uscReportDesignerInformation {
         return promise.promise();
     }
 
-    private fillMetadataProperties(metadatas: MetadataViewModel): ReportBuilderPropertyModel[] {
+    private fillMetadataProperties(metadatas: MetadataDesignerViewModel): ReportBuilderPropertyModel[] {
         let metadataProperties: ReportBuilderPropertyModel[] = [];        
         for (let textMetadata of metadatas.TextFields) {
             metadataProperties.push(this.createMetadataProperty(textMetadata.Label, ReportBuilderPropertyType.MetadataText));

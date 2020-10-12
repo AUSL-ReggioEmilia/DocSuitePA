@@ -23,7 +23,11 @@
 
     DocumentUnitArchived = CreateProtocol * 2,
 
-    ProtocolShared = DocumentUnitArchived * 2
+    ProtocolShared = DocumentUnitArchived * 2,
+
+    CloneProcessFolder = ProtocolShared * 2,
+
+    InsertProcedureFascicle = CloneProcessFolder * 2
 }
 
 export = InsertActionType;

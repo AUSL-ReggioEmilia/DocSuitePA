@@ -48,18 +48,22 @@ define(["require", "exports", "App/Services/Protocols/ProtocolService", "App/Ser
                 switch (_this.documentUnitType) {
                     case Environment.Protocol:
                         var protocol = _this._currentUD;
-                        params = params.concat("&IdCategory=", protocol.Category.EntityShortId.toString(), "&IdUD=", protocol.UniqueId, "&Environment=", Environment.Protocol.toString());
+                        params = params.concat("&IdCategory=", protocol.Category.EntityShortId.toString(), "&IdDocumentUnit=", protocol.UniqueId, "&Environment=", Environment.Protocol.toString());
                         break;
                     case Environment.Resolution:
                         var resolution = _this._currentUD;
-                        params = params.concat("&IdCategory=", resolution.Category.EntityShortId.toString(), "&IdUD=", resolution.UniqueId, "&Environment=", Environment.Resolution.toString());
+                        params = params.concat("&IdCategory=", resolution.Category.EntityShortId.toString(), "&IdDocumentUnit=", resolution.UniqueId, "&Environment=", Environment.Resolution.toString());
                         break;
                     case Environment.UDS:
                         var UDS = _this._currentUD;
-                        params = params.concat("&IdCategory=", UDS.Category.EntityShortId.toString(), "&IdUD=", UDS.UniqueId, "&Environment=", Environment.UDS.toString(), "&IdUDSRepository=", _this.currentIdUDSRepository);
+                        params = params.concat("&IdCategory=", UDS.Category.EntityShortId.toString(), "&IdDocumentUnit=", UDS.UniqueId, "&Environment=", Environment.UDS.toString(), "&IdUDSRepository=", _this.currentIdUDSRepository);
                         break;
                 }
-                window.location.href = "../Fasc/FascInserimento.aspx?".concat(params);
+                var locationPath = "../Fasc/FascInserimento.aspx";
+                if (_this.processEnabled) {
+                    locationPath = "../Fasc/FascProcessInserimento.aspx";
+                }
+                window.location.href = locationPath + "?" + params;
             };
             /**
              * Evento scatenato al click del pulsante "Rimuovi"
@@ -100,7 +104,12 @@ define(["require", "exports", "App/Services/Protocols/ProtocolService", "App/Ser
                     _this.showNotificationMessage(_this.uscNotificationId, "Nessun Fascicolo selezionato");
                     return;
                 }
-                _this.insertFascicleDocumentUnit(selectedFascicle);
+                var selectedFascicleFolder = _this._uscFascicleSearch.getSelectedFascicleFolder();
+                if (_this.folderSelectionEnabled && !selectedFascicleFolder) {
+                    _this.showNotificationMessage(_this.uscNotificationId, "Nessuna cartella fascicolo selezionata");
+                    return;
+                }
+                _this.insertFascicleDocumentUnit(selectedFascicle, selectedFascicleFolder);
             };
             /**
              * Evento scatenato al click del pulsante "Cambio classificazione"
@@ -193,10 +202,6 @@ define(["require", "exports", "App/Services/Protocols/ProtocolService", "App/Ser
                             }
                         });
                         _this._btnInsert.set_enabled(_this.validationModel.CanManageFascicle);
-                        var uscFascicleSearch_1 = $("#" + _this.uscFascicleSearchId).data();
-                        if (!jQuery.isEmptyObject(uscFascicleSearch_1)) {
-                            uscFascicleSearch_1.setButtonSearchEnabled(_this.validationModel.CanManageFascicle);
-                        }
                         _this._btnNewFascicle.set_visible(!isAlreadyFascicolate);
                         if (_this._btnNewFascicle.get_visible()) {
                             _this._btnNewFascicle.set_enabled(_this.validationModel.CanInsertFascicle);
@@ -253,6 +258,7 @@ define(["require", "exports", "App/Services/Protocols/ProtocolService", "App/Ser
             this._lblObject = $("#".concat(this.lblObjectId));
             this._lblCategory = $("#".concat(this.lblCategoryId));
             this._ajaxManager = $find(this.ajaxManagerId);
+            this._uscFascicleSearch = $("#" + this.uscFascicleSearchId).data();
             try {
                 var fascicleDocumentUnitConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, FascicleBase.FASCICLE_DOCUMENTUNIT_TYPE_NAME);
                 this._fascicleDocumentUnitService = new FascicleDocumentUnitService(fascicleDocumentUnitConfiguration);
@@ -310,9 +316,9 @@ define(["require", "exports", "App/Services/Protocols/ProtocolService", "App/Ser
                         if (_this._btnCategoryChange.get_visible()) {
                             _this._btnCategoryChange.set_enabled(false);
                         }
-                        var uscFascicleSearch_2 = $("#" + _this.uscFascicleSearchId).data();
-                        if (!jQuery.isEmptyObject(uscFascicleSearch_2)) {
-                            uscFascicleSearch_2.loadFascicle(fascicle.UniqueId);
+                        var uscFascicleSearch_1 = $("#" + _this.uscFascicleSearchId).data();
+                        if (!jQuery.isEmptyObject(uscFascicleSearch_1)) {
+                            uscFascicleSearch_1.loadFascicle(fascicle.UniqueId);
                         }
                     }
                     model.ReferenceType = fascicleDocumentUnit.ReferenceType;
@@ -481,11 +487,13 @@ define(["require", "exports", "App/Services/Protocols/ProtocolService", "App/Ser
          * Inserisce un riferimento per la documentunit
          * @param selectedFascicle
          **/
-        FascUDManager.prototype.insertFascicleDocumentUnit = function (selectedFascicle) {
+        FascUDManager.prototype.insertFascicleDocumentUnit = function (selectedFascicle, selectedFascicleFolder) {
             var model = new FascicleDocumentUnitModel(selectedFascicle.UniqueId);
             model.ReferenceType = FascicleReferenceType.Fascicle;
             var documentUnit = this._currentUD;
             model.DocumentUnit = documentUnit;
+            model.FascicleFolder = {};
+            model.FascicleFolder.UniqueId = selectedFascicleFolder.UniqueId;
             this.insertFascicleUD(model, documentUnit, this._fascicleDocumentUnitService);
         };
         /**
@@ -506,22 +514,13 @@ define(["require", "exports", "App/Services/Protocols/ProtocolService", "App/Ser
             if (this._btnCategoryChange.get_visible()) {
                 this._btnCategoryChange.set_enabled(false);
             }
-            this._fascicleFolderService.getByCategoryAndFascicle(model.Fascicle.UniqueId, reference.Category.EntityShortId, function (data) {
-                if (data) {
-                    model.FascicleFolder = data;
-                    service.insertFascicleUD(model, FascicolableActionType.AutomaticDetection, function (data) {
-                        _this.loadUDdata(reference, function () {
-                            if (_this._btnCategoryChange.get_visible()) {
-                                _this._btnCategoryChange.set_enabled(false);
-                            }
-                            _this._loadingPanel.hide(_this.pageContentId);
-                        });
-                    }, function (exception) {
-                        _this._loadingPanel.hide(_this.pageContentId);
-                        _this.setButtonEnable();
-                        _this.showNotificationException(_this.uscNotificationId, exception);
-                    });
-                }
+            service.insertFascicleUD(model, FascicolableActionType.AutomaticDetection, function (data) {
+                _this.loadUDdata(reference, function () {
+                    if (_this._btnCategoryChange.get_visible()) {
+                        _this._btnCategoryChange.set_enabled(false);
+                    }
+                    _this._loadingPanel.hide(_this.pageContentId);
+                });
             }, function (exception) {
                 _this._loadingPanel.hide(_this.pageContentId);
                 _this.setButtonEnable();

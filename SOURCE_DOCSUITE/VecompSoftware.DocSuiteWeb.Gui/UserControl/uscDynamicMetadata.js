@@ -1,4 +1,4 @@
-define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Services/Commons/MetadataRepositoryService", "App/DTOs/ExceptionDTO"], function (require, exports, ServiceConfigurationHelper, MetadataRepositoryService, ExceptionDTO) {
+define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Services/Commons/MetadataRepositoryService", "App/DTOs/ExceptionDTO", "./uscSetiContactSel", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, ServiceConfigurationHelper, MetadataRepositoryService, ExceptionDTO, uscSetiContactSel, SessionStorageKeysHelper) {
     var uscDynamicMetadata = /** @class */ (function () {
         /**
     * Costruttore
@@ -14,14 +14,21 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
      *------------------------- Methods -----------------------------
      */
         uscDynamicMetadata.prototype.initialize = function () {
+            var _this = this;
             this._metadataRepositoryConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "MetadataRepository");
             this._metadataRepositoryService = new MetadataRepositoryService(this._metadataRepositoryConfiguration);
             this._manager = $find(this.managerId);
             $("#".concat(this.pnlDynamicContentId)).data(this);
+            $("#".concat(this.fascicleInsertCommonIdEvent)).on(uscSetiContactSel.SELECTED_SETI_CONTACT_EVENT, function (sender, args) {
+                var ajaxModel = {};
+                ajaxModel.ActionName = "PopulateFields";
+                ajaxModel.Value = [JSON.stringify(args)];
+                $find(_this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
+            });
         };
         uscDynamicMetadata.prototype.loadDynamicMetadata = function (id) {
             var _this = this;
-            sessionStorage.removeItem("MetadataRepository");
+            sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
             if (!id || id == "") {
                 var ajaxModel = {};
                 ajaxModel.ActionName = "ClearControls";
@@ -31,7 +38,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             else {
                 this._metadataRepositoryService.getFullModelById(id, function (data) {
                     if (data && !!data.JsonMetadata) {
-                        sessionStorage.setItem("MetadataRepository", data.UniqueId);
+                        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY, data.UniqueId);
                         var ajaxModel = {};
                         ajaxModel.ActionName = "LoadControls";
                         ajaxModel.Value = [];

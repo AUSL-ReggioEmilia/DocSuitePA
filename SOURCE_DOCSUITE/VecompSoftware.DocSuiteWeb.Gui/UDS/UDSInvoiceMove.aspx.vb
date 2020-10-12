@@ -5,6 +5,7 @@ Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Tenants
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Public Class UDSInvoiceMove
     Inherits UDSBasePage
@@ -19,10 +20,13 @@ Public Class UDSInvoiceMove
 #Region "Events"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If Not IsPostBack Then
-            Dim finder As UserTenantFinder = New UserTenantFinder(DocSuiteContext.Current.Tenants)
-            finder.EnablePaging = False
+            Dim results As ICollection(Of WebAPIDto(Of Tenant)) = WebAPIImpersonatorFacade.ImpersonateFinder(New UserTenantFinder(DocSuiteContext.Current.Tenants),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.EnablePaging = False
+                        Return finder.DoSearch()
+                    End Function)
 
-            Dim results As ICollection(Of WebAPIDto(Of Tenant)) = finder.DoSearch()
             rlbSelectCompany.Items.Add(New DropDownListItem(" ", String.Empty))
 
             For Each item As Tenant In results.Select(Function(r) r.Entity).Where(Function(f) CurrentTenant.UniqueId <> f.UniqueId)

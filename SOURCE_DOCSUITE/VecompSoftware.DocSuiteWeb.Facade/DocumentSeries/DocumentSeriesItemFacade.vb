@@ -118,7 +118,7 @@ Public Class DocumentSeriesItemFacade
         item.LocationAnnexed = item.DocumentSeries.Container.DocumentSeriesAnnexedLocation
         item.LocationUnpublishedAnnexed = item.DocumentSeries.Container.DocumentSeriesUnpublishedAnnexedLocation
 
-        item.IdMain = chain.ArchiveInBiblos(item.DocumentSeries.Container.DocumentSeriesLocation.DocumentServer, item.DocumentSeries.Container.DocumentSeriesLocation.ProtBiblosDSDB)
+        item.IdMain = chain.ArchiveInBiblos(item.DocumentSeries.Container.DocumentSeriesLocation.ProtBiblosDSDB)
         archiviedDocs = chain.ArchivedDocuments
 
         item.HasMainDocument = archiviedDocs IsNot Nothing AndAlso archiviedDocs.Count > 0
@@ -128,7 +128,7 @@ Public Class DocumentSeriesItemFacade
         If Not annexed.IsNullOrEmpty() AndAlso Not item.LocationAnnexed Is Nothing Then
             For Each doc As DocumentInfo In annexed
                 archiviedDoc = Nothing
-                archiviedDoc = doc.ArchiveInBiblos(item.DocumentSeries.Container.DocumentSeriesAnnexedLocation.DocumentServer, item.DocumentSeries.Container.DocumentSeriesAnnexedLocation.ProtBiblosDSDB, item.IdAnnexed)
+                archiviedDoc = doc.ArchiveInBiblos(item.DocumentSeries.Container.DocumentSeriesAnnexedLocation.ProtBiblosDSDB, item.IdAnnexed)
                 item.IdAnnexed = archiviedDoc.ChainId
                 archiviedAnnexed.Add(archiviedDoc)
             Next
@@ -137,7 +137,7 @@ Public Class DocumentSeriesItemFacade
         If Not unpublishedAnnexed.IsNullOrEmpty() AndAlso Not item.LocationUnpublishedAnnexed Is Nothing Then
             archiviedDoc = Nothing
             For Each doc As DocumentInfo In unpublishedAnnexed
-                archiviedDoc = doc.ArchiveInBiblos(item.DocumentSeries.Container.DocumentSeriesUnpublishedAnnexedLocation.DocumentServer, item.DocumentSeries.Container.DocumentSeriesUnpublishedAnnexedLocation.ProtBiblosDSDB, item.IdUnpublishedAnnexed)
+                archiviedDoc = doc.ArchiveInBiblos(item.DocumentSeries.Container.DocumentSeriesUnpublishedAnnexedLocation.ProtBiblosDSDB, item.IdUnpublishedAnnexed)
                 item.IdUnpublishedAnnexed = archiviedDoc.ChainId
                 archiviedUnpublishedAnnexed.Add(archiviedDoc)
             Next
@@ -298,9 +298,9 @@ Public Class DocumentSeriesItemFacade
     End Sub
 
     Public Function GetMainDocuments(item As DocumentSeriesItem, Optional sortResult As Boolean = False) As List(Of BiblosDocumentInfo)
-        Dim documents As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(item.Location.DocumentServer, item.IdMain, True)
+        Dim documents As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(item.IdMain, True)
         If documents.IsNullOrEmpty() AndAlso Not item.DocumentSeries.AllowNoDocument.GetValueOrDefault(False) Then
-            Dim notFound As String = String.Format("Documento non trovato in catena {0}\{1}", item.Location.DocumentServer, item.IdMain)
+            Dim notFound As String = String.Format("Documento non trovato in catena {0}", item.IdMain)
             Throw New InvalidOperationException(notFound)
         End If
 
@@ -311,33 +311,33 @@ Public Class DocumentSeriesItemFacade
     End Function
 
     Public Function GetMainChainInfo(item As DocumentSeriesItem) As BiblosChainInfo
-        Return GetBiblosChainInfo(item.Location.DocumentServer, item.IdMain)
+        Return GetBiblosChainInfo(item.IdMain)
     End Function
 
     Public Function GetMainChainInfo(dto As DocumentSeriesItemDTO(Of BiblosDocumentInfo)) As BiblosChainInfo
-        Return GetBiblosChainInfo(dto.LocationServer, dto.IdMain)
+        Return GetBiblosChainInfo(dto.IdMain)
     End Function
 
     Public Function GetAnnexedChainInfo(item As DocumentSeriesItem) As BiblosChainInfo
-        Return GetBiblosChainInfo(item.Location.DocumentServer, item.IdAnnexed)
+        Return GetBiblosChainInfo(item.IdAnnexed)
     End Function
 
     Public Function GetAnnexedUnpublishedChainInfo(item As DocumentSeriesItem) As BiblosChainInfo
-        Return GetBiblosChainInfo(item.Location.DocumentServer, item.IdUnpublishedAnnexed)
+        Return GetBiblosChainInfo(item.IdUnpublishedAnnexed)
     End Function
 
     Public Function GetAnnexedChainInfo(dto As DocumentSeriesItemDTO(Of BiblosDocumentInfo)) As BiblosChainInfo
-        Return GetBiblosChainInfo(dto.LocationServer, dto.IdAnnexed)
+        Return GetBiblosChainInfo(dto.IdAnnexed)
     End Function
 
-    Public Function GetBiblosChainInfo(server As String, idChain As Guid) As BiblosChainInfo
-        Return New BiblosChainInfo(server, idChain)
+    Public Function GetBiblosChainInfo(idChain As Guid) As BiblosChainInfo
+        Return New BiblosChainInfo(idChain)
     End Function
 
     Public Function GetAnnexedDocuments(item As DocumentSeriesItem, Optional sortResult As Boolean = False) As List(Of BiblosDocumentInfo)
         Dim annexed As List(Of BiblosDocumentInfo) = New List(Of BiblosDocumentInfo)()
-        If item.LocationAnnexed IsNot Nothing AndAlso Not String.IsNullOrEmpty(item.LocationAnnexed.DocumentServer) Then
-            annexed = BiblosDocumentInfo.GetDocuments(item.LocationAnnexed.DocumentServer, item.IdAnnexed)
+        If item.LocationAnnexed IsNot Nothing Then
+            annexed = BiblosDocumentInfo.GetDocuments(item.IdAnnexed)
             If sortResult Then
                 annexed = BiblosFacade.SortDocuments(annexed)
             End If
@@ -346,7 +346,7 @@ Public Class DocumentSeriesItemFacade
     End Function
 
     Public Function GetAnnexedDocuments(item As DocumentSeriesItemDTO(Of BiblosDocumentInfo), Optional sortResult As Boolean = False) As List(Of BiblosDocumentInfo)
-        Dim annexed As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(item.LocationAnnexedServer, item.IdAnnexed)
+        Dim annexed As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(item.IdAnnexed)
         If sortResult Then
             annexed = BiblosFacade.SortDocuments(annexed)
         End If
@@ -354,14 +354,14 @@ Public Class DocumentSeriesItemFacade
     End Function
 
     Public Sub AddAnnexed(item As DocumentSeriesItem, annexed As DocumentInfo)
-        item.IdAnnexed = annexed.ArchiveInBiblos(item.DocumentSeries.Container.DocumentSeriesAnnexedLocation.DocumentServer, item.DocumentSeries.Container.DocumentSeriesAnnexedLocation.ProtBiblosDSDB, item.IdAnnexed).ChainId
+        item.IdAnnexed = annexed.ArchiveInBiblos(item.DocumentSeries.Container.DocumentSeriesAnnexedLocation.ProtBiblosDSDB, item.IdAnnexed).ChainId
     End Sub
 
     Public Function GetUnpublishedAnnexedDocuments(item As DocumentSeriesItem, Optional sortResult As Boolean = False) As List(Of BiblosDocumentInfo)
         If item.LocationUnpublishedAnnexed Is Nothing Then
             Return New List(Of BiblosDocumentInfo)()
         End If
-        Dim unpublishedAnnexed As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(item.LocationUnpublishedAnnexed.DocumentServer, item.IdUnpublishedAnnexed)
+        Dim unpublishedAnnexed As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(item.IdUnpublishedAnnexed)
         If sortResult Then
             unpublishedAnnexed = BiblosFacade.SortDocuments(unpublishedAnnexed)
         End If
@@ -369,7 +369,7 @@ Public Class DocumentSeriesItemFacade
     End Function
 
     Public Function GetUnpublishedAnnexedDocuments(item As DocumentSeriesItemDTO(Of BiblosDocumentInfo), Optional sortResult As Boolean = False) As List(Of BiblosDocumentInfo)
-        Dim unpublishedAnnexed As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(item.LocationUnpublishedAnnexedServer, item.IdUnpublishedAnnexed)
+        Dim unpublishedAnnexed As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(item.IdUnpublishedAnnexed)
         If sortResult Then
             unpublishedAnnexed = BiblosFacade.SortDocuments(unpublishedAnnexed)
         End If
@@ -377,7 +377,7 @@ Public Class DocumentSeriesItemFacade
     End Function
 
     Public Sub AddUnpublishedAnnexed(item As DocumentSeriesItem, unpublishableAnnexed As DocumentInfo)
-        item.IdUnpublishedAnnexed = unpublishableAnnexed.ArchiveInBiblos(item.DocumentSeries.Container.DocumentSeriesUnpublishedAnnexedLocation.DocumentServer, item.DocumentSeries.Container.DocumentSeriesUnpublishedAnnexedLocation.ProtBiblosDSDB, item.IdUnpublishedAnnexed).ChainId
+        item.IdUnpublishedAnnexed = unpublishableAnnexed.ArchiveInBiblos(item.DocumentSeries.Container.DocumentSeriesUnpublishedAnnexedLocation.ProtBiblosDSDB, item.IdUnpublishedAnnexed).ChainId
 
     End Sub
 
@@ -386,10 +386,9 @@ Public Class DocumentSeriesItemFacade
     End Sub
 
     Public Sub ChangeDocumentsAttributes(item As DocumentSeriesItem, location As Location, documents As IList(Of BiblosDocumentInfo), chainAttributes As IDictionary(Of String, String))
-        Dim serverName As String = location.DocumentServer
         For Each document As BiblosDocumentInfo In documents
             Try
-                Dim biblosDocument As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentInfo(serverName, document.DocumentId, Nothing, True).FirstOrDefault()
+                Dim biblosDocument As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentInfo(document.DocumentId, Nothing, True).FirstOrDefault()
                 If biblosDocument Is Nothing Then
                     FileLogger.Warn(LoggerName, String.Concat("Nessun documento trovato in Biblos con ID ", document.DocumentId))
                     Exit Sub
@@ -419,55 +418,34 @@ Public Class DocumentSeriesItemFacade
         Return _dao.GetDocumentSeriesItem()
     End Function
 
-    Public Function GetDematerialisationDocuments(item As DocumentSeriesItem) As List(Of BiblosDocumentInfo)
-        Dim dematerialisationDocuments As List(Of BiblosDocumentInfo) = Nothing
-        If item.DocumentSeries IsNot Nothing AndAlso item.DocumentSeries.Container IsNot Nothing AndAlso item.DocumentSeries.Container.DocumentSeriesAnnexedLocation IsNot Nothing AndAlso Not String.IsNullOrEmpty(item.DocumentSeries.Container.DocumentSeriesAnnexedLocation.DocumentServer) Then
-            dematerialisationDocuments = BiblosDocumentInfo.GetDocuments(item.DocumentSeries.Container.DocumentSeriesAnnexedLocation.DocumentServer, item.DematerialisationChainId.Value, True)
-        End If
-        Return dematerialisationDocuments
-    End Function
-
     ''' <summary> Recupera il DataSource del DocumentSeriesItemViewerLight. </summary>
     ''' <param name="item">DSI di riferimento.</param>
-    Public Function GetDocumentSeriesItemViewerSource(item As DocumentSeriesItem, captionConfiguration As IDictionary(Of ChainType, String), Optional sortResult As Boolean = False) As DocumentInfo
+    Public Function GetDocumentSeriesItemViewerSource(item As DocumentSeriesItem, captionConfiguration As IDictionary(Of Model.Entities.DocumentUnits.ChainType, String), Optional sortResult As Boolean = False) As DocumentInfo
         ' Creo la struttura ad albero del visualizzatore.
         Dim source As New FolderInfo()
         source.ID = item.Id.ToString()
         source.Name = GetCaption(item)
 
         Dim mainDocumentCaption As String = String.Empty
-        If (captionConfiguration.ContainsKey(ChainType.MainChain)) Then
-            mainDocumentCaption = captionConfiguration(ChainType.MainChain)
+        If (captionConfiguration.ContainsKey(Model.Entities.DocumentUnits.ChainType.MainChain)) Then
+            mainDocumentCaption = captionConfiguration(Model.Entities.DocumentUnits.ChainType.MainChain)
         End If
         Dim mainDocuments As New FolderInfo() With {.Name = mainDocumentCaption}
         mainDocuments.AddChildren(Factory.DocumentSeriesItemFacade.GetMainDocuments(item, sortResult).Cast(Of DocumentInfo).ToList())
 
         Dim annexedDocumentCaption As String = String.Empty
-        If (captionConfiguration.ContainsKey(ChainType.AnnexedChain)) Then
-            annexedDocumentCaption = captionConfiguration(ChainType.AnnexedChain)
+        If (captionConfiguration.ContainsKey(Model.Entities.DocumentUnits.ChainType.AnnexedChain)) Then
+            annexedDocumentCaption = captionConfiguration(Model.Entities.DocumentUnits.ChainType.AnnexedChain)
         End If
         Dim annexed As New FolderInfo() With {.Name = annexedDocumentCaption}
         annexed.AddChildren(Factory.DocumentSeriesItemFacade.GetAnnexedDocuments(item, sortResult).Cast(Of DocumentInfo).ToList())
 
         Dim unpublishedAnnexedDocumentCaption As String = String.Empty
-        If (captionConfiguration.ContainsKey(ChainType.UnpublishedAnnexedChain)) Then
-            unpublishedAnnexedDocumentCaption = captionConfiguration(ChainType.UnpublishedAnnexedChain)
+        If (captionConfiguration.ContainsKey(Model.Entities.DocumentUnits.ChainType.UnpublishedAnnexedChain)) Then
+            unpublishedAnnexedDocumentCaption = captionConfiguration(Model.Entities.DocumentUnits.ChainType.UnpublishedAnnexedChain)
         End If
         Dim notPub As New FolderInfo() With {.Name = unpublishedAnnexedDocumentCaption}
         notPub.AddChildren(Factory.DocumentSeriesItemFacade.GetUnpublishedAnnexedDocuments(item, sortResult).Cast(Of DocumentInfo).ToList())
-
-        Dim dematerialisationDocuments As New FolderInfo()
-        If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso item.DematerialisationChainId.HasValue AndAlso Not item.DematerialisationChainId = Guid.Empty Then
-            Dim dematerialisationDocumentCaption As String = String.Empty
-            If (captionConfiguration.ContainsKey(ChainType.DematerialisationChain)) Then
-                dematerialisationDocumentCaption = captionConfiguration(ChainType.DematerialisationChain)
-            End If
-            dematerialisationDocuments.Name = dematerialisationDocumentCaption
-            Dim dematerialisationList As List(Of BiblosDocumentInfo) = Factory.DocumentSeriesItemFacade.GetDematerialisationDocuments(item)
-            If dematerialisationList IsNot Nothing Then
-                dematerialisationDocuments.AddChildren(dematerialisationList.Cast(Of DocumentInfo).ToList())
-            End If
-        End If
 
         If mainDocuments.Children.Count > 0 Then
             source.AddChild(mainDocuments)
@@ -478,10 +456,6 @@ Public Class DocumentSeriesItemFacade
         If notPub.Children.Count > 0 Then
             source.AddChild(notPub)
         End If
-        If dematerialisationDocuments.Children IsNot Nothing AndAlso dematerialisationDocuments.Children.Count > 0 Then
-            source.AddChild(dematerialisationDocuments)
-        End If
-
         Return source
     End Function
 
@@ -589,9 +563,9 @@ Public Class DocumentSeriesItemFacade
 
         Try
             'Eseguo detach dei documenti se presenti
-            Dim mainChain As BiblosDocumentInfo = BiblosDocumentInfo.GetDocuments(item.Location.DocumentServer, item.IdMain, False).FirstOrDefault()
+            Dim mainChain As BiblosDocumentInfo = BiblosDocumentInfo.GetDocuments(item.IdMain, False).FirstOrDefault()
             If mainChain IsNot Nothing Then
-                Service.DetachDocument(mainChain.Server, item.Location.ProtBiblosDSDB, mainChain.BiblosChainId)
+                Service.DetachDocument(item.Location.ProtBiblosDSDB, mainChain.BiblosChainId)
             End If
             item.HasMainDocument = False
         Catch ex As Exception
@@ -611,12 +585,6 @@ Public Class DocumentSeriesItemFacade
         End If
     End Sub
 
-    Private Function getOpenDocumentSeriesById(idSeries As Integer) As IList(Of DocumentSeriesIncremental)
-
-        Return Factory.DocumentSeriesIncrementalFacade.GetOpenDocumentIncrementalSeries(idSeries)
-
-    End Function
-
     ''' <summary>
     ''' Invia un nuovo comando di inserimento alle web api
     ''' </summary>
@@ -624,8 +592,8 @@ Public Class DocumentSeriesItemFacade
     ''' <returns>Command ID</returns>
     Public Function SendInsertDocumentSeriesItemCommand(item As DocumentSeriesItem) As Guid
         Try
-            Dim commandInsert As ICommandCreateDocumentSeriesItem = GetDocumentSeriesItemCommand(Of ICommandCreateDocumentSeriesItem)(item, Function(tenantName, tenantId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
-                                                                                                                                                Return New CommandCreateDocumentSeriesItem(tenantName, tenantId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
+            Dim commandInsert As ICommandCreateDocumentSeriesItem = GetDocumentSeriesItemCommand(Of ICommandCreateDocumentSeriesItem)(item, Function(tenantName, tenantId, tenantAOOId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
+                                                                                                                                                Return New CommandCreateDocumentSeriesItem(tenantName, tenantId, tenantAOOId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
                                                                                                                                             End Function)
             CommandInsertFacade.Push(commandInsert)
             Return commandInsert.Id
@@ -641,8 +609,8 @@ Public Class DocumentSeriesItemFacade
     ''' <returns>Command ID</returns>
     Public Function SendUpdateDocumentSeriesItemCommand(item As DocumentSeriesItem) As Guid
         Try
-            Dim commandUpdate As ICommandUpdateDocumentSeriesItem = GetDocumentSeriesItemCommand(Of ICommandUpdateDocumentSeriesItem)(item, Function(tenantName, tenantId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
-                                                                                                                                                Return New CommandUpdateDocumentSeriesItem(tenantName, tenantId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
+            Dim commandUpdate As ICommandUpdateDocumentSeriesItem = GetDocumentSeriesItemCommand(Of ICommandUpdateDocumentSeriesItem)(item, Function(tenantName, tenantId, tenantAOOId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
+                                                                                                                                                Return New CommandUpdateDocumentSeriesItem(tenantName, tenantId, tenantAOOId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
                                                                                                                                             End Function)
             CommandUpdateFacade.Push(commandUpdate)
             Return commandUpdate.Id
@@ -652,12 +620,13 @@ Public Class DocumentSeriesItemFacade
     End Function
 
     Private Function GetDocumentSeriesItemCommand(Of T As {ICommand})(item As DocumentSeriesItem,
-                                                                      commandInitializeFunc As Func(Of String, Guid, IDictionary(Of String, String), IdentityContext, APISeriesItem.DocumentSeriesItem, APICommons.CategoryFascicle, APIDocUnit.DocumentUnit, T)) As T
+                                                                      commandInitializeFunc As Func(Of String, Guid, Guid, IDictionary(Of String, String), IdentityContext, APISeriesItem.DocumentSeriesItem, APICommons.CategoryFascicle, APIDocUnit.DocumentUnit, T)) As T
         Dim mapper As MapperDocumentSeriesItemEntity = New MapperDocumentSeriesItemEntity()
         Dim apiDocumentSeries As APISeriesItem.DocumentSeriesItem = mapper.MappingDTO(item)
         Dim identity As IdentityContext = New IdentityContext(DocSuiteContext.Current.User.FullUserName)
-        Dim tenantName As String = DocSuiteContext.Current.CurrentTenant.TenantName
-        Dim tenantId As Guid = DocSuiteContext.Current.CurrentTenant.TenantId
+        Dim tenantName As String = CurrentTenant.TenantName
+        Dim tenantId As Guid = CurrentTenant.UniqueId
+        Dim tenantAOOId As Guid = CurrentTenant.TenantAOO.UniqueId
         Dim attributes As IDictionary(Of String, String) = New Dictionary(Of String, String)
         Dim path As String = String.Empty
 
@@ -685,7 +654,7 @@ Public Class DocumentSeriesItemFacade
         End If
 
         attributes.Add("trasparenza_path", path)
-        Return commandInitializeFunc(tenantName, tenantId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, Nothing)
+        Return commandInitializeFunc(tenantName, tenantId, tenantAOOId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, Nothing)
     End Function
 
     Public Function GetDocumentSeriesItemsNotDraft(prot As Protocol) As IList(Of DocumentSeriesItem)

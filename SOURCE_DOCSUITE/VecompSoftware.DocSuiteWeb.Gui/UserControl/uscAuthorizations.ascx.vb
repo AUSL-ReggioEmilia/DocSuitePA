@@ -76,11 +76,11 @@ Partial Public Class uscAuthorizations
         ClearControls()
         If WorkflowRole IsNot Nothing Then
             rowMasterRole.Visible = True
-            LoadRolesTree(WorkflowRole, rtvMasterRole, "Settore con presa in carico")
+            LoadRolesTree(WorkflowRole, rtvMasterRole, "Settore con presa in carico", True)
         End If
         If ResponsibleRoles IsNot Nothing Then
             rowResponsibleRole.Visible = True
-            LoadRolesTree(ResponsibleRoles, rtvResponsibleRole, "Settore Responsabile/Competente")
+            LoadRolesTree(ResponsibleRoles, rtvResponsibleRole, "Settore responsabile/Competente")
         End If
         If AccountedRoles IsNot Nothing Then
             authorizedRoles.Visible = True
@@ -110,7 +110,7 @@ Partial Public Class uscAuthorizations
         rtvWorkflowHandler.Nodes(0).Nodes.Add(handler)
     End Sub
 
-    Private Sub LoadRolesTree(fascRoles As ICollection(Of Role), tree As RadTreeView, caption As String)
+    Private Sub LoadRolesTree(fascRoles As ICollection(Of Role), tree As RadTreeView, caption As String, Optional isWorkflowRole As Boolean = False)
         If fascRoles.Any() Then
             Dim node As RadTreeNode = New RadTreeNode(caption, "Root")
             node.Font.Bold = True
@@ -118,16 +118,19 @@ Partial Public Class uscAuthorizations
             tree.Nodes.Add(node)
             tree.Nodes(0).Expanded = True
 
-            LoadRoles(fascRoles, tree.Nodes(0), caption)
+            LoadRoles(fascRoles, tree.Nodes(0), caption, isWorkflowRole)
         End If
     End Sub
 
-    Private Sub LoadRoles(roles As ICollection(Of Role), ByRef tree As RadTreeNode, treeCaption As String)
+    Private Sub LoadRoles(roles As ICollection(Of Role), ByRef tree As RadTreeNode, treeCaption As String, Optional isWorkflowRole As Boolean = False)
         Dim reeView As RadTreeNode = tree
         Dim node As RadTreeNode
         For Each role As Role In roles
             node = SeekAndImplementNode(Nothing, role, tree, role.TenantId.ToString())
             node.Font.Bold = True
+            If isWorkflowRole Then
+                node.ImageUrl = "../App_Themes/DocSuite2008/imgset16/Admin.png"
+            End If
         Next
     End Sub
 

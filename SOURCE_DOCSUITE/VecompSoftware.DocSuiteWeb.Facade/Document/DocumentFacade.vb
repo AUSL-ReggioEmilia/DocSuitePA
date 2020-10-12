@@ -83,6 +83,10 @@ Public Class DocumentFacade
         Return _dao.GetConservationDocuments(ToDate)
     End Function
 
+    Public Function GetByServiceNumber(ByVal serviceNumber As String) As IList(Of Document)
+        Return _dao.GetByServiceNumber(serviceNumber)
+    End Function
+
     ''' <summary> Chiusura pratica </summary>
     Public Sub Close(ByRef currentDocument As Document, ByVal endDate As Date?, ByVal note As String)
         Dim factory As FacadeFactory = New FacadeFactory("DocmDB")

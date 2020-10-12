@@ -10,13 +10,15 @@
             div.RadGrid_Office2007 input {
                 background-color: white;
             }
-            .RadWindow .rwIcon{
-                margin:3px 5px 0 0;
+
+            .RadWindow .rwIcon {
+                margin: 3px 5px 0 0;
                 position: static;
             }
-            .RadWindow .rwIcon::before{
-                content: unset;
-            }
+
+                .RadWindow .rwIcon::before {
+                    content: unset;
+                }
         </style>
 
         <script type="text/javascript">
@@ -40,6 +42,7 @@
                     tbltTenant.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>";
                     tbltTenant.splitterMainId = "<%= splitterMain.ClientID %>";
                     tbltTenant.toolBarSearchId = "<%= ToolBarSearch.ClientID %>";
+                    tbltTenant.managerId = "<%= MasterDocSuite.DefaultWindowManager.ClientID %>";
 
                     // details right zone
                     tbltTenant.lblCompanyNameId = "<%= lblCompanyName.ClientID %>";
@@ -87,7 +90,13 @@
                     tbltTenant.txtTenantWorkflowRepositoryJsonValueId = "<%= txtTenantWorkflowRepositoryJsonValue.ClientID %>";
                     tbltTenant.txtTenantWorkflowRepositoryIntegrationModuleNameId = "<%= txtTenantWorkflowRepositoryIntegrationModuleName.ClientID %>";
                     tbltTenant.txtTenantWorkflowRepositoryConditionsId = "<%= txtTenantWorkflowRepositoryConditions.ClientID %>";
-                    
+                    tbltTenant.txtTenantAOONameId = "<%= txtTenantAOOName.ClientID %>"
+                    tbltTenant.txtTenantAOONoteId = "<%= txtTenantAOONote.ClientID %>"
+                    tbltTenant.txtCategorySuffixId = "<%= txtCategorySuffix.ClientID%>"
+                    tbltTenant.txtTenantAOONameInfoId =  "<%= txtTenantAOONameInfo.ClientID %>";
+                    tbltTenant.txtTenantAOONoteInfoId =  "<%= txtTenantAOONoteInfo.ClientID %>";
+                    tbltTenant.txtTenantAOOSuffixInfoId = "<%= txtTenantAOOSuffixInfo.ClientID %>";
+
                     // Window buttons Confirm, Cancel
                     tbltTenant.btnContainerSelectorOkId = "<%= btnContainerSelectorOk.ClientID %>";
                     tbltTenant.btnContainerSelectorCancelId = "<%= btnContainerSelectorCancel.ClientID %>";
@@ -103,9 +112,9 @@
                     tbltTenant.btnTenantConfigurationSelectorCancelId = "<%= btnTenantConfigurationSelectorCancel.ClientID %>";
                     tbltTenant.btnTenantSelectorOkId = "<%= btnTenantSelectorOk.ClientID %>";
                     tbltTenant.btnTenantSelectorCancelId = "<%= btnTenantSelectorCancel.ClientID %>";
-                    tbltTenant.btnTenantInsertId = "<%= btnTenantInsert.ClientID %>";
-                    tbltTenant.btnTenantUpdateId = "<%= btnTenantUpdate.ClientID %>";
-
+                    tbltTenant.rtbCompanyOptionsId = "<%= rtbCompanyOptions.ClientID %>";
+                    tbltTenant.btnTenantAOOSelectorOkId = "<%=btnTenantAOOSelectorOk.ClientID %>"
+                    tbltTenant.btnTenantAOOSelectorCancelId = "<%= btnTenantAOOSelectorCancel.ClientID%>"
                     tbltTenant.uscContattiSelRestId = "<% =uscContattiSelRest.PanelContent.ClientID%>";
                     tbltTenant.uscRoleRestId = "<%= uscRoles.TableContentControl.ClientID %>";
 
@@ -168,7 +177,7 @@
                                 <telerik:RadButton runat="server" ID="btnPECMailBoxSelectorOk" Text="Conferma" Width="100px" AutoPostBack="false"></telerik:RadButton>
                                 <telerik:RadButton runat="server" ID="btnPECMailBoxSelectorCancel" Text="Annulla" Width="100px" AutoPostBack="false"></telerik:RadButton>
                             </td>
-                            
+
                         </tr>
                     </table>
                 </ContentTemplate>
@@ -362,7 +371,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">Sigla AOO:</td>
+                            <td class="label">Sigla UO:</td>
                             <td>
                                 <telerik:RadTextBox ID="txtTenantName" MaxLength="10" runat="server" Width="100%" Height="100%" TextMode="SingleLine" />
                             </td>
@@ -374,7 +383,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">Nome AOO:</td>
+                            <td class="label">Nome UO:</td>
                             <td>
                                 <telerik:RadTextBox ID="txtTenantCompany" MaxLength="255" runat="server" Width="100%" Height="100%" TextMode="SingleLine" />
                             </td>
@@ -399,11 +408,45 @@
                             </td>
                         </tr>
                     </table>
+
+                    <table class="datatable" id="TenantAOOSelectorWindowTable">
+                        <tr>
+                            <td class="label">Nome AOO:</td>
+                            <td>
+                                <telerik:RadTextBox ID="txtTenantAOOName" MaxLength="255" runat="server" Width="100%" Height="100%" TextMode="SingleLine" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label"></td>
+                            <td>
+                                <asp:RequiredFieldValidator runat="server" ID="txtTenantAOONameValidator" Display="Dynamic" ControlToValidate="txtTenantAOOName" ValidationGroup="TenantAOOValidationGroup" ErrorMessage="Il nome del'AOO non può essere vuoto!" />
+                            </td>
+                        </tr>
+                          <tr>
+                            <td class="label">Suffisso categoria:</td>
+                            <td>
+                                <telerik:RadTextBox ID="txtCategorySuffix" MaxLength="255" runat="server" Width="100%" Height="100%" TextMode="SingleLine" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Note:</td>
+                            <td>
+                                <telerik:RadTextBox ID="txtTenantAOONote" MaxLength="255" runat="server" Width="100%" Height="100%" TextMode="MultiLine" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="buttons" colspan="2">
+                                <telerik:RadButton runat="server" ID="btnTenantAOOSelectorOk" Text="Conferma" Width="100px" AutoPostBack="false"></telerik:RadButton>
+                                <telerik:RadButton runat="server" ID="btnTenantAOOSelectorCancel" Text="Annulla" Width="100px" AutoPostBack="false"></telerik:RadButton>
+                            </td>
+                        </tr>
+                    </table>
                 </ContentTemplate>
             </asp:UpdatePanel>
         </ContentTemplate>
     </telerik:RadWindow>
-    
+
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="cphContent" runat="server">
@@ -428,28 +471,25 @@
                                     </ItemTemplate>
                                 </telerik:RadToolBarButton>
                                 <telerik:RadToolBarButton IsSeparator="true" />
-                                <telerik:RadToolBarButton Text="Cerca" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
+                                <telerik:RadToolBarButton Text="Disattivi" CheckOnClick="true" Group="Disabled" Checked="false" Value="disabled" PostBack="true"
+                                    AllowSelfUnCheck="true">
+                                </telerik:RadToolBarButton>
                                 <telerik:RadToolBarButton IsSeparator="true" />
+                                <telerik:RadToolBarButton Text="Attivi" CheckOnClick="true" Checked="false" Group="Active" Value="active" PostBack="true"
+                                    AllowSelfUnCheck="true">
+                                </telerik:RadToolBarButton>
+                                <telerik:RadToolBarButton IsSeparator="true" />
+                                <telerik:RadToolBarButton Text="Cerca" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" Value="search" />
                             </Items>
                         </telerik:RadToolBar>
-                        <telerik:RadToolBar AutoPostBack="true" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="ToolBarStatus" runat="server" Width="100%">
+
+                        <telerik:RadToolBar AutoPostBack="false" EnableRoundedCorners="False" EnableShadows="False" ID="rtbCompanyOptions" runat="server" Width="100%" RenderMode="Lightweight">
                             <Items>
-                                <telerik:RadToolBarButton>
-                                    <ItemTemplate>
-                                        <label>Stato dell'AOO:</label>
-                                    </ItemTemplate>
-                                </telerik:RadToolBarButton>
-                                <telerik:RadToolBarButton IsSeparator="true" />
-                                <telerik:RadToolBarButton Text="Disattivi" CheckOnClick="true" Group="Disabled" Checked="false" Value="searchDisabled" PostBack="true"
-                                    AllowSelfUnCheck="true">
-                                </telerik:RadToolBarButton>
-                                <telerik:RadToolBarButton IsSeparator="true" />
-                                <telerik:RadToolBarButton Text="Attivi" CheckOnClick="true" Checked="true" Group="Active" Value="searchActive" PostBack="true"
-                                    AllowSelfUnCheck="true">
-                                </telerik:RadToolBarButton>
-                                <telerik:RadToolBarButton IsSeparator="true" />
+                                <telerik:RadToolBarButton ToolTip="Aggiungi" Text="Aggiungi" CheckOnClick="false" Checked="false" Value="create" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+                                <telerik:RadToolBarButton ToolTip="Modifica" Text="Modifica" CheckOnClick="false" Checked="false" Value="modify" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
                             </Items>
                         </telerik:RadToolBar>
+
                         <telerik:RadTreeView ID="rtvTenants" LoadingStatusPosition="BeforeNodeText" PersistLoadOnDemandNodes="false" runat="server" Style="margin-top: 10px;" Width="100%">
                             <Nodes>
                                 <telerik:RadTreeNode Expanded="true" NodeType="Root" runat="server" Selected="true" Text="AOO" Value="" />
@@ -467,7 +507,9 @@
             <telerik:RadPane runat="server">
                 <asp:Panel runat="server" ID="pnlDetails" Enabled="True">
 
-                    <table id="ItemDetailTable" class="datatable pec" style="height: 100%; margin-bottom: 0; table-layout: fixed">
+
+               <div id="tenantAOOInfo">
+                    <table id="ItemDetailTableAOO" class="datatable pec" style="height: 100%; margin-bottom: 0; table-layout: fixed">
                         <tr>
                             <th colspan="2">Informazioni</th>
                         </tr>
@@ -475,11 +517,40 @@
                             <td class="label">Nome AOO
                             </td>
                             <td>
+                                <asp:Label runat="server" ID="txtTenantAOONameInfo" Width="90%"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Suffisso categoria
+                            </td>
+                            <td>
+                                <asp:Label runat="server" ID="txtTenantAOOSuffixInfo" Width="90%"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Note
+                            </td>
+                            <td>
+                                <asp:Label runat="server" ID="txtTenantAOONoteInfo" Width="90%"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>                 
+               </div>
+
+               <div id="tenantLinkOptions">
+                    <table id="ItemDetailTable" class="datatable pec" style="height: 100%; margin-bottom: 0; table-layout: fixed">
+                        <tr>
+                            <th colspan="2">Informazioni</th>
+                        </tr>
+                        <tr>
+                            <td class="label">Nome UO
+                            </td>
+                            <td>
                                 <asp:Label runat="server" ID="lblCompanyName" Width="90%"></asp:Label>
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">Sigla AOO
+                            <td class="label">Sigla UO
                             </td>
                             <td>
                                 <asp:Label runat="server" ID="lblTenantName" Width="90%"></asp:Label>
@@ -507,7 +578,8 @@
                             </td>
                         </tr>
 
-                    </table>
+                    </table>                  
+
                     <table class="datatable">
                         <thead>
                             <tr>
@@ -521,6 +593,8 @@
                                     <Items>
                                         <telerik:RadToolBarButton CommandName="ADDNEW" ImageUrl="~/App_Themes/DocSuite2008/imgset16/box_open_add.png" ToolTip="Aggiungi contenitore esistente"></telerik:RadToolBarButton>
                                         <telerik:RadToolBarButton CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/box_open_remove.png" ToolTip="Elimina contenitore selezionato"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton CommandName="ADDALL" ImageUrl="~/App_Themes/DocSuite2008/imgset16/database_add.png" ToolTip="Aggiungi tutti contenitori"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton CommandName="REMOVEALL" ImageUrl="~/App_Themes/DocSuite2008/imgset16/database_delete.png" ToolTip="Elimina tutti contenitori"></telerik:RadToolBarButton>
                                     </Items>
                                 </telerik:RadToolBar>
                             </td>
@@ -561,14 +635,18 @@
                     <table class="datatable">
                         <tr>
                             <td>
-                                <usc:uscRoleRest Caption="Settori collegati" 
-                                                 MultipleRoles="true" 
-                                                 ID="uscRoles" 
-                                                 ReadOnlyMode="false" 
-                                                 runat="server"></usc:uscRoleRest>
+                                <usc:uscRoleRest Caption="Settori collegati"
+                                    MultipleRoles="true"
+                                    ID="uscRoles"
+                                    ReadOnlyMode="false"
+                                    runat="server"
+                                    AllDataButtonEnabled="true"
+                                    RemoveAllDataButtonEnabled="true"
+                                    LoadAllRoles="true"></usc:uscRoleRest>
                             </td>
                         </tr>
                     </table>
+
                     <table class="datatable">
                         <tr>
                             <th>Flusso di lavoro</th>
@@ -616,36 +694,26 @@
                         </tr>
                     </table>
 
-
                     <%-- Contatti --%>
-
                     <table class="datatable">
                         <tr>
                             <th>Contatti</th>
                         </tr>
-                         <tr>
+                        <tr>
                             <td>
                                 <asp:Panel runat="server">
-                                    <usc:uscContattiSelRest runat="server" ID="uscContattiSelRest"></usc:uscContattiSelRest>
+                                    <usc:uscContattiSelRest FilterByTenantEnabled="False" runat="server" ID="uscContattiSelRest"
+                                        AddAllDataButtonVisibility="true"
+                                        RemoveAllDataButtonVisibility="true"></usc:uscContattiSelRest>
                                 </asp:Panel>
-                                
+
                             </td>
                         </tr>
-                    </table>      
+                    </table>
+                  </div>
                 </asp:Panel>
             </telerik:RadPane>
 
         </telerik:RadSplitter>
     </div>
-</asp:Content>
-
-<asp:Content ID="Content1" runat="server" ContentPlaceHolderID="cphFooter">
-    <table style="width: 100%;">
-        <tr>
-            <td style="width: 50%;">
-                <telerik:RadButton ID="btnTenantInsert" runat="server" Text="Aggiungi" Width="100px" AutoPostBack="false"></telerik:RadButton>
-                <telerik:RadButton ID="btnTenantUpdate" runat="server" Text="Modifica" Width="100px" AutoPostBack="false"></telerik:RadButton>
-            </td>
-        </tr>
-    </table>
 </asp:Content>

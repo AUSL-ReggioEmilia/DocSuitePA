@@ -19,25 +19,43 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows
             _this._configuration = configuration;
             return _this;
         }
-        WorkflowInstanceService.prototype.getWorkflowInstances = function (searchFilter, callback, error) {
-            var url = this._configuration.ODATAUrl.concat("?$expand=WorkflowRepository($select=Name),WorkflowActivities($orderby=RegistrationDate)&$orderby=RegistrationDate desc");
-            var oDataFilters = "&$filter=1 eq 1";
-            if (searchFilter.name) {
-                oDataFilters = oDataFilters.concat(" and contains(WorkflowRepository/Name, '" + searchFilter.name + "')");
+        WorkflowInstanceService.prototype._buildOdataFilters = function (baseOdataOperator, searchFilter) {
+            var baseOdataUrl = this._configuration.ODATAUrl + "/" + baseOdataOperator;
+            var oDataFilters = "";
+            if (searchFilter.workflowRepositoryId) {
+                oDataFilters = oDataFilters + " and WorkflowRepository/UniqueId eq " + searchFilter.workflowRepositoryId;
             }
             if (searchFilter.status) {
-                oDataFilters = oDataFilters.concat(" and Status eq '" + searchFilter.status + "'");
-            }
-            if (searchFilter.name) {
-                oDataFilters = oDataFilters.concat(" and contains(WorkflowRepository/Name, '" + searchFilter.name + "')");
+                oDataFilters = oDataFilters + " and Status eq '" + searchFilter.status + "'";
             }
             if (searchFilter.activeFrom) {
-                oDataFilters = oDataFilters.concat(" and RegistrationDate gt " + searchFilter.activeFrom);
+                oDataFilters = oDataFilters + " and RegistrationDate gt " + searchFilter.activeFrom;
             }
             if (searchFilter.activeTo) {
-                oDataFilters = oDataFilters.concat(" and RegistrationDate lt " + searchFilter.activeTo);
+                oDataFilters = oDataFilters + " and RegistrationDate lt " + searchFilter.activeTo;
             }
-            this.getRequest(url.concat(oDataFilters), null, function (response) {
+            if (searchFilter.skip) {
+                oDataFilters = oDataFilters + "&$skip=" + searchFilter.skip;
+            }
+            if (searchFilter.top) {
+                oDataFilters = oDataFilters + "&$top=" + searchFilter.top;
+            }
+            return baseOdataUrl + oDataFilters;
+        };
+        WorkflowInstanceService.prototype.countWorkflowInstances = function (searchFilter, callback, error) {
+            searchFilter.skip = null;
+            searchFilter.top = null;
+            var url = this._buildOdataFilters("$count?$filter= 1 eq 1", searchFilter);
+            this.getRequest(url, null, function (response) {
+                if (callback && response) {
+                    callback(response);
+                }
+                ;
+            }, error);
+        };
+        WorkflowInstanceService.prototype.getWorkflowInstances = function (searchFilter, callback, error) {
+            var url = this._buildOdataFilters("?$expand=WorkflowRepository($select=Name),WorkflowActivities($orderby=RegistrationDate)&$orderby=RegistrationDate desc&$filter= 1 eq 1", searchFilter);
+            this.getRequest(url, null, function (response) {
                 if (callback && response) {
                     var modelMapper_1 = new WorkflowInstanceModelMapper();
                     var workflowInstances_1 = [];

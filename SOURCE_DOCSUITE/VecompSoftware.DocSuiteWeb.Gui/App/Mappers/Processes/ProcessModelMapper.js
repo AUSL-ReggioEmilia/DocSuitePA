@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/Commons/CategoryModelMapper", "App/Mappers/Dossiers/DossierModelMapper", "App/Mappers/BaseMapper", "../Commons/RoleModelMapper"], function (require, exports, CategoryModelMapper, DossierModelMapper, BaseMapper, RoleModelMapper) {
+define(["require", "exports", "App/Mappers/Commons/CategoryModelMapper", "App/Mappers/Dossiers/DossierModelMapper", "App/Mappers/BaseMapper", "App/Mappers/Commons/RoleModelMapper"], function (require, exports, CategoryModelMapper, DossierModelMapper, BaseMapper, RoleModelMapper) {
     var ProcessModelMapper = /** @class */ (function (_super) {
         __extends(ProcessModelMapper, _super);
         function ProcessModelMapper() {
@@ -26,7 +26,6 @@ define(["require", "exports", "App/Mappers/Commons/CategoryModelMapper", "App/Ma
             toMap.Category = source.Category ? new CategoryModelMapper().Map(source.Category) : null;
             toMap.Dossier = source.Dossier ? new DossierModelMapper().Map(source.Dossier) : null;
             toMap.Name = source.Name;
-            toMap.FascicleType = source.FascicleType;
             toMap.StartDate = source.StartDate;
             toMap.EndDate = source.EndDate;
             toMap.Note = source.Note;

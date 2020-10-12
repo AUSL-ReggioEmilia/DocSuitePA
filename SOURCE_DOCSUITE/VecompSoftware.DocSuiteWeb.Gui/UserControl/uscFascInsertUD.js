@@ -209,32 +209,24 @@ define(["require", "exports", "App/Services/DocumentUnits/DocumentUnitService", 
             });
             return _this;
         }
-        Object.defineProperty(uscFascInsertUD.prototype, "DocumentUnitRedirectUrls", {
-            get: function () {
-                var items = [
-                    [Environment.Protocol, function (d) { return "../Prot/ProtVisualizza.aspx?Year=" + d.Year.toString() + "&Number=" + d.Number.toString() + "&Type=Prot"; }],
-                    [Environment.Resolution, function (d) { return "../Resl/ReslVisualizza.aspx?IdResolution=" + d.EntityId.toString() + "&Type=Resl"; }],
-                    [Environment.DocumentSeries, function (d) { return "../Series/Item.aspx?IdDocumentSeriesItem=" + d.EntityId.toString() + "&Action=View&Type=Series"; }],
-                    [Environment.UDS, function (d) { return "../UDS/UDSView.aspx?Type=UDS&IdUDS=" + d.UniqueId.toString() + "&IdUDSRepository=" + d.UDSRepository.UniqueId.toString(); }]
-                ];
-                return items;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscFascInsertUD.prototype, "DocumentUnitInsertActions", {
-            get: function () {
-                var _this = this;
-                var items = [
-                    [Environment.Protocol, function (d) { return _this.insertFascicleDocumentUnit(d); }],
-                    [Environment.Resolution, function (d) { return _this.insertFascicleDocumentUnit(d); }],
-                    [Environment.UDS, function (d) { return _this.insertFascicleDocumentUnit(d); }]
-                ];
-                return items;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        uscFascInsertUD.prototype.DocumentUnitRedirectUrls = function () {
+            var items = [
+                [Environment.Protocol, function (d) { return "../Prot/ProtVisualizza.aspx?UniqueId=" + d.UniqueId + "&Type=Prot"; }],
+                [Environment.Resolution, function (d) { return "../Resl/ReslVisualizza.aspx?IdResolution=" + d.EntityId.toString() + "&Type=Resl"; }],
+                [Environment.DocumentSeries, function (d) { return "../Series/Item.aspx?IdDocumentSeriesItem=" + d.EntityId.toString() + "&Action=View&Type=Series"; }],
+                [Environment.UDS, function (d) { return "../UDS/UDSView.aspx?Type=UDS&IdUDS=" + d.UniqueId.toString() + "&IdUDSRepository=" + d.UDSRepository.UniqueId.toString(); }]
+            ];
+            return items;
+        };
+        uscFascInsertUD.prototype.DocumentUnitInsertActions = function () {
+            var _this = this;
+            var items = [
+                [Environment.Protocol, function (d) { return _this.insertFascicleDocumentUnit(d); }],
+                [Environment.Resolution, function (d) { return _this.insertFascicleDocumentUnit(d); }],
+                [Environment.UDS, function (d) { return _this.insertFascicleDocumentUnit(d); }]
+            ];
+            return items;
+        };
         /**
          * Inizializzazione
          */
@@ -411,7 +403,7 @@ define(["require", "exports", "App/Services/DocumentUnits/DocumentUnitService", 
          */
         uscFascInsertUD.prototype.getDocumentUnitUrl = function (documentUnit) {
             var env = this._documentUnitService.getDocumentUnitEnvironment(documentUnit);
-            var foundItems = this.DocumentUnitRedirectUrls.filter(function (item) { return item[0] == env; })
+            var foundItems = this.DocumentUnitRedirectUrls().filter(function (item) { return item[0] == env; })
                 .map(function (item) { return item[1](documentUnit); });
             if (!foundItems || foundItems.length == 0) {
                 return "#";
@@ -420,26 +412,24 @@ define(["require", "exports", "App/Services/DocumentUnits/DocumentUnitService", 
         };
         uscFascInsertUD.prototype.getFinderModel = function () {
             var finderModel = {};
-            finderModel.Year = Number(this._txtYear.get_value());
+            finderModel.IdTenantAOO = this.currentTenantAOOId;
+            if (this._txtYear.get_value() != "")
+                finderModel.Year = Number(this._txtYear.get_value());
             if (this._txtNumber.get_value() != "")
                 finderModel.Number = this._txtNumber.get_value().replace("/", "|");
             if (this._rcbUDDoc.get_selectedItem() != undefined && this._rcbUDDoc.get_selectedItem().get_value() != "") {
-                finderModel.UdType = this._rcbUDDoc.get_selectedItem().get_value();
+                finderModel.DocumentUnitName = this._rcbUDDoc.get_selectedItem().get_value();
             }
             if (this._txtSubject.get_value() != "") {
                 finderModel.Subject = this._txtSubject.get_value();
             }
             if (this._rcbContainers.get_selectedItem() && this._rcbContainers.get_selectedItem().get_value()) {
-                finderModel.ContainerId = Number(this._rcbContainers.get_selectedItem().get_value());
+                finderModel.IdContainer = Number(this._rcbContainers.get_selectedItem().get_value());
             }
             this._treeCategory = $find(this.treeCategoryId);
             if (this._treeCategory.get_allNodes().length > 0) {
                 var lastNodeIndex = this._treeCategory.get_allNodes().length - 1;
-                finderModel.CategoryId = this._treeCategory.get_allNodes()[lastNodeIndex].get_value();
-                finderModel.CategoryFullPath = [];
-                this._treeCategory.get_allNodes().forEach(function (item) {
-                    finderModel.CategoryFullPath.push(+item.get_value());
-                });
+                finderModel.IdCategory = this._treeCategory.get_allNodes()[lastNodeIndex].get_value();
             }
             finderModel.IncludeChildClassification = this._chbCategoryChild.checked;
             return finderModel;
@@ -456,14 +446,17 @@ define(["require", "exports", "App/Services/DocumentUnits/DocumentUnitService", 
             var finderModel = this.getFinderModel();
             var masterTableView = this._grdUdDocSelected.get_masterTableView();
             var top = skip + masterTableView.get_pageSize();
-            this._documentUnitService.findDocumentUnits(skip, top, finderModel, this._fascicleModel, function (data) {
+            finderModel.Skip = skip;
+            finderModel.Top = top;
+            finderModel.IdFascicle = this._fascicleModel.UniqueId;
+            this._documentUnitService.findDocumentUnits(finderModel, function (data) {
                 if (data == null) {
                     _this._loadingPanel.hide(_this.pageContentId);
                     _this.showWarningMessage(_this.uscNotificationId, "Nessun elemento trovato con i parametri passati");
                     return;
                 }
                 _this.bindDocumentUnitsGrid(data);
-                _this._documentUnitService.countDocumentUnits(finderModel, _this._fascicleModel, function (data) {
+                _this._documentUnitService.countDocumentUnits(finderModel, function (data) {
                     if (data == null) {
                         _this._loadingPanel.hide(_this.pageContentId);
                         _this.showWarningMessage(_this.uscNotificationId, "Nessun elemento trovato con i parametri passati");

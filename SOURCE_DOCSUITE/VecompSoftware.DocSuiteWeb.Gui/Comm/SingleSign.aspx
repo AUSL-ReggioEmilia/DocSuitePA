@@ -459,7 +459,7 @@
                 </telerik:RadToolBarButton>
                 <telerik:RadToolBarButton Value="pinContainer">
                     <ItemTemplate>
-                        <telerik:RadTextBox ID="pin" runat="server" TextMode="Password" Width="50px" />
+                        <telerik:RadTextBox ID="pin" runat="server" TextMode="Password" Width="75px" />
                     </ItemTemplate>
                 </telerik:RadToolBarButton>
 
@@ -471,7 +471,7 @@
                 </telerik:RadToolBarButton>
                 <telerik:RadToolBarButton Value="otpContainer2">
                     <ItemTemplate>
-                        <telerik:RadTextBox ID="proxyOtp" runat="server" TextMode="Password" Width="50px" />
+                        <telerik:RadTextBox ID="proxyOtp" runat="server" TextMode="Password" Width="85px" />
                     </ItemTemplate>
                 </telerik:RadToolBarButton>
 

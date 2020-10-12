@@ -8,12 +8,23 @@ class TbltSettore {
     radTreeViewRolesId: string;
     radWindowManagerRolesId: string;
     ajaxManagerId: string;
+    folderToolBarId: string;
     showDisabled: string;
-    ajaxLoadingPanelId: string;
-    pnlDetails: string;
-    pnlInformations: string;
 
-    private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
+
+    private _folderToolBar: Telerik.Web.UI.RadToolBar;
+
+    private static CREATE_OPTION: string = "create"
+    private static MODIFY_OPTION: string = "modify"
+    private static DELETE_OPTION: string = "delete"
+    private static MOVE_OPTION: string = "move"
+    private static CLONE_OPTION: string = "clone"
+    private static PRINT_OPTION: string = "print"
+    private static GROUPS_OPTION: string = "groups"
+    private static HISTORY_OPTION: string = "history"
+    private static LOG_OPTION: string = "log"
+    private static FUNCTION_OPTION: string = "function"
+    private static PROPAGATION_OPTION: string = "propagation"
 
     /**
      * Costruttore
@@ -28,12 +39,12 @@ class TbltSettore {
      * Initialize
      */
     initialize(): void {
+        this._folderToolBar = <Telerik.Web.UI.RadToolBar>$find(this.folderToolBarId);
         let wndManager: Telerik.Web.UI.RadWindowManager = <Telerik.Web.UI.RadWindowManager>$find(this.radWindowManagerRolesId);
         wndManager.getWindowByName('windowEditRoles').add_close(this.onCloseWindowEdit);
+        wndManager.getWindowByName('windowGroupRoles').add_close(this.onCloseWindowGroup);
         wndManager.getWindowByName('windowRoles').add_close(this.onCloseWindowRoles);
         wndManager.getWindowByName('windowAddUsers').add_close(this.onCloseWindowAddUserInGroup);
-
-        this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
     }
 
     /**
@@ -48,10 +59,17 @@ class TbltSettore {
     onCloseWindowEdit = (sender: any, args: Telerik.Web.UI.WindowCloseEventArgs) => {
         if (args.get_argument() !== null) {
             this.updateGroups(args.get_argument());
-            this.hideLoadingSpinner();
         }
     }
 
+    /**
+     * Evento alla chiusura della finestra di gestione gruppi
+     * @param sender
+     * @param args
+     */
+    onCloseWindowGroup = (sender: any, args: Telerik.Web.UI.WindowCloseEventArgs) => {
+        this.updateGroups();
+    }
     /**
      * Evento alla chiusura della finestra di move settori
      * @param sender
@@ -105,6 +123,9 @@ class TbltSettore {
             case TbltSettoreOperation.Function:
                 this.viewFunctionUsers();
                 break;
+            case TbltSettoreOperation.ChildrenRoles:
+                this.loadChildrenRoles();
+                break;
         }
     }
 
@@ -122,9 +143,20 @@ class TbltSettore {
         let isNodeRecovery: boolean
         if (attributeRecovery != null) {
             isNodeRecovery = !!JSON.parse(treeNode.get_attributes().getAttribute("Recovery"));
+            isNodeRecovery ? (<any>menu.findItemByValue(TbltSettore.DELETE_OPTION)).set_text("Recupera") : (<any>menu.findItemByValue('Delete')).set_text("Elimina");
         }
 
         if (isNodeRecovery) {
+            menu.findItemByValue(TbltSettore.CREATE_OPTION).disable();
+            menu.findItemByValue(TbltSettore.MODIFY_OPTION).disable();
+            menu.findItemByValue(TbltSettore.PRINT_OPTION).disable();
+            menu.findItemByValue(TbltSettore.DELETE_OPTION).enable();
+            menu.findItemByValue(TbltSettore.GROUPS_OPTION).disable();
+            menu.findItemByValue(TbltSettore.LOG_OPTION).disable();
+            menu.findItemByValue(TbltSettore.FUNCTION_OPTION).disable();
+            menu.findItemByValue(TbltSettore.MOVE_OPTION).enable();
+            menu.findItemByValue(TbltSettore.CLONE_OPTION).disable();
+            this.alignButtons(menu);
             return;
         }
 
@@ -133,21 +165,75 @@ class TbltSettore {
         switch (nodeType) {
             case "Role":
             case "SubRole":
-                menu.findItemByValue('Clone').enable();
-
-                for (let childNode of treeNode.get_allNodes()) {
-                    if (childNode.get_attributes().getAttribute("NodeType") == "SubRole") {
-                        break;
-                    }
-                }
+                menu.findItemByValue(TbltSettore.CREATE_OPTION).enable();
+                menu.findItemByValue(TbltSettore.MODIFY_OPTION).enable();
+                menu.findItemByValue(TbltSettore.PRINT_OPTION).enable();
+                menu.findItemByValue(TbltSettore.DELETE_OPTION).enable();
+                menu.findItemByValue(TbltSettore.GROUPS_OPTION).enable();
+                menu.findItemByValue(TbltSettore.CLONE_OPTION).enable();
+                menu.findItemByValue(TbltSettore.LOG_OPTION).enable();
+                menu.findItemByValue(TbltSettore.FUNCTION_OPTION).enable();
+                menu.findItemByValue(TbltSettore.MOVE_OPTION).enable();
                 break;
             case "Group":
+                menu.findItemByValue(TbltSettore.CREATE_OPTION).disable();
+                menu.findItemByValue(TbltSettore.MODIFY_OPTION).disable();
+                menu.findItemByValue(TbltSettore.PRINT_OPTION).disable();
+                menu.findItemByValue(TbltSettore.DELETE_OPTION).disable();
+                menu.findItemByValue(TbltSettore.GROUPS_OPTION).disable();
+                menu.findItemByValue(TbltSettore.LOG_OPTION).enable();
+                menu.findItemByValue(TbltSettore.FUNCTION_OPTION).disable();
+                menu.findItemByValue(TbltSettore.MOVE_OPTION).disable();
+                menu.findItemByValue(TbltSettore.CLONE_OPTION).disable();
+
+                this.disableButtons();
                 break;
             case "Root":
+                menu.findItemByValue(TbltSettore.CREATE_OPTION).enable();
+                menu.findItemByValue(TbltSettore.MODIFY_OPTION).disable();
+                menu.findItemByValue(TbltSettore.PRINT_OPTION).disable();
+                menu.findItemByValue(TbltSettore.DELETE_OPTION).disable();
+                menu.findItemByValue(TbltSettore.LOG_OPTION).disable();
+                menu.findItemByValue(TbltSettore.LOG_OPTION).disable();
+                menu.findItemByValue(TbltSettore.FUNCTION_OPTION).disable();
+                menu.findItemByValue(TbltSettore.MOVE_OPTION).disable();
+                menu.findItemByValue(TbltSettore.CLONE_OPTION).disable();
                 break;
             default:
+                menu.findItemByValue(TbltSettore.CREATE_OPTION).enable();
+                menu.findItemByValue(TbltSettore.MODIFY_OPTION).disable();
+                menu.findItemByValue(TbltSettore.PRINT_OPTION).disable();
+                menu.findItemByValue(TbltSettore.DELETE_OPTION).enable();
+                menu.findItemByValue(TbltSettore.GROUPS_OPTION).disable();
+                menu.findItemByValue(TbltSettore.LOG_OPTION).enable();
+                menu.findItemByValue(TbltSettore.FUNCTION_OPTION).disable();
+                menu.findItemByValue(TbltSettore.MOVE_OPTION).disable();
+                menu.findItemByValue(TbltSettore.CLONE_OPTION).disable();
                 break;
         }
+        this.alignButtons(menu);
+    }
+
+    disableButtons() {
+        var btnAdd = this._folderToolBar.findItemByValue(TbltSettore.CREATE_OPTION);
+        var btnModify = this._folderToolBar.findItemByValue(TbltSettore.MODIFY_OPTION);
+        var btnPrint = this._folderToolBar.findItemByValue(TbltSettore.PRINT_OPTION);
+        var btnLog = this._folderToolBar.findItemByValue(TbltSettore.LOG_OPTION);
+        var btnFunction = this._folderToolBar.findItemByValue(TbltSettore.FUNCTION_OPTION);
+        var btnDelete = this._folderToolBar.findItemByValue(TbltSettore.DELETE_OPTION);
+        var btnGroups = this._folderToolBar.findItemByValue(TbltSettore.GROUPS_OPTION);
+        var btnMove = this._folderToolBar.findItemByValue(TbltSettore.MOVE_OPTION);
+        var btnClone = this._folderToolBar.findItemByValue(TbltSettore.CLONE_OPTION);
+
+        if (btnAdd != null) btnAdd.set_enabled(false);
+        if (btnModify != null) btnModify.set_enabled(false);
+        if (btnPrint != null) btnPrint.set_enabled(false);
+        if (btnLog != null) btnLog.set_enabled(false);
+        if (btnFunction != null) btnFunction.set_enabled(false);
+        if (btnDelete != null) btnDelete.set_enabled(false);
+        if (btnGroups != null) btnGroups.set_enabled(false);
+        if (btnMove != null) btnMove.set_enabled(false);
+        if (btnClone != null) btnClone.set_enabled(false);
     }
 
     selectNode(nodeValue) {
@@ -182,7 +268,7 @@ class TbltSettore {
             case TbltSettoreOperation.Rename:
                 parameters = parameters.concat("&RoleID=", selectedNode.get_value());
                 break;
-            case TbltSettoreOperation.Delete:            
+            case TbltSettoreOperation.Delete:
                 if (selectedNode.get_attributes().getAttribute("Recovery") == "true") {
                     parameters = "Action=Recovery";
                 }
@@ -300,16 +386,78 @@ class TbltSettore {
      * @param menu
      */
     checkDeleteItem(node: Telerik.Web.UI.RadTreeNode, menu: Telerik.Web.UI.RadMenu): boolean {
+        var btnDelete = this._folderToolBar.findItemByValue(TbltSettore.DELETE_OPTION);
         node.get_nodes().forEach(function (item: Telerik.Web.UI.RadTreeNode) {
             let nodeType: string = item.get_attributes().getAttribute("NodeType").toUpperCase();
             if (nodeType != "GROUP") {
                 let isNodeRecovery: boolean = !!JSON.parse(item.get_attributes().getAttribute("Recovery"));
                 if (nodeType == "SUBROLE" && !isNodeRecovery) {
+                    btnDelete.disable();
                     return false;
                 }
             }
         });
+
+        btnDelete.enable();
         return true;
+    }
+
+    /**
+     * Metodo per allineare i pulsante al context menu
+     * @param menu
+     */
+    alignButtons(menu): void {
+        var btnAdd = this._folderToolBar.findItemByValue(TbltSettore.CREATE_OPTION);
+        var btnModify = this._folderToolBar.findItemByValue(TbltSettore.MODIFY_OPTION);
+        var btnPrint = this._folderToolBar.findItemByValue(TbltSettore.PRINT_OPTION);
+        var btnLog = this._folderToolBar.findItemByValue(TbltSettore.LOG_OPTION);
+        var btnFunction = this._folderToolBar.findItemByValue(TbltSettore.FUNCTION_OPTION);
+        var btnDelete = this._folderToolBar.findItemByValue(TbltSettore.DELETE_OPTION);
+        var btnGroups = this._folderToolBar.findItemByValue(TbltSettore.GROUPS_OPTION);
+        var btnMove = this._folderToolBar.findItemByValue(TbltSettore.MOVE_OPTION);
+        var btnClone = this._folderToolBar.findItemByValue(TbltSettore.CLONE_OPTION);
+
+        if (btnAdd != null) {
+            btnAdd.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Add]).get_enabled());
+        }
+        if (btnModify != null) {
+            btnModify.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Rename]).get_enabled());
+        }
+        if (btnMove != null) {
+            btnMove.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Move]).get_enabled());
+        }
+        if (btnPrint != null) {
+            btnPrint.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Print]).get_enabled());
+        }
+        if (btnLog != null) {
+            btnLog.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Log]).get_enabled());
+        }
+        if (btnFunction != null) {
+            btnFunction.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Function]).get_enabled());
+        }
+        if (btnDelete != null) {
+            btnDelete.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Delete]).get_enabled());
+        }
+        if (btnGroups != null) {
+            btnGroups.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Groups]).get_enabled());
+        }
+        if (btnClone != null) {
+            btnClone.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Clone]).get_enabled());
+        }
+    }
+
+
+    /**
+    * Chiamata Ajax per caricamento Settori figli del settore selezionato
+    */
+    loadChildrenRoles(): void {
+        let treeView: Telerik.Web.UI.RadTreeView = <Telerik.Web.UI.RadTreeView>$find(this.radTreeViewRolesId);
+        let selectedNode: Telerik.Web.UI.RadTreeNode = treeView.get_selectedNode();
+        if (selectedNode != null && selectedNode.get_value() != "Root") {
+            let nodeTypeId: string = selectedNode.get_value();
+            let ajaxManager: Telerik.Web.UI.RadAjaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
+            ajaxManager.ajaxRequest('loadChildrenRoles');
+        }
     }
 
     /**
@@ -317,18 +465,14 @@ class TbltSettore {
      * @param source
      */
     updateGroups(source?: any): void {
-        this._loadingPanel.show(this.pnlDetails);
         let ajaxManager: Telerik.Web.UI.RadAjaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
         if (source != null) {
             ajaxManager.ajaxRequest('Update' + '|' + source.Operation + '|' + source.ID);
         } else {
             ajaxManager.ajaxRequest('Update');
         }
-    }   
-
-    public hideLoadingSpinner(): void {
-        this._loadingPanel.hide(this.pnlDetails);
     }
+
 }
 
 export = TbltSettore

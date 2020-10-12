@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscUDS
-    
+
     '''<summary>
     '''uscContent control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscContent As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''rowUDSArchive control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowUDSArchive As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''rowTypology control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowTypology As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''ddlTypology control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlTypology As Global.Telerik.Web.UI.RadComboBox
-    
+
     '''<summary>
     '''ddlUds control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlUds As Global.Telerik.Web.UI.RadComboBox
-    
+
     '''<summary>
     '''rowUDSInfo control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowUDSInfo As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''tblUDSinformation control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblUDSinformation As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblYear control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblYear As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblNumer control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNumer As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblRegistrationDate control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRegistrationDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''tblSubject control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblSubject As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblSubject control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSubject As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblNote control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNote As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rowUDSContacts control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowUDSContacts As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''udsDynamicContactsControl control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udsDynamicContactsControl As Global.VecompSoftware.DocSuiteWeb.Gui.uscUDSDynamics
-    
+
     '''<summary>
     '''rowUDSAuthorizations control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowUDSAuthorizations As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''udsDynamicAuthorizationsControl control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udsDynamicAuthorizationsControl As Global.VecompSoftware.DocSuiteWeb.Gui.uscUDSDynamics
-    
+
     '''<summary>
     '''tblClassificazione control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblClassificazione As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblCode control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCode As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblDescription control.
     '''</summary>
@@ -192,7 +192,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDescription As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rowMulticlassificationRest control.
     '''</summary>
@@ -201,7 +201,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowMulticlassificationRest As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscMulticlassificationRest control.
     '''</summary>
@@ -210,106 +210,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscMulticlassificationRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscMulticlassificationRest
-    
-    '''<summary>
-    '''tblIngoingPEC control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tblIngoingPEC As Global.System.Web.UI.HtmlControls.HtmlTable
-    
-    '''<summary>
-    '''ingoingPecTitle control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ingoingPecTitle As Global.System.Web.UI.WebControls.Literal
-    
-    '''<summary>
-    '''btnExpandIngoingPec control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnExpandIngoingPec As Global.System.Web.UI.WebControls.ImageButton
-    
-    '''<summary>
-    '''rptIngoingPEC control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rptIngoingPEC As Global.System.Web.UI.WebControls.Repeater
-    
-    '''<summary>
-    '''tblOutgoingPEC control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tblOutgoingPEC As Global.System.Web.UI.HtmlControls.HtmlTable
-    
-    '''<summary>
-    '''outgoingPecTitle control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents outgoingPecTitle As Global.System.Web.UI.WebControls.Literal
-    
-    '''<summary>
-    '''btnExpandOutgoingPec control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnExpandOutgoingPec As Global.System.Web.UI.WebControls.ImageButton
-    
-    '''<summary>
-    '''outgoingPecWarns control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents outgoingPecWarns As Global.System.Web.UI.WebControls.Image
-    
-    '''<summary>
-    '''outgoingPecErrors control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents outgoingPecErrors As Global.System.Web.UI.WebControls.Image
-    
-    '''<summary>
-    '''chkShowOtherStatusPec control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents chkShowOtherStatusPec As Global.System.Web.UI.WebControls.CheckBox
-    
-    '''<summary>
-    '''rptOutgoingPEC control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rptOutgoingPEC As Global.System.Web.UI.WebControls.Repeater
-    
+
     '''<summary>
     '''lblDddlUds control.
     '''</summary>
@@ -318,7 +219,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDddlUds As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblContainer control.
     '''</summary>
@@ -327,7 +228,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblContainer As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblRegistrationUser control.
     '''</summary>
@@ -336,7 +237,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRegistrationUser As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblLastChangedUser control.
     '''</summary>
@@ -345,7 +246,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblLastChangedUser As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblAuthorized control.
     '''</summary>
@@ -354,7 +255,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblAuthorized As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rowData control.
     '''</summary>
@@ -363,7 +264,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowData As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''udsDataInsert control.
     '''</summary>
@@ -372,7 +273,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udsDataInsert As Global.VecompSoftware.DocSuiteWeb.Gui.uscUDSStaticDataInsert
-    
+
     '''<summary>
     '''udsDataFinder control.
     '''</summary>
@@ -381,7 +282,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udsDataFinder As Global.VecompSoftware.DocSuiteWeb.Gui.uscUDSStaticDataFinder
-    
+
     '''<summary>
     '''rowDynamicData control.
     '''</summary>
@@ -390,7 +291,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowDynamicData As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''udsDynamicControls control.
     '''</summary>
@@ -399,7 +300,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udsDynamicControls As Global.VecompSoftware.DocSuiteWeb.Gui.uscUDSDynamics
-    
+
     '''<summary>
     '''tblAnnullamento control.
     '''</summary>
@@ -408,7 +309,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblAnnullamento As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''imgAnnullamento control.
     '''</summary>
@@ -417,7 +318,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgAnnullamento As Global.System.Web.UI.WebControls.Image
-    
+
     '''<summary>
     '''lblCancelMotivation control.
     '''</summary>
@@ -426,43 +327,16 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCancelMotivation As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
-    '''tblParer control.
+    '''uscDocumentUnitConservationRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents tblParer As Global.System.Web.UI.HtmlControls.HtmlTable
-    
-    '''<summary>
-    '''parerInfo control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents parerInfo As Global.System.Web.UI.WebControls.ImageButton
-    
-    '''<summary>
-    '''parerIcon control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents parerIcon As Global.System.Web.UI.WebControls.Image
-    
-    '''<summary>
-    '''parerLabel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents parerLabel As Global.System.Web.UI.WebControls.Label
-    
+    Protected WithEvents uscDocumentUnitConservationRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUnitConservationRest
+
     '''<summary>
     '''tblUDSMessage control.
     '''</summary>
@@ -471,7 +345,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblUDSMessage As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''UDSMessageTitle control.
     '''</summary>
@@ -480,7 +354,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UDSMessageTitle As Global.System.Web.UI.WebControls.Literal
-    
+
     '''<summary>
     '''UDSMessageWarns control.
     '''</summary>
@@ -489,7 +363,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UDSMessageWarns As Global.System.Web.UI.WebControls.Image
-    
+
     '''<summary>
     '''UDSMessageErrors control.
     '''</summary>
@@ -498,7 +372,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UDSMessageErrors As Global.System.Web.UI.WebControls.Image
-    
+
     '''<summary>
     '''btnExpandUDSMessage control.
     '''</summary>
@@ -507,7 +381,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnExpandUDSMessage As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''rptUDSMessage control.
     '''</summary>
@@ -516,7 +390,7 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rptUDSMessage As Global.System.Web.UI.WebControls.Repeater
-    
+
     '''<summary>
     '''uscDocumentUnitReferences control.
     '''</summary>

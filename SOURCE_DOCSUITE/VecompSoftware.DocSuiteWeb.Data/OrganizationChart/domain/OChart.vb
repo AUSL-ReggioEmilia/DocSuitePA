@@ -1,6 +1,4 @@
-﻿Imports AutoMapper
-Imports NHibernate.Collection.Generic
-Imports System.Linq
+﻿Imports System.Linq
 Imports VecompSoftware.Helpers.ExtensionMethods
 
 <Serializable>

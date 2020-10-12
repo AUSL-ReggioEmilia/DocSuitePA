@@ -14,21 +14,21 @@ var ODataService = (function () {
 
     ODataService.prototype.loadOdata = function (filters, sorts, pager, onSuccessCallback, onErrorCallback) {
         var queryString = "";
-        if (filters != undefined && filters.length > 0) {
+        if (filters !== undefined && filters.length > 0) {
             queryString += getFilterODataString(filters);
         }
 
-        if (sorts != undefined && sorts.length > 0) {
-            if (queryString != "") queryString += "&";
+        if (sorts !== undefined && sorts.length > 0) {
+            if (queryString !== "") queryString += "&";
             queryString += getSortODataString(sorts);
         }
 
-        if (pager != "") {
-            if (queryString != "") queryString += "&";
+        if (pager !== "") {
+            if (queryString !== "") queryString += "&";
             queryString += pager
         }
 
-        if (queryString != "") queryString += "&";
+        if (queryString !== "") queryString += "&";
         queryString = queryString += "applySecurity=1";
 
         var xhrCall = $.ajax({
@@ -60,7 +60,7 @@ var ODataService = (function () {
     function getSortODataString(sorts) {
         var comma = ',';
         var expression = odataSortingCommand + $.map(sorts, function (elem) {
-            var operator = (elem.sortOrder == 1) ? "asc" : "desc";
+            var operator = elem.sortOrder === 1 ? "asc" : "desc";
             if (elem.fieldName.indexOf(",") > 0) {
                 var fields = elem.fieldName.split(comma);
                 return fields.join(" " + operator + ", ") + " " + operator;
@@ -107,7 +107,7 @@ var ODataService = (function () {
 
         var filterExpressions = tableView.get_filterExpressions().toList();
         var sortExpressions = tableView.get_sortExpressions().toList();
-        if (sortExpressions.length == 0)
+        if (sortExpressions.length === 0)
             sortExpressions.push(odataGridSource.defaultSortExpression);
         loadRequest(filterExpressions, sortExpressions);
     }
@@ -140,11 +140,11 @@ var ODataService = (function () {
 
     function getPagerExpressions(customIndex, pageSize) {
         var tableView = odataGridSource.grid.get_masterTableView();
-        return "$count=true&$inlinecount=allpages&$skip=" + (tableView.CurrentPageIndex * tableView.PageSize) + "&$top=" + tableView.PageSize;
+        return "$count=true&$inlinecount=allpages&$skip=" + tableView.CurrentPageIndex * tableView.PageSize + "&$top=" + tableView.PageSize;
     }
 
     function formatValue(value, filterDataTypeName) {
-        if (filterDataTypeName == stringDataTypeName) {
+        if (filterDataTypeName === stringDataTypeName) {
             return "'" + value + "'";
         }
         return value;
@@ -157,37 +157,37 @@ var ODataService = (function () {
         var filterExpression = radFilterExpression.get_filterFunction();
         var filterDataTypeName = radFilterExpression.get_dataTypeName();
 
-        if (filterValue == undefined || filterValue == "") {
+        if (filterValue === undefined || filterValue === "") {
             return;
         }
-
+        var expr = "";
         switch (filterExpression) {
             case equalTo:
-                var expr = filteredColumn + " eq " + "" + formatValue(filterValue, filterDataTypeName) + "";
+                expr = filteredColumn + " eq " + "" + formatValue(filterValue, filterDataTypeName) + "";
                 addFilter(filteredColumn, expr);
                 break;
             case notEqualTo:
-                var expr = filteredColumn + " ne " + "" + formatValue(filterValue, filterDataTypeName) + "";
+                expr = filteredColumn + " ne " + "" + formatValue(filterValue, filterDataTypeName) + "";
                 addFilter(filteredColumn, expr);
                 break;
             case greaterThan:
-                var expr = filteredColumn + " gt " + "" + formatValue(filterValue, filterDataTypeName) + "";
+                expr = filteredColumn + " gt " + "" + formatValue(filterValue, filterDataTypeName) + "";
                 addFilter(filteredColumn, expr);
                 break;
             case lessThan:
-                var expr = filteredColumn + " lt " + "" + formatValue(filterValue, filterDataTypeName) + "";
+                expr = filteredColumn + " lt " + "" + formatValue(filterValue, filterDataTypeName) + "";
                 addFilter(filteredColumn, expr);
                 break;
             case greaterThanOrEqual:
-                var expr = filteredColumn + " ge " + "" + formatValue(filterValue, filterDataTypeName) + "";
+                expr = filteredColumn + " ge " + "" + formatValue(filterValue, filterDataTypeName) + "";
                 addFilter(filteredColumn, expr);
                 break;
             case lessThanOrEqual:
-                var expr = filteredColumn + " le " + "" + formatValue(filterValue, filterDataTypeName) + "";
+                expr = filteredColumn + " le " + "" + formatValue(filterValue, filterDataTypeName) + "";
                 addFilter(filteredColumn, expr);
                 break;
             case contains:
-                var expr = "contains(" + filteredColumn + ", '" + filterValue + "')";
+                expr = "contains(" + filteredColumn + ", '" + filterValue + "')";
                 addFilter(filteredColumn, expr);
                 break;
             case noFilter:
@@ -200,13 +200,13 @@ var ODataService = (function () {
 
     function addFilter(fieldName, expression) {
         var objFound = $(filters).filter(function () {
-            return this.fieldName == fieldName;
+            return this.fieldName === fieldName;
         }).first();
 
-        if (expression != "") {
+        if (expression !== "") {
             if (objFound.length > 0) {
                 $.each(filters, function (i, item) {
-                    if (item.fieldName == fieldName) {
+                    if (item.fieldName === fieldName) {
                         item.expression = expression;
                     }
                 });
@@ -228,6 +228,40 @@ var ODataService = (function () {
         sorter.push(sortObj);
     }
 
+    function extractItemsToExport(items){
+        var shouldInclude = function (propertyName) {
+            var excluding = [
+                "Documents",
+                "UDSId",
+                "IdUDSRepository",
+                "UDSRepository",
+                "_cancelMotivation",
+                "IdCategory",
+                "Category",
+                "DocumentUnit",
+                "_status",
+                "Timestamp"
+            ];
+
+            return !(propertyName.startsWith("$") || $.inArray(propertyName, excluding) > -1);
+        };
+
+
+        var data = [];
+        for (var i = 0; i < items.length; i++) {
+            var itemdata = {};
+            for (var property in items[i]) {
+                if (items[i].hasOwnProperty(property)) {
+                    if (shouldInclude(property)) {
+                        itemdata[property] = items[i][property];
+                    }
+                }
+            }
+            data.push(itemdata);
+        }
+        return data;
+    }
+
     function requestSucceeded(data, args) {
         hideGridLoadingPanel();
 
@@ -242,6 +276,7 @@ var ODataService = (function () {
 
         var gridModel = [];
         var gridColumns = [];
+
         $.each(odataGridSource.grid.get_masterTableView().get_dataItems(), function (index, item) {
 
             gridModel.push({});
@@ -266,8 +301,7 @@ var ODataService = (function () {
                 gridColumns.push(column._element.innerText);
         });
 
-        document.getElementById("dgvUDSItems").value = JSON.stringify(gridModel);
-        document.getElementById("dgvColumns").value = JSON.stringify(gridColumns);
+        document.getElementById("dgvUDSItems").value = JSON.stringify(extractItemsToExport(gridData));
     }
 
     function requestAllDataSucceeded(data, args) {
@@ -279,29 +313,27 @@ var ODataService = (function () {
 
             gridModel.push({});
             $.each(odataGridSource.grid.get_masterTableView().get_columns(), function (key, column) {
-                var timestamp = Date.parse(item[column._data.DataField]);
+
                 if (column._data.DataField !== "") {
-                    if (column._data.DataField === "AnnoNumero")
+                    if (column._data.DataField === "AnnoNumero") {
                         gridModel[index][column._data.DataField] = item._year + '/' + getUDNumber(item._number);
-                    else if (column._data.DataField === "Category_FullSearchComputed")
+                    }
+                    else if (column._data.DataField === "Category_FullSearchComputed") {
                         gridModel[index][column._data.DataField] = getCategory(item.Category);
-                    else if (column._data.DataField === "RegistrationDate")
-                        gridModel[index][column._data.DataField] = getDate(item.RegistrationDate);
+                    }
                     else {
-                        if (isNaN(timestamp) === false) {
-                            gridModel[index][column._data.DataField] = new Date(timestamp).toISOString().slice(0, 10);
-                        } else {
-                            gridModel[index][column._data.DataField] = item[column._data.DataField];
-                        }
+                        gridModel[index][column._data.DataField] = item[column._data.DataField];
                     }
                 }
             });
         });
 
-        document.getElementById("dgvUDSAllItems").value = JSON.stringify(gridModel);
+        document.getElementById("dgvUDSAllItems").value = JSON.stringify(extractItemsToExport(newData.Items));
+
         event.preventDefault();
-        $("#"+ hiddenButtonId).trigger("click");
+        $("#" + hiddenButtonId).trigger("click");
     }
+
 
     function errorRequest(args) {
         hideGridLoadingPanel();
@@ -329,7 +361,7 @@ var ODataService = (function () {
     window.btnGridDocumentsClick = function () {
         showGridLoadingPanel();
         var selectedItems = getSelectedItems();
-        if (!selectedItems || selectedItems.length == 0) {
+        if (!selectedItems || selectedItems.length === 0) {
             hideGridLoadingPanel();
             alert("Nessun archivio selezionato.");
             return;

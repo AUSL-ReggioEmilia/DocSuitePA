@@ -35,7 +35,7 @@ define(["require", "exports", "App/Services/BaseService"], function (require, ex
             var data = "";
             this.getRequest(url, data, function (response) {
                 if (callback)
-                    callback(response.value[0]);
+                    callback(response.value);
             }, error);
         };
         return DomainUserService;

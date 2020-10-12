@@ -1,6 +1,6 @@
-﻿import IMapper = require('App/Mappers/IMapper');
-import DossierSummaryFolderViewModel = require('App/ViewModels/Dossiers/DossierSummaryFolderViewModel');
+﻿import DossierSummaryFolderViewModel = require('App/ViewModels/Dossiers/DossierSummaryFolderViewModel');
 import BaseMapper = require('App/Mappers/BaseMapper');
+import ProcessFascicleTemplateModelMapper = require('App/Mappers/Processes/ProcessFascicleTemplateModelMapper');
 
 class DossierSummaryFolderViewModelMapper extends BaseMapper<DossierSummaryFolderViewModel>{
     constructor() {
@@ -22,6 +22,9 @@ class DossierSummaryFolderViewModelMapper extends BaseMapper<DossierSummaryFolde
         toMap.idFascicle = source.IdFascicle;
         toMap.idCategory = source.Category? source.Category.EntityShortId : source.IdCategory;
         toMap.idRole = (source.DossierFolderRoles && source.DossierFolderRoles[0] && source.DossierFolderRoles[0].Role) ? source.DossierFolderRoles[0].Role.EntityShortId : source.IdRole;
+        toMap.DossierFolders = source.DossierFolders ? this.MapCollection(source.DossierFolders) : null;
+        toMap.FascicleTemplates = source.FascicleTemplates ? new ProcessFascicleTemplateModelMapper().MapCollection(source.FascicleTemplates) : null;
+        toMap.JsonMetadata = source.JsonMetadata;
         return toMap;
     }
 

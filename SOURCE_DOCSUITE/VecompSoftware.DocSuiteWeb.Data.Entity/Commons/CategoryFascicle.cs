@@ -25,6 +25,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Commons
 
         public virtual int DSWEnvironment { get; set; }
 
+        public virtual string CustomActions { get; set; }
+
         #endregion
 
         #region [ Navigation Properties ]

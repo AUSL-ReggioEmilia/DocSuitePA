@@ -70,7 +70,7 @@ class TbltContainerGes {
     /**
     *------------------------- Events -----------------------------
     */
-    private btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         if (!this._grdUDSRepositories.get_selectedItems() || this._grdUDSRepositories.get_selectedItems().length < 1) {
             this.showNotificationException(this.uscNotificationId, null, "Selezionare almeno un contenitore");
             return;
@@ -124,7 +124,7 @@ class TbltContainerGes {
         return promise.promise();
     }
 
-    private btnSearch_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnSearch_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this.loadContainers();
     }
     /**

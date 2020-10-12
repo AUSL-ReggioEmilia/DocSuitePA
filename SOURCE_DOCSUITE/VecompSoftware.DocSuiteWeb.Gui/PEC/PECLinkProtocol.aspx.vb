@@ -64,8 +64,8 @@ Public Class PECLinkProtocol
 
         Facade.PECMailFacade.LinkToProtocol(CurrentPecMail, CurrentProtocol)
 
-        Dim parameters As String = String.Format("Type=Prot&Year={0}&Number={1}", CurrentProtocol.Year, CurrentProtocol.Number)
-        Response.Redirect(String.Concat("../Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(parameters)), True)
+        Dim parameters As String = String.Format("Type=Prot&UniqueId={0}", CurrentProtocol.Id)
+        Response.Redirect(String.Concat("~/Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(parameters)), True)
     End Sub
 
 #End Region

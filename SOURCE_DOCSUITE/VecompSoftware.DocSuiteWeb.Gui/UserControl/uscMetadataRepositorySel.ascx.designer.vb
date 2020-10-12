@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscMetadataRepositorySel
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscMetadataRepositorySel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscMetadataRepositorySel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
+
     '''<summary>
     '''metadataPageContent control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscMetadataRepositorySel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents metadataPageContent As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''metadataRepositoryRow control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscMetadataRepositorySel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents metadataRepositoryRow As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''rcbMetadataRepository control.
     '''</summary>
@@ -57,4 +57,40 @@ Partial Public Class uscMetadataRepositorySel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rcbMetadataRepository As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
+    '''enableAdvancedMetadataSearchBtn control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents enableAdvancedMetadataSearchBtn As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''uscSetiContactSel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscSetiContactSel As Global.VecompSoftware.DocSuiteWeb.Gui.uscSetiContactSel
+
+    '''<summary>
+    '''txtMetadataValue control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtMetadataValue As Global.Telerik.Web.UI.RadTextBox
+
+    '''<summary>
+    '''uscAdvancedSearchDynamicMetadataRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscAdvancedSearchDynamicMetadataRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscAdvancedSearchDynamicMetadataRest
 End Class

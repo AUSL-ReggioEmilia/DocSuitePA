@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscMetadataRepositoryDesigner
-    
+
     '''<summary>
     '''pageContent control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscMetadataRepositoryDesigner
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pageContent As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''componentTitle control.
     '''</summary>
@@ -30,7 +30,16 @@ Partial Public Class uscMetadataRepositoryDesigner
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents componentTitle As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
+    '''<summary>
+    '''seti_field_check control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents seti_field_check As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
     '''<summary>
     '''componentText control.
     '''</summary>
@@ -39,7 +48,7 @@ Partial Public Class uscMetadataRepositoryDesigner
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents componentText As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''componentComment control.
     '''</summary>
@@ -48,7 +57,7 @@ Partial Public Class uscMetadataRepositoryDesigner
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents componentComment As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''componentDate control.
     '''</summary>
@@ -57,7 +66,7 @@ Partial Public Class uscMetadataRepositoryDesigner
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents componentDate As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''componentNumber control.
     '''</summary>
@@ -66,7 +75,7 @@ Partial Public Class uscMetadataRepositoryDesigner
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents componentNumber As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''componentCheckbox control.
     '''</summary>
@@ -75,7 +84,7 @@ Partial Public Class uscMetadataRepositoryDesigner
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents componentCheckbox As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''componentEnum control.
     '''</summary>
@@ -84,7 +93,7 @@ Partial Public Class uscMetadataRepositoryDesigner
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents componentEnum As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>

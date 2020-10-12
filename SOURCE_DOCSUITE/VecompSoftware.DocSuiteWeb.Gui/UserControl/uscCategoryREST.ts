@@ -3,12 +3,16 @@
 
 import CategoryTreeViewModel = require("App/ViewModels/Commons/CategoryTreeViewModel");
 import FascicleType = require("App/Models/Fascicles/FascicleType");
-import ExceptionDTO = require("../App/DTOs/ExceptionDTO");
-import CategoryService = require("../App/Services/Commons/CategoryService");
-import ServiceConfiguration = require("../App/Services/ServiceConfiguration");
-import ServiceConfigurationHelper = require("../App/Helpers/ServiceConfigurationHelper");
+import ExceptionDTO = require("App/DTOs/ExceptionDTO");
+import CategoryService = require("App/Services/Commons/CategoryService");
+import ServiceConfiguration = require("App/Services/ServiceConfiguration");
+import ServiceConfigurationHelper = require("App/Helpers/ServiceConfigurationHelper");
 import UscErrorNotification = require("UserControl/uscErrorNotification");
-import CategoryModel = require("../App/Models/Commons/CategoryModel");
+import CategoryModel = require("App/Models/Commons/CategoryModel");
+import TreeNodeModel = require("App/ViewModels/Commons/TreeNodeModel");
+import CommonSelCategoryRest = require("./CommonSelCategoryRest");
+import ProcessNodeType = require("App/Models/Processes/ProcessNodeType");
+import CategoryFascicleViewModel = require("App/ViewModels/Commons/CategoryFascicleViewModel");
 
 declare var ValidatorEnable: any;
 interface uscCategoryRestConfiguration {
@@ -30,6 +34,8 @@ class uscCategoryRest {
     idCategory?: number;
     ajaxManagerId: string;
     windowSelCategoryId: string;
+    showProcesses: boolean;
+    currentTenantAOOId: string;
 
     static LOADED_EVENT: string = "onLoaded";
     static ADDED_EVENT: string = "onAdded";
@@ -45,7 +51,7 @@ class uscCategoryRest {
     private _windowSelCategory: Telerik.Web.UI.RadWindow;
     private _categoryService: CategoryService;
 
-    private get toolbarActions(): Array<[string, () => void]> {
+    private toolbarActions(): Array<[string, () => void]> {
         let items: Array<[string, () => void]> = [
             ["add", () => this.addCategories()],
             ["delete", () => this.removeCategories()]
@@ -66,27 +72,40 @@ class uscCategoryRest {
     */
     protected actionToolbar_ButtonClicked = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
         let currentActionButtonItem: Telerik.Web.UI.RadToolBarButton = args.get_item() as Telerik.Web.UI.RadToolBarButton;
-        let currentAction: () => void = this.toolbarActions.filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
+        let currentAction: () => void = this.toolbarActions().filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
             .map((item: [string, () => void]) => item[1])[0];
 
         currentAction();
     }
 
     windowSelCategory_onClose = (sender: Telerik.Web.UI.RadWindow, args: Telerik.Web.UI.WindowCloseEventArgs) => {
-        let category: CategoryTreeViewModel = args.get_argument();
-        if (category) {
-            this._treeCategory.trackChanges();
-            this._treeCategory.get_nodes().clear();
-            sessionStorage.removeItem(this._selectedCategorySessionKey);
-            this.createNode(category).
-                done((node) => {
-                    node.get_attributes().setAttribute("IsSelected", true);
-                    this._treeCategory.commitChanges();
-                    this.addToSelectedSource(category);
-                    $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.ADDED_EVENT, category.IdCategory);
-                    this._ajaxManager.ajaxRequest("Add");
+        let returnedData: any = args.get_argument();
+        if (this.showProcesses) {
+            let processFascicleTemplateParents: TreeNodeModel[] = returnedData;
+            if (processFascicleTemplateParents) {
+                this._treeCategory.get_nodes().clear();
+                this.createProcessFascicleTemplateNode(processFascicleTemplateParents.reverse()).done((node) => {
                 })
-                .fail((exception: ExceptionDTO) => this.showNotificationException(exception));
+                    .fail((exception: ExceptionDTO) => this.showNotificationException(exception));
+            }
+        }
+        else {
+            let category: CategoryTreeViewModel = returnedData;
+            if (category) {
+                this._treeCategory.trackChanges();
+                this._treeCategory.get_nodes().clear();
+                sessionStorage.removeItem(this._selectedCategorySessionKey);
+                this.createNode(category).
+                    done((node) => {
+                        node.get_attributes().setAttribute("IsSelected", true);
+                        node.set_selected(true);
+                        this._treeCategory.commitChanges();
+                        this.addToSelectedSource(category);
+                        $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.ADDED_EVENT, category.IdCategory);
+                        this._ajaxManager.ajaxRequest("Add");
+                    })
+                    .fail((exception: ExceptionDTO) => this.showNotificationException(exception));
+            }
         }
     }
 
@@ -107,6 +126,10 @@ class uscCategoryRest {
         this.initializeSources()
             .done(() => this.bindLoaded())
             .fail((exception: ExceptionDTO) => this.showNotificationException(exception));
+    }
+
+    public registerAddedEventhandler(handler: (data: JQueryEventObject, args: any[]) => void) {
+        $(`#${this.pnlMainContentId}`).on(uscCategoryRest.ADDED_EVENT, handler);
     }
 
     private initializeSources(): JQueryPromise<void> {
@@ -165,6 +188,7 @@ class uscCategoryRest {
         if (configuration.showContainerFascicolable) {
             url = url.concat(`&Container=${configuration.showContainerFascicolable}`);
         }
+        url = url.concat(`&ShowProcesses=${this.showProcesses}`);
         this._windowManager.open(url, "windowSelCategory", undefined);
     }
 
@@ -200,6 +224,10 @@ class uscCategoryRest {
             let configuration: uscCategoryRestConfiguration = this.getConfiguration();
             this._categoryService.findTreeCategory(category.IdParent, configuration.fascicleType,
                 (data: any) => {
+                    if (data.Code == 0) {
+                        this._treeCategory.get_nodes().add(currentNode);
+                        return promise.resolve(currentNode);
+                    }
                     this.createNode(data)
                         .done((node) => {
                             node.get_nodes().add(currentNode);
@@ -215,6 +243,28 @@ class uscCategoryRest {
             return promise.resolve(currentNode);
         }
         return promise.promise();
+    }
+
+    private createProcessFascicleTemplateNode(processFascicleTemplateParents: TreeNodeModel[]): JQueryPromise<Telerik.Web.UI.RadTreeNode> {
+        let promise: JQueryDeferred<Telerik.Web.UI.RadTreeNode> = $.Deferred<Telerik.Web.UI.RadTreeNode>();
+        let nodeCollection: Telerik.Web.UI.RadTreeNodeCollection = this._treeCategory.get_nodes();
+        let leafNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+        for (let treeNodeData of processFascicleTemplateParents) {
+            let currentNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+            currentNode.set_text(`${treeNodeData.text}`);
+            currentNode.set_value(treeNodeData.value);
+            currentNode.set_imageUrl(treeNodeData.icon);
+            currentNode.set_cssClass(treeNodeData.cssClass);
+            currentNode.get_attributes().setAttribute("NodeType", treeNodeData.nodeType);
+            nodeCollection.add(currentNode);
+            currentNode.expand();
+            currentNode.select();
+            nodeCollection = nodeCollection.getNode(0).get_nodes();
+            leafNode = currentNode;
+        }
+        leafNode.get_attributes().setAttribute("IsSelected", true);
+        $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.ADDED_EVENT, processFascicleTemplateParents[processFascicleTemplateParents.length - 1].value);
+        return promise.resolve(leafNode);
     }
 
     private addToSelectedSource(category: CategoryTreeViewModel): void {
@@ -240,6 +290,20 @@ class uscCategoryRest {
         model.EntityShortId = source[0].IdCategory;
         model.Name = source[0].Name;
         return model;
+    }
+
+    getProcessId(): string {
+        return this._treeCategory.findNodeByText(CommonSelCategoryRest.PROCESSES_AND_FOLDERS_TEXT).get_nodes().getNode(0).get_value();
+    }
+
+    getSelectedNode(): Telerik.Web.UI.RadTreeNode {
+        return this._treeCategory.get_selectedNode();
+    }
+
+    getProcessFascicleTemplateFolderId(): string {
+        return this.getSelectedNode().get_attributes().getAttribute("NodeType") === ProcessNodeType.ProcessFascicleTemplate
+            ? this._treeCategory.get_selectedNode().get_parent().get_value()
+            : this._treeCategory.get_selectedNode().get_value();
     }
 
     private getConfiguration(): uscCategoryRestConfiguration {
@@ -297,14 +361,44 @@ class uscCategoryRest {
         sessionStorage[this._configurationCategorySessionKey] = JSON.stringify(configuration);
     }
 
-    addDefaultNode(categoryModel: CategoryModel): void {
+    addDefaultCategory(idCategory: number, onlyFascicolable: boolean = false): JQueryPromise<void> {
+        let promise: JQueryDeferred<void> = $.Deferred<void>();
         this._treeCategory.get_nodes().clear();
+        this._treeCategory.trackChanges();
 
-        let currentNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-        currentNode.set_text(`${categoryModel.Code}.${categoryModel.Name}`);
-        currentNode.set_value(categoryModel.EntityShortId);
+        let finderAction: Function = (id, callback, error) => this._categoryService.findTreeCategory(id, null, callback, error);
+        if (onlyFascicolable) {
+            finderAction = (id, callback, error) => this._categoryService.findFascicolableCategory(id, callback, error);
+        }
 
-        this._treeCategory.get_nodes().add(currentNode);
+        finderAction(idCategory,
+            (data: any) => {
+                if (!data || data.Code == 0) {
+                    return promise.resolve();
+                }
+
+                this.createNode(data as CategoryTreeViewModel)
+                    .done((node) => {
+                        node.select();
+                        node.get_attributes().setAttribute("IsSelected", true);
+                        node.get_attributes().setAttribute("NodeType", ProcessNodeType.Category);
+                        this.addToSelectedSource(data);
+                        this._treeCategory.commitChanges();                        
+                        $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.ADDED_EVENT, data.IdCategory);
+                        setTimeout(() => this._ajaxManager.ajaxRequest("Add"), 800);
+                        promise.resolve();
+                    })
+                    .fail((exception: ExceptionDTO) => {
+                        this._treeCategory.commitChanges();
+                        promise.reject(exception);
+                    });
+            },
+            (exception: ExceptionDTO) => {
+                this._treeCategory.commitChanges();
+                promise.reject(exception);
+            }
+        );        
+        return promise.promise();
     }
 
     disableButtons(): void {
@@ -313,10 +407,18 @@ class uscCategoryRest {
         });
     }
 
+    setToolbarVisibilityButtons(): void {
+        $(`#${this.actionToolbarId}`).hide();
+    }
+
     enableButtons(): void {
         this._actionToolbar.get_items().forEach(function (item: Telerik.Web.UI.RadToolBarItem) {
             item.set_enabled(true);
         });
+    }
+
+    public updateSessionStorageSelectedCategory(category: CategoryTreeViewModel) {
+        sessionStorage.setItem(this._selectedCategorySessionKey, JSON.stringify([category]));
     }
 
     public populateCategotyTree(category: CategoryTreeViewModel) {
@@ -329,6 +431,16 @@ class uscCategoryRest {
 
     clearTree() {
         this._treeCategory.get_nodes().clear();
+    }
+
+    getCategoryFascicles(categoryId: number): JQueryPromise<CategoryFascicleViewModel[]> {
+        let promise: JQueryDeferred<CategoryFascicleViewModel[]> = $.Deferred<CategoryFascicleViewModel[]>();
+        this._categoryService.getCategoriesByIds([categoryId], this.currentTenantAOOId, (data) => {
+            if (!data) return;
+            let category: CategoryModel = data[0];
+            promise.resolve(category.CategoryFascicles);
+        }, this.showNotificationException);
+        return promise.promise();
     }
 }
 

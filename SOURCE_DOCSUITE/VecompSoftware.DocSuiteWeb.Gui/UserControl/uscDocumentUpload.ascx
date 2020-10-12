@@ -56,6 +56,10 @@
             <%= Me.ID %>_CloseCopyDocument(sender, args, 'SERIES');
         }
 
+        function <%= Me.ID %>_CloseCopyDocumentUDS(sender, args) {
+            <%= Me.ID %>_CloseCopyDocument(sender, args, 'UDS');
+        }
+
         // richiamata quando la finestra di firma viene chiusa
         function <%= Me.ID %>_CloseSignWindow(sender, args) {
             if (args.get_argument() !== null) {
@@ -237,32 +241,6 @@
             }
         }
 
-        function <%= Me.ID %>_sendSecureDocumentRequest() {
-            var treeDocuments = $find("<%= RadTreeViewDocument.ClientID %>");
-            var documentCount = treeDocuments.get_nodes().getNode(0).get_nodes().get_count();
-            if (documentCount > 0) {
-                var selectedNode = treeDocuments.get_selectedNode();
-                if ((selectedNode != undefined && (selectedNode.get_value() == undefined || selectedNode.get_value().toLowerCase() != 'root'))
-                    || (selectedNode == undefined && documentCount == 1)) {
-                    if (documentCount == 1) {
-                        selectedNode = treeDocuments.get_nodes().getNode(0).get_nodes().getNode(0);
-                    }
-                    var secureDocumentAttribute = selectedNode.get_attributes().getAttribute('SecureDocumentId');
-                    var sendConfirm = false;
-                    if (!secureDocumentAttribute) {
-                        sendConfirm = confirm('Confermi la richiesta di securizzazione del documento?');
-                    } else {
-                        alert('Il documento selezionato è già securizzato');
-                    }
-
-                    if (sendConfirm) {
-                        <%= Me.ID %>_requestStart();
-                        $find("<%= AjaxManager.ClientID %>").ajaxRequest('<%= Me.ClientID %>|SECUREDOCUMENT');
-                    }
-                }
-            }
-        }
-
         function <%= Me.ID %>_ddlPrivacyLevels_SelectedIndexChanged(sender, args) {
 
             var tree = sender.get_parent();
@@ -280,14 +258,15 @@
 
 <telerik:RadWindowManager DestroyOnClose="True" ReloadOnShow="True" ID="RadWindowManagerUpload" runat="server">
     <Windows>
-        <telerik:RadWindow Behaviors="Close" DestroyOnClose="True" Height="500px" ID="signWindow" ReloadOnShow="true" runat="server" Title="Firma Documento" Width="850px" />
-        <telerik:RadWindow Behaviors="Close" DestroyOnClose="true" Height="460px" ID="windowScannerDocument" ReloadOnShow="true" runat="server" Title="Scansione Documento" Width="800px" />
-        <telerik:RadWindow Behaviors="Close" ID="windowUploadDocument" ReloadOnShow="True" runat="server" Title="Selezione Documento" />
+        <telerik:RadWindow Behaviors="Close" DestroyOnClose="True" Height="500px" ID="signWindow" ReloadOnShow="true" runat="server" Title="Firma documento" Width="850px" />
+        <telerik:RadWindow Behaviors="Close" DestroyOnClose="true" Height="460px" ID="windowScannerDocument" ReloadOnShow="true" runat="server" Title="Scansione documento" Width="800px" />
+        <telerik:RadWindow Behaviors="Close" ID="windowUploadDocument" ReloadOnShow="True" runat="server" Title="Selezione documento" />
         <telerik:RadWindow Behaviors="Maximize,Close,Resize,Reload" DestroyOnClose="True" ID="windowPreviewDocument" ReloadOnShow="false" runat="server" Title="Anteprima documento" />
-        <telerik:RadWindow Behaviors="Close" ID="windowSharedFolder" ReloadOnShow="false" runat="server" Title="Cartella Condivisa" />
-        <telerik:RadWindow Behaviors="Close" ID="wndCopyProtocol" ReloadOnShow="true" runat="server" Title="Copia da Protocollo" />
-        <telerik:RadWindow Behaviors="Close" ID="wndCopyResl" ReloadOnShow="true" runat="server" Title="Copia da Atto/Delibera" />
+        <telerik:RadWindow Behaviors="Close" ID="windowSharedFolder" ReloadOnShow="false" runat="server" Title="Cartella condivisa" />
+        <telerik:RadWindow Behaviors="Close" ID="wndCopyProtocol" ReloadOnShow="true" runat="server" Title="Copia da protocollo" />
+        <telerik:RadWindow Behaviors="Close" ID="wndCopyResl" ReloadOnShow="true" runat="server" Title="Copia da atto/delibera" />
         <telerik:RadWindow Behaviors="Close" ID="wndCopySeries" ReloadOnShow="true" runat="server" />
+        <telerik:RadWindow Behaviors="Close" ID="wndCopyUDS" ReloadOnShow="true" runat="server" Title="Copia da archivio" />
         <telerik:RadWindow Behaviors="Close" ID="wndSelectTemplate" ReloadOnShow="true" runat="server" Title="Selezione deposito documentale" />
     </Windows>
 </telerik:RadWindowManager>
@@ -300,7 +279,7 @@
         </tr>
         <tr>
             <td class="col-dsw-7">
-                <asp:Label Font-Italic="true" ID="lblSendSourceDocument" runat="server" Style="display: none;" Text="Selezionare per quali documenti effettuare ANCHE l'invio del documento originale." />
+                <asp:Label Font-Italic="true" ID="lblSendSourceDocument" runat="server" Style="display: none;" Text="Selezionare per quali documenti effettuare anche l'invio del documento originale." />
                 <%-- TreeView con l'elenco dei documenti --%>
                 <telerik:RadTreeView CausesValidation="false" ID="RadTreeViewDocument" runat="server" ShowLineImages="true">   
                     <NodeTemplate>                                                       
@@ -322,7 +301,6 @@
                 <asp:Panel runat="server" ID="pnlButtons">
                     <div style="height: 18px; white-space: nowrap;">
                         <asp:ImageButton CausesValidation="False" ID="btnEditName" ImageUrl="~/App_Themes/DocSuite2008/imgset16/pencil.png" runat="server" Visible="false" ToolTip="Modifica il nome del documento" />
-                        <asp:ImageButton CausesValidation="False" ID="btnSecureDocument" ImageUrl="~/App_Themes/DocSuite2008/imgset16/document_signature_green.png" runat="server" Visible="false" ToolTip="Securizzazione del documento" />
                         <asp:ImageButton CausesValidation="False" ID="btnAddDocumentScanner" ImageUrl="~/App_Themes/DocSuite2008/imgset16/scanner.png" runat="server" ToolTip="Inserimento documento da scanner" />
                         <asp:ImageButton CausesValidation="False" ID="btnAddDocument" ImageUrl="~/App_Themes/DocSuite2008/imgset16/folder.png" runat="server" ToolTip="Inserimento documento" />
                         <asp:ImageButton CausesValidation="False" ID="btnUploadSharepoint" ImageUrl="~/App_Themes/DocSuite2008/imgset16/sharepoint.png" runat="server" Visible="false" />
@@ -331,9 +309,10 @@
                         <asp:ImageButton CausesValidation="False" ID="btnPreviewDoc" ImageUrl="~/App_Themes/DocSuite2008/imgset16/documentPreview.png" runat="server" ToolTip="Anteprima documento" />
                         <asp:ImageButton CausesValidation="False" ID="btnSignDocument" ImageUrl="~/App_Themes/DocSuite2008/imgset16/card_chip_gold.png" runat="server" ToolTip="Firma documento" />
                         <asp:ImageButton CausesValidation="False" ID="btnImportSharedFolder" ImageUrl="~/Comm/Images/FolderOpen16.gif" runat="server" ToolTip="Seleziona documento da cartella condivisa" />
-                        <asp:ImageButton CausesValidation="False" ID="btnCopyProtocol" ImageUrl="~/Comm/Images/DocSuite/Collegamento16.gif" runat="server" ToolTip="Copia da protocollo" Visible="false" />
+                        <asp:ImageButton CausesValidation="False" ID="btnCopyProtocol" ImageUrl="~/Comm/Images/DocSuite/Link16.png" runat="server" ToolTip="Copia da protocollo" Visible="false" />
                         <asp:ImageButton CausesValidation="False" ID="btnCopyResl" ImageUrl="~/Resl/Images/Delibera.gif" runat="server" ToolTip="Copia da atto/delibera" Visible="false" />
                         <asp:ImageButton CausesValidation="False" ID="btnCopySeries" ImageUrl="~/App_Themes/DocSuite2008/imgset16/document_copies_add.png" runat="server" Visible="false" />
+                        <asp:ImageButton CausesValidation="False" ID="btnCopyUDS" ImageUrl="~/App_Themes/DocSuite2008/imgset16/document_copies.png" runat="server" ToolTip="Copia da archivio" Visible="false" />
                         <asp:ImageButton CausesValidation="False" ID="btnImportContactManual" ImageUrl="~/App_Themes/DocSuite2008/imgset16/FromExcel.png" runat="server" ToolTip="Importazione contatti manuali destinatari/mittenti" Visible="false" />
                         <asp:ImageButton CausesValidation="False" ID="btnSelectTemplate" ImageUrl="~/Comm/Images/Selezione16.gif" runat="server" ToolTip="Seleziona deposito documentale" Visible="false" />
                     </div>
@@ -355,4 +334,4 @@
 <asp:TextBox ID="txtDocumentOK" runat="server" AutoPostBack="True" />
 <asp:TextBox ID="txtFileName" runat="server" Width="16px" />
 <asp:TextBox ID="txtFileDateTime" runat="server" Width="16px" />
-<asp:RequiredFieldValidator ControlToValidate="txtDocumentOK" Display="Dynamic" ErrorMessage="Documento Obbligatorio" ID="rfvDocument" runat="server" />
+<asp:RequiredFieldValidator ControlToValidate="txtDocumentOK" Display="Dynamic" ErrorMessage="Documento obbligatorio" ID="rfvDocument" runat="server" />

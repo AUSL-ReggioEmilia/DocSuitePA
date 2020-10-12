@@ -67,7 +67,7 @@ Partial Public Class DossierMiscellanea
     Private Sub DeleteDocument(idDocument As Guid)
         FileLogger.Debug(LoggerName, String.Format("DossierMiscellanea_AjaxRequest -> IdDossier {0} - Delete document with Id: {1}", IdDossier, idDocument))
         Try
-            Service.DetachDocument(DossierMiscellaneaLocation.ProtBiblosDSDB, idDocument)
+            Service.DetachDocument(idDocument)
         Catch ex As Exception
             AjaxAlert("Errore in eliminazione documento inserti")
             FileLogger.Warn(LoggerName, "Errore in eliminazione documento inserti: " & ex.Message, ex)

@@ -2,7 +2,7 @@
 import EnumHelper = require("App/Helpers/EnumHelper");
 import ServiceConfigurationHelper = require("App/Helpers/ServiceConfigurationHelper");
 import FascicleDocumentUnitService = require("App/Services/Fascicles/FascicleDocumentUnitService");
-import FascicleDocumentModel = require("App/Models/Fascicles/FascicleDocumentModel");
+import DossierModel = require("App/Models/Dossiers/DossierModel");
 import UDSDocumentUnitService = require("App/Services/UDS/UDSDocumentUnitService");
 import UDSDocumentUnitModel = require("App/Models/UDS/UDSDocumentUnitModel");
 import UscErrorNotification = require('UserControl/uscErrorNotification');
@@ -13,8 +13,8 @@ import ProtocolService = require("App/Services/Protocols/ProtocolService");
 import ProtocolModel = require("App/Models/Protocols/ProtocolModel");
 import MessageService = require("App/Services/Messages/MessageService");
 import DocumentSeriesItemService = require("App/Services/DocumentArchives/DocumentSeriesItemService");
-import MessageModel = require("../App/Models/Messages/MessageModel");
-import DocumentSeriesItemModel = require("../App/Models/DocumentArchives/DocumentSeriesItemModel");
+import MessageModel = require("App/Models/Messages/MessageModel");
+import DocumentSeriesItemModel = require("App/Models/DocumentArchives/DocumentSeriesItemModel");
 import MessageContactPosition = require("App/Models/Messages/MessageContactPosition");
 import PECMailService = require("App/Services/PECMails/PECMailService");
 import PECMailViewModel = require("App/ViewModels/PECMails/PECMailViewModel");
@@ -29,12 +29,16 @@ import ResolutionDocumentSeriesItemModel = require("App/Models/Resolutions/Resol
 import FascicleLinkService = require("App/Services/Fascicles/FascicleLinkService");
 import FascicleLinkModel = require("App/Models/Fascicles/FascicleLinkModel");
 import FascicleService = require("App/Services/Fascicles/FascicleService");
-import DossierService = require("App/Services/Dossiers/DossierService");
+import DossierFolderService = require("App/Services/Dossiers/DossierFolderService");
 import WorkflowActivityService = require("App/Services/Workflows/WorkflowActivityService");
 import FascicleModel = require("App/Models/Fascicles/FascicleModel");
 import DossierFolderModel = require("App/Models/Dossiers/DossierFolderModel");
 import DocumentUnitReferenceTypeEnum = require("App/Models/Commons/DocumentUnitReferenceTypeEnum");
 import WorkflowActivityModel = require('App/Models/Workflows/WorkflowActivityModel');
+import TNoticeService = require("App/Services/PosteWeb/TNoticeService");
+import TNoticeStatusSummaryDTO = require("App/DTOs/TNoticeStatusSummaryDTO");
+import StatusColor = require("App/Models/PosteWeb/StatusColor");
+import DossierFolderStatus = require("App/Models/Dossiers/DossierFolderStatus");
 
 class uscDocumentUnitReferences {
     radTreeDocumentsId: string;
@@ -45,7 +49,7 @@ class uscDocumentUnitReferences {
     protocolUdsDocumentList: UDSDocumentUnitModel[];
     udsIdList: UDSDocumentUnitModel[];
     protocolDocumentList: UDSDocumentUnitModel[];
-    fascicleDocumentList: FascicleDocumentModel[];
+    fascicleDocumentUnitList: FascicleModel[];
     protocolLinks: ProtocolLinkModel[];
     protocolMessages: ProtocolModel[];
     protocolDocumentSeries: ProtocolModel;
@@ -59,7 +63,11 @@ class uscDocumentUnitReferences {
     resolutionDocumentSeriesItem: ResolutionDocumentSeriesItemModel[];
     fascicleLinkList: FascicleLinkModel[];
     fascicleList: FascicleModel[];
-    workflowActivityList: WorkflowActivityModel[];
+    dossierFolderList: DossierFolderModel[];
+    activeWorkflowActivityList: WorkflowActivityModel[];
+    doneWorkflowActivityList: WorkflowActivityModel[];
+    tNoticeSummaryList: TNoticeStatusSummaryDTO[];
+    showRemoveUDSLinksButton: string;
 
     rpbDocumentsId: string;
     uscNotificationId: string;
@@ -75,22 +83,21 @@ class uscDocumentUnitReferences {
     showProtocolDocumentSeriesLinks: string;
     showDocumentSeriesMessageLinks: string;
     showDocumentSeriesResolutionsLinks: string;
-
     showArchiveLinks: string;
     showProtocolLinks: string;
     showDocumentSeriesProtocolsLinks: string;
-
     showIncomingPECMailLinks: string;
     showOutgoingPECMailLinks: string;
-
     showResolutionlMessageLinks: string;
     showResolutionDocumentSeriesLinks: string;
-
     showFasciclesLinks: string;
     showDossierLinks: string;
-
+    showTNotice: string;
     showActiveWorkflowActivities: string;
+    showDoneWorkflowActivities: string;
 
+    btnExpandDocumentUnitReferenceId: string;
+    documentUnitReferenceInfoId: string;
 
     private _DocumentRadTreeId: Telerik.Web.UI.RadTreeView;
     private _serviceConfigurations: ServiceConfiguration[];
@@ -107,9 +114,12 @@ class uscDocumentUnitReferences {
     private _resolutionDocumentSeriesItemService: ResolutionDocumentSeriesItemService;
     private _fascicleLinksService: FascicleLinkService;
     private _fascicleService: FascicleService;
-    private _dossierService: DossierService;
+    private _dossierFolderService: DossierFolderService;
+    private _tnoticeService: TNoticeService;
     private _workflowActivityService: WorkflowActivityService;
-
+    private _btnExpandDocumentUnitReference: Telerik.Web.UI.RadButton;
+    private _isDocumentUnitReferenceOpen: boolean;
+    private _documentUnitReferenceContent: JQuery;
     private index: number = 0;
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
@@ -120,6 +130,14 @@ class uscDocumentUnitReferences {
     }
 
     initialize(): void {
+        this._btnExpandDocumentUnitReference = <Telerik.Web.UI.RadButton>$find(this.btnExpandDocumentUnitReferenceId);
+        this._btnExpandDocumentUnitReference.addCssClass("dsw-arrow-down");
+        this._btnExpandDocumentUnitReference.add_clicking(this.btnExpandDocumentUnitReference_OnClick);
+        this._documentUnitReferenceContent = $("#".concat(this.documentUnitReferenceInfoId));
+        this._documentUnitReferenceContent.show();
+
+
+
         let serviceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "FascicleDocumentUnit");
         this._fascService = new FascicleDocumentUnitService(serviceConfiguration);
 
@@ -156,22 +174,37 @@ class uscDocumentUnitReferences {
         let fascicleServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Fascicle");
         this._fascicleService = new FascicleService(fascicleServiceConfiguration);
 
-        let dossierServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Dossier");
-        this._dossierService = new DossierService(dossierServiceConfiguration);
+        let dossierFolderServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DossierFolder");
+        this._dossierFolderService = new DossierFolderService(dossierFolderServiceConfiguration);
 
         let workflowActivityServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowActivity");
         this._workflowActivityService = new WorkflowActivityService(workflowActivityServiceConfiguration);
 
+        let polRequestConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "POLRequest");
+        this._tnoticeService = new TNoticeService(polRequestConfiguration);
+
         this._DocumentRadTreeId = <Telerik.Web.UI.RadTreeView>$find(this.radTreeDocumentsId);
 
         if (this.showIncomingPECMailLinks.toLowerCase() == "true") {
-            this.evaluateNodePropertyFactory("PEC ingresso", DocumentUnitReferenceTypeEnum.PECIngresso, () => this.loadIncomingPECMailCount(Number(this.documentUnitYear), Number(this.documentUnitNumber), `'Incoming'`, this.index));
+            this.evaluateNodePropertyFactory("PEC ingresso", DocumentUnitReferenceTypeEnum.PECIngresso, () => this.loadIncomingPECMailCount(this.documentUnitId, `'Incoming'`, this.index));
         }
 
         if (this.showOutgoingPECMailLinks.toLowerCase() == "true") {
-            this.evaluateNodePropertyFactory("PEC uscita", DocumentUnitReferenceTypeEnum.PECUscita, () => this.loadOutgoingPECMailCount(Number(this.documentUnitYear), Number(this.documentUnitNumber), `'Outgoing'`, this.index))
+            this.evaluateNodePropertyFactory("PEC uscita", DocumentUnitReferenceTypeEnum.PECUscita, () => this.loadOutgoingPECMailCount(this.documentUnitId, `'Outgoing'`, this.index))
         }
-        
+
+        if (this.showTNotice.toLocaleLowerCase() == "true") {
+            this.evaluateNodePropertyFactory("TNotice", DocumentUnitReferenceTypeEnum.TNotice, () => this.loadTNoticeCount(this.documentUnitId, this.index));
+        }
+
+        if (this.showFascicleLinks.toLowerCase() == "true") {
+            this.evaluateNodePropertyFactory("Fascicoli", DocumentUnitReferenceTypeEnum.Fascicle, () => this.loadFascicleCount(this.documentUnitId, this.index));
+        }
+
+        if (this.showFasciclesLinks.toLocaleLowerCase() == "true") {
+            this.evaluateNodePropertyFactory("Fascicoli", DocumentUnitReferenceTypeEnum.FascicleProtocol, () => this.loadFasciclesCount(this.documentUnitId, this.index));
+        }
+
         if (this.showArchiveRelationLinks.toLowerCase() == "true") {
             this.evaluateNodePropertyFactory("Archivi", DocumentUnitReferenceTypeEnum.ArchiveProtocol, () => this.loadProtocolUDSCount(this.documentUnitId, this.index));
         }
@@ -196,8 +229,8 @@ class uscDocumentUnitReferences {
             this.evaluateNodePropertyFactory("Protocolli", DocumentUnitReferenceTypeEnum.Protocol, () => this.loadProtocolCount(this.documentUnitId, this.index));
         }
 
-          if (this.showDocumentSeriesProtocolsLinks.toLocaleLowerCase() == "true" && this.protocolDocumentSeriesButtonEnable.toLocaleLowerCase() == "true") {
-              this.evaluateNodePropertyFactory("Protocolli", DocumentUnitReferenceTypeEnum.ProtocolSeries, () => this.loadDocumentSeriesProtocolsLinksCount(this.documentUnitId, this.index));
+        if (this.showDocumentSeriesProtocolsLinks.toLocaleLowerCase() == "true" && this.protocolDocumentSeriesButtonEnable.toLocaleLowerCase() == "true") {
+            this.evaluateNodePropertyFactory("Protocolli", DocumentUnitReferenceTypeEnum.ProtocolSeries, () => this.loadDocumentSeriesProtocolsLinksCount(this.documentUnitId, this.index));
         }
 
         if (this.showResolutionlMessageLinks.toLocaleLowerCase() == "true") {
@@ -211,17 +244,9 @@ class uscDocumentUnitReferences {
         if (this.showDocumentSeriesMessageLinks.toLocaleLowerCase() == "true") {
             this.evaluateNodePropertyFactory("Messaggi", DocumentUnitReferenceTypeEnum.MessageSeries, () => this.loadDocumentSeriesMessageCount(this.documentUnitId, this.index));
         }
-              
+
         if (this.showDocumentSeriesResolutionsLinks.toLocaleLowerCase() == "true") {
             this.evaluateNodePropertyFactory("Atti", DocumentUnitReferenceTypeEnum.Atti, () => this.loadDocumentSeriesItemLinksCount(this.documentUnitId, this.index));
-        }
-
-        if (this.showFascicleLinks.toLowerCase() == "true") {
-            this.evaluateNodePropertyFactory("Fascicoli", DocumentUnitReferenceTypeEnum.Fascicle, () => this.loadFascicleCount(this.documentUnitId, this.index));
-        }
-
-        if (this.showFasciclesLinks.toLocaleLowerCase() == "true") {
-            this.evaluateNodePropertyFactory("Fascicoli", DocumentUnitReferenceTypeEnum.FascicleProtocol, () => this.loadFasciclesCount(this.documentUnitId, this.index));
         }
 
         if (this.showDossierLinks.toLocaleLowerCase() == "true") {
@@ -229,7 +254,10 @@ class uscDocumentUnitReferences {
         }
 
         if (this.showActiveWorkflowActivities.toLocaleLowerCase() == "true") {
-            this.evaluateNodePropertyFactory("Flussi di lavoro attivi", DocumentUnitReferenceTypeEnum.Workflows, () => this.loadActiveWorkflowActivitiesCount(this.documentUnitId, this.index));
+            this.evaluateNodePropertyFactory("Flussi di lavoro attivi", DocumentUnitReferenceTypeEnum.ActiveWorkflows, () => this.loadActiveWorkflowActivitiesCount(this.documentUnitId, this.index));
+        }
+        if (this.showDoneWorkflowActivities.toLocaleLowerCase() == "true") {
+            this.evaluateNodePropertyFactory("Flussi di lavoro completati", DocumentUnitReferenceTypeEnum.DoneWorkflows, () => this.loadDoneWorkflowActivitiesCount(this.documentUnitId, this.index));
         }
 
         this._DocumentRadTreeId.add_nodeClicked(this.generalOnNodeExpanding);
@@ -273,6 +301,12 @@ class uscDocumentUnitReferences {
                 let url: string = `../Prot/PECDetails.aspx?PECEntityId=${nodeValue}&Direction='Outgoing'`;
                 this.openWindow(url, "searchPECDetails", 750, 300);
             }
+
+            if (parentNode.get_text().startsWith("TNotice")) {
+                var nodeValue: string = args.get_node().get_value();
+                let url: string = `../Prot/TNoticeDetails.aspx?RequestId=${nodeValue}`;
+                this.openWindow(url, "searchTNoticeDetails", 750, 300);
+            }
         }
 
         if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.FascicleProtocol.toString()) {
@@ -287,8 +321,12 @@ class uscDocumentUnitReferences {
             this.loadDossiersData(this.documentUnitId, loadIndex);
         }
 
-        if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.Workflows.toString()) {
-            this.loadWorkflowActivitiesData(this.documentUnitId, loadIndex);
+        if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.ActiveWorkflows.toString()) {
+            this.loadActiveWorkflowActivitiesData(this.documentUnitId, loadIndex);
+        }
+
+        if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.DoneWorkflows.toString()) {
+            this.loadDoneWorkflowActivitiesData(this.documentUnitId, loadIndex);
         }
 
         if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.Atti.toString()) {
@@ -296,11 +334,11 @@ class uscDocumentUnitReferences {
         }
 
         if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.PECIngresso.toString()) {
-            this.loadIncomingPECMailData(Number(this.documentUnitYear), Number(this.documentUnitNumber), `'Incoming'`, loadIndex);
+            this.loadIncomingPECMailData(this.documentUnitId, `'Incoming'`, loadIndex);
         }
 
         if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.PECUscita.toString()) {
-            this.loadOutgoingPECMailData(Number(this.documentUnitYear), Number(this.documentUnitNumber), `'Outgoing'`, loadIndex);
+            this.loadOutgoingPECMailData(this.documentUnitId, `'Outgoing'`, loadIndex);
         }
 
         if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.Archive.toString()) {
@@ -342,6 +380,10 @@ class uscDocumentUnitReferences {
         if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.SeriesProtocol.toString() && this.showResolutionDocumentSeriesLinks.toLowerCase() == "false") {
             this.loadDocumentSerieData(this.documentUnitId, loadIndex);
         }
+
+        if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.TNotice.toString()) {
+            this.loadTNoticeData(this.documentUnitId, loadIndex);
+        }
     }
 
     private loadDocumentSeriesProtocolsLinksData(uniqueId: string, position: number): void {
@@ -368,7 +410,7 @@ class uscDocumentUnitReferences {
             node.set_text(documentSeriesItemProtocolName);
             node.set_value(protocolDocumentSeriesItems[i].UniqueId);
 
-            node.set_navigateUrl(`../Prot/ProtVisualizza.aspx?Year=${protocolDocumentSeriesItems[i].Year.toString()}&Number=${protocolDocumentSeriesItems[i].Number.toString()}&Type=Prot`);
+            node.set_navigateUrl(`../Prot/ProtVisualizza.aspx?UniqueId=${protocolDocumentSeriesItems[i].UniqueId}&Type=Prot`);
 
 
             let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
@@ -428,9 +470,9 @@ class uscDocumentUnitReferences {
 
     }
 
-    private loadIncomingPECMailData(year: number, number: number, pecMailDirection: string, position: number): void {
+    private loadIncomingPECMailData(uniqueId: string, pecMailDirection: string, position: number): void {
         if (!this.pecMailIncomingAndOutgoing || this.pecMailIncomingAndOutgoing.length === 0) {
-            this._pecMailService.getIncomingPECMail(year, number, pecMailDirection, (data) => {
+            this._pecMailService.getIncomingPECMail(uniqueId, pecMailDirection, (data) => {
                 if (!data) return;
                 this.pecMailIncomingAndOutgoing = data;
                 this.renderIncomingPECMailNodes(this.pecMailIncomingAndOutgoing, position);
@@ -440,9 +482,9 @@ class uscDocumentUnitReferences {
         }
     }
 
-    private loadOutgoingPECMailData(year: number, number: number, direction: string, position: number): void {
+    private loadOutgoingPECMailData(uniqueId: string, direction: string, position: number): void {
         if (!this.pecMailOutgoings) {
-            this._pecMailService.getOutgoingPECMail(year, number, direction, (data) => {
+            this._pecMailService.getOutgoingPECMail(uniqueId, direction, (data) => {
                 if (!data) return;
                 this.pecMailOutgoings = data;
                 this.renderOutgoingPECMailNodes(this.pecMailOutgoings, position);
@@ -453,14 +495,14 @@ class uscDocumentUnitReferences {
     }
 
     private loadFascicleData(uniqueId: string, position: number): void {
-        if (!this.fascicleDocumentList || this.fascicleDocumentList.length === 0) {
-            this._fascService.getFascicleListById(uniqueId, (data) => {
+        if (!this.fascicleDocumentUnitList || this.fascicleDocumentUnitList.length === 0) {
+            this._fascicleService.getAuthorizedFasciclesFromDocumentUnit(uniqueId, (data) => {
                 if (!data) return;
-                this.fascicleDocumentList = data;
-                this.renderFascicleNodes(this.fascicleDocumentList, position);
+                this.fascicleDocumentUnitList = data;
+                this.renderFascicleNodes(this.fascicleDocumentUnitList, position);
             });
         } else {
-            this.renderFascicleNodes(this.fascicleDocumentList, position);
+            this.renderFascicleNodes(this.fascicleDocumentUnitList, position);
         }
     }
 
@@ -477,26 +519,38 @@ class uscDocumentUnitReferences {
     }
 
     private loadDossiersData(uniqueId: string, position: number): void {
-        if (!this.fascicleList || this.fascicleList.length === 0) {
-            this._fascicleService.getDossiersById(uniqueId,false, true, (data) => {
+        if (!this.dossierFolderList || this.dossierFolderList.length === 0) {
+            this._dossierFolderService.getByFascicleId(uniqueId, (data) => {
                 if (!data) return;
-                this.fascicleList = data;
-                this.renderDossiersNodes(this.fascicleList, position);
+                this.dossierFolderList = data;
+                this.renderDossiersNodes(this.dossierFolderList, position);
             });
         } else {
-            this.renderDossiersNodes(this.fascicleList, position);
+            this.renderDossiersNodes(this.dossierFolderList, position);
         }
     }
 
-    private loadWorkflowActivitiesData(uniqueId: string, position: number): void {
-        if (!this.workflowActivityList || this.workflowActivityList.length === 0) {
+    private loadActiveWorkflowActivitiesData(uniqueId: string, position: number): void {
+        if (!this.activeWorkflowActivityList || this.activeWorkflowActivityList.length === 0) {
             this._workflowActivityService.getActiveByReferenceDocumentUnitId(uniqueId, (data: WorkflowActivityModel[]) => {
                 if (!data) return;
-                this.workflowActivityList = data;
-                this.renderWorkflowActivityNodes(this.workflowActivityList, position);
+                this.activeWorkflowActivityList = data;
+                this.renderWorkflowActivityNodes(true, true, this.activeWorkflowActivityList, position);
             });
         } else {
-            this.renderWorkflowActivityNodes(this.workflowActivityList, position);
+            this.renderWorkflowActivityNodes(true, true, this.activeWorkflowActivityList, position);
+        }
+    }
+
+    private loadDoneWorkflowActivitiesData(uniqueId: string, position: number): void {
+        if (!this.doneWorkflowActivityList || this.doneWorkflowActivityList.length === 0) {
+            this._workflowActivityService.getByStatusReferenceDocumentUnitId('Done', uniqueId, (data: WorkflowActivityModel[]) => {
+                if (!data) return;
+                this.doneWorkflowActivityList = data;
+                this.renderWorkflowActivityNodes(true, false, this.doneWorkflowActivityList, position);
+            });
+        } else {
+            this.renderWorkflowActivityNodes(true, false, this.doneWorkflowActivityList, position);
         }
     }
 
@@ -599,6 +653,18 @@ class uscDocumentUnitReferences {
         }
     }
 
+    private loadTNoticeData(idDocumentUnit: string, position: number): void {
+        if (!this.tNoticeSummaryList || this.tNoticeSummaryList.length === 0) {
+            this._tnoticeService.getRequestsSummariesByDocumentId(idDocumentUnit, (data) => {
+                if (!data) { return; }
+                this.tNoticeSummaryList = data;
+                this.renderTNoticeSummary(data, position);
+            });
+        } else {
+            this.renderTNoticeSummary(this.tNoticeSummaryList, position);
+        }
+    }
+
     private loadDocumentSeriesMessageCount(uniqueId: string, position: number): void {
         this._messageService.countDocumentSeriesItemById(uniqueId, (data) => {
             let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
@@ -621,7 +687,7 @@ class uscDocumentUnitReferences {
     }
 
     private loadFascicleCount(uniqueId: string, position: number): void {
-        this._fascService.countFascicleById(uniqueId, (data) => {
+        this._fascicleService.countAuthorizedFasciclesFromDocumentUnit(uniqueId, (data) => {
             let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.set_text(`Fascicoli (${data})`);
         });
@@ -670,15 +736,15 @@ class uscDocumentUnitReferences {
         });
     }
 
-    private loadIncomingPECMailCount(year: number, number: number, direction: string, position: number): void {
-        this._pecMailService.countIncomingPECMail(year, number, direction, (data) => {
+    private loadIncomingPECMailCount(uniqueId: string, direction: string, position: number): void {
+        this._pecMailService.countIncomingPECMail(uniqueId, direction, (data) => {
             let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.set_text(`PEC ingresso (${data})`);
         });
     }
 
-    private loadOutgoingPECMailCount(year: number, number: number, direction: string, position: number): void {
-        this._pecMailService.countOutgoingPECMail(year, number, direction, (data) => {
+    private loadOutgoingPECMailCount(uniqueId: string, direction: string, position: number): void {
+        this._pecMailService.countOutgoingPECMail(uniqueId, direction, (data) => {
             let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.set_text(`PEC uscita (${data})`);
         });
@@ -693,8 +759,8 @@ class uscDocumentUnitReferences {
 
     private loadDocumentSeriesItemCount(uniqueId: string, position: number): void {
         this._resolutionDocumentSeriesItemService.getResolutionDocumentSeriesItemLinksCount(uniqueId, (data) => {
-            let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
-            let nodeText: string = this.seriesTitle ? this.seriesTitle : "Serie documentali";
+            const parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+            const nodeText: string = this.seriesTitle ? this.seriesTitle : "Serie documentali";
             parentNode.set_text(`${nodeText} (${data})`);
         });
 
@@ -702,23 +768,76 @@ class uscDocumentUnitReferences {
 
     private loadFasciclesCount(uniqueId: string, position: number): void {
         this._fascicleLinksService.countLinkedFascicleById(uniqueId, (data) => {
-            let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+            const parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.set_text(`Fascicoli (${data})`);
         });
     }
 
     private loadDossierCount(uniqueId: string, position: number): void {
-        this._dossierService.countDossiersById(uniqueId, false, true, (data) => {
-            let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+        this._dossierFolderService.countByFascicleId(uniqueId, (data) => {
+            const parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.set_text(`Dossiers (${data})`);
         });
     }
 
     private loadActiveWorkflowActivitiesCount(uniqueId: string, position: number): void {
         this._workflowActivityService.countActiveByReferenceDocumentUnitId(uniqueId, (data) => {
-            let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+            const parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.set_text(`Flussi di lavoro attivi (${data})`);
         });
+    }
+
+    private loadDoneWorkflowActivitiesCount(uniqueId: string, position: number): void {
+        this._workflowActivityService.countByStatusReferenceDocumentUnitId('Done', uniqueId, (data) => {
+            const parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+            parentNode.set_text(`Flussi di lavoro conclusi (${data})`);
+        });
+    }
+
+    private loadTNoticeCount(idDocumentUnit: string, position: number): void {
+        this._tnoticeService.countRequestsSummariesByDocumentId(idDocumentUnit, (data) => {
+            const parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+            parentNode.set_text(`TNotice (${data})`);
+        });
+    }
+
+    private renderTNoticeSummary(currentItems: TNoticeStatusSummaryDTO[], position: number): void {
+        let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+        parentNode.get_nodes().clear();
+
+        for (let summary of currentItems) {
+            var node = new Telerik.Web.UI.RadTreeNode();
+
+            let displayText = summary.Status;
+
+            if (summary.RegistrationDate) {
+                displayText = `${displayText} - ${summary.RegistrationDate}`;
+            }
+
+            node.set_text(displayText);
+            node.set_value(summary.RequestUniqueId);
+
+            if (summary.DisplayColor == StatusColor.Blue) {
+                node.set_imageUrl("../Comm/Images/pec-accettazione.gif");
+            }
+
+            if (summary.DisplayColor == StatusColor.Yellow) {
+                node.set_imageUrl("../Comm/Images/pec-preavviso-errore-consegna.gif");
+            }
+
+            if (summary.DisplayColor == StatusColor.Green) {
+                node.set_imageUrl("../Comm/Images/pec-avvenuta-consegna.gif");
+            }
+
+            if (summary.DisplayColor == StatusColor.Red) {
+                node.set_imageUrl("../Comm/Images/pec-errore-consegna.gif");
+            }
+
+            parentNode.get_nodes().add(node);
+
+        }
+
+        this._DocumentRadTreeId.commitChanges();
     }
 
     private renderResolutionDocumentSeriesItemNode(currentItems: ResolutionDocumentSeriesItemModel[], position: number): void {
@@ -748,7 +867,7 @@ class uscDocumentUnitReferences {
         this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
 
         for (let pecMails of currentItems) {
-            
+
             let recipients: string = pecMails.MailRecipients;
             let senderAndRecipient: string = `${pecMails.MailSenders} ${recipients}`;
 
@@ -804,7 +923,7 @@ class uscDocumentUnitReferences {
             let senderAndRecipient: string = `${outGoingPECMails.MailSenders} ${recipients}`;
             let result: string = "";
             if (outGoingPECMails.MailDate) {
-                result = `${senderAndRecipient} - ${moment(outGoingPECMails.MailDate).format("DD/MM/YYYY, hh:mm:ss")}`;
+                result = `${senderAndRecipient} - ${moment(outGoingPECMails.MailDate).format("DD/MM/YYYY, HH:mm:ss")}`;
             } else {
                 result = senderAndRecipient;
             }
@@ -812,6 +931,7 @@ class uscDocumentUnitReferences {
             let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
             node.set_text(result);
             node.set_value(outGoingPECMails.EntityId);
+            node.set_cssClass("text-label");
 
             let numberOfItems: number = outGoingPECMails.PECMailReceipts.length;
             let pecMailsReceipts: PECMailReceiptsModel[] = outGoingPECMails.PECMailReceipts;
@@ -874,17 +994,17 @@ class uscDocumentUnitReferences {
         this.renderMessageNodes(numberOfItems, messages, position)
     }
 
-    private renderFascicleNodes(currentItems: FascicleDocumentModel[], position: number): void {
+    private renderFascicleNodes(currentItems: FascicleModel[], position: number): void {
         this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
 
         for (let fascDoc of currentItems) {
-            let fascicleDocumentsName: string = `${fascDoc.Fascicle.Title} - ${fascDoc.Fascicle.FascicleObject}`;
+            let fascicleDocumentsName: string = `${fascDoc.Title} - ${fascDoc.FascicleObject}`;
 
             let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
             node.set_text(fascicleDocumentsName);
-            node.set_value(fascDoc.Fascicle.UniqueId);
+            node.set_value(fascDoc.UniqueId);
             node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/fascicle_open.png");
-            node.set_navigateUrl(`../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=${fascDoc.Fascicle.UniqueId}`);
+            node.set_navigateUrl(`../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=${fascDoc.UniqueId}`);
 
             let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.get_nodes().add(node);
@@ -910,39 +1030,45 @@ class uscDocumentUnitReferences {
         }
     }
 
-    private renderDossiersNodes(currentItems: FascicleModel[], position: number): void {
+    private renderDossiersNodes(currentItems: DossierFolderModel[], position: number): void {
         this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
 
-        for (let fascicle of currentItems) {
-            for (let dossierFolder of fascicle.DossierFolders) {
-                let dossierName: string = `${dossierFolder.Dossier.Year}/${this.pad(+dossierFolder.Dossier.Number, 7)} - ${dossierFolder.Dossier.Subject}/${dossierFolder.Name}`;
+        for (const dossierFolder of currentItems) {
+            const dossierName = `${dossierFolder.Dossier.Year}/${this.pad(+dossierFolder.Dossier.Number, 7)} - ${dossierFolder.Dossier.Subject}`;
 
-                let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+            const node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+            node.set_text(dossierName);
+            node.set_value(dossierFolder.Dossier.UniqueId);
+            node.set_imageUrl("../Comm/Images/DocSuite/Dossier_16.png");
+            node.set_navigateUrl(`../Dossiers/DossierVisualizza.aspx?Type=Dossier&IdDossier=${dossierFolder.Dossier.UniqueId}`);
 
-                node.set_text(dossierName);
-                node.set_value(dossierFolder.Dossier.UniqueId);
-                node.set_imageUrl("../Comm/Images/DocSuite/Dossier_16.png");
+            const parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+            parentNode.get_nodes().add(node);
 
-                node.set_navigateUrl(`../Dossiers/DossierVisualizza.aspx?Type=Dossier&IdDossier=${dossierFolder.Dossier.UniqueId}`);
-
-                let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
-                parentNode.get_nodes().add(node);
-
-                this._DocumentRadTreeId.commitChanges();
-            }
+            this._DocumentRadTreeId.commitChanges();
         }
     }
 
-    private renderWorkflowActivityNodes(currentItems: WorkflowActivityModel[], position: number): void {
+    private renderWorkflowActivityNodes(includeName: boolean, includeRegistrationUser: boolean, currentItems: WorkflowActivityModel[], position: number): void {
         this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
 
-        for (let workflowActivity of currentItems) {
-            let name: string = `${workflowActivity.Name} del ${workflowActivity.RegistrationDateFormatted} richiesta da ${workflowActivity.RegistrationUser}`;
+        for (const workflowActivity of currentItems) {
+            let name = '';
+            if (includeName && includeName === true) {
+                name = workflowActivity.Name
+            }
+            if (workflowActivity.Subject && workflowActivity.Subject !== '') {
+                name = `${name} - ${workflowActivity.Subject}`
+            }
+            name = `${name} del ${workflowActivity.RegistrationDateFormatted}`
+            if (includeRegistrationUser && includeRegistrationUser === true) {
+                name = `${name} richiesta da ${workflowActivity.RegistrationUser}`
+            }
 
-            let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+            const node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
 
             node.set_text(name);
-            let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+            const parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.get_nodes().add(node);
             this._DocumentRadTreeId.commitChanges();
         }
@@ -952,11 +1078,11 @@ class uscDocumentUnitReferences {
         this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
 
         for (let i = 0; i < numberOfItems; i++) {
-            let status: string = messages[i].Status;
+            const status: string = messages[i].Status;
             //Inviato in data <data> a : elenco destinatari
-            let protocolMessageName: string = `${messages[i].MessageContacts.filter(f => f.ContactPosition == MessageContactPosition.Sender).map(f => f.Description).join("; ")} ${messages[i].MessageEmails[0].SentDate ? 'ha inviato in data ' + moment(messages[i].MessageEmails[0].SentDate).format("DD/MM/YYYY") : 'invio in corso'} a ${messages[i].MessageContacts.filter(f => f.ContactPosition == MessageContactPosition.Recipient || f.ContactPosition == MessageContactPosition.RecipientBcc).map(f => f.Description).join("; ")}`;;
-            let idMessage: number = messages[i].EntityId;
-            let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+            const protocolMessageName: string = `${messages[i].MessageContacts.filter(f => f.ContactPosition == MessageContactPosition.Sender).map(f => f.Description).join("; ")} ${messages[i].MessageEmails[0].SentDate ? 'ha inviato in data ' + moment(messages[i].MessageEmails[0].SentDate).format("DD/MM/YYYY") : 'invio in corso'} a ${messages[i].MessageContacts.filter(f => f.ContactPosition == MessageContactPosition.Recipient || f.ContactPosition == MessageContactPosition.RecipientBcc).map(f => f.Description).join("; ")}`;;
+            const idMessage: number = messages[i].EntityId;
+            const node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
             node.set_text(protocolMessageName);
             node.set_value(idMessage);
 
@@ -992,14 +1118,14 @@ class uscDocumentUnitReferences {
         this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
 
         for (let udsDoc of currentItems) {
-            let udsDocumentsName: string = `${udsDoc.Relation.Title} - ${udsDoc.Relation.Subject}`;
+            let udsDocumentsName: string = `${udsDoc.SourceUDS.Title} - ${udsDoc.SourceUDS.Subject}`;
 
             let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
             node.set_text(udsDocumentsName);
-            node.set_value(udsDoc.Relation.UniqueId);
+            node.set_value(udsDoc.SourceUDS.UniqueId);
             node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/document_copies.png");
-            if (udsDoc.Relation.UDSRepository) {
-                node.set_navigateUrl(`../UDS/UDSView.aspx?Type=UDS&IdUDS=${udsDoc.IdUDS}&IdUDSRepository=${udsDoc.Relation.UDSRepository.UniqueId.toString()}`);
+            if (udsDoc.SourceUDS.UDSRepository) {
+                node.set_navigateUrl(`../UDS/UDSView.aspx?Type=UDS&IdUDS=${udsDoc.IdUDS}&IdUDSRepository=${udsDoc.SourceUDS.UDSRepository.UniqueId.toString()}`);
             }
             let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.get_nodes().add(node);
@@ -1017,7 +1143,7 @@ class uscDocumentUnitReferences {
             node.set_text(protocolLinkName);
             node.set_value(protLink.ProtocolLinked.UniqueId);
             node.set_imageUrl("../Comm/Images/DocSuite/Protocollo16.gif");
-            node.set_navigateUrl(`../Prot/ProtVisualizza.aspx?Year=${protLink.ProtocolLinked.Year.toString()}&Number=${protLink.ProtocolLinked.Number.toString()}&Type=Prot`);
+            node.set_navigateUrl(`../Prot/ProtVisualizza.aspx?UniqueId=${protLink.ProtocolLinked.UniqueId}&Type=Prot`);
 
             let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position)
             parentNode.get_nodes().add(node);
@@ -1035,7 +1161,7 @@ class uscDocumentUnitReferences {
             node.set_text(protocolDocumentsName);
             node.set_value(protDoc.Relation.UniqueId);
             node.set_imageUrl("../Comm/Images/DocSuite/Protocollo16.gif");
-            node.set_navigateUrl(`../Prot/ProtVisualizza.aspx?Year=${protDoc.Relation.Year.toString()}&Number=${protDoc.Relation.Number.toString()}&Type=Prot`);
+            node.set_navigateUrl(`../Prot/ProtVisualizza.aspx?UniqueId=${protDoc.Relation.UniqueId}&Type=Prot`);
 
             let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.get_nodes().add(node);
@@ -1045,7 +1171,6 @@ class uscDocumentUnitReferences {
 
     private renderUDSNodes(currentItems: UDSDocumentUnitModel[], position: number): void {
         this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-
         for (let udsDoc of currentItems) {
             let udsDocumentsName: string = `${udsDoc.Relation.Title} - ${udsDoc.Relation.Subject}`;
 
@@ -1058,12 +1183,41 @@ class uscDocumentUnitReferences {
             }
             let parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
             parentNode.get_nodes().add(node);
+
+            var contentElement: any = node.get_contentElement();
+
+            if (this.showRemoveUDSLinksButton.toLowerCase() == "true") {
+                contentElement.innerHTML = `<img src=\"${node.get_imageUrl()}\"/><a href=\"${node.get_navigateUrl()}\">${node.get_text()}</a>
+                <img src = \"../App_Themes/DocSuite2008/imgset16/remove.png\" style=\"margin-left: 5px;\" onclick='removeLink(\"${udsDoc.UniqueId}\", \"${udsDoc.IdUDS}\", \"${udsDoc.Relation.UniqueId}\");'>`;
+            }
+
             this._DocumentRadTreeId.commitChanges();
         }
     }
 
-    protected showNotificationException(uscNotificationId: string, customMessage?: string) {
-        let exception: ExceptionDTO;
+    removeLink(uniqueId: any, udsId: any, relationId: any) {
+        if (window.confirm("Vuoi eliminare l'archivio selezionato?")) {
+            let from: UDSDocumentUnitModel = <UDSDocumentUnitModel>{};
+            from.UniqueId = uniqueId;
+
+            this._udsService.getUDSById(relationId, udsId, (data) => {
+                this._udsService.deleteUDSByid(from, () => {
+                    this._udsService.deleteUDSByid(data[0], () => {
+                        window.location.reload();
+                        alert("Collegamento eliminato correttamente");
+                    }, (exception: ExceptionDTO) => {
+                        this.showNotificationException(this.uscNotificationId, exception);
+                    });
+                }, (exception: ExceptionDTO) => {
+                    this.showNotificationException(this.uscNotificationId, exception);
+                });
+            }, (exception: ExceptionDTO) => {
+                this.showNotificationException(this.uscNotificationId, exception);
+            });
+        }
+    }
+
+    protected showNotificationException(uscNotificationId: string, exception: ExceptionDTO, customMessage?: string) {
         if (exception && exception instanceof ExceptionDTO) {
             let uscNotification: UscErrorNotification = <UscErrorNotification>$(`#${uscNotificationId}`).data();
             if (!jQuery.isEmptyObject(uscNotification)) {
@@ -1097,6 +1251,24 @@ class uscDocumentUnitReferences {
             s = `0${s}`
         }
         return s;
+    }
+    /**
+* Evento al click del pulsante per la espandere o comprimere il sommario
+*/
+    btnExpandDocumentUnitReference_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
+        args.set_cancel(true);
+        if (this._isDocumentUnitReferenceOpen) {
+            this._isDocumentUnitReferenceOpen = false;
+            this._documentUnitReferenceContent.hide();
+            this._btnExpandDocumentUnitReference.removeCssClass("dsw-arrow-down");
+            this._btnExpandDocumentUnitReference.addCssClass("dsw-arrow-up");
+        }
+        else {
+            this._isDocumentUnitReferenceOpen = true;
+            this._documentUnitReferenceContent.show();
+            this._btnExpandDocumentUnitReference.removeCssClass("dsw-arrow-up");
+            this._btnExpandDocumentUnitReference.addCssClass("dsw-arrow-down");
+        }
     }
 
 }

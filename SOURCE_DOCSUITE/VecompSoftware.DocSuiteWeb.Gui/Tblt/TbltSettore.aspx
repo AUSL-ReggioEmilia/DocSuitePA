@@ -21,6 +21,7 @@
                 tbltSettore.radTreeViewRolesId = "<%= RadTreeViewRoles.ClientID %>";
                 tbltSettore.radWindowManagerRolesId = "<%= RadWindowManagerRoles.ClientID %>";
                 tbltSettore.ajaxManagerId = "<%= AjaxManager.ClientID %>";
+                tbltSettore.folderToolBarId = "<%= FolderToolBar.ClientID%>";
                 tbltSettore.showDisabled = "<%= Not ProtocolEnv.ManageDisableItemsEnabled %>";
                 tbltSettore.initialize();
             }
@@ -163,18 +164,17 @@
                         </telerik:RadToolBar>
                         <telerik:RadToolBar AutoPostBack="true" EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%" RenderMode="Lightweight">
                             <Items>
-                                <telerik:RadToolBarButton runat="server" ToolTip="Aggiungi" Value="create" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Modifica" Value="modify" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Elimina" Value="delete" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Sposta" Value="move" ImageUrl="~/App_Themes/DocSuite2008/imgset16/move_to_folder.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Clona" Value="clone" ImageUrl="~/App_Themes/DocSuite2008/imgset16/document_copies.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Stampa" Value="print" ImageUrl="~/App_Themes/DocSuite2008/imgset16/printer.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Recupera" Value="recover" ImageUrl="~/App_Themes/DocSuite2008/imgset16/view_history.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Gruppi" Value="groups" ImageUrl="~/comm/images/interop/Uo.gif" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Storico" Visible="false" Value="history" ImageUrl="~/App_Themes/DocSuite2008/imgset16/history.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Log" Value="log" ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_log.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Disegno di funzione" Value="function" ImageUrl="~/App_Themes/DocSuite2008/imgset16/function.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Propagazione massiva" Value="propagation" ImageUrl="~/App_Themes/DocSuite2008/imgset16/propagation.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Aggiungi" Value="create" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Modifica" Value="modify" Text="Modifica" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Elimina" Value="delete" Text="Elimina" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Gruppi" Value="groups" Text="Gruppi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/GroupMembers.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Disegno di funzione" Value="function" Text="Funzione" ImageUrl="~/App_Themes/DocSuite2008/imgset16/function.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Sposta" Value="move" Text="Sposta" ImageUrl="~/App_Themes/DocSuite2008/imgset16/move_to_folder.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Clona" Value="clone" Text="Clona" ImageUrl="~/App_Themes/DocSuite2008/imgset16/clone.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Stampa" Value="print" Text="Stampa" ImageUrl="~/App_Themes/DocSuite2008/imgset16/printer.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Storico" Visible="false" Text="Storico" Value="history" ImageUrl="~/App_Themes/DocSuite2008/imgset16/history.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Propagazione massiva" Value="propagation" Text="Propagazione" ImageUrl="~/App_Themes/DocSuite2008/imgset16/propagation.png" />
+                                <telerik:RadToolBarButton runat="server" ToolTip="Log" Value="log" Text="Log" ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_log.png" />
                             </Items>
                         </telerik:RadToolBar>
                         <telerik:RadTreeView ID="RadTreeViewRoles" OnClientNodeClicked="OnClientNodeClickedExpand" runat="server" Style="margin-top: 10px;" Width="100%" Height="91%">

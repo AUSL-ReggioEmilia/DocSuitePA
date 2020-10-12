@@ -27,17 +27,17 @@ Public Module MailboxDTOEx
 
     <Extension()>
     Public Function IsPEC(source As MailboxDTO) As Boolean
-        Return source.IsTypeName(Of PECMailBox)()
+        Return If(source Is Nothing, False, source.IsTypeName(Of PECMailBox)())
     End Function
 
     <Extension()>
     Public Function IsPOL(source As MailboxDTO) As Boolean
-        Return source.IsTypeName(Of POLAccount)()
+        Return If(source Is Nothing, False, source.IsTypeName(Of POLAccount)())
     End Function
 
     <Extension()>
     Public Function IsMessage(source As MailboxDTO) As Boolean
-        Return source.IsTypeName(Of DSWMessage)()
+        Return If(source Is Nothing, False, source.IsTypeName(Of DSWMessage)())
     End Function
 
     <Extension()>

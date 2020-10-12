@@ -94,7 +94,7 @@ Partial Public Class uscCollRoles
     Protected ReadOnly Property CurrentRoleUserFacade As Facade.WebAPI.Commons.RoleUserFacade
         Get
             If _currentRoleUserFacade Is Nothing Then
-                _currentRoleUserFacade = New Facade.WebAPI.Commons.RoleUserFacade(DocSuiteContext.Current.Tenants)
+                _currentRoleUserFacade = New Facade.WebAPI.Commons.RoleUserFacade(DocSuiteContext.Current.Tenants, BasePage.CurrentTenant)
             End If
             Return _currentRoleUserFacade
         End Get
@@ -182,11 +182,14 @@ Partial Public Class uscCollRoles
                     apiRoleUser = mapper.MappingDTO(roleUser)
                     If roleUser.Account.Contains("\") AndAlso templates Is Nothing Then
                         accountStr = roleUser.Account.Split("\"c)
-                        CurrentTemplateCollaborationFinder.ResetDecoration()
-                        CurrentTemplateCollaborationFinder.UserName = accountStr.Last()
-                        CurrentTemplateCollaborationFinder.Domain = accountStr.First()
-                        CurrentTemplateCollaborationFinder.IdRole = roleUser.Role.IdRoleTenant
-                        templates = CurrentTemplateCollaborationFinder.DoSearch()
+                        templates = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentTemplateCollaborationFinder,
+                            Function(impersonationType, wfinder)
+                                wfinder.ResetDecoration()
+                                wfinder.UserName = accountStr.Last()
+                                wfinder.Domain = accountStr.First()
+                                wfinder.IdRole = roleUser.Role.IdRoleTenant
+                                Return wfinder.DoSearch()
+                            End Function)
                     End If
                     CurrentRoleUserFacade.Update(apiRoleUser, UpdateActionType.RoleUserTemplateCollaborationInvalid.ToString())
                 Next
@@ -260,7 +263,7 @@ Partial Public Class uscCollRoles
 
         If role IsNot Nothing Then
             For Each securityUser As SecurityUsers In role.RoleGroups.Where(Function(f) f.SecurityGroup IsNot Nothing).SelectMany(Function(f) f.SecurityGroup.SecurityUsers)
-                users.Add(New AccountModel(securityUser.Account, securityUser.Description, securityUser.UserDomain))
+                users.Add(New AccountModel(securityUser.Account, securityUser.Description, domain:=securityUser.UserDomain))
             Next
         End If
 
@@ -941,10 +944,6 @@ Partial Public Class uscCollRoles
         rootFunc = New RadTreeNode("Funzioni", "FunzioniRoot") With {.Expanded = True, .Checkable = False}
         rtvRoles.Nodes.Add(rootFunc)
 
-        If DocSuiteContext.Current.ProtocolEnv.IsCollaborationEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled Then
-            Dim rootFunzionarioDematerializzazione As RadTreeNode = CreateRootNode("Funzionario  per la dematerializzazione", RoleUserType.OD)
-            rootFunc.Nodes.Add(rootFunzionarioDematerializzazione)
-        End If
         If DocSuiteContext.Current.ProtocolEnv.IsCollaborationEnabled AndAlso
                                DocSuiteContext.Current.ProtocolEnv.IsCollaborationGroupEnabled Then
             Dim rootDirettori As RadTreeNode = CreateRootNode(DocSuiteContext.Current.ProtocolEnv.NomeDirigentiCollaborazione, RoleUserType.D)
@@ -992,7 +991,6 @@ Partial Public Class uscCollRoles
         Dim rootFasc As RadTreeNode = Nothing
         Dim rootColl As RadTreeNode = Nothing
         Dim rootProt As RadTreeNode = Nothing
-        Dim rootDematerialization As RadTreeNode = Nothing
         If ProtocolEnv.FascicleEnabled AndAlso Not FromCollaboration Then
             rootFasc = New RadTreeNode("Fascicoli", "FascicoliRoot") With {.Expanded = True, .Checkable = False}
             rtvRoles.Nodes.Add(rootFasc)
@@ -1007,12 +1005,12 @@ Partial Public Class uscCollRoles
             rootProt = New RadTreeNode("Protocollo", "ProtocolloRoot") With {.Expanded = True, .Checkable = False}
             rtvRoles.Nodes.Add(rootProt)
 
-            If ProtocolEnv.IsDistributionEnabled Then
-                Dim rootManager As RadTreeNode = CreateRootNode("Manager", RoleUserType.M)
-                rootProt.Nodes.Add(rootManager)
-                Dim rootUtenti As RadTreeNode = CreateRootNode("Utenti", RoleUserType.U)
-                rootProt.Nodes.Add(rootUtenti)
-            End If
+            'If ProtocolEnv.IsDistributionEnabled Then
+            '    Dim rootManager As RadTreeNode = CreateRootNode("Manager", RoleUserType.M)
+            '    rootProt.Nodes.Add(rootManager)
+            '    Dim rootUtenti As RadTreeNode = CreateRootNode("Utenti", RoleUserType.U)
+            '    rootProt.Nodes.Add(rootUtenti)
+            'End If
 
             If DocSuiteContext.Current.PrivacyEnabled Then
                 Dim rootPrivacyManager As RadTreeNode = CreateRootNode(CommonBasePage.PRIVACY_LABEL, RoleUserType.MP)
@@ -1024,12 +1022,6 @@ Partial Public Class uscCollRoles
         If DocSuiteContext.Current.ProtocolEnv.IsCollaborationEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.IsCollaborationGroupEnabled Then
             rootColl = New RadTreeNode("Collaborazione", "CollaborazioneRoot") With {.Expanded = True, .Checkable = False}
             rtvRoles.Nodes.Add(rootColl)
-
-            If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled Then
-                Dim rootFunzionarioDematerializzazione As RadTreeNode = CreateRootNode("Funzionario per la dematerializzazione", RoleUserType.OD)
-                rootColl.Nodes.Add(rootFunzionarioDematerializzazione)
-            End If
-
             Dim rootDirettori As RadTreeNode = CreateRootNode(DocSuiteContext.Current.ProtocolEnv.NomeDirigentiCollaborazione, RoleUserType.D)
             rootColl.Nodes.Add(rootDirettori)
             Dim rootViceDirettori As RadTreeNode = CreateRootNode(DocSuiteContext.Current.ProtocolEnv.NomeViceCollaborazione, RoleUserType.V)

@@ -8,18 +8,16 @@ Public Class ProtocolPrint
     Inherits BasePrint
 
 #Region "Fields"
-    Private _listid As New List(Of YearNumberCompositeKey)
+    Private _listid As New List(Of Guid)
 #End Region
 
 #Region "properties"
 
-    Public Property ListId() As List(Of YearNumberCompositeKey)
+    Public Property ListId() As List(Of Guid)
         Get
-
             Return _listid
-
         End Get
-        Set(ByVal value As List(Of YearNumberCompositeKey))
+        Set(ByVal value As List(Of Guid))
             _listid = value
         End Set
     End Property
@@ -122,7 +120,7 @@ Public Class ProtocolPrint
         CreateRow(TablePrint, row, type, "", 0)
 
 
-        For Each id As YearNumberCompositeKey In ListId
+        For Each id As Guid In ListId
             Dim protocol As Protocol = Facade.ProtocolFacade.GetById(id)
 
             row = New ArrayList()

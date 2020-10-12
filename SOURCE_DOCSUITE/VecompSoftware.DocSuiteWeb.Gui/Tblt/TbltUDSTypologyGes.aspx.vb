@@ -1,4 +1,5 @@
 ﻿Imports System.Web
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Partial Class TbltUDSTypologyGes
@@ -24,6 +25,11 @@ Partial Class TbltUDSTypologyGes
 #Region "Events"
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         MasterDocSuite.TitleVisible = False
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
+
         If Not IsPostBack Then
         End If
     End Sub

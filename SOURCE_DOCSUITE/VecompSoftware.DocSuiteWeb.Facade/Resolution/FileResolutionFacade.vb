@@ -98,7 +98,7 @@ Public Class FileResolutionFacade
     ''' <param name="directory">Directory dove salvare il file</param>
     ''' <returns>Nome del file generato</returns>
     Public Function Extract(ByVal resolution As Resolution, ByVal fieldName As String, ByVal directory As DirectoryInfo) As String
-        Return Extract(resolution.File, resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, fieldName, directory)
+        Return Extract(resolution.File, resolution.Location.ReslBiblosDSDB, fieldName, directory)
     End Function
 
     ''' <summary>
@@ -110,11 +110,11 @@ Public Class FileResolutionFacade
     ''' <param name="fieldName">Nome del campo contente l'id catena necessario</param>
     ''' <param name="directory">Directory dove salvare il file</param>
     ''' <returns>Nome del file generato</returns>
-    Public Function Extract(ByVal fileResolution As FileResolution, ByVal server As String, ByVal archive As String, ByVal fieldName As String, ByVal directory As DirectoryInfo) As String
+    Public Function Extract(ByVal fileResolution As FileResolution, ByVal archive As String, ByVal fieldName As String, ByVal directory As DirectoryInfo) As String
         ' id catena del campo desiderato
-        Dim chainId As Integer = ReflectionHelper.GetPropertyCase(fileResolution, fieldName)
+        Dim chainId As Integer = Integer.Parse(ReflectionHelper.GetPropertyCase(fileResolution, fieldName).ToString())
 
-        Dim doc As New BiblosDocumentInfo(server, archive, chainId)
+        Dim doc As New BiblosDocumentInfo(archive, chainId)
 
         Dim filename As String = String.Format("{0}{1}{2}", fileResolution.Resolution.Id, ResolutionJournalFacade.Separator, doc.Name)
         doc.SaveToDisk(directory, filename)

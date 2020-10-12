@@ -2,7 +2,7 @@
 
 
 <div class="radGridWrapper">
-    <DocSuite:BindGrid AllowFilteringByColumn="True" AutoGenerateColumns="False" Width="100%" GridLines="None" ID="gvCollaboration" runat="server" ShowGroupPanel="True">
+    <DocSuite:BindGrid AllowFilteringByColumn="True" AutoGenerateColumns="False" Width="100%" GridLines="None" ID="gvCollaboration" runat="server" ShowGroupPanel="True" ImpersonateCurrentUser="true">
         <MasterTableView DataKeyNames="Entity.IdCollaboration" GridLines="Horizontal" NoMasterRecordsText="Nessun documento trovato" TableLayout="Auto">
             <Columns>
                 <telerik:GridBoundColumn HeaderStyle-Width="0" UniqueName="Entity.DocumentType" DataField="Entity.DocumentType"></telerik:GridBoundColumn>

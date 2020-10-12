@@ -41,6 +41,15 @@ Partial Public Class UserCollGestione
     Protected WithEvents rwAbsentManager As Global.Telerik.Web.UI.RadWindow
 
     '''<summary>
+    '''rwPrecompilerProtocol control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rwPrecompilerProtocol As Global.Telerik.Web.UI.RadWindow
+
+    '''<summary>
     '''pnlFilterPanel control.
     '''</summary>
     '''<remarks>
@@ -120,6 +129,15 @@ Partial Public Class UserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlSpecificDocumentType As Global.Telerik.Web.UI.RadDropDownList
+
+    '''<summary>
+    '''rfvSpecificDocumentType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rfvSpecificDocumentType As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''pnlMainPanel control.
@@ -626,6 +644,15 @@ Partial Public Class UserCollGestione
     Protected WithEvents txtObject As Global.Telerik.Web.UI.RadTextBox
 
     '''<summary>
+    '''hdfLastTemplateObject control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hdfLastTemplateObject As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
     '''tNote control.
     '''</summary>
     '''<remarks>
@@ -644,6 +671,15 @@ Partial Public Class UserCollGestione
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
 
     '''<summary>
+    '''hdfLastTemplateNote control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hdfLastTemplateNote As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
     '''tEditCollaborationData control.
     '''</summary>
     '''<remarks>
@@ -660,6 +696,24 @@ Partial Public Class UserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnEditCollaborationData As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''pnlDocumentUnitDraftEditor control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlDocumentUnitDraftEditor As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''btnDocumentUnitDraftEditor control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnDocumentUnitDraftEditor As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''pnlUDS control.

@@ -36,7 +36,9 @@ import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import AjaxModel = require('App/Models/AjaxModel');
 import FascicolableActionType = require('App/Models/FascicolableActionType');
 import CategoryTreeViewModel = require('App/ViewModels/Commons/CategoryTreeViewModel');
-import uscFascicleSearch = require('../UserControl/uscFascicleSearch');
+import uscFascicleSearch = require('UserControl/uscFascicleSearch');
+import FascicleFolderModel = require('App/Models/Fascicles/FascicleFolderModel');
+import FascicleSummaryFolderViewModel = require('App/ViewModels/Fascicles/FascicleSummaryFolderViewModel');
 
 class FascUDManager extends FascicleBase {
     documentUnitUniqueId: string;
@@ -66,7 +68,8 @@ class FascUDManager extends FascicleBase {
     availableFascicleRowId: string;
     maxNumberElements: string;
     uscFascicleSearchId: string;
-
+    processEnabled: boolean;
+    folderSelectionEnabled: boolean;
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _rgvAssociatedFascicles: Telerik.Web.UI.RadGrid;
@@ -92,6 +95,7 @@ class FascUDManager extends FascicleBase {
     private _selectedAssociatedFascicle: AssociatedFasciclesViewModel;
     private _managerAddFascLink: Telerik.Web.UI.RadWindowManager;
     private _fascicleFolderService: FascicleFolderService;
+    private _uscFascicleSearch: uscFascicleSearch;
     /**
      * Costruttore
      * @param serviceConfiguration
@@ -126,6 +130,7 @@ class FascUDManager extends FascicleBase {
         this._lblObject = $("#".concat(this.lblObjectId));
         this._lblCategory = $("#".concat(this.lblCategoryId));
         this._ajaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
+        this._uscFascicleSearch = <uscFascicleSearch>$(`#${this.uscFascicleSearchId}`).data();
 
         try {
             let fascicleDocumentUnitConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, FascicleBase.FASCICLE_DOCUMENTUNIT_TYPE_NAME);
@@ -182,7 +187,7 @@ class FascUDManager extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnNewFascicle_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnNewFascicle_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         this._loadingPanel.show(this.pageContentId);
         this._btnInsert.set_enabled(false);
@@ -198,19 +203,23 @@ class FascUDManager extends FascicleBase {
         switch (<Environment>this.documentUnitType) {
             case Environment.Protocol:
                 let protocol: ProtocolModel = <ProtocolModel>this._currentUD;
-                params = params.concat("&IdCategory=", protocol.Category.EntityShortId.toString(), "&IdUD=", protocol.UniqueId, "&Environment=", Environment.Protocol.toString());
+                params = params.concat("&IdCategory=", protocol.Category.EntityShortId.toString(), "&IdDocumentUnit=", protocol.UniqueId, "&Environment=", Environment.Protocol.toString());
                 break;
             case Environment.Resolution:
                 let resolution: ResolutionModel = <ResolutionModel>this._currentUD;
-                params = params.concat("&IdCategory=", resolution.Category.EntityShortId.toString(), "&IdUD=", resolution.UniqueId, "&Environment=", Environment.Resolution.toString());
+                params = params.concat("&IdCategory=", resolution.Category.EntityShortId.toString(), "&IdDocumentUnit=", resolution.UniqueId, "&Environment=", Environment.Resolution.toString());
                 break;
             case Environment.UDS:
                 let UDS: UDSModel = <UDSModel>this._currentUD;
-                params = params.concat("&IdCategory=", UDS.Category.EntityShortId.toString(), "&IdUD=", UDS.UniqueId, "&Environment=", Environment.UDS.toString(), "&IdUDSRepository=", this.currentIdUDSRepository);
+                params = params.concat("&IdCategory=", UDS.Category.EntityShortId.toString(), "&IdDocumentUnit=", UDS.UniqueId, "&Environment=", Environment.UDS.toString(), "&IdUDSRepository=", this.currentIdUDSRepository);
                 break;
         }
 
-        window.location.href = "../Fasc/FascInserimento.aspx?".concat(params);
+        let locationPath = "../Fasc/FascInserimento.aspx";
+        if (this.processEnabled) {
+            locationPath = "../Fasc/FascProcessInserimento.aspx";
+        }
+        window.location.href = `${locationPath}?${params}`;
     }
 
     /**
@@ -218,7 +227,7 @@ class FascUDManager extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnRemoveFascicle_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnRemoveFascicle_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         let dataItems: any = this._rgvAssociatedFascicles.get_selectedItems();
         if (dataItems.length == 0) {
@@ -245,18 +254,28 @@ class FascUDManager extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnInsert_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnInsert_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
+
         let selectedFascicle: FascicleModel;
         let uscFascicleSearch: uscFascicleSearch = $(`#${this.uscFascicleSearchId}`).data() as uscFascicleSearch;
         if (!jQuery.isEmptyObject(uscFascicleSearch)) {
             selectedFascicle = uscFascicleSearch.getSelectedFascicle();
         }
+
         if (!selectedFascicle) {
             this.showNotificationMessage(this.uscNotificationId, "Nessun Fascicolo selezionato");
             return;
         }
-        this.insertFascicleDocumentUnit(selectedFascicle);
+
+        let selectedFascicleFolder: FascicleSummaryFolderViewModel = this._uscFascicleSearch.getSelectedFascicleFolder();
+
+        if (this.folderSelectionEnabled && !selectedFascicleFolder) {
+            this.showNotificationMessage(this.uscNotificationId, "Nessuna cartella fascicolo selezionata");
+            return;
+        }
+
+        this.insertFascicleDocumentUnit(selectedFascicle, selectedFascicleFolder);
     }    
 
 
@@ -265,7 +284,7 @@ class FascUDManager extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnCategoryChange_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnCategoryChange_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         this._manager.add_close(this.closeChangeCategoryWindow);
         let protocol: ProtocolModel = <ProtocolModel>this._currentUD;
@@ -361,10 +380,6 @@ class FascUDManager extends FascicleBase {
                     }
                 });
                 this._btnInsert.set_enabled(this.validationModel.CanManageFascicle);
-                let uscFascicleSearch: uscFascicleSearch = $(`#${this.uscFascicleSearchId}`).data() as uscFascicleSearch;
-                if (!jQuery.isEmptyObject(uscFascicleSearch)) {
-                    uscFascicleSearch.setButtonSearchEnabled(this.validationModel.CanManageFascicle);
-                }
                 this._btnNewFascicle.set_visible(!isAlreadyFascicolate);
                 if ((<any>this._btnNewFascicle).get_visible()) {
                     this._btnNewFascicle.set_enabled(this.validationModel.CanInsertFascicle);
@@ -610,11 +625,15 @@ class FascUDManager extends FascicleBase {
      * Inserisce un riferimento per la documentunit
      * @param selectedFascicle
      **/
-    insertFascicleDocumentUnit(selectedFascicle: FascicleModel): void {
+    insertFascicleDocumentUnit(selectedFascicle: FascicleModel, selectedFascicleFolder: FascicleSummaryFolderViewModel): void {
         let model: FascicleDocumentUnitModel = new FascicleDocumentUnitModel(selectedFascicle.UniqueId);
         model.ReferenceType = FascicleReferenceType.Fascicle;
         let documentUnit: DocumentUnitModel = <DocumentUnitModel>this._currentUD;
         model.DocumentUnit = documentUnit;
+
+        model.FascicleFolder = {} as FascicleFolderModel;
+        model.FascicleFolder.UniqueId = selectedFascicleFolder.UniqueId;
+
         this.insertFascicleUD(model, documentUnit, this._fascicleDocumentUnitService);
     }
 
@@ -636,32 +655,21 @@ class FascUDManager extends FascicleBase {
             this._btnCategoryChange.set_enabled(false);
         }
 
-        this._fascicleFolderService.getByCategoryAndFascicle(model.Fascicle.UniqueId, reference.Category.EntityShortId,
-            (data) => {
-                if (data) {
-                    model.FascicleFolder = data;
-                    service.insertFascicleUD(model, FascicolableActionType.AutomaticDetection,
-                        (data: any) => {
-                            this.loadUDdata(reference, () => {
-                                if ((<any>this._btnCategoryChange).get_visible()) {
-                                    this._btnCategoryChange.set_enabled(false);
-                                }
-                                this._loadingPanel.hide(this.pageContentId);
-                            });
-                        },
-                        (exception: ExceptionDTO) => {
-                            this._loadingPanel.hide(this.pageContentId);
-                            this.setButtonEnable();
-                            this.showNotificationException(this.uscNotificationId, exception);
-                        }
-                    );
-                }
+        service.insertFascicleUD(model, FascicolableActionType.AutomaticDetection,
+            (data: any) => {
+                this.loadUDdata(reference, () => {
+                    if ((<any>this._btnCategoryChange).get_visible()) {
+                        this._btnCategoryChange.set_enabled(false);
+                    }
+                    this._loadingPanel.hide(this.pageContentId);
+                });
             },
             (exception: ExceptionDTO) => {
                 this._loadingPanel.hide(this.pageContentId);
                 this.setButtonEnable();
                 this.showNotificationException(this.uscNotificationId, exception);
-            });
+            }
+        );
     }
 
     /**

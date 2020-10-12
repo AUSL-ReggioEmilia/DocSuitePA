@@ -12,6 +12,10 @@ Imports System.Text
 Imports VecompSoftware.Services.Logging
 Imports System.Web
 Imports System.Text.RegularExpressions
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.Commons
+Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate
 
 Partial Public Class uscContattiGes
     Inherits DocSuite2008BaseControl
@@ -247,14 +251,7 @@ Partial Public Class uscContattiGes
         End If
 
         If IdContact.HasValue Then
-            If ManualContactMode Then
-                _contactManual = Facade.ProtocolContactManualFacade.GetById(New YearNumberIdCompositeKey(Year, Number, IdContact.Value), False)
-                If _contactManual IsNot Nothing Then
-                    _contact = _contactManual.Contact
-                End If
-            Else
-                _contact = Facade.ContactFacade.GetById(IdContact.Value, False)
-            End If
+            _contact = Facade.ContactFacade.GetById(IdContact.Value, False)
 
             If _contact IsNot Nothing Then
                 _description = Replace(_contact.Description, "|", " ")
@@ -801,6 +798,14 @@ Partial Public Class uscContattiGes
                     Facade.ContactFacade.DuplicationCheck(_contact)
                     Facade.ContactFacade.Save(_contact)
 
+                    If ProtocolEnv.MultiTenantEnabled Then
+                        Dim currentTenant As Tenant = CType(Session("CurrentTenant"), Tenant)
+                        currentTenant.Contacts.Add(New Entity.Commons.Contact With {.EntityId = _contact.Id})
+                        Dim currentTenantFacade As WebAPI.Tenants.TenantFacade = New WebAPI.Tenants.TenantFacade(DocSuiteContext.Current.Tenants.ToList(), currentTenant)
+                        currentTenantFacade.Update(currentTenant, UpdateActionType.TenantContactAdd.ToString())
+                        currentTenant.Contacts.Clear()
+                    End If
+
                 Case "Rename" ' Modifica Contatto Rubrica
 
                     'Questo è il case in cui esegue la modifica del contatto
@@ -879,7 +884,7 @@ Partial Public Class uscContattiGes
         txtCode.Text = contact.Code
         txtSearchCode.Text = contact.SearchCode
         txtFiscalCode.Text = contact.FiscalCode
-        txtCertifiedMail.Text = contact.CertifiedMail
+        txtCertifiedMail.Text = If(SimpleMode AndAlso String.IsNullOrEmpty(contact.CertifiedMail), contact.EmailAddress, contact.CertifiedMail)
         txtSDIIdentification.Text = contact.SDIIdentification
         If contact.Address IsNot Nothing Then
             If contact.Address.PlaceName IsNot Nothing Then

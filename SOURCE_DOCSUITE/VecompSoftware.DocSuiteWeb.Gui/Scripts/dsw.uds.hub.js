@@ -89,7 +89,7 @@
 
     function actionHubSuccess(model) {
         if (correlationId !== null) {
-            $.each(model.CorrelatedCommands, function (i, command) {
+            $.each(model.CorrelatedMessages, function (i, command) {
                 if (command.CorrelationId === correlationId) {
                     if (currentOnSuccessCallback) {
                         currentOnSuccessCallback(model.Content.ContentTypeValue);
@@ -102,7 +102,7 @@
 
     function actionHubError(model) {
         if (correlationId !== null) {
-            $.each(model.CorrelatedCommands, function (i, command) {
+            $.each(model.CorrelatedMessages, function (i, command) {
                 if (command.CorrelationId === correlationId) {
                     tentativeCount++;
                     completeError(model.Content.ContentTypeValue);

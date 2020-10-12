@@ -2,6 +2,7 @@
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.DocSuiteWeb.Model.Parameters
+Imports System.Xml
 
 Public Class ProtocolEnv
     Inherits BaseEnvironment
@@ -47,7 +48,6 @@ Public Class ProtocolEnv
             Return GetString("SignaturePrintExt", String.Empty)
         End Get
     End Property
-
 
     Public ReadOnly Property EnableFederationAD() As Boolean
         Get
@@ -420,7 +420,7 @@ Public Class ProtocolEnv
 
     Public ReadOnly Property ZebraPrinterEnabled() As Boolean
         Get
-            Return IsComputerLogEnabled() AndAlso GetBoolean("ZebraPrinterEnabled")
+            Return GetBoolean("ZebraPrinterEnabled")
         End Get
     End Property
 
@@ -564,19 +564,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property InteropOggettoXPath() As String
         Get
             Return GetString("InteropOggettoXPath", "//Descrizione/Documento/Oggetto")
-        End Get
-    End Property
-
-
-    Public ReadOnly Property IsLogEnabled() As Boolean
-        Get
-            Return GetBoolean("LogEnabled")
-        End Get
-    End Property
-
-    Public ReadOnly Property IsComputerLogEnabled() As Boolean
-        Get
-            Return IsLogEnabled() AndAlso GetBoolean("ComputerLogEnabled")
         End Get
     End Property
 
@@ -778,7 +765,7 @@ Public Class ProtocolEnv
 
     Public ReadOnly Property ScannerConfigurationEnabled() As Boolean
         Get
-            Return IsComputerLogEnabled() AndAlso GetBoolean("ScannerConfigurationEnabled")
+            Return GetBoolean("ScannerConfigurationEnabled")
         End Get
     End Property
 
@@ -822,24 +809,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property UserLogEnabled() As String
-        Get
-            Return GetString("UserLogEnabled", String.Empty)
-        End Get
-    End Property
-
-    Public ReadOnly Property OfficeRedirect() As String
-        Get
-            Return GetString("OfficeRedirect", String.Empty)
-        End Get
-    End Property
-
-    Public ReadOnly Property ThinClientxDefaultButton() As String
-        Get
-            Return GetString("ThinClientxDefaultButton", String.Empty)
-        End Get
-    End Property
-
     Public ReadOnly Property AuthorizContainer() As Integer
         Get
             Return GetInteger("AuthorizContainer")
@@ -878,12 +847,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property ThinClientxMultiChain() As Boolean
-        Get
-            Return GetBoolean("ThinClientxMultiChain")
-        End Get
-    End Property
-
     Public ReadOnly Property SmartClientMultiChain() As Boolean
         Get
             Return GetBoolean("SmartClientMultiChain")
@@ -904,12 +867,6 @@ Public Class ProtocolEnv
                 Return Nothing
             End If
             Return New ChangeObjectParameter(param)
-        End Get
-    End Property
-
-    Public ReadOnly Property ModificaOggettiDisable() As Boolean
-        Get
-            Return GetBoolean("ModificaOggettiDisable", True)
         End Get
     End Property
 
@@ -1291,6 +1248,29 @@ Public Class ProtocolEnv
             Return GetBoolean("PECDestinationOptional")
         End Get
     End Property
+    Public ReadOnly Property PECFisicalDeleteGroups() As String
+        Get
+            Return GetString("PECFisicalDeleteGroups", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property RemovePECEnabledInPECMailBoxIds() As String
+        Get
+            Return GetString("RemovePECEnabledInPECMailBoxIds", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property RemovePECEnabledInPECMailBoxes As IList(Of Integer)
+        Get
+            Dim splitted As String() = DocSuiteContext.Current.ProtocolEnv.RemovePECEnabledInPECMailBoxIds.Split("|"c)
+            Dim parsed As Integer = 0
+            Dim valid As IEnumerable(Of String) = splitted.Where(Function(c) Integer.TryParse(c, parsed))
+            Dim _removePECEnabledInPECMailBoxes As IList(Of Integer) = valid.Select(Function(c) Integer.Parse(c)).ToList()
+            Return _removePECEnabledInPECMailBoxes
+        End Get
+    End Property
+
+
 
     ''' <summary> Indica se se proporre o meno la data documento da protocollazione da pec. </summary>
     Public ReadOnly Property EnableDocumentDateFromPEC() As Boolean
@@ -1673,7 +1653,7 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property ProtNewPecMailEnabled() As Boolean
+    Public ReadOnly Property ProtNewPECMailEnabled() As Boolean
         Get
             Return GetBoolean("ProtNewPecMailEnabled")
         End Get
@@ -2327,7 +2307,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-
     Public ReadOnly Property OChartEnabled() As Boolean
         Get
             Return GetBoolean("OChartEnabled", False)
@@ -2915,7 +2894,7 @@ Public Class ProtocolEnv
         End Get
     End Property
     ''' <summary>
-    ''' Oggetto mail autorizzazione alla visione di  External Viewer
+    ''' Oggetto mail autorizzazione alla visione di External Viewer
     ''' </summary>
     ''' <returns>
     ''' 0 . numero protocollo
@@ -2933,7 +2912,7 @@ Public Class ProtocolEnv
     End Property
     Public ReadOnly Property BasicPersonSearcherKey As String
         Get
-            Return GetString("BasicPersonSearcherKey", "(&(&(objectCategory=person)(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))(|(cn=*{0}*)(sAMAccountName={0})))")
+            Return GetString("BasicPersonSearcherKey", "(&(&(objectCategory=person)(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))(|(cn=*{0}*)(displayName={0})))")
         End Get
     End Property
 
@@ -3465,7 +3444,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-
     Public ReadOnly Property ImportDocumentSeriesRecoveryFolder As String
         Get
             Return GetString("ImportDocumentSeriesRecoveryFolder", String.Empty)
@@ -3594,7 +3572,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-
     Public ReadOnly Property FascicolableThreshold As Integer
         Get
             Return GetInteger("FascicolableThreshold", 30)
@@ -3704,26 +3681,16 @@ Public Class ProtocolEnv
             Return GetBoolean("CheckSecurityUsersDomainEnabled", False)
         End Get
     End Property
-    Public ReadOnly Property IP4DEnabled As Boolean
-        Get
-            Return GetBoolean("IP4DEnabled", False)
-        End Get
-    End Property
 
     Public ReadOnly Property ExternalViewerProtocolLink As String
         Get
             Return GetString("ExternalViewerProtocolLink")
         End Get
     End Property
+
     Public ReadOnly Property ExternalViewerMyDocuments As String
         Get
             Return GetString("ExternalViewerMyDocuments")
-        End Get
-    End Property
-
-    Public ReadOnly Property IP4DGroups As IList(Of String)
-        Get
-            Return GetJson(Of IList(Of String))("IP4DGroups", String.Empty)
         End Get
     End Property
 
@@ -4042,12 +4009,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property DematerialisationEnabled As Boolean
-        Get
-            Return GetBoolean("DematerialisationEnabled", False) AndAlso Not IsProtocolAttachLocationEnabled
-        End Get
-    End Property
-
     Public ReadOnly Property UDSLocation As Integer
         Get
             Return GetInteger("UDSLocation", -1)
@@ -4085,12 +4046,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property SecureDocumentEnabled As Boolean
-        Get
-            Return GetBoolean("SecureDocumentEnabled", False)
-        End Get
-    End Property
-
     Public ReadOnly Property PasswordEncryptionKey As String
         Get
             Return GetString("PasswordEncryptionKey", "")
@@ -4109,27 +4064,9 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property SecureDocumentGroups As String
-        Get
-            Return GetString("SecureDocumentGroups", String.Empty)
-        End Get
-    End Property
-
-    Public ReadOnly Property SecureDocumentSignatureEnabled As Boolean
-        Get
-            Return GetBoolean("SecureDocumentSignatureEnabled", False)
-        End Get
-    End Property
-
     Public ReadOnly Property MailUploadProtRecipientsEnabled As Boolean
         Get
             Return GetBoolean("MailUploadProtRecipientsEnabled", False)
-        End Get
-    End Property
-
-    Public ReadOnly Property SecureDocumentVisibilities As ICollection(Of SecureDocumentVisibilityConfiguration)
-        Get
-            Return GetJson(Of ICollection(Of SecureDocumentVisibilityConfiguration))("SecureDocumentVisibilities", My.Resources.SecureDocumentVisibilities)
         End Get
     End Property
 
@@ -4172,30 +4109,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property ButtonSeriesTitle As String
         Get
             Return GetString("ButtonSeriesTitle", "Amministrazione aperta")
-        End Get
-    End Property
-
-    Public ReadOnly Property SecureDocumentWorkflowStatementVisibility As SecureDocumentWorkflowStatementVisibilityConfiguration
-        Get
-            Return GetJson(Of SecureDocumentWorkflowStatementVisibilityConfiguration)("SecureDocumentWorkflowStatementVisibility", My.Resources.SecureDocumentWorkflowStatementVisibility)
-        End Get
-    End Property
-
-    Public ReadOnly Property SecurePaperServiceId As Integer
-        Get
-            Return GetInteger("SecurePaperServiceId", -1)
-        End Get
-    End Property
-
-    Public ReadOnly Property SecurePaperCertificateThumbprint As String
-        Get
-            Return GetString("SecurePaperCertificateThumbprint", String.Empty)
-        End Get
-    End Property
-
-    Public ReadOnly Property SecurePaperServiceUrl As String
-        Get
-            Return GetString("SecurePaperServiceUrl", String.Empty)
         End Get
     End Property
 
@@ -4244,7 +4157,7 @@ Public Class ProtocolEnv
 
     Public ReadOnly Property ScannerLightRestEnabled As Boolean
         Get
-            Return GetBoolean("ScannerLightRestEnabled", False)
+            Return GetBoolean("ScannerLightRestEnabled", True)
         End Get
     End Property
 
@@ -4269,6 +4182,16 @@ Public Class ProtocolEnv
     Public ReadOnly Property TransparentManagerGroups As String
         Get
             Return GetString("TransparentManagerGroups", String.Empty)
+        End Get
+    End Property
+    Public ReadOnly Property ProcessesViewsReadableGroups As String
+        Get
+            Return GetString("ProcessesViewsReadableGroups", String.Empty)
+        End Get
+    End Property
+    Public ReadOnly Property ProcessesViewsManageableGroups As String
+        Get
+            Return GetString("ProcessesViewsManageableGroups", String.Empty)
         End Get
     End Property
 
@@ -4344,7 +4267,7 @@ Public Class ProtocolEnv
 
     Public ReadOnly Property MultiTenantEnabled As Boolean
         Get
-            Return GetBoolean("MultiTenantEnabled", False)
+            Return GetBoolean("MultiTenantEnabled", True)
         End Get
     End Property
 
@@ -4377,9 +4300,9 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property WorkflowLocation As Integer
+    Public ReadOnly Property WorkflowLocation As Integer?
         Get
-            Return GetInteger("WorkflowLocation", -1)
+            Return GetNullableInt("WorkflowLocation")
         End Get
     End Property
 
@@ -4420,9 +4343,9 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property CurrentUserEMailSenderEnabled As Boolean
+    Public ReadOnly Property EmailSenderDescriptionEnabled As Boolean
         Get
-            Return GetBoolean("CurrentUserEMailSenderEnabled", True)
+            Return GetBoolean("EmailSenderDescriptionEnabled", True)
         End Get
     End Property
 
@@ -4500,7 +4423,7 @@ Public Class ProtocolEnv
 
     Public ReadOnly Property ProcessEnabled As Boolean
         Get
-            Return GetBoolean("ProcessEnabled", False)
+            Return GetBoolean("ProcessEnabled", False) AndAlso Not FascicleContainerEnabled
         End Get
     End Property
 
@@ -4521,6 +4444,7 @@ Public Class ProtocolEnv
             Return GetBoolean("ForceDeleteCollaborationEnabled", False)
         End Get
     End Property
+
     Public ReadOnly Property CheckResolutionCollaborationOriginEnabled As Boolean
         Get
             Return GetBoolean("CheckResolutionCollaborationOriginEnabled", False)
@@ -4537,12 +4461,195 @@ Public Class ProtocolEnv
             Return GetJson(Of IDictionary(Of String, String))("SearchProtocolRblDefaultValue", My.Resources.SearchProtocolRblDefaultValue)
         End Get
     End Property
+    Public ReadOnly Property RemoteSignDelegateEnabled As Boolean
+        Get
+            Return GetBoolean("RemoteSignDelegateEnabled", False)
+        End Get
+    End Property
+
+
+    Public ReadOnly Property ProtocolPrintEnabled As Boolean
+        Get
+            Return GetBoolean("ProtocolPrintEnabled", True)
+        End Get
+    End Property
+
+    Public ReadOnly Property TenantAOOJournalLocations As IDictionary(Of Guid, Integer)
+        Get
+            Return GetJson(Of IDictionary(Of Guid, Integer))("TenantAOOJournalLocations", "{}")
+        End Get
+    End Property
+
+    Public ReadOnly Property ShibbolethEnabled As Boolean
+        Get
+            Return GetBoolean("ShibbolethEnabled", False)
+        End Get
+    End Property
+    Public ReadOnly Property ForceCollaborationSignDateEnabled As Boolean
+        Get
+            Return GetBoolean("ForceCollaborationSignDateEnabled", False)
+        End Get
+    End Property
+    Public ReadOnly Property InvoiceDashboardFilterByTenantEnabled As Boolean
+        Get
+            Return GetBoolean("InvoiceDashboardFilterByTenantEnabled", False)
+        End Get
+    End Property
+    Public ReadOnly Property InsertDefaultBodySignEmailEnabled As Boolean
+        Get
+            Return GetBoolean("InsertDefaultBodySignEmailEnabled", False)
+        End Get
+    End Property
+    Public ReadOnly Property SendEmailProtocolHighlightRemovedEnabled As Boolean
+        Get
+            Return GetBoolean("SendEmailProtocolHighlightRemovedEnabled", False)
+        End Get
+    End Property
+    Public ReadOnly Property SendEmailProtocolHighlightEmailContent As String
+        Get
+            Return GetString("SendEmailProtocolHighlightEmailContent", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property AnagraficaAUSUrl As String
+        Get
+            Return GetString("AnagraficaAUSUrl", "http://ds-aus.pa.cis:8080/aus/soggetti")
+        End Get
+    End Property
+
+    Public ReadOnly Property AUSIntegrationEnabled As Boolean
+        Get
+            Return GetBoolean("AUSIntegrationEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property AUSUser As String
+        Get
+            Return GetString("AUSUser", "dgroove")
+        End Get
+    End Property
+
+    Public ReadOnly Property AUSPassword As String
+        Get
+            Return GetString("AUSPassword", "aster001")
+        End Get
+    End Property
+
+    Public ReadOnly Property FulltextEnabled As Boolean
+        Get
+            Return GetBoolean("FulltextEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property ContactAOOParentId As Integer
+        Get
+            Return GetShort("ContactAOOParentId", -1)
+        End Get
+    End Property
+
+    Public ReadOnly Property SecurityGroupAutogenerateEnabled As Boolean
+        Get
+            Return GetBoolean("SecurityGroupAutogenerateEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property SignatureTemplate As String
+        Get
+            Dim xml As String = GetString("SignatureTemplate", "<Label><Text>(SIGNATURE) Pagina (pagina) di (pagine)</Text><Font Face=""Arial"" Size=""12"" Style=""Bold"" /></Label>")
+            Dim xmlDocument As XmlDocument = New XmlDocument()
+            xmlDocument.LoadXml(xml)
+            Return xmlDocument.OuterXml
+        End Get
+    End Property
+
+    Public ReadOnly Property SETIIntegrationEnabled As Boolean
+        Get
+            Return GetBoolean("SETIIntegrationEnabled", False)
+        End Get
+    End Property
+    Public ReadOnly Property AnagraficaANASUrl As String
+        Get
+            Return GetString("AnagraficaAnAsUrl", "http://api.ausl.pc.it/anas/v1/ascon")
+        End Get
+    End Property
+
+    Public ReadOnly Property ContactRoleGenerateEnabled As Boolean
+        Get
+            Return GetBoolean("ContactRoleGenerateEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property CollaborationTemplateRequired As Boolean
+        Get
+            Return GetBoolean("CollaborationTemplateRequired", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property CollaborationProposerAsSignerEnabled As Boolean
+        Get
+            Return GetBoolean("CollaborationProposerAsSignerEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property MenuRightEnabled As Boolean
+        Get
+            Return GetBoolean("MenuRightEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property MassiveChangeProtocolContainerEnabled As Boolean
+        Get
+            Return GetBoolean("MassiveChangeProtocolContainerEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property CollaborationMultiSignDocumentsDefaultFlagged As Boolean
+        Get
+            Return GetBoolean("CollaborationMultiSignDocumentsDefaultFlagged", False)
+        End Get
+    End Property
+    Public ReadOnly Property FascicleAutoCloseThresholdDays As Integer
+        Get
+            Return GetShort("FascicleAutoCloseThresholdDays", 60)
+        End Get
+    End Property
+
+    Public ReadOnly Property FascicleAutoCloseWarningThresholdDays As Integer
+        Get
+            Return GetShort("FascicleAutoCloseWarningThresholdDays", 30)
+        End Get
+    End Property
+
+    Public ReadOnly Property MultiAOOFascicleEnabled As Boolean
+        Get
+            Return GetBoolean("MultiAOOFascicleEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property WorkflowStateSummaryEnabled As Boolean
+        Get
+            Return GetBoolean("WorkflowStateSummaryEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property DossierSendToSecretariesEnabled As Boolean
+        Get
+            Return GetBoolean("DossierSendToSecretariesEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property DossierTypologyEnabled As Boolean
+        Get
+            Return GetBoolean("DossierTypologyEnabled", False)
+        End Get
+    End Property
+
 #End Region
 
 #Region " Methods "
 
     Function IsPosteWebEnabled() As Boolean
-        Return IsRaccomandataEnabled() OrElse IsLetteraEnabled() OrElse IsTelgrammaEnabled()
+        Return (IsRaccomandataEnabled() OrElse IsLetteraEnabled() OrElse IsTelgrammaEnabled()) AndAlso Not TNoticeEnabled
     End Function
 
     Function IsProtocolRecoverEnabled() As Boolean
@@ -4554,6 +4661,10 @@ Public Class ProtocolEnv
     End Function
     Function PECMailBoxPasswordEncriptionEnabled() As Boolean
         Return Not String.IsNullOrEmpty(PasswordEncryptionKey) AndAlso PasswordEncryptionKey.Length = 32
+    End Function
+
+    Function IsIPAAUSEnabled() As Boolean
+        Return Not String.IsNullOrEmpty(LdapIndicePa) OrElse AUSIntegrationEnabled
     End Function
 #End Region
 

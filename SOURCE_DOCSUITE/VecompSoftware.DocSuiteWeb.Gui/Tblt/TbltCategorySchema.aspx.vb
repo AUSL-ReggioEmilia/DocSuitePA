@@ -70,7 +70,7 @@ Public Class TbltCategorySchema
 
 #Region "Methods"
     Private Sub InitializePage()
-        If Not (CommonShared.HasGroupTblCategoryRight AndAlso DocSuiteContext.IsFullApplication) Then
+        If Not CommonShared.HasGroupTblCategoryRight Then
             Throw New DocSuiteException("Utente non autorizzato alla visualizzazione della Versione del Classificatore.")
         End If
         LoadCategorySchemas()

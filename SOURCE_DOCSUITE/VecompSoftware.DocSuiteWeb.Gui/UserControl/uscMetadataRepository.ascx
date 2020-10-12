@@ -30,6 +30,13 @@
         <telerik:RadToolBarButton Text="Cerca" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
     </Items>
 </telerik:RadToolBar>
+<telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%">
+    <Items>
+        <telerik:RadToolBarButton ToolTip="Aggiungi" Value="create" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+        <telerik:RadToolBarButton ToolTip="Modifica" Value="modify" Text="Modifica" Enabled="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+        <telerik:RadToolBarButton runat="server" ToolTip="Elimina" Value="delete" Text="Elimina" Enabled="false" Visible="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
+    </Items>
+</telerik:RadToolBar>
 
 <telerik:RadPageLayout runat="server" ID="pageContentDiv" Width="100%" HtmlTag="Div">
     <Rows>

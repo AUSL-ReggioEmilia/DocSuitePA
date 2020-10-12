@@ -1,11 +1,11 @@
-Imports System.Collections.Generic
-Imports VecompSoftware.DocSuiteWeb.Facade
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Tenants
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.OData
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
 
 Partial Public Class uscFascGrid
     Inherits DocSuite2008BaseControl
@@ -23,10 +23,11 @@ Partial Public Class uscFascGrid
     Public Const COLUMN_RIF As String = "FascicleContacts.Contact.Description"
     Public Const COLUMN_MANAGER As String = "Manager"
     Public Const COLUMN_OBJECT As String = "FascicleObject"
+    Public Const COLUMN_LASTCHANGEDDATE As String = "LastChangedDate"
 
     Public Const COLUMN_UNREAD As String = "cUnread"
     Private _currentODataFacade As ODataFacade
-
+    Private _currentTenantFinder As TenantFinder
 #End Region
 
 #Region " Properties "
@@ -157,6 +158,16 @@ Partial Public Class uscFascGrid
         End Set
     End Property
 
+    ''' <summary> Visualizza/Nasconde colonna Data dell'ultima modifica </summary>
+    Public Property ColumnLastChangedDateVisible() As Boolean
+        Get
+            Return gvFascicles.Columns.FindByUniqueName(COLUMN_LASTCHANGEDDATE).Visible
+        End Get
+        Set(ByVal value As Boolean)
+            gvFascicles.Columns.FindByUniqueName(COLUMN_LASTCHANGEDDATE).Visible = value
+        End Set
+    End Property
+
     Private ReadOnly Property CurrentODataFacade As ODataFacade
         Get
             If _currentODataFacade Is Nothing Then
@@ -165,6 +176,17 @@ Partial Public Class uscFascGrid
             Return _currentODataFacade
         End Get
     End Property
+
+    Private ReadOnly Property CurrentTenantFinder As TenantFinder
+        Get
+            If _currentTenantFinder Is Nothing Then
+                _currentTenantFinder = New TenantFinder(DocSuiteContext.Current.CurrentTenant)
+            End If
+
+            Return _currentTenantFinder
+        End Get
+    End Property
+
 #End Region
 
 #Region " Events "
@@ -173,6 +195,15 @@ Partial Public Class uscFascGrid
         If Not IsPostBack Then
 
         End If
+    End Sub
+
+    Private Sub gvFascicles_PreRender(sender As Object, e As EventArgs) Handles gvFascicles.PreRender
+        WebAPIImpersonatorFacade.ImpersonateFinder(CurrentTenantFinder, AddressOf SetTenantAOONameColumnVisibility)
+    End Sub
+
+    Private Sub SetTenantAOONameColumnVisibility(impersonationType As ImpersonationType, finder As TenantFinder)
+        Dim tenantsCount As Integer = finder.Count()
+        gvFascicles.MasterTableView.GetColumn("TenantAOOName").Visible = ProtocolEnv.ProcessEnabled AndAlso tenantsCount > 1
     End Sub
 
     Private Sub gvFascicles_ItemDataBound(sender As Object, e As GridItemEventArgs) Handles gvFascicles.ItemDataBound

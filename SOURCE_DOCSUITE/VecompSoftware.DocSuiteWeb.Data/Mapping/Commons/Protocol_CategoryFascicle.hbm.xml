@@ -17,6 +17,9 @@
     <property name="DSWEnvironment">
       <column name="DSWEnvironment" />
     </property>
+    <property name="CustomActions">
+      <column name="CustomActions" />
+    </property>
     <property name="LastChangedDate">
       <column name="LastChangedDate" not-null="false" />
     </property>

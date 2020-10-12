@@ -38,7 +38,7 @@
             </MasterTableView>
             <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" />
             <ClientSettings AllowDragToGroup="True" />
-            <SortingSettings SortToolTip="Ordina" SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Decrescente" />
+            <SortingSettings SortToolTip="Ordina" SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine Decrescente" />
             <ExportSettings FileName="Esportazione">
                 <Pdf PageHeight="297mm" PageWidth="210mm" PaperSize="A4" />
                 <Excel Format="ExcelML" />

@@ -17,10 +17,10 @@ Public Class NHibernateProtocolContactManualDao
         MyBase.New()
     End Sub
 
-    Public Function GetByComunicationType(ByVal year As Short, ByVal number As Integer, ByVal type As String) As IList(Of ProtocolContactManual)
+    Public Function GetByComunicationType(uniqueIdProtocol As Guid, ByVal type As String) As IList(Of ProtocolContactManual)
         criteria = NHibernateSession.CreateCriteria(Of ProtocolContactManual)()
-        criteria.Add(Restrictions.Eq("Id.Year", year))
-        criteria.Add(Restrictions.Eq("Id.Number", number))
+        criteria.CreateAlias("Protocol", "P", SqlCommand.JoinType.InnerJoin)
+        criteria.Add(Restrictions.Eq("P.Id", uniqueIdProtocol))
         If Not String.IsNullOrEmpty(type) Then
             criteria.Add(Restrictions.Eq("ComunicationType", type))
         End If
@@ -30,10 +30,10 @@ Public Class NHibernateProtocolContactManualDao
         Return criteria.List(Of ProtocolContactManual)()
     End Function
 
-    Public Function GetCountByProtocol(ByVal year As Short, ByVal number As Integer, ByVal comunicationType As String) As Integer
+    Public Function GetCountByProtocol(uniqueIdProtocol As Guid, ByVal comunicationType As String) As Integer
         criteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.Eq("Id.Year", year))
-        criteria.Add(Restrictions.Eq("Id.Number", number))
+        criteria.CreateAlias("Protocol", "P", SqlCommand.JoinType.InnerJoin)
+        criteria.Add(Restrictions.Eq("P.Id", uniqueIdProtocol))
         If (Not String.IsNullOrEmpty(comunicationType)) Then
             criteria.Add(Restrictions.Eq("ComunicationType", comunicationType))
         End If
@@ -79,5 +79,13 @@ Public Class NHibernateProtocolContactManualDao
         criteria.SetResultTransformer(New AliasToBeanResultTransformer(GetType(ProtocolContactJournalDTO)))
 
         Return criteria.List(Of ProtocolContactJournalDTO)()
+    End Function
+
+    Public Function GetByProtocolAndIncremental(uniqueIdProtocol As Guid, incremental As Integer) As ProtocolContactManual
+        criteria = NHibernateSession.CreateCriteria(persitentType)
+        criteria.CreateAlias("Protocol", "P", SqlCommand.JoinType.InnerJoin)
+        criteria.Add(Restrictions.Eq("P.Id", uniqueIdProtocol))
+        criteria.Add(Restrictions.Eq("ComunicationType", incremental))
+        Return criteria.UniqueResult(Of ProtocolContactManual)()
     End Function
 End Class

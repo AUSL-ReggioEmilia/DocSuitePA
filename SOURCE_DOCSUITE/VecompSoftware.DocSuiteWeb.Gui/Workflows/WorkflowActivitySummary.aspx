@@ -3,6 +3,7 @@
 <%@ Register Src="~/UserControl/uscDocumentUpload.ascx" TagName="documentupload" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="ContattiSel" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscUploadDocumentRest.ascx" TagName="uscUploadDocumentRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 
 <asp:Content ContentPlaceHolderID="cphHeader" runat="server">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock" EnableViewState="false">
@@ -26,6 +27,7 @@
 
                     workflowActivitySummary.treeProponenteId = "<%= uscProponente.TreeViewContact.ClientID %>"
                     workflowActivitySummary.treeDestinatariId = "<%= uscDestinatari.TreeViewContact.ClientID %>"
+                    workflowActivitySummary.logTreeId = "<%= logTree.ClientID%>";
 
                     workflowActivitySummary.cmdDocumentsId = "<%= cmdDocuments.ClientID%>";
                     workflowActivitySummary.cmdManageActivityId = "<%= cmdManageActivity.ClientID%>";
@@ -45,12 +47,15 @@
                     workflowActivitySummary.uscUploadDocumentiId = "<%=uscUploadDocumenti.ClientID%>";
                     workflowActivitySummary.bindDocument = "<%=uscUploadDocumenti.uploadDocumentComponent.ClientID%>";
                     workflowActivitySummary.documentSection = document.getElementById("docUpload");
+                    workflowActivitySummary.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
 
                     workflowActivitySummary.initialize();
                 });
             });
         </script>
     </telerik:RadScriptBlock>
+
+    <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
 
     <telerik:RadPageLayout runat="server" ID="attivitaContainer" Width="100%" HtmlTag="Div">
         <Rows>
@@ -250,13 +255,28 @@
                 </telerik:LayoutRow>
             </Rows>
         </telerik:RadPageLayout>
+
+        <telerik:RadPageLayout runat="server" ID="logContainer" Width="100%" HtmlTag="Div">
+            <Rows>
+                <telerik:LayoutRow ID="logger">
+                    <Content>
+                        <div class="dsw-panel">
+                            <div class="dsw-panel-title">
+                                Collegamenti
+                            </div>
+                                <telerik:RadTreeView ID="logTree" runat="server" Width="100%" />         
+                        </div>
+                    </Content>
+                </telerik:LayoutRow>
+            </Rows>
+        </telerik:RadPageLayout>
     </asp:Panel>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="cphFooter" ID="footerContent">
     <telerik:RadButton Text="Documenti" runat="server" ID="cmdDocuments" AutoPostBack="false" />
     <telerik:RadButton Text="Gestisci" runat="server" ID="cmdManageActivity" AutoPostBack="false" />
-    <telerik:RadButton Text="Approva" runat="server" ID="cmdApprove" AutoPostBack="false" />
-    <telerik:RadButton Text="Rifiuta" runat="server" ID="cmdRefuse" AutoPostBack="false" />
-    <telerik:RadButton Text="Firma digitale" runat="server" ID="cmdSign" AutoPostBack="false" />
-    <telerik:RadButton Text="Completa attività" runat="server" ID="cmdCompleteActivity" AutoPostBack="false" />
+    <telerik:RadButton Text="Approva" runat="server" ID="cmdApprove" AutoPostBack="false" Style="display:none;"/>
+    <telerik:RadButton Text="Rifiuta" runat="server" ID="cmdRefuse" AutoPostBack="false" Style="display:none;"/>
+    <telerik:RadButton Text="Firma digitale" runat="server" ID="cmdSign" AutoPostBack="false" Style="display:none;"/>
+    <telerik:RadButton Text="Completa attività" runat="server" ID="cmdCompleteActivity" AutoPostBack="false" Style="display:none;"/>
 </asp:Content>

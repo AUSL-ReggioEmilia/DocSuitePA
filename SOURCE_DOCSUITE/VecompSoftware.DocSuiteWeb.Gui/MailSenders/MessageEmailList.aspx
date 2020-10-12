@@ -100,7 +100,7 @@
         <ClientSettings>
             <Selecting AllowRowSelect="True" CellSelectionMode="None" UseClientSelectColumnOnly="True" EnableDragToSelectRows="False" />
         </ClientSettings>
-        <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente" SortToolTip="Ordina" />
+        <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente" SortToolTip="Ordina" />
     </DocSuite:BindGrid>
     </div>
 </asp:Content>

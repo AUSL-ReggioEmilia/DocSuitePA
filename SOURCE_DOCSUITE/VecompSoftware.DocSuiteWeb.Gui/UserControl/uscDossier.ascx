@@ -1,8 +1,9 @@
 ﻿<%@ Control Language="vb" AutoEventWireup="false" CodeBehind="uscDossier.ascx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.uscDossier" %>
-<%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="uscContatti" TagPrefix="uc" %>
-<%@ Register Src="~/UserControl/uscSettori.ascx" TagName="uscSettori" TagPrefix="uc" %>
+<%@ Register Src="~/UserControl/uscContattiSelRest.ascx" TagName="uscContattiSelRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscRoleRest.ascx" TagName="uscRoleRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
-<%@ Register Src="~/UserControl/uscDynamicMetadataSummaryClient.ascx" TagName="uscDynamicMetadataSummaryClient" TagPrefix="uc" %>
+<%@ Register Src="~/UserControl/uscDynamicMetadataSummaryRest.ascx" TagName="uscDynamicMetadataSummaryRest" TagPrefix="uc" %>
+<%@ Register Src="~/UserControl/uscCategoryRest.ascx" TagName="uscCategoryRest" TagPrefix="usc" %>
 
 <telerik:RadScriptBlock runat="server" EnableViewState="false">
     <script type="text/javascript">
@@ -26,9 +27,15 @@
                 uscDossier.lblWorkflowProposerRoleId = "<%= lblWorkflowProposerRole.ClientID %>";
                 uscDossier.rowWorkflowProposerId = "<%= rowWorkflowProposer.ClientID %>";
                 uscDossier.workflowActivityId = "<%= CurrentWorkflowActivityId%>";
-                uscDossier.uscDynamicMetadataSummaryClientId = "<%= uscDynamicMetadataSummaryClient.PageContent.ClientID%>";
+                uscDossier.uscDynamicMetadataSummaryRestId = "<%= uscDynamicMetadataSummaryRest.PageContent.ClientID%>";
                 uscDossier.metadataRepositoryEnabled = JSON.parse("<%=ProtocolEnv.MetadataRepositoryEnabled%>".toLowerCase());
                 uscDossier.rowMetadataId = "<%= rowMetadata.ClientID%>";
+                uscDossier.uscRoleRestId = "<%=uscRoleRest.TableContentControl.ClientID%>";
+                uscDossier.uscResponsableRoleRestId = "<%=uscResponsableRoleRest.TableContentControl.ClientID%>";
+                uscDossier.uscContattiSelRestId = "<%=uscContattiSelRest.PanelContent.ClientID%>";
+                uscDossier.uscCategoryRestId = "<%= uscCategoryRest.MainContent.ClientID %>";
+                uscDossier.lblDossierTypeId = "<%= lblDossierType.ClientID %>";
+                uscDossier.lblDossierStatusId = "<%= lblDossierStatus.ClientID %>";
                 uscDossier.initialize();
             });
         });
@@ -67,6 +74,22 @@
                                 <telerik:LayoutRow HtmlTag="Div">
                                     <Columns>
                                         <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
+                                            <b>Tipologia:</b>
+                                        </telerik:LayoutColumn>
+                                        <telerik:LayoutColumn Span="2" CssClass="t-col-left-padding">
+                                            <asp:Label ID="lblDossierType" runat="server"></asp:Label>
+                                        </telerik:LayoutColumn>
+                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
+                                            <b>Stato:</b>
+                                        </telerik:LayoutColumn>
+                                        <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding">
+                                            <asp:Label ID="lblDossierStatus" runat="server"></asp:Label>
+                                        </telerik:LayoutColumn>
+                                    </Columns>
+                                </telerik:LayoutRow>
+                                <telerik:LayoutRow HtmlTag="Div">
+                                    <Columns>
+                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
                                             <b>Data Apertura:</b>
                                         </telerik:LayoutColumn>
                                         <telerik:LayoutColumn Span="2" CssClass="t-col-left-padding">
@@ -74,21 +97,6 @@
                                         </telerik:LayoutColumn>
                                     </Columns>
                                 </telerik:LayoutRow>
-                            </Rows>
-                        </telerik:RadPageLayout>
-                    </div>
-                </div>
-            </Content>
-        </telerik:LayoutRow>
-        <telerik:LayoutRow>
-            <Content>
-                <div class="dsw-panel">
-                    <div class="dsw-panel-title">
-                        Oggetto
-                    </div>
-                    <div class="dsw-panel-content">
-                        <telerik:RadPageLayout runat="server" HtmlTag="Div" Width="100%">
-                            <Rows>
                                 <telerik:LayoutRow HtmlTag="Div">
                                     <Columns>
                                         <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
@@ -116,16 +124,26 @@
             </Content>
         </telerik:LayoutRow>
         <telerik:LayoutRow ID="rowContact" runat="server" HtmlTag="Div">
+            <Content>                
+                    <div class="dsw-panel">
+                        <div class="dsw-panel-title">
+                            Riferimento
+                        </div>
+
+                        <div class="dsw-panel-content">
+                            <usc:uscContattiSelRest ID="uscContattiSelRest" runat="server" ToolbarVisible="false" Required="false" />
+                        </div>
+                    </div>
+            </Content>
+        </telerik:LayoutRow>
+        <telerik:LayoutRow ID="rowResponsableRoles" runat="server">
             <Content>
-                <uc:uscContatti ButtonDeleteVisible="false" ButtonImportVisible="false" ButtonManualVisible="false" ButtonPropertiesVisible="true"
-                    ButtonSelectAdamVisible="false" ButtonSelectDomainVisible="false" ButtonSelectOChartVisible="false" ButtonSelectVisible="false"
-                    Caption="Riferimento" EnableCompression="true" EnableCC="false" ID="uscContatto" IsRequired="false" Multiple="true"
-                    MultiSelect="true" runat="server" Type="Dossier" />
+                <usc:uscRoleRest runat="server" ID="uscResponsableRoleRest" Caption="Settore responsabile" Required="false" ReadOnlyMode="true"  />
             </Content>
         </telerik:LayoutRow>
         <telerik:LayoutRow ID="rowRoles" runat="server">
             <Content>
-                <uc:uscSettori ID="uscSettori" ReadOnly="true" runat="server" Required="false" Caption="Settore Responsabile" />
+                <usc:uscRoleRest runat="server" ID="uscRoleRest" Caption="Settori autorizzati" Required="false" ReadOnlyMode="true"  />
             </Content>
         </telerik:LayoutRow>
         <telerik:LayoutRow ID="rowGeneral">
@@ -139,46 +157,42 @@
                             <Rows>
                                 <telerik:LayoutRow HtmlTag="Div">
                                     <Columns>
-                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right col-dsw-16-important">
+                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
                                             <b>Contenitore:</b>
                                         </telerik:LayoutColumn>
-                                        <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding col-dsw-34-important">
+                                        <telerik:LayoutColumn Span="9" CssClass="t-col-left-padding">
                                             <asp:Label ID="lblContainer" runat="server"></asp:Label>
                                         </telerik:LayoutColumn>
                                     </Columns>
                                 </telerik:LayoutRow>
                                 <telerik:LayoutRow>
                                     <Columns>
-                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right col-dsw-16-important">
+                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
                                             <b>Creato da:</b>
                                         </telerik:LayoutColumn>
-                                        <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding col-dsw-34-important">
+                                        <telerik:LayoutColumn Span="2" CssClass="t-col-left-padding">
                                             <asp:Label ID="lblRegistrationUser" runat="server"></asp:Label>
                                         </telerik:LayoutColumn>
-                                    </Columns>
-                                </telerik:LayoutRow>
-                                <telerik:LayoutRow>
-                                    <Columns>
-                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right col-dsw-16-important">
+                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
                                             <b>Modificato da:</b>
                                         </telerik:LayoutColumn>
-                                        <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding col-dsw-34-important">
+                                        <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding">
                                             <asp:Label ID="lblModifiedUser" runat="server"></asp:Label>
                                         </telerik:LayoutColumn>
                                     </Columns>
                                 </telerik:LayoutRow>
                                 <telerik:LayoutRow HtmlTag="Div" ID="rowWorkflowProposer" runat="server">
                                     <Columns>
-                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right col-dsw-16-important">
+                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
                                             <b>Richiedente flusso:</b>
                                         </telerik:LayoutColumn>
-                                        <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding col-dsw-34-important">
+                                        <telerik:LayoutColumn Span="2" CssClass="t-col-left-padding">
                                             <asp:Label ID="lblWorkflowProposerRole" runat="server"></asp:Label>
                                         </telerik:LayoutColumn>
-                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right col-dsw-16-important">
+                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
                                             <b>Flusso in carico a:</b>
                                         </telerik:LayoutColumn>
-                                        <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding col-dsw-34-important">
+                                        <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding">
                                             <asp:Label ID="lblWorkflowHandlerUser" runat="server"></asp:Label>
                                         </telerik:LayoutColumn>
                                     </Columns>
@@ -189,14 +203,19 @@
                 </div>
             </Content>
         </telerik:LayoutRow>
+        <telerik:LayoutRow ID="rowCategory" runat="server">
+            <Content>
+                <usc:uscCategoryRest runat="server" ID="uscCategoryRest" IsRequired="false" />
+            </Content>
+        </telerik:LayoutRow>
         <telerik:LayoutRow ID="rowMetadata" runat="server">
             <Content>
                 <div class="dsw-panel">
                     <div class="dsw-panel-title">
                         Metadati
                     </div>
-                    <div class="dsw-panel-content" style="width:98%">
-                        <uc:uscDynamicMetadataSummaryClient runat="server" ID="uscDynamicMetadataSummaryClient"></uc:uscDynamicMetadataSummaryClient>
+                    <div class="dsw-panel-content" style="width: 98%">
+                        <uc:uscDynamicMetadataSummaryRest runat="server" ID="uscDynamicMetadataSummaryRest"></uc:uscDynamicMetadataSummaryRest>
                     </div>
                 </div>
             </Content>

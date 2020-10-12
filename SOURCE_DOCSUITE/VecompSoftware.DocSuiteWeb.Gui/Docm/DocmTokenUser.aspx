@@ -27,7 +27,7 @@
             <PagerStyle AlwaysVisible="True" Mode="NextPrevAndNumeric" Position="TopAndBottom" ShowPagerText="False"  />
             <ClientSettings AllowDragToGroup="True">
             </ClientSettings>
-            <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente" SortToolTip="Ordina" />
+            <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente" SortToolTip="Ordina" />
         </DocSuite:BindGrid>
     </div>
 </asp:Content>

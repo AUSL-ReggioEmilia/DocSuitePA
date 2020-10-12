@@ -110,7 +110,7 @@ class DossierFolderLinkFascicle extends DossierBase {
     * @param eventArgs
     * @returns
     */
-    btmConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btmConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this._loadingPanel.show(this.currentPageId);
         this._btnConferma.set_enabled(false);
 

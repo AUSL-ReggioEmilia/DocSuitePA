@@ -41,6 +41,42 @@ Partial Public Class uscFascicolo
     Protected WithEvents pageContent As Global.Telerik.Web.UI.RadPageLayout
 
     '''<summary>
+    '''fascDetails control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fascDetails As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''fascDetailsPane control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fascDetailsPane As Global.Telerik.Web.UI.RadPageLayout
+
+    '''<summary>
+    '''fascSummaryColumn control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fascSummaryColumn As Global.Telerik.Web.UI.LayoutColumn
+
+    '''<summary>
+    '''summaryContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents summaryContent As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''uscFascSummary control.
     '''</summary>
     '''<remarks>
@@ -48,6 +84,24 @@ Partial Public Class uscFascicolo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscFascSummary As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascSummary
+
+    '''<summary>
+    '''customActionsColumn control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents customActionsColumn As Global.Telerik.Web.UI.LayoutColumn
+
+    '''<summary>
+    '''uscCustomActionsRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscCustomActionsRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscCustomActionsRest
 
     '''<summary>
     '''uscResponsabili control.
@@ -77,24 +131,6 @@ Partial Public Class uscFascicolo
     Protected WithEvents uscAuthorizations As Global.VecompSoftware.DocSuiteWeb.Gui.uscAuthorizations
 
     '''<summary>
-    '''rowRoles control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rowRoles As Global.Telerik.Web.UI.LayoutRow
-
-    '''<summary>
-    '''uscSettori control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscSettori As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-
-    '''<summary>
     '''rowDocumentUnitReference control.
     '''</summary>
     '''<remarks>
@@ -113,22 +149,22 @@ Partial Public Class uscFascicolo
     Protected WithEvents uscDocumentUnitReferences As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUnitReferences
 
     '''<summary>
-    '''rowAccountedRoles control.
+    '''rowRoles control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents rowAccountedRoles As Global.Telerik.Web.UI.LayoutRow
+    Protected WithEvents rowRoles As Global.Telerik.Web.UI.LayoutRow
 
     '''<summary>
-    '''uscSettoriAccounted control.
+    '''uscRole control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscSettoriAccounted As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
+    Protected WithEvents uscRole As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
 
     '''<summary>
     '''btnExpandDynamicMetadata control.
@@ -149,13 +185,13 @@ Partial Public Class uscFascicolo
     Protected WithEvents dynamicMetadataContent As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 
     '''<summary>
-    '''uscDynamicMetadata control.
+    '''uscDynamicMetadataSummaryRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscDynamicMetadata As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadata
+    Protected WithEvents uscDynamicMetadataSummaryRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadataSummaryRest
 
     '''<summary>
     '''pnlFoldersAndUD control.

@@ -14,7 +14,7 @@ Public Class NHibernateFascicleDocumentUnitsDao
 
     Function GetByProtocol(ByVal protocol As Protocol) As IList(Of FascicleDocumentUnit)
         criteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.Eq("IdDocumentUnit", protocol.UniqueId))
+        criteria.Add(Restrictions.Eq("IdDocumentUnit", protocol.Id))
         Return criteria.List(Of FascicleDocumentUnit)()
     End Function
 

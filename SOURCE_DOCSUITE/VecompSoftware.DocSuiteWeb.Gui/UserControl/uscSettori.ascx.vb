@@ -645,7 +645,7 @@ Partial Public Class uscSettori
         If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso arguments.Length > 2 AndAlso arguments(1).Eq("User") Then
             Dim localArg As String = HttpUtility.HtmlDecode(arguments(2))
             Dim contact As Contact = JsonConvert.DeserializeObject(Of Contact)(localArg)
-            AddUserAuthorization(contact.FullDescription(False), contact.Code, localArg, False, Nothing)
+            AddUserAuthorization(contact.FullDescription(False), contact.Code, localArg, False, Nothing, ProtocolUserType.Authorization, String.Empty)
             Exit Sub
         End If
 
@@ -1141,7 +1141,7 @@ Partial Public Class uscSettori
     End Sub
 
     Private Sub AddUserAuthorization(fullDescription As String, fullAccount As String, manualContact As String, showRegistrationDate As Boolean,
-                                     auhtorizationDate As DateTimeOffset?)
+                                     auhtorizationDate As DateTimeOffset?, userType As ProtocolUserType, authorizerDescription As String)
         Dim foundNode As RadTreeNode = RadTreeSettori.Nodes.FindNodeByValue(fullAccount)
         If foundNode IsNot Nothing Then
             Exit Sub
@@ -1151,7 +1151,11 @@ Partial Public Class uscSettori
         node.Text = fullDescription
 
         If showRegistrationDate AndAlso auhtorizationDate.HasValue Then
-            node.Text = String.Concat(node.Text, " - autorizzato il ", String.Format("{0:dd/MM/yyyy}", auhtorizationDate.Value))
+            If userType.Equals(ProtocolUserType.Highlight) Then
+                node.Text = $"{node.Text} - messo in evidenza da {authorizerDescription} il {auhtorizationDate:dd/MM/yyyy}"
+            Else
+                node.Text = String.Concat(node.Text, " - autorizzato il ", String.Format("{0:dd/MM/yyyy}", auhtorizationDate.Value))
+            End If
         End If
 
         node.Value = fullAccount
@@ -1262,9 +1266,9 @@ Partial Public Class uscSettori
             'SetRoleAs(RoleAction.Added, protRole.Role.Id)
         Next
 
-        If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso users IsNot Nothing Then
+        If (DocSuiteContext.Current.SimplifiedPrivacyEnabled OrElse ProtocolEnv.ProtocolHighlightEnabled) AndAlso users IsNot Nothing Then
             For Each user As ProtocolUser In users.OrderByDescending(Function(f) f.RegistrationDate)
-                AddUserAuthorization(GetUserDescription(user.Account), user.Account, Nothing, True, user.RegistrationDate)
+                AddUserAuthorization(GetUserDescription(user.Account), user.Account, Nothing, True, user.RegistrationDate, user.Type, GetUserDescription(user.RegistrationUser))
             Next
         End If
 
@@ -1318,7 +1322,7 @@ Partial Public Class uscSettori
 
         If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso SourceUsers IsNot Nothing AndAlso SourceUsers.Count > 0 Then
             For Each user As KeyValuePair(Of String, String) In SourceUsers
-                AddUserAuthorization(user.Value, user.Key, String.Empty, False, Nothing)
+                AddUserAuthorization(user.Value, user.Key, String.Empty, False, Nothing, ProtocolUserType.Authorization, String.Empty)
             Next
         End If
 
@@ -1739,7 +1743,7 @@ Partial Public Class uscSettori
         End If
 
         For Each pr As ProtocolRole In CurrentProtocol.Roles
-            If pr.Id.Id.Equals(roleId) Then
+            If pr.Role.Id.Equals(roleId) Then
                 Return pr
             End If
         Next
@@ -1800,22 +1804,10 @@ Partial Public Class uscSettori
         End If
 
         Dim roleUserNodeValue As String() = roleUserNode.Value.Split("|"c)
-
-        Dim pruk As New ProtocolRoleUserKey
-        pruk.Year = CurrentProtocol.Year
-        pruk.Number = CurrentProtocol.Number
-        pruk.IdRole = CType(roleUserNodeValue.GetValue(ProtocolRoleUserColumns.IdRole), Integer)
-        pruk.GroupName = CType(roleUserNodeValue.GetValue(ProtocolRoleUserColumns.GroupName), String)
-        pruk.UserName = CType(roleUserNodeValue.GetValue(ProtocolRoleUserColumns.UserName), String)
-
-        For Each pru As ProtocolRoleUser In CurrentProtocol.RoleUsers
-            If pru.Id.Equals(pruk) Then
-                Return True
-            End If
-        Next
-
-        Return False
-
+        Dim idRole As Integer = CType(roleUserNodeValue.GetValue(ProtocolRoleUserColumns.IdRole), Integer)
+        Dim groupName As String = CType(roleUserNodeValue.GetValue(ProtocolRoleUserColumns.GroupName), String)
+        Dim userName As String = CType(roleUserNodeValue.GetValue(ProtocolRoleUserColumns.UserName), String)
+        Return CurrentProtocol.RoleUsers.Any(Function(x) x.Role.Id = idRole AndAlso x.GroupName.Eq(groupName) AndAlso x.UserName.Eq(userName))
     End Function
 
     ''' <summary> Verifica se il RoleGroup ha almeno un ProtocolRoleUser. </summary>
@@ -1826,7 +1818,7 @@ Partial Public Class uscSettori
         End If
 
         For Each pru As ProtocolRoleUser In CurrentProtocol.RoleUsers
-            If pru.Id.IdRole = roleGroup.Role.IdRoleTenant AndAlso pru.Id.GroupName.Eq(roleGroup.Name) Then
+            If pru.Role.Id = roleGroup.Role.IdRoleTenant AndAlso pru.GroupName.Eq(roleGroup.Name) Then
                 Return True
             End If
         Next
@@ -1889,7 +1881,7 @@ Partial Public Class uscSettori
         If (roleGroup.SecurityGroup Is Nothing) Then
             Throw New DocSuiteException(String.Concat("Il gruppo ", roleGroup.Name, "(", roleGroup.Id, ") non è configurato correttamente nella SecurityGroup"))
         End If
-        users = Facade.SecurityUsersFacade.GetUsersByGroup(roleGroup.SecurityGroup.Id).Select(Function(f) New AccountModel(f.Account, f.Description, f.UserDomain) With {.DisplayName = f.Description})
+        users = Facade.SecurityUsersFacade.GetUsersByGroup(roleGroup.SecurityGroup.Id).Select(Function(f) New AccountModel(f.Account, f.Description, domain:=f.UserDomain) With {.DisplayName = f.Description})
         For Each user As AccountModel In users.OrderBy(Function(f) f.Name)
             Dim currentNode As RadTreeNode = SetRoleUserNodeForRoleUser(roleGroup, user, asRoleDistributionManager, asCopiaConoscenza)
 
@@ -2080,7 +2072,7 @@ Partial Public Class uscSettori
         If (RadTreeSettori.Nodes.Count > 0 OrElse RadTreeRoleTenant.Nodes.Count > 0) AndAlso Checkable AndAlso CurrentProtocol IsNot Nothing AndAlso Not CurrentProtocol.RoleUsers.IsNullOrEmpty() Then
             ' Seleziona i nodi RoleUser presenti in ProtocolRoleUser
             For Each pru As ProtocolRoleUser In CurrentProtocol.RoleUsers
-                Dim seek As String = GetRoleUserNodeValue(pru.Id.IdRole.ToString(), pru.Id.GroupName, pru.Id.UserName, pru.Account)
+                Dim seek As String = GetRoleUserNodeValue(pru.Role.Id.ToString(), pru.GroupName, pru.UserName, pru.Account)
                 Dim currentNode As RadTreeNode = Nothing
                 If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso Not pru.Role.TenantId.Equals(Guid.Empty) AndAlso Not pru.Role.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId) Then
                     currentNode = RadTreeRoleTenant.FindNodeByValue(seek)

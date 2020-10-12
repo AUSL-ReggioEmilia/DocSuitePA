@@ -73,7 +73,7 @@ class FascicleFolderInserimento extends FascBase {
    * @param eventArgs
    * @returns
    */
-    btmConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btmConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         if (!Page_IsValid) {
             return;
         }
@@ -125,16 +125,8 @@ class FascicleFolderInserimento extends FascBase {
         if (fascicleFolderToUpdate) {
             fascicleFolder.ParentInsertId = fascicleFolderToUpdate.UniqueId;
             fascicleFolder.Fascicle.UniqueId = fascicleFolderToUpdate.Fascicle.UniqueId;
-            fascicleFolder.Typology = fascicleFolderToUpdate.Typology;
-
-            let typology: FascicleFolderTypology = <FascicleFolderTypology>FascicleFolderTypology[fascicleFolder.Typology.toString()];
-            if (isNaN(typology)) {
-                typology = FascicleFolderTypology[typology.toString()];
-            }
-            if (typology == FascicleFolderTypology.Fascicle) {
-                fascicleFolder.Typology = FascicleFolderTypology.SubFascicle;
-            }
-        };
+            fascicleFolder.Typology = FascicleFolderTypology.SubFascicle;
+        }
         if (this.doNotUpdateDatabase === "False") {
             this.callInsertFascicleFolderService(fascicleFolder);
         }
@@ -144,7 +136,6 @@ class FascicleFolderInserimento extends FascBase {
             model.ActionName = "ManageParent";
             model.Value = [];
             fascicleFolder.UniqueId = Guid.newGuid();
-            fascicleFolder.Typology = FascicleFolderTypology.Fascicle;
             model.Value.push(JSON.stringify(fascicleFolder));
             this.closeWindow(model);
         }

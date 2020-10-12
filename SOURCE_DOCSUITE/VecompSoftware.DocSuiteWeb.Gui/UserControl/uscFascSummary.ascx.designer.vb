@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscFascSummary
-    
+
     '''<summary>
     '''pageContent control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pageContent As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''fascCaption control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents fascCaption As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''btnExpandFascInfo control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnExpandFascInfo As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''fascInfo control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents fascInfo As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''lblTitle control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblTitle As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblViewFascicle control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblViewFascicle As Global.System.Web.UI.WebControls.HyperLink
-    
+
     '''<summary>
     '''lblFascicleType control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblFascicleType As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblStartDate control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStartDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblEndDate control.
     '''</summary>
@@ -93,7 +93,16 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblEndDate As Global.System.Web.UI.WebControls.Label
-    
+
+    '''<summary>
+    '''lblSerieName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSerieName As Global.System.Web.UI.WebControls.Label
+
     '''<summary>
     '''lblFascicleObject control.
     '''</summary>
@@ -102,7 +111,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblFascicleObject As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblFascicleNote control.
     '''</summary>
@@ -111,7 +120,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblFascicleNote As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblRegistrationUser control.
     '''</summary>
@@ -120,7 +129,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRegistrationUser As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblRegistrationDate control.
     '''</summary>
@@ -129,7 +138,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRegistrationDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblLastChangedUser control.
     '''</summary>
@@ -138,7 +147,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblLastChangedUser As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblLastChangedDate control.
     '''</summary>
@@ -147,7 +156,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblLastChangedDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''containerRow control.
     '''</summary>
@@ -156,7 +165,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents containerRow As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''lblContainer control.
     '''</summary>
@@ -165,7 +174,7 @@ Partial Public Class uscFascSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblContainer As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>

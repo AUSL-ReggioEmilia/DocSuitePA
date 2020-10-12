@@ -22,7 +22,7 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
                         _this.setContactVisibilityBehaviour(contact);
                         _this.drawContactTree(idContact)
                             .done(function () {
-                            _this._rowTreeContact.show();
+                            _this._rowTreeContact().show();
                             _this.resetCollapseButton();
                             _this.setFormControlEnableState(false);
                             _this.hideToolbar();
@@ -63,7 +63,7 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
             this.btnNewContact_onClicked = function (sender, args) {
                 _this.setLastSearchedContactModel(null);
                 var emptyContact = { Description: "" };
-                _this._rowTreeContact.hide();
+                _this._rowTreeContact().hide();
                 _this.bindContactToPage(emptyContact);
                 _this.setContactVisibilityBehaviour(emptyContact);
                 _this.resetCollapseButton();
@@ -77,7 +77,7 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
             };
             this.rcbPersistanceType_onSelectedIndexChanged = function (sender, args) {
                 _this.hideToolbarRoleElements();
-                if (_this._rcbPersistanceType.get_selectedItem().get_value() == uscContactRest.RUBRICA_ADDRESS_TYPE) {
+                if (_this._rcbPersistanceType().get_selectedItem().get_value() == uscContactRest.RUBRICA_ADDRESS_TYPE) {
                     _this.showToolbarRoleElements();
                 }
             };
@@ -88,170 +88,78 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
             var contactPlaceNameServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "ContactPlaceName");
             this._contactPlaceNameService = new ContactPlaceNameService(contactPlaceNameServiceConfiguration);
         }
-        Object.defineProperty(uscContactRest.prototype, "_pnlMain", {
-            get: function () {
-                return $("#" + this.pnlMainId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_pnlToolbar", {
-            get: function () {
-                return $("#" + this.pnlToolbarId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowDescription", {
-            get: function () {
-                return $("#" + this.rowDescriptionId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowName", {
-            get: function () {
-                return $("#" + this.rowNameId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowSurname", {
-            get: function () {
-                return $("#" + this.rowSurnameId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowBirthdate", {
-            get: function () {
-                return $("#" + this.rowBirthdateId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowTitle", {
-            get: function () {
-                return $("#" + this.rowTitleId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowCertifiedMail", {
-            get: function () {
-                return $("#" + this.rowCertifiedMailId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowCode", {
-            get: function () {
-                return $("#" + this.rowCodeId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowPiva", {
-            get: function () {
-                return $("#" + this.rowPivaId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowAddressType", {
-            get: function () {
-                return $("#" + this.rowAddressTypeId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowAddress", {
-            get: function () {
-                return $("#" + this.rowAddressId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowCivicNumber", {
-            get: function () {
-                return $("#" + this.rowCivicNumberId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowZipCode", {
-            get: function () {
-                return $("#" + this.rowZipCodeId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowCity", {
-            get: function () {
-                return $("#" + this.rowCityId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowCityCode", {
-            get: function () {
-                return $("#" + this.rowCityCodeId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowBirthplace", {
-            get: function () {
-                return $("#" + this.rowBirthplaceId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowNationality", {
-            get: function () {
-                return $("#" + this.rowNationalityId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowLanguage", {
-            get: function () {
-                return $("#" + this.rowLanguageId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rowTreeContact", {
-            get: function () {
-                return $("#" + this.rowTreeContactId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rcbPersistanceType", {
-            get: function () {
-                var toolbarItem = this._toolbar.findItemByValue("persistanceType");
-                return toolbarItem.findControl("rcbPersistanceType");
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rcbContactType", {
-            get: function () {
-                var toolbarItem = this._toolbar.findItemByValue("contactType");
-                return toolbarItem.findControl("rcbContactType");
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscContactRest.prototype, "_rcbRoleContact", {
-            get: function () {
-                var toolbarItem = this._toolbar.findItemByValue("roleContact");
-                return toolbarItem.findControl("rcbRoleContact");
-            },
-            enumerable: true,
-            configurable: true
-        });
+        uscContactRest.prototype._pnlMain = function () {
+            return $("#" + this.pnlMainId);
+        };
+        uscContactRest.prototype._pnlToolbar = function () {
+            return $("#" + this.pnlToolbarId);
+        };
+        uscContactRest.prototype._rowDescription = function () {
+            return $("#" + this.rowDescriptionId);
+        };
+        uscContactRest.prototype._rowName = function () {
+            return $("#" + this.rowNameId);
+        };
+        uscContactRest.prototype._rowSurname = function () {
+            return $("#" + this.rowSurnameId);
+        };
+        uscContactRest.prototype._rowBirthdate = function () {
+            return $("#" + this.rowBirthdateId);
+        };
+        uscContactRest.prototype._rowTitle = function () {
+            return $("#" + this.rowTitleId);
+        };
+        uscContactRest.prototype._rowCertifiedMail = function () {
+            return $("#" + this.rowCertifiedMailId);
+        };
+        uscContactRest.prototype._rowCode = function () {
+            return $("#" + this.rowCodeId);
+        };
+        uscContactRest.prototype._rowPiva = function () {
+            return $("#" + this.rowPivaId);
+        };
+        uscContactRest.prototype._rowAddressType = function () {
+            return $("#" + this.rowAddressTypeId);
+        };
+        uscContactRest.prototype._rowAddress = function () {
+            return $("#" + this.rowAddressId);
+        };
+        uscContactRest.prototype._rowCivicNumber = function () {
+            return $("#" + this.rowCivicNumberId);
+        };
+        uscContactRest.prototype._rowZipCode = function () {
+            return $("#" + this.rowZipCodeId);
+        };
+        uscContactRest.prototype._rowCity = function () {
+            return $("#" + this.rowCityId);
+        };
+        uscContactRest.prototype._rowCityCode = function () {
+            return $("#" + this.rowCityCodeId);
+        };
+        uscContactRest.prototype._rowBirthplace = function () {
+            return $("#" + this.rowBirthplaceId);
+        };
+        uscContactRest.prototype._rowNationality = function () {
+            return $("#" + this.rowNationalityId);
+        };
+        uscContactRest.prototype._rowLanguage = function () {
+            return $("#" + this.rowLanguageId);
+        };
+        uscContactRest.prototype._rowTreeContact = function () {
+            return $("#" + this.rowTreeContactId);
+        };
+        uscContactRest.prototype._rcbPersistanceType = function () {
+            var toolbarItem = this._toolbar.findItemByValue("persistanceType");
+            return toolbarItem.findControl("rcbPersistanceType");
+        };
+        uscContactRest.prototype._rcbContactType = function () {
+            var toolbarItem = this._toolbar.findItemByValue("contactType");
+            return toolbarItem.findControl("rcbContactType");
+        };
+        uscContactRest.prototype._rcbRoleContact = function () {
+            var toolbarItem = this._toolbar.findItemByValue("roleContact");
+            return toolbarItem.findControl("rcbRoleContact");
+        };
         /**
         *------------------------- Methods -----------------------------
         */
@@ -283,8 +191,9 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
             this._toolbar = $find(this.toolbarId);
             this._btnNewContact = $find(this.btnNewContactId);
             this._btnNewContact.add_clicked(this.btnNewContact_onClicked);
-            this._rcbContactType.add_selectedIndexChanged(this.rcbContactType_onSelectedIndexChanged);
-            this._rcbPersistanceType.add_selectedIndexChanged(this.rcbPersistanceType_onSelectedIndexChanged);
+            this._btnNewContact.set_visible(this.createManualContactEnabled);
+            this._rcbContactType().add_selectedIndexChanged(this.rcbContactType_onSelectedIndexChanged);
+            this._rcbPersistanceType().add_selectedIndexChanged(this.rcbPersistanceType_onSelectedIndexChanged);
             this._ajaxLoadingPanel = $find(this.ajaxLoadingPanelId);
             this._selectedContactsSessionKey = this.callerId + "_selectedContactsSessionKey";
             this.clearSelectedContactsSession();
@@ -303,15 +212,15 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
             });
         };
         uscContactRest.prototype.initializeControls = function () {
-            this._rowBirthplace.hide();
-            this._rowNationality.hide();
-            this._rowLanguage.hide();
+            this._rowBirthplace().hide();
+            this._rowNationality().hide();
+            this._rowLanguage().hide();
             if (this.spidEnabeld) {
-                this._rowBirthplace.show();
+                this._rowBirthplace().show();
             }
             if (this.contactNationalityEnabled) {
-                this._rowNationality.show();
-                this._rowLanguage.show();
+                this._rowNationality().show();
+                this._rowLanguage().show();
             }
         };
         uscContactRest.prototype.loadUserData = function () {
@@ -330,8 +239,8 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
             this._contactService.getRoleContacts(function (data) {
                 if (!data || data.length == 0) {
                     _this.hideToolbarRoleElements();
-                    var toDeleteItem = _this._rcbPersistanceType.findItemByText(uscContactRest.RUBRICA_ADDRESS_TYPE);
-                    _this._rcbPersistanceType.get_items().remove(toDeleteItem);
+                    var toDeleteItem = _this._rcbPersistanceType().findItemByText(uscContactRest.RUBRICA_ADDRESS_TYPE);
+                    _this._rcbPersistanceType().get_items().remove(toDeleteItem);
                     promise.resolve();
                     return;
                 }
@@ -342,10 +251,10 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
                     comboItem.set_imageUrl(ImageHelper.getContactTypeImageUrl("Sector"));
                     comboItem.set_text(contactTitle.Description);
                     comboItem.set_value(contactTitle.Id.toString());
-                    _this._rcbRoleContact.get_items().add(comboItem);
+                    _this._rcbRoleContact().get_items().add(comboItem);
                 }
                 if (data.length == 1) {
-                    _this._rcbRoleContact.get_items().getItem(0).select();
+                    _this._rcbRoleContact().get_items().getItem(0).select();
                     _this.hideToolbarRoleElements();
                 }
                 promise.resolve();
@@ -377,7 +286,7 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
                     comboItem = new Telerik.Web.UI.RadComboBoxItem();
                     comboItem.set_text(contactTitle.Description);
                     comboItem.set_value(contactTitle.EntityId.toString());
-                    _this._rcbContactType.get_items().add(comboItem);
+                    _this._rcbContactType().get_items().add(comboItem);
                 }
                 promise.resolve();
             }, function (exception) { return promise.reject(exception); });
@@ -456,16 +365,22 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
                     toSelectedItem.select();
                 }
             }
-            var item = this._rcbPersistanceType.findItemByValue(uscContactRest.RUBRICA_ADDRESS_TYPE);
-            item.select();
+            var item = this._rcbPersistanceType().findItemByValue(uscContactRest.RUBRICA_ADDRESS_TYPE);
+            if (item) {
+                item.select();
+            }
+            else {
+                var mitem = this._rcbPersistanceType().findItemByValue(uscContactRest.MANUALE_ADDRESS_TYPE);
+                mitem.select();
+            }
             switch (contact.IdContactType) {
                 case uscContactRest.PERSONA_CONTACT_TYPE: {
-                    var item_1 = this._rcbContactType.findItemByValue(uscContactRest.PERSONA_CONTACT_TYPE);
+                    var item_1 = this._rcbContactType().findItemByValue(uscContactRest.PERSONA_CONTACT_TYPE);
                     item_1.select();
                     break;
                 }
                 default: {
-                    var item_2 = this._rcbContactType.findItemByValue(uscContactRest.AZIENDA_CONTACT_TYPE);
+                    var item_2 = this._rcbContactType().findItemByValue(uscContactRest.AZIENDA_CONTACT_TYPE);
                     item_2.select();
                 }
             }
@@ -475,32 +390,32 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
             this._btnCollapseInformations.set_text("Altri campi");
             this.toggleMetadataVisibility();
         };
-        uscContactRest.prototype.toggleMetadataVisibility = function () {
+        uscContactRest.prototype.toggleAction = function (control) {
             var toExpand = this._btnCollapseInformations.get_commandArgument() == uscContactRest.ALL_INFORMATIONS_ARGUMENT;
-            var toggleAction = function (control) {
-                control.hide();
-                if (toExpand) {
-                    control.show();
-                }
-            };
+            control.hide();
+            if (toExpand) {
+                control.show();
+            }
+        };
+        uscContactRest.prototype.toggleMetadataVisibility = function () {
             if (this.isCitizenContact()) {
-                toggleAction(this._rowBirthdate);
-                toggleAction(this._rowTitle);
+                this.toggleAction(this._rowBirthdate());
+                this.toggleAction(this._rowTitle());
                 if (this.spidEnabeld) {
-                    toggleAction(this._rowBirthplace);
+                    this.toggleAction(this._rowBirthplace());
                 }
             }
-            toggleAction(this._rowCode);
-            toggleAction(this._rowPiva);
-            toggleAction(this._rowAddressType);
-            toggleAction(this._rowAddress);
-            toggleAction(this._rowCivicNumber);
-            toggleAction(this._rowZipCode);
-            toggleAction(this._rowCity);
-            toggleAction(this._rowCityCode);
+            this.toggleAction(this._rowCode());
+            this.toggleAction(this._rowPiva());
+            this.toggleAction(this._rowAddressType());
+            this.toggleAction(this._rowAddress());
+            this.toggleAction(this._rowCivicNumber());
+            this.toggleAction(this._rowZipCode());
+            this.toggleAction(this._rowCity());
+            this.toggleAction(this._rowCityCode());
             if (this.contactNationalityEnabled) {
-                toggleAction(this._rowNationality);
-                toggleAction(this._rowLanguage);
+                this.toggleAction(this._rowNationality());
+                this.toggleAction(this._rowLanguage());
             }
         };
         uscContactRest.prototype.isCitizenContact = function () {
@@ -508,15 +423,15 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
             if (lastSearchedContact) {
                 return lastSearchedContact.IdContactType == uscContactRest.PERSONA_CONTACT_TYPE;
             }
-            return this._rcbContactType.get_selectedItem().get_value() == uscContactRest.PERSONA_CONTACT_TYPE;
+            return this._rcbContactType().get_selectedItem().get_value() == uscContactRest.PERSONA_CONTACT_TYPE;
         };
         uscContactRest.prototype.setContactVisibilityBehaviour = function (contactOrContactType) {
-            this._rowName.hide();
-            this._rowSurname.hide();
-            this._rowDescription.hide();
-            this._rowBirthdate.hide();
-            this._rowBirthplace.hide();
-            this._rowTitle.hide();
+            this._rowName().hide();
+            this._rowSurname().hide();
+            this._rowDescription().hide();
+            this._rowBirthdate().hide();
+            this._rowBirthplace().hide();
+            this._rowTitle().hide();
             var contactType = "";
             if (typeof contactOrContactType == "string") {
                 contactType = contactOrContactType;
@@ -526,17 +441,17 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
             }
             switch (contactType) {
                 case uscContactRest.PERSONA_CONTACT_TYPE: {
-                    this._rowName.show();
-                    this._rowSurname.show();
-                    this._rowBirthdate.show();
+                    this._rowName().show();
+                    this._rowSurname().show();
+                    this._rowBirthdate().show();
                     if (this.spidEnabeld) {
-                        this._rowBirthplace.show();
+                        this._rowBirthplace().show();
                     }
-                    this._rowTitle.show();
+                    this._rowTitle().show();
                     break;
                 }
                 default: {
-                    this._rowDescription.show();
+                    this._rowDescription().show();
                 }
             }
         };
@@ -608,11 +523,11 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
                     return promise.reject("E' necessario definire una descrizione per il contatto");
                 }
                 var contactAction = function () { return $.Deferred().resolve(contactFromPage_1).promise(); };
-                if (this._rcbPersistanceType.get_selectedItem().get_value() == uscContactRest.RUBRICA_ADDRESS_TYPE) {
-                    if (!this._rcbRoleContact.get_selectedItem()) {
+                if (this._rcbPersistanceType().get_selectedItem().get_value() == uscContactRest.RUBRICA_ADDRESS_TYPE) {
+                    if (!this._rcbRoleContact().get_selectedItem()) {
                         return promise.reject("E' necessario selezionare un contatto di rubrica che conterrà il nuovo contatto");
                     }
-                    contactFromPage_1.IncrementalFather = +this._rcbRoleContact.get_selectedItem().get_value();
+                    contactFromPage_1.IncrementalFather = +this._rcbRoleContact().get_selectedItem().get_value();
                     contactAction = function () {
                         var promise = $.Deferred();
                         _this._contactService.insertContact(contactFromPage_1, function (data) { return promise.resolve(data); }, function (exception) { return promise.reject(exception); });
@@ -622,7 +537,7 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
                 contactAction()
                     .done(function (contact) {
                     _this.addSelectedContactToSession(contact);
-                    promise.resolve([_this._rcbPersistanceType.get_selectedItem().get_value(), contact]);
+                    promise.resolve([_this._rcbPersistanceType().get_selectedItem().get_value(), contact]);
                 })
                     .fail(function (exception) { return promise.reject(exception); });
             }
@@ -707,19 +622,19 @@ define(["require", "exports", "UserControl/uscContactSearchRest", "App/Helpers/S
             this.resetCollapseButton();
             this.hideToolbar();
             this.hideMainPanel();
-            this._rcbRoleContact.clearSelection();
+            this._rcbRoleContact().clearSelection();
         };
         uscContactRest.prototype.showMainPanel = function () {
-            this._pnlMain.show();
+            this._pnlMain().show();
         };
         uscContactRest.prototype.hideMainPanel = function () {
-            this._pnlMain.hide();
+            this._pnlMain().hide();
         };
         uscContactRest.prototype.showToolbar = function () {
-            this._pnlToolbar.show();
+            this._pnlToolbar().show();
         };
         uscContactRest.prototype.hideToolbar = function () {
-            this._pnlToolbar.hide();
+            this._pnlToolbar().hide();
         };
         uscContactRest.prototype.addSelectedContactToSession = function (contact) {
             var sessionItem = sessionStorage.getItem(this._selectedContactsSessionKey);

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Web;
 using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
 using VecompSoftware.DocSuiteWeb.Entity;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.EntityMapper.WebAPI;
 using VecompSoftware.Services.Logging;
 using VecompSoftware.WebAPIManager.Dao;
@@ -21,6 +22,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI
 
         private readonly WebAPIDtoMapper<T> _mapper;
         public const string ERROR_MESSAGE = "Errore nell'esecuzione del metodo {0} per il Tenant {1}";
+        private readonly Tenant _currentTenant;
 
         #endregion
 
@@ -40,14 +42,17 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI
             get { return LogName.WebAPIClientLog; }
         }
 
+        protected Tenant CurrentTenant => _currentTenant;
+
         #endregion
 
         #region [ Constructor ]
 
-        public FacadeWebAPIBase(ICollection<WebAPITenantConfiguration<T, TDao>> daoConfigurations)
+        public FacadeWebAPIBase(ICollection<WebAPITenantConfiguration<T, TDao>> daoConfigurations, Tenant currentTenant)
         {
             _mapper = new WebAPIDtoMapper<T>();
             _daoConfigurations = daoConfigurations.Where(f => f.Tenant.CurrentTenant || (!f.Tenant.CurrentTenant && f.Tenant.Entities.Any(x => x.Key == typeof(T).Name && x.Value.IsActive))).ToList();
+            _currentTenant = currentTenant;
         }
 
         #endregion
@@ -61,7 +66,10 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI
             {
                 try
                 {
-                    count += configuration.Dao.Count();
+                    WebAPIImpersonatorFacade.ImpersonateDao<TDao, T>(configuration.Dao, (impersonationType, dao) =>
+                    {
+                        count += dao.Count();
+                    });                    
                 }
                 catch (Exception ex)
                 {
@@ -80,8 +88,11 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI
             {
                 try
                 {
-                    results = configuration.Dao.GetAll();
-                    items.AddRange(results.Select(s => _mapper.TransformDTO(s, configuration.Tenant)));
+                    WebAPIImpersonatorFacade.ImpersonateDao<TDao, T>(configuration.Dao, (impersonationType, dao) =>
+                    {
+                        results = dao.GetAll();
+                        items.AddRange(results.Select(s => _mapper.TransformDTO(s, configuration.Tenant)));
+                    });                    
                 }
                 catch (Exception ex)
                 {
@@ -95,50 +106,45 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI
         public WebAPIDto<T> GetById(Guid id)
         {
             IWebAPITenantConfiguration<T, TDao> currentTenant = _daoConfigurations.Single(s => s.IsCurrent);
-            return _mapper.TransformDTO(currentTenant.Dao.GetById(id), currentTenant.Tenant);
+            return WebAPIImpersonatorFacade.ImpersonateDao<TDao, T, WebAPIDto<T>>(currentTenant.Dao, (impersonationType, dao) =>
+            {                
+                return _mapper.TransformDTO(dao.GetById(id), currentTenant.Tenant);
+            });            
         }
 
         public void Save(T entity)
         {
-            WindowsIdentity wi = HttpContext.Current.User.Identity as WindowsIdentity;
-            using (WindowsImpersonationContext wic = wi.Impersonate())
-            using (ExecutionContext.SuppressFlow())
+            TDao currentTenant = _daoConfigurations.Single(s => s.IsCurrent).Dao;
+            WebAPIImpersonatorFacade.ImpersonateDao<TDao, T>(currentTenant, (impersonationType, dao) =>
             {
-                TDao currentTenant = _daoConfigurations.Single(s => s.IsCurrent).Dao;
-                currentTenant.Save(ref entity);
-            }
+                dao.Save(ref entity);
+            });
         }
 
         public void Update(T entity)
         {
-            WindowsIdentity wi = HttpContext.Current.User.Identity as WindowsIdentity;
-            using (WindowsImpersonationContext wic = wi.Impersonate())
-            using (ExecutionContext.SuppressFlow())
+            TDao currentTenant = _daoConfigurations.Single(s => s.IsCurrent).Dao;
+            WebAPIImpersonatorFacade.ImpersonateDao<TDao, T>(currentTenant, (impersonationType, dao) =>
             {
-                TDao currentTenant = _daoConfigurations.Single(s => s.IsCurrent).Dao;
-                currentTenant.Update(ref entity);
-            }
+                dao.Update(ref entity);
+            });
         }
 
         public void Update(T entity, string actionType = "")
         {
-            WindowsIdentity wi = HttpContext.Current.User.Identity as WindowsIdentity;
-            using (WindowsImpersonationContext wic = wi.Impersonate())
-            using (ExecutionContext.SuppressFlow())
+            TDao currentTenant = _daoConfigurations.Single(s => s.IsCurrent).Dao;
+            WebAPIImpersonatorFacade.ImpersonateDao<TDao, T>(currentTenant, (impersonationType, dao) =>
             {
-                TDao currentTenant = _daoConfigurations.Single(s => s.IsCurrent).Dao;
-                currentTenant.Update(ref entity, actionType);
-            }
+                dao.Update(ref entity, actionType);
+            });
         }
         public void Delete(T entity)
         {
-            WindowsIdentity wi = HttpContext.Current.User.Identity as WindowsIdentity;
-            using (WindowsImpersonationContext wic = wi.Impersonate())
-            using (ExecutionContext.SuppressFlow())
+            TDao currentTenant = _daoConfigurations.Single(s => s.IsCurrent).Dao;
+            WebAPIImpersonatorFacade.ImpersonateDao<TDao, T>(currentTenant, (impersonationType, dao) =>
             {
-                TDao currentTenant = _daoConfigurations.Single(s => s.IsCurrent).Dao;
-                currentTenant.Delete(ref entity);
-            }
+                dao.Delete(ref entity);
+            });
         }
         #endregion
     }

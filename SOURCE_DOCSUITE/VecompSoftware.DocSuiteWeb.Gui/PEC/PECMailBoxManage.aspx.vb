@@ -63,7 +63,7 @@ Public Class PECMailBoxManage
         'todo: vuoto per future implementazioni
     End Sub
 
-    Private Sub btnSaveMailBox_Click(sender As Object, e As EventArgs) Handles btnSave.Click
+    Private Sub btnSaveMailBox_Click(sender As Object, e As EventArgs) Handles saveBtn.Click
         If Not Page.IsValid Then
             AjaxAlert("Errore nella validazione dei dati inseriti.")
             Exit Sub
@@ -83,7 +83,7 @@ Public Class PECMailBoxManage
         Response.Redirect("~/PEC/PECMailBoxSettings.aspx?Type=PEC")
     End Sub
 
-    Private Sub btnAnnulla_Click(sender As Object, e As EventArgs) Handles btnAnnulla.Click
+    Private Sub btnAnnulla_Click(sender As Object, e As EventArgs) Handles cancelBtn.Click
         Response.Redirect("~/PEC/PECMailBoxSettings.aspx?Type=PEC")
     End Sub
 
@@ -93,8 +93,8 @@ Public Class PECMailBoxManage
 
     Private Sub InitializeAjax()
         AddHandler AjaxManager.AjaxRequest, AddressOf RadAjaxManagerAjaxRequest
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnSave, pnlPageContent, MasterDocSuite.AjaxDefaultLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnAnnulla, pnlPageContent, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(saveBtn, pnlPageContent, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(cancelBtn, pnlPageContent, MasterDocSuite.AjaxDefaultLoadingPanel)
     End Sub
 
     Private Sub Initialize()
@@ -145,9 +145,7 @@ Public Class PECMailBoxManage
             If CurrentPecMailBox.InvoiceType.HasValue Then
                 ddlInvoiceType.SelectedValue = (CType(CurrentPecMailBox.InvoiceType.Value, Integer)).ToString()
             End If
-            chkHumanEnabled.Checked = CurrentPecMailBox.HumanEnabled
-        Else
-            chkHumanEnabled.Checked = True
+            chkLoginError.Checked = CurrentPecMailBox.LoginError
         End If
     End Sub
 
@@ -263,7 +261,7 @@ Public Class PECMailBoxManage
         If Not String.IsNullOrEmpty(ddlInvoiceType.SelectedItem.Text) Then
             model.InvoiceType = CType(ddlInvoiceType.SelectedItem.Value, InvoiceType?)
         End If
-        model.HumanEnabled = chkHumanEnabled.Checked
+        model.LoginError = False
     End Sub
 
     Protected Function UpdatePecMailBox() As Boolean

@@ -4,6 +4,7 @@ import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import WorkflowActivityModel = require('App/Models/Workflows/WorkflowActivityModel');
 import UpdateActionType = require("App/Models/UpdateActionType");
 import WorkflowActivityModelMapper = require('App/Mappers/Workflows/WorkflowActivityModelMapper');
+import WorkflowStatus = require('App/Models/Workflows/WorkflowStatus');
 
 class WorkflowActivityService extends BaseService {
     _configuration: ServiceConfiguration;
@@ -24,28 +25,45 @@ class WorkflowActivityService extends BaseService {
  * @param error
  */
     getWorkflowActivity(id: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl;
-        let data: string = "$filter=UniqueId eq ".concat(id, '&$expand=WorkflowAuthorizations, WorkflowProperties');
+        const url: string = this._configuration.ODATAUrl;
+        const data = `$filter=UniqueId eq ${id}&$expand=WorkflowAuthorizations,WorkflowProperties,WorkflowInstance($expand=WorkflowRepository)`;
         this.getRequest(url, data,
             (response: any) => {
                 if (callback) {
-                    let instance = <WorkflowActivityModel>{};
-                    let mapper = new WorkflowActivityModelMapper();
+                    let instance = {} as WorkflowActivityModel;
+                    const mapper = new WorkflowActivityModelMapper();
                     instance = mapper.Map(response.value[0]);
                     callback(instance);
                 }
             }, error);
     }
 
-
-    getWorkflowActivityById(id: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl;
-        let data: string = "$filter=UniqueId eq ".concat(id,'&$expand=WorkflowAuthorizations,WorkflowProperties,WorkflowInstance($expand=WorkflowRepository)');
+    getWorkflowActivityByLogType(id: string, workflowStatus: WorkflowStatus, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        const url: string = this._configuration.ODATAUrl;
+        const data = `$filter=UniqueId eq ${id}&$expand=WorkflowActivityLogs($filter=LogType eq '${WorkflowStatus[workflowStatus]}')`;
         this.getRequest(url, data,
             (response: any) => {
                 if (callback) {
-                    let instance = <WorkflowActivityModel>{};
-                    let mapper = new WorkflowActivityModelMapper();
+                    let instance = {} as WorkflowActivityModel;
+                    const mapper = new WorkflowActivityModelMapper();
+                    instance = mapper.Map(response.value[0]);
+                    callback(instance);
+                }
+            }, error);
+    }
+
+    getWorkflowActivityById(id: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, expandProperties?: string[]): void {
+        const url: string = this._configuration.ODATAUrl;
+        let odataQuery = `$filter=UniqueId eq ${id}`;
+        if (expandProperties && expandProperties.length) {
+            odataQuery = `${odataQuery}&$expand=${(expandProperties.join(','))}`;
+        }
+
+        this.getRequest(url, odataQuery,
+            (response: any) => {
+                if (callback) {
+                    let instance = {} as WorkflowActivityModel;
+                    const mapper = new WorkflowActivityModelMapper();
                     instance = mapper.Map(response.value[0]);
                     callback(instance);
                 }
@@ -125,7 +143,7 @@ class WorkflowActivityService extends BaseService {
     }
 
     getActiveByReferenceDocumentUnitId(uniqueId: string, callback?: (data: WorkflowActivityModel[]) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.concat(`?$filter=DocumentUnitReferenced/UniqueId eq ${uniqueId} and Status ne 'Done'`);
+        let url: string = this._configuration.ODATAUrl.concat(`?$filter=DocumentUnitReferenced/UniqueId eq ${uniqueId} and (Status eq 'Todo' or Status eq 'Progress')`);
         this.getRequest(url, null,
             (response: any) => {
                 if (callback) {
@@ -142,7 +160,35 @@ class WorkflowActivityService extends BaseService {
 
     countActiveByReferenceDocumentUnitId(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        let data: string = `/$count?$filter=DocumentUnitReferenced/UniqueId eq ${uniqueId} and Status ne 'Done'`;
+        let data: string = `/$count?$filter=DocumentUnitReferenced/UniqueId eq ${uniqueId} and (Status eq 'Todo' or Status eq 'Progress')`;
+        url = url.concat(data);
+        this.getRequest(url, null,
+            (response: any) => {
+                if (callback) {
+                    callback(response);
+                }
+            }, error);
+    }
+
+    getByStatusReferenceDocumentUnitId(status:string, uniqueId: string, callback?: (data: WorkflowActivityModel[]) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`?$filter=DocumentUnitReferenced/UniqueId eq ${uniqueId} and Status eq '${status}'`);
+        this.getRequest(url, null,
+            (response: any) => {
+                if (callback) {
+                    let modelMapper = new WorkflowActivityModelMapper();
+                    let workflowActivities: WorkflowActivityModel[] = [];
+                    $.each(response.value, function (i, value) {
+                        workflowActivities.push(modelMapper.Map(value));
+                    });
+
+                    callback(workflowActivities);
+                }
+            }, error);
+    }
+
+    countByStatusReferenceDocumentUnitId(status: string, uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        let data: string = `/$count?$filter=DocumentUnitReferenced/UniqueId eq ${uniqueId} and Status eq '${status}'`;
         url = url.concat(data);
         this.getRequest(url, null,
             (response: any) => {

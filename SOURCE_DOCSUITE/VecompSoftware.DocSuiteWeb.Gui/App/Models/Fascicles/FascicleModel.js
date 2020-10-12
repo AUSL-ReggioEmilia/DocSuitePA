@@ -11,6 +11,7 @@ define(["require", "exports"], function (require, exports) {
             this.FascicleDocuments = new Array();
             this.FascicleRoles = new Array();
             this.FascicleFolders = new Array();
+            this.WorkflowActions = new Array();
         }
         return FascicleModel;
     }());

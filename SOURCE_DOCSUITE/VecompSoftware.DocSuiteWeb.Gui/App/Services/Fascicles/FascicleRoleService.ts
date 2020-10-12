@@ -23,6 +23,11 @@ class FascicleRoleService extends BaseService {
         let url: string = this._configuration.WebAPIUrl;
         this.deleteRequest(url, JSON.stringify(model), callback, error);
     }
+
+    updateFascicleRole(model: FascicleRoleModel, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.WebAPIUrl;
+        this.putRequest(url, JSON.stringify(model), callback, error);
+    }
   }
 
 export = FascicleRoleService;

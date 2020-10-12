@@ -50,15 +50,13 @@ Public Class ResolutionHeader
     End Property
 
     Public Property LocationId As Integer?
-    Public Property LocationDocumentServer As String
     Public Property LocationReslBiblosDSDB As String
     Public ReadOnly Property ProxiedLocation As Location
         Get
             If LocationId.GetValueOrDefault(0) <> 0 AndAlso _proxiedLocation Is Nothing Then
                 _proxiedLocation = New Location()
                 With _proxiedLocation
-                    .Id = LocationId
-                    .DocumentServer = LocationDocumentServer
+                    .Id = LocationId.Value
                     .ReslBiblosDSDB = LocationReslBiblosDSDB
                 End With
             End If

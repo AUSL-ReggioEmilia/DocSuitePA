@@ -16,8 +16,7 @@
                     tbltMetadataRepository.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID%>";
                     tbltMetadataRepository.uscMetadataRepositoryId = "<%= uscMetadataRepository.PageContent.ClientID%>";
                     tbltMetadataRepository.uscMetadataRepositorySummaryId = "<%= uscMetadataRepositorySummary.PageContentDiv.ClientID%>";
-                    tbltMetadataRepository.btnAggiungiId = "<%= btnAggiungi.ClientID%>"
-                    tbltMetadataRepository.btnModificaId = "<%= btnModifica.ClientID%>"
+                    tbltMetadataRepository.folderToolbarId = "<%= uscMetadataRepository.FolderToolBar_Grid.ClientID%>";
                     tbltMetadataRepository.pageContentId = "<%= pageContent.ClientID%>"
                     tbltMetadataRepository.initialize();
                 });
@@ -39,12 +38,4 @@
         </telerik:RadSplitter>
     </div>
     <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
-</asp:Content>
-
-<asp:Content runat="server" ContentPlaceHolderID="cphFooter">
-
-    <telerik:RadButton ID="btnAggiungi" runat="server" Text="Aggiungi" CausesValidation="false" AutoPostBack="false" />
-    <telerik:RadButton ID="btnModifica" runat="server" Text="Modifica" Enabled="false" AutoPostBack="false" />
-    <telerik:RadButton ID="btnElimina" runat="server" Text="Elimina" Enabled="false" AutoPostBack="false" Visible="false" />
-
 </asp:Content>

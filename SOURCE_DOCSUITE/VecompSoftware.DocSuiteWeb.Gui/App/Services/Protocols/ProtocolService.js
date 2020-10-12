@@ -24,21 +24,6 @@ define(["require", "exports", "App/Services/BaseService"], function (require, ex
             return _this;
         }
         /**
-         * Recupera un protocollo per Year/Number
-         * @param year
-         * @param number
-         * @param callback
-         * @param error
-         */
-        ProtocolService.prototype.getProtocolByYearAndNumber = function (year, number, callback, error) {
-            var url = this._configuration.ODATAUrl;
-            var data = "$filter=Year eq ".concat(year.toString(), " and Number eq ", number.toString(), "&$expand=Category,Container");
-            this.getRequest(url, data, function (response) {
-                if (callback)
-                    callback(response.value[0]);
-            }, error);
-        };
-        /**
          * Recupera un protocollo per UniqueId
          * @param uniqueId
          * @param callback

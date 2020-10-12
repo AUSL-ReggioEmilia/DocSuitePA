@@ -5,15 +5,14 @@ using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
 
 namespace VecompSoftware.WebAPIManager.Finder
 {
-    public interface IWebAPIFinder<T, THeader> : IFinder<T>
+    public interface IWebAPIFinder<T, THeader> : IFinder<T>, IImpersonateWebAPIFinder
     {
         bool EnableTableJoin { get; set; }
         bool EnablePaging { get; set; }
         bool EnableTopOdata { get; set; }
         Guid? UniqueId { get; set; }
         ICollection<WebAPIDto<THeader>> DoSearchHeader();
-        new ICollection<WebAPIDto<T>> DoSearch();
-
+        new ICollection<WebAPIDto<T>> DoSearch();        
         void ResetDecoration();
 
     }

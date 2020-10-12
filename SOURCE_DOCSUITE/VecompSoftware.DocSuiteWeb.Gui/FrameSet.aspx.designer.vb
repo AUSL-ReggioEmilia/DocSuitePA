@@ -194,15 +194,6 @@ Partial Public Class FrameSet
     Protected WithEvents btnLastPagesToSign As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
-    '''btnRequestStatement control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnRequestStatement As Global.Telerik.Web.UI.RadButton
-
-    '''<summary>
     '''btnScrivania control.
     '''</summary>
     '''<remarks>
@@ -228,6 +219,15 @@ Partial Public Class FrameSet
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnReloadSessionTenant As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''btnFullText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnFullText As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''btnHelp control.

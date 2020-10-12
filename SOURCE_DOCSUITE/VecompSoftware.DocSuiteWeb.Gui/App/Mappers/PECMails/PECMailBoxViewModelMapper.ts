@@ -52,7 +52,7 @@ class PECMailBoxViewModelMapper extends BaseMapper<PECMailBoxModel> implements I
     toMap.RegistrationDate = source.RegistrationDate;
     toMap.LastChangedUser = source.LastChangedUser;
     toMap.LastChangedDate = source.LastChangedDate;
-    toMap.HumanEnabled = source.HumanEnabled;
+    toMap.LoginError = source.LoginError;
     toMap.Location = source.Location;
     toMap.InvoiceType = source.InvoiceType;
 

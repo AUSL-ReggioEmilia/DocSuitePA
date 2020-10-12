@@ -3,11 +3,13 @@ import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHel
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import DossierBase = require('Dossiers/DossierBase');
 import DossierSearchFilterDTO = require("App/DTOs/DossierSearchFilterDTO");
+import AjaxModel = require('App/Models/AjaxModel');
 
 class uscDossierGrid extends DossierBase {
     dossierGridId: string;
     authorizedDossiers: DossierGridViewModel[];
     pageId: string;
+    isWindowPopupEnable: boolean;
 
     public static LOADED_EVENT: string = "onLoaded";
     public static PAGE_CHANGED_EVENT: string = "onPageChanged";
@@ -93,6 +95,11 @@ class uscDossierGrid extends DossierBase {
 
     getGridCurrentPageIndex(): number {
         return this._masterTableView.get_currentPageIndex();
+    }
+
+    closeResultWindow(dossierId: string) {
+        let wnd: Telerik.Web.UI.RadWindow = this.getRadWindow();
+        wnd.close(`${dossierId}`);
     }
 }
 

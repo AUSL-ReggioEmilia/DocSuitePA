@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
 using VecompSoftware.DocSuiteWeb.Facade;
+using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
 
 namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Validators.Categories
 {
@@ -118,10 +121,15 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Validators.Categories
             Category dbCategory = FacadeFactory.Instance.CategoryFacade.GetById(this._categoryToValidate.Id);
             if (dbCategory.StartDate!= this._categoryToValidate.StartDate)
             {
-                DocumentUnitModelFinder documentUnitFinder = new DocumentUnitModelFinder(DocSuiteContext.Current.CurrentTenant);
-                documentUnitFinder.DocumentUnitFinderAction = DocumentUnitFinderActionType.CategorizedUD;
-                documentUnitFinder.CategoryId = this._categoryToValidate.UniqueId;
-                if (FacadeFactory.Instance.CategoryFacade.IsUsed(ref dbCategory) || documentUnitFinder.DoSearch().Count > 0)
+                ICollection<WebAPIDto<DocumentUnitModel>> result = WebAPIImpersonatorFacade.ImpersonateFinder(new DocumentUnitModelFinder(DocSuiteContext.Current.Tenants),
+                    (impersonationType, finder) =>
+                    {
+                        finder.DocumentUnitFinderAction = DocumentUnitFinderActionType.CategorizedUD;
+                        finder.CategoryId = this._categoryToValidate.UniqueId;
+                        return finder.DoSearch();
+                    });
+
+                if (FacadeFactory.Instance.CategoryFacade.IsUsed(ref dbCategory) || result.Count > 0)
                 {
                     resultModel.Errors.Add(CATEGORY_USED_ERROR_MESSAGE);
                 }

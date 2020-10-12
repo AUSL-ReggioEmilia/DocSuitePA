@@ -1,45 +1,51 @@
 Public Class ProtocolRoleUser
-    Inherits AuditableDomainObject(Of ProtocolRoleUserKey)
+    Inherits AuditableDomainObject(Of Guid)
 
-    Private _role As Role
+#Region " Fields "
     Private _protocol As Protocol
+#End Region
 
-    Public Overridable Property Role() As Role
-        Get
-            Return _role
-        End Get
-        Set(ByVal value As Role)
-            _role = value
-            Id.IdRole = value.Id
-        End Set
-    End Property
+#Region " Properties "
+    Public Overridable Property Year As Short
+
+    Public Overridable Property Number As Integer
+
+    Public Overridable Property GroupName As String
+
+    Public Overridable Property UserName As String
 
     Public Overridable Property Account As String
 
     Public Overridable Property IsActive As Short
 
-    Public Overridable Property Protocol() As Protocol
+    Public Overridable Property Status As Short
+
+    Public Overridable Property Protocol As Protocol
         Get
             Return _protocol
         End Get
         Set(ByVal value As Protocol)
             _protocol = value
-            Id.Year = value.Year
-            Id.Number = value.Number
+            Year = value.Year
+            Number = value.Number
         End Set
     End Property
 
-    Public Overridable Property UniqueIdProtocol As Guid
-    Public Overridable Property Status As Short
+    Public Overridable Property Role As Role
 
+    Public Overridable Property ProtocolRole As ProtocolRole
+#End Region
 
-#Region "Ctor/init"
+#Region " Constructor "
     Public Sub New()
-        Id = New ProtocolRoleUserKey()
-        UniqueId = Guid.NewGuid()
-        RegistrationDate = DateTimeOffset.UtcNow
-        RegistrationUser = DocSuiteContext.Current.User.FullUserName
+
     End Sub
+#End Region
+
+#Region " Methods "
+    Public Overrides Function ToString() As String
+        Return $"{Year}/{Number:0000000}/{Role.Id}/{GroupName}/{UserName}"
+    End Function
 #End Region
 
 End Class

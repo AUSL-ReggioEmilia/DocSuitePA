@@ -1,4 +1,6 @@
 ﻿import BaseEntityViewModel = require('App/ViewModels/BaseEntityViewModel');
+import BaseEntityRoleViewModel = require('App/ViewModels/BaseEntityRoleViewModel');
+import CategoryTreeViewModel = require('App/ViewModels/Commons/CategoryTreeViewModel');
 
 interface DossierSummaryViewModel{
     UniqueId: string;
@@ -16,12 +18,15 @@ interface DossierSummaryViewModel{
     LastChangedUser: string;
     LastChangedDate: string;
     ContactId: string;
-    JsonMetadata: string;
+    MetadataDesigner: string;
+    MetadataValues: string;
+    DossierType: string;
+    Status: string;
 
     Contacts: BaseEntityViewModel[];
-    Roles: BaseEntityViewModel[];
+    Roles: BaseEntityRoleViewModel[];
     Documents: BaseEntityViewModel[];
-    
+    Category: CategoryTreeViewModel;
 }
 
 export = DossierSummaryViewModel

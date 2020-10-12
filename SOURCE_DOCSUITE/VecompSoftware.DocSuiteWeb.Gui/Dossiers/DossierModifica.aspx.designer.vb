@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class DossierModifica
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''dossierPageContent control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dossierPageContent As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''lblYear control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblYear As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblNumber control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNumber As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblStartDate control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStartDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscObject control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscObject As Global.VecompSoftware.DocSuiteWeb.Gui.uscOggetto
-    
+
     '''<summary>
     '''txtNote control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''lblContainer control.
     '''</summary>
@@ -84,16 +84,16 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblContainer As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
-    '''uscContattiSel control.
+    '''uscContattiSelRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscContattiSel As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+    Protected WithEvents uscContattiSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelRest
+
     '''<summary>
     '''rdpStartDate control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpStartDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''rfvStartDate control.
     '''</summary>
@@ -111,7 +111,16 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvStartDate As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
+    '''<summary>
+    '''rcbDossierStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rcbDossierStatus As Global.Telerik.Web.UI.RadComboBox
+
     '''<summary>
     '''rowMetadata control.
     '''</summary>
@@ -120,16 +129,25 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowMetadata As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
-    '''uscDynamicMetadataClient control.
+    '''uscSetiContact control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscDynamicMetadataClient As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadataClient
-    
+    Protected WithEvents uscSetiContact As Global.VecompSoftware.DocSuiteWeb.Gui.uscSetiContactSel
+
+    '''<summary>
+    '''UscDynamicMetadataRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents UscDynamicMetadataRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadataRest
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -138,7 +156,7 @@ Partial Public Class DossierModifica
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
+
     '''<summary>
     '''btnConferma control.
     '''</summary>

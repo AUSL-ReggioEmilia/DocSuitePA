@@ -82,6 +82,7 @@ Public Class TemplateUserCollGestione
         Try
             Dim senderControl As RadButton = DirectCast(sender, RadButton)
             Dim entity As TemplateCollaboration = GetTemplateCollaboration()
+            CollaborationParameter.ResetCollaborationTemplateJsonParameters()
             AjaxManager.ResponseScripts.Add(String.Format(CONFIRM_CALLBACK, JsonConvert.SerializeObject(entity), JsonConvert.SerializeObject(senderControl.ID.Eq(btnPublish.ID))))
         Catch ex As Exception
             FileLogger.Error(LoggerName, "Errore in generazione template", ex)
@@ -134,8 +135,8 @@ Public Class TemplateUserCollGestione
 #Region "Methods"
     Private Sub InitializeAjax()
         AddHandler MasterDocSuite.AjaxManager.AjaxRequest, AddressOf TemplateUserCollGestione_AjaxRequest
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnConfirm, pnlMainPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnPublish, pnlMainPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnConfirm, lblDestinatari)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnPublish, lblDestinatari)
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlDocumentType, uscVisioneFirma)
         AjaxManager.AjaxSettings.AddAjaxSetting(uscVisioneFirma, uscSettoriSegreterie)
         AjaxManager.AjaxSettings.AddAjaxSetting(uscSettoriSegreterie, uscSettoriSegreterie)

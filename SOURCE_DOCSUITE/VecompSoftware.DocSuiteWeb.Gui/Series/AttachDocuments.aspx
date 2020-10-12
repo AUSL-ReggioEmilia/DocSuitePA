@@ -76,7 +76,7 @@
             </tr>
             <tr>
                 <td>
-                    <asp:RequiredFieldValidator ID="rfvDdlDocumentSeries" runat="server" ControlToValidate="ddlDocumentSeries" ErrorMessage="Campo Tipo Documento Obbligatorio" Display="Dynamic" ValidationGroup="val" />
+                    <asp:RequiredFieldValidator ID="rfvDdlDocumentSeries" runat="server" ControlToValidate="ddlDocumentSeries" ErrorMessage="Campo Tipo Documento obbligatorio" Display="Dynamic" ValidationGroup="val" />
                 </td>
                 <td>
                     <asp:RequiredFieldValidator ControlToValidate="txtYear" Display="Dynamic" ErrorMessage="Campo Obbligatorio" ID="Requiredfieldvalidator2" runat="server" ValidationGroup="val" />

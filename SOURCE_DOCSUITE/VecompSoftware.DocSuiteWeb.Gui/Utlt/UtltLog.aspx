@@ -111,7 +111,7 @@
                     <Excel Format="ExcelML" />
                 </ExportSettings>
                 <ClientSettings AllowDragToGroup="True" />
-                <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Decrescente" SortToolTip="Ordina" />
+                <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine Decrescente" SortToolTip="Ordina" />
             </DocSuite:BindGrid>
         </asp:Panel>
 </asp:Content>

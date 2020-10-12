@@ -40,7 +40,7 @@ class TbltCategoryMetadata {
     /**
      * Evento scatenato al click del pulsante di conferma
      */
-    private btnSubmit_OnClicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    private btnSubmit_OnClicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonCancelEventArgs) => {
         eventArgs.set_cancel(true);
         this._loadingPanel.show(this.uscMetadataRepositoryId);
         let uscMetadaRepository: UscMetadataRepository = <UscMetadataRepository>$("#".concat(this.uscMetadataRepositoryId)).data();
@@ -83,7 +83,7 @@ class TbltCategoryMetadata {
     /**
      * Evento scatenato al click del pulsante di conferma
      */
-    private btnRemove_OnClicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    private btnRemove_OnClicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonCancelEventArgs) => {
         eventArgs.set_cancel(true);
 
         if (!this.metadataRepositoryId) {

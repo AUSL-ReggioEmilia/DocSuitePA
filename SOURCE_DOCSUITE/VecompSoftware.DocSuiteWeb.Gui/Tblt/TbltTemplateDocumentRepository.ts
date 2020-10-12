@@ -8,10 +8,9 @@ import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHel
 import TemplateDocumentRepositoryService = require('App/Services/Templates/TemplateDocumentRepositoryService');
 import uscTemplateDocumentRepository = require('UserControl/uscTemplateDocumentRepository');
 import RadTreeNodeViewModel = require('App/ViewModels/Telerik/RadTreeNodeViewModel');
-import StringHelper = require('App/Helpers/StringHelper');
-import WindowHelper = require('App/Helpers/WindowHelper');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
+import AjaxModel = require('App/Models/AjaxModel');
 
 
 
@@ -26,12 +25,6 @@ class TbltTemplateDocumentRepository {
     lblVersionId: string;
     lblStatusId: string;
     lblObjectId: string;
-    btnAggiungiId: string;
-    btnModificaId: string;
-    btnVisualizzaId: string;
-    btnEliminaId: string;
-    btnLogId: string;
-    btnEliminaUniqueId: string;
     lblTagsId: string;
     previewSplitterId: string;
     previewPaneId: string;
@@ -39,18 +32,33 @@ class TbltTemplateDocumentRepository {
     ajaxManagerId: string;
     uscNotificationId: string;
     lblIdentifierId: string;
+    actionToolbarId: string;
 
     private _templateDocumentRepositoryService: TemplateDocumentRepositoryService;
     private _uscTemplateDocumentRepository: uscTemplateDocumentRepository;
-    private _btnAggiungi: Telerik.Web.UI.RadButton;
-    private _btnElimina: Telerik.Web.UI.RadButton;
-    private _btnModifica: Telerik.Web.UI.RadButton;
-    private _btnVisualizza: Telerik.Web.UI.RadButton;
-    private _btnLog: Telerik.Web.UI.RadButton;
     private _manager: Telerik.Web.UI.RadWindowManager;
     private _previewSplitter: Telerik.Web.UI.RadSplitter;
     private _previewPane: Telerik.Web.UI.RadPane;
+    private _actionToolbar: Telerik.Web.UI.RadToolBar;
+    private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
     private _resizeTO: any;
+
+    private static CREATE_OPTION: string = "create";
+    private static MODIFY_OPTION: string = "modify";
+    private static DELETE_OPTION: string = "delete";
+    private static LOG_OPTION: string = "log";
+    private static VIEW_OPTION: string = "view";
+
+    private toolbarActions(): Array<[string, () => void]> {
+        let items: Array<[string, () => void]> = [
+            [TbltTemplateDocumentRepository.CREATE_OPTION, () => this.btnAggiungi_Clicked()],
+            [TbltTemplateDocumentRepository.DELETE_OPTION, () => this.btnElimina_Clicked()],
+            [TbltTemplateDocumentRepository.MODIFY_OPTION, () => this.btnModifica_Clicked()],
+            [TbltTemplateDocumentRepository.LOG_OPTION, () => this.btnLog_Clicked()],
+            [TbltTemplateDocumentRepository.VIEW_OPTION, () => this.btnVisualizza_Clicked()]
+        ];
+        return items;
+    }
 
     /**
      * Costruttore
@@ -59,7 +67,7 @@ class TbltTemplateDocumentRepository {
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         let serviceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "TemplateDocumentRepository");
         if (!serviceConfiguration) {
-            this.showNotificationMessage(this.uscNotificationId,"Errore in inizializzazione. Nessun servizio configurato per il Deposito Documentale");
+            this.showNotificationMessage(this.uscNotificationId, "Errore in inizializzazione. Nessun servizio configurato per il Deposito Documentale");
             return;
         }
         this._templateDocumentRepositoryService = new TemplateDocumentRepositoryService(serviceConfiguration);
@@ -74,10 +82,9 @@ class TbltTemplateDocumentRepository {
      * @param sender
      * @param eventArgs
      */
-    btnAggiungi_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnAggiungi_Clicked = (): void => {
         this._manager.add_close(this.closeInsertWindow);
         this._manager.open('../Tblt/TbltTemplateDocumentRepositoryGes.aspx?Action=Insert', 'windowManageTemplate', null);
-        this._manager.center();
     }
 
     /**
@@ -85,17 +92,16 @@ class TbltTemplateDocumentRepository {
      * @param sender
      * @param eventArgs
      */
-    btnModifica_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnModifica_Clicked = (): void => {
         let userControl: uscTemplateDocumentRepository = $('#'.concat(this.uscTemplateDocumentRepositoryId)).data();
         let selectedTemplate: TemplateDocumentRepositoryModel = userControl.getSelectedTemplateDocument();
         if (selectedTemplate == undefined) {
-            this.showWarningMessage(this.uscNotificationId,'Selezionare almeno un template');
+            this.showWarningMessage(this.uscNotificationId, 'Selezionare almeno un template');
             return;
         }
 
         this._manager.add_close(this.closeEditWindow);
         this._manager.open('../Tblt/TbltTemplateDocumentRepositoryGes.aspx?Action=Edit&TemplateId='.concat(selectedTemplate.UniqueId, "&TemplateIdArchiveChain=", selectedTemplate.IdArchiveChain), 'windowManageTemplate', null);
-        this._manager.center();
     }
 
     /**
@@ -103,11 +109,11 @@ class TbltTemplateDocumentRepository {
      * @param sender
      * @param eventArgs
      */
-    btnVisualizza_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnVisualizza_Clicked = (): void => {
         let userControl: uscTemplateDocumentRepository = $('#'.concat(this.uscTemplateDocumentRepositoryId)).data();
         let selectedTemplate: TemplateDocumentRepositoryModel = userControl.getSelectedTemplateDocument();
         if (selectedTemplate == undefined) {
-            this.showNotificationMessage(this.uscNotificationId,'Selezionare almeno un template');
+            this.showNotificationMessage(this.uscNotificationId, 'Selezionare almeno un template');
             return;
         }
 
@@ -120,11 +126,11 @@ class TbltTemplateDocumentRepository {
      * @param sender
      * @param eventArgs
      */
-    btnElimina_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnElimina_Clicked = (): void => {
         let userControl: uscTemplateDocumentRepository = $('#'.concat(this.uscTemplateDocumentRepositoryId)).data();
         let templateToDelete: TemplateDocumentRepositoryModel = userControl.getSelectedTemplateDocument();
         if (templateToDelete == undefined) {
-            this.showNotificationMessage(this.uscNotificationId,'Selezionare almeno un elemento');
+            this.showNotificationMessage(this.uscNotificationId, 'Selezionare almeno un elemento');
             return;
         }
 
@@ -133,7 +139,12 @@ class TbltTemplateDocumentRepository {
         this._manager.radconfirm("Sei sicuro di voler eliminare l'elemento selezionato?", (arg) => {
             if (arg) {
                 this.showLoadingPanel(this.splitterPageId);
-                (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequestWithTarget(this.btnEliminaUniqueId, templateToDelete.IdArchiveChain);
+
+                let ajaxModel: AjaxModel = <AjaxModel>{};
+                ajaxModel.Value = new Array<string>(templateToDelete.IdArchiveChain);
+                ajaxModel.ActionName = "DeleteTemplate";
+                this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+                //(<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequestWithTarget(this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.DELETE_OPTION).get_value(), templateToDelete.IdArchiveChain);
             }
         }, 300, 160);
     }
@@ -143,7 +154,7 @@ class TbltTemplateDocumentRepository {
      * @param sender
      * @param eventArgs
      */
-    btnLog_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnLog_Clicked = () : void => {
         let url: string = "../Tblt/TbltLog.aspx?Type=Comm&TableName=TemplateDocumentRepository";
         let userControl: uscTemplateDocumentRepository = $('#'.concat(this.uscTemplateDocumentRepositoryId)).data();
         let selectedTemplate: TemplateDocumentRepositoryModel = userControl.getSelectedTemplateDocument();
@@ -153,7 +164,13 @@ class TbltTemplateDocumentRepository {
         }
 
         this._manager.open(url, 'windowLogTemplate', null);
-        this._manager.center();
+    }
+
+    protected actionToolbar_ButtonClicked = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
+        let currentActionButtonItem: Telerik.Web.UI.RadToolBarButton = args.get_item() as Telerik.Web.UI.RadToolBarButton;
+        let currentAction: () => void = this.toolbarActions().filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_value())
+            .map((item: [string, () => void]) => item[1])[0];
+        currentAction();
     }
 
 
@@ -166,20 +183,15 @@ class TbltTemplateDocumentRepository {
      */
     initialize() {
         this.hideDetailsPanel();
-    
-        this._btnAggiungi = <Telerik.Web.UI.RadButton>$find(this.btnAggiungiId);
-        this._btnAggiungi.add_clicked(this.btnAggiungi_Clicked);
-        this._btnModifica = <Telerik.Web.UI.RadButton>$find(this.btnModificaId);
-        this._btnModifica.add_clicked(this.btnModifica_Clicked);
-        this._btnVisualizza = <Telerik.Web.UI.RadButton>$find(this.btnVisualizzaId);
-        this._btnVisualizza.add_clicked(this.btnVisualizza_Clicked);
-        this._btnElimina = <Telerik.Web.UI.RadButton>$find(this.btnEliminaId);
-        this._btnElimina.add_clicked(this.btnElimina_Clicked);
-        this._btnLog = <Telerik.Web.UI.RadButton>$find(this.btnLogId);
-        this._btnLog.add_clicked(this.btnLog_Clicked);
+
         this._previewSplitter = <Telerik.Web.UI.RadSplitter>$find(this.previewSplitterId);
         this._previewPane = <Telerik.Web.UI.RadPane>$find(this.previewPaneId);
         this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.managerId);
+        this._ajaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
+        this._actionToolbar = <Telerik.Web.UI.RadToolBar>$find(this.actionToolbarId);
+        if (this._actionToolbar) {
+            this._actionToolbar.add_buttonClicked(this.actionToolbar_ButtonClicked);
+        }
 
         this.showLoadingPanel(this.splitterPageId);
         //parte caricamento treeview e dati gia presenti in tabella
@@ -322,24 +334,18 @@ class TbltTemplateDocumentRepository {
      * @param templateDocumentNodeSelected
      */
     private setButtonVisibility(templateDocumentNodeSelected: boolean) {
-        this._btnAggiungi.set_enabled(!templateDocumentNodeSelected);
-        this._btnModifica.set_enabled(templateDocumentNodeSelected);
-        this._btnElimina.set_enabled(templateDocumentNodeSelected);
-        this._btnVisualizza.set_enabled(templateDocumentNodeSelected);
-        this._btnLog.set_enabled(templateDocumentNodeSelected);
+        this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.CREATE_OPTION).set_enabled(!templateDocumentNodeSelected);
+        this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.MODIFY_OPTION).set_enabled(templateDocumentNodeSelected);
+        this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.DELETE_OPTION).set_enabled(templateDocumentNodeSelected);
+        this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.VIEW_OPTION).set_enabled(templateDocumentNodeSelected);
+        this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.LOG_OPTION).set_enabled(templateDocumentNodeSelected);
     }
 
     /**
      * Metodo che resetta lo stato dei pulsanti dato dall'ajaxificazione degli stessi
      */
     private resetButtonsState() {
-        this._btnAggiungi = <Telerik.Web.UI.RadButton>$find(this.btnAggiungiId);
-        this._btnModifica = <Telerik.Web.UI.RadButton>$find(this.btnModificaId);
-        this._btnVisualizza = <Telerik.Web.UI.RadButton>$find(this.btnVisualizzaId);
-        this._btnElimina = <Telerik.Web.UI.RadButton>$find(this.btnEliminaId);
-        //Reset in quanto il pulsante viene ricreato
-        this._btnElimina.add_clicked(this.btnElimina_Clicked);
-        this._btnLog = <Telerik.Web.UI.RadButton>$find(this.btnLogId);
+        this._actionToolbar = <Telerik.Web.UI.RadToolBar>$find(this.actionToolbarId);
     }
 
     /**
@@ -386,7 +392,7 @@ class TbltTemplateDocumentRepository {
             let entity: TemplateDocumentRepositoryModel = <TemplateDocumentRepositoryModel>{};
             entity = JSON.parse(args.get_argument())
             userControl.refreshTemplates(true);
-            this.setDetailPanelControls(entity);        
+            this.setDetailPanelControls(entity);
         }
     }
 

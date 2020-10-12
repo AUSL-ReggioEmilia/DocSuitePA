@@ -17,7 +17,7 @@
 </telerik:RadScriptBlock>
 
 <div class="radGridWrapper">
-    <DocSuite:BindGrid AllowMultiRowSelection="False" AutoGenerateColumns="False" GridLines="Both" ID="grdProtocols" runat="server" ShowGroupPanel="True">
+    <DocSuite:BindGrid AllowMultiRowSelection="False" AutoGenerateColumns="False" GridLines="Both" ID="grdProtocols" runat="server" ShowGroupPanel="True" ImpersonateCurrentUser="true">
         <MasterTableView AllowFilteringByColumn="True" GridLines="Both" NoMasterRecordsText="Nessun Documento Trovato" TableLayout="Fixed">
             <Columns>
                 <telerik:GridTemplateColumn UniqueName="TenantModel.TenantName" CurrentFilterFunction="EqualTo" SortExpression="TenantModel.TenantName" DataField="TenantModel.TenantName" HeaderText="Azienda" Groupable="false" AllowFiltering="true" Visible="false" >

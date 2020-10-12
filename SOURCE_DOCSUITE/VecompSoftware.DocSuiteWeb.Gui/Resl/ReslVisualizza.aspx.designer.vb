@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class ReslVisualizza
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''RadWindowManagerResl control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerResl As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowDelete control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowDelete As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowDuplica control.
     '''</summary>
@@ -48,16 +48,7 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowDuplica As Global.Telerik.Web.UI.RadWindow
-    
-    '''<summary>
-    '''windowRequestStatement control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents windowRequestStatement As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowDocmSceltaPratica control.
     '''</summary>
@@ -66,7 +57,7 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowDocmSceltaPratica As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowLastPage control.
     '''</summary>
@@ -75,7 +66,7 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowLastPage As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''PageDiv control.
     '''</summary>
@@ -84,7 +75,7 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents PageDiv As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''tblPrincipale control.
     '''</summary>
@@ -93,7 +84,7 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblPrincipale As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''uscResolution control.
     '''</summary>
@@ -102,7 +93,7 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscResolution As Global.VecompSoftware.DocSuiteWeb.Gui.uscResolution
-    
+
     '''<summary>
     '''TblButtons control.
     '''</summary>
@@ -111,7 +102,7 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents TblButtons As Global.System.Web.UI.WebControls.Table
-    
+
     '''<summary>
     '''resolutionBottomBar control.
     '''</summary>

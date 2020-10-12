@@ -23,6 +23,15 @@ Partial Public Class ProtVisualizza
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
 
     '''<summary>
+    '''radNotificationInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents radNotificationInfo As Global.Telerik.Web.UI.RadNotification
+
+    '''<summary>
     '''RadWindowManagerProt control.
     '''</summary>
     '''<remarks>
@@ -57,15 +66,6 @@ Partial Public Class ProtVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowPrintLabel As Global.Telerik.Web.UI.RadWindow
-
-    '''<summary>
-    '''windowRequestStatement control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents windowRequestStatement As Global.Telerik.Web.UI.RadWindow
 
     '''<summary>
     '''RejectMotivation control.
@@ -230,15 +230,6 @@ Partial Public Class ProtVisualizza
     Protected WithEvents btnMail As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
-    '''btnSendIP4D control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnSendIP4D As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
     '''btnMailSettori control.
     '''</summary>
     '''<remarks>
@@ -320,13 +311,13 @@ Partial Public Class ProtVisualizza
     Protected WithEvents btnHighlight As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
-    '''btnStatements control.
+    '''btnRemoveHighlight control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnStatements As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnRemoveHighlight As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''btnWorkflow control.
@@ -606,15 +597,6 @@ Partial Public Class ProtVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnCallbackDuplica As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''btnCallbackRequestStatement control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnCallbackRequestStatement As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''ReportButtons control.

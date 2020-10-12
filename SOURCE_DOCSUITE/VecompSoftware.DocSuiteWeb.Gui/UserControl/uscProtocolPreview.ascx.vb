@@ -14,8 +14,8 @@ Partial Public Class uscProtocolPreview
 
     Public Property CurrentProtocol() As Protocol
         Get
-            If _currentProtocol Is Nothing And CurrentProtocolId IsNot Nothing Then
-                _currentProtocol = Facade.ProtocolFacade.GetById(CurrentProtocolId)
+            If _currentProtocol Is Nothing AndAlso CurrentProtocolId.HasValue Then
+                _currentProtocol = Facade.ProtocolFacade.GetById(CurrentProtocolId.Value)
             End If
             Return _currentProtocol
         End Get
@@ -25,11 +25,14 @@ Partial Public Class uscProtocolPreview
         End Set
     End Property
 
-    Public Property CurrentProtocolId As YearNumberCompositeKey
+    Public Property CurrentProtocolId As Guid?
         Get
-            Return CType(ViewState("CurrentProtocolID"), YearNumberCompositeKey)
+            If ViewState("CurrentProtocolID") IsNot Nothing Then
+                Return DirectCast(ViewState("CurrentProtocolID"), Guid)
+            End If
+            Return Nothing
         End Get
-        Set(value As YearNumberCompositeKey)
+        Set(value As Guid?)
             ViewState("CurrentProtocolID") = value
         End Set
     End Property
@@ -67,8 +70,8 @@ Partial Public Class uscProtocolPreview
         cmdProtocol.Icon.PrimaryIconUrl = "../Comm/Images/DocSuite/Protocollo16.gif"
         cmdProtocol.Icon.PrimaryIconHeight = Unit.Pixel(16)
         cmdProtocol.Icon.PrimaryIconWidth = Unit.Pixel(16)
-        cmdProtocol.Text = String.Format("{0} del {1}", CurrentProtocol.Id, String.Format(ProtocolEnv.ProtRegistrationDateFormat, CurrentProtocol.RegistrationDate.ToLocalTime()))
-        Dim params As String = String.Format("Year={0}&Number={1}", CurrentProtocol.Year, CurrentProtocol.Number)
+        cmdProtocol.Text = String.Format("{0} del {1}", CurrentProtocol.FullNumber, String.Format(ProtocolEnv.ProtRegistrationDateFormat, CurrentProtocol.RegistrationDate.ToLocalTime()))
+        Dim params As String = String.Format("UniqueId={0}&Type=Prot", CurrentProtocol.Id)
         cmdProtocol.NavigateUrl = String.Concat("~/Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(params))
 
         lblType.Text = CurrentProtocol.Type.Description

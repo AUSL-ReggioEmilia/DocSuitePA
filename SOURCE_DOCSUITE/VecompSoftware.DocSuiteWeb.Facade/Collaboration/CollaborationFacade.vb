@@ -16,6 +16,7 @@ Imports VecompSoftware.Helpers.Web
 Imports VecompSoftware.DocSuiteWeb.API
 Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.DocSuiteWeb.DTO.Collaborations
+Imports Newtonsoft.Json
 
 <ComponentModel.DataObject()>
 Public Class CollaborationFacade
@@ -69,7 +70,7 @@ Public Class CollaborationFacade
         doc.Signature = signature
 
         Dim location As Location = Factory.LocationFacade.GetById(DocSuiteContext.Current.ProtocolEnv.CollaborationLocation)
-        Dim archivedBiblosChainId As Integer = doc.ArchiveInBiblos(location.DocumentServer, location.ProtBiblosDSDB).BiblosChainId
+        Dim archivedBiblosChainId As Integer = doc.ArchiveInBiblos(location.ProtBiblosDSDB).BiblosChainId
         Factory.CollaborationVersioningFacade.InsertDocument(collNumber, archivedBiblosChainId, documentName, username, username)
     End Sub
 
@@ -97,7 +98,7 @@ Public Class CollaborationFacade
         Dim doc As New MemoryDocumentInfo(stream, documentName)
         doc.Signature = signature
         Dim location As Location = Factory.LocationFacade.GetById(DocSuiteContext.Current.ProtocolEnv.CollaborationLocation)
-        Dim chainId As Integer = doc.ArchiveInBiblos(location.DocumentServer, location.ProtBiblosDSDB).BiblosChainId
+        Dim chainId As Integer = doc.ArchiveInBiblos(location.ProtBiblosDSDB).BiblosChainId
         Factory.CollaborationVersioningFacade.InsertDocument(collNumber, chainId, documentName, username, username, index + 1S)
     End Sub
 
@@ -1071,52 +1072,51 @@ Public Class CollaborationFacade
 
 #End Region
 
-    Public Sub ChangeSigner(ByVal idList As IList(Of Integer), ByVal changeSigner As ChangeSignerDTO, ByRef countChanged As Integer, ByRef countTotal As Integer)
+    Public Sub ChangeSigner(ByVal coll As Collaboration, ByVal changeSigner As ChangeSignerDTO, ByRef countChanged As Integer, ByRef countTotal As Integer, ByRef pushNotify As Boolean)
         Dim roleUserFacade As New RoleUserFacade(ProtDB)
         Dim roleFacade As New RoleFacade(ProtDB)
+        pushNotify = False
+        countTotal += 1
+        Dim collSign As CollaborationSign = coll.GetFirstCollaborationSignActive()
 
-        For Each id As Integer In idList
-            countTotal += 1
-            Dim coll As Collaboration = GetById(id)
-            Dim collSign As CollaborationSign = coll.GetFirstCollaborationSignActive()
-
-            If DocSuiteContext.Current.ProtocolEnv.StrictManagerChange Then
-                Dim roleIds As List(Of Integer) = roleUserFacade.GetManagersByCollaboration(coll.Id, collSign.SignUser).Select(Function(x) x.Role.Id).ToList()
-                Dim collSecretary As IList(Of RoleUser) = roleUserFacade.GetByRoleIdsAndAccount(roleIds, DocSuiteContext.Current.User.FullUserName, RoleUserType.S.ToString())
-                If Not collSign.SignUser.Eq(DocSuiteContext.Current.User.FullUserName) AndAlso (collSecretary Is Nothing OrElse (collSecretary IsNot Nothing AndAlso collSecretary.Count = 0)) Then
-                    Continue For
-                End If
+        If DocSuiteContext.Current.ProtocolEnv.StrictManagerChange Then
+            Dim roleIds As List(Of Integer) = roleUserFacade.GetManagersByCollaboration(coll.Id, collSign.SignUser).Select(Function(x) x.Role.Id).ToList()
+            Dim collSecretary As IList(Of RoleUser) = roleUserFacade.GetByRoleIdsAndAccount(roleIds, DocSuiteContext.Current.User.FullUserName, RoleUserType.S.ToString())
+            If Not collSign.SignUser.Eq(DocSuiteContext.Current.User.FullUserName) AndAlso (collSecretary Is Nothing OrElse (collSecretary IsNot Nothing AndAlso collSecretary.Count = 0)) Then
+                Exit Sub
             End If
+        End If
 
-            'Se in stato da protocollare la collaborazione non può cambiare responsabile
-            If coll.IdStatus.Eq(CollaborationStatusType.DP.ToString()) Then
-                Factory.CollaborationLogFacade.Insert(coll, 0, 0, 0, CollaborationLogType.CR, "Cambio Responsabile Non possibile collaborazione in stato Da Protocollare")
-                Continue For
-            End If
+        'Se in stato da protocollare la collaborazione non può cambiare responsabile
+        If coll.IdStatus.Eq(CollaborationStatusType.DP.ToString()) Then
+            Factory.CollaborationLogFacade.Insert(coll, 0, 0, 0, CollaborationLogType.CR, "Cambio Responsabile Non possibile collaborazione in stato Da Protocollare")
+            Exit Sub
+        End If
 
-            Dim contactForward As New List(Of CollaborationContact)
-            Dim accountFw As CollaborationContact = Nothing
-            Dim account As IList(Of RoleUser) = roleUserFacade.GetByRoleIdAndAccount(changeSigner.RoleId, changeSigner.Destination, "")
-            If account.Count > 0 Then
-                Dim description As String = GetSignerDescription(account(0).Description, changeSigner.Destination, coll.DocumentType)
-                accountFw = New CollaborationContact(changeSigner.Destination, Nothing, description, account(0).Email, False)
-                contactForward.Add(accountFw)
-            End If
+        Dim contactForward As New List(Of CollaborationContact)
+        Dim accountFw As CollaborationContact = Nothing
+        Dim account As IList(Of RoleUser) = roleUserFacade.GetByRoleIdAndAccount(changeSigner.RoleId, changeSigner.Destination, "")
+        If account.Count > 0 Then
+            Dim description As String = GetSignerDescription(account(0).Description, changeSigner.Destination, coll.DocumentType)
+            accountFw = New CollaborationContact(changeSigner.Destination, Nothing, description, account(0).Email, False)
+            contactForward.Add(accountFw)
+        End If
 
-            If (collSign Is Nothing) OrElse Not collSign.SignUser.Eq(changeSigner.Origin) Then
-                Factory.CollaborationLogFacade.Insert(coll, collSign.Incremental, collSign.Incremental, 0, CollaborationLogType.CR, String.Format("Cambio Responsabile Non possibile non è ancora il turno di [{0}].", collSign.SignUser))
-                Continue For
-            End If
+        If (collSign Is Nothing) OrElse Not collSign.SignUser.Eq(changeSigner.Origin) Then
+            Factory.CollaborationLogFacade.Insert(coll, collSign.Incremental, collSign.Incremental, 0, CollaborationLogType.CR, String.Format("Cambio Responsabile Non possibile non è ancora il turno di [{0}].", collSign.SignUser))
+            Exit Sub
+        End If
 
-            Factory.CollaborationLogFacade.Insert(coll, collSign.Incremental, collSign.Incremental, 0, CollaborationLogType.CR, String.Format("Cambio Responsabile [{0}].", collSign.SignUser))
-            If coll.SignCount.HasValue AndAlso (coll.SignCount.Value > 1) Then
-                Factory.CollaborationSignsFacade.ShiftUsers(coll.Id, accountFw, changeSigner.Destination, DocSuiteContext.Current.User.FullUserName)
-            Else
-                Update(coll, "", Nothing, "", Nothing, Nothing, Nothing, Nothing, Nothing, contactForward, Nothing, Nothing, Nothing, collSign.SignUser, 0, True)
-            End If
-            SendMail(coll, CollaborationMainAction.CambioResponsabile)
-            countChanged += 1
-        Next
+        Factory.CollaborationLogFacade.Insert(coll, collSign.Incremental, collSign.Incremental, 0, CollaborationLogType.CR, String.Format("Cambio Responsabile [{0}].", collSign.SignUser))
+        If coll.SignCount.HasValue AndAlso (coll.SignCount.Value > 1) Then
+            Factory.CollaborationSignsFacade.ShiftUsers(coll.Id, accountFw, changeSigner.Destination, DocSuiteContext.Current.User.FullUserName)
+        Else
+            Update(coll, "", Nothing, "", Nothing, Nothing, Nothing, Nothing, Nothing, contactForward, Nothing, Nothing, Nothing, collSign.SignUser, 0, True)
+        End If
+
+        SendMail(coll, CollaborationMainAction.CambioResponsabile)
+        countChanged += 1
+        pushNotify = True
     End Sub
 
     Public Sub NextStep(ByVal idList As IList(Of Integer), Optional managersAccounts As AbsentManager() = Nothing)
@@ -1148,6 +1148,14 @@ Public Class CollaborationFacade
                     SendMail(coll, CollaborationMainAction.DaVisionareFirmare)
                     Factory.CollaborationLogFacade.Insert(coll, "Prosegui al destinatario successivo")
                 Else
+                    'Aggiorno
+                    If DocSuiteContext.Current.ProtocolEnv.ForceCollaborationSignDateEnabled Then
+                        Dim activeSigner As CollaborationSign = coll.GetFirstCollaborationSignActive()
+                        If Not activeSigner.SignDate.HasValue Then
+                            activeSigner.SignDate = _dao.GetServerDate()
+                            Factory.CollaborationSignsFacade.UpdateOnly(activeSigner)
+                        End If
+                    End If
                     ' Ultimo destinatario di firma, metto in da protocollare
                     If Factory.ResolutionFacade.UpdateResolutionFromCollaboration(coll) Then
                         Update(coll, String.Empty, Nothing, String.Empty, Nothing, CollaborationStatusType.WM, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, String.Empty, 0, False)
@@ -1158,7 +1166,7 @@ Public Class CollaborationFacade
                         Factory.CollaborationLogFacade.Insert(coll, "Avanzamento al protocollo/segreteria")
                     End If
                 End If
-
+                UpdateBiblosSignsModel(coll)
             Catch ex As DocSuiteException
                 Throw
             Catch ex As Exception
@@ -1167,7 +1175,38 @@ Public Class CollaborationFacade
             End Try
         Next
     End Sub
+    Public Sub UpdateBiblosSignsModel(ByRef coll As Collaboration)
+        If DocSuiteContext.Current.ProtocolEnv.ForceCollaborationSignDateEnabled Then
+            Dim signerModels As List(Of CollaborationSignModel) = Factory.CollaborationSignsFacade.GetCollaborationSignModel(coll.Id)
+            Dim documentsDictionary As IDictionary(Of Guid, BiblosDocumentInfo)
+            documentsDictionary = Factory.CollaborationVersioningFacade.GetLastVersionDocuments(coll, VersioningDocumentGroup.MainDocument)
+            StoreDocumentMetadatas(documentsDictionary, signerModels)
+            'documento omissis
+            documentsDictionary = Factory.CollaborationVersioningFacade.GetLastVersionDocuments(coll, VersioningDocumentGroup.MainDocumentOmissis)
+            StoreDocumentMetadatas(documentsDictionary, signerModels)
+            'allegati
+            documentsDictionary = Factory.CollaborationVersioningFacade.GetLastVersionDocuments(coll, VersioningDocumentGroup.Attachment)
+            StoreDocumentMetadatas(documentsDictionary, signerModels)
+            'allegati omissis
+            documentsDictionary = Factory.CollaborationVersioningFacade.GetLastVersionDocuments(coll, VersioningDocumentGroup.AttachmentOmissis)
+            StoreDocumentMetadatas(documentsDictionary, signerModels)
+            'annessi
+            documentsDictionary = Factory.CollaborationVersioningFacade.GetLastVersionDocuments(coll, VersioningDocumentGroup.Annexed)
+            StoreDocumentMetadatas(documentsDictionary, signerModels)
+        End If
+    End Sub
 
+    Private Sub StoreDocumentMetadatas(ByVal documentsDictionary As IDictionary(Of Guid, BiblosDocumentInfo), ByVal signerModels As List(Of CollaborationSignModel))
+        If Not documentsDictionary.IsNullOrEmpty() Then
+            Dim documents As IList(Of BiblosDocumentInfo) = New List(Of BiblosDocumentInfo)(documentsDictionary.Values)
+            If Not documents.IsNullOrEmpty() Then
+                For Each document As BiblosDocumentInfo In documents
+                    document.AddAttribute(BiblosFacade.SING_MODELS_ATTRIBUTE, JsonConvert.SerializeObject(signerModels))
+                    Service.UpdateDocument(document, DocSuiteContext.Current.User.FullUserName)
+                Next
+            End If
+        End If
+    End Sub
     Public Function GetFdqDocuments(ByVal idCollList As List(Of Integer)) As IList(Of DocumentFDQDTO)
         Return _dao.GetFDQDocuments(idCollList)
     End Function
@@ -1329,31 +1368,9 @@ Public Class CollaborationFacade
         Return String.Format("Collaborazione {0} del {1:dd/MM/yyyy}", collaboration.Id, collaboration.RegistrationDate)
     End Function
 
-    Public Sub FinalizeToProtocol(id As Integer, protocol As Protocol)
-        FinalizeToProtocol(GetById(id), protocol)
-    End Sub
-
-    Public Sub FinalizeToProtocol(collaboration As Collaboration, protocol As Protocol)
-        Update(collaboration, "", Nothing, "", Nothing, CollaborationStatusType.PT, Nothing, Nothing, Nothing, Nothing, protocol.Year, protocol.Number, Nothing, "", 0, False)
+    Public Sub FinalizeToProtocol(collaboration As Collaboration)
+        Update(collaboration, "", Nothing, "", Nothing, CollaborationStatusType.PT, Nothing, Nothing, Nothing, Nothing, collaboration.Year, collaboration.Number, Nothing, "", 0, False)
         SendMail(collaboration, CollaborationMainAction.ProtocollatiGestiti)
-    End Sub
-
-    Public Sub FinalizeSecureDocument(collaboration As Collaboration)
-        Try
-            Dim versionings As ICollection(Of CollaborationVersioning) = FacadeFactory.Instance.CollaborationVersioningFacade.GetLastVersionings(collaboration)
-            Dim document As BiblosDocumentInfo
-            Dim secureAttribute As String
-            For Each versioning As CollaborationVersioning In versionings
-                document = New BiblosDocumentInfo(collaboration.Location.DocumentServer, collaboration.Location.ProtBiblosDSDB, versioning.IdDocument)
-                If document IsNot Nothing AndAlso document.Attributes.ContainsKey(BiblosFacade.SECURE_DOCUMENT_ATTRIBUTE) Then
-                    secureAttribute = document.GetAttributeValue(BiblosFacade.SECURE_DOCUMENT_ATTRIBUTE).ToString()
-                    Services.StampaConforme.Service.UploadSecureDocument(document.Stream, secureAttribute)
-                End If
-            Next
-        Catch ex As Exception
-            FileLogger.Error(LoggerName, "Errore nella fase di upload documento securizzato", ex)
-            Throw New DocSuiteException("Errore nella fase di conclusione documento securizzato di collaborazione", ex)
-        End Try
     End Sub
 
     ''' <summary>
@@ -1374,7 +1391,7 @@ Public Class CollaborationFacade
     ''' <param name="type"> 1 - sostantivo, 2 - moto a luogo, 3 - azione. </param>
     ''' <remarks> Mah </remarks>
     Public Shared Function GetModuleName(ByVal documentType As String, ByVal type As String) As String
-        Dim name As String = ""
+        Dim name As String = "Gestisci"
         Select Case documentType
             Case CollaborationDocumentType.P.ToString()
                 Select Case type

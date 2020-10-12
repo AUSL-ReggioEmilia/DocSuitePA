@@ -1,12 +1,13 @@
-﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("VecompSoftware.DaoManager")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyConfiguration("release")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("VecompSoftware.DaoManager")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2019")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyMetadata("tags", "VecompSoftware.DaoManager")]
@@ -17,5 +18,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("992a4c8e-ea09-4650-bb89-d48e201f4bb0")]
 
-[assembly: AssemblyVersion("8.88.0.0")]
-[assembly: AssemblyFileVersion("8.88.0.0")]
+[assembly: AssemblyVersion("9.09.20286.02")]
+[assembly: AssemblyFileVersion("9.09.20286.02")]

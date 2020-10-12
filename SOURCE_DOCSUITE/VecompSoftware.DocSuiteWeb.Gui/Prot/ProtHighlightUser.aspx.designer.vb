@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class ProtHighlightUser
-    
+
     '''<summary>
     '''uscUserSearch control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class ProtHighlightUser
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUserSearch As Global.VecompSoftware.DocSuiteWeb.Gui.uscSearchADUser
-    
+
     '''<summary>
     '''note control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class ProtHighlightUser
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents note As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''rtbProtocolNotes control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class ProtHighlightUser
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtbProtocolNotes As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''btnConfirm control.
     '''</summary>
@@ -48,7 +48,16 @@ Partial Public Class ProtHighlightUser
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConfirm As Global.System.Web.UI.WebControls.Button
-    
+
+    '''<summary>
+    '''btnConfirmAndRemoveHighlight control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnConfirmAndRemoveHighlight As Global.System.Web.UI.WebControls.Button
+
     '''<summary>
     '''btnHighlightToMe control.
     '''</summary>
@@ -57,7 +66,7 @@ Partial Public Class ProtHighlightUser
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnHighlightToMe As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnRemoveHighlight control.
     '''</summary>

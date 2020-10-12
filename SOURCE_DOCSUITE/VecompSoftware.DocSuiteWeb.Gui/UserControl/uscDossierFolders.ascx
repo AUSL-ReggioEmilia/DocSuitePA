@@ -18,11 +18,16 @@
                 uscDossierFolders.managerCreateFolderId = "<%= managerCreateFolder.ClientID %>";
                 uscDossierFolders.managerFascicleLinkId = "<%= managerFascicleLink.ClientID %>";
                 uscDossierFolders.managerModifyFolderId = "<%= managerModifyFolder.ClientID%>";
+                uscDossierFolders.managerModifyFascicle = "<%=managerModifyFascicle.ClientID%>";
                 uscDossierFolders.managerCreateFascicleFolderId = "<%=managerCreateFascicleFolder.ClientID%>";
                 uscDossierFolders.managerId = "<%= BasePage.MasterDocSuite.DefaultWindowManager.ClientID %>";
                 uscDossierFolders.persistanceDisabled = <%= PersistanceDisabled.ToString().ToLower() %>;
                 uscDossierFolders.hideFascicleAssociateButton = <%= HideFascicleAssociateButton.ToString().ToLower() %>;
                 uscDossierFolders.hideStatusToolbar = <%= HideStatusToolbar.ToString().ToLower() %>;
+                uscDossierFolders.processEnabled = <%= ProtocolEnv.ProcessEnabled.ToString().ToLower() %>;
+                uscDossierFolders.isWindowPopupEnable = <%= IsWindowPopupEnable.ToString().ToLower() %>;
+                uscDossierFolders.btnSelectDossierFolderId = "<%= btnSelectDossierFolder.ClientID %>";
+                uscDossierFolders.fascicleModifyButtonEnable = <%= FascicleModifyButtonEnable.ToString().ToLower() %>;
                 uscDossierFolders.initialize();
             });
         });
@@ -43,6 +48,7 @@
         <telerik:RadWindow Height="600" ID="managerCreateFascicleFolder" runat="server" Title="Crea nuova cartella con fascicolo" Width="750" />
         <telerik:RadWindow Height="600" ID="managerFascicleLink" runat="server" Title="Aggiungi fascicolo" Width="750" />
         <telerik:RadWindow Height="600" ID="managerModifyFolder" runat="server" Title="Modifica cartella" Width="750" />
+        <telerik:RadWindow Height="600" ID="managerModifyFascicle" runat="server" Title="Modifica fascicolo" Width="750" />
     </Windows>
 </telerik:RadWindowManager>
 
@@ -52,12 +58,15 @@
             <Content>
                 <telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%">
                     <Items>
-                        <telerik:RadToolBarButton ToolTip="Crea cartella" CheckOnClick="false" Checked="false" Value="createFolder" ImageUrl="../App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
-                        <telerik:RadToolBarButton ToolTip="Modifica cartella" CheckOnClick="false" Checked="false" Value="modifyFolder" ImageUrl="../App_Themes/DocSuite2008/imgset16/modify_folder.png" />
-                        <telerik:RadToolBarButton ToolTip="Elimina cartella" CheckOnClick="false" Checked="false" Value="deleteFolder" ImageUrl="../App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
-                        <telerik:RadToolBarButton ToolTip="Crea Fascicolo" CheckOnClick="false" Checked="false" Value="createFascicle" ImageUrl="../App_Themes/DocSuite2008/imgset16/fascicle_open.png" />
-                        <telerik:RadToolBarButton ToolTip="Aggiungi fascicolo" CheckOnClick="false" Checked="false" Value="addFascicle" ImageUrl="../App_Themes/DocSuite2008/imgset16/add_fascicle.png" />
-                        <telerik:RadToolBarButton ToolTip="Rimuovi fascicolo" CheckOnClick="false" Checked="false" Value="removeFascicle" ImageUrl="../App_Themes/DocSuite2008/imgset16/remove_fascicle.png" />
+                        <telerik:RadToolBarButton ToolTip="Crea cartella" style="display:none;" CheckOnClick="false" Checked="false" Value="createFolder" ImageUrl="../App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+                        <telerik:RadToolBarButton ToolTip="Modifica cartella" style="display:none;" CheckOnClick="false" Checked="false" Value="modifyFolder" ImageUrl="../App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+                        <telerik:RadToolBarButton ToolTip="Elimina cartella" style="display:none;" CheckOnClick="false" Checked="false" Value="deleteFolder" ImageUrl="../App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
+                        <telerik:RadToolBarButton ToolTip="Crea Fascicolo" style="display:none;" CheckOnClick="false" Checked="false" Value="createFascicle" ImageUrl="../App_Themes/DocSuite2008/imgset16/fascicle_open.png" />
+                        <telerik:RadToolBarButton ToolTip="Aggiungi fascicolo" style="display:none;" CheckOnClick="false" Checked="false" Value="addFascicle" ImageUrl="../App_Themes/DocSuite2008/imgset16/add_fascicle.png" />
+                        <telerik:RadToolBarButton ToolTip="Modifica fascicolo" style="display:none;" CheckOnClick="false" Checked="false" Value="modifyFascicle" ImageUrl="../App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+                        <telerik:RadToolBarButton ToolTip="Rimuovi fascicolo" style="display:none;" CheckOnClick="false" Checked="false" Value="removeFascicle" ImageUrl="../App_Themes/DocSuite2008/imgset16/remove_fascicle.png" />
+                        <telerik:RadToolBarButton ToolTip="Ricaricare cartella" CheckOnClick="false" Checked="false" Value="refreshDossierFolders" ImageUrl="../App_Themes/DocSuite2008/imgset16/Activity_16x.png" />
+                        <telerik:RadToolBarButton ToolTip="Crea fascicolo da template" style="display:none;" CheckOnClick="false" Checked="false" Value="createFascicleFromTemplate" ImageUrl="../App_Themes/DocSuite2008/imgset16/clone.png" />
                     </Items>
                 </telerik:RadToolBar>
                 <telerik:RadToolBar CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="StatusToolBar" runat="server" Width="100%">
@@ -87,6 +96,13 @@
                         </Nodes>
                     </telerik:RadTreeView>
                 </div>
+            </Content>
+        </telerik:LayoutRow>
+    </Rows>
+    <Rows>
+        <telerik:LayoutRow HtmlTag="Div" style="position: fixed; bottom: 1em;">
+            <Content>
+                <telerik:RadButton runat="server" ID="btnSelectDossierFolder" AutoPostBack="false" Text="Seleziona cartella" Visible="false" />
             </Content>
         </telerik:LayoutRow>
     </Rows>

@@ -15,7 +15,7 @@ Namespace Prot
         Inherits CommonBasePage
 
 #Region " Fields "
-        Private _protocolContactDictionary As IDictionary(Of YearNumberCompositeKey, Contact)
+        Private _protocolContactDictionary As IDictionary(Of Guid, Contact)
         Private _gridDataSource As IList(Of ProtocolHeader)
 #End Region
 
@@ -30,7 +30,7 @@ Namespace Prot
             End Get
         End Property
 
-        Private ReadOnly Property ProtocolContactDictionary As IDictionary(Of YearNumberCompositeKey, Contact)
+        Private ReadOnly Property ProtocolContactDictionary As IDictionary(Of Guid, Contact)
             Get
                 If _protocolContactDictionary Is Nothing Then
                     _protocolContactDictionary = Facade.ProtocolFacade.GetProtocolContactDictionary(GridDataSource)
@@ -81,17 +81,17 @@ Namespace Prot
             End If
 
             Dim boundHeader As ProtocolHeader = DirectCast(e.Item.DataItem, ProtocolHeader)
-            Dim hiddenId As String = String.Format("{0}|{1}", boundHeader.Year, boundHeader.Number)
+            Dim hiddenId As String = String.Format("{0}|{1}|{2}", boundHeader.UniqueId, boundHeader.Year, boundHeader.Number)
 
             With DirectCast(e.Item.FindControl("lbtViewProtocol"), LinkButton)
                 .Text = boundHeader.FullProtocolNumber
                 .CommandArgument = hiddenId
 
                 If RedirectOnParentPage Then
-                    Dim parameters As String = String.Format("Year={0}&Number={1}&Type={2}", boundHeader.Year, boundHeader.Number, "Prot")
+                    Dim parameters As String = String.Format("UniqueId={0&Type=Prot", boundHeader.UniqueId)
                     parameters = CommonShared.AppendSecurityCheck(parameters)
 
-                    Dim parentPageUrl As String = "../Prot/ProtVisualizza.aspx?" & parameters
+                    Dim parentPageUrl As String = $"~/Prot/ProtVisualizza.aspx?{parameters}"
                     Dim parentPageScript As String = grdConcourse.GetRedirectParentPageScript(parentPageUrl)
 
                     .OnClientClick = parentPageScript
@@ -99,6 +99,9 @@ Namespace Prot
             End With
 
             Dim currentContact As Contact = GetContactByHeader(boundHeader)
+            If currentContact Is Nothing Then
+                Exit Sub
+            End If
             DirectCast(e.Item.FindControl("lblProtocolContactLastName"), Label).Text = currentContact.LastName
             DirectCast(e.Item.FindControl("lblProtocolContactFirstName"), Label).Text = currentContact.FirstName
 
@@ -117,7 +120,9 @@ Namespace Prot
             Select Case e.CommandName
                 Case "ViewProtocol"
                     Dim split As String() = e.CommandArgument.ToString().Split("|"c)
-                    Dim ynck As New YearNumberCompositeKey(CType(split(0), Short?), CType(split(1), Integer?))
+                    Dim protocolId As Guid = Guid.Parse(split(0))
+                    Dim protocolYear As Short = Short.Parse(split(1))
+                    Dim protocolNumber As Integer = Integer.Parse(split(2))
 
                     Select Case Action
                         Case "CopyProtocolDocuments", "Fasc", "Resl"
@@ -125,9 +130,9 @@ Namespace Prot
                             AjaxManager.ResponseScripts.Add(script)
 
                         Case Else
-                            Dim parameters As String = String.Format("Year={0}&Number={1}&Type=Prot", ynck.Year, ynck.Number)
+                            Dim parameters As String = $"UniqueId={protocolId}&Type=Prot"
                             parameters = CommonShared.AppendSecurityCheck(parameters)
-                            RedirectOnPage("../Prot/ProtVisualizza.aspx?" & parameters)
+                            RedirectOnPage($"~/Prot/ProtVisualizza.aspx?{parameters}")
                     End Select
             End Select
         End Sub
@@ -180,8 +185,8 @@ Namespace Prot
 
 #Region " Methods "
         Private Function GetContactByHeader(protocolHeader As ProtocolHeader) As Contact
-            If ProtocolContactDictionary IsNot Nothing AndAlso ProtocolContactDictionary.Keys.Contains(protocolHeader.ProtocolCompositeKey) Then
-                Return ProtocolContactDictionary.Item(protocolHeader.ProtocolCompositeKey)
+            If ProtocolContactDictionary IsNot Nothing AndAlso ProtocolContactDictionary.Keys.Contains(protocolHeader.UniqueId) Then
+                Return ProtocolContactDictionary.Item(protocolHeader.UniqueId)
             Else
                 Return Nothing
             End If

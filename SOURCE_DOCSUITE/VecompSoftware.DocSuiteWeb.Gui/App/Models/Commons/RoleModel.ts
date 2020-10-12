@@ -1,4 +1,5 @@
-﻿
+﻿import CategoryFascicleRightModel = require("App/Models/Commons/CategoryFascicleRightModel");
+
 interface RoleModel {
     UniqueId: string;
     EntityShortId: number;
@@ -12,6 +13,7 @@ interface RoleModel {
     ServiceCode: string;
     ActiveFrom?: string;
     Children?: RoleModel[];
+    CategoryFascicleRights: CategoryFascicleRightModel[];
 }
 
 export = RoleModel;

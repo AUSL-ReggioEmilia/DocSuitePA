@@ -15,24 +15,16 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
 
         #region [ Properties ]
         public Guid? WorkflowInstanceId { get; set; }
-
         public Guid? DocumentUnitReferenced { get; set; }
-
         public ICollection<WorkflowStatus> Statuses { get; set; }
-
         public WorkflowActivityType? ActivityType { get; set; }
-
         public string Name { get; set; }
-
         public bool? WorkflowInstanceInProgress { get; set; }
-
         public bool? IsAuthorized { get; set; }
-
         public string Account;
-
         public bool? Top1 { get; set; }
-
         public bool ExpandProperties { get; set; }
+        public bool ExpandRepository { get; set; }
         #endregion
 
         #region [ Constructor ]
@@ -81,6 +73,11 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
                 odataQuery = odataQuery.Expand("WorkflowProperties");
             }
 
+            if (ExpandRepository)
+            {
+                odataQuery = odataQuery.Expand("WorkflowInstance($expand=WorkflowRepository)");
+            }
+
             if (Statuses.Count > 0)
             {
                 ICollection<string> expressions = Statuses.Select(s => string.Format("Status eq VecompSoftware.DocSuiteWeb.Entity.Workflows.WorkflowStatus'{0}'", (int)s)).ToList();
@@ -107,6 +104,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
             WorkflowInstanceInProgress = null;
             Top1 = null;
             ExpandProperties = false;
+            ExpandRepository = false;
             EnableTopOdata = true;
         }
         #endregion

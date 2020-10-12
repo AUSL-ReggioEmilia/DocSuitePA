@@ -1,4 +1,4 @@
-define(["require", "exports", "App/Services/Securities/DomainUserService", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO"], function (require, exports, DomainUserService, ServiceConfigurationHelper, ExceptionDTO) {
+define(["require", "exports", "App/Services/Securities/DomainUserService", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, DomainUserService, ServiceConfigurationHelper, ExceptionDTO, SessionStorageKeysHelper) {
     var ViewMetadataComments = /** @class */ (function () {
         function ViewMetadataComments(serviceConfigurations) {
             this._serviceConfigurations = serviceConfigurations;
@@ -7,7 +7,7 @@ define(["require", "exports", "App/Services/Securities/DomainUserService", "App/
             var _this = this;
             var domainUserConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DomainUserModel");
             this._domainUserService = new DomainUserService(domainUserConfiguration);
-            var metadataModelSession = sessionStorage.getItem("CurrentMetadataValues");
+            var metadataModelSession = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_CURRENT_METADATA_VALUES);
             this.pageContent = $("#".concat(this.pageContentId))[0];
             if (metadataModelSession) {
                 var model = JSON.parse(metadataModelSession);

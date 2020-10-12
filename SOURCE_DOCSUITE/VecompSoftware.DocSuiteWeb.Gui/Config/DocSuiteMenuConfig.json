@@ -39,10 +39,10 @@
       "FirstNode13": {
         "Name": "Altre attività sui documenti",
         "Nodes": {
-          "SecondNode1": { "Name": "Attività" },
-          "SecondNode2": { "Name": "Attestazioni di conformità" }
+          "SecondNode1": { "Name": "Attività" }
         }
-      }
+      },
+      "FirstNode14": { "Name": "Da firmare in delega" }
     }
   },
   "Menu4": {
@@ -81,7 +81,6 @@
       "FirstNode10": { "Name": "Importazione lettere" },
       "FirstNode11": { "Name": "Importazione lettere Excel" },
       "FirstNode12": { "Name": "Importazione" },
-      "FirstNode13": { "Name": "Modifica oggetti" },
       "FirstNode14": { "Name": "Ricerca registri" },
       "FirstNode15": {
         "Name": "Poste Web",
@@ -186,8 +185,11 @@
           "SecondNode2": { "Name": "Ricerca" },
           "SecondNode3": { "Name": "Documenti da fascicolare" },
           "SecondNode4": { "Name": "Avvia fascicoli periodici" },
-          "SecondNode5": { "Name": "Inserimento guidato" }
+          "SecondNode5": { "Name": "Fascicoli da chiudere" }
         }
+      },
+      "FirstNode3": {
+        "Name": "Vista archivistica"
       }
     }
   },
@@ -206,7 +208,8 @@
           "SecondNode6": { "Name": "Recapito in corso" },
           "SecondNode7": { "Name": "Mancato recapito" },
           "SecondNode8": { "Name": "Consegnata" },
-          "SecondNode9": { "Name": "Rifiutata dallo SDI" }
+          "SecondNode9": { "Name": "Rifiutata dallo SDI" },
+          "SecondNode10": { "Name": "Flusso di lavoro" }
         }
       },
       "FirstNode3": {
@@ -222,7 +225,8 @@
           "SecondNode8": { "Name": "Consegnata" },
           "SecondNode9": { "Name": "Rifiutata dallo SDI" },
           "SecondNode10": { "Name": "Accettata" },
-          "SecondNode11": { "Name": "Rifiutata" }
+          "SecondNode11": { "Name": "Rifiutata" },
+          "SecondNode12": { "Name": "Flusso di lavoro" }
         }
       },
       "FirstNode4": {
@@ -232,7 +236,8 @@
           "SecondNode2": { "Name": "In attesa dati contabili" },
           "SecondNode3": { "Name": "Contabilizzata" },
           "SecondNode4": { "Name": "B2B in errore" },
-          "SecondNode5": { "Name": "B2B in lavorazione" }
+          "SecondNode5": { "Name": "B2B in lavorazione" },
+          "SecondNode6": { "Name": "Flusso di lavoro" }
         }
       },
       "FirstNode5": {
@@ -322,8 +327,7 @@
       "FirstNode4": { "Name": "Posta eliminata" },
       "FirstNode5": { "Name": "Apertura da file" },
       "FirstNode6": { "Name": "Reportistica" },
-      "FirstNode7": { "Name": "PEC Log" },
-      "FirstNode8": { "Name": "PEC in errore" }
+      "FirstNode7": { "Name": "PEC Log" }
     }
   },
   "Menu11": {
@@ -348,11 +352,12 @@
         }
       },
       "FirstNode8": {
-        "Name": "Titolario",
+        "Name": "Gestione archivistica",
         "Nodes": {
-          "SecondNode1": { "Name": "Classificatore" },
+          "SecondNode4": { "Name": "Gestione serie e volumi" },
+          "SecondNode1": { "Name": "Classificatore/Titolario" },
           "SecondNode2": { "Name": "Massimario di scarto" },
-          "SecondNode3": { "Name": "Versione del classificatore" }
+          "SecondNode3": { "Name": "Versione del classificatore/titolario" }
         }
       },
       "FirstNode9": {
@@ -364,7 +369,13 @@
         }
       },
       "FirstNode11": { "Name": "Settori" },
-      "FirstNode12": { "Name": "Contenitori" },
+      "FirstNode12": {
+        "Name": "Gestione contenitori" ,
+        "Nodes": {
+          "SecondNode1": { "Name": "Contenitori" },
+          "SecondNode2": { "Name": "Deposito Documentale" }
+        }
+      },
       "FirstNode14": { "Name": "Scatoloni" },
       "FirstNode15": {
         "Name": "Stampe",
@@ -385,7 +396,7 @@
           "SecondNode1": { "Name": "Template di protocollo" },
           "SecondNode2": { "Name": "Template di collaborazione" },
           "SecondNode3": { "Name": "Template di trasparenza" },
-          "SecondNode4": { "Name": "Deposito documentale" }
+          "SecondNode4": { "Name": "Template documenti" }
         }
       },
       "FirstNode23": { "Name": "Metadati" },
@@ -400,12 +411,6 @@
         "Name": "Gestione AOO",
         "Nodes": {
           "SecondNode1": { "Name": "Elenco AOO" }
-        }
-      },
-      "FirstNode28": {
-        "Name": "Raccolta procedimenti",
-        "Nodes": {
-          "SecondNode1": { "Name": "Raccolta procedimenti" }
         }
       }
     }

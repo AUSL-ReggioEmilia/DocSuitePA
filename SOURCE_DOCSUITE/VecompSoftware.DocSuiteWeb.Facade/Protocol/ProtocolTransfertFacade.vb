@@ -3,7 +3,7 @@ Imports VecompSoftware.DocSuiteWeb.Data
 
 <ComponentModel.DataObject()> _
 Public Class ProtocolTransfertFacade
-    Inherits BaseProtocolFacade(Of ProtocolTransfert, Integer, NHibernateProtocolTransferDao)
+    Inherits BaseProtocolFacade(Of ProtocolTransfert, Guid, NHibernateProtocolTransferDao)
 
     Public Sub New()
         MyBase.New()

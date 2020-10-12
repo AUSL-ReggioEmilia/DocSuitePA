@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.Clients.WebAPI.Http;
 using VecompSoftware.DocSuiteWeb.DTO.OData;
+using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
@@ -28,6 +30,13 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
         public ICollection<Guid> FascicleIds { get; set; }
         public bool ExpandRoles { get; set; }
         public FascicleFinderModel FascicleFinderModel { get; set; }
+        public bool FromPostMethod { get; set; }
+        public int? Year { get; set; }
+        public int? Number { get; set; }
+        public string FascicleTitle { get; set; }
+        public string FascicleSubject { get; set; }
+        public Guid? Dossier { get; set; }
+        public Guid? IdMetadataRepository { get; set; }
 
         private bool FromFinderModel => FascicleFinderModel != null;
 
@@ -73,31 +82,38 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
 
             return CurrentTenantExecutionWebAPI<Fascicle, int>((tenant) =>
             {
-                IODATAQueryManager odataQuery = GetODataQuery();
-                odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.FascicleService.FX_GetCountAuthorizedFascicles, JsonConvert.SerializeObject(FascicleFinderModel,
-                    new JsonSerializerSettings() { DateFormatString = "yyyy-MM-ddTHH:mm:ssZ" })));
-                TenantEntityConfiguration tenantConfiguration = CurrentTenant.Entities.Where(x => x.Key.Equals(nameof(Fascicle))).Select(s => s.Value).SingleOrDefault();
-                WebApiHttpClient httpClient = GetWebAPIClient(CurrentTenant, tenantConfiguration);
-                int result = httpClient.GetAsync<Fascicle>().WithRowQuery(odataQuery.Compile()).ResponseToModel<ODataModel<int>>().Value;
+                WebApiHttpClient httpClient = GetWebAPIClient(CurrentTenant);
+                Dictionary<string, FascicleFinderModel> finders = new Dictionary<string, FascicleFinderModel>();
+                finders.Add("finder", FascicleFinderModel);
+                string bodyQuery = JsonConvert.SerializeObject(finders, new StringEnumConverter());
+                int result = httpClient.PostStringAsync<Fascicle>($"/{CommonDefinition.OData.FascicleService.FX_GetCountAuthorizedFascicles}", bodyQuery).ResponseToModel<ODataModel<int>>().Value;
+
                 return result;
-            }, nameof(Count));            
+            }, nameof(Count));
+        }
+
+        public List<WebAPIDto<FascicleModel>> GetFromPostMethod()
+        {
+            WebApiHttpClient httpClient = GetWebAPIClient(CurrentTenant);
+            FascicleFinderModel.Skip = PageIndex;
+            FascicleFinderModel.Top = (CustomPageIndex + 1) * PageSize;
+            Dictionary<string, FascicleFinderModel> finders = new Dictionary<string, FascicleFinderModel>();
+            finders.Add("finder", FascicleFinderModel);
+            string bodyQuery = JsonConvert.SerializeObject(finders, new StringEnumConverter());
+            IEnumerable<FascicleModel> results = httpClient.PostStringAsync<Fascicle>($"/{CommonDefinition.OData.FascicleService.FX_GetAuthorizedFascicles}", bodyQuery).ResponseToModel<ODataModel<ICollection<FascicleModel>>>().Value;
+            return results.Select(fascicleModel => new WebAPIDto<FascicleModel>
+            {
+                Entity = fascicleModel,
+                TenantModel = CurrentTenant
+            }).ToList();
         }
 
         public override IODATAQueryManager DecorateFinder(IODATAQueryManager odataQuery)
         {
-            if (FromFinderModel)
-            {
-                FascicleFinderModel.Skip = PageIndex;
-                FascicleFinderModel.Top = (CustomPageIndex + 1) * PageSize;
-                odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.FascicleService.FX_GetAuthorizedFascicles, JsonConvert.SerializeObject(FascicleFinderModel,
-                    new JsonSerializerSettings() { DateFormatString = "yyyy-MM-ddTHH:mm:ssZ" })));
-                EnableTopOdata = false;
-                return odataQuery;
-            }
-
             if (ExpandProperties)
             {
-                odataQuery = odataQuery.Expand("Category")
+                odataQuery = odataQuery
+                    .Expand("Category")
                     .Expand("FascicleDocumentUnits")
                     .Expand("FascicleDocuments")
                     .Expand("FascicleDocuments($expand=FascicleFolder)")
@@ -142,6 +158,36 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
             if (ExpandRoles)
             {
                 odataQuery = odataQuery.Expand("FascicleRoles($expand=Role)");
+            }
+
+            if (Year.HasValue && Year != 0)
+            {
+                odataQuery = odataQuery.Filter($"Year eq {Year}");
+            }
+
+            if (Number.HasValue && Number != 0)
+            {
+                odataQuery = odataQuery.Filter($"Number eq {Number}");
+            }
+
+            if (!string.IsNullOrEmpty(FascicleTitle))
+            {
+                odataQuery = odataQuery.Filter($"contains(Title, '{FascicleTitle}')");
+            }
+
+            if (!string.IsNullOrEmpty(FascicleSubject))
+            {
+                odataQuery = odataQuery.Filter($"contains(FascicleObject, '{FascicleSubject}')");
+            }
+
+            if (Dossier.HasValue)
+            {
+                odataQuery = odataQuery.Filter($"DossierFolders/any(df:df/Dossier/UniqueId eq {Dossier})");
+            }
+
+            if (IdMetadataRepository != null)
+            {
+                odataQuery = odataQuery.Filter($"MetadataRepository/UniqueId eq {IdMetadataRepository}");
             }
 
             return base.DecorateFinder(odataQuery);

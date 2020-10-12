@@ -19,9 +19,9 @@ Public Class NHibernateProtocolRoleUserDao
 
 #Region " Methods "
 
-    Public Function GetByUniqueIdProtocolAndAccount(uniqueIdProtocol As Guid, account As String) As IList(Of ProtocolRoleUser)
+    Public Function GetByProtocolIdAndAccount(uniqueIdProtocol As Guid, account As String) As IList(Of ProtocolRoleUser)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.Eq("UniqueIdProtocol", uniqueIdProtocol))
+        criteria.Add(Restrictions.Eq("Protocol.Id", uniqueIdProtocol))
         criteria.Add(Restrictions.Eq("Account", account.ToLower()))
         Return criteria.List(Of ProtocolRoleUser)()
     End Function

@@ -24,7 +24,7 @@
                         <HeaderStyle horizontalalign="Center" width="98px" />
                         <ItemStyle horizontalalign="center" width="98px" />
                         <ItemTemplate>
-		    		        <asp:LinkButton runat="server" ID="lnkProtocol" Text='<%# Eval("Protocol")%>' CommandName="ShowProt" CommandArgument='<%# Eval("Year") & "|" & Eval("Number") %>'></asp:LinkButton>
+		    		        <asp:LinkButton runat="server" ID="lnkProtocol" Text='<%# Eval("Protocol")%>' CommandName="ShowProt" CommandArgument='<%# Eval("UniqueId") %>'></asp:LinkButton>
 				        </ItemTemplate>
                     </DocSuite:YearNumberBoundColumn>
                     <telerik:GridDateTimeColumn DataField="RegistrationDate" HeaderText="Data registrazione" DataFormatString="{0:dd/MM/yyyy}" CurrentFilterFunction="EqualTo" UniqueName="RegistrationDate" SortExpression="RegistrationDate"> 

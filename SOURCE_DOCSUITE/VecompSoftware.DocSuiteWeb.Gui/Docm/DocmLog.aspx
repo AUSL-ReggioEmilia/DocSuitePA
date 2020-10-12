@@ -63,7 +63,7 @@
     </ExportSettings>
     <ClientSettings AllowDragToGroup="True">
     </ClientSettings>
-    <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Decrescente"
+    <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine Decrescente"
         SortToolTip="Ordina" />
 </DocSuite:BindGrid>        
 </asp:Content>

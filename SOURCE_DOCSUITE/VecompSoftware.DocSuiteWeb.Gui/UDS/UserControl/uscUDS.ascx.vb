@@ -35,13 +35,13 @@ Public Class uscUDS
     Public Const YEAR_LABEL_FORMAT As String = "Anno: {0}"
     Public Const NUMBER_LABEL_FORMAT As String = "Numero: {0:0000000}"
     Public Const REGDATE_LABEL_FORMAT As String = "Data registrazione: {0:dd/MM/yyyy}"
-    Public Const PAGE_PROTOCOL_SUMMARY As String = "~/Prot/ProtVisualizza.aspx?Year={0}&Number={1}"
+    Public Const PAGE_PROTOCOL_SUMMARY As String = "~/Prot/ProtVisualizza.aspx?UniqueId={0}&Type=Prot"
 #End Region
 
 #Region "Odata query"
     Private Const ODATA_DOCUMENTUNIT_FILTER As String = "DocumentUnit/DocumentUnitRoles/any(r:r/{0} in ({1}))"
-    Private Const ODATA_CONTACT_FILTER As String = "Contacts/any(contacts:contacts/{0} eq {1} and contacts/ContactLabel eq '{2}')"
-    Private Const ODATA_CONTACT_MANUAL_FILTER As String = "(Contacts/any(c:contains(c/{0},'{1}') and c/ContactLabel eq '{2}') or Contacts/any(c1:contains(c1/Contact/Description,'{1}') and c1/ContactLabel eq '{2}'))"
+    Private Const ODATA_CONTACT_FILTER As String = "DocumentUnit/UDSContacts/any(contacts:contacts/Relation/EntityId eq {0} and contacts/ContactLabel eq '{1}')"
+    Private Const ODATA_CONTACT_MANUAL_FILTER As String = "(DocumentUnit/UDSContacts/any(c:contains(c/ContactManual,'{0}') and c/ContactLabel eq '{1}') or DocumentUnit/UDSContacts/any(c1:contains(c1/Relation/Description,'{0}') and c1/ContactLabel eq '{1}'))"
 #End Region
 
 #Region "Properties"
@@ -79,10 +79,14 @@ Public Class uscUDS
         Get
             If authorizedUsers Is Nothing Then
                 authorizedUsers = New List(Of WebAPIUDS.UDSUser)
-                UDSUserFinder.ResetDecoration()
-                UDSUserFinder.IdUDS = UDSId.Value
-                UDSUserFinder.EnablePaging = False
-                Dim result As ICollection(Of WebAPIDto(Of WebAPIUDS.UDSUser)) = UDSUserFinder.DoSearch()
+                Dim result As ICollection(Of WebAPIDto(Of WebAPIUDS.UDSUser)) = WebAPIImpersonatorFacade.ImpersonateFinder(UDSUserFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.IdUDS = UDSId.Value
+                        finder.EnablePaging = False
+                        Return finder.DoSearch()
+                    End Function)
+
                 If result IsNot Nothing AndAlso result.Count() > 0 Then
                     authorizedUsers = result.Select(Function(x) x.Entity).ToList()
                 End If
@@ -296,18 +300,6 @@ Public Class uscUDS
         End Set
     End Property
 
-    Public Property UDSPecMails As IList(Of UDSEntityPECMailDto)
-        Get
-            If ViewState(String.Format("{0}_UDSPecMails", ID)) Is Nothing Then
-                Return New List(Of UDSEntityPECMailDto)
-            End If
-            Return DirectCast(ViewState(String.Format("{0}_UDSPecMails", ID)), IList(Of UDSEntityPECMailDto))
-        End Get
-        Set(value As IList(Of UDSEntityPECMailDto))
-            ViewState(String.Format("{0}_UDSPecMails", ID)) = value
-        End Set
-    End Property
-
     Public Property WorkflowSignedDocRequired As IDictionary(Of String, Boolean)
         Get
             If ViewState(String.Format("{0}_WorkflowSignedDocRequired", ID)) IsNot Nothing Then
@@ -338,10 +330,20 @@ Public Class uscUDS
         End Set
     End Property
 
+    Public Property VisibleParer As Boolean
+        Get
+            If ViewState(String.Format("{0}_VisibleParer", ID)) IsNot Nothing Then
+                Return DirectCast(ViewState(String.Format("{0}_VisibleParer", ID)), Boolean)
+            End If
+            Return False
+        End Get
+        Set(ByVal value As Boolean)
+            ViewState(String.Format("{0}_VisibleParer", ID)) = value
+        End Set
+    End Property
 
-    'TODO: Disabilito di default la visibilità del pannello parer in quanto non ancora gestito
-    Public Property HideParerPanel As Boolean = True
-
+    Public Property HasEditableRight As Boolean
+    Public Property HasActiveWorkflowActivity As Boolean = False
     Public Property CurrentUDSTypologyId As Guid?
 
     Public ReadOnly Property uscDataFinder As uscUDSStaticDataFinder
@@ -369,6 +371,8 @@ Public Class uscUDS
 
     Protected Sub ddlUds_ItemsChanged(sender As Object, e As RadComboBoxSelectedIndexChangedEventArgs) Handles ddlUds.SelectedIndexChanged
         RaiseEvent UDSIndexChanged(Me, e)
+
+        Web.HttpContext.Current.Session.Add("Archive.Search.ArchiveType", ddlUds.SelectedItem.Text)
         If String.IsNullOrEmpty(e.Value) Then
             If ActionType.Eq(ACTION_TYPE_SEARCH) Then
                 rowDynamicData.SetDisplay(False)
@@ -395,56 +399,56 @@ Public Class uscUDS
 
         udsDataFinder.SetUDSBehaviour(schemaRepository)
 
-
         udsDynamicControls.ResetState()
         udsDynamicControls.LoadDynamicControls(schemaRepository.Model, True)
         udsDynamicControls.InitializeDynamicFilters()
         udsDynamicControls.LoadDefaultData()
 
-        If (FromUDSLink) Then
+        If FromUDSLink Then
             AjaxManager.ResponseScripts.Add(String.Concat("UDSRepositoryOnChange('", CurrentUDSRepositoryId, "');"))
         End If
     End Sub
 
     Protected Sub ddlUds_ItemsRequested(sender As Object, e As RadComboBoxItemsRequestedEventArgs) Handles ddlUds.ItemsRequested
         Dim repositories As IList(Of WebAPIUDS.UDSRepository)
-        Dim finder As UDSRepositoryFinder = New UDSRepositoryFinder(DocSuiteContext.Current.Tenants)
-        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
-            finder.ActionType = UDSRepositoryFinderActionType.Search
-        Else
-            finder.ActionType = UDSRepositoryFinderActionType.Insert
-        End If
-        finder.PECAnnexedEnabled = CopyToPEC.HasValue AndAlso CopyToPEC.Value
-        finder.UserName = DocSuiteContext.Current.User.UserName
-        finder.Domain = DocSuiteContext.Current.User.Domain
-        finder.SortExpressions.Add("Entity.Name", "ASC")
-        If rowTypology.Visible AndAlso Not String.IsNullOrEmpty(e.Message) Then
-            finder.IdUDSTypology = Guid.Parse(e.Message)
-        End If
-        finder.EnablePaging = False
-        Dim results As ICollection(Of WebAPIDto(Of WebAPIUDS.UDSRepository)) = finder.DoSearch()
+
+        Dim results As ICollection(Of WebAPIDto(Of WebAPIUDS.UDSRepository)) = WebAPIImpersonatorFacade.ImpersonateFinder(New UDSRepositoryFinder(DocSuiteContext.Current.Tenants),
+                    Function(impersonationType, finder)
+                        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+                            finder.ActionType = UDSRepositoryFinderActionType.Search
+                        Else
+                            finder.ActionType = UDSRepositoryFinderActionType.Insert
+                        End If
+                        finder.PECAnnexedEnabled = CopyToPEC.HasValue AndAlso CopyToPEC.Value
+                        finder.UserName = DocSuiteContext.Current.User.UserName
+                        finder.Domain = DocSuiteContext.Current.User.Domain
+                        finder.SortExpressions.Add("Entity.Name", "ASC")
+                        If rowTypology.Visible AndAlso Not String.IsNullOrEmpty(e.Message) Then
+                            finder.IdUDSTypology = Guid.Parse(e.Message)
+                        End If
+                        finder.EnablePaging = False
+                        Return finder.DoSearch()
+                    End Function)
 
         If results IsNot Nothing Then
             repositories = results.Select(Function(r) r.Entity).ToList()
-            If ProtocolEnv.MultiTenantEnabled Then
-                If BasePage.CurrentTenant IsNot Nothing AndAlso BasePage.CurrentTenant.Containers IsNot Nothing Then
-                    Dim fullFinder As UDSRepositoryFinder
-                    Dim fullRepository As WebAPIUDS.UDSRepository
-                    For Each repository As WebAPIUDS.UDSRepository In repositories.ToList()
-                        fullFinder = New UDSRepositoryFinder(DocSuiteContext.Current.Tenants) With {
-                            .EnablePaging = False,
-                            .ActionType = UDSRepositoryFinderActionType.FindElement,
-                            .UniqueId = repository.UniqueId,
-                            .ExpandProperties = True
-                        }
-                        fullRepository = fullFinder.DoSearch().Select(Function(s) s.Entity).First()
-                        If (Not BasePage.CurrentTenant.Containers.Any(Function(x) x.EntityShortId = fullRepository.Container.EntityShortId)) Then
-                            repositories.Remove(repository)
-                        End If
-                    Next
-                Else
-                    repositories = New List(Of WebAPIUDS.UDSRepository)
-                End If
+            If BasePage.CurrentTenant IsNot Nothing AndAlso BasePage.CurrentTenant.Containers IsNot Nothing Then
+                Dim fullRepository As WebAPIUDS.UDSRepository
+                For Each repository As WebAPIUDS.UDSRepository In repositories.ToList()
+                    fullRepository = WebAPIImpersonatorFacade.ImpersonateFinder(New UDSRepositoryFinder(DocSuiteContext.Current.Tenants),
+                        Function(impersonationType, finder)
+                            finder.ActionType = UDSRepositoryFinderActionType.FindElement
+                            finder.UniqueId = repository.UniqueId
+                            finder.ExpandProperties = True
+                            finder.EnablePaging = False
+                            Return finder.DoSearch().Select(Function(s) s.Entity).First()
+                        End Function)
+                    If (Not BasePage.CurrentTenant.Containers.Any(Function(x) x.EntityShortId = fullRepository.Container.EntityShortId)) Then
+                        repositories.Remove(repository)
+                    End If
+                Next
+            Else
+                repositories = New List(Of WebAPIUDS.UDSRepository)
             End If
 
             ddlUds.Items.Clear()
@@ -464,6 +468,8 @@ Public Class uscUDS
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         InitializeAjax()
+        uscDocumentUnitReferences.ShowRemoveUDSLinksButton = HasEditableRight
+
         If Not IsPostBack Then
             Initialize()
         End If
@@ -511,84 +517,8 @@ Public Class uscUDS
         End If
     End Sub
 
-    Protected Sub rptOutgoingPEC_ItemDataBound(ByVal sender As Object, ByVal e As RepeaterItemEventArgs) Handles rptOutgoingPEC.ItemDataBound
-        If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
-            Dim item As PECMail = DirectCast(e.Item.DataItem, PECMail)
-
-            Dim HtmlAncorColor As String = String.Empty
-            Dim Title As String = String.Empty
-
-            If (item.IsActive = 3) Then
-                HtmlAncorColor = "orange"
-                Title = "PEC in elaborazione"
-            End If
-            If (item.IsActive = 255) Then
-                HtmlAncorColor = "red"
-                Title = "PEC in errore"
-            End If
-
-            With DirectCast(e.Item.FindControl("lblPECOutgoingDate"), Label)
-                .Text = If(item.MailDate.HasValue, item.MailDate.Value.ToString(), "")
-            End With
-
-            With DirectCast(e.Item.FindControl("lblPECOutgoingMittente"), Label)
-                .Text = Server.HtmlEncode(item.MailSenders)
-            End With
-
-            With DirectCast(e.Item.FindControl("lblPECOutgoingSender"), Label)
-                .Text = Server.HtmlEncode(item.MailRecipients)
-            End With
-
-            With DirectCast(e.Item.FindControl("aOutgoing"), HtmlAnchor)
-                .InnerText = If(String.IsNullOrEmpty(item.MailSubject), "<senza oggetto>", item.MailSubject)
-                .HRef = String.Format("{0}?Type=Pec&PECId={1}", ResolveUrl("~/PEC/PECSummary.aspx"), item.Id)
-                .Style.Add("color", HtmlAncorColor)
-                .Title = Title
-            End With
-
-            With DirectCast(e.Item.FindControl("uscPecHistory"), uscPecHistory)
-                .PecHistory = Facade.PECMailFacade.GetOutgoingMailHistory(item.Id)
-                .BindData()
-            End With
-        End If
-    End Sub
-
-    Protected Sub rptIngoingPEC_ItemDataBound(ByVal sender As Object, ByVal e As RepeaterItemEventArgs) Handles rptIngoingPEC.ItemDataBound
-        If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
-            Exit Sub
-        End If
-
-        Dim item As PECMail = DirectCast(e.Item.DataItem, PECMail)
-
-        With DirectCast(e.Item.FindControl("lblPECIngoingDate"), Label)
-            .Text = item.MailDate.ToString()
-        End With
-
-        With DirectCast(e.Item.FindControl("lblPECIngoingSender"), Label)
-            .Text = item.MailSenders
-        End With
-
-        Dim pecRights As PECMailRightsUtil = New PECMailRightsUtil(item, DocSuiteContext.Current.User.FullUserName)
-        With DirectCast(e.Item.FindControl("aIncoming"), HtmlAnchor)
-            .InnerText = If(String.IsNullOrEmpty(item.MailSubject), "<senza oggetto>", item.MailSubject)
-            .HRef = String.Format("{0}?Type=Pec&PECId={1}&ProtocolBox={2}", ResolveUrl("~/PEC/PECSummary.aspx"), item.Id, item.MailBox.IsProtocolBox.HasValue AndAlso item.MailBox.IsProtocolBox.Value)
-        End With
-    End Sub
-
-    Private Sub btnExpandIngoingPec_Click(sender As Object, e As ImageClickEventArgs) Handles btnExpandIngoingPec.Click
-        RepeaterExpander(btnExpandIngoingPec, rptIngoingPEC)
-    End Sub
-
     Private Sub btnExpandUDSMessage_Click(sender As Object, e As ImageClickEventArgs) Handles btnExpandUDSMessage.Click
         RepeaterExpander(btnExpandUDSMessage, rptUDSMessage)
-    End Sub
-
-    Private Sub btnExpandOutgoingPec_Click(sender As Object, e As ImageClickEventArgs) Handles btnExpandOutgoingPec.Click
-        RepeaterExpander(btnExpandOutgoingPec, rptOutgoingPEC)
-    End Sub
-
-    Protected Sub chkShowOtherStatusPec_changed(ByVal sender As Object, e As EventArgs) Handles chkShowOtherStatusPec.CheckedChanged
-        InitializePecPanel()
     End Sub
 
     Protected Sub ddlTypology_ItemsChanged(sender As Object, e As RadComboBoxSelectedIndexChangedEventArgs) Handles ddlTypology.SelectedIndexChanged
@@ -609,10 +539,7 @@ Public Class uscUDS
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlUds, udsDataFinder)
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlUds, udsDataInsert)
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlUds, rowDynamicData)
-        AjaxManager.AjaxSettings.AddAjaxSetting(chkShowOtherStatusPec, tblOutgoingPEC)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnExpandOutgoingPec, tblOutgoingPEC)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnExpandUDSMessage, tblUDSMessage)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnExpandIngoingPec, tblUDSMessage)
     End Sub
 
     Private Sub Initialize()
@@ -625,7 +552,7 @@ Public Class uscUDS
 
             Case ACTION_TYPE_EDIT
                 SetRowControlVisibile(True)
-                InitializeEditAction()
+                InitializeEditAction(HasActiveWorkflowActivity)
 
             Case ACTION_TYPE_VIEW
                 SetRowControlVisibile(True)
@@ -679,12 +606,13 @@ Public Class uscUDS
         CurrentStaticDataControl.InitializeControls()
 
         udsDynamicControls.ActionType = ACTION_TYPE_INSERT
+        udsDynamicControls.DocumentsReadonly = False
         If ActionType.Eq(ACTION_TYPE_DUPLICATE) Then
             udsDynamicControls.ActionType = ACTION_TYPE_DUPLICATE
         End If
         udsDynamicControls.WorkflowSignedDocRequired = WorkflowSignedDocRequired
 
-        If (Request.QueryString("ArchiveTypeId") IsNot Nothing) Then
+        If Request.QueryString("ArchiveTypeId") IsNot Nothing Then
             CurrentUDSRepositoryId = Guid.Parse(Request.QueryString("ArchiveTypeId").ToString())
         End If
 
@@ -699,7 +627,7 @@ Public Class uscUDS
         End If
     End Sub
 
-    Public Sub InitializeEditAction()
+    Public Sub InitializeEditAction(documentsReadonly As Boolean)
         InitializeAction()
 
         udsDataInsert.Visible = True
@@ -714,6 +642,8 @@ Public Class uscUDS
         udsDynamicControls.ActionType = ACTION_TYPE_EDIT
         udsDynamicControls.WorkflowSignedDocRequired = WorkflowSignedDocRequired
         udsDynamicControls.ViewAuthorizations = False
+        udsDynamicControls.ViewDocuments = True
+        udsDynamicControls.DocumentsReadonly = documentsReadonly
 
         If UDSItemSource Is Nothing Then
             RaiseEvent NeedRepositorySource(Me, New EventArgs())
@@ -758,7 +688,6 @@ Public Class uscUDS
         rowUDSArchive.SetDisplay(False)
         rowUDSInfo.SetDisplay(True)
         tblAnnullamento.Visible = False
-        tblParer.Visible = ProtocolEnv.ParerEnabled AndAlso Not HideParerPanel
         lblDddlUds.Visible = True
         tblSubject.Visible = False
         udsDynamicContactsControl.Visible = False
@@ -772,7 +701,10 @@ Public Class uscUDS
         rowUDSArchive.SetDisplay(False)
         rowUDSContacts.Visible = True
         tblClassificazione.Visible = True
-        tblParer.Visible = ProtocolEnv.ParerEnabled AndAlso Not HideParerPanel
+        uscDocumentUnitConservationRest.Visible = VisibleParer
+        If UDSId.HasValue Then
+            uscDocumentUnitConservationRest.IdDocumentUnit = UDSId.Value
+        End If
         udsDataInsert.Visible = True
         udsDataInsert.ActionType = ACTION_TYPE_VIEW
         CurrentStaticDataControl.ResetControls()
@@ -802,28 +734,32 @@ Public Class uscUDS
             RaiseEvent NeedRepositorySource(Me, New EventArgs())
             If UDSItemSource IsNot Nothing AndAlso UDSItemSource.Model IsNot Nothing AndAlso UDSItemSource.Model.WorkflowEnabled Then
                 Dim metadata As List(Of BaseDocumentGeneratorParameter) = New List(Of BaseDocumentGeneratorParameter)()
+                Dim str As StringParameter
                 For Each item As FieldBaseType In UDSItemSource.Model.Metadata.SelectMany(Function(f) f.Items)
                     If TypeOf item Is TextField Then
-                        'str = New StringParameter(item.ColumnName, DirectCast(item, TextField).Value)
-                        'str.IsHtmlValue = DirectCast(item, TextField).HTMLEnable
-                        metadata.Add(New StringParameter(item.ColumnName, Server.HtmlEncode(DirectCast(item, TextField).Value)))
+                        str = New StringParameter(item.ColumnName, Server.HtmlEncode(DirectCast(item, TextField).Value))
+                        str.HasHtmlValue = DirectCast(item, TextField).HTMLEnable
+                        metadata.Add(str)
                     End If
                     If TypeOf item Is DateField Then
-                        'str.IsHtmlValue = DirectCast(item, TextField).HTMLEnable
                         metadata.Add(New DateTimeParameter(item.ColumnName, DirectCast(item, DateField).Value))
                     End If
                     If TypeOf item Is EnumField AndAlso Not String.IsNullOrEmpty(DirectCast(item, EnumField).Value) Then
-                        metadata.Add(New StringParameter(item.ColumnName, Server.HtmlEncode(String.Join(", ", JsonConvert.DeserializeObject(Of List(Of String))(DirectCast(item, EnumField).Value)).ToArray())))
+                        str = New StringParameter(item.ColumnName, Server.HtmlEncode(String.Join(", ", JsonConvert.DeserializeObject(Of List(Of String))(DirectCast(item, EnumField).Value)).ToArray()))
+                        metadata.Add(str)
                     End If
-                    If TypeOf item Is LookupField AndAlso Not String.IsNullOrEmpty(DirectCast(item, EnumField).Value) Then
-                        metadata.Add(New StringParameter(item.ColumnName, Server.HtmlEncode(String.Join(", ", JsonConvert.DeserializeObject(Of List(Of String))(DirectCast(item, LookupField).Value)).ToArray())))
+                    If TypeOf item Is LookupField AndAlso Not String.IsNullOrEmpty(DirectCast(item, LookupField).Value) Then
+                        str = New StringParameter(item.ColumnName, Server.HtmlEncode(String.Join(", ", JsonConvert.DeserializeObject(Of List(Of String))(DirectCast(item, LookupField).Value)).ToArray()))
+                        metadata.Add(str)
                     End If
                     If TypeOf item Is BoolField Then
-                        metadata.Add(New StringParameter(item.ColumnName, If(DirectCast(item, BoolField).Value, "vero", "falso")))
+                        str = New StringParameter(item.ColumnName, If(DirectCast(item, BoolField).Value, "vero", "falso"))
+                        metadata.Add(str)
                     End If
                     If TypeOf item Is NumberField Then
                         Dim res As NumberField = DirectCast(item, NumberField)
-                        metadata.Add(New StringParameter(item.ColumnName, res.Value.ToString(res.Format)))
+                        str = New StringParameter(item.ColumnName, res.Value.ToString(res.Format))
+                        metadata.Add(str)
                     End If
                 Next
                 metadata.Add(New StringParameter("_subject", Server.HtmlEncode(UDSItemSource.Model.Subject.Value)))
@@ -844,8 +780,9 @@ Public Class uscUDS
     ''' <summary>
     ''' Abilita la sezione elementi collegati e mostra il link verso il link di protocollo
     ''' </summary>
-    Public Sub InitializeElementiCollegati()
+    Public Sub InitializeUscDocumentUnitReferences()
         uscDocumentUnitReferences.Visible = True
+        uscDocumentUnitReferences.ShowActiveWorkflowActivities = ProtocolEnv.WorkflowManagerEnabled AndAlso ProtocolEnv.WorkflowStateSummaryEnabled
         If UDSId.HasValue Then
             uscDocumentUnitReferences.IdDocumentUnit = UDSId.Value.ToString()
             uscDocumentUnitReferences.DocumentUnitYear = UDSYear?.ToString()
@@ -978,15 +915,8 @@ Public Class uscUDS
             End If
         End If
 
-        'PECMail
-        If ProtocolEnv.IsPECEnabled AndAlso ActionType.Equals(ACTION_TYPE_VIEW) AndAlso UDSPecMails.Count() > 0 Then
-            InitializePecPanel()
-        End If
-
-        'PARER
-        If tblParer.Visible Then
-            InitializeParerPanel()
-        End If
+        Dim metadatas As FieldBaseType() = UDSItemSource.Model.Metadata(0).Items
+        AjaxManager.ResponseScripts.Add($"SetCurrentMetadataSessionStorage({JsonConvert.SerializeObject(metadatas, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)});")
     End Sub
 
     Public Sub RefreshDynamicControls()
@@ -1034,8 +964,8 @@ Public Class uscUDS
         Return model
     End Function
 
-    Public Function GetDatesBetween(fieldToGet As String) As Control
-        Return udsDynamicControls.GetDatesBetween(fieldToGet)
+    Public Function GetControlsBetween(fieldToGet As String) As Control
+        Return udsDynamicControls.GetControlsBetween(fieldToGet)
     End Function
 
     Private Sub ToggleFinderBorderStyle(setBorder As Boolean)
@@ -1058,74 +988,18 @@ Public Class uscUDS
         End If
     End Sub
 
-    Public Sub InitializeParerPanel()
-        'TODO: Gestire verifica stato di conservazione
-    End Sub
-
-    Public Sub InitializePecPanel()
-        Dim outgoingPecMails As IList(Of PECMail) = New List(Of PECMail)
-        Dim ingoingPecMails As IList(Of PECMail) = New List(Of PECMail)
-        For Each pecMail As UDSEntityPECMailDto In UDSPecMails
-            If pecMail.IdPECMail.HasValue Then
-                Dim item As PECMail = Facade.PECMailFacade.GetById(pecMail.IdPECMail.Value)
-                If item IsNot Nothing AndAlso (item.IsActive.Equals(ActiveType.PECMailActiveType.Active) OrElse
-                item.IsActive.Equals(ActiveType.PECMailActiveType.Processing) OrElse item.IsActive.Equals(ActiveType.PECMailActiveType.Error)) Then
-                    If item.Direction = PECMailDirection.Ingoing Then
-                        ingoingPecMails.Add(item)
-                    Else
-                        outgoingPecMails.Add(item)
-                    End If
-                End If
-            End If
-        Next
-
-        If ingoingPecMails.Count > 0 Then
-            tblIngoingPEC.Visible = True
-            ingoingPecTitle.Text = String.Format("Messaggi d'origine ({0})", ingoingPecMails.Count)
-
-            rptIngoingPEC.DataSource = ingoingPecMails.OrderByDescending(Function(x) x.MailDate)
-            rptIngoingPEC.DataBind()
-
-            If ingoingPecMails.Count <= ProtocolEnv.ProtMinimumPecToShow Then
-                RepeaterExpander(btnExpandIngoingPec, rptIngoingPEC)
-            End If
-        End If
-
-        chkShowOtherStatusPec.Visible = outgoingPecMails.Any(Function(p) p.IsActive.Equals(ActiveType.PECMailActiveType.Processing) OrElse
-                                                         p.IsActive.Equals(ActiveType.PECMailActiveType.Error))
-
-        If Not chkShowOtherStatusPec.Visible OrElse (chkShowOtherStatusPec.Visible AndAlso Not chkShowOtherStatusPec.Checked) Then
-            outgoingPecMails = outgoingPecMails.Where(Function(p) p.IsActive.Equals(ActiveType.PECMailActiveType.Active)).ToList()
-        End If
-
-        If ProtocolEnv.PECDraftMailBoxId <> -1 Then
-            outgoingPecMails = outgoingPecMails.Where(Function(p) p.MailBox.Id <> DocSuiteContext.Current.ProtocolEnv.PECDraftMailBoxId).ToList()
-        End If
-
-        If outgoingPecMails.Count() > 0 Then
-            tblOutgoingPEC.Visible = True
-            Dim multiplePecs As IList(Of PECMail) = outgoingPecMails.Where(Function(p) p.Multiple).ToList()
-            outgoingPecTitle.Text = String.Format("Messaggi PEC inviati ({0}){1}", outgoingPecMails.Count(), If(multiplePecs.Count() > 0, " - Elaborazione in corso PEC multiple", String.Empty))
-            btnExpandOutgoingPec.ImageUrl = ImagePath.SmallExpand
-            outgoingPecMails = outgoingPecMails.Except(multiplePecs).OrderByDescending(Function(x) x.MailDate).ToList()
-            rptOutgoingPEC.DataSource = outgoingPecMails.OrderByDescending(Function(x) Not x.MailDate.HasValue).ThenByDescending(Function(x) x.MailDate)
-            rptOutgoingPEC.DataBind()
-
-            If outgoingPecMails.Count() <= ProtocolEnv.ProtMinimumPecToShow Then
-                RepeaterExpander(btnExpandOutgoingPec, rptOutgoingPEC)
-            End If
-        End If
-    End Sub
-
     Public Function GetDeletedDocuments(document As Helpers.UDS.Document) As IList(Of Guid)
         Return udsDynamicControls.GetDeletedDocuments(document)
     End Function
 
     Private Sub InitializeUDSTypology()
-        Dim typologyFinder As UDSTypologyFinder = New UDSTypologyFinder(DocSuiteContext.Current.Tenants)
-        typologyFinder.Status = WebAPIUDS.UDSTypologyStatus.Active
-        typologyFinder.EnablePaging = False
-        Dim results As ICollection(Of WebAPIDto(Of WebAPIUDS.UDSTypology)) = typologyFinder.DoSearch()
+        Dim results As ICollection(Of WebAPIDto(Of WebAPIUDS.UDSTypology)) = WebAPIImpersonatorFacade.ImpersonateFinder(New UDSTypologyFinder(DocSuiteContext.Current.Tenants),
+                        Function(impersonationType, finder)
+                            finder.Status = WebAPIUDS.UDSTypologyStatus.Active
+                            finder.EnablePaging = False
+                            Return finder.DoSearch()
+                        End Function)
+
         Dim typologies As ICollection(Of WebAPIUDS.UDSTypology)
         If results IsNot Nothing Then
             typologies = results.Select(Function(r) r.Entity).ToList()
@@ -1191,6 +1065,19 @@ Public Class uscUDS
                                     .Expression = String.Format("RegistrationDate lt cast({0}Z, Edm.DateTimeOffset)", finderControl.RegistrationDateTo.Value.AddDays(1.0).ToString("s"))})
         End If
 
+        If Not finderControl.DocumentName.IsNullOrEmpty() Then
+            finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "DocumentName",
+                                    .Expression = String.Format("Documents/any(d:contains(d/DocumentName,'{0}') and d/DocumentType eq 1)", finderControl.DocumentName)})
+        End If
+
+        If finderControl.GenericDocument = True Then
+            finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "",
+                                    .Expression = String.Format("not Documents/any()")})
+        Else
+            finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "",
+                                .Expression = String.Format("Documents/any()")})
+        End If
+
         finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "_status", .Expression = String.Format("_status eq {0}", Convert.ToInt32(Not finderControl.ViewDeletedUDS))})
 
         If model IsNot Nothing Then
@@ -1208,8 +1095,7 @@ Public Class uscUDS
                         For Each contactInstance As ContactInstance In contact.ContactInstances
                             finderModel.Filters.Add(New UDSFinderExpressionDto() With {
                                                                                 .FieldName = String.Concat("IdContact", Guid.NewGuid()),
-                                                                                .Expression = String.Format(ODATA_CONTACT_FILTER, "IdContact",
-                                                                                                            contactInstance.IdContact, contact.Label)})
+                                                                                .Expression = String.Format(ODATA_CONTACT_FILTER, contactInstance.IdContact, contact.Label)})
                         Next
                     End If
 
@@ -1217,7 +1103,7 @@ Public Class uscUDS
                         For Each manualInstance As ContactManualInstance In contact.ContactManualInstances
                             finderModel.Filters.Add(New UDSFinderExpressionDto() With {
                                                                                 .FieldName = String.Concat("ContactManual", Guid.NewGuid()),
-                                                                                .Expression = String.Format(ODATA_CONTACT_MANUAL_FILTER, "ContactManual",
+                                                                                .Expression = String.Format(ODATA_CONTACT_MANUAL_FILTER,
                                                                                                             JsonConvert.DeserializeObject(Of Data.ContactDTO)(manualInstance.ContactDescription).Contact.DescriptionFormatByContactType,
                                                                                                             contact.Label)})
                         Next
@@ -1290,24 +1176,57 @@ Public Class uscUDS
                                     finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = field.ColumnName, .Expression = String.Format("contains({0}, '{1}')", field.ColumnName, field.Value)})
                                 Case uscUDSDynamics.CTL_NUMBER
                                     Dim field As NumberField = DirectCast(item, NumberField)
-                                    Dim numberFormat As String = field.Value.ToString()
-                                    Dim decimalSeparator As String = Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator
-                                    numberFormat = numberFormat.Replace(decimalSeparator, ".")
-
-
-                                    If Not field.Searchable OrElse Not field.ValueSpecified Then
+                                    If Not field.Searchable Then
                                         Continue For
                                     End If
 
-                                    finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = field.ColumnName, .Expression = String.Format("{0} eq {1}", field.ColumnName, numberFormat)})
+                                    Dim fromNumber As RadNumericTextBox = CType(GetControlsBetween(CType($"field_{item.ColumnName}FromNumber", String)), RadNumericTextBox)
+                                    Dim toNumber As RadNumericTextBox = CType(GetControlsBetween(CType($"field_{item.ColumnName}ToNumber", String)), RadNumericTextBox)
+
+                                    Dim decimalSeparator As String = Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator
+                                    Dim startNumberFormat As String = If(fromNumber.Value.HasValue,
+                                        fromNumber.Value.Value.ToString().Replace(decimalSeparator, "."),
+                                        Nothing)
+                                    Dim endNumberFormat As String = If(toNumber.Value.HasValue,
+                                        toNumber.Value.Value.ToString().Replace(decimalSeparator, "."),
+                                        Nothing)
+
+                                    If startNumberFormat IsNot Nothing AndAlso endNumberFormat Is Nothing Then
+                                        finderModel.Filters.Add(New UDSFinderExpressionDto() With
+                                                                {
+                                                                .FieldName = CType(item.ColumnName, String),
+                                                                .Expression = String.Format("{0} eq {1}",
+                                                                                            CType(item.ColumnName, String),
+                                                                                            startNumberFormat)
+                                                                })
+                                    ElseIf startNumberFormat Is Nothing AndAlso endNumberFormat IsNot Nothing Then
+                                        finderModel.Filters.Add(New UDSFinderExpressionDto() With
+                                                                {
+                                                                .FieldName = CType(item.ColumnName, String),
+                                                                .Expression = String.Format("{0} eq {1}",
+                                                                                            CType(item.ColumnName, String),
+                                                                                            endNumberFormat)
+                                                                })
+                                    ElseIf startNumberFormat IsNot Nothing AndAlso endNumberFormat IsNot Nothing Then
+                                        finderModel.Filters.Add(New UDSFinderExpressionDto() With
+                                                                {
+                                                                .FieldName = CType(item.ColumnName, String),
+                                                                .Expression = String.Format("({0} ge {1}) and ({0} le {2})",
+                                                                                            CType(item.ColumnName, String),
+                                                                                            startNumberFormat,
+                                                                                            endNumberFormat)
+                                                                })
+                                    Else
+                                        Continue For
+                                    End If
                                 Case uscUDSDynamics.CTL_DATE
                                     Dim field As DateField = DirectCast(item, DateField)
                                     If Not field.Searchable Then
                                         Continue For
                                     End If
 
-                                    Dim fromDate As RadDatePicker = CType(GetDatesBetween(CType("field_" + item.ColumnName + "FromDate", String)), RadDatePicker)
-                                    Dim toDate As RadDatePicker = CType(GetDatesBetween(CType("field_" + item.ColumnName + "ToDate", String)), RadDatePicker)
+                                    Dim fromDate As RadDatePicker = CType(GetControlsBetween(CType("field_" + item.ColumnName + "FromDate", String)), RadDatePicker)
+                                    Dim toDate As RadDatePicker = CType(GetControlsBetween(CType("field_" + item.ColumnName + "ToDate", String)), RadDatePicker)
                                     Dim startDate As String
                                     Dim endDate As String
 

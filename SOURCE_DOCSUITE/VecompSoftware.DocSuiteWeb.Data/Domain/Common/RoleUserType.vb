@@ -15,8 +15,6 @@
     S
     ''' <summary> Nessun ruolo in collaborazione</summary>
     X
-    ''' <summary> Funzionario per la dematerializzazione</summary>
-    OD
     ''' <summary> Responsabili privacy</summary>
     MP
 End Enum

@@ -691,13 +691,11 @@ Partial Public Class ProtRicerca
 
     Protected Overridable Sub BindContainers(ByRef comboBox As DropDownList)
         Dim containers As ICollection(Of Container) = Facade.ContainerFacade.GetAllRightsDistinct("Prot", Nothing)
-        If ProtocolEnv.MultiTenantEnabled Then
-            If CurrentTenant IsNot Nothing Then
-                Dim tenantContainers As ICollection(Of Entity.Commons.Container) = CurrentTenant.Containers
-                containers = containers.Where(Function(x) tenantContainers.Any(Function(xx) xx.EntityShortId = x.Id)).ToList()
-            Else
-                containers = New List(Of Container)
-            End If
+        If CurrentTenant IsNot Nothing Then
+            Dim tenantContainers As ICollection(Of Entity.Commons.Container) = CurrentTenant.Containers
+            containers = containers.Where(Function(x) tenantContainers.Any(Function(xx) xx.EntityShortId = x.Id)).ToList()
+        Else
+            containers = New List(Of Container)
         End If
 
         If Not containers.IsNullOrEmpty() Then
@@ -721,14 +719,13 @@ Partial Public Class ProtRicerca
 
     Protected Overridable Sub SearchContainer(ByRef comboBox As RadComboBox, ByVal textToSearch As String)
         Dim containers As ICollection(Of Container) = Facade.ContainerFacade.GetAllRightsDistinct("Prot", Nothing)
-        If ProtocolEnv.MultiTenantEnabled Then
-            If CurrentTenant IsNot Nothing Then
-                Dim tenantContainers As ICollection(Of Entity.Commons.Container) = CurrentTenant.Containers
-                containers = containers.Where(Function(x) tenantContainers.Any(Function(xx) xx.EntityShortId = x.Id)).ToList()
-            Else
-                containers = New List(Of Container)
-            End If
+        If CurrentTenant IsNot Nothing Then
+            Dim tenantContainers As ICollection(Of Entity.Commons.Container) = CurrentTenant.Containers
+            containers = containers.Where(Function(x) tenantContainers.Any(Function(xx) xx.EntityShortId = x.Id)).ToList()
+        Else
+            containers = New List(Of Container)
         End If
+
         Dim filtered As IList(Of Container) = Facade.ContainerFacade.FilterContainers(containers, textToSearch)
         If Not filtered.IsNullOrEmpty() Then
             '' Tengo separati i contenitori disabilitati

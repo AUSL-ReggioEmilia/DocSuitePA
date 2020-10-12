@@ -1,7 +1,8 @@
 ﻿import UDSModel = require('App/Models/UDS/UDSModel');
 import CategoryModelMapper = require('App/Mappers/Commons/CategoryModelMapper');
 import ContainerModelMapper = require('App/Mappers/Commons/ContainerModelMapper');
-import BaseMapper = require ('App/Mappers/BaseMapper');
+import BaseMapper = require('App/Mappers/BaseMapper');
+import UDSDocumentModelMapper = require('App/Mappers/UDS/UDSDocumentModelMapper');
 
 class UDSModelMapper extends BaseMapper<UDSModel>{
     constructor() {      
@@ -22,6 +23,7 @@ class UDSModelMapper extends BaseMapper<UDSModel>{
         toMap.RegistrationDate = source.RegistrationDate;
         toMap.Category = source.Category ? new CategoryModelMapper().Map(source.Category): null;
         toMap.Container = source.Container ? new ContainerModelMapper().Map(source.Container) : null;
+        toMap.Documents = source.Documents && source.Documents.$values ? new UDSDocumentModelMapper().MapCollection(source.Documents.$values) : null;
 
         return toMap;
     }

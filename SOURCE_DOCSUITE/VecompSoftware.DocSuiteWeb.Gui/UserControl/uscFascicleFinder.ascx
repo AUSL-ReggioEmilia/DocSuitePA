@@ -4,7 +4,7 @@
 <%@ Register Src="uscClassificatore.ascx" TagName="uscClassificatore" TagPrefix="uc1" %>
 <%@ Register Src="uscContattiSel.ascx" TagName="uscContattiSel" TagPrefix="uc3" %>
 <%@ Register Src="uscMetadataRepositorySel.ascx" TagName="uscMetadataRepositorySel" TagPrefix="usc" %>
-<%@ Register Src="../UserControl/uscSettori.ascx" TagName="uscSettori" TagPrefix="uc2" %>
+<%@ Register Src="uscSettori.ascx" TagName="uscSettori" TagPrefix="uc2" %>
 
 <telerik:RadAjaxManagerProxy runat="server" ID="ctrlAjaxManager">
 </telerik:RadAjaxManagerProxy>
@@ -37,6 +37,12 @@
             <asp:TextBox ID="txtYear" runat="server" MaxLength="4" Width="56px" />
             <asp:RegularExpressionValidator runat="server" ID="vYear" ErrorMessage="Errore formato"
                 ControlToValidate="txtYear" ValidationExpression="\d{4}" />
+        </td>
+    </tr>
+    <tr>
+        <td class="label col-dsw-3">Numero:</td>
+        <td class="col-dsw-7">
+            <asp:TextBox ID="txtNumber" runat="server" MaxLength="255" Width="300px"/>
         </td>
     </tr>
     <tr>
@@ -147,15 +153,14 @@
         </th>
     </tr>
     <tr>
-        <td class="label col-dsw-3">Tipologia metadati:</td>
+        <td class="label col-dsw-3" style="vertical-align: top;">Tipologia metadati:</td>
         <td>
-            <usc:uscMetadataRepositorySel runat="server" ID="uscMetadataRepositorySel" Caption="Metadati dinamici" Required="False" UseSessionStorage="true" />
-        </td>
-    </tr>
-    <tr>
-        <td class="label col-dsw-3">Valore metadato:</td>
-        <td>
-            <asp:TextBox ID="txtMetadataValue" runat="server" MaxLength="50" Width="287px"></asp:TextBox>
+            <usc:uscMetadataRepositorySel runat="server" 
+                ID="uscMetadataRepositorySel" 
+                Caption="Metadati dinamici" 
+                EnableAdvancedMetadataSearch="true" 
+                Required="False" 
+                UseSessionStorage="true" />
         </td>
     </tr>
 </table>

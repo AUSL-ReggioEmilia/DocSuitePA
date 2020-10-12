@@ -22,15 +22,15 @@ define(["require", "exports", "App/Mappers/Commons/ContainerModelMapper", "App/S
             _this._configuration = configuration;
             return _this;
         }
-        ContainerService.prototype.getDossierInsertAuthorizedContainers = function (callback, error) {
-            var url = this._configuration.ODATAUrl.concat("/ContainerService.GetDossierInsertAuthorizedContainers()");
+        ContainerService.prototype.getDossierInsertAuthorizedContainers = function (tenantId, callback, error) {
+            var url = this._configuration.ODATAUrl.concat("/ContainerService.GetDossierInsertAuthorizedContainers(tenantId=" + tenantId + ")");
             this.getRequest(url, undefined, function (response) {
                 if (callback)
                     callback(response.value);
             }, error);
         };
-        ContainerService.prototype.getAnyDossierAuthorizedContainers = function (callback, error) {
-            var url = this._configuration.ODATAUrl.concat("/ContainerService.GetAnyDossierAuthorizedContainers()");
+        ContainerService.prototype.getAnyDossierAuthorizedContainers = function (tenantId, callback, error) {
+            var url = this._configuration.ODATAUrl.concat("/ContainerService.GetAnyDossierAuthorizedContainers(tenantId=" + tenantId + ")");
             this.getRequest(url, undefined, function (response) {
                 if (callback)
                     callback(response.value);

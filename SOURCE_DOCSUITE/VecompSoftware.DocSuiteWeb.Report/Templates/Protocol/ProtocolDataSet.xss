@@ -9,9 +9,9 @@
     <Shape ID="DesignTable:ProtocolDataTable" ZOrder="6" X="155" Y="90" Height="714" Width="228" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="710" />
     <Shape ID="DesignTable:ContactDataTable" ZOrder="5" X="401" Y="90" Height="334" Width="193" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="330" />
     <Shape ID="DesignTable:RoleDataTable" ZOrder="1" X="408" Y="437" Height="106" Width="192" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="102" />
-    <Shape ID="DesignTable:PECMailOutgoingDataTable" ZOrder="4" X="0" Y="0" Height="90" Width="158" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="0" />
-    <Shape ID="DesignTable:MessageEmailDataTable" ZOrder="3" X="0" Y="0" Height="90" Width="158" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="0" />
-    <Shape ID="DesignTable:CollaborationDataTable" ZOrder="2" X="0" Y="0" Height="125" Width="204" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="121" />
+    <Shape ID="DesignTable:PECMailOutgoingDataTable" ZOrder="4" X="1083" Y="210" Height="144" Width="158" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="140" />
+    <Shape ID="DesignTable:MessageEmailDataTable" ZOrder="3" X="821" Y="294" Height="106" Width="158" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="102" />
+    <Shape ID="DesignTable:CollaborationDataTable" ZOrder="2" X="751" Y="50" Height="125" Width="204" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="121" />
   </Shapes>
   <Connectors />
 </DiagramLayout>

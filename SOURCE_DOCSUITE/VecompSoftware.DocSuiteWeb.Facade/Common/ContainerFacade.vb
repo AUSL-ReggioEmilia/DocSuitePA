@@ -129,7 +129,7 @@ Public Class ContainerFacade
 
     ''' <summary> Verifica se si han diritti di inserimento o gestione. </summary>
     Public Function HasInsertOrProposalRights() As Boolean
-        Return CommonShared.UserProtocolCheckRight(ProtocolContainerRightPositions.Insert) OrElse CommonShared.UserResolutionCheckRight(ResolutionRightPositions.Insert)
+        Return CommonShared.UserProtocolCheckRight(ProtocolContainerRightPositions.Insert) OrElse CommonShared.UserResolutionCheckRight(ResolutionRightPositions.Insert) OrElse CommonShared.UserUDSCheckRight(ProtocolContainerRightPositions.Insert)
     End Function
 
     Public Function GetContainers(env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, Optional idProtocolType As Nullable(Of Short) = Nothing) As IList(Of Container)
@@ -278,6 +278,10 @@ Public Class ContainerFacade
             End If
         Next
         Return tor
+    End Function
+
+    Public Function GetOrderedContainersByName(Optional orderedExpression As String = Nothing, Optional name As String = Nothing) As IList(Of Container)
+        Return _dao.GetOrderedContainersByName(orderedExpression, name)
     End Function
 #End Region
 

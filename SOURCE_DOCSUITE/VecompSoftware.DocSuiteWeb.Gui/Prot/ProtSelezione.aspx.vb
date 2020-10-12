@@ -38,25 +38,17 @@ Partial Public Class ProtSelezione
     Private Sub gvProtocols_ItemCommand(ByVal source As Object, ByVal e As GridCommandEventArgs) Handles gvProtocols.ItemCommand
         Select Case e.CommandName
             Case "View"
-                Dim hiddenId As HiddenField = e.Item.FindControl("hdId")
-                Dim splitted As String() = hiddenId.Value.Split("|"c)
-                Dim selectedKey As New YearNumberCompositeKey(splitted(0), splitted(1))
+                Dim hiddenId As HiddenField = DirectCast(e.Item.FindControl("hdId"), HiddenField)
+                Dim protocolId As Guid = Guid.Parse(hiddenId.Value)
 
-                ViewDocument(selectedKey)
+                ViewDocument(protocolId)
 
             Case "Sort"
 
             Case Else
                 ' Recupera il protocollo selezionato.
-                Dim currentArguments As String() = e.CommandArgument.ToString.Split("|"c)
-                Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(currentArguments.GetValue(0), currentArguments.GetValue(1))
-
-                If Not currentProtocol Is Nothing Then
-                    'Tolto in quanto la logica di recupero può prevedere di non completare la fase di recupero di protocollo. Quindi permettere la possibilità di completarlo successivamente
-                    'currentProtocol.IdStatus = ProtocolStatusId.Errato
-                    'Facade.ProtocolFacade.Update(currentProtocol)
-                End If
-                Dim currentJs As String = String.Format("CloseWindow('{0}|{1}');", currentProtocol.Year.ToString, currentProtocol.Number.ToString)
+                Dim protocolId As Guid = Guid.Parse(e.CommandArgument.ToString())
+                Dim currentJs As String = String.Format("CloseWindow('{0}');", protocolId)
                 MasterDocSuite.AjaxManager.ResponseScripts.Add(currentJs)
         End Select
     End Sub
@@ -67,7 +59,7 @@ Partial Public Class ProtSelezione
             Exit Sub
         End If
 
-        Dim selectedProtocols As IList(Of Protocol) = Facade.ProtocolFacade.GetProtocols(GetSelectedProtocolKeys)
+        Dim selectedProtocols As ICollection(Of Protocol) = Facade.ProtocolFacade.GetProtocols(GetSelectedProtocolKeys)
         If selectedProtocols.IsNullOrEmpty() Then
             AjaxAlert("E' necessario selezionare almeno un protocollo.")
             Exit Sub
@@ -77,10 +69,7 @@ Partial Public Class ProtSelezione
             p.IdStatus = ProtocolStatusId.Annullato
             p.LastChangedReason = txtAnnulla.Text.Trim
             Facade.ProtocolFacade.Update(p)
-
-            If DocSuiteContext.Current.ProtocolEnv.IsLogEnabled Then
-                Facade.ProtocolLogFacade.Insert(p, ProtocolLogEvent.PA, p.LastChangedReason)
-            End If
+            Facade.ProtocolLogFacade.Insert(p, ProtocolLogEvent.PA, p.LastChangedReason)
         Next
         gvProtocols.DataBindFinder()
         txtAnnulla.Text = ""
@@ -89,7 +78,7 @@ Partial Public Class ProtSelezione
 
     Private Sub btnPrintZebraLabel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnPrintDocumentLabel.Click, btnPrintAttachmentLabel.Click
         CommonShared.ZebraPrintData = Nothing
-        Dim selectedProtocolKeys As IList(Of YearNumberCompositeKey) = GetSelectedProtocolKeys()
+        Dim selectedProtocolKeys As IList(Of Guid) = GetSelectedProtocolKeys()
         If selectedProtocolKeys.Count <= 0 Then
             MasterDocSuite.AjaxManager.Alert("E' necessario selezionare almeno un protocollo.")
             Exit Sub
@@ -155,8 +144,8 @@ Partial Public Class ProtSelezione
         btnPrintAttachmentLabel.Visible = ProtocolEnv.ZebraPrinterEnabled AndAlso Facade.ComputerLogFacade.GetCurrent.ZebraPrinter IsNot Nothing
     End Sub
 
-    Public Function HasDocument(ByVal year As Short, ByVal number As Integer) As Boolean
-        Dim prot As Protocol = Facade.ProtocolFacade.GetById(year, number)
+    Public Function HasDocument(uniqueIdProtocol As Guid) As Boolean
+        Dim prot As Protocol = Facade.ProtocolFacade.GetById(uniqueIdProtocol)
         Return prot.IdDocument.HasValue AndAlso prot.IdDocument.Value > 0
     End Function
 
@@ -190,37 +179,26 @@ Partial Public Class ProtSelezione
     End Sub
 
     ''' <summary> Ritorna l'elenco delle chiavi selezionate. </summary>
-    Private Function GetSelectedProtocolKeys() As IList(Of YearNumberCompositeKey)
-        Dim retval As IList(Of YearNumberCompositeKey)
+    Private Function GetSelectedProtocolKeys() As IList(Of Guid)
+        Dim retval As IList(Of Guid) = New List(Of Guid)
 
         Dim currentCheckBox As CheckBox
         Dim currentHiddenField As HiddenField
-        Dim keyToAdd As YearNumberCompositeKey
-
-        retval = New List(Of YearNumberCompositeKey)
-        For Each i As Telerik.Web.UI.GridDataItem In gvProtocols.Items
-            currentCheckBox = i.FindControl("cbSelect")
-            currentHiddenField = i.FindControl("hdId")
+        For Each dataItem As GridDataItem In gvProtocols.Items
+            currentCheckBox = DirectCast(dataItem.FindControl("cbSelect"), CheckBox)
+            currentHiddenField = DirectCast(dataItem.FindControl("hdId"), HiddenField)
 
             If currentCheckBox.Checked Then
-                keyToAdd = New YearNumberCompositeKey
-                keyToAdd.Year = CShort(currentHiddenField.Value.Split("|"c).GetValue(0))
-                keyToAdd.Number = CInt(currentHiddenField.Value.Split("|"c).GetValue(1))
-                retval.Add(keyToAdd)
+                retval.Add(Guid.Parse(currentHiddenField.Value))
             End If
         Next
 
         Return retval
     End Function
 
-    Private Sub ViewDocument(ynck As YearNumberCompositeKey)
-        Dim p As Protocol = Facade.ProtocolFacade.GetById(ynck)
-        If p IsNot Nothing Then
-            Dim parameters As String = "Year={0}&Number={1}&Type={2}"
-            parameters = String.Format(parameters, p.Year, p.Number, "Prot")
-            Dim viewerUrl As String = "~/Viewers/ProtocolViewer.aspx?" & CommonShared.AppendSecurityCheck(parameters)
-            Response.Redirect(viewerUrl)
-        End If
+    Private Sub ViewDocument(uniqueIdProtocol As Guid)
+        Dim viewerUrl As String = $"~/Viewers/ProtocolViewer.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={uniqueIdProtocol}&Type=Prot")}"
+        Response.Redirect(viewerUrl)
     End Sub
 
 #End Region

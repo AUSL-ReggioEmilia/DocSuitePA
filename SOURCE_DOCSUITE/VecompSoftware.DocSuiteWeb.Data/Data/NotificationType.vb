@@ -10,6 +10,5 @@
     ProtocolliDaAccettare = 8
     ProtocolliRespinti = 9
     UltimePagineDaFirmare = 10
-    RichiestaDematerializzazione = 11
     ProtocolliDifatturaDaLeggere = 12
 End Enum

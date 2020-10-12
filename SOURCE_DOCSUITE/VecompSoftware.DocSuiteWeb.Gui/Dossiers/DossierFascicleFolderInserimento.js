@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "Dossiers/DossierBase", "App/Helpers/ServiceConfigurationHelper", "App/Services/Dossiers/DossierFolderService", "App/Services/Commons/RoleService", "App/Models/Commons/CategoryModel", "App/Models/Fascicles/FascicleModel", "App/Models/Dossiers/DossierFolderStatus", "App/Models/Commons/AuthorizationRoleType", "App/Models/Dossiers/DossierRoleStatus", "App/Mappers/Dossiers/DossierFolderSummaryModelMapper", "UserControl/uscFascicleInsert", "App/Models/Fascicles/FascicleType", "App/Services/Fascicles/FascicleService", "App/DTOs/ValidationExceptionDTO", "App/Models/Commons/MetadataRepositoryModel", "App/Services/Dossiers/DossierFolderLocalService", "App/Services/Fascicles/FascicleLocalService", "App/Services/Commons/RoleLocalService"], function (require, exports, DossierBase, ServiceConfigurationHelper, DossierFolderService, RoleService, CategoryModel, FascicleModel, DossierFolderStatus, AuthorizationRoleType, DossierRoleStatus, DossierFolderSummaryModelMapper, UscFascicleInsert, FascicleType, FascicleService, ValidationExceptionDTO, MetadataRepositoryModel, DossierFolderLocalService, FascicleLocalService, RoleLocalService) {
+define(["require", "exports", "Dossiers/DossierBase", "App/Helpers/ServiceConfigurationHelper", "App/Services/Dossiers/DossierFolderService", "App/Services/Commons/RoleService", "App/Models/Commons/CategoryModel", "App/Models/Dossiers/DossierFolderStatus", "App/Models/Commons/AuthorizationRoleType", "App/Models/Dossiers/DossierRoleStatus", "App/Mappers/Dossiers/DossierFolderSummaryModelMapper", "App/Models/Fascicles/FascicleType", "App/Services/Fascicles/FascicleService", "App/DTOs/ValidationExceptionDTO", "App/Models/Commons/MetadataRepositoryModel", "App/Services/Dossiers/DossierFolderLocalService", "App/Services/Fascicles/FascicleLocalService", "App/Services/Commons/RoleLocalService", "App/Helpers/PageClassHelper", "App/Helpers/GenericHelper", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, DossierBase, ServiceConfigurationHelper, DossierFolderService, RoleService, CategoryModel, DossierFolderStatus, AuthorizationRoleType, DossierRoleStatus, DossierFolderSummaryModelMapper, FascicleType, FascicleService, ValidationExceptionDTO, MetadataRepositoryModel, DossierFolderLocalService, FascicleLocalService, RoleLocalService, PageClassHelper, GenericHelper, SessionStorageKeysHelper) {
     var DossierFascicleFolderInserimento = /** @class */ (function (_super) {
         __extends(DossierFascicleFolderInserimento, _super);
         /**
@@ -34,28 +34,37 @@ define(["require", "exports", "Dossiers/DossierBase", "App/Helpers/ServiceConfig
            * @returns
            */
             _this.btmConferma_ButtonClicked = function (sender, eventArgs) {
-                var selectedFascicleType;
-                var isFascValid = false;
-                var uscFascInsert = $("#".concat(_this._uscFascInsertId)).data();
-                if (!jQuery.isEmptyObject(uscFascInsert)) {
-                    isFascValid = uscFascInsert.isPageValid();
-                    selectedFascicleType = uscFascInsert.getSelectedFascicleType();
-                    if (String.isNullOrEmpty(selectedFascicleType)) {
-                        _this.showNotificationMessage(_this.uscNotificationId, 'Selezionare una tipologia di fascicolo');
+                var externalValidation = function () { return $.Deferred().resolve(true).promise(); };
+                if (!_this.processEnabled) {
+                    externalValidation = function () { return _this.fascicleExternalValidation(); };
+                }
+                externalValidation()
+                    .done(function (isValid) {
+                    if (!isValid || !Page_IsValid) {
+                        return;
                     }
-                }
-                if (!isFascValid || String.isNullOrEmpty(selectedFascicleType)) {
-                    return;
-                }
-                if (!Page_IsValid) {
-                    return;
-                }
-                _this._loadingPanel.show(_this.currentPageId);
-                _this._btnConferma.set_enabled(false);
-                var ajaxModel = {};
-                ajaxModel.Value = new Array();
-                ajaxModel.ActionName = "Insert";
-                _this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+                    _this._loadingPanel.show(_this.currentPageId);
+                    _this._btnConferma.set_enabled(false);
+                    if (_this.processEnabled) {
+                        PageClassHelper.callUserControlFunctionSafe(_this.fascicleInsertControlId).done(function (instance) {
+                            instance.fillMetadataModel().done(function (metadatas) {
+                                if (!metadatas) {
+                                    _this._btnConferma.set_enabled(true);
+                                    return;
+                                }
+                                _this.insertDossierFolder(0, metadatas[0], metadatas[1]);
+                            });
+                        });
+                    }
+                    else {
+                        PageClassHelper.callUserControlFunctionSafe(_this.fascicleInsertControlId).done(function (instance) {
+                            var ajaxModel = {};
+                            ajaxModel.Value = new Array();
+                            ajaxModel.ActionName = "Insert";
+                            _this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+                        });
+                    }
+                });
             };
             _this.callInsertDossierFolderService = function (dossierFolder, fascicleTitle) {
                 _this._dossierFolderService.insertDossierFolder(dossierFolder, null, function (data) {
@@ -152,6 +161,19 @@ define(["require", "exports", "Dossiers/DossierBase", "App/Helpers/ServiceConfig
             });
             return _this;
         }
+        Object.defineProperty(DossierFascicleFolderInserimento.prototype, "currentFascicleInsertInstanceFactory", {
+            get: function () {
+                //TODO UscFascicleInsert prepopulate in the future
+                if (this.processEnabled) {
+                    return PageClassHelper.callUserControlFunctionSafe(this.fascicleInsertControlId);
+                }
+                else {
+                    return PageClassHelper.callUserControlFunctionSafe(this.fascicleInsertControlId);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
         * Inizializzazione
         */
@@ -163,7 +185,6 @@ define(["require", "exports", "Dossiers/DossierBase", "App/Helpers/ServiceConfig
             this._btnConferma.add_clicked(this.btmConferma_ButtonClicked);
             this._loadingPanel = $find(this.ajaxLoadingPanelId);
             this._manager = $find(this.managerId);
-            this._uscFascInsertId = this.uscFascInsertId;
             if (this.persistanceDisabled) {
                 this._dossierFolderService = new DossierFolderLocalService();
             }
@@ -185,10 +206,18 @@ define(["require", "exports", "Dossiers/DossierBase", "App/Helpers/ServiceConfig
                 var fascicleConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, DossierBase.FASCICLE_TYPE_NAME);
                 this._fascicleService = new FascicleService(fascicleConfiguration);
             }
-            $("#".concat(this._uscFascInsertId)).bind(UscFascicleInsert.LOADED_EVENT, function (args) {
+            this.currentFascicleInsertInstanceFactory
+                .done(function (instance) {
                 $("#".concat(_this.fascicleTypeRow)).show();
             });
             $.when(this.getFolderParentRoles()).done(function () {
+                _this.fascicleId = GenericHelper.getUrlParams(window.location.href, "idFascicle");
+                _this.actionType = GenericHelper.getUrlParams(window.location.href, "ActionType");
+                if (_this.fascicleId && _this.actionType == DossierFascicleFolderInserimento.updateActionType) {
+                    var sessionModel = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIERFOLDERS_SESSIONNAME));
+                    var fascicle = sessionModel.filter(function (x) { return x.Fascicle && x.Fascicle.UniqueId == _this.fascicleId; })[0].Fascicle;
+                    _this.populateFascicleFields(fascicle);
+                }
             }).fail(function (exception) {
                 _this.showNotificationException(_this.uscNotificationId, exception, "Errore nel caricamento dei settori autorizzati alla cartella madre.");
             });
@@ -197,52 +226,95 @@ define(["require", "exports", "Dossiers/DossierBase", "App/Helpers/ServiceConfig
         /**
         *---------------------------- Methods ---------------------------
         */
-        DossierFascicleFolderInserimento.prototype.insertDossierFolder = function (responsibleContact, metadataModel) {
+        DossierFascicleFolderInserimento.prototype.insertDossierFolder = function (responsibleContact, metadataDesignerModel, metadataValueModels) {
             var _this = this;
-            var uscFascInsert = $("#".concat(this._uscFascInsertId)).data();
-            var dossierFolder = {};
-            var dossier = {};
-            dossier.UniqueId = this.currentDossierId;
-            dossierFolder.Status = DossierFolderStatus.InProgress;
-            dossierFolder.Dossier = dossier;
-            var dossierFolderToUpdate = this.getFolderParent(this.currentDossierId);
-            if (dossierFolderToUpdate) {
-                dossierFolder.ParentInsertId = dossierFolderToUpdate.UniqueId;
-            }
-            ;
-            if (!jQuery.isEmptyObject(uscFascInsert)) {
-                var fascicle = new FascicleModel;
-                fascicle = uscFascInsert.getFascicle();
-                if (!!metadataModel) {
-                    fascicle.MetadataValues = metadataModel;
-                    if (sessionStorage.getItem("MetadataRepository")) {
-                        var metadataRepository = new MetadataRepositoryModel();
-                        metadataRepository.UniqueId = sessionStorage.getItem("MetadataRepository");
-                        fascicle.MetadataRepository = metadataRepository;
+            this.currentFascicleInsertInstanceFactory
+                .done(function (instance) {
+                var dossierFolder = {};
+                var dossier = {};
+                dossier.UniqueId = _this.currentDossierId;
+                dossierFolder.Status = DossierFolderStatus.InProgress;
+                dossierFolder.Dossier = dossier;
+                var dossierFolderToUpdate = _this.getFolderParent(_this.currentDossierId);
+                if (dossierFolderToUpdate) {
+                    dossierFolder.ParentInsertId = dossierFolderToUpdate.UniqueId;
+                }
+                ;
+                var deferredAction = $.Deferred().resolve(instance.getFascicle()).promise();
+                if (_this.processEnabled) {
+                    deferredAction = instance.getFascicle();
+                }
+                deferredAction.done(function (fascicle) {
+                    if (!!metadataValueModels) {
+                        fascicle.MetadataDesigner = metadataDesignerModel;
+                        fascicle.MetadataValues = metadataValueModels;
+                        if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY)) {
+                            var metadataRepository = new MetadataRepositoryModel();
+                            metadataRepository.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
+                            fascicle.MetadataRepository = metadataRepository;
+                        }
                     }
-                }
-                if (fascicle.FascicleType != FascicleType.Activity) {
-                    var contactModel = {};
-                    contactModel.EntityId = responsibleContact;
-                    fascicle.Contacts.push(contactModel);
-                }
-                //imprimo il settore della cartella madre
-                dossierFolder.DossierFolderRoles = this._dossierParentFolderRoles;
-                this._fascicleService.insertFascicle(fascicle, function (data) {
-                    var savedFascicle = data;
-                    dossierFolder.Status = DossierFolderStatus.Fascicle;
-                    dossierFolder.Fascicle = savedFascicle;
-                    var category = new CategoryModel();
-                    category.EntityShortId = savedFascicle.Category.EntityShortId;
-                    dossierFolder.Category = category;
-                    _this.callInsertDossierFolderService(dossierFolder, savedFascicle.Title);
-                }, function (exception) {
-                    _this._loadingPanel.hide(_this.currentPageId);
-                    _this.showNotificationException(_this.uscNotificationId, exception);
-                    _this._btnConferma.set_enabled(true);
+                    if (responsibleContact > 0 && fascicle.FascicleType != FascicleType.Activity) {
+                        var contactModel = {};
+                        contactModel.EntityId = responsibleContact;
+                        fascicle.Contacts.push(contactModel);
+                    }
+                    //imprimo il settore della cartella madre
+                    dossierFolder.DossierFolderRoles = _this._dossierParentFolderRoles;
+                    var fascicleUniqueId;
+                    var dossierParentId;
+                    _this._fascicleService.insertFascicle(fascicle, null, function (data) {
+                        var savedFascicle = data;
+                        dossierFolder.Status = DossierFolderStatus.Fascicle;
+                        dossierFolder.Fascicle = savedFascicle;
+                        var category = new CategoryModel();
+                        category.EntityShortId = savedFascicle.Category.EntityShortId;
+                        dossierFolder.Category = category;
+                        if (_this.actionType == DossierFascicleFolderInserimento.updateActionType) {
+                            var sessionModel = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIERFOLDERS_SESSIONNAME));
+                            if (sessionModel.filter(function (x) { return x.Fascicle && x.Fascicle.UniqueId == _this.fascicleId; })[0] &&
+                                sessionModel.filter(function (x) { return x.Fascicle && x.Fascicle.UniqueId == _this.fascicleId; })[0].Fascicle) {
+                                fascicleUniqueId = sessionModel.filter(function (x) { return x.Fascicle && x.Fascicle.UniqueId == _this.fascicleId; })[0].Fascicle.UniqueId;
+                                dossierParentId = sessionModel.filter(function (x) { return x.Fascicle && x.Fascicle.UniqueId == _this.fascicleId; })[0].ParentInsertId;
+                                dossierFolder.ParentInsertId = dossierParentId;
+                                var arr = [];
+                                for (var i = 0; i <= sessionModel.length - 1; i++) {
+                                    if (!sessionModel[i].Fascicle || (sessionModel[i].Fascicle && sessionModel[i].Fascicle.UniqueId != fascicleUniqueId)) {
+                                        arr.push(sessionModel[i]);
+                                    }
+                                }
+                                sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIERFOLDERS_SESSIONNAME, JSON.stringify(arr));
+                            }
+                        }
+                        _this.callInsertDossierFolderService(dossierFolder, savedFascicle.FascicleObject);
+                    }, function (exception) {
+                        _this._loadingPanel.hide(_this.currentPageId);
+                        _this.showNotificationException(_this.uscNotificationId, exception);
+                        _this._btnConferma.set_enabled(true);
+                    });
                 });
-            }
+            });
         };
+        DossierFascicleFolderInserimento.prototype.fascicleExternalValidation = function () {
+            var _this = this;
+            var promise = $.Deferred();
+            PageClassHelper.callUserControlFunctionSafe(this.fascicleInsertControlId)
+                .done(function (instance) {
+                var isFascValid = instance.isPageValid();
+                var selectedFascicleType = instance.getSelectedFascicleType();
+                if (!selectedFascicleType) {
+                    _this.showNotificationMessage(_this.uscNotificationId, 'Selezionare una tipologia di fascicolo');
+                }
+                return promise.resolve((isFascValid && !!selectedFascicleType));
+            });
+            return promise.promise();
+        };
+        DossierFascicleFolderInserimento.prototype.populateFascicleFields = function (fascicle) {
+            PageClassHelper.callUserControlFunctionSafe(this.fascicleInsertControlId).done(function (instance) {
+                instance.populateInputs(fascicle);
+            });
+        };
+        DossierFascicleFolderInserimento.updateActionType = "Update";
         return DossierFascicleFolderInserimento;
     }(DossierBase));
     return DossierFascicleFolderInserimento;

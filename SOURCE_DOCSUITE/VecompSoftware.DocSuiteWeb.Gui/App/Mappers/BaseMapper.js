@@ -5,6 +5,9 @@ define(["require", "exports"], function (require, exports) {
             this.MapCollection = function (source) {
                 var mappedEntities = new Array();
                 if (source) {
+                    if ('$values' in source) {
+                        source = source.$values;
+                    }
                     source.forEach(function (item) { if (item) {
                         mappedEntities.push(_this.Map(item));
                     } });

@@ -1,0 +1,63 @@
+Epic 23686: [***REMOVED***] Integrazione HR - SkyDoc
+Epic 23692: [AUSL-RE] Fascicoli : Evolutive fascicoli 9.07
+
+
+Feature 23687: [***REMOVED***] EHC : Tool di migrazione Pratiche personale in Dossier e Fascicolo del personale
+Feature 23689: [***REMOVED***] EHC : Nuovo modulo di integrazione per la modalità di gestione delle tabelle di confine
+Feature 23690: [***REMOVED***] EHC : Miglioramenti gestione Dossier
+Feature 23691: [***REMOVED***] EHC : Creazione parametro QueryString “ApriMetadato” per apertura Dossier e Fascicolo mediante navigazione da EHC
+Feature 23695: [AUSL-RE] Fascicoli : Inserimento di un fascicolo nel dossier direttamente dal sommario di fascicolo, sfruttando la pagina “collegamenti di fascicolo”
+Feature 23696: [AUSL-RE] Fascicoli : Coautoring del fascicolo - gestione autorizzazoni RACI
+Feature 23697: [AUSL-RE] Fascicoli : Durante l’inserimento di un documento (unità documentale) deve essere possibile scegliere la cartellina del fascicolo di destinazione
+Feature 23819: [AUSL-RE] Workflow AVELCO/ZEN: Creare uno workflow che possa essere utilizzato per la creazione di un fascicolo chiuso contenente tutte le unità documentarie
+Feature 23883: [SM Fascicoli: Mostare nell'elenco dei risultati di fascicolo la classificazione di livello 0 come indicazione della AOO di appartenenza
+Feature 23908: [AUSL-RE] Dossier : Rimozione degli usercontrol "Settori" e "Contatti" nhibernate in favore di UserControl REST
+Feature 23918: [SM] SyncActa: Introdurre la modalità di sincronizzazione "continuativa" e "Distribuzione di protocollo" 
+Feature 24000: [SM] TNotice: Adeguare le validazioni al campo contatto "Destinatario"
+
+
+User Story 23688: [***REMOVED***] EHC : Tool di migrazione Pratiche personale in Dossier e Fascicolo del personale
+User Story 23764: [AUSL-RE] Integrazioni esterne: Adeguamento alle PublicWebAPI per avvio workflow AVELCO
+User Story 23791: [***REMOVED***] Integrations :Creazione modulo integration VecompSoftware.BPM.Integrations.Modules.***REMOVED***.EHC
+User Story 23792: [***REMOVED***] Integrations : Sviluppare nel modulo "***REMOVED***.EHC" la business logic della gestione della tabella Commands
+User Story 23793: [***REMOVED***] Integrations : Sviluppare nel modulo "***REMOVED***.EHC" la business logic della gestione della tabella Events
+User Story 23794: [***REMOVED***] Framework: Creare gli eventi del CQRS dell'entità Dossier
+User Story 23795: [***REMOVED***] WebAPI: Gestire l'invio dei comandi di creazione e aggiornamento relativi entità Dossier
+User Story 23796: [***REMOVED***] EHC Listeners: Adeguare logica VecompSoftware.ServiceBus.Module.CQRS.Executors per l'evento ICommandCreateDossier/ICommandUpdateDossier
+User Story 23797: [***REMOVED***] Dossier: Possibilità di inserimento rapido di un nuovo inserto all'interno del fascicolo
+User Story 23798: [***REMOVED***] Dossier: Possibilità di inserimento rapido di un nuovo inserto all'interno del fascicolo
+User Story 23799: [AUSL-RE] Fascicoli : Rimuovere le componenti "Settore nhibernate" aggiungendo le componenti "Settori REST
+User Story 23800: [AUSL-RE] Fascicoli :In fase di inserimento/modifica autorizzazioni, permettere la possibilità di specificare se un settore autorizzato ha il diritto in gestione del fascicolo. 
+User Story 23801: [***REMOVED***] Apertura QueryString : Gestione URL Azione=Apri&Anno=<>&Numero=<>&Tipo=dossier
+User Story 23802: [***REMOVED***] Apertura QueryString : Gestione URL Azione=Apri&Metadato=<>&Valore=<>&Anno=<>&Tipo=dossier
+User Story 23803: [***REMOVED***] Apertura QueryString : Gestione URL Azione=ApriConFascicolo&Metadato=<>&Valore=<>&Fascicolo=<>&Tipo=dossier
+User Story 23804: [***REMOVED***] Apertura QueryString : Gestione URL Azione=Apri&Anno=<>&Numero=<>&Tipo=fasc
+User Story 23805: [***REMOVED***] Apertura QueryString : Gestione URL Azione=Apri&Metadato=<>&Valore=<>&Anno=<>&Tipo=fasc
+User Story 23806: [AUSL-RE] Fascicoli : Modificare pagina “collegamenti di fascicolo” per gestione "collegamenti di Dossier"
+User Story 23807: [AUSL-RE] Fascicoli : Aggiungere gestione "selezione cartella di fascicolo" nello usercontrol fascUDManager.
+User Story 23812: [AUSL-RE] Fascicoli : Aggiungere pulsante "torna alla ricerca" nella pagina "FascRisultati"
+User Story 23820: [AUSL-RE] Workflow AVELCO/ZEN: Creare uno workflow che possa essere utilizzato per la creazione di un fascicolo chiuso contenente tutte le unità documentarie
+User Story 23821: [AUSL-RE] Workflow AVELCO/ZEN: Creare un workflow che permetta di aggiungere inserti a un fascicolo aperto.
+User Story 23884: [SM Fascicoli: Adeguare le WebAPI per leggere la relazione del TanantAOO in base al classificatore
+User Story 23885: [SM Fascicoli: Modificare la pagina dei risultati di ricerca di fascicolo mostrando il nome della AOO. 
+User Story 23893: [AUSL-RE] Workflow AVELCO/ZEN: Modificare interfaccia IWorkflowAction e relativi modelli per gestione WorkflowActions da eseguire prima dell'azione corrente
+User Story 23897: [AUSL-RE] Workflow AVELCO/ZEN: Modificare listener ModelInsert e ModelUpdate per gestione WorkflowActions tramite pattern Aggregator
+User Story 23898: [AUSL-RE] Workflow AVELCO/ZEN: Modificare modulo integration FascicleDocumentUnit per gestione ReplyTo
+User Story 23899: [AUSL-RE] Workflow AVELCO/ZEN: Nuovo modulo dell'integration VSW.WorkflowAggregator
+User Story 23907: [AUSL-RE] Fascicoli : Modificare pagina “collegamenti di fascicolo” per gestione "collegamenti di Dossier"
+User Story 23909: [AUSL-RE] Dossier : Rimozione degli usercontrol "Settori" e "Contatti" nhibernate in favore di UserControl REST nella pagina di inserimento
+User Story 23910: [AUSL-RE] Dossier : Rimozione degli usercontrol "Settori" e "Contatti" nhibernate in favore di UserControl REST nella pagina di visualizzazione
+User Story 23911: [AUSL-RE] Dossier : Rimozione degli usercontrol "Settori" e "Contatti" nhibernate in favore di UserControl REST nella pagina di modifica
+User Story 23976: [SM]Sommario di fascicolo: visibilità documenti multi AOO
+User Story 24001: [SM] TNotice: Nella UX rimuovere la validazione sul contatto destinatario per i campi "Indirizzo"
+User Story 24002: [SM] TNotice: Nel jeepservice rimuovere la validazione sul contatto destinatario per i campi "Indirizzo". Mettere String.Empty
+User Story 24023: [SM] TNotice: Adeguare le validazione nel framework VecompSoftware.Services.TNotice 
+
+
+Bug 23975: [AGENAS]Collaborazione cambio responsabile: avviso di errore
+Bug 24036: [AUSL-RE]Fascicoli:rimozione settore responsabile
+Bug 24102: [ENEA]Tabelle settori: il pulsane "recupera" apre la pagina di stampa
+Bug 24115: [DOCSUITE]Metadati fascicolo: gestione inserimento metadato di tipo "data"
+
+
+Issue 23708: [ENEA]Collaborazione: senza documento principale

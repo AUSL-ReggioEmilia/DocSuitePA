@@ -278,24 +278,22 @@ Public Class NHibernateResolutionWorkflowFinder
         End If
 
         'Classificazione
+        criteria.CreateAlias("R.Category", "Category")
         If Not String.IsNullOrEmpty(Categories) Then
-            Dim words As String()
-            Dim conju As New Conjunction
-            words = Categories.Split(","c)
-            criteria.CreateAlias("R.Category", "Category", JoinType.LeftOuterJoin)
-            criteria.CreateAlias("R.SubCategory", "SubCategory", JoinType.LeftOuterJoin)
+            criteria.CreateAlias("R.CategoryAPI", "CategoryAPI")
 
-            For Each word As String In words
+            Dim rootDisjunction As Disjunction = Restrictions.Disjunction()
+            For Each category As String In Categories.Split(","c)
                 If IncludeChildCategories Then
-                    conju.Add(Expression.Like("Category.FullIncrementalPath", "%" & word & "%"))
+                    Dim dis As Disjunction = Restrictions.Disjunction()
+                    dis.Add(Restrictions.Eq("CategoryAPI.FullIncrementalPath", Categories))
+                    dis.Add(Restrictions.Like("CategoryAPI.FullIncrementalPath", $"%{Categories}|%"))
+                    rootDisjunction.Add(dis)
                 Else
-                    conju.Add(Restrictions.Eq("Category.FullIncrementalPath", word))
-                    conju.Add(Restrictions.IsNull("SubCategory.FullIncrementalPath"))
+                    rootDisjunction.Add(Restrictions.Eq("CategoryAPI.FullIncrementalPath", Categories))
                 End If
             Next
-            criteria.Add(conju)
-        Else
-            MyBase.AddJoinAlias(criteria, "R.Category", "Category", JoinType.LeftOuterJoin)
+            criteria.Add(rootDisjunction)
         End If
 
         If IdStatus.HasValue Then

@@ -58,7 +58,7 @@ Public Class ProtAssegna
     Public ReadOnly Property ProtocolsList As List(Of Protocol)
         Get
             If Not SelectedProtocolsKeys.IsNullOrEmpty() AndAlso _listProtocol Is Nothing Then
-                _listProtocol = SelectedProtocolsKeys.Select(Function(k) FacadeFactory.Instance.ProtocolFacade.GetByUniqueId(k)).ToList()
+                _listProtocol = SelectedProtocolsKeys.Select(Function(k) FacadeFactory.Instance.ProtocolFacade.GetById(k)).ToList()
             End If
             If (_listProtocol Is Nothing) Then
                 _listProtocol = New List(Of Protocol)()
@@ -137,10 +137,6 @@ Public Class ProtAssegna
 
     Private Sub LogInsert()
 
-        'Log: Modifica Assegnatario/Proponente e Modifica Stato Protocollo
-        If Not DocSuiteContext.Current.ProtocolEnv.IsLogEnabled Then
-            Exit Sub
-        End If
         For Each prot As Protocol In ProtocolsList
             Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, "Assegn/Propon." & " (old): " & prot.Subject)
             Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, "Assegn/Propon." & " (new): " & uscSubject.GetContactText())

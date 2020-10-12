@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscProtocollo
-    
+
     '''<summary>
     '''RadCodeBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
-    
+
     '''<summary>
     '''RadWindowManagerViewMail control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerViewMail As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowPreviewDocument control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowPreviewDocument As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''tblProtocollo control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblProtocollo As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblTitle control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblTitle As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''tblTipoDocumento control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblTipoDocumento As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''cbClaim control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cbClaim As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''TipoDocumentoDescription control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents TipoDocumentoDescription As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''tblInvoice control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblInvoice As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''trInvoiceTitle control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trInvoiceTitle As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''trInvoiceNumber control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trInvoiceNumber As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''tdInvoiceNumber control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tdInvoiceNumber As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''trAccountingSectional control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trAccountingSectional As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''tdAccountingSectional control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tdAccountingSectional As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''tblStatusProt control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblStatusProt As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''tblScatoloni control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblScatoloni As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''tblSenderProt control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblSenderProt As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''tblOggetto control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblOggetto As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''trObjectChangeReason control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trObjectChangeReason As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''trNote control.
     '''</summary>
@@ -192,7 +192,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trNote As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''tblMittentiDestinatari control.
     '''</summary>
@@ -201,7 +201,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblMittentiDestinatari As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''uscMittenti control.
     '''</summary>
@@ -210,7 +210,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscMittenti As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''uscDestinatari control.
     '''</summary>
@@ -219,7 +219,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDestinatari As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''tblFascicoli control.
     '''</summary>
@@ -228,7 +228,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblFascicoli As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''uscFascicoli control.
     '''</summary>
@@ -237,7 +237,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscFascicoli As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''tbltRefusedAuthorizations control.
     '''</summary>
@@ -246,7 +246,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tbltRefusedAuthorizations As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''TreeViewRefused control.
     '''</summary>
@@ -255,7 +255,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents TreeViewRefused As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''uscSettori control.
     '''</summary>
@@ -264,7 +264,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSettori As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''uscProtocolRoleUser control.
     '''</summary>
@@ -273,7 +273,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscProtocolRoleUser As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''tblClassificazione control.
     '''</summary>
@@ -282,7 +282,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblClassificazione As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''rowDocumentUnitMulticlassifactionRest control.
     '''</summary>
@@ -291,7 +291,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowDocumentUnitMulticlassifactionRest As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''uscMulticlassificationRest control.
     '''</summary>
@@ -300,7 +300,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscMulticlassificationRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscMulticlassificationRest
-    
+
     '''<summary>
     '''tblAltri control.
     '''</summary>
@@ -309,7 +309,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblAltri As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''LocationName control.
     '''</summary>
@@ -318,7 +318,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents LocationName As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''ContainerName control.
     '''</summary>
@@ -327,7 +327,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ContainerName As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rowProponente control.
     '''</summary>
@@ -336,7 +336,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowProponente As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''rowAssegnatario control.
     '''</summary>
@@ -345,7 +345,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowAssegnatario As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblPubblication control.
     '''</summary>
@@ -354,7 +354,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblPubblication As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblCheckPublication control.
     '''</summary>
@@ -363,7 +363,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCheckPublication As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblProtocolRegistrationUser control.
     '''</summary>
@@ -372,7 +372,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblProtocolRegistrationUser As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblProtocolLastChangedUser control.
     '''</summary>
@@ -381,7 +381,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblProtocolLastChangedUser As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblProtocolLink control.
     '''</summary>
@@ -390,7 +390,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblProtocolLink As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''trSourceCollaboration control.
     '''</summary>
@@ -399,7 +399,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trSourceCollaboration As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''cmdSourceCollaboration control.
     '''</summary>
@@ -408,7 +408,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdSourceCollaboration As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''tblUds control.
     '''</summary>
@@ -417,7 +417,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblUds As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''btnViewUDS control.
     '''</summary>
@@ -426,7 +426,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnViewUDS As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''trSourceUDS control.
     '''</summary>
@@ -435,7 +435,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trSourceUDS As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''dynamicData control.
     '''</summary>
@@ -444,7 +444,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dynamicData As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''udsDynamicControls control.
     '''</summary>
@@ -453,7 +453,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udsDynamicControls As Global.VecompSoftware.DocSuiteWeb.Gui.uscUDSDynamics
-    
+
     '''<summary>
     '''tblAssegnatario control.
     '''</summary>
@@ -462,7 +462,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblAssegnatario As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''tblAnnullamento control.
     '''</summary>
@@ -471,7 +471,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblAnnullamento As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''imgAnnullamento control.
     '''</summary>
@@ -480,7 +480,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgAnnullamento As Global.System.Web.UI.WebControls.Image
-    
+
     '''<summary>
     '''tblReject control.
     '''</summary>
@@ -489,7 +489,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblReject As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''imgReject control.
     '''</summary>
@@ -498,7 +498,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgReject As Global.System.Web.UI.WebControls.Image
-    
+
     '''<summary>
     '''lblReject control.
     '''</summary>
@@ -507,7 +507,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblReject As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''tblParer control.
     '''</summary>
@@ -516,7 +516,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblParer As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''parerInfo control.
     '''</summary>
@@ -525,7 +525,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents parerInfo As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''parerIcon control.
     '''</summary>
@@ -534,7 +534,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents parerIcon As Global.System.Web.UI.WebControls.Image
-    
+
     '''<summary>
     '''parerLabel control.
     '''</summary>
@@ -543,7 +543,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents parerLabel As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''tblInvoicePA control.
     '''</summary>
@@ -552,7 +552,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblInvoicePA As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''imgInvoicePAStatus control.
     '''</summary>
@@ -561,7 +561,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgInvoicePAStatus As Global.System.Web.UI.WebControls.Image
-    
+
     '''<summary>
     '''lblInvoicePAStatus control.
     '''</summary>
@@ -570,7 +570,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblInvoicePAStatus As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''tblPosteWeb control.
     '''</summary>
@@ -579,7 +579,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblPosteWeb As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''rptPosteRequest control.
     '''</summary>
@@ -588,7 +588,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rptPosteRequest As Global.System.Web.UI.WebControls.Repeater
-    
+
     '''<summary>
     '''dgPosteRequestContact control.
     '''</summary>
@@ -597,7 +597,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dgPosteRequestContact As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''rowDocumentUnitReference control.
     '''</summary>
@@ -606,7 +606,7 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowDocumentUnitReference As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''uscDocumentUnitReferences control.
     '''</summary>

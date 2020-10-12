@@ -27,12 +27,6 @@ Namespace PEC
             Return bld.CreateFromEml(eml)
         End Function
 
-        Public Shared Function GetAttachments(file As FileInfo) As List(Of DocumentInfo)
-            Dim builder As New Limilabs.Mail.MailBuilder
-            Dim mail As IMail = builder.CreateFromEmlFile(file.FullName)
-            Return GetAttachments(mail, file.Name)
-        End Function
-
         Public Shared Function GetAttachments(doc As DocumentInfo) As List(Of DocumentInfo)
             Dim builder As New Limilabs.Mail.MailBuilder
             Dim mail As IMail = builder.CreateFromEml(Encoding.UTF8.GetString(doc.Stream))
@@ -159,25 +153,10 @@ Namespace PEC
             Return pec
         End Function
 
-        Public Shared Function PecMailFactory(file As FileInfo) As PECMail
-            Dim builder As New Limilabs.Mail.MailBuilder
-            Dim mail As IMail = builder.CreateFromEmlFile(file.FullName)
-            Return PecMailFactory(mail, file.Length)
-        End Function
-
         Public Shared Function PecMailFactory(doc As DocumentInfo) As PECMail
             Dim builder As New Limilabs.Mail.MailBuilder
             Dim mail As IMail = builder.CreateFromEml(Encoding.UTF8.GetString(doc.Stream))
             Return PecMailFactory(mail, doc.Size)
-        End Function
-
-        Public Shared Function RemoveAttachments(data As IMail) As IMail
-            Dim cfg As New AttachmentRemoverConfiguration()
-            cfg.RemoveVisuals = False
-            cfg.RemoveAlternatives = True
-            data.RemoveAttachments(cfg)
-
-            Return data
         End Function
 
         Public Shared Function GetMailAddressFromMailAddress(mailBoxList As IList(Of Headers.MailAddress)) As String

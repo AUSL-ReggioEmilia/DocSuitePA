@@ -856,6 +856,8 @@ Public Class Resolution
 
     Public Overridable Property ResolutionKind As ResolutionKind
 
+    Public Overridable Property CategoryAPI As Category
+
 #End Region
 
 #Region "Public Properties: Collections"

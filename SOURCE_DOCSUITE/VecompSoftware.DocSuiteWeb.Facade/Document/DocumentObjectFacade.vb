@@ -161,9 +161,9 @@ Public Class DocumentObjectFacade
 
         Dim idBiblos As Integer
         Try
-            idBiblos = doc.ArchiveInBiblos(location.DocumentServer, location.DocmBiblosDSDB).BiblosChainId
+            idBiblos = doc.ArchiveInBiblos(location.DocmBiblosDSDB).BiblosChainId
         Catch ex As Exception
-            Throw New DocSuiteException("Inserimento Documento", String.Format("Impossibile inserire documento nella pratica [{0}] su archivio [{1}-{2}]", documentObject.Id.ToString(), location.DocumentServer, location.DocmBiblosDSDB), ex)
+            Throw New DocSuiteException("Inserimento Documento", String.Format("Impossibile inserire documento nella pratica [{0}] su archivio [{1}-{2}]", documentObject.Id.ToString(), location.DocmBiblosDSDB), ex)
         End Try
 
         ' Registrazione

@@ -249,6 +249,22 @@
                     $find("<%= AjaxManager.ClientID %>").ajaxRequest("refresh");
                 }
             }
+
+            function showImageOnSelectedItemChanging(sender, eventArgs) {
+                var input = sender.get_inputDomElement();
+
+                input.style.background = "url(" + eventArgs.get_item().get_imageUrl() + ") no-repeat";
+                input.style.paddingLeft = "17px";
+                input.style.backgroundPositionY = "bottom";
+            }
+
+            function OnClientLoad(sender) {
+                var input = sender.get_inputDomElement();
+
+                input.style.background = "url(" + sender.get_selectedItem().get_imageUrl() + ") no-repeat";
+                input.style.paddingLeft = "17px";
+                input.style.backgroundPositionY = "bottom";
+            }
         </script>
     </telerik:RadCodeBlock>
     <%--Header--%>
@@ -261,8 +277,15 @@
                             <b>Casella PEC:</b>
                         </td>
                         <td style="vertical-align: middle; font-size: 8pt">
-                            <asp:DropDownList ID="ddlMailBox" runat="server" AutoPostBack="true" DataValueField="Id"
-                                DataTextField="MailBoxName" Width="300" />
+                                <telerik:RadComboBox runat="server" 
+                                    RenderMode="Lightweight" 
+                                    ID="ddlMailbox" 
+                                    DataTextField="MailBoxName" 
+                                    DataValueField="Id" 
+                                    AutoPostBack="true" 
+                                    Width="300px"
+                                    OnClientSelectedIndexChanging="showImageOnSelectedItemChanging" 
+                                    OnClientLoad="OnClientLoad"/>
                         </td>
                     </tr>
                     <tr>
@@ -439,7 +462,7 @@
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
                 <%-- Link Protocollo --%>
-                <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderText="Protocollo" UniqueName="cProtocol">
+                <DocSuite:CompositeTemplateExportableColumn AllowFiltering="false" Groupable="false" HeaderText="Protocollo" UniqueName="cProtocol">
                         <HeaderStyle HorizontalAlign="Center" Width="130px" />
                         <ItemStyle HorizontalAlign="Center" Width="130px" />
                     <ItemTemplate>
@@ -447,7 +470,7 @@
                             <telerik:RadButton ButtonType="LinkButton" ID="cmdProtocol" runat="server" />
                         </div>
                     </ItemTemplate>
-                </telerik:GridTemplateColumn>
+                </DocSuite:CompositeTemplateExportableColumn>
                 <%-- ImgIsPEC --%>
                 <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../App_Themes/DocSuite2008/imgset16/document_signature.png" HeaderText="PEC" UniqueName="cIsPEC">
                         <HeaderStyle HorizontalAlign="Center"  CssClass="headerImage" />
@@ -513,7 +536,7 @@
             <ClientEvents OnRowDeselected="onRowDeselected" OnRowSelected="onRowSelected" />
                 
         </ClientSettings>
-        <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente" SortToolTip="Ordina" />
+        <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente" SortToolTip="Ordina" />
     </DocSuite:BindGrid>
     </div>
 </asp:Content>

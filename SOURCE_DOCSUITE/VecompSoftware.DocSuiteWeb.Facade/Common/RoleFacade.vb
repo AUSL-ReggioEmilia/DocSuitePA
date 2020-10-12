@@ -422,12 +422,12 @@ Public Class RoleFacade
     ''' <param name="root">Indica se si vogliono solo Settori radice.</param>
     ''' <returns>Lista dei Settori che soddisfano i filtri</returns>
     ''' <remarks>Lavora sia per AD che per SG</remarks>
-    Public Function GetUserRoles(env As DSWEnvironment, rightPosition As Integer?, isActive As Boolean?, name As String, root As Boolean?, parent As Role, Optional tenantId As Guid? = Nothing) As IList(Of Role)
+    Public Function GetUserRoles(env As DSWEnvironment, rightPosition As Integer?, isActive As Boolean?, name As String, root As Boolean?, parent As Role, Optional tenantId As Guid? = Nothing, Optional multitenantEnabled As Boolean = False) As IList(Of Role)
         Dim groups As IList(Of SecurityGroups) = Factory.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName)
         If groups.IsNullOrEmpty() Then
             Return Nothing
         End If
-        Return _dao.GetRolesBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, isActive, name, root, parent, tenantId)
+        Return _dao.GetRolesBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, isActive, name, root, parent, tenantId, multitenantEnabled:=multitenantEnabled)
     End Function
 
 

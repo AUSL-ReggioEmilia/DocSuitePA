@@ -133,9 +133,6 @@
                 var btnDuplica = $find("<%= btnDuplica.ClientID %>");
                 if (btnDuplica != null)
                     btnDuplica.set_enabled(value);
-                var btnRequestStatement = $find("<%= btnRequestStatement.ClientID %>");
-                if (btnRequestStatement != null)
-                    btnRequestStatement.set_enabled(value);
                 var btnWorkflow = $find("<%= btnWorkflow.ClientID %>");
                 if (btnWorkflow != null)
                     btnWorkflow.set_enabled(value);
@@ -178,9 +175,6 @@
                 var btnDuplica = $find("<%= btnDuplica.ClientID %>");
                 if (btnDuplica != null)
                     btnDuplica.set_enabled(value);
-                var btnRequestStatement = $find("<%= btnRequestStatement.ClientID %>");
-                if (btnRequestStatement != null)
-                    btnRequestStatement.set_visible(value);
                 var btnWorkflow = $find("<%= btnWorkflow.ClientID %>");
                 if (btnWorkflow != null)
                     btnWorkflow.set_visible(value);
@@ -226,31 +220,6 @@
                     $find("<%= AjaxManager.ClientID %>").ajaxRequest("toDuplicate|" + idUDS + "|" + idUDSRepository + "|" + args.get_argument());
                 }
             }
-            function openWindowRequestStatement() {
-                var idUDS = "<%= CurrentIdUDS.Value %>";
-                var idUDSRepository = "<%= CurrentIdUDSRepository.Value %>";
-                var manager = $find("<%=RadWindowManagerUDS.ClientID %>");
-                var wnd = manager.open('../Workflows/RequestStatement.aspx?Titolo=\'Richiesta Attestazione di Conformità\'&IdUDS=' + idUDS + '&IdUDSRepository=' + idUDSRepository + '&ArchiveName=' + '<% =CurrentUDSRepository.Name %>', 'windowRequestStatement');
-                wnd.setSize(720, 560);
-                wnd.set_behaviors(Telerik.Web.UI.WindowBehaviors.Maximize + Telerik.Web.UI.WindowBehaviors.Resize + Telerik.Web.UI.WindowBehaviors.Close);
-                wnd.set_behaviors(Telerik.Web.UI.WindowBehaviors.Close);
-                wnd.set_visibleStatusbar(false);
-                wnd.add_close(closeRequestStatement);
-                wnd.set_modal(true);
-                wnd.center();
-                return false;
-            }
-
-            function closeRequestStatement(sender, args) {
-                sender.remove_close(closeRequestStatement);
-
-                var idUDS = "<%= CurrentIdUDS.Value %>";
-                var idUDSRepository = "<%= CurrentIdUDSRepository.Value %>";
-
-                if (args.get_argument() !== null) {
-                    $find("<%= AjaxManager.ClientID %>").ajaxRequest("toDuplicate|" + idUDS + "|" + idUDSRepository + "|" + args.get_argument());
-                }
-            }
 
             function goToDuplicateInsert() {
                 $get('<%= toDuplicate.ClientID %>').click();
@@ -284,7 +253,7 @@
 
      <telerik:RadNotification ID="radNotificationInfo" runat="server"
         VisibleOnPageLoad="false" LoadContentOn="PageLoad" Width="300" Height="150" Animation="FlyIn"
-        EnableRoundedCorners="true" EnableShadow="true" ContentIcon="info" Title="Informazioni Archivi" TitleIcon="none" AutoCloseDelay="4000" Position="Center" />
+        EnableRoundedCorners="true" EnableShadow="true" ContentIcon="info" Title="Informazioni archivio" TitleIcon="none" AutoCloseDelay="4000" Position="Center" />
 </asp:Content>
 
 
@@ -293,8 +262,7 @@
         <telerik:RadWindowManager BackColor="Gray" Behaviors="Close" DestroyOnClose="true" EnableViewState="False" ID="RadWindowManagerUDS" runat="server">
             <Windows>
                 <telerik:RadWindow Height="300" ID="windowDuplica" OnClientClose="closeDuplica" runat="server" Title="Archivio  - Duplica" Width="500" />
-                <telerik:RadWindow Height="300" ID="windowRequestStatement" OnClientClose="closeRequestStatement" runat="server" Title="Archivio  - Richiedi Attestazione" Width="500" />
-                <telerik:RadWindow Height="300" ID="windowUdsSearch" OnClientClose="closeRequestStatement" runat="server" Title="UDS Search" Width="500" />
+                <telerik:RadWindow Height="300" ID="windowUdsSearch" runat="server" Title="UDS Search" Width="500" />
                 <telerik:RadWindow Height="450" ID="windowCompleteWorkflow" runat="server" Title="Stato attività" Width="600" />
             </Windows>
         </telerik:RadWindowManager>
@@ -367,7 +335,6 @@
             <telerik:RadButton runat="server" ID="btnCancel" OnClientClicked="openDeleteMotivationWindow" Width="150" CausesValidation="false" Text="Annullamento" AutoPostBack="false" />
             <telerik:RadButton runat="server" ID="btnWorkflow" OnClientClicked="showLoadingPanel" Width="150" CausesValidation="false" Text="Avvia attività" />
             <telerik:RadButton runat="server" ID="btnDuplica" OnClientClicked="openWindowDuplica" Width="150" CausesValidation="false" Text="Duplica" AutoPostBack="false" />
-            <telerik:RadButton runat="server" ID="btnRequestStatement" OnClientClicked="openWindowRequestStatement" Width="150" CausesValidation="false" Text="Richiesta attestazione" AutoPostBack="false" Visible="false" />
         </asp:Panel>
 
         <asp:Panel runat="server" ID="pnlFunctionalityButtons">

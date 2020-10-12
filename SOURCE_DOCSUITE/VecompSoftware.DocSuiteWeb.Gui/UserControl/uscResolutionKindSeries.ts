@@ -12,6 +12,7 @@ import ResolutionKindDocumentSeriesService = require('App/Services/Resolutions/R
 import DocumentSeriesService = require('App/Services/DocumentArchives/DocumentSeriesService');
 import DocumentSeriesConstraintService = require('App/Services/DocumentArchives/DocumentSeriesConstraintService');
 import UscErrorNotification = require('UserControl/UscErrorNotification');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class UscResolutionKindSeries {
     pnlPageContentId: string;
@@ -36,7 +37,6 @@ class UscResolutionKindSeries {
     private static ADD_SERIES_COMMAND: string = "addSeries";
     private static EDIT_SERIES_COMMAND: string = "editSeries";
     private static DELETE_SERIES_COMMAND: string = "deleteSeries";
-    private static SESSION_KIND_KEY: string = "ResolutionKindKey";
     private static CONSTRAINT_LOADED_EVENT_NAME: string = "ConstraintsLoaded";
 
     get panelConstraintsSelectionControl(): JQuery {
@@ -44,7 +44,7 @@ class UscResolutionKindSeries {
     }
 
     get currentResolutionKind(): ResolutionKindModel {
-        let sessionValue: string = sessionStorage.getItem(UscResolutionKindSeries.SESSION_KIND_KEY);
+        let sessionValue: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KIND_KEY);
         if (!sessionValue) {
             return null;
         }
@@ -76,7 +76,7 @@ class UscResolutionKindSeries {
      *------------------------- Events -----------------------------
      */
 
-    private btnAddSeries_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnAddSeries_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         try {
             sender.enableAfterSingleClick();
             this.openWindow(this.wndResolutionKindDocumentSeriesId, 'Associa un nuovo archivio alla tipologia atto');
@@ -95,7 +95,7 @@ class UscResolutionKindSeries {
         }        
     }
 
-    private btnEditSeries_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnEditSeries_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         sender.enableAfterSingleClick();
         if (!this.currentResolutionKind) {
             alert("Nessuna tipologia di atto trovata per la modifica");
@@ -147,7 +147,7 @@ class UscResolutionKindSeries {
         }        
     }
 
-    private btnCancelSeries_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {        
+    private btnCancelSeries_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {        
         let selectedArchives: Telerik.Web.UI.GridDataItem[] = this._grdDocumentSeries.get_selectedItems();
         if (!selectedArchives || selectedArchives.length == 0) {
             alert("Selezionare un archivio per la cancellazione");
@@ -196,7 +196,7 @@ class UscResolutionKindSeries {
             .fail((exception) => this.showNotificationException(exception));
     }    
 
-    private btnConfirmSeries_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnConfirmSeries_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedArchive: Telerik.Web.UI.RadComboBoxItem = this._rcbArchives.get_selectedItem();
         if (!selectedArchive || !selectedArchive.get_value()) {
             alert("E' richiesta la selezione di un archivio per il salvataggio");
@@ -271,7 +271,7 @@ class UscResolutionKindSeries {
         let documentSeriesConstraintConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DocumentSeriesConstraint");
         this._documentSeriesConstraintService = new DocumentSeriesConstraintService(documentSeriesConstraintConfiguration);
 
-        sessionStorage.removeItem(UscResolutionKindSeries.SESSION_KIND_KEY);
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KIND_KEY);
 
         this.bindLoaded();
     }
@@ -318,7 +318,7 @@ class UscResolutionKindSeries {
             return promise.resolve();
         }
 
-        sessionStorage.setItem(UscResolutionKindSeries.SESSION_KIND_KEY, JSON.stringify(resolutionKind));
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KIND_KEY, JSON.stringify(resolutionKind));
         this._resolutionKindDocumentSeriesService.getByResolutionKind(resolutionKind.UniqueId,
             (data: any) => {
                 if (!data) return;

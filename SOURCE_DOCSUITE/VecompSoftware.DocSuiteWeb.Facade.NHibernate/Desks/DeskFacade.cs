@@ -79,8 +79,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
                 {
                     DeskDocument deskDocument = new DeskDocument(_userName);
                     Guid chain = Guid.Empty;
-                    chain = DocumentInfoFactory.ArchiveDocumentsInBiblos(new List<DocumentInfo>() { document.Value }, 
-                                currentDeskLocation.DocumentServer, currentDeskLocation.ProtBiblosDSDB, chain);
+                    chain = DocumentInfoFactory.ArchiveDocumentsInBiblos(new List<DocumentInfo>() { document.Value }, currentDeskLocation.ProtBiblosDSDB, chain);
 
                     deskDocument.DocumentType = DeskDocumentType.MainDocument;
                     deskDocument.IdDocument = chain;

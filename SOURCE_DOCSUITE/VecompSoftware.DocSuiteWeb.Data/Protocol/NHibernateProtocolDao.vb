@@ -113,6 +113,7 @@ Public Class NHibernateProtocolDao
         crit.Add(Restrictions.Eq("IdStatus", Convert.ToInt32(ProtocolStatusId.Attivo)))
         Return crit.UniqueResult(Of Protocol)()
     End Function
+
     Private Function GetProtocols(ByRef crit As ICriteria, keys As IList(Of YearNumberCompositeKey), strategy As FetchingStrategy) As IList(Of Protocol)
         SetFetchingStrategy(crit, strategy)
         Return GetProtocols(crit, keys)
@@ -144,17 +145,27 @@ Public Class NHibernateProtocolDao
         Return GetProtocols(crit, keys, strategy)
     End Function
 
+    Public Function GetProtocols(ids As ICollection(Of Guid), strategy As FetchingStrategy) As IList(Of Protocol)
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of Protocol)("P")
+        SetFetchingStrategy(criteria, strategy)
+        criteria.Add(Restrictions.InG("Id", ids))
+        criteria.AddOrder(Order.Asc("P.Year"))
+        criteria.AddOrder(Order.Asc("P.Number"))
+        Return criteria.List(Of Protocol)
+    End Function
+
 #End Region
 
     ''' <summary> Elenco dei protocolli modificati nel range specificato  </summary>
     ''' <remarks> Query specifica per la scrivania </remarks>
-    Public Function GetUserProtocolDiary(ByVal fromDate As DateTime, ByVal toDate As DateTime) As ICollection(Of UserDiary)
+    Public Function GetUserProtocolDiary(ByVal fromDate As DateTime, ByVal toDate As DateTime, currentTenantAOOId As Guid) As ICollection(Of UserDiary)
         Dim qQuery As IQuery = NHibernateSession.GetNamedQuery("ProtUserDiary")
 
         qQuery.SetResultTransformer(Transformers.AliasToBean(New UserDiary().GetType()))
         qQuery = qQuery.SetParameter("SystemUser", DocSuiteContext.Current.User.FullUserName)
         qQuery = qQuery.SetParameter("LogDateFrom", fromDate.BeginOfTheDay().ToVecompSoftwareString())
         qQuery = qQuery.SetParameter("LogDateTo", toDate.EndOfTheDay().ToVecompSoftwareString())
+        qQuery = qQuery.SetParameter("IdTenantAOO", currentTenantAOOId)
 
         Return qQuery.List(Of UserDiary)()
     End Function
@@ -169,9 +180,16 @@ Public Class NHibernateProtocolDao
 
     End Function
 
+    Public Function GetByYearNumber(year As Short, number As Integer) As Protocol
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
+        criteria.Add(Restrictions.Eq("Year", year))
+        criteria.Add(Restrictions.Eq("Number", number))
+        Return criteria.UniqueResult(Of Protocol)()
+    End Function
+
     Public Function GetByUniqueId(uniqueId As Guid) As Protocol
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.Eq("UniqueId", uniqueId))
+        criteria.Add(Restrictions.Eq("Id", uniqueId))
         Return criteria.UniqueResult(Of Protocol)()
     End Function
 
@@ -227,10 +245,10 @@ Public Class NHibernateProtocolDao
     ''' <summary> Esegue la sospensione di protocolli. </summary>
     ''' <param name="suspendNumber">Numero di protocolli da sospendere.</param>
     ''' <param name="suspendDate">Data Registrazione dei protocolli che verranno sospesi.</param>
-    Public Function Suspend(ByVal suspendNumber As Integer, ByVal suspendDate As Date, suspendYear As Short?) As List(Of String)
+    Public Function Suspend(ByVal suspendNumber As Integer, ByVal suspendDate As Date, suspendYear As Short?, currentTenantAOOId As Guid) As List(Of String)
         Dim vParameter As New Parameter
         Dim session As ISession = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB")
-        Dim sqlQuery As IQuery = session.CreateSQLQuery("select * from Parameter with (xlock, rowlock) where incremental=1").AddEntity(vParameter.GetType).SetMaxResults(1)
+        Dim sqlQuery As IQuery = session.CreateSQLQuery($"select * from Parameter with (xlock, rowlock) where IdTenantAOO='{currentTenantAOOId}'").AddEntity(vParameter.GetType).SetMaxResults(1)
         Dim tx As ITransaction = session.BeginTransaction(IsolationLevel.Serializable)
 
         Dim retval As New List(Of String)
@@ -303,17 +321,6 @@ Public Class NHibernateProtocolDao
         Return retval
     End Function
 
-    Function ProtocolHasAuthUsers(ByVal year As Short, ByVal number As Integer, ByVal idRole As Integer) As Boolean
-        Dim crit As ICriteria = NHibernateSession.CreateCriteria(persitentType)
-
-        crit.Add(Restrictions.Eq("Year", year))
-        crit.Add(Restrictions.Eq("Number", number))
-        crit.Add(Restrictions.Eq("RoleUsers.Role", idRole))
-
-        crit.SetProjection(Projections.Count("Number"))
-        Return crit.UniqueResult(Of Integer)() > 0
-    End Function
-
     Function GetLastProtocolInDuplicateMetadatas(ByVal documentCode As String, ByVal [date] As Date?, ByVal subject As String) As Protocol
         Dim crit As ICriteria = NHibernateSession.CreateCriteria(persitentType)
         crit.Add(Restrictions.Eq("IdStatus", Convert.ToInt32(ProtocolStatusId.Attivo)))
@@ -333,18 +340,6 @@ Public Class NHibernateProtocolDao
         crit.SetMaxResults(1)
 
         Return crit.UniqueResult(Of Protocol)()
-    End Function
-
-
-    Function ProtocolIsAuthRole(ByVal year As Short, ByVal number As Integer, ByVal idRole As Integer) As Boolean
-        Dim crit As ICriteria = NHibernateSession.CreateCriteria(persitentType)
-
-        crit.Add(Restrictions.Eq("Year", year))
-        crit.Add(Restrictions.Eq("Number", number))
-        crit.Add(Restrictions.Eq("Roles.Role", idRole))
-
-        crit.SetProjection(Projections.Count("Number"))
-        Return crit.UniqueResult(Of Integer)() > 0
     End Function
 
     ''' <summary> Metodo che ritira protocolli e anagrafiche dei concorsi nel contenitore richiesto. </summary>
@@ -406,6 +401,7 @@ Public Class NHibernateProtocolDao
 
     Private Sub GetProtocolForCouncourseProjections(ByRef crit As ICriteria)
         Dim aliases As New Dictionary(Of String, String)
+        aliases.Add("Id", "Id")
         aliases.Add("Year", "Year")
         aliases.Add("Number", "Number")
         aliases.Add("RegistrationDate", "RegistrationDate")
@@ -429,19 +425,19 @@ Public Class NHibernateProtocolDao
         crit.SetResultTransformer(New TupleToPropertyResultTransformer(GetType(Protocol), aliases, False))
     End Sub
 
-    Public Function GetFirstContact(ByVal year As Short, ByVal number As Integer, ByVal type As String) As ProtocolContactDTO
+    Public Function GetFirstContact(uniqueIdProtocol As Guid, ByVal type As String) As ProtocolContactDTO
         Dim protContacts As IList(Of ProtocolContactDTO)
         Dim protManaualContacts As IList(Of ProtocolContactDTO)
 
         Dim protContactQuery As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolContact)("PC")
         protContactQuery.CreateAlias("PC.Contact", "C", SqlCommand.JoinType.InnerJoin)
-        protContactQuery.Add(Restrictions.Eq("PC.Id.ComunicationType", type))
-        protContactQuery.Add(Restrictions.Eq("PC.Id.Year", year))
-        protContactQuery.Add(Restrictions.Eq("PC.Id.Number", number))
+        protContactQuery.CreateAlias("PC.Protocol", "P")
+        protContactQuery.Add(Restrictions.Eq("PC.ComunicationType", type))
+        protContactQuery.Add(Restrictions.Eq("P.Id", uniqueIdProtocol))
 
         Dim protContactProj As ProjectionList = Projections.ProjectionList()
-        protContactProj.Add(Projections.Property("PC.Id.Year"), "Year")
-        protContactProj.Add(Projections.Property("PC.Id.Number"), "Number")
+        protContactProj.Add(Projections.Property("P.Year"), "Year")
+        protContactProj.Add(Projections.Property("P.Number"), "Number")
         protContactProj.Add(Projections.Property("C.Description"), "Description")
         protContactProj.Add(Projections.Property("C.ContactType.Id"), "Type")
         protContactProj.Add(Projections.Property("C.SearchCode"), "SearchCode")
@@ -451,14 +447,14 @@ Public Class NHibernateProtocolDao
 
 
         Dim protContactManualQuery As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolContactManual)("PCM")
+        protContactManualQuery.CreateAlias("PCM.Protocol", "P")
         protContactManualQuery.Add(Restrictions.Eq("PCM.ComunicationType", type))
-        protContactManualQuery.Add(Restrictions.Eq("PCM.Id.Year", year))
-        protContactManualQuery.Add(Restrictions.Eq("PCM.Id.Number", number))
+        protContactManualQuery.Add(Restrictions.Eq("P.Id", uniqueIdProtocol))
 
         Dim protContactManualProj As ProjectionList = Projections.ProjectionList()
-        protContactManualProj.Add(Projections.Property("PCM.Id.Year"), "Year")
-        protContactManualProj.Add(Projections.Property("PCM.Id.Number"), "Number")
-        protContactManualProj.Add(Projections.Property("PCM.Id.Id"), "Incremental")
+        protContactManualProj.Add(Projections.Property("P.Year"), "Year")
+        protContactManualProj.Add(Projections.Property("P.Number"), "Number")
+        protContactManualProj.Add(Projections.Property("PCM.Incremental"), "Incremental")
         protContactManualProj.Add(Projections.Property("PCM.Contact.Description"), "Description")
         protContactProj.Add(Projections.Property("PCM.Contact.ContactType.Id"), "Type")
         protContactManualQuery.SetProjection(Projections.Distinct(protContactManualProj))
@@ -486,89 +482,78 @@ Public Class NHibernateProtocolDao
         Return aggregated
     End Function
 
-    Private Function GetMainProtocolContacts(aggregated As IDictionary(Of Short, IList(Of Integer))) As IList(Of ProtocolContact)
+    Private Function GetMainProtocolContacts(aggregated As ICollection(Of Guid)) As IList(Of ProtocolContact)
         Dim crit As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolContact)("PC")
         With crit
             .SetFetchMode("Contact", FetchMode.Eager)
             .SetFetchMode("Contact.Address.PlaceName", FetchMode.Eager)
-
+            .CreateAlias("PC.Protocol", "P")
             ' Se il protocollo è in uscita recupero solo i destinatari, altrimenti recupero i mittenti.
-            Dim dcComunicationType As DetachedCriteria = DetachedCriteriaComunicationType("PC.Id.Year", "PC.Id.Number")
-            .Add(Restrictions.EqProperty("PC.Id.ComunicationType", Projections.SubQuery(dcComunicationType)))
+            Dim dcComunicationType As DetachedCriteria = DetachedCriteriaComunicationType("P.Id")
+            .Add(Restrictions.EqProperty("PC.ComunicationType", Projections.SubQuery(dcComunicationType)))
 
             Dim disj As Disjunction = New Disjunction()
             Dim conj As Conjunction = New Conjunction()
-            For Each item As KeyValuePair(Of Short, IList(Of Integer)) In aggregated
-                conj = New Conjunction()
-                conj.Add(Restrictions.Eq("PC.Id.Year", item.Key))
-                conj.Add(Restrictions.In("PC.Id.Number", item.Value.ToArray()))
-                disj.Add(conj)
-            Next
+            conj.Add(Restrictions.In("P.Id", aggregated.ToArray()))
+            disj.Add(conj)
+
             .Add(disj)
 
-            .AddOrder(Order.Asc("PC.Id.Year"))
-            .AddOrder(Order.Asc("PC.Id.Number"))
-            .AddOrder(Order.Asc("PC.Id.IdContact"))
+            .AddOrder(Order.Asc("P.Year"))
+            .AddOrder(Order.Asc("P.Number"))
+            .AddOrder(Order.Asc("PC.Contact.Id"))
 
             Return .List(Of ProtocolContact)()
         End With
     End Function
 
-    Private Function GetMainProtocolContactManuals(aggregated As IDictionary(Of Short, IList(Of Integer))) As IList(Of ProtocolContactManual)
+    Private Function GetMainProtocolContactManuals(aggregated As ICollection(Of Guid)) As IList(Of ProtocolContactManual)
         Dim crit As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolContactManual)("PCM")
         With crit
             .SetFetchMode("Contact", FetchMode.Eager)
             .SetFetchMode("Contact.Address.PlaceName", FetchMode.Eager)
+            .CreateAlias("PCM.Protocol", "P")
 
             ' Se il protocollo è in uscita recupero solo i destinatari, altrimenti recupero i mittenti.
-            Dim dcComunicationType As DetachedCriteria = DetachedCriteriaComunicationType("PCM.Id.Year", "PCM.Id.Number")
+            Dim dcComunicationType As DetachedCriteria = DetachedCriteriaComunicationType("P.Id")
             .Add(Restrictions.EqProperty("PCM.ComunicationType", Projections.SubQuery(dcComunicationType)))
 
             Dim disj As New Disjunction()
             Dim conj As Conjunction = New Conjunction()
-            For Each item As KeyValuePair(Of Short, IList(Of Integer)) In aggregated
-                conj = New Conjunction()
-                conj.Add(Restrictions.Eq("PCM.Id.Year", item.Key))
-                conj.Add(Restrictions.In("PCM.Id.Number", item.Value.ToArray()))
-                disj.Add(conj)
-            Next
+            conj.Add(Restrictions.In("P.Id", aggregated.ToArray()))
+            disj.Add(conj)
+
             .Add(disj)
 
-            .AddOrder(Order.Asc("PCM.Id.Year"))
-            .AddOrder(Order.Asc("PCM.Id.Number"))
-            .AddOrder(Order.Asc("PCM.Id.Id"))
+            .AddOrder(Order.Asc("P.Year"))
+            .AddOrder(Order.Asc("P.Number"))
+            .AddOrder(Order.Asc("PCM.Incremental"))
 
             Return .List(Of ProtocolContactManual)()
         End With
     End Function
 
-    Private Function DetachedCriteriaComunicationType(yearPropertyDescriptor As String, numberPropertyDescriptor As String) As DetachedCriteria
-        Dim dc As DetachedCriteria = DetachedCriteria.For(Of Protocol)("P")
-        dc.Add(Restrictions.EqProperty(yearPropertyDescriptor, "P.Year"))
-        dc.Add(Restrictions.EqProperty(numberPropertyDescriptor, "P.Number"))
-        dc.SetProjection(Projections.Conditional(Restrictions.Eq("P.Type.Id", 1),
+    Private Function DetachedCriteriaComunicationType(uniqueIdProtocolPropertyDescriptor As String) As DetachedCriteria
+        Dim dc As DetachedCriteria = DetachedCriteria.For(Of Protocol)("Protocol")
+        dc.Add(Restrictions.EqProperty(uniqueIdProtocolPropertyDescriptor, "Protocol.Id"))
+        dc.SetProjection(Projections.Conditional(Restrictions.Eq("Protocol.Type.Id", 1),
                                                  Projections.Constant("D"), Projections.Constant("M")))
         Return dc
     End Function
 
-    Public Function GetMainContacts(keys As IList(Of YearNumberCompositeKey)) As IDictionary(Of YearNumberCompositeKey, Object)
+    Public Function GetMainContacts(keys As IList(Of Guid)) As IDictionary(Of Guid, Object)
         If (keys Is Nothing) OrElse keys.Count <= 0 Then
             Return Nothing
         End If
 
-        Dim aggregated As IDictionary(Of Short, IList(Of Integer)) = AggregateProtocolKeys(keys)
-        If (aggregated Is Nothing) OrElse aggregated.Count <= 0 Then
-            Return Nothing
-        End If
-
-        Dim protocolContacts As IList(Of ProtocolContact) = GetMainProtocolContacts(aggregated)
-        Dim protocolContactManuals As IList(Of ProtocolContactManual) = GetMainProtocolContactManuals(aggregated)
+        Dim protocolContacts As IList(Of ProtocolContact) = GetMainProtocolContacts(keys)
+        Dim protocolContactManuals As IList(Of ProtocolContactManual) = GetMainProtocolContactManuals(keys)
 
         If ((protocolContacts Is Nothing) OrElse protocolContacts.Count <= 0) AndAlso ((protocolContactManuals Is Nothing) OrElse protocolContactManuals.Count <= 0) Then
             Return Nothing
         End If
 
-        Dim merged As New Dictionary(Of YearNumberCompositeKey, Object)
+        Dim merged As New Dictionary(Of Guid, Object)
         For Each pc As ProtocolContact In protocolContacts
             If Not merged.ContainsKey(pc.Protocol.Id) Then
                 merged.Add(pc.Protocol.Id, pc)

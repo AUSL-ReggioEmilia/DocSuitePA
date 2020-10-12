@@ -11,54 +11,37 @@ define(["require", "exports", "App/Models/MassimariScarto/MassimarioScartoModel"
             /**
              *------------------------- Events -----------------------------
              */
-            /**
-             * Evento scatenato al click del pulsante Aggiungi
-             * @method
-             * @param sender
-             * @param eventArgs
-             * @returns
-             */
-            this.btnAggiungi_Clicking = function (sender, eventArgs) {
-                eventArgs.set_cancel(true);
-                _this.initializeInsertForm();
-                _this._btnSaveMassimario.set_commandArgument("Insert");
-                _this.openWindow();
-            };
-            /**
-             * Evento scatenato al click del pulsante Modifica
-             * @method
-             * @param sender
-             * @param eventArgs
-             * @returns
-             */
-            this.btnModifica_Clicking = function (sender, eventArgs) {
-                eventArgs.set_cancel(true);
-                _this._uscMassimarioScarto = $("#".concat(_this.uscMassimarioScartoId)).data();
-                var selectedModel = _this._uscMassimarioScarto.getSelectedMassimario();
-                _this.initializeEditForm(selectedModel);
-                _this._btnSaveMassimario.set_commandArgument("Edit");
-                _this.openWindow();
-            };
-            /**
-             * Evento scatenato al click del pulsante Annulla
-             * @method
-             * @param sender
-             * @param eventArgs
-             * @returns
-             */
-            this.btnCancel_Clicking = function (sender, eventArgs) {
-                eventArgs.set_cancel(true);
-                _this.initializeCancelForm();
-                _this._btnSaveMassimario.set_commandArgument("Cancel");
-                _this.openWindow();
-            };
-            this.btnRecover_Clicking = function (sender, eventArgs) {
-                eventArgs.set_cancel(true);
-                _this._uscMassimarioScarto = $("#".concat(_this.uscMassimarioScartoId)).data();
-                var selectedModel = _this._uscMassimarioScarto.getSelectedMassimario();
-                _this.initializeRecoverForm(selectedModel);
-                _this._btnSaveMassimario.set_commandArgument("Recover");
-                _this.openWindow();
+            this.folderToolBar_onClick = function (sender, args) {
+                switch (args.get_item().get_value()) {
+                    case TbltMassimarioScartoGes.CREATE_OPTION: {
+                        _this.initializeInsertForm();
+                        _this._btnSaveMassimario.set_commandArgument("Insert");
+                        _this.openWindow();
+                        break;
+                    }
+                    case TbltMassimarioScartoGes.MODIFY_OPTION: {
+                        _this._uscMassimarioScarto = $("#".concat(_this.uscMassimarioScartoId)).data();
+                        var selectedModel = _this._uscMassimarioScarto.getSelectedMassimario();
+                        _this.initializeEditForm(selectedModel);
+                        _this._btnSaveMassimario.set_commandArgument("Edit");
+                        _this.openWindow();
+                        break;
+                    }
+                    case TbltMassimarioScartoGes.DELETE_OPTION: {
+                        _this.initializeCancelForm();
+                        _this._btnSaveMassimario.set_commandArgument("Cancel");
+                        _this.openWindow();
+                        break;
+                    }
+                    case TbltMassimarioScartoGes.RECOVER_OPTION: {
+                        _this._uscMassimarioScarto = $("#".concat(_this.uscMassimarioScartoId)).data();
+                        var selectedModel = _this._uscMassimarioScarto.getSelectedMassimario();
+                        _this.initializeRecoverForm(selectedModel);
+                        _this._btnSaveMassimario.set_commandArgument("Recover");
+                        _this.openWindow();
+                        break;
+                    }
+                }
             };
             /**
              * Evento scatenato al click del pulsante Conferma
@@ -141,7 +124,12 @@ define(["require", "exports", "App/Models/MassimariScarto/MassimarioScartoModel"
                 _this.closeLoadingPanel(_this.pnlMetadataId);
                 _this._uscMassimarioScarto.updateSelectedNodeChildren();
                 var selectedModel = _this._uscMassimarioScarto.getSelectedMassimario();
-                _this.setButtonVisibility(selectedModel);
+                if (selectedModel.UniqueId) {
+                    _this.setButtonVisibility(selectedModel);
+                }
+                else {
+                    _this.setButtonVisibility(0, true);
+                }
                 _this._btnSaveMassimario.set_enabled(true);
                 _this.closeWindow();
             };
@@ -153,7 +141,12 @@ define(["require", "exports", "App/Models/MassimariScarto/MassimarioScartoModel"
                 _this._uscMassimarioScarto.updateParentNode(function () {
                     _this.hideDetailsPanel();
                     var selectedModel = _this._uscMassimarioScarto.getSelectedMassimario();
-                    _this.setButtonVisibility(selectedModel);
+                    if (selectedModel.UniqueId) {
+                        _this.setButtonVisibility(selectedModel);
+                    }
+                    else {
+                        _this.setButtonVisibility(0, true);
+                    }
                     _this._btnSaveMassimario.set_enabled(true);
                     _this.closeWindow();
                 });
@@ -193,14 +186,8 @@ define(["require", "exports", "App/Models/MassimariScarto/MassimarioScartoModel"
          */
         TbltMassimarioScartoGes.prototype.initialize = function () {
             var _this = this;
-            this._btnAggiungi = $find(this.btnAggiungiId);
-            this._btnAggiungi.add_clicking(this.btnAggiungi_Clicking);
-            this._btnModifica = $find(this.btnModificaId);
-            this._btnModifica.add_clicking(this.btnModifica_Clicking);
-            this._btnAnnulla = $find(this.btnAnnullaId);
-            this._btnAnnulla.add_clicking(this.btnCancel_Clicking);
-            this._btnRecover = $find(this.btnRecoverId);
-            this._btnRecover.add_clicking(this.btnRecover_Clicking);
+            this._folderToolBar = $find(this.folderToolBarId);
+            this._folderToolBar.add_buttonClicked(this.folderToolBar_onClick);
             this._txtName = $find(this.txtNameId);
             this._txtCode = $find(this.txtCodeId);
             this._txtNote = $find(this.txtNoteId);
@@ -318,10 +305,10 @@ define(["require", "exports", "App/Models/MassimariScarto/MassimarioScartoModel"
                 massimarioLevel = massimarioModelOrLevel;
             }
             this._uscMassimarioScarto = $("#".concat(this.uscMassimarioScartoId)).data();
-            this._btnAggiungi.set_enabled(massimarioLevel < 2 && active);
-            this._btnModifica.set_enabled(massimarioLevel > 0 && active);
-            this._btnAnnulla.set_enabled(massimarioLevel > 0 && active && this._uscMassimarioScarto.allSelectedChildrenIsCancel());
-            this._btnRecover.set_enabled(!active);
+            this._folderToolBar.findItemByValue(TbltMassimarioScartoGes.CREATE_OPTION).set_enabled(massimarioLevel < 2 && active);
+            this._folderToolBar.findItemByValue(TbltMassimarioScartoGes.MODIFY_OPTION).set_enabled(massimarioLevel > 0 && active);
+            this._folderToolBar.findItemByValue(TbltMassimarioScartoGes.DELETE_OPTION).set_enabled(massimarioLevel > 0 && active && this._uscMassimarioScarto.allSelectedChildrenIsCancel());
+            this._folderToolBar.findItemByValue(TbltMassimarioScartoGes.RECOVER_OPTION).set_enabled(!active);
         };
         /**
          * Apre una nuova radwindow con dati personalizzati
@@ -412,27 +399,29 @@ define(["require", "exports", "App/Models/MassimariScarto/MassimarioScartoModel"
         TbltMassimarioScartoGes.prototype.initializeRecoverForm = function (model) {
             var wnd = $find(this.rwEditMassimarioId);
             wnd.set_title("Recupera massimario di scarto");
-            this._txtName.set_value(model.Name);
-            this._txtName.get_element().readOnly = true;
-            this._txtCode.set_value(model.Code.toString());
-            this._txtCode.get_element().readOnly = true;
-            this._txtNote.set_value(model.Note);
-            this._txtNote.get_element().readOnly = true;
-            this._rdpStartDate.set_selectedDate(moment(model.StartDate).startOf('day').toDate());
-            this._rdpStartDate.set_enabled(false);
-            this._txtPeriod.get_element().readOnly = true;
-            if (model.ConservationPeriod != undefined) {
-                this._btnInfinite.set_checked(model.ConservationPeriod == -1);
-                this._txtPeriod.set_value(model.ConservationPeriod != -1 ? model.getPeriodLabel() : undefined);
+            if (model) {
+                this._txtName.set_value(model.Name);
+                this._txtName.get_element().readOnly = true;
+                this._txtCode.set_value(model.Code.toString());
+                this._txtCode.get_element().readOnly = true;
+                this._txtNote.set_value(model.Note);
+                this._txtNote.get_element().readOnly = true;
+                this._rdpStartDate.set_selectedDate(moment(model.StartDate).startOf('day').toDate());
+                this._rdpStartDate.set_enabled(false);
+                this._txtPeriod.get_element().readOnly = true;
+                if (model.ConservationPeriod != undefined) {
+                    this._btnInfinite.set_checked(model.ConservationPeriod == -1);
+                    this._txtPeriod.set_value(model.ConservationPeriod != -1 ? model.getPeriodLabel() : undefined);
+                }
+                else {
+                    this._txtPeriod.clear();
+                    this._btnInfinite.set_checked(true);
+                }
+                this.displayRowsForm("Recover", model.MassimarioScartoLevel != 2);
+                ValidatorEnable($get(this.rfvCodeId), false);
+                ValidatorEnable($get(this.rfvNameId), false);
+                ValidatorEnable($get(this.rfvEndDateId), false);
             }
-            else {
-                this._txtPeriod.clear();
-                this._btnInfinite.set_checked(true);
-            }
-            this.displayRowsForm("Recover", model.MassimarioScartoLevel != 2);
-            ValidatorEnable($get(this.rfvCodeId), false);
-            ValidatorEnable($get(this.rfvNameId), false);
-            ValidatorEnable($get(this.rfvEndDateId), false);
         };
         TbltMassimarioScartoGes.prototype.displayRowsForm = function (commandName, hidePeriods) {
             switch (commandName) {
@@ -501,6 +490,10 @@ define(["require", "exports", "App/Models/MassimariScarto/MassimarioScartoModel"
             model.Status = MassimarioScartoStatusType.Active;
             return model;
         };
+        TbltMassimarioScartoGes.CREATE_OPTION = "create";
+        TbltMassimarioScartoGes.MODIFY_OPTION = "modify";
+        TbltMassimarioScartoGes.DELETE_OPTION = "delete";
+        TbltMassimarioScartoGes.RECOVER_OPTION = "recover";
         return TbltMassimarioScartoGes;
     }());
     return TbltMassimarioScartoGes;

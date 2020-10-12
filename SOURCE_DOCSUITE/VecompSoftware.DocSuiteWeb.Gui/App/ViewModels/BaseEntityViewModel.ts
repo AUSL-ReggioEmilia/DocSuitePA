@@ -5,6 +5,7 @@
     Name: string;
     Type: string;
     IdArchiveChain: string;
+    IncrementalFather: number;
 
     constructor() {
     }

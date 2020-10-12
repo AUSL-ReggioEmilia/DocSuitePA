@@ -27,10 +27,6 @@ namespace VecompSoftware.DocSuiteWeb.DTO.Desks
         public decimal? LastVersion { get; set; }
 
         public short IsActive { get; set; }
-        /// <summary>
-        /// Proprietà che identifica il nome server Biblos.
-        /// </summary>
-        public string DocumentServer { get; set; }
 
         public Guid? IdDocumentBiblos { get; set; }
 

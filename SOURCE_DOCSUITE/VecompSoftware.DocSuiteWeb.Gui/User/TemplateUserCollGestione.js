@@ -1,6 +1,6 @@
 /// <reference path="../scripts/typings/telerik/telerik.web.ui.d.ts" />
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
-define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Services/Templates/TemplateCollaborationService", "App/Models/Templates/TemplateCollaborationStatus", "App/Models/Collaborations/CollaborationDocumentType", "App/DTOs/ExceptionDTO"], function (require, exports, ServiceConfigurationHelper, TemplateCollaborationService, TemplateCollaborationStatus, CollaborationDocumentType, ExceptionDTO) {
+define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Services/Templates/TemplateCollaborationService", "App/Models/Templates/TemplateCollaborationStatus", "App/Models/Collaborations/CollaborationDocumentType", "App/Models/Commons/JsonParameter", "App/DTOs/ExceptionDTO"], function (require, exports, ServiceConfigurationHelper, TemplateCollaborationService, TemplateCollaborationStatus, CollaborationDocumentType, JsonParameter, ExceptionDTO) {
     var TemplateUserCollGestione = /** @class */ (function () {
         /**
          * Costruttore
@@ -93,6 +93,15 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             }
             this._service = new TemplateCollaborationService(serviceConfiguration);
         }
+        TemplateUserCollGestione.prototype._chkSecretaryViewRightEnabled = function () {
+            return $("#" + this.chkSecretaryViewRightEnabledId);
+        };
+        TemplateUserCollGestione.prototype._chkPopupDocumentNotSignedAlertEnabled = function () {
+            return $("#" + this.chkPopupDocumentNotSignedAlertEnabledId);
+        };
+        TemplateUserCollGestione.prototype._chkBtnCheckoutEnabled = function () {
+            return $("#" + this.chkBtnCheckoutEnabledId);
+        };
         /**
          *------------------------- Methods -----------------------------
          */
@@ -121,6 +130,8 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             this._manager = $find(this.radWindowManagerId);
             this._rblPriority = $("#".concat(this.rblPriorityId));
             this._currentTemplateIsLocked = false;
+            this._chkDocumentUnitDraftEnabled = $("#".concat(this.chkDocumentUnitDraftEnabledId));
+            $("#".concat(this.rowDocumentUnitDraftId)).hide();
             $("#specificTypeRow").hide();
             if (this.action == TemplateUserCollGestione.EDIT_ACTION) {
                 this.showLoadingPanels();
@@ -187,6 +198,28 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                 entity.IsLocked = false;
             }
             entity.Status = TemplateCollaborationStatus.Draft;
+            var jpars = [];
+            var documentUnitDraftParam = new JsonParameter();
+            documentUnitDraftParam.Name = TemplateUserCollGestione.PRECOMPILE_PARAM;
+            documentUnitDraftParam.PropertyType = 16;
+            documentUnitDraftParam.ValueBoolean = $("#".concat(this.chkDocumentUnitDraftEnabledId)).is(":checked");
+            var secretaryRightParam = new JsonParameter();
+            secretaryRightParam.Name = TemplateUserCollGestione.SECRETARY_PARAM;
+            secretaryRightParam.PropertyType = 16;
+            secretaryRightParam.ValueBoolean = this._chkSecretaryViewRightEnabled().is(":checked");
+            var popupDocumentNotSignedAlertParam = new JsonParameter();
+            popupDocumentNotSignedAlertParam.Name = TemplateUserCollGestione.POPUP_PARAM;
+            popupDocumentNotSignedAlertParam.PropertyType = 16;
+            popupDocumentNotSignedAlertParam.ValueBoolean = this._chkPopupDocumentNotSignedAlertEnabled().is(":checked");
+            var btncheckoutParam = new JsonParameter();
+            btncheckoutParam.Name = TemplateUserCollGestione.BTNCHEKOUT_PARAM;
+            btncheckoutParam.PropertyType = 16;
+            btncheckoutParam.ValueBoolean = this._chkBtnCheckoutEnabled().is(":checked");
+            jpars.push(documentUnitDraftParam);
+            jpars.push(secretaryRightParam);
+            jpars.push(popupDocumentNotSignedAlertParam);
+            jpars.push(btncheckoutParam);
+            entity.JsonParameters = JSON.stringify(jpars);
             return entity;
         };
         /**
@@ -276,12 +309,37 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             this._txtName.set_value(entity.Name);
             this._txtNote.set_value(entity.Note);
             this._txtObject.set_value(entity.Object);
+            if (entity.JsonParameters) {
+                var jsonParms = JSON.parse(entity.JsonParameters);
+                var draftParm = jsonParms.filter(function (f) { return f.Name == TemplateUserCollGestione.PRECOMPILE_PARAM; });
+                if (draftParm && draftParm.length > 0) {
+                    $("#".concat(this.chkDocumentUnitDraftEnabledId)).prop("checked", draftParm[0].ValueBoolean);
+                }
+                var secreataryParm = jsonParms.filter(function (f) { return f.Name == TemplateUserCollGestione.SECRETARY_PARAM; });
+                if (secreataryParm && secreataryParm.length > 0) {
+                    this._chkSecretaryViewRightEnabled().prop("checked", secreataryParm[0].ValueBoolean);
+                }
+                var popupDocumentNotSignedAlertParam = jsonParms.filter(function (f) { return f.Name == TemplateUserCollGestione.POPUP_PARAM; });
+                if (popupDocumentNotSignedAlertParam && popupDocumentNotSignedAlertParam.length > 0) {
+                    this._chkPopupDocumentNotSignedAlertEnabled().prop("checked", popupDocumentNotSignedAlertParam[0].ValueBoolean);
+                }
+                var btncheckoutParam = jsonParms.filter(function (f) { return f.Name == TemplateUserCollGestione.BTNCHEKOUT_PARAM; });
+                if (btncheckoutParam && btncheckoutParam.length > 0) {
+                    this._chkBtnCheckoutEnabled().prop("checked", btncheckoutParam[0].ValueBoolean);
+                }
+            }
             var collaborationDocumentTypeName = this.getCollaborationDocumentTypeFromEntity(entity);
             this._ddlDocumentType.findItemByValue(collaborationDocumentTypeName).select();
             if (collaborationDocumentTypeName == CollaborationDocumentType[CollaborationDocumentType.UDS] && !isNaN(parseInt(entity.DocumentType))) {
                 this._ddlSpecificDocumentType.findItemByValue(entity.DocumentType).select();
             }
+            this.showPanel(entity.DocumentType);
             $("#".concat(this.rblPriorityId, " :radio[value='", entity.IdPriority, "']")).prop("checked", true);
+        };
+        TemplateUserCollGestione.prototype.showPanel = function (documentType) {
+            if (documentType == CollaborationDocumentType[CollaborationDocumentType.P] || !isNaN(parseInt(documentType))) {
+                $("#" + this.rowDocumentUnitDraftId).show();
+            }
         };
         /**
          * Callback scatenato al load dei dati dalle WebAPI lato code-behind
@@ -324,6 +382,10 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
         };
         TemplateUserCollGestione.INSERT_ACTION = "Insert";
         TemplateUserCollGestione.EDIT_ACTION = "Edit";
+        TemplateUserCollGestione.PRECOMPILE_PARAM = "DocumentUnitDraftEditorEnabled";
+        TemplateUserCollGestione.SECRETARY_PARAM = "SecretaryViewRightEnabled";
+        TemplateUserCollGestione.POPUP_PARAM = "PopUpDocumentNotSignedAlertEnabled";
+        TemplateUserCollGestione.BTNCHEKOUT_PARAM = "BtnCheckoutEnabled";
         return TemplateUserCollGestione;
     }());
     return TemplateUserCollGestione;

@@ -8,7 +8,9 @@ import ValidationCode = require('App/Models/Validations/ValidationCode');
 
 declare var JSONHelper: any;
 class ErrorHelper {
-   
+    public static DEFAULT_ERROR_MESSAGE = "Anomalia critica nell'esecuzione della richiesta. Contattare l'assistenza.";
+    public static DEFAULT_UNAUTHORIZED_MESSAGE = "Non si è autorizzati ad effetturare la richiesta. Verificare di avere i permessi necessari.";
+
     getExceptionModel(XMLHttpRequest: JQueryXHR): ExceptionDTO {
         if (XMLHttpRequest) {
             let exceptionDto: ExceptionDTO = new ExceptionDTO();
@@ -18,7 +20,7 @@ class ErrorHelper {
             switch (exceptionDto.statusCode) {
                 case ExceptionStatusCode.BadRequest: {
 
-                    exceptionDto.statusText = "Anomalia critica nell'esecuzione della richiesta. Contattare l'assistenza.";
+                    exceptionDto.statusText = ErrorHelper.DEFAULT_ERROR_MESSAGE;
                     if (XMLHttpRequest.responseJSON) {
                         let jsonHelper: any = new JSONHelper();
                         let validation: ValidationModel = <ValidationModel>jsonHelper.resolveReferences(XMLHttpRequest.responseJSON);
@@ -40,15 +42,15 @@ class ErrorHelper {
                     break;
                 }
                 case ExceptionStatusCode.Unauthorized: {
-                    exceptionDto.statusText = "Non si è autorizzati ad effetturare la richiesta. Contattare l'assistenza.";
+                    exceptionDto.statusText = ErrorHelper.DEFAULT_UNAUTHORIZED_MESSAGE;
                     break;
                 }
                 case ExceptionStatusCode.InternalServerError: {
-                    exceptionDto.statusText = "Anomalia critica nell'esecuzione della richiesta. Contattare l'assistenza.";
+                    exceptionDto.statusText = ErrorHelper.DEFAULT_ERROR_MESSAGE;
                     break;
                 }
                 default: {
-                    exceptionDto.statusText = "Anomalia critica nell'esecuzione della richiesta. Contattare l'assistenza.";
+                    exceptionDto.statusText = ErrorHelper.DEFAULT_ERROR_MESSAGE;
                 }
             }
 

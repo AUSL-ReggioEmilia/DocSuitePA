@@ -3,18 +3,15 @@ import DossierFolderModel = require('App/Models/Dossiers/DossierFolderModel');
 import DossierFolderRoleModel = require('App/Models/Dossiers/DossierFolderRoleModel');
 import DossierFolderStatus = require('App/Models/Dossiers/DossierFolderStatus');
 import ContainerModel = require('App/Models/Commons/ContainerModel');
-import ContactModel = require('App/Models/Commons/ContactModel');
 import RoleModel = require('App/Models/Commons/RoleModel');
-import DossierRoleModel = require('App/Models/Dossiers/DossierRoleModel');
 import DossierBase = require('Dossiers/DossierBase');
-import WindowHelper = require('App/Helpers/WindowHelper');
 import DossierService = require('App/Services/Dossiers/DossierService');
 import ContainerService = require('App/Services/Commons/ContainerService');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
-import UscDynamicMetadataClient = require('UserControl/uscDynamicMetadataClient');
-import MetadataViewModel = require('App/ViewModels/Metadata/MetadataViewModel');
+import UscDynamicMetadataRest = require('UserControl/uscDynamicMetadataRest');
+import MetadataDesignerViewModel = require('App/ViewModels/Metadata/MetadataDesignerViewModel');
 import UscMetadataRepositorySel = require('UserControl/uscMetadataRepositorySel');
 import MetadataRepositoryModel = require('App/Models/Commons/MetadataRepositoryModel');
 import ContainerPropertyService = require('App/Services/Commons/ContainerPropertyService');
@@ -25,8 +22,19 @@ import DossierFolderService = require('App/Services/Dossiers/DossierFolderServic
 import InsertActionType = require('App/Models/InsertActionType');
 import BuildActionModel = require('App/Models/Commons/BuildActionModel');
 import BuildActionType = require('App/Models/Commons/BuildActionType');
-import Guid = require('App/Helpers/GuidHelper');
 import FascicleModel = require('App/Models/Fascicles/FascicleModel');
+import SetiContactModel = require('App/Models/Commons/SetiContactModel');
+import uscRoleRest = require('UserControl/uscRoleRest');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import UscRoleRestEventType = require('App/Models/Commons/UscRoleRestEventType');
+import uscContattiSelRest = require('UserControl/uscContattiSelRest');
+import ContactModel = require('APP/Models/Commons/ContactModel');
+import DossierRoleModel = require('App/Models/Dossiers/DossierRoleModel');
+import AuthorizationRoleType = require('App/Models/Commons/AuthorizationRoleType');
+import uscCategoryRest = require('UserControl/uscCategoryRest');
+import CategoryModel = require('App/Models/Commons/CategoryModel');
+import EnumHelper = require('App/Helpers/EnumHelper');
+import DossierType = require('App/Models/Dossiers/DossierType');
 
 declare var Page_IsValid: any;
 
@@ -34,7 +42,6 @@ class DossierInserimento extends DossierBase {
 
     dossierPageContentId: string;
     btnConfirmId: string;
-    btnConfirmUniqueId: string;
     txtObjectId: string;
     txtNoteId: string;
     rdpStartDateId: string;
@@ -49,6 +56,19 @@ class DossierInserimento extends DossierBase {
     metadataRepositoryEnabled: boolean;
     uscMetadataRepositorySelId: string;
     rowMetadataId: string;
+    currentTenantId: string;
+    uscSetiContactSelId: string;
+    uscRoleRestId: string;
+    uscContattiSelRestId: string;
+    uscRoleMasterId: string;
+    roleInsertId: number[];
+    contactInsertId: number[] = [];
+    dossierRolesList: DossierRoleModel[] = [];
+    uscCategoryRestId: string;
+    rcbDossierTypeId: string;
+    rfvDossierTypeId: string;
+    defaultCategoryId: number;
+    _enumHelper: EnumHelper;
 
     private _serviceConfigurations: ServiceConfiguration[];
     private _dossierService: DossierService;
@@ -64,7 +84,10 @@ class DossierInserimento extends DossierBase {
     private _containerPropertyService: ContainerPropertyService;
     private _selectedDossierFoldersModel: DossierInsertViewModel;
     private _dossierFolderService: DossierFolderService;
-
+    private _uscRoleRest: uscRoleRest;
+    private _uscContattiSelRest: uscContattiSelRest;
+    private selectedResponsibleRole: RoleModel;
+    private _rcbDossierType: Telerik.Web.UI.RadComboBox;
     /**
 * Costruttore
 * @param serviceConfiguration
@@ -89,22 +112,18 @@ class DossierInserimento extends DossierBase {
    * @param eventArgs
    * @returns
    */
-    btnConfirm_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
-        if (Page_IsValid) {
-            this._loadingPanel.show(this.dossierPageContentId);
-            this._btnConfirm.set_enabled(false);
-            (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequestWithTarget(this.btnConfirmUniqueId, '');
-        }
+    btnConfirm_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
+        this.insertCallback();
     }
 
     rdlContainer_OnSelectedIndexChanged = (sender: Telerik.Web.UI.RadDropDownList, eventArgs: Telerik.Web.UI.DropDownListIndexChangedEventArgs) => {
         if (sender.get_selectedItem()) {
             let uscMetadataRepositorySel: UscMetadataRepositorySel = <UscMetadataRepositorySel>$("#".concat(this.uscMetadataRepositorySelId)).data();
-            let uscDynamicMetadataClient: UscDynamicMetadataClient = <UscDynamicMetadataClient>$("#".concat(this.uscDynamicMetadataId)).data();
+            let uscDynamicMetadataRest: UscDynamicMetadataRest = <UscDynamicMetadataRest>$("#".concat(this.uscDynamicMetadataId)).data();
             uscMetadataRepositorySel.setRepositoryRestrictions([]);
             uscMetadataRepositorySel.clearComboboxText();
             uscMetadataRepositorySel.enableSelection();
-            uscDynamicMetadataClient.clearPage();
+            uscDynamicMetadataRest.clearPage();
             this._selectedDossierFoldersModel = undefined;
             this._loadingPanel.show(this.dossierPageContentId);
             this._containerPropertyService.getByContainer(Number(sender.get_selectedItem().get_value()), "DossierFoldersModel",
@@ -113,7 +132,6 @@ class DossierInserimento extends DossierBase {
                         this._loadingPanel.hide(this.dossierPageContentId);
                         return;
                     }
-
                     try {
                         let containerProperty: ContainerPropertyModel = data[0] as ContainerPropertyModel;
                         if (containerProperty.ValueString) {
@@ -123,7 +141,7 @@ class DossierInserimento extends DossierBase {
                                 let repositoryId: string = this._selectedDossierFoldersModel.MetadataRestrictions[0];
                                 uscMetadataRepositorySel.setComboboxText(repositoryId);
                                 this._selectedMetadataRepository = repositoryId;
-                                uscDynamicMetadataClient.loadMetadataRepository(repositoryId);
+                                uscDynamicMetadataRest.loadMetadataRepository(repositoryId);
                                 uscMetadataRepositorySel.disableSelection();
                             }
                         }
@@ -132,7 +150,7 @@ class DossierInserimento extends DossierBase {
                         console.error(e);
                         this._loadingPanel.hide(this.dossierPageContentId);
                         this.showNotificationMessage(this.uscNotificationId, "Errore nella lettura degli automatismi associati al contenitore.");
-                    }                    
+                    }
                 },
                 (exception: ExceptionDTO) => {
                     this._loadingPanel.hide(this.dossierPageContentId);
@@ -150,6 +168,7 @@ class DossierInserimento extends DossierBase {
     */
     initialize() {
         super.initialize();
+        this._enumHelper = new EnumHelper();
         this._btnConfirm = <Telerik.Web.UI.RadButton>$find(this.btnConfirmId);
         this._btnConfirm.add_clicked(this.btnConfirm_OnClicked);
         this._txtNote = <Telerik.Web.UI.RadTextBox>$find(this.txtNoteId);
@@ -159,6 +178,7 @@ class DossierInserimento extends DossierBase {
         this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.ajaxManagerId);
         this._rowMetadataRepository = $("#".concat(this.rowMetadataId));
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
+
         let containerConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Container");
         this._containerService = new ContainerService(containerConfiguration);
 
@@ -174,21 +194,46 @@ class DossierInserimento extends DossierBase {
         this._loadingPanel.show(this.dossierPageContentId);
         this.checkInsertRight();
 
+        this._uscRoleRest = <uscRoleRest>$(`#${this.uscRoleRestId}`).data();
+        this._uscRoleRest.renderRolesTree([]);
+        this.registerUscRoleRestEventHandlers();
+
+        this._uscContattiSelRest = <uscContattiSelRest>$(`#${this.uscContattiSelRestId}`).data();
+        this.registerUscContactRestEventHandlers();
+
         if (this.metadataRepositoryEnabled) {
             this._rowMetadataRepository.show();
 
-            $("#".concat(this.uscMetadataRepositorySelId)).on(UscMetadataRepositorySel.SELECTED_INDEX_EVENT, (args, data) => {
-                let uscDynamicMetadataClient: UscDynamicMetadataClient = <UscDynamicMetadataClient>$("#".concat(this.uscDynamicMetadataId)).data();
-                if (!jQuery.isEmptyObject(uscDynamicMetadataClient)) {
-                    uscDynamicMetadataClient.clearPage();
+            $("#".concat(this.uscMetadataRepositorySelId)).on(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, (args, data) => {
+                let uscDynamicMetadataRest: UscDynamicMetadataRest = <UscDynamicMetadataRest>$("#".concat(this.uscDynamicMetadataId)).data();
+                if (!jQuery.isEmptyObject(uscDynamicMetadataRest)) {
+                    uscDynamicMetadataRest.clearPage();
                     this._selectedMetadataRepository = data;
                     if (data) {
-                        uscDynamicMetadataClient.loadMetadataRepository(data);
+                        uscDynamicMetadataRest.loadMetadataRepository(data);
                     }
                 }
             });
-
+            /*event for filing out the fields with the chosen Seti contact*/
+            $("#".concat(this.uscMetadataRepositorySelId)).on(UscMetadataRepositorySel.SELECTED_SETI_CONTACT_EVENT, (sender, args: SetiContactModel) => {
+                let uscDynamicMetadataRest: UscDynamicMetadataRest = <UscDynamicMetadataRest>$("#".concat(this.uscDynamicMetadataId)).data();
+                uscDynamicMetadataRest.populateMetadataRepository(args);
+            });
         }
+
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRestId).done((instance) => {
+            instance.setToolbarVisibility(true);
+            instance.renderRolesTree([]);
+        });
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((instance) => {
+            instance.setToolbarVisibility(true);
+            instance.renderRolesTree([]);
+        });
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRestId).done((instance) => instance.setToolbarVisibility(true));
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((instance) => instance.setToolbarVisibility(true));
+
+        this._rcbDossierType = <Telerik.Web.UI.RadComboBox>$find(this.rcbDossierTypeId);
+        this.populateDossierTypeComboBox();
     }
 
     /**
@@ -219,7 +264,7 @@ class DossierInserimento extends DossierBase {
     }
 
     private loadContainers = () => {
-        this._containerService.getDossierInsertAuthorizedContainers(
+        this._containerService.getDossierInsertAuthorizedContainers(this.currentTenantId,
             (data: any) => {
                 let containers: ContainerModel[] = <ContainerModel[]>data;
                 this.addContainers(containers, this._rdlContainer);
@@ -239,22 +284,34 @@ class DossierInserimento extends DossierBase {
     * @param contact
     * @param category
     */
-    insertCallback(contact: string, role: string): void {
+    insertCallback(): void {
         let dossierModel: DossierModel = <DossierModel>{};
 
-        //riferimento
-        this.fillContacts(contact, dossierModel);
-        //settore
-        this.fillRoles(role, dossierModel);
-        this.fillModelFromPage(dossierModel);
-
-        if (this.metadataRepositoryEnabled && this._selectedMetadataRepository && !this.fillMetadataModel(dossierModel)) {
-            this._loadingPanel.hide(this.dossierPageContentId);
-            this._btnConfirm = <Telerik.Web.UI.RadButton>$find(this.btnConfirmId);
-            this._btnConfirm.set_enabled(true);
+        if (!this._rdlContainer.get_selectedItem()) {
+            this.showNotificationMessage(this.uscNotificationId, "La selezione del contenitore è obbligatoria");
             return;
         }
 
+        //riferimento
+        this.fillContacts(JSON.stringify(this.contactInsertId), dossierModel);
+        //settore
+        dossierModel.DossierRoles = this.dossierRolesList;
+        this.fillModelFromPage(dossierModel);
+        //metadati
+        if (this.metadataRepositoryEnabled && this._selectedMetadataRepository && !this.fillMetadataModel(dossierModel)) {
+            this.enableBtnConfirm();
+            return;
+        }
+        //classificatore
+        let uscCategoryRest: uscCategoryRest = <uscCategoryRest>$(`#${this.uscCategoryRestId}`).data();
+        dossierModel.Category = uscCategoryRest.getSelectedCategory();
+        if (!dossierModel.Category) {
+            dossierModel.Category = <CategoryModel>{
+                EntityShortId: this.defaultCategoryId
+            };
+        }
+        this._loadingPanel.show(this.dossierPageContentId);
+        this._btnConfirm.set_enabled(false);
         (<DossierService>this.service).insertDossier(dossierModel,
             (data: any) => {
                 if (data == null) return;
@@ -269,10 +326,25 @@ class DossierInserimento extends DossierBase {
                 }
             },
             (exception: ExceptionDTO) => {
+                this._btnConfirm.set_enabled(true);
                 this._loadingPanel.hide(this.dossierPageContentId);
                 this.showNotificationException(this.uscNotificationId, exception);
             }
         );
+    }
+
+    private registerUscContactRestEventHandlers(): void {
+        PageClassHelper.callUserControlFunctionSafe<uscContattiSelRest>(this.uscContattiSelRestId)
+            .done((instance) => {
+                instance.registerEventHandler(instance.uscContattiSelRestEvents.ContactDeleted, (contactIdToDelete: number) => {
+                    this.contactInsertId = this.contactInsertId.filter(x => x != contactIdToDelete);
+                    return $.Deferred<void>().resolve();
+                });
+                instance.registerEventHandler(instance.uscContattiSelRestEvents.NewContactsAdded, (newAddedContact: ContactModel) => {
+                    this.contactInsertId.push(newAddedContact.EntityId);
+                    return $.Deferred<void>().resolve();
+                });
+            });
     }
 
     private saveFolders(modelFolders: DossierFolderInsertViewModel[], dossierId: string): JQueryPromise<void> {
@@ -376,17 +448,27 @@ class DossierInserimento extends DossierBase {
         containerModel.EntityShortId = Number(this._rdlContainer.get_selectedItem().get_value());
         model.Container = containerModel;
 
+        model.DossierType = DossierType[this._rcbDossierType.get_selectedItem().get_value()];
+
         return model;
     }
 
     private fillMetadataModel(model: DossierModel): boolean {
-
-        let uscDynamicMetadataClient: UscDynamicMetadataClient = <UscDynamicMetadataClient>$("#".concat(this.uscDynamicMetadataId)).data();
-        if (!jQuery.isEmptyObject(uscDynamicMetadataClient)) {
-            model.JsonMetadata = uscDynamicMetadataClient.bindModelFormPage();
-            if (!model.JsonMetadata) {
+        let uscDynamicMetadataRest: UscDynamicMetadataRest = <UscDynamicMetadataRest>$("#".concat(this.uscDynamicMetadataId)).data();
+        let metadataRepository = uscDynamicMetadataRest.getMetadataRepository();
+        let setiIntegrationEnabledField: boolean;
+        if (metadataRepository && metadataRepository.JsonMetadata) {
+            let metadataJson: MetadataDesignerViewModel = JSON.parse(metadataRepository.JsonMetadata);
+            setiIntegrationEnabledField = metadataJson.SETIFieldEnabled;
+        }
+       
+        if (!jQuery.isEmptyObject(uscDynamicMetadataRest)) {
+            let metadatas: [string, string] = uscDynamicMetadataRest.bindModelFormPage(setiIntegrationEnabledField);
+            if (!metadatas) {
                 return false;
             }
+            model.MetadataDesigner = metadatas[0];
+            model.MetadataValues = metadatas[1];
 
             let currentRepository = <MetadataRepositoryModel>{};
             currentRepository.UniqueId = this._selectedMetadataRepository;
@@ -396,6 +478,89 @@ class DossierInserimento extends DossierBase {
         return true;
     }
 
+    private deleteRoleFromModel(roleIdToDelete: number): void {
+        if (!roleIdToDelete)
+            return;
+
+        let dossierRoles: DossierRoleModel[] = [];
+        dossierRoles = this.dossierRolesList.filter(x => x.Role.IdRole !== roleIdToDelete && x.Role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) === -1);
+        this.dossierRolesList = dossierRoles;
+    }
+
+    private registerUscRoleRestEventHandlers(): void {
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRestId)
+            .done((instance) => {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, (roleId: number) => {
+                    this.deleteRoleFromModel(roleId);
+                    return $.Deferred<void>().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, (newAddedRoles: RoleModel[]) => {
+                    let existedRole: RoleModel;
+                    this.addRoleToModel(this.uscRoleMasterId, newAddedRoles, (role) => {
+                        existedRole = role;
+                    });
+                    return $.Deferred<RoleModel>().resolve(existedRole);
+                });
+            });
+
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
+            .done((instance) => {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, (roleId: number) => {
+                    this.deleteRoleFromModel(roleId);
+                    return $.Deferred<void>().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, (newAddedRoles: RoleModel[]) => {
+                    let existedRole: RoleModel;
+                    this.addRoleToModel(this.uscRoleRestId, newAddedRoles, (role) => {
+                        existedRole = role;
+                    });
+                    if (!existedRole) {
+                        this.selectedResponsibleRole = newAddedRoles[0];
+                    }
+                    return $.Deferred<RoleModel>().resolve(existedRole, true);
+                });
+            });
+    }
+
+    private addRoleToModel(toCheckControlId: string, newAddedRoles: RoleModel[], existedRoleCallback?: (RoleModel) => void): void {
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(toCheckControlId)
+            .done((instance) => {
+                let existedRole: RoleModel = instance.existsRole(newAddedRoles);
+                if (existedRole) {
+                    alert(`Non è possibile selezionare il settore ${existedRole.Name} in quanto già presente come settore ${toCheckControlId == this.uscRoleMasterId ? "responsabile" : "autorizzato"} del fascicolo`);
+                    existedRoleCallback(existedRole);
+                    newAddedRoles = newAddedRoles.filter(x => x.IdRole !== existedRole.IdRole);
+                }
+                    let dossierRoles: DossierRoleModel[] = newAddedRoles.map(x => <DossierRoleModel>{
+                        Role: x,
+                        IsMaster: toCheckControlId != this.uscRoleMasterId,
+                        AuthorizationRoleType: toCheckControlId != this.uscRoleMasterId
+                            ? AuthorizationRoleType.Responsible
+                            : AuthorizationRoleType.Accounted
+                    });
+                for (let dossierRole of dossierRoles) {
+                    this.dossierRolesList.push(dossierRole);
+                }
+            });
+    }
+
+    private populateDossierTypeComboBox(): void {
+        for (let dossierType in DossierType) {
+            if (typeof DossierType[dossierType] === 'string' && dossierType !== DossierType.Process.toString()) {
+                let rcbItem: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
+                rcbItem.set_text(this._enumHelper.getDossierTypeDescription(DossierType[dossierType]));
+                rcbItem.set_value(DossierType[dossierType]);
+                this._rcbDossierType.get_items().add(rcbItem);
+            }
+        }
+        this._rcbDossierType.findItemByValue(DossierType[DossierType.Procedure]).select();
+    }
+
+    private enableBtnConfirm(): void {
+        this._loadingPanel.hide(this.dossierPageContentId);
+        this._btnConfirm = <Telerik.Web.UI.RadButton>$find(this.btnConfirmId);
+        this._btnConfirm.set_enabled(true);
+    }
 }
 
 export = DossierInserimento;

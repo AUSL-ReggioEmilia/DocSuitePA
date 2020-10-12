@@ -3,8 +3,9 @@
     MasterPageFile="~/MasterPages/DocSuite2008.Master" %>
 
 
-<%@ Register Src="../UserControl/uscSettori.ascx" TagName="uscSettori" TagPrefix="uc3" %>
-<%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="uscContatti" TagPrefix="uc3" %>
+<%@ Register Src="~/UserControl/uscRoleRest.ascx" TagName="uscRoleRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscDomainUserSelRest.ascx" TagName="uscDomainUserSelRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscWorkflowDesignerValidations.ascx" TagName="uscWorkflowDesignerValidations" TagPrefix="usc" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1" EnableViewState="false">
@@ -22,11 +23,31 @@
                     tbltWorkflowEvaluationPropertyGes.rdpValueDateId = "<%= rdpValueDate.ClientID%>";
                     tbltWorkflowEvaluationPropertyGes.rntbValueDoubleId = "<%= rntbValueDouble.ClientID%>";
                     tbltWorkflowEvaluationPropertyGes.rdbGuidId = "<%= rdbGuid.ClientID%>";
+                    tbltWorkflowEvaluationPropertyGes.workflowEnv = "<%=WorkflowEnv%>";
 
                     tbltWorkflowEvaluationPropertyGes.btnConfirmId = "<%= btnConfirm.ClientID %>";
                     tbltWorkflowEvaluationPropertyGes.ajaxManagerId = "<%= MasterDocSuite.AjaxManager.ClientID %>";
                     tbltWorkflowEvaluationPropertyGes.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                     tbltWorkflowEvaluationPropertyGes.pageContentId = "<%= pnlRinomina.ClientID %>";
+
+                    tbltWorkflowEvaluationPropertyGes.uscRoleRestId = "<%=uscRoleRest.TableContentControl.ClientID%>";
+                    tbltWorkflowEvaluationPropertyGes.uscRoleRestContainerId = "<%="uscRoleRestContainer"%>";
+
+                    tbltWorkflowEvaluationPropertyGes.uscWorkflowDesignerValidationsId = "<%=uscWorkflowDesignerValidations.PageContent.ClientID%>";
+                    tbltWorkflowEvaluationPropertyGes.uscWorkflowDesignerValidationsContainerId = "<%="uscWorkflowDesignerValidationsContainer"%>";
+
+                    tbltWorkflowEvaluationPropertyGes.uscDomainUserSelRestId = "<%=uscDomainUserSelRest.PageContent.ClientID %>";
+                    tbltWorkflowEvaluationPropertyGes.uscDomainUserSelRestContainerId = "<%="uscDomainUserSelRestContainer"%>";
+
+                    tbltWorkflowEvaluationPropertyGes.ddlTemplateCollaborationId = "<%= ddlTemplateCollaboration.ClientID %>";;
+                    tbltWorkflowEvaluationPropertyGes.uscTemplateCollaborationContainerId = "<%="uscTemplateCollaborationContainer"%>";
+
+                    tbltWorkflowEvaluationPropertyGes.ddlCollaborationSignSummaryId = "<%=ddlCollaborationSignSummary.ClientID%>"
+                    tbltWorkflowEvaluationPropertyGes.uscCollaborationSignSummaryContainerId = "<%="uscCollaborationSignSummaryContainer"%>"
+
+                    tbltWorkflowEvaluationPropertyGes.ddlActionGenerateId = "<%=ddlActionGenerate.ClientID%>"
+                    tbltWorkflowEvaluationPropertyGes.uscActionGenerateContainerId = "<%="uscActionGenerateContainer"%>"
+
                     tbltWorkflowEvaluationPropertyGes.initialize();
                 });
             });
@@ -41,11 +62,11 @@
                 <td class="label col-dsw-3">Proprietà</td>
 
                 <td class="col-dsw-7">
-                    <telerik:RadComboBox  AllowCustomText="true" runat="server" CausesValidation="false"
+                    <telerik:RadComboBox AllowCustomText="true" runat="server" CausesValidation="false"
                         ID="rcbName" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true"
-                        ItemRequestTimeout="500" Width="300">
+                        ItemRequestTimeout="500" Width="400">
                     </telerik:RadComboBox>
-                    <asp:RequiredFieldValidator ID="tfvNameWorkflowStartup" runat="server" Display="Dynamic" ErrorMessage="Campo Proprietà Obbligatorio" ControlToValidate="rcbName" />
+                    <asp:RequiredFieldValidator ID="tfvNameWorkflowStartup" runat="server" Display="Dynamic" ErrorMessage="Campo proprietà obbligatorio" ControlToValidate="rcbName" />
                 </td>
             </tr>
 
@@ -59,14 +80,45 @@
                         <NumberFormat GroupSeparator="" DecimalDigits="0" />
                     </telerik:RadNumericTextBox>
 
-                    <telerik:RadTextBox runat="server" CausesValidation="false" Width="300"
+                    <telerik:RadTextBox runat="server" CausesValidation="false" Width="400"
                         ID="rtbValueString" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true">
                     </telerik:RadTextBox>
 
-                    <telerik:RadTextBox runat="server" CausesValidation="false" Width="300"
+                    <telerik:RadTextBox runat="server" CausesValidation="false" Width="400"
                         ID="rtbValueJson" Rows="5" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true"
                         TextMode="MultiLine">
                     </telerik:RadTextBox>
+
+                    <div id="uscRoleRestContainer">
+                        <usc:uscRoleRest runat="server" ID="uscRoleRest" Caption="Autorizzazioni" Required="true" DSWEnvironmentType="Document" OnlyMyRoles="true"
+                            Expanded="true" />
+                    </div>
+
+                    <div id="uscWorkflowDesignerValidationsContainer">
+                        <usc:uscWorkflowDesignerValidations runat="server" ID="uscWorkflowDesignerValidations" Caption="Regole di validazione" />
+                    </div>
+
+                    <div id="uscTemplateCollaborationContainer">
+                        <telerik:RadComboBox runat="server" ID="ddlTemplateCollaboration" Width="100%" Filter="Contains"
+                            CausesValidation="false" EnableLoadOnDemand="True" AutoPostBack="false" EmptyMessage="Selezionare template">
+                        </telerik:RadComboBox>
+                    </div>
+
+                    <div id="uscCollaborationSignSummaryContainer">
+                        <telerik:RadComboBox runat="server" ID="ddlCollaborationSignSummary" Width="100%" Filter="Contains"
+                            CausesValidation="false" EnableLoadOnDemand="True" AutoPostBack="false" EmptyMessage="Selezionare template">
+                        </telerik:RadComboBox>
+                    </div>
+
+                    <div id="uscActionGenerateContainer">
+                        <telerik:RadComboBox runat="server" ID="ddlActionGenerate" Width="100%" Filter="Contains"
+                            CausesValidation="false" EnableLoadOnDemand="True" AutoPostBack="false" EmptyMessage="Selezionare template">
+                        </telerik:RadComboBox>
+                    </div>
+
+                    <div id="uscDomainUserSelRestContainer">
+                        <usc:uscDomainUserSelRest runat="server" ID="uscDomainUserSelRest" Required="true" />
+                    </div>
 
                     <div id="valueBool">
                         <telerik:RadListBox runat="server" CausesValidation="false"

@@ -38,7 +38,7 @@ class TbltWorkflowRepositoryGes {
         }
     }
 
-    private btnConferma_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnConferma_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._loadingPanel.show(this.pageContentId);
         (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest('SaveMapping');
         return false;

@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class FascRisultati
-    
+
     '''<summary>
     '''rsbContent control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class FascRisultati
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rsbContent As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''divTitolo control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class FascRisultati
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents divTitolo As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''lblHeader control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class FascRisultati
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblHeader As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscFascicleGrid control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class FascRisultati
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscFascicleGrid As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascGrid
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class FascRisultati
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
+
     '''<summary>
     '''pnlButtons control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class FascRisultati
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnDocuments control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class FascRisultati
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnDocuments As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnSelectAll control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class FascRisultati
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSelectAll As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnDeselectAll control.
     '''</summary>
@@ -93,4 +93,13 @@ Partial Public Class FascRisultati
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnDeselectAll As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''backBtn control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents backBtn As Global.Telerik.Web.UI.RadButton
 End Class

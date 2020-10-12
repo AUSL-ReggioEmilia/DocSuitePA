@@ -23,6 +23,7 @@ namespace VecompSoftware.DocSuiteWeb.API
         #endregion
 
         #region [ Properties ]
+        public Guid? UniqueId { get; set; }
 
         public short? Year { get; set; }
 
@@ -105,13 +106,20 @@ namespace VecompSoftware.DocSuiteWeb.API
         public DateTime? ProtocolReserveFrom { get; set; }
 
         public DateTime? ProtocolReserveTo { get; set; }
+
+        public Guid IdTenantAOO { get; set; }
+
+        [JsonConverter(typeof(APIArgumentConverter<WorkflowActionDTO, IWorkflowActionDTO>))]
+        public IWorkflowActionDTO[] WorkflowActions { get; set; }
+
+        public int? IdServiceCategory { get; set; }
         #endregion
 
         #region [ Methods ]
 
         public bool HasId()
         {
-            return this.Year.HasValue && this.Number.HasValue;
+            return this.UniqueId.HasValue;
         }
 
         public bool HasAttachments()
@@ -177,15 +185,15 @@ namespace VecompSoftware.DocSuiteWeb.API
             return this.AddDocument(fullName, content);
         }
 
-        public IProtocolDTO AddBiblosDocument(string biblosServer, string biblosArchive, int biblosId)
+        public IProtocolDTO AddBiblosDocument(string biblosArchive, int biblosId)
         {
-            this.Document = new DocumentDTO(biblosServer, biblosArchive, biblosId);
+            this.Document = new DocumentDTO(biblosArchive, biblosId);
             return this;
         }
 
-        public IProtocolDTO AddBiblosDocument(string biblosServer, Guid biblosGuid)
+        public IProtocolDTO AddBiblosDocument(Guid biblosGuid)
         {
-            this.Document = new DocumentDTO(biblosServer, biblosGuid);
+            this.Document = new DocumentDTO(biblosGuid);
             return this;
         }
 
@@ -207,14 +215,14 @@ namespace VecompSoftware.DocSuiteWeb.API
             return this.AddAttachment(new DocumentDTO(name, content));
         }
 
-        public IProtocolDTO AddBiblosAttachment(string biblosServer, string biblosArchive, int biblosId)
+        public IProtocolDTO AddBiblosAttachment(string biblosArchive, int biblosId)
         {
-            return this.AddAttachment(new DocumentDTO(biblosServer, biblosArchive, biblosId));
+            return this.AddAttachment(new DocumentDTO(biblosArchive, biblosId));
         }
 
-        public IProtocolDTO AddBiblosAttachment(string biblosServer, Guid biblosGuid)
+        public IProtocolDTO AddBiblosAttachment(Guid biblosGuid)
         {
-            return this.AddAttachment(new DocumentDTO(biblosServer, biblosGuid));
+            return this.AddAttachment(new DocumentDTO(biblosGuid));
         }
 
         public IProtocolDTO AddAttachmentBytes(string fullName)
@@ -259,14 +267,14 @@ namespace VecompSoftware.DocSuiteWeb.API
             return this.AddAnnexed(new DocumentDTO(name, content));
         }
 
-        public IProtocolDTO AddBiblosAnnexed(string biblosServer, string biblosArchive, int biblosId)
+        public IProtocolDTO AddBiblosAnnexed(string biblosArchive, int biblosId)
         {
-            return this.AddAnnexed(new DocumentDTO(biblosServer, biblosArchive, biblosId));
+            return this.AddAnnexed(new DocumentDTO(biblosArchive, biblosId));
         }
 
-        public IProtocolDTO AddBiblosAnnexed(string biblosServer, Guid biblosGuid)
+        public IProtocolDTO AddBiblosAnnexed(Guid biblosGuid)
         {
-            return this.AddAnnexed(new DocumentDTO(biblosServer, biblosGuid));
+            return this.AddAnnexed(new DocumentDTO(biblosGuid));
         }
 
         public IProtocolDTO AddAnnexedBytes(string fullName)

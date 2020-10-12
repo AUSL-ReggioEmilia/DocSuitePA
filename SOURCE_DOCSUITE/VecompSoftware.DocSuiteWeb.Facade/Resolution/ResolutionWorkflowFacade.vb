@@ -54,7 +54,7 @@ Public Class ResolutionWorkflowFacade
             Return String.Empty
         End If
         Try
-            Dim biblosDocumentName As String = Service.GetDocumentName(header.ProxiedLocation.DocumentServer, header.ProxiedLocation.ReslBiblosDSDB, header.AdoptedDocument.Value, 0)
+            Dim biblosDocumentName As String = Service.GetDocumentName(header.ProxiedLocation.ReslBiblosDSDB, header.AdoptedDocument.Value, 0)
             If String.IsNullOrEmpty(biblosDocumentName) Then
                 Return String.Empty
             End If
@@ -85,7 +85,7 @@ Public Class ResolutionWorkflowFacade
             Return String.Empty
         End If
 
-        Dim biblosDocumentName As String = Service.GetDocumentName(rw.Resolution.Location.DocumentServer, rw.Resolution.Location.ReslBiblosDSDB, rw.Document.Value, 0)
+        Dim biblosDocumentName As String = Service.GetDocumentName(rw.Resolution.Location.ReslBiblosDSDB, rw.Document.Value, 0)
         If String.IsNullOrEmpty(biblosDocumentName) Then
             Return String.Empty
         End If

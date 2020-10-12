@@ -1,4 +1,4 @@
-﻿import MetadataViewModel = require('App/ViewModels/Metadata/MetadataViewModel');
+﻿import MetadataDesignerViewModel = require('App/ViewModels/Metadata/MetadataDesignerViewModel');
 import DiscussionFieldViewModel = require('App/ViewModels/Metadata/DiscussionFieldViewModel');
 import CommentFieldViewModel = require('App/ViewModels/Metadata/CommentFieldViewModel');
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
@@ -7,6 +7,7 @@ import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHel
 import DomainUserModel = require('App/Models/Securities/DomainUserModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class ViewMetadataComments {
     discussionLabel: string;
@@ -25,10 +26,10 @@ class ViewMetadataComments {
         let domainUserConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DomainUserModel");
         this._domainUserService = new DomainUserService(domainUserConfiguration);
 
-        let metadataModelSession: string = sessionStorage.getItem("CurrentMetadataValues");
+        let metadataModelSession: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_CURRENT_METADATA_VALUES);
         this.pageContent = $("#".concat(this.pageContentId))[0];
         if (metadataModelSession) {
-            let model: MetadataViewModel = JSON.parse(metadataModelSession);
+            let model: MetadataDesignerViewModel = JSON.parse(metadataModelSession);
             let discussion: DiscussionFieldViewModel = model.DiscussionFields.filter(i => i.Label == this.discussionLabel)[0];
             let orderedComments: CommentFieldViewModel[] = discussion.Comments;
 

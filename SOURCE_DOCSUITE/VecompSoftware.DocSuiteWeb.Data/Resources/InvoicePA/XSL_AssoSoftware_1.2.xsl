@@ -7,7 +7,7 @@
 	xmlns:a="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2"
 	xmlns:d="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.0">
 
-  <xsl:output method="xhtml" />
+  <xsl:output method="xhtml"/>
   <xsl:decimal-format name="euro" decimal-separator="," grouping-separator="."/>
 
   <xsl:template name="FormatDateIta">
@@ -153,7 +153,7 @@
     <xsl:variable name="valNumeroLinea" >
       <xsl:value-of select="floor(NumeroLinea)" />
     </xsl:variable>
-   
+
 
     <!--Pre LINEA OpzPreLineaDatiDDT -->
     <xsl:choose>
@@ -165,7 +165,7 @@
             <xsl:with-param name="textDescrizione" select = "." />
           </xsl:call-template>
         </xsl:for-each>
-        
+
       </xsl:when>
 
       <xsl:when test="count($TipoFattura/FatturaElettronicaBody[$IndiceBody]/DatiGenerali/DatiDDT/RiferimentoNumeroLinea[.=$valNumeroLinea] ) > 0">
@@ -191,7 +191,7 @@
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
-     
+
       </xsl:otherwise>
 
     </xsl:choose>
@@ -223,7 +223,7 @@
     </xsl:choose>
 
     <!--DatiContratto  -->
-      <xsl:choose>
+    <xsl:choose>
       <!--Pre LINEA OpzPreLineaDatiContratto  -->
       <xsl:when test="OpzPreLineaDatiContratto ">
         <xsl:for-each select="OpzPreLineaDatiContratto"  >
@@ -1072,7 +1072,7 @@
 
                               </div>
 
-                              <xsl:if test="Denominazione">                              
+                              <xsl:if test="Denominazione">
                                 <div class="headContent">
 
                                   Denominazione:
@@ -1083,7 +1083,7 @@
                               </xsl:if>
 
                               <xsl:if test="Nome | Cognome">
-                              <div class="headContent" >
+                                <div class="headContent" >
 
                                   Cognome nome:
 
@@ -1098,7 +1098,7 @@
                                       <xsl:value-of select="Nome" />
                                     </span>
                                   </xsl:if>
-                              </div>
+                                </div>
                               </xsl:if>
 
                               <div class="headContent" >
@@ -1607,12 +1607,12 @@
 
 
           <xsl:variable name="BodyIndex" select="position()"/>
-          
+
           <!-- Conforme Standard AssoSoftware se altridatigestionali presenta ASWRELSTD   -->
           <xsl:variable name="posASWRELSTD" >
             <xsl:for-each select="DatiBeniServizi/DettaglioLinee">
               <xsl:variable name="DettaglioLinee" select="."/>
-              
+
               <xsl:variable name="posDettaglioLinee" select="position()"/>
               <xsl:for-each select="AltriDatiGestionali">
 
@@ -1841,14 +1841,14 @@
 
                 <thead>
                   <tr>
-                    <th width="80px">Cod. articolo</th>
-                    <th>Descrizione</th>
-                    <th class="import2" style="width: 60px;">Quantità</th>
-                    <th class="import2">Prezzo unitario</th>
+                    <th class="import2">Cod. articolo</th>
+                    <th class="thDescrizione">Descrizione</th>
+                    <th class="">Q.ta</th>
+                    <th class="import60">Prezzo/u</th>
                     <th class="perc2">UM</th>
                     <th class="perc">Sconto o magg.</th>
                     <th class="perc2">%IVA</th>
-                    <th class="ximport">Prezzo totale</th>
+                    <th class="ximport">Totale</th>
 
                   </tr>
                 </thead>
@@ -2180,7 +2180,7 @@
                     <th colspan="3" >esigibilità iva / riferimenti normativi</th>
                     <th class="perc">%IVA</th>
                     <th>Spese accessorie</th>
-					 <th class="perc">Arr.</th>
+                    <th class="perc">Arr.</th>
                     <th colspan="2" >Totale imponibile</th>
                     <th colspan="2" >Totale imposta</th>
                   </tr>
@@ -2252,12 +2252,12 @@
                         </td>
 
 
-						 <td class="import">
+                        <td class="import">
 
-                        <xsl:if test="Arrotondamento">
-                          <xsl:value-of select="format-number(Arrotondamento,  '###.###.##0,00', 'euro')" />
-                        </xsl:if>
-                      </td>
+                          <xsl:if test="Arrotondamento">
+                            <xsl:value-of select="format-number(Arrotondamento,  '###.###.##0,00', 'euro')" />
+                          </xsl:if>
+                        </td>
                         <td  colspan="2" class="import" >
 
                           <xsl:if test="ImponibileImporto">
@@ -2299,9 +2299,9 @@
                       Sconto/Maggiorazione
                     </th>
 
-                
 
-					 <th class="perc">Arr.</th>
+
+                    <th class="perc">Arr.</th>
                     <th colspan="4" >
                       Totale documento
                     </th>
@@ -2331,9 +2331,9 @@
                     </td>
 
 
-                    
-					
-					<td class="import">
+
+
+                    <td class="import">
 
                       <xsl:if test="DatiGenerali/DatiGeneraliDocumento/Arrotondamento">
 
@@ -2375,8 +2375,8 @@
               <table class="tbFoglio" >
                 <thead>
                   <tr>
-                    <th>Modalità pagamento</th>
-                    <th>IBAN</th>
+                    <th class="pagamento">Modalità pagamento</th>
+                    <th class="iban">IBAN</th>
                     <th>Istituto</th>
                     <th class="data">Data scadenza</th>
                     <th class="ximport">Importo</th>
@@ -2598,7 +2598,7 @@
 
           .tbHeader
           {
-           width: 610px;
+          width: 610px;
           border: 2px solid black;
           }
 
@@ -2684,7 +2684,7 @@
           border-collapse: collapse;
           word-wrap:break-word;
           }
-		  
+
           table.tbFoglio th {
           padding-left: 5px;
           padding-right: 5px;
@@ -2781,9 +2781,23 @@
           text-align:right;
           }
 
+          th.import60
+          {
+          width:60px;
+          }
+
+          td.import60
+          {
+          text-align:right;
+          }
+
+          th.thDescrizione{
+          width:170px;
+          }
+
           th.ximport
           {
-          width:100px;
+          width:60px;
           }
 
           td.ximport
@@ -2818,7 +2832,12 @@
           {
           text-align:right;
           }
-
+          .iban{
+          width:180px;
+          }
+          .pagamento{
+          width:90px;
+          }
 
         </style>
       </head>

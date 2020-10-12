@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class PECSummary
-    
+
     '''<summary>
     '''RadCodeBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
-    
+
     '''<summary>
     '''pnlDestination control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDestination As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblDestination control.
     '''</summary>
@@ -39,7 +39,16 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDestination As Global.System.Web.UI.WebControls.Label
-    
+
+    '''<summary>
+    '''windowManager control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents windowManager As Global.Telerik.Web.UI.RadWindowManager
+
     '''<summary>
     '''pnlMainContent control.
     '''</summary>
@@ -48,7 +57,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlMainContent As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''tblMainData control.
     '''</summary>
@@ -57,7 +66,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblMainData As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblMainData control.
     '''</summary>
@@ -66,7 +75,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblMainData As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblFrom control.
     '''</summary>
@@ -75,7 +84,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblFrom As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblTo control.
     '''</summary>
@@ -84,7 +93,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblTo As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''trCc control.
     '''</summary>
@@ -93,7 +102,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trCc As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblCc control.
     '''</summary>
@@ -102,7 +111,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCc As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblHandler control.
     '''</summary>
@@ -111,7 +120,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblHandler As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblPecSize control.
     '''</summary>
@@ -120,7 +129,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblPecSize As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblStatus control.
     '''</summary>
@@ -129,7 +138,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStatus As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscPecHistory control.
     '''</summary>
@@ -138,7 +147,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscPecHistory As Global.VecompSoftware.DocSuiteWeb.Gui.uscPecHistory
-    
+
     '''<summary>
     '''lblInfo control.
     '''</summary>
@@ -147,7 +156,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblInfo As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''tblAnnullamento control.
     '''</summary>
@@ -156,7 +165,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblAnnullamento As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''imgAnnullamento control.
     '''</summary>
@@ -165,7 +174,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgAnnullamento As Global.System.Web.UI.WebControls.Image
-    
+
     '''<summary>
     '''lblDeleteInfo control.
     '''</summary>
@@ -174,7 +183,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDeleteInfo As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''tblObject control.
     '''</summary>
@@ -183,7 +192,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblObject As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblSubject control.
     '''</summary>
@@ -192,7 +201,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSubject As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''tblBody control.
     '''</summary>
@@ -201,7 +210,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblBody As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblBody control.
     '''</summary>
@@ -210,7 +219,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblBody As Global.Telerik.Web.UI.RadEditor
-    
+
     '''<summary>
     '''uscInteropInfo control.
     '''</summary>
@@ -219,7 +228,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscInteropInfo As Global.VecompSoftware.DocSuiteWeb.Gui.uscInteropInfo
-    
+
     '''<summary>
     '''DestinationPanel control.
     '''</summary>
@@ -228,7 +237,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents DestinationPanel As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''DestinationLabel control.
     '''</summary>
@@ -237,7 +246,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents DestinationLabel As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscProtocolPreview control.
     '''</summary>
@@ -246,7 +255,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscProtocolPreview As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtocolPreview
-    
+
     '''<summary>
     '''TblButtons control.
     '''</summary>
@@ -255,7 +264,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents TblButtons As Global.System.Web.UI.WebControls.Table
-    
+
     '''<summary>
     '''IconsCell control.
     '''</summary>
@@ -264,7 +273,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents IconsCell As Global.System.Web.UI.WebControls.TableCell
-    
+
     '''<summary>
     '''pnlButtons control.
     '''</summary>
@@ -273,7 +282,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnDestinate control.
     '''</summary>
@@ -282,7 +291,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnDestinate As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnPECToDocumentUnit control.
     '''</summary>
@@ -291,7 +300,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnPECToDocumentUnit As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnAttachPec control.
     '''</summary>
@@ -300,7 +309,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAttachPec As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnLinkToProtocol control.
     '''</summary>
@@ -309,7 +318,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnLinkToProtocol As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnReply control.
     '''</summary>
@@ -318,7 +327,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnReply As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnReplyAll control.
     '''</summary>
@@ -327,7 +336,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnReplyAll As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnMovePEC control.
     '''</summary>
@@ -336,7 +345,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnMovePEC As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnMail control.
     '''</summary>
@@ -345,7 +354,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnMail As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnOriginalEml control.
     '''</summary>
@@ -354,7 +363,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnOriginalEml As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''cmdPECView control.
     '''</summary>
@@ -363,7 +372,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdPECView As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnUnhandle control.
     '''</summary>
@@ -372,7 +381,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnUnhandle As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnHandle control.
     '''</summary>
@@ -381,7 +390,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnHandle As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnDelete control.
     '''</summary>
@@ -390,7 +399,16 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnDelete As Global.System.Web.UI.WebControls.Button
-    
+
+    '''<summary>
+    '''btnFisicalRemovePEC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnFisicalRemovePEC As Global.System.Web.UI.WebControls.Button
+
     '''<summary>
     '''btnRestore control.
     '''</summary>
@@ -399,7 +417,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnRestore As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnForward control.
     '''</summary>
@@ -408,7 +426,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnForward As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnReceipt control.
     '''</summary>
@@ -417,7 +435,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnReceipt As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnViewLog control.
     '''</summary>
@@ -426,7 +444,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnViewLog As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnFix control.
     '''</summary>
@@ -435,7 +453,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnFix As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnRaccomandata control.
     '''</summary>
@@ -444,7 +462,7 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnRaccomandata As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''cmdResend control.
     '''</summary>

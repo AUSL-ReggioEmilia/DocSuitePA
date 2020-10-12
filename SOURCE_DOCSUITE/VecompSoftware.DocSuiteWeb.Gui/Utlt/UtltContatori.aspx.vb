@@ -2,7 +2,6 @@
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 
-
 Partial Class UtltContatori
     Inherits CommonBasePage
 
@@ -176,22 +175,22 @@ Partial Class UtltContatori
 
     Function Aggiorna(ByVal dbName As String) As Boolean
         Dim paramFacade As New ParameterFacade(dbName)
-        Dim parameter As Parameter = paramFacade.GetCurrent()
-
-        Select Case dbName
-            Case "ProtDB", "DocmDB"
-                parameter.LastUsedYear = Convert.ToInt16(DateTime.Now.Year)
-                parameter.LastUsedNumber = 0
-            Case "ReslDB"
-                parameter.LastUsedResolutionYear = Convert.ToInt16(DateTime.Now.Year)
-                parameter.LastUsedResolutionNumber = 0
-                parameter.LastUsedBillNumber = 0
-        End Select
-
         Try
-            paramFacade.UpdateSingleInstance(parameter, dbName)
+            Select Case dbName
+                Case "ProtDB"
+                    Dim parameter As Parameter = paramFacade.GetCurrent()
+                    parameter.LastUsedYear = Convert.ToInt16(DateTime.Now.Year)
+                    parameter.LastUsedNumber = 0
+                    paramFacade.UpdateSingleInstance(parameter, dbName)
+
+                Case "DocmDB"
+                    paramFacade.ResetDocumentNumbers()
+
+                Case "ReslDB"
+                    paramFacade.ResetResolutionNumbers()
+            End Select
         Catch ex As Exception
-            FileLogger.Warn(LoggerName, String.Format("Impossibile aggiornare parametro [{0}] su ambiente [{1}].", parameter.Id, dbName), ex)
+            FileLogger.Warn(LoggerName, $"Impossibile aggiornare i contatori su ambiente [{dbName}].", ex)
             Return False
         End Try
 

@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/BaseMapper", "App/Models/UDS/UDSRepositoryModel", "App/Mappers/Commons/CategoryModelMapper", "App/Mappers/Commons/ContainerModelMapper", "App/Mappers/UDS/UDSRepositoryModelMapper", "./DocumentUnitRoleMapper"], function (require, exports, BaseMapper, UDSRepositoryModel, CategoryModelMapper, ContainerModelMapper, UDSRepositoryModelMapper, DocumentUnitRoleMapper) {
+define(["require", "exports", "App/Mappers/BaseMapper", "App/Models/UDS/UDSRepositoryModel", "App/Mappers/Commons/CategoryModelMapper", "App/Mappers/Commons/ContainerModelMapper", "App/Mappers/UDS/UDSRepositoryModelMapper", "./DocumentUnitRoleMapper", "./DocumentUnitChainMapper"], function (require, exports, BaseMapper, UDSRepositoryModel, CategoryModelMapper, ContainerModelMapper, UDSRepositoryModelMapper, DocumentUnitRoleMapper, DocumentUnitChainMapper) {
     var DocumentUnitModelMapper = /** @class */ (function (_super) {
         __extends(DocumentUnitModelMapper, _super);
         function DocumentUnitModelMapper() {
@@ -37,6 +37,7 @@ define(["require", "exports", "App/Mappers/BaseMapper", "App/Models/UDS/UDSRepos
             toMap.Container = source.Container ? new ContainerModelMapper().Map(source.Container) : null;
             toMap.UDSRepository = source.UDSRepository ? new UDSRepositoryModelMapper().Map(source.UDSRepository) : null;
             toMap.DocumentUnitRoles = source.DocumentUnitRoles ? new DocumentUnitRoleMapper().MapCollection(source.DocumentUnitRoles) : null;
+            toMap.DocumentUnitChains = source.DocumentUnitChains ? new DocumentUnitChainMapper().MapCollection(source.DocumentUnitChains) : null;
             if (source.IdUDSRepository && !toMap.UDSRepository) {
                 toMap.UDSRepository = new UDSRepositoryModel();
                 toMap.UDSRepository.UniqueId = source.IdUDSRepository;

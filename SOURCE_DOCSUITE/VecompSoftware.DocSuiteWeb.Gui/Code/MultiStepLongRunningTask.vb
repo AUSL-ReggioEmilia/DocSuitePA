@@ -1,5 +1,6 @@
 ﻿Imports System.Threading
 Imports System.Collections.Generic
+Imports System.Web
 
 Public Class MultiStepLongRunningTask
 
@@ -199,7 +200,11 @@ Public Class MultiStepLongRunningTask
                 _running = True
                 _lastStartTime = DateTime.Now
 
-                Dim newThread As New Thread(AddressOf DoWork)
+                Dim ctx As HttpContext = HttpContext.Current
+                Dim newThread As New Thread(New ThreadStart(Sub()
+                                                                HttpContext.Current = ctx
+                                                                DoWork()
+                                                            End Sub))
 
                 newThread.Start()
                 _currentStep = 0

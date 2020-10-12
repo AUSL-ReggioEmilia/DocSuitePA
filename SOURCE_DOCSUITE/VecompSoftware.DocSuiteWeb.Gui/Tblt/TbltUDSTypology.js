@@ -14,18 +14,14 @@ define(["require", "exports", "App/Services/UDS/UDSTypologyService", "App/Servic
             this.initialize = function () {
                 _this._rtvTypology = $find(_this.rtvTypologyId);
                 _this._toolBarSearch = $find(_this.toolBarSearchId);
-                _this._toolBarStatus = $find(_this.toolBarStatusId);
-                _this._btnAdd = $find(_this.btnAddId);
-                _this._btnEdit = $find(_this.btnEditId);
+                _this._folderToolBar = $find(_this.folderToolBarId);
+                _this._folderToolBar.add_buttonClicked(_this.folderToolBar_onClick);
                 _this._btnAggiungi = $find(_this.btnAggiungiId);
                 _this._btnRimuovi = $find(_this.btnRimuoviId);
                 _this._windowAddUDSTypology = $find(_this.windowAddUDSTypologyId);
                 _this._windowAddUDSTypology.add_close(_this.closeInsertWindow);
                 _this._toolBarSearch.add_buttonClicked(_this.toolBarSearch_ButtonClicked);
-                _this._toolBarStatus.add_buttonClicked(_this.toolBarStatus_ButtonClicked);
-                _this._btnAdd.add_clicked(_this.btnAdd_OnClick);
-                _this._btnEdit.add_clicked(_this.btnEdit_OnClick);
-                _this._btnEdit.set_enabled(false);
+                _this._folderToolBar.findItemByValue(TbltUDSTypology.MODIFY_OPTION).set_enabled(false);
                 _this._btnAggiungi.add_clicked(_this.btnAggiungi_OnClick);
                 _this._btnRimuovi.add_clicked(_this.btnRimuovi_OnClick);
                 _this._rtvTypology.add_nodeClicked(_this.treeView_ClientNodeClicked);
@@ -42,22 +38,28 @@ define(["require", "exports", "App/Services/UDS/UDSTypologyService", "App/Servic
             this.toolBarSearch_ButtonClicked = function (sender, eventArgs) {
                 _this.loadTypologies();
             };
-            this.toolBarStatus_ButtonClicked = function (sender, eventArgs) {
-                _this.loadTypologies();
-            };
-            this.btnAdd_OnClick = function (sender, eventArgs) {
-                var url = "../Tblt/TbltUDSTypologyGes.aspx?Type=Comm&Action=Add";
-                _this.openWindow(url, 450, 250, "Tipologie - Aggiungi");
-            };
-            this.btnEdit_OnClick = function (sender, eventArgs) {
-                var selectedNode = _this._currentSelectedNode;
-                if (selectedNode == undefined || selectedNode.get_value() == null || selectedNode.get_value() == "") {
-                    _this.showWarningMessage(_this.uscNotificationId, 'Nessuna tipologia selezionata');
-                    return;
+            this.folderToolBar_onClick = function (sender, args) {
+                switch (args.get_item().get_value()) {
+                    case TbltUDSTypology.CREATE_OPTION: {
+                        var url = "../Tblt/TbltUDSTypologyGes.aspx?Type=Comm&Action=Add";
+                        _this.openWindow(url, 450, 250, "Tipologie - Aggiungi");
+                        break;
+                    }
+                    case "delete": {
+                        break;
+                    }
+                    case TbltUDSTypology.MODIFY_OPTION: {
+                        var selectedNode = _this._currentSelectedNode;
+                        if (selectedNode == undefined || selectedNode.get_value() == null || selectedNode.get_value() == "") {
+                            _this.showWarningMessage(_this.uscNotificationId, 'Nessuna tipologia selezionata');
+                            return;
+                        }
+                        _this.setUDSTypologyNode();
+                        var url = "../Tblt/TbltUDSTypologyGes.aspx?Type=Comm&Action=Edit&IdUDSTypology=".concat(selectedNode.get_value());
+                        _this.openWindow(url, 450, 250, "Tipologie - Modifica");
+                        break;
+                    }
                 }
-                _this.setUDSTypologyNode();
-                var url = "../Tblt/TbltUDSTypologyGes.aspx?Type=Comm&Action=Edit&IdUDSTypology=".concat(selectedNode.get_value());
-                _this.openWindow(url, 450, 250, "Tipologie - Modifica");
             };
             this.btnAggiungi_OnClick = function (sender, eventArgs) {
                 var selectedNode = _this._currentSelectedNode;
@@ -113,15 +115,15 @@ define(["require", "exports", "App/Services/UDS/UDSTypologyService", "App/Servic
                 if (!_this._currentSelectedNode || !_this._currentSelectedNode.get_value()) {
                     $('#'.concat(_this.pnlDetailsId)).hide();
                     $('#'.concat(_this.pnlButtonsId)).hide();
-                    _this._btnAdd.set_enabled(true);
-                    _this._btnEdit.set_enabled(false);
+                    _this._folderToolBar.findItemByValue(TbltUDSTypology.CREATE_OPTION).set_enabled(true);
+                    _this._folderToolBar.findItemByValue(TbltUDSTypology.MODIFY_OPTION).set_enabled(false);
                     return;
                 }
-                _this._btnEdit.set_enabled(true);
-                _this._btnAdd.set_enabled(false);
+                _this._folderToolBar.findItemByValue(TbltUDSTypology.CREATE_OPTION).set_enabled(false);
+                _this._folderToolBar.findItemByValue(TbltUDSTypology.MODIFY_OPTION).set_enabled(true);
                 if (_this._currentSelectedNode == _this._rtvTypology.get_nodes().getNode(0)) {
-                    _this._btnAdd.set_enabled(true);
-                    _this._btnEdit.set_enabled(false);
+                    _this._folderToolBar.findItemByValue(TbltUDSTypology.CREATE_OPTION).set_enabled(true);
+                    _this._folderToolBar.findItemByValue(TbltUDSTypology.MODIFY_OPTION).set_enabled(false);
                     _this._btnAggiungi.set_enabled(false);
                     _this._btnRimuovi.set_enabled(false);
                     $('#'.concat(_this.pnlDetailsId)).hide();
@@ -132,7 +134,7 @@ define(["require", "exports", "App/Services/UDS/UDSTypologyService", "App/Servic
                 _this._loadingPanel.show(_this.pnlDetailsId);
                 $.when(_this.loadUDSTypology(), _this.loadUDSRepositories()).done(function () {
                     var inactive = (parseInt(UDSTypologyStatus[_this._currentUDSTypology.Status]) == UDSTypologyStatus.Inactive);
-                    _this._btnEdit.set_enabled(!inactive);
+                    _this._folderToolBar.findItemByValue(TbltUDSTypology.MODIFY_OPTION).set_enabled(!inactive);
                     _this._btnAggiungi.set_enabled(!inactive);
                     _this._btnRimuovi.set_enabled(!inactive);
                     _this.loadDetails();
@@ -303,7 +305,7 @@ define(["require", "exports", "App/Services/UDS/UDSTypologyService", "App/Servic
         TbltUDSTypology.prototype.loadTypologies = function () {
             var _this = this;
             var txtDescription = this._toolBarSearch.findItemByValue('searchDescription').findControl('txtDescription');
-            var checkedButtons = this._toolBarStatus.get_items().toArray().filter(function (i) { return i.get_checked(); });
+            var checkedButtons = this._toolBarSearch.get_items().toArray().filter(function (i) { return i.get_checked(); });
             var description = txtDescription ? txtDescription.get_value() : '';
             var status = null;
             if (checkedButtons && checkedButtons.length == 1) {
@@ -355,6 +357,8 @@ define(["require", "exports", "App/Services/UDS/UDSTypologyService", "App/Servic
             this._windowAddUDSTypology.show();
         };
         TbltUDSTypology.UDSREPOSITORY_TYPE_NAME = "UDSRepository";
+        TbltUDSTypology.CREATE_OPTION = "create";
+        TbltUDSTypology.MODIFY_OPTION = "modify";
         return TbltUDSTypology;
     }());
     return TbltUDSTypology;

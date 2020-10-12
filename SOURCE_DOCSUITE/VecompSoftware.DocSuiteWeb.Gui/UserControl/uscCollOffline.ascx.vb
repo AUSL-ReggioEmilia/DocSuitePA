@@ -78,7 +78,7 @@ Partial Public Class uscCollOffline
         Dim fileNameTemp As String = "Offline/Files/" & CommonUtil.UserDocumentName & String.Format("{0:HHmmss}", Now()) & "-Offline"
         If idBiblos <> 0 Then
             Try
-                Dim doc As New BiblosDocumentInfo(location.DocumentServer, location.ProtBiblosDSDB, idBiblos, 0)
+                Dim doc As New BiblosDocumentInfo(location.ProtBiblosDSDB, idBiblos, 0)
                 BiblosFacade.SaveUniqueToTemp(doc, Path.Combine(CommonUtil.GetInstance().AppTempPath, "/Offline/Files/", doc.Name))
             Catch ex As Exception
                 FileLogger.Warn(LoggerName, ex.Message, ex)

@@ -50,6 +50,33 @@ Partial Public Class uscProtGridBar
     Protected WithEvents wndProgress As Global.Telerik.Web.UI.RadWindow
 
     '''<summary>
+    '''modalPopup control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents modalPopup As Global.Telerik.Web.UI.RadWindow
+
+    '''<summary>
+    '''hfSelectedContainer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfSelectedContainer As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''ddlContainers control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlContainers As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
     '''pnlGridBar control.
     '''</summary>
     '''<remarks>
@@ -120,4 +147,13 @@ Partial Public Class uscProtGridBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAssign As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''btnChangeContainer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnChangeContainer As Global.System.Web.UI.WebControls.Button
 End Class

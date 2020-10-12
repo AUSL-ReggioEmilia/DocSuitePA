@@ -12,16 +12,16 @@ Option Explicit On
 
 
 Partial Public Class WorkflowInstances
-    
+
     '''<summary>
-    '''txtWorkflowRepositoryName control.
+    '''rcbWorkflowRepositories control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents txtWorkflowRepositoryName As Global.Telerik.Web.UI.RadTextBox
-    
+    Protected WithEvents rcbWorkflowRepositories As Global.Telerik.Web.UI.RadComboBox
+
     '''<summary>
     '''dtpWorkflowRepositoryActiveFrom control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dtpWorkflowRepositoryActiveFrom As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''dtpWorkflowRepositoryActiveTo control.
     '''</summary>
@@ -39,7 +39,16 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dtpWorkflowRepositoryActiveTo As Global.Telerik.Web.UI.RadDatePicker
-    
+
+    '''<summary>
+    '''rangeDateValidator control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rangeDateValidator As Global.System.Web.UI.WebControls.CompareValidator
+
     '''<summary>
     '''cmbWorkflowRepositoryStatus control.
     '''</summary>
@@ -48,7 +57,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmbWorkflowRepositoryStatus As Global.Telerik.Web.UI.RadComboBox
-    
+
     '''<summary>
     '''btnSearch control.
     '''</summary>
@@ -57,7 +66,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSearch As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnClean control.
     '''</summary>
@@ -66,7 +75,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnClean As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''pageContent control.
     '''</summary>
@@ -75,7 +84,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pageContent As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''workflowInstanceGrid control.
     '''</summary>
@@ -84,7 +93,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents workflowInstanceGrid As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''rwWorkflowActivities control.
     '''</summary>
@@ -93,7 +102,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rwWorkflowActivities As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''ContainerSelectorUpdatePanel control.
     '''</summary>
@@ -102,7 +111,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ContainerSelectorUpdatePanel As Global.System.Web.UI.UpdatePanel
-    
+
     '''<summary>
     '''workflowActivityGrid control.
     '''</summary>
@@ -111,7 +120,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents workflowActivityGrid As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''rwWorkflowInstanceLogs control.
     '''</summary>
@@ -120,7 +129,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rwWorkflowInstanceLogs As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''UpdatePanel1 control.
     '''</summary>
@@ -129,7 +138,7 @@ Partial Public Class WorkflowInstances
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UpdatePanel1 As Global.System.Web.UI.UpdatePanel
-    
+
     '''<summary>
     '''workflowInstanceLogsGrid control.
     '''</summary>

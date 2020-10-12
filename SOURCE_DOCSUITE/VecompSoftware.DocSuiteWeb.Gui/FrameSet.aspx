@@ -63,7 +63,7 @@
                         framesetElement.btnHighlightProtocols = "<%= btnHighlightProtocols.ClientID %>";
                         framesetElement.btnPECNotReader = "<%= btnPECNotReaded.ClientID %>";
                         framesetElement.btnLastPagesToSign = "<%= btnLastPagesToSign.ClientID %>";
-                        framesetElement.btnRequestStatement = "<%= btnRequestStatement.ClientID %>";
+                        framesetElement.idTenantAOO = "<%= If(CurrentTenant Is Nothing, String.Empty, CurrentTenant.TenantAOO.UniqueId) %>";
 
                         initializeSignalR();
                     }
@@ -87,6 +87,7 @@
                         </td>
                         <td class="rightHead">
                             <asp:Panel ID="notificationPanel" runat="server" CssClass="dsw-display-inline">
+
                                 <telerik:RadButton runat="server" ID="btnProtocolNotReaded" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
                                     Target="main" ToolTip="Protocolli da leggere" Visible="false">
                                     <Icon PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.gif" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
@@ -135,23 +136,23 @@
                                     Target="main" ToolTip="Ultime pagine da firmare" Visible="false">
                                     <Icon PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.gif" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
                                 </telerik:RadButton>
-                                <telerik:RadButton runat="server" ID="btnRequestStatement" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
-                                    Target="main" ToolTip="Richiesta di dematerializzazione" Visible="false">
-                                    <Icon PrimaryIconUrl="Comm/Images/DocSuite/Workflow16.png" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
-                                </telerik:RadButton>
                             </asp:Panel>
                             <telerik:RadButton ID="btnScrivania" runat="server" Text="Scrivania" ToolTip="Vai a Scrivania" ButtonType="LinkButton">
                                 <Icon PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
                             </telerik:RadButton>
-                            <telerik:RadButton ID="btnCompanyName" runat="server" Text="No Company" ToolTip="Configurazione utente" ButtonType="LinkButton" Visible="false">
+                            <telerik:RadButton ID="btnCompanyName" runat="server" Text="Nessuna AOO" ToolTip="Configurazione utente" ButtonType="LinkButton" Visible="false">
                                 <Icon PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
                             </telerik:RadButton>
                             <telerik:RadButton ID="btnReloadSessionTenant" AutoPostBack="true" runat="server" Text="" ToolTip="Ricarica diritti AOO" ButtonType="LinkButton" Visible="false" CssClass="btnReloadSession">
                                 <Icon PrimaryIconUrl="App_Themes/DocSuite2008/imgset16/Activity_16x.png" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
                             </telerik:RadButton>
-                            <telerik:RadButton ID="btnHelp" runat="server" ToolTip="Documentazione" ButtonType="LinkButton" Visible="true" NavigateUrl="User/ZenDeskHelp.aspx?IsButtonPressed=True">
+                            <telerik:RadButton ID="btnFullText" runat="server" ToolTip="Ricerca fulltext" ButtonType="LinkButton" Visible="false" NavigateUrl="User/fulltextsearch.aspx"  CssClass="btnReloadSession">
+                                <Icon PrimaryIconUrl="App_Themes/DocSuite2008/images/search-transparent.png" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
+                            </telerik:RadButton>
+                            <telerik:RadButton ID="btnHelp" runat="server" ToolTip="Documentazione" ButtonType="LinkButton" Visible="true" NavigateUrl="User/ZenDeskHelp.aspx?IsButtonPressed=True"  CssClass="btnReloadSession">
                                 <Icon PrimaryIconUrl="App_Themes/DocSuite2008/imgset16/help.png" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
                             </telerik:RadButton>
+
                         </td>
                     </tr>
                 </table>
@@ -180,7 +181,7 @@
                                         <telerik:RadPanelItem ImageUrl="~/Comm/Images/DocSuite/Atti16.gif" Value="AttiItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/imgset16/pec.png" Value="PECItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/imgset16/AdminTable.png" Value="TabelleItem" Visible="false" Width="100%" />
-                                        <telerik:RadPanelItem ImageUrl="~/Comm/Images/DocSuite/Collegamento16.gif" Text="Utilità" Value="UtilitaItem" Visible="false" Width="100%" />
+                                        <telerik:RadPanelItem ImageUrl="~/Comm/Images/DocSuite/Link16.png" Text="Utilità" Value="UtilitaItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/imgset16/Admin.png" Value="AmministrazioneItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/imgset16/GroupEmpty.png" Text="Conservazione sostitutiva" Value="ConservazioneItem" Visible="false" Width="100%" />
                                     </Items>

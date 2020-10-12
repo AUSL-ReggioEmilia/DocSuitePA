@@ -65,7 +65,7 @@
 
                 workflowReferenceBiblos = JSON.stringify(workflowReferenceBiblos);
 
-                addItemInfo("Preparazione spostametno della fattura in corso. Attendere prego...");
+                addItemInfo("Preparazione spostamento della fattura in corso. Attendere prego...");
                 dswSignalR.sendServerMessages(serverFunction, correlationId, workflowReferenceBiblos, 'workflow_integration', 'AutomaticInvoiceMove',
                     onDoneSignalRSubscriptionCallback, onErrorSignalRCallback);
             }

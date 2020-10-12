@@ -43,13 +43,13 @@ Public Class SelectPolAccount
                 Dim check As Boolean = True
                 Dim script As String = String.Empty
                 For Each pec As PECMail In PecMails
-                    If Not (pec.HasDocumentUnit() AndAlso pec.DocumentUnitType = DSWEnvironment.Protocol) Then
+                    If Not (pec.HasDocumentUnit() AndAlso pec.DocumentUnit.Environment = DSWEnvironment.Protocol) Then
                         check = False
                         script = "closeDialogWithError('Impossibile inviare raccomandate da PEC non protocollate')"
                     End If
 
-                    Dim protocol As Protocol = Facade.ProtocolFacade.GetById(pec.Year.Value, pec.Number.Value)
-                    If check AndAlso Not New ProtocolRights(protocol).IsPecSendable Then
+                    Dim protocol As Protocol = Facade.ProtocolFacade.GetById(pec.DocumentUnit.Id)
+                    If check AndAlso Not New ProtocolRights(protocol).IsPECSendable Then
                         check = False
                         script = "closeDialogWithError('Contenitore del protocollo errato o diritti insufficienti per l'utente')"
                     End If
@@ -77,13 +77,12 @@ Public Class SelectPolAccount
         Try
             For Each pec As PECMail In PecMails
                 Dim msg As POLRequest = New ROLRequest
-                Dim protocol As Protocol = Facade.ProtocolFacade.GetById(pec.Year.Value, pec.Number.Value)
+                Dim protocol As Protocol = Facade.ProtocolFacade.GetById(pec.DocumentUnit.Id)
 
                 msg.Id = Guid.NewGuid()
                 msg.Status = POLRequestStatusEnum.RequestQueued
                 msg.StatusDescrition = "In attesa di Invio a Poste Online"
-                msg.ProtocolYear = protocol.Year
-                msg.ProtocolNumber = protocol.Number
+                msg.DocumentUnit = Facade.DocumentUnitFacade.GetById(protocol.Id)
 
                 ' Imposto il mittente.
                 Dim selectedSenders As IList(Of ContactDTO) = protocol.GetSenders()
@@ -103,7 +102,7 @@ Public Class SelectPolAccount
                 End Try
 
                 msg.Sender.PhoneNumber = String.Format("{0}", selectedSenders(0).Contact.TelephoneNumber).Trim()
-                msg.Sender.RegistrationDate = Date.Now
+                msg.Sender.RegistrationDate = DateTimeOffset.UtcNow
                 msg.Sender.RegistrationUser = DocSuiteContext.Current.User.FullUserName
                 msg.Sender.Request = msg
 
@@ -134,7 +133,7 @@ Public Class SelectPolAccount
                     End Try
 
                     rcp.PhoneNumber = String.Format("{0}", currentRecipient.TelephoneNumber).Trim()
-                    rcp.RegistrationDate = Date.Now
+                    rcp.RegistrationDate = DateTimeOffset.UtcNow
                     rcp.RegistrationUser = DocSuiteContext.Current.User.FullUserName
                     rcp.Status = POLMessageContactEnum.Created
                     rcp.StatusDescrition = "In Attesa di Invio"
@@ -152,11 +151,11 @@ Public Class SelectPolAccount
                 Dim rq As LOLRequest = DirectCast(msg, LOLRequest)
                 Dim docs As List(Of DocumentInfo) = New List(Of DocumentInfo)
 
-                Dim doc As BiblosDocumentInfo = New BiblosDocumentInfo(protocol.Location.DocumentServer, protocol.Location.ProtBiblosDSDB, protocol.IdDocument.Value)
+                Dim doc As BiblosDocumentInfo = New BiblosDocumentInfo(protocol.Location.ProtBiblosDSDB, protocol.IdDocument.Value)
                 Dim memory As MemoryDocumentInfo = New MemoryDocumentInfo(doc.GetPdfStream(), doc.Name)
                 docs.Add(memory)
                 Dim chain As BiblosChainInfo = New BiblosChainInfo(docs)
-                rq.IdArchiveChain = chain.ArchiveInBiblos(protocol.Location.DocumentServer, protocol.Location.ProtBiblosDSDB)
+                rq.IdArchiveChain = chain.ArchiveInBiblos(protocol.Location.ProtBiblosDSDB)
                 Dim md5 As MD5 = New MD5CryptoServiceProvider()
                 rq.DocumentMD5 = BitConverter.ToString(md5.ComputeHash(memory.GetPdfStream())).Replace("-", String.Empty)
                 rq.DocumentName = doc.PDFName

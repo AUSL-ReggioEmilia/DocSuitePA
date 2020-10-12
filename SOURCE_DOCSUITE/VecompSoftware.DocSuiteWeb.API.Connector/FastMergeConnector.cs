@@ -54,6 +54,12 @@ namespace VecompSoftware.DocSuiteWeb.API
             return serialized.DeserializeAsResponse<TableDocTypeDTO[]>();
         }
 
+        public APIResponse<ServiceCategoryDTO[]> GetServiceCategories()
+        {
+            var serialized = this.Client.GetServiceCategories();
+            return serialized.DeserializeAsResponse<ServiceCategoryDTO[]>();
+        }
+
         public APIResponse<ProtocolDTO> InsertProtocol(IProtocolDTO protocolDTO, ITaskDTO taskDTO)
         {
             var inputProtocol = protocolDTO.Serialize();

@@ -231,10 +231,12 @@ Partial Public Class CommonSelCategory
     Private Sub LoadRootNodes()
         If IDCategory.HasValue Then
             Dim categoryRoot As Category = Facade.CategoryFacade.GetById(IDCategory.Value)
-            txtCategoryCode.Text = categoryRoot.Code.ToString()
-            txtSearchCode.Text = categoryRoot.Code & "."
-            RadTreeCategory.Nodes(0).Text = categoryRoot.GetFullName()
-            RadTreeCategory.Nodes(0).Value = categoryRoot.Id.ToString()
+            If Not categoryRoot.Code.Equals(0) Then
+                txtCategoryCode.Text = categoryRoot.Code.ToString()
+                txtSearchCode.Text = categoryRoot.Code & "."
+                RadTreeCategory.Nodes(0).Text = categoryRoot.GetFullName()
+                RadTreeCategory.Nodes(0).Value = categoryRoot.Id.ToString()
+            End If
         End If
 
         RadTreeCategory.Nodes(0).Nodes.Clear()
@@ -277,7 +279,7 @@ Partial Public Class CommonSelCategory
         End If
 
         Dim father As RadTreeNode
-        If category.Parent IsNot Nothing Then
+        If category.Parent IsNot Nothing AndAlso category.Parent.Code > 0 Then
             father = RadTreeCategory.FindNodeByValue(category.Parent.Id.ToString())
             If father Is Nothing Then
                 ' Se non è ancora stato creato un padre per una classificatore esistente allora lo aggiungo
@@ -334,9 +336,11 @@ Partial Public Class CommonSelCategory
     End Sub
 
     Private Function GetBaseFinder() As CategoryFinder
-        Dim categoryFinder As CategoryFinder = New CategoryFinder(New MapperCategoryModel(), DocSuiteContext.Current.User.FullUserName)
-        categoryFinder.EnablePaging = False
-        categoryFinder.IsActive = OnlyActive.GetValueOrDefault(False)
+        Dim categoryFinder As CategoryFinder = New CategoryFinder(New MapperCategoryModel(), DocSuiteContext.Current.User.FullUserName) With {
+            .EnablePaging = False,
+            .IsActive = OnlyActive.GetValueOrDefault(False),
+            .IncludeZeroLevel = False
+        }
 
         If Year.HasValue Then
             categoryFinder.Year = Year.Value
@@ -367,7 +371,7 @@ Partial Public Class CommonSelCategory
             End If
         End If
 
-        categoryFinder.SortExpressions.Add(New SortExpression(Of Category) With {.Direction = SortDirection.Ascending, .Expression = Function(x) x.Code})
+        categoryFinder.SortExpressions.Add(New SortExpression(Of Category) With {.Direction = SortDirection.Ascending, .Expression = Function(x) x.FullCode})
         Return categoryFinder
     End Function
 
@@ -406,7 +410,7 @@ Partial Public Class CommonSelCategory
     End Function
 
     Private Sub FillComboBoxCategorySchemas()
-        rcbCategorySchemas.Items.Add(New RadComboBoxItem("", ""))
+        rcbCategorySchemas.Items.Add(New RadComboBoxItem(String.Empty, String.Empty))
 
         Dim schemas As ICollection(Of CategorySchema) = Facade.CategorySchemaFacade.GetManageableCategorySchemas(DateTimeOffset.UtcNow)
         rcbCategorySchemas.Items.AddRange(schemas.Select(Function(s) New RadComboBoxItem(String.Format("Versione dal {0}", s.StartDate.DefaultString()), s.Id.ToString())))
@@ -423,7 +427,7 @@ Partial Public Class CommonSelCategory
         If currentCategorySchema IsNot Nothing Then
             rcbCategorySchemas.SelectedValue = currentCategorySchema.Id.ToString()
         Else
-            rcbCategorySchemas.SelectedValue = ""
+            rcbCategorySchemas.SelectedValue = String.Empty
         End If
     End Sub
 

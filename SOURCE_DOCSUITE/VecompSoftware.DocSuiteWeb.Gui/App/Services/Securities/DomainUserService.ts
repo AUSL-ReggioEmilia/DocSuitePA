@@ -25,7 +25,7 @@ class DomainUserService extends BaseService {
         let url: string = this._configuration.ODATAUrl.concat("/DomainUserService.UsersFinder(text='", username, "')");
         let data: string = "";
         this.getRequest(url, data, (response: any) => {
-            if (callback) callback(response.value[0]);
+            if (callback) callback(response.value);
         }, error);
     }
 }

@@ -36,7 +36,7 @@ Public Class DocmInserimento
 
         Dim document As New Document()
         'Rilascio numero progressivo
-        Dim yearNumberKey As YearNumberCompositeKey = Facade.ParameterFacade.GetYearNumber()
+        Dim yearNumberKey As YearNumberCompositeKey = Facade.ParameterFacade.GetDocumentYearNumber()
         If yearNumberKey Is Nothing Then
             AjaxAlert("Il Server non ha assegnato correttamente il numero di Pratica progressivo.{0}Ripetere l\'operazione di Inserimento", Environment.NewLine)
             Exit Sub

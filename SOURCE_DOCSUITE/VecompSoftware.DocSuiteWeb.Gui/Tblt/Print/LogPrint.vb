@@ -81,10 +81,10 @@ Public Class LogPrint
                 If protLogFinder.LogType <> String.Empty Then
                     CreaRigaIntestazione(tbl, "Tipo: " & protLogFinder.LogType, 9)
                 End If
-                If protLogFinder.ProtocolYear <> 0 Then
+                If protLogFinder.ProtocolYear.HasValue Then
                     CreaRigaIntestazione(tbl, "Anno: " & protLogFinder.ProtocolYear, 9)
                 End If
-                If protLogFinder.ProtocolNumber <> 0 Then
+                If protLogFinder.ProtocolNumber.HasValue Then
                     CreaRigaIntestazione(tbl, "Numero: " & protLogFinder.ProtocolNumber, 9)
                 End If
 

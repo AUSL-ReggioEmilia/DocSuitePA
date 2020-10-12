@@ -49,7 +49,7 @@ Partial Public Class ReslEstrazione
                 exportRow &= AP & String.Empty & AP & ","
             End If
             If resl.ResolutionContactProposers IsNot Nothing AndAlso resl.ResolutionContactProposers.Count > 0 Then
-                exportRow &= AP & resl.ResolutionContactProposers.ElementAt(0).Contact.Code & AP & ","
+                exportRow &= AP & String.Join(", ", resl.ResolutionContactProposers.Select(Function(s) s.Contact.Code)) & AP & ","
             Else
                 exportRow &= AP & String.Empty & AP & ","
             End If

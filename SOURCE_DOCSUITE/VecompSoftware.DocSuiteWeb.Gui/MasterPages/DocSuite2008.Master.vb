@@ -186,7 +186,7 @@ Partial Public Class DocSuite2008
                 For Each udsRepository As UDSRepository In udsRepositories
                     controllerName = Helpers.UDS.Utils.GetWebAPIControllerName(udsRepository.Name)
                     FileLogger.Debug(LogName.FileLog, $"setting WebAPIModels {controllerName} udsRepository")
-                    url = String.Concat(baseUrl, If(Char.IsDigit(controllerName.ElementAt(0)), $"_{controllerName}", controllerName))
+                    url = String.Concat(baseUrl, controllerName)
                     webApiServiceModel.Add(New WebAPIServiceDto() With {
                                            .Name = udsRepository.Name,
                                            .ODATAUrl = url,

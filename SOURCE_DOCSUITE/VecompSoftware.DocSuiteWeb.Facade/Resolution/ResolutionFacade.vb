@@ -169,7 +169,7 @@ Public Class ResolutionFacade
                 Continue For
             End If
 
-            Dim location As New UIDLocation(loc.DocumentServer, loc.ReslBiblosDSDB)
+            Dim location As New UIDLocation(loc.ReslBiblosDSDB)
             Dim [from] As New UIDChain(location, idCatenaFrom)
             Dim [to] As New UIDChain(location, idCatenaTo)
             If sFile(i) = "idAttachements" Then
@@ -595,7 +595,7 @@ Public Class ResolutionFacade
         Dim files As FileResolution = GetFileResolution(resolution)
 
         If files.IdPrivacyPublicationDocument.HasValue Then
-            Dim biblosChain As UIDChain = New UIDChain(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, files.IdPrivacyPublicationDocument.Value)
+            Dim biblosChain As UIDChain = New UIDChain(resolution.Location.ReslBiblosDSDB, files.IdPrivacyPublicationDocument.Value)
             Return BiblosDocumentInfo.GetDocuments(biblosChain).ToArray()
         End If
 
@@ -622,7 +622,7 @@ Public Class ResolutionFacade
     Public Function GetDocumentsOmissis(resolution As Resolution, incremental As Short, getFromStep As Boolean, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
         Dim id As Guid = GetDocumentsOmissisGuid(resolution, incremental, getFromStep)
         If Not id.Equals(Guid.Empty) Then
-            Dim docs As BiblosDocumentInfo() = BiblosDocumentInfo.GetDocuments(resolution.Location.DocumentServer, id).ToArray()
+            Dim docs As BiblosDocumentInfo() = BiblosDocumentInfo.GetDocuments(id).ToArray()
             If includeUniqueId Then
                 For Each doc As BiblosDocumentInfo In docs
                     doc = SetProtocolUniqueIdAttribute(doc, resolution.UniqueId, DSWEnvironment.Resolution)
@@ -662,7 +662,7 @@ Public Class ResolutionFacade
     Public Function GetAttachmentsOmissis(resolution As Resolution, incremental As Short, getFromStep As Boolean, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
         Dim id As Guid = GetAttachmentsOmissisGuid(resolution, incremental, getFromStep)
         If Not id.Equals(Guid.Empty) Then
-            Dim docs As BiblosDocumentInfo() = BiblosDocumentInfo.GetDocuments(resolution.Location.DocumentServer, id).ToArray()
+            Dim docs As BiblosDocumentInfo() = BiblosDocumentInfo.GetDocuments(id).ToArray()
             If includeUniqueId Then
                 For Each doc As BiblosDocumentInfo In docs
                     doc = SetProtocolUniqueIdAttribute(doc, resolution.UniqueId, DSWEnvironment.Resolution)
@@ -691,7 +691,7 @@ Public Class ResolutionFacade
             Return False
         End If
 
-        Dim docId As Integer = ReflectionHelper.GetPropertyCase(files, tab.FieldAttachment)
+        Dim docId As Integer = Integer.Parse(ReflectionHelper.GetPropertyCase(files, tab.FieldAttachment).ToString())
 
         Return (docId > 0)
     End Function
@@ -701,7 +701,7 @@ Public Class ResolutionFacade
     Public Function GetAnnexes(ByVal resolution As Resolution, ByVal incremental As Short, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
         Dim guid As Guid = GetAnnexesGuid(resolution, incremental)
         If Not guid.Equals(Guid.Empty) Then
-            Dim docs As BiblosDocumentInfo() = BiblosDocumentInfo.GetDocuments(resolution.Location.DocumentServer, guid).ToArray()
+            Dim docs As BiblosDocumentInfo() = BiblosDocumentInfo.GetDocuments(guid).ToArray()
             If includeUniqueId Then
                 For Each doc As BiblosDocumentInfo In docs
                     doc = SetProtocolUniqueIdAttribute(doc, resolution.UniqueId, DSWEnvironment.Resolution)
@@ -716,7 +716,7 @@ Public Class ResolutionFacade
     Public Function GetDocumentsUID(resolution As Resolution, incremental As Short) As UIDChain
         Dim tab As TabWorkflow = Factory.TabWorkflowFacade.GetTabWorkflow(resolution, incremental)
         If (tab Is Nothing) Then
-            Return New UIDChain(String.Empty, String.Empty, 0)
+            Return New UIDChain(String.Empty, 0)
         End If
         Dim files As FileResolution = GetFileResolution(resolution)
         FileLogger.Debug(LoggerName, String.Format("GetDocumentsUID: tab.FieldDocument = {0}", tab.FieldDocument))
@@ -724,13 +724,13 @@ Public Class ResolutionFacade
         Dim docId As Integer = CType(ReflectionHelper.GetPropertyCase(files, tab.FieldDocument), Integer)
         FileLogger.Debug(LoggerName, String.Format("GetDocumentsUID: docId = {0}", docId))
 
-        Return New UIDChain(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, docId)
+        Return New UIDChain(resolution.Location.ReslBiblosDSDB, docId)
     End Function
 
     Public Function GetDocumentsUID(resolution As Resolution, field As String) As UIDChain
         Dim files As FileResolution = GetFileResolution(resolution)
-        Dim docId As Integer = ReflectionHelper.GetPropertyCase(files, field)
-        Return New UIDChain(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, docId)
+        Dim docId As Integer = Integer.Parse(ReflectionHelper.GetPropertyCase(files, field).ToString())
+        Return New UIDChain(resolution.Location.ReslBiblosDSDB, docId)
     End Function
 
     Public Function GetDocumentsOmissisGuid(resolution As Resolution, incremental As Short, getFromStep As Boolean) As Guid
@@ -755,7 +755,7 @@ Public Class ResolutionFacade
         If getFromStep Then
             'Volontariamente il valore nullo diventa 0, la catena con id 0 viene gestita dallo strato superiore
             Dim idChain As Integer = CType(Factory.ResolutionWorkflowFacade.GetById(New ResolutionWorkflowCompositeKey() With {.IdResolution = resolution.Id, .Incremental = incremental}).Attachment, Integer)
-            Return New UIDChain(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, idChain)
+            Return New UIDChain(resolution.Location.ReslBiblosDSDB, idChain)
         End If
 
         '' Altrimenti carico come prima dalla FileResolution
@@ -763,10 +763,10 @@ Public Class ResolutionFacade
         Dim files As FileResolution = GetFileResolution(resolution)
 
         If String.IsNullOrEmpty(tab.FieldAttachment) Then
-            Return New UIDChain(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, 0)
+            Return New UIDChain(resolution.Location.ReslBiblosDSDB, 0)
         Else
             Dim docId As Integer = CType(ReflectionHelper.GetPropertyCase(files, tab.FieldAttachment), Integer)
-            Return New UIDChain(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, docId)
+            Return New UIDChain(resolution.Location.ReslBiblosDSDB, docId)
         End If
     End Function
 
@@ -795,7 +795,7 @@ Public Class ResolutionFacade
         If String.IsNullOrEmpty(tab.FieldAnnexed) Then
             Return files.IdAnnexes
         Else
-            Return ReflectionHelper.GetPropertyCase(files, tab.FieldAnnexed)
+            Return Guid.Parse(ReflectionHelper.GetPropertyCase(files, tab.FieldAnnexed).ToString())
         End If
     End Function
 
@@ -976,13 +976,10 @@ Public Class ResolutionFacade
                 Dim parameterFacade As New ParameterFacade(ReslDB)
                 Dim reslParameter As Parameter = parameterFacade.GetCurrentAndRefresh()
                 If viewReslType = ResolutionType.IdentifierDelibera Then
-                    reslParameter.LastUsedResolutionNumber += 1S
+                    parameterFacade.UpdateResolutionLastUsedNumber(reslParameter.LastUsedResolutionNumber + 1S)
                 Else
-                    reslParameter.LastUsedBillNumber += 1S
+                    parameterFacade.UpdateResolutionLastUsedBillNumber(reslParameter.LastUsedBillNumber + 1S)
                 End If
-                parameterFacade.Update(reslParameter)
-
-
             End If
         End If
 
@@ -1123,14 +1120,14 @@ Public Class ResolutionFacade
             For Each document As DocumentInfo In documents
                 document.Signature = signature
             Next
-            idChain = DocumentInfoFactory.ArchiveDocumentsInBiblos(documents, resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idChain)
+            idChain = DocumentInfoFactory.ArchiveDocumentsInBiblos(documents, resl.Location.ReslBiblosDSDB, idChain)
         End If
 
         If Not attachments.IsNullOrEmpty() Then
             For Each document As DocumentInfo In attachments
                 document.Signature = signature
             Next
-            idChainAllegati = DocumentInfoFactory.ArchiveDocumentsInBiblos(attachments, resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idChainAllegati)
+            idChainAllegati = DocumentInfoFactory.ArchiveDocumentsInBiblos(attachments, resl.Location.ReslBiblosDSDB, idChainAllegati)
         End If
     End Sub
 
@@ -1153,18 +1150,14 @@ Public Class ResolutionFacade
                 'Carico la signature
                 document.Signature = signature
                 'Carico il biblosDocumentInfo
-                Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, guidChain)
+                Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(resl.Location.ReslBiblosDSDB, guidChain)
                 'Aggiorno la catena corrente
                 guidChain = storedBiblosDocumentInfo.ChainId
                 'Aggiungo il documento Biblos alla lista
                 documentInfos.Add(storedBiblosDocumentInfo)
                 'Verifico se è richiesto l'id biblos old style
-                If Not idChainOldStyle.Equals(-1) Then idChainOldStyle = storedBiblosDocumentInfo.BiblosChainId
-
-                If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled Then
-                    document.AddAttribute("documentId", storedBiblosDocumentInfo.DocumentId.ToString())
-                    document.AddAttribute("chainId", storedBiblosDocumentInfo.ChainId.ToString())
-                    document.AddAttribute("archiveName", resl.Location.ReslBiblosDSDB)
+                If Not idChainOldStyle.Equals(-1) Then
+                    idChainOldStyle = storedBiblosDocumentInfo.BiblosChainId
                 End If
             Next
         End If
@@ -1188,7 +1181,7 @@ Public Class ResolutionFacade
             If Not String.IsNullOrEmpty(signature) Then
                 annexed.Signature = signature
             End If
-            pResolition.File.IdAnnexes = annexed.ArchiveInBiblos(pResolition.Location.DocumentServer, pResolition.Location.ProtBiblosDSDB, pResolition.File.IdAnnexes).ChainId
+            pResolition.File.IdAnnexes = annexed.ArchiveInBiblos(pResolition.Location.ProtBiblosDSDB, pResolition.File.IdAnnexes).ChainId
         Next
 
         Return pResolition.File.IdAnnexes
@@ -2331,8 +2324,8 @@ Public Class ResolutionFacade
 
     Public Sub SendCreateResolutionCommand(resolution As Resolution)
         Try
-            Dim commandCreate As ICommandCreateResolution = PrepareResolutionCommand(Of ICommandCreateResolution)(resolution, Function(tenantName, tenantId, identity, resolutionModel, apiCategoryFascicle, documentUnit)
-                                                                                                                                  Return New CommandCreateResolution(tenantName, tenantId, identity, resolutionModel, apiCategoryFascicle, documentUnit)
+            Dim commandCreate As ICommandCreateResolution = PrepareResolutionCommand(Of ICommandCreateResolution)(resolution, Function(tenantName, tenantId, tenantAOOId, identity, resolutionModel, apiCategoryFascicle, documentUnit)
+                                                                                                                                  Return New CommandCreateResolution(tenantName, tenantId, tenantAOOId, identity, resolutionModel, apiCategoryFascicle, documentUnit)
                                                                                                                               End Function)
             CommandCreateFacade.Push(commandCreate)
         Catch ex As Exception
@@ -2343,8 +2336,8 @@ Public Class ResolutionFacade
     Public Sub SendUpdateResolutionCommand(resolution As Resolution)
         Try
             If resolution IsNot Nothing AndAlso resolution.AdoptionDate.HasValue Then
-                Dim commandUpdate As ICommandUpdateResolution = PrepareResolutionCommand(Of ICommandUpdateResolution)(resolution, Function(tenantName, tenantId, identity, resolutionModel, apiCategoryFascicle, documentUnit)
-                                                                                                                                      Return New CommandUpdateResolution(tenantName, tenantId, identity, resolutionModel, apiCategoryFascicle, documentUnit)
+                Dim commandUpdate As ICommandUpdateResolution = PrepareResolutionCommand(Of ICommandUpdateResolution)(resolution, Function(tenantName, tenantId, tenantAOOId, identity, resolutionModel, apiCategoryFascicle, documentUnit)
+                                                                                                                                      Return New CommandUpdateResolution(tenantName, tenantId, tenantAOOId, identity, resolutionModel, apiCategoryFascicle, documentUnit)
                                                                                                                                   End Function)
                 CommandUpdateFacade.Push(commandUpdate)
             End If
@@ -2354,11 +2347,12 @@ Public Class ResolutionFacade
     End Sub
 
     Public Function PrepareResolutionCommand(Of T As {ICommand})(resolution As Resolution,
-                                                                  commandInitializeFunc As Func(Of String, Guid, IdentityContext, ResolutionModel, APICommons.CategoryFascicle, DocumentUnit, T)) As T
+                                                                  commandInitializeFunc As Func(Of String, Guid, Guid, IdentityContext, ResolutionModel, APICommons.CategoryFascicle, Entity.DocumentUnits.DocumentUnit, T)) As T
 
         Dim identity As IdentityContext = New IdentityContext(DocSuiteContext.Current.User.FullUserName)
-        Dim tenantName As String = DocSuiteContext.Current.CurrentTenant.TenantName
-        Dim tenantId As Guid = DocSuiteContext.Current.CurrentTenant.TenantId
+        Dim tenantName As String = CurrentTenant.TenantName
+        Dim tenantId As Guid = CurrentTenant.UniqueId
+        Dim tenantAOOId As Guid = CurrentTenant.TenantAOO.UniqueId
         Dim resolutionModel As ResolutionModel = MapperResolutionModel.MappingDTO(resolution)
 
         If resolution.Type.Id.Equals(ResolutionType.IdentifierDetermina) Then
@@ -2373,7 +2367,7 @@ Public Class ResolutionFacade
             apiCategoryFascicle = MapperCategoryFascicle.MappingDTO(dswCategoryFascicle)
         End If
 
-        Return commandInitializeFunc(tenantName, tenantId, identity, resolutionModel, apiCategoryFascicle, Nothing)
+        Return commandInitializeFunc(tenantName, tenantId, tenantAOOId, identity, resolutionModel, apiCategoryFascicle, Nothing)
     End Function
 
     Public Function CountResolutionKind(ReslKind As ResolutionKind) As Integer
@@ -2730,7 +2724,7 @@ Public Class ResolutionFacade
         Dim fileFacade As New FileResolutionFacade()
         Dim fileResolution As FileResolution = fileFacade.GetByResolution(resl)(0)
 
-        Dim doc As DocumentInfo = New BiblosDocumentInfo(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, fileResolution.IdFrontespizio.Value, 0)
+        Dim doc As DocumentInfo = New BiblosDocumentInfo(resl.Location.ReslBiblosDSDB, fileResolution.IdFrontespizio.Value, 0)
         Dim frontespizioInfo As FileInfo = BiblosFacade.SaveUniquePdfToTemp(doc)
 
         Return GetPublicationDocument(resl, New FileDocumentInfo(frontespizioInfo), addSignature)
@@ -2750,12 +2744,12 @@ Public Class ResolutionFacade
         ' Recupero i documenti da fondere.
         Dim documents As New List(Of DocumentInfo)
         '' Aggiungo la relata di adozione
-        documents.Add(New BiblosDocumentInfo(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, fr.IdResolutionFile.Value, 0))
+        documents.Add(New BiblosDocumentInfo(resl.Location.ReslBiblosDSDB, fr.IdResolutionFile.Value, 0))
         '' Aggiungo il documento adottato
-        documents.Add(New BiblosDocumentInfo(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, fr.IdAssumedProposal.Value, 0))
+        documents.Add(New BiblosDocumentInfo(resl.Location.ReslBiblosDSDB, fr.IdAssumedProposal.Value, 0))
         '' Aggiungo gli allegati (se presenti)
         If fr.IdAttachements.HasValue AndAlso fr.IdAttachements > 0 Then
-            documents.AddRange(BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, fr.IdAttachements.Value))
+            documents.AddRange(BiblosDocumentInfo.GetDocuments(resl.Location.ReslBiblosDSDB, fr.IdAttachements.Value))
         End If
         '' Aggiungo il frontalino di pubblicazione
         documents.Add(frontespizio)
@@ -2805,8 +2799,8 @@ Public Class ResolutionFacade
                 Dim doc As New FileDocumentInfo(finalDocument)
                 doc.Name = "DocumentoPubblicato.pdf"
                 doc.Signature = doc.Name
-                doc.AddAttribute(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE, 0)
-                savedDocument = doc.ArchiveInBiblos(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB)
+                doc.AddAttribute(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE, "0")
+                savedDocument = doc.ArchiveInBiblos(resl.Location.ReslBiblosDSDB)
                 wp.IDDocument = savedDocument.BiblosChainId
 
                 If DocSuiteContext.Current.PrivacyLevelsEnabled Then
@@ -2944,10 +2938,10 @@ Public Class ResolutionFacade
         signature &= String.Format(" {0} del {1} (Frontespizio)", resl.InclusiveNumber, resl.AdoptionDate.DefaultString())
         frontalinoFileDocumentInfo.Signature = signature
 
-        frontalinoFileDocumentInfo.AddAttribute(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE, 0)
+        frontalinoFileDocumentInfo.AddAttribute(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE, "0")
 
         'Aggiungo il frontalino a Biblos e aggiorno la tabella FileResolution
-        Dim frontalinoBiblos As BiblosDocumentInfo = frontalinoFileDocumentInfo.ArchiveInBiblos(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB)
+        Dim frontalinoBiblos As BiblosDocumentInfo = frontalinoFileDocumentInfo.ArchiveInBiblos(resl.Location.ReslBiblosDSDB)
         Dim idFrontalino As Integer = frontalinoBiblos.BiblosChainId
 
         If DocSuiteContext.Current.PrivacyLevelsEnabled Then
@@ -2995,7 +2989,7 @@ Public Class ResolutionFacade
 
     Public Function GetPresentDocumentSigners(resolution As Resolution, tabWorkflow As TabWorkflow, idDocument As Integer) As IList(Of String)
         Dim idDoc As Integer = IIf(idDocument <> -1, idDocument, CType((0 & ReflectionHelper.GetPropertyCase(resolution.File, tabWorkflow.FieldDocument)), Integer))
-        Dim dc As BiblosDocumentInfo = BiblosDocumentInfo.GetDocuments(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, idDoc).Where(Function(t) Not False OrElse t.IsSigned).ToList().FirstOrDefault()
+        Dim dc As BiblosDocumentInfo = BiblosDocumentInfo.GetDocuments(resolution.Location.ReslBiblosDSDB, idDoc).Where(Function(t) Not False OrElse t.IsSigned).ToList().FirstOrDefault()
 
         Dim documentSigners As IDictionary(Of String, String) = dc.GetDocumentSignersSerialNumbers()
 
@@ -3020,11 +3014,11 @@ Public Class ResolutionFacade
             Select Case chainId.GetType
                 Case GetType(Guid)
                     If Not chainId.Equals(Guid.Empty) Then
-                        documents = BiblosDocumentInfo.GetDocuments(location.DocumentServer, CType(chainId, Guid))
+                        documents = BiblosDocumentInfo.GetDocuments(CType(chainId, Guid))
                     End If
                 Case GetType(Integer)
                     If chainId > 0 Then
-                        documents = BiblosDocumentInfo.GetDocuments(location.DocumentServer, location.ReslBiblosDSDB, CType(chainId, Integer))
+                        documents = BiblosDocumentInfo.GetDocuments(location.ReslBiblosDSDB, CType(chainId, Integer))
                     End If
             End Select
             'In tutti gli altri casi non carico documenti e restituisco quindi lista vuota
@@ -3110,14 +3104,6 @@ Public Class ResolutionFacade
         ' Annessi
         If showAnnexes Then
             Dim folder As FolderInfo = CreateAnnexesFolder(resl, incr, includeUniqueId:=True)
-            If folder IsNot Nothing Then
-                main.AddChild(folder)
-            End If
-        End If
-
-        ' Documenti "Attestazione Conformità"
-        If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled Then
-            Dim folder As FolderInfo = CreateDematerialisedFolder(resl, includeUniqueId:=True)
             If folder IsNot Nothing Then
                 main.AddChild(folder)
             End If
@@ -3221,32 +3207,6 @@ Public Class ResolutionFacade
         Return _dao.GetActualToPublicate(serviceNumber, type, workflowType)
     End Function
 
-    Public Function CreateDematerialisedFolder(resl As Resolution, Optional includeUniqueId As Boolean = False) As FolderInfo
-        Dim docs() As BiblosDocumentInfo = GetDematerialisationDocument(resl, includeUniqueId)
-        If docs.Length <= 0 Then
-            Return Nothing
-        End If
-
-        Dim folder As New FolderInfo() With {.Name = "Attestazione di conformità"}
-        folder.AddChildren(docs)
-        Return folder
-    End Function
-
-    Public Function GetDematerialisationDocument(ByVal resolution As Resolution, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
-
-        If resolution.File IsNot Nothing AndAlso resolution.File.DematerialisationChainId.HasValue AndAlso Not resolution.File.DematerialisationChainId = Guid.Empty AndAlso resolution.Location IsNot Nothing AndAlso Not String.IsNullOrEmpty(resolution.Location.DocumentServer) Then
-            Dim docs As BiblosDocumentInfo() = BiblosDocumentInfo.GetDocumentsLatestVersion(resolution.Location.DocumentServer, resolution.File.DematerialisationChainId.Value).ToArray()
-            If includeUniqueId Then
-                For Each doc As BiblosDocumentInfo In docs
-                    doc = SetProtocolUniqueIdAttribute(doc, resolution.UniqueId, DSWEnvironment.Resolution)
-                Next
-            End If
-            Return docs
-        Else
-            Return New BiblosDocumentInfo() {}
-        End If
-    End Function
-
 #End Region
 
     Public Sub ResolutionInsertedDocumentPrivacyLevel(resolution As Resolution, doc As BiblosDocumentInfo, typeDoc As String)
@@ -3272,7 +3232,6 @@ Public Class ResolutionFacade
             FacadeFactory.Instance.ResolutionLogFacade.Insert(resolution, ResolutionLogType.LP, String.Format("Associato livello privacy {0} al {1} {2} [{3}]", doc.Attributes.Item(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE), type, doc.Name, doc.DocumentId))
         End If
     End Sub
-
 
     Public Function UpdateResolutionFromCollaboration(collaboration As Collaboration) As Boolean
         Dim isCollaborationeFromResolution As Boolean = False
@@ -3335,7 +3294,7 @@ Public Class ResolutionFacade
                         Factory.TabWorkflowFacade.GetByStep(resolution.WorkflowType, actualStepId, workStep)
                         Factory.TabWorkflowFacade.GetByStep(resolution.WorkflowType, nextStepId, workNextStep)
 
-                        Dim data As DateTime = ReflectionHelper.GetProperty(resolution, workStep.FieldDate)
+                        Dim data As DateTime = Date.Today()
 
                         Factory.ResolutionWorkflowFacade.InsertNextStep(idResolution, 2, idDocumento, idAllegati, 0, idAnnexes, idDocumentiOmissis, idAllegatiOmissis, DocSuiteContext.Current.User.FullUserName)
                         resolution.Status = Factory.ResolutionStatusFacade.GetById(ResolutionStatusId.Attivo)

@@ -17,26 +17,12 @@ Public Class UDSBasePage
     Public Const UDS_ADDRESS_NAME As String = "API-UDSAddress"
     Private Const ODATA_EQUAL_UDSID As String = "$filter=UDSId eq {0}"
     Private _UDSRepositoryFacade As UDSRepositoryFacade
-    Private _workflowPropertyFacade As WorkflowPropertyFacade
     Private _UDSFacade As UDSFacade
     Private _UDSRepository As UDSRepository
-    Private _workflowRepositoryFacade As WorkflowRepositoryFacade
-    Private _workflowActivityFacade As WorkflowActivityFacade
-    Private _webAPIHelper As WebAPIHelper
-    Private _workflowOperation As Boolean?
-    Private _idWorkflowActivity As Guid?
 #End Region
 
 #Region "Properties"
 
-    Protected ReadOnly Property CurrentIdWorkflowActivity As Guid
-        Get
-            If Not _idWorkflowActivity.HasValue Then
-                _idWorkflowActivity = GetKeyValue(Of Guid)("IdWorkflowActivity")
-            End If
-            Return _idWorkflowActivity.Value
-        End Get
-    End Property
     Public ReadOnly Property Callback As String
         Get
             Return GetKeyValue(Of String)("Callback")
@@ -55,15 +41,6 @@ Public Class UDSBasePage
         End Get
     End Property
 
-    Public ReadOnly Property CurrentWorkflowActivityFacade As WorkflowActivityFacade
-        Get
-            If _workflowActivityFacade Is Nothing Then
-                _workflowActivityFacade = New WorkflowActivityFacade(DocSuiteContext.Current.User.FullUserName)
-            End If
-            Return _workflowActivityFacade
-        End Get
-    End Property
-
     Public ReadOnly Property CurrentUDSRepository As UDSRepository
         Get
             If _UDSRepository Is Nothing AndAlso CurrentIdUDSRepository.HasValue Then
@@ -73,40 +50,12 @@ Public Class UDSBasePage
         End Get
     End Property
 
-    Public ReadOnly Property CurrentWorkflowPropertyFacade As WorkflowPropertyFacade
-        Get
-            If _workflowPropertyFacade Is Nothing Then
-                _workflowPropertyFacade = New WorkflowPropertyFacade(DocSuiteContext.Current.User.FullUserName)
-            End If
-            Return _workflowPropertyFacade
-        End Get
-    End Property
-
     Public ReadOnly Property CurrentUDSFacade As UDSFacade
         Get
             If _UDSFacade Is Nothing Then
                 _UDSFacade = New UDSFacade()
             End If
             Return _UDSFacade
-        End Get
-    End Property
-
-
-    Protected ReadOnly Property WebAPIHelper As WebAPIHelper
-        Get
-            If _webAPIHelper Is Nothing Then
-                _webAPIHelper = New WebAPIHelper()
-            End If
-            Return _webAPIHelper
-        End Get
-    End Property
-
-    Protected ReadOnly Property IsWorkflowOperation() As Boolean
-        Get
-            If Not _workflowOperation.HasValue Then
-                _workflowOperation = Request.QueryString.GetValueOrDefault("IsWorkflowOperation", False)
-            End If
-            Return _workflowOperation.Value
         End Get
     End Property
 

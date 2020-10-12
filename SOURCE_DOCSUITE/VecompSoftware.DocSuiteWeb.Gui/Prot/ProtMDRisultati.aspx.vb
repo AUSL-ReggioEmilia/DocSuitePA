@@ -1,10 +1,11 @@
-﻿Imports System.Linq
+﻿Imports System.Collections.Generic
+Imports System.Linq
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
-Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Extensions
-Imports VecompSoftware.Helpers.ExtensionMethods
 
 Partial Public Class ProtMDRisultati
     Inherits ProtBasePage
@@ -49,6 +50,11 @@ Partial Public Class ProtMDRisultati
     Protected Sub ProtMDRisultatiAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
 
     End Sub
+
+    Private Sub ImpersonationFinderDelegate(ByVal source As Object, ByVal e As EventArgs)
+        uscProtocolGrid.Grid.SetImpersonationAction(AddressOf ImpersonateGridCallback)
+        uscProtocolGrid.Grid.SetImpersonationCounterAction(AddressOf ImpersonateGridCallback)
+    End Sub
 #End Region
 
 #Region "Methods"
@@ -71,14 +77,12 @@ Partial Public Class ProtMDRisultati
     End Sub
 
     Private Sub LoadProtocols()
-        Dim finder As DocumentUnitModelFinder = New DocumentUnitModelFinder(DocSuiteContext.Current.Tenants.GetActualTenants(Of DocumentUnit).ToList())
+        Dim finder As DocumentUnitModelFinder = New DocumentUnitModelFinder(DocSuiteContext.Current.Tenants.GetActualTenants(Of Entity.DocumentUnits.DocumentUnit).ToList())
         finder.PageSize = 50
         finder.DocumentUnitFinderAction = DocumentUnitFinderActionType.AuthorizedUD
-        finder.UserName = DocSuiteContext.Current.User.UserName
-        finder.Domain = DocSuiteContext.Current.User.Domain
         finder.DateFrom = New DateTimeOffset(rdpDateFrom.SelectedDate.Value)
         finder.DateTo = New DateTimeOffset(rdpDateTo.SelectedDate.Value).AddDays(1)
-        finder.IsSecurityUserEnabled = DocSuiteContext.Current.ProtocolEnv.IsSecurityGroupEnabled
+        finder.IdTenantAOO = CurrentTenant.TenantAOO.UniqueId
         finder.SortExpressions.Add("Entity.Year", "DESC")
         finder.SortExpressions.Add("Entity.Number", "DESC")
         uscProtocolGrid.Grid.Finder = finder
@@ -96,6 +100,7 @@ Partial Public Class ProtMDRisultati
 
     Private Sub InitializeAjaxSettings()
         AddHandler AjaxManager.AjaxRequest, AddressOf ProtMDRisultatiAjaxRequest
+        AddHandler uscProtocolGrid.Grid.NeedImpersonation, AddressOf ImpersonationFinderDelegate
         AjaxManager.AjaxSettings.AddAjaxSetting(btnUpdate, pnlHeader, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnUpdate, MasterDocSuite.TitleContainer)
         AjaxManager.AjaxSettings.AddAjaxSetting(uscProtocolGrid.Grid, MasterDocSuite.TitleContainer)
@@ -104,6 +109,12 @@ Partial Public Class ProtMDRisultati
         AjaxManager.AjaxSettings.AddAjaxSetting(btnUpdate, uscProtocolGrid.Grid, MasterDocSuite.AjaxDefaultLoadingPanel)
     End Sub
 
+    Private Function ImpersonateGridCallback(Of TResult)(finder As IFinder, callback As Func(Of TResult)) As TResult
+        Return WebAPIImpersonatorFacade.ImpersonateFinder(Of DocumentUnitModelFinder, TResult)(finder,
+                        Function(impersonationType, wfinder)
+                            Return callback()
+                        End Function)
+    End Function
 #End Region
 
 End Class

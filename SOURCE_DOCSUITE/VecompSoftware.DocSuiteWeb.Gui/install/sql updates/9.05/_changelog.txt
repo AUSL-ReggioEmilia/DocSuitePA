@@ -1,0 +1,46 @@
+Epic 22843: [AGENAS] Progetto Tracking Acquisti 
+Epic 22984: [CTT] Miglioramenti workflow fatturazione elettronica  9.05
+
+
+Feature 22740: [CNOCDL] Protocolli in Evidenza: Miglioramenti funzionali alla gestione massiva nelle viste protocolli in evidenza
+Feature 22853: [ENPALC] Compendio di integrazione in modalità “SFTP”
+Feature 22985: [CTT] Mostrare gli stati del workflow per capire dove il workflow della fatturazione è fermo (Archivio, Protocollo, PEC)
+Feature 22986: [CTT] Annullamento automatico delle fatture scartate in fase di re-immissione (chiave univoca numero fattura su azienda)
+Feature 22987: [CTT] Evolutiva cruscotto fatturazione elettronica: Aggiungere filtro "rimuove filtri in sessione"
+Feature 22988: [CTT] Possibilità di modificare massivamente il contenitore di protocollo da ricerca di protocollo
+Feature 23076: [AUSL-RE] Archivi : Abilitare l'invio PEC
+Feature 23098: [AGENAS] Progetto Tracking Acquisti : Miglioramenti motore di workflow
+Feature 23110: [AGENAS] Progetto Tracking Acquisti : Introdurre nel modulo archivi l'opzione "Range di valori" per il campo numerico
+Feature 23117: [AUSL-RE] Rifacimento portale - Bandi di Gara e agli Appalti con l'uso di archivi docsuite
+Feature 23151: [AFOL] Progetto "Flusso acquisti\determine" : Creazione modulo integration "AFOL.ERP.RDA"
+Feature 23172: [ENPACL] Fatturazione Elettronica : Creazione modulo integration "ENPACL.Invoices"
+Feature 23230: [***REMOVED***] Fatturazione elettronica: Creazione tool di eliminazione delle fatture passive duplicate
+Feature 23256: [AUSL-PC] Protocollo: Visualizzare mittente nella pagina ricerca protocolli da collegamenti
+
+
+User Story 23017: [CNOCDL] Protocolli in Evidenza: Aggiungere il pulsante "Rimuovi evidenza" a fianco al pulsante "Evidenza" 
+User Story 23018: [CNOCDL] Protocolli in Evidenza: Aggiungere il pulsante "conferma e Rimuovi evidenza" nella finestra "Evidenza" 
+User Story 23099: [AGENAS] Workflow :Nuove property l'helper workflow nel framewok
+User Story 23100: [AGENAS] Workflow : Adeguare la gestione del TbltWorkflowRepository con le nuove WorkflowEvalutionProperty
+User Story 23101: [AGENAS] Workflow: Rendere governabile da parametro il pulsante “conferma attività” nella pagina di protocollo
+User Story 23102: [AGENAS] Workflow: Modificare lo user control uscStartWorkflow adeguando alla proprietà DSW_PROPERTY_TEMPLATE_COLLABORATION_READONLY 
+User Story 23106: [AGENAS] Workflow: Aggiungere la gestione delle azioni di workflow collaborazione nel ProtocolModelInitialize
+User Story 23114: [AGENAS] Archivi : Aggiungere nell'xsd del framework VecompSoftware.Helpers.UDS, gli attributi MinValiue e MaxValue.
+User Story 23115: [AGENAS] UDS Designer : Adeguare il designer per la gestione delle proprietà range MinValue-MaxValue per il campo NumberField
+User Story 23116: [AGENAS] Archivi: Adeguare il designer per la gestione delle proprietà range MinValue-MaxValue per il campo NumberField
+User Story 23120: [AUSL-RE]Bandi di Gara e agli Appalti  : Creazione di una nuova app angular "Bandi Di Gara".
+User Story 23136: [AUSL-RE]Bandi di Gara e agli Appalti  : Adeguamenti alle PublicWebAPI
+User Story 23160: [AFOL] Integrations : Creazione modulo integration "AFOL.ERP.RDA"
+User Story 23167: [AFOL] Integrations : Business rules del modulo "AFOL.ERP.RDA"
+User Story 23173: [ENPACL] Integrations : Business rules del modulo "ENPACL.Invoices"
+User Story 23174: [ENPACL] Integrations :  Creazione modulo integration "ENPACL.Invoices"
+User Story 23219: [AFOL] Fascicoli ServiceBus: Creare il modulo 'VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateFascicle'
+User Story 23231: [***REMOVED***] Fatturazione elettronica: Creazione tool di eliminazione delle fatture passive duplicate
+
+Bug 22668: [AUSL-PC]Segnalazione template di collaborazione
+Bug 22719: [AUSL-RE]Modulo JeepService import series: Miglioramento gestione recupero errore
+Bug 22737: [ASLTO] Sommario di Delibera con controllo alla regione: errore inserimento documento in modifica di atto
+Bug 23393: [DSW] Errore in apertura visualizzatore documenti da griglia risultati Archivi
+
+
+Issue 20341: [***REMOVED***]Email utente settore non compare in sommario di protocollo

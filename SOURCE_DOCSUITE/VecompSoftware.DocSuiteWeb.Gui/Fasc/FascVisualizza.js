@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/Models/Fascicles/FascicleType", "App/Helpers/ServiceConfigurationHelper", "App/Services/DocumentUnits/DocumentUnitService", "App/Models/Environment", "App/Services/Workflows/WorkflowActivityService", "App/Services/UDS/UDSRepositoryService", "App/Services/Commons/ConservationService", "App/Models/UpdateActionType", "App/Models/Workflows/WorkflowStatus", "App/Managers/HandlerWorkflowManager", "App/Models/Fascicles/FascicleReferenceType", "App/Models/DocumentUnits/ChainType", "App/Models/Fascicles/FascicleFolderTypology", "UserControl/uscFascicleFolders", "App/Services/Fascicles/FascicleDocumentService", "Fasc/FascMoveItems", "App/Services/Workflows/WorkflowRepositoryService", "App/Rules/Rights/Entities/Fascicles/FascicleRights", "App/Models/Fascicles/FascicleDocumentUnitModel", "App/Services/Fascicles/FascicleDocumentUnitService", "../Workflows/StartWorkflow"], function (require, exports, FascicleBase, UscFascicolo, FascicleType, ServiceConfigurationHelper, DocumentUnitService, Environment, WorkflowActivityService, UDSRepositoryService, ConservationService, UpdateActionType, WorkflowStatus, HandlerWorkflowManager, FascicleReferenceType, ChainType, FascicleFolderTypology, UscFascicleFolders, FascicleDocumentService, FascMoveItems, WorkflowRepositoryService, FascicleRights, FascicleDocumentUnitModel, FascicleDocumentUnitService, StartWorkflow) {
+define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/Models/Fascicles/FascicleType", "App/Helpers/ServiceConfigurationHelper", "App/Services/DocumentUnits/DocumentUnitService", "App/Models/Environment", "App/Services/Workflows/WorkflowActivityService", "App/Services/UDS/UDSRepositoryService", "App/Services/Commons/ConservationService", "App/Models/UpdateActionType", "App/Models/Workflows/WorkflowStatus", "App/Managers/HandlerWorkflowManager", "App/Models/Fascicles/FascicleReferenceType", "App/Models/DocumentUnits/ChainType", "App/Models/Fascicles/FascicleFolderTypology", "UserControl/uscFascicleFolders", "App/Services/Fascicles/FascicleDocumentService", "App/Services/Workflows/WorkflowRepositoryService", "App/Rules/Rights/Entities/Fascicles/FascicleRights", "App/Models/Fascicles/FascicleDocumentUnitModel", "App/Services/Fascicles/FascicleDocumentUnitService", "App/Helpers/PageClassHelper", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, FascicleBase, UscFascicolo, FascicleType, ServiceConfigurationHelper, DocumentUnitService, Environment, WorkflowActivityService, UDSRepositoryService, ConservationService, UpdateActionType, WorkflowStatus, HandlerWorkflowManager, FascicleReferenceType, ChainType, FascicleFolderTypology, UscFascicleFolders, FascicleDocumentService, WorkflowRepositoryService, FascicleRights, FascicleDocumentUnitModel, FascicleDocumentUnitService, PageClassHelper, SessionStorageKeysHelper) {
     var FascVisualizza = /** @class */ (function (_super) {
         __extends(FascVisualizza, _super);
         /**
@@ -26,6 +26,12 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
             /**
              *------------------------- Events -----------------------------
              */
+            _this.onFascicleSearchCloseWindow = function (sender, args) {
+                if (args.get_argument() === true) {
+                    _this._notificationInfo.set_text("Copiato con successo");
+                    _this._notificationInfo.show();
+                }
+            };
             /**
              * Evento al click del pulsante "Modifica"
              * @param sender
@@ -46,6 +52,8 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
              */
             _this.btnDocuments_OnClick = function (sender, args) {
                 args.set_cancel(true);
+                _this.setWorkflowSessionStorage();
+                sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
                 var documentUrl = "../Viewers/FascicleViewer.aspx?Type=Fasc&IdFascicle=".concat(_this.currentFascicleId);
                 if (_this.actionPage != "") {
                     documentUrl = documentUrl.concat("&Action=", _this.actionPage);
@@ -105,11 +113,14 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                             _this._btnRemove.set_visible(false);
                             _this._btnLink.set_visible(false);
                             _this._btnAutorizza.set_visible(false);
+                            _this._btnSign.set_visible(false);
                             _this._btnSendToRoles.set_visible(false);
                             _this._btnWorkflow.set_visible(false);
-                            _this._btnComplete.set_visible(false);
+                            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_ISBUTTON_WORKFLOW_VISIBLE, String(false));
+                            _this._btnCompleteWorkflow.set_visible(false);
                             _this.setBtnOpenVisibility();
                             _this._btnUndo.set_visible(false);
+                            _this._btnCopyToFascicle.set_visible(false);
                             var uscFascicolo = $("#".concat(_this.uscFascicoloId)).data();
                             if (!jQuery.isEmptyObject(uscFascicolo)) {
                                 uscFascicolo.loadData(_this._fascicleModel);
@@ -131,6 +142,44 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 args.set_cancel(true);
                 var linkUrl = "../Fasc/FascicleLink.aspx?Type=Fasc&IdFascicle=".concat(_this.currentFascicleId);
                 window.location.href = linkUrl;
+            };
+            /**
+        * Evento al click del pulsante "Autorizza"
+        * @param sender
+        * @param args
+        */
+            _this.btnSign_OnClick = function (sender, args) {
+                args.set_cancel(true);
+                _this.setWorkflowSessionStorage();
+                var varStr = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL);
+                if (!varStr) {
+                    _this.showWarningMessage(_this.uscNotificationId, "Nessun documento selezionato");
+                    return false;
+                }
+                var fascicle = JSON.parse(varStr);
+                if (!fascicle) {
+                    _this.showWarningMessage(_this.uscNotificationId, "Nessun documento selezionato");
+                    return false;
+                }
+                varStr = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
+                if (!varStr) {
+                    _this.showWarningMessage(_this.uscNotificationId, "Nessun documento selezionato");
+                    return false;
+                }
+                _this._loadingPanel.show(_this.pageContentId);
+                var documents = JSON.parse(varStr);
+                if (!documents || documents.length === 0) {
+                    _this._loadingPanel.hide(_this.pageContentId);
+                    _this._notificationInfo.set_text("Nessun documento selezionato");
+                    _this._notificationInfo.show();
+                    return;
+                }
+                var ajaxRequest = {};
+                ajaxRequest.ActionName = "InitializeSignDocument";
+                ajaxRequest.Value = new Array();
+                ajaxRequest.Value.push(documents[0].ArchiveDocumentId);
+                _this._ajaxManager.ajaxRequest(JSON.stringify(ajaxRequest));
+                return false;
             };
             /**
         * Evento al click del pulsante "Autorizza"
@@ -159,28 +208,40 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 _this._manager.radconfirm("Sei sicuro di voler eliminare il documento selezionato dal fascicolo corrente?", function (arg) {
                     if (arg) {
                         _this._loadingPanel.show(_this.pageContentId);
-                        var item = dataItems[0];
-                        var element = (item.findControl("btnUDLink"));
-                        var uniqueId = element.get_element().getAttribute("UniqueId");
-                        var UDName = element.get_element().getAttribute("DocumentUnitName");
-                        var environment = element.get_element().getAttribute("Environment");
-                        switch (Number(environment)) {
-                            case Environment.Document:
+                        var documentsToDelete_1 = [];
+                        var udToDeletePromises = [$.Deferred().resolve().promise()];
+                        for (var _i = 0, dataItems_1 = dataItems; _i < dataItems_1.length; _i++) {
+                            var item = dataItems_1[_i];
+                            var element = (item.findControl(FascVisualizza.btnUDLink_CONTROL_NAME));
+                            var uniqueId = element.get_element().getAttribute(FascVisualizza.UniqueId_ATTRIBUTE_NAME);
+                            var environment = element.get_element().getAttribute(FascVisualizza.Environment_ATTRIBUTE_NAME);
+                            switch (Number(environment)) {
+                                case Environment.Document:
+                                    documentsToDelete_1.push(uniqueId);
+                                    break;
+                                default:
+                                    udToDeletePromises.push(_this.removeDocumentUnitFromFascicle(uniqueId));
+                                    break;
+                            }
+                        }
+                        $.when.apply(null, udToDeletePromises)
+                            .done(function () {
+                            if (documentsToDelete_1.length > 0) {
                                 var ajaxRequest = {};
                                 ajaxRequest.ActionName = "Delete_Miscellanea_Document";
                                 ajaxRequest.Value = new Array();
-                                ajaxRequest.Value.push(uniqueId);
+                                ajaxRequest.Value = documentsToDelete_1;
                                 _this._ajaxManager.ajaxRequest(JSON.stringify(ajaxRequest));
-                                break;
-                            default:
-                                _this._fascicleDocumentUnitService.getByDocumentUnitAndFascicle(uniqueId, _this.currentFascicleId, function (data) {
-                                    var fascicleDocumentUnitModel = new FascicleDocumentUnitModel(_this.currentFascicleId);
-                                    fascicleDocumentUnitModel.DocumentUnit = data.DocumentUnit;
-                                    fascicleDocumentUnitModel.UniqueId = data.UniqueId;
-                                    _this.removeFascicleUD(fascicleDocumentUnitModel, _this._fascicleDocumentUnitService);
-                                });
-                                break;
-                        }
+                            }
+                            else {
+                                _this.sendRefreshUDRequest();
+                            }
+                        })
+                            .fail(function (exception) {
+                            _this._loadingPanel.hide(_this.pageContentId);
+                            $("#".concat(_this.pageContentId)).hide();
+                            _this.showNotificationException(_this.uscNotificationId, exception);
+                        });
                     }
                 }, 300, 160);
             };
@@ -189,9 +250,9 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
             * @param sender
             * @param args
             */
-            _this.btnComplete_OnClick = function (sender, args) {
+            _this.btnCompleteWorkflow_OnClick = function (sender, args) {
                 args.set_cancel(true);
-                var url = "../Workflows/CompleteWorkflow.aspx?Type=Fasc&IdFascicle=".concat(_this.currentFascicleId, "&IdWorkflowActivity=", _this.workflowActivityId);
+                var url = "../Workflows/CompleteWorkflow.aspx?Type=Fasc&IdFascicle=" + _this.currentFascicleId + "&IdWorkflowActivity=" + _this.workflowActivityId;
                 return _this.openWindow(url, "windowCompleteWorkflow", 700, 500);
             };
             /**
@@ -279,10 +340,12 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 if (selectedFolder) {
                     currentIdFascicleFolder = selectedFolder.UniqueId;
                 }
-                _this._documentUnitService.getFascicleDocumentUnits(_this._fascicleModel, qs, currentIdFascicleFolder, function (data) {
+                _this.getFascicleDocumentUnits(qs, currentIdFascicleFolder)
+                    .done(function (data) {
                     _this.refreshUD(data, afterRemove);
-                }, function (exception) {
+                }).fail(function (exception) {
                     _this._loadingPanel.hide(_this.pageContentId);
+                    $("#".concat(_this.pageContentId)).hide();
                     _this.showNotificationException(_this.uscNotificationId, exception);
                 });
             };
@@ -293,32 +356,35 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
              */
             _this.refreshUD = function (models, updateFascicleDocument) {
                 if (updateFascicleDocument === void 0) { updateFascicleDocument = false; }
-                var radGridUD = $find(_this.radGridUDId);
-                var panelUD = $("#".concat(_this.panelUDId));
-                var uscFascicolo = $("#".concat(_this.uscFascicoloId)).data();
-                if (!jQuery.isEmptyObject(uscFascicolo)) {
-                    var selectedFolderId_1 = "";
+                PageClassHelper.callUserControlFunctionSafe(_this.uscFascicoloId)
+                    .done(function (instance) {
+                    var selectedFolderId = "";
                     var selectedFolder = _this.getSelectedFascicleFolder();
                     if (selectedFolder) {
-                        selectedFolderId_1 = selectedFolder.UniqueId;
+                        selectedFolderId = selectedFolder.UniqueId;
                     }
-                    _this._fascicleDocumentService.getByFolder(_this._fascicleModel.UniqueId, selectedFolderId_1, function (data) {
+                    _this.getByFolder(selectedFolderId)
+                        .done(function (data) {
                         var insertsArchiveChains = data.filter(function (x) { return x.ChainType.toString() == ChainType[ChainType.Miscellanea]; }).map(function (m) { return m.IdArchiveChain; });
-                        if (selectedFolderId_1 != "" && updateFascicleDocument) {
+                        if (selectedFolderId != "" && updateFascicleDocument) {
                             _this._fascicleDocumentService.updateFascicleDocument(data[0]);
                         }
-                        uscFascicolo.refreshGridUD(models, insertsArchiveChains);
-                    }, function (exception) {
+                        $("#".concat(_this.uscFascicoloId)).unbind(UscFascicolo.GRID_REFRESH_EVENT);
+                        $("#".concat(_this.uscFascicoloId)).bind(UscFascicolo.GRID_REFRESH_EVENT, function (arg) {
+                            _this._fascicleRights.HasFascicolatedUD = (models.filter(function (e) { return e.ReferenceType.toString() == FascicleReferenceType[FascicleReferenceType.Fascicle]; }).length > 0);
+                            _this.setBtnCloseVisibility();
+                            _this.setBtnOpenVisibility();
+                            _this.setButtonEnable(true);
+                            _this._loadingPanel.hide(_this.pageContentId);
+                        });
+                        instance.refreshGridUD(models, insertsArchiveChains);
+                    })
+                        .fail(function (exception) {
                         _this._loadingPanel.hide(_this.pageContentId);
                         $("#".concat(_this.pageContentId)).hide();
                         _this.showNotificationException(_this.uscNotificationId, exception);
                     });
-                }
-                _this._fascicleRights.HasFascicolatedUD = (models.filter(function (e) { return e.ReferenceType.toString() == FascicleReferenceType[FascicleReferenceType.Fascicle]; }).length > 0);
-                _this.setBtnCloseVisibility();
-                _this.setBtnOpenVisibility();
-                _this.setButtonEnable(true);
-                _this._loadingPanel.hide(_this.pageContentId);
+                });
             };
             _this.sendRefreshLinkRequest = function (sender, onDoneCallback) {
                 _this.service.getLinkedFascicles(_this._fascicleModel, null, function (data) {
@@ -336,39 +402,14 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
             };
             _this.btnWorkflow_OnClick = function (sender, args) {
                 args.set_cancel(true);
-                sessionStorage.setItem(StartWorkflow.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(_this._fascicleModel));
-                sessionStorage.setItem(StartWorkflow.SESSION_KEY_REFERENCE_ID, _this.currentFascicleId);
-                sessionStorage.setItem(StartWorkflow.SESSION_KEY_REFERENCE_TITLE, _this._fascicleModel.Title);
-                var radGridUD = $find(_this.radGridUDId);
-                var dataItems = radGridUD.get_selectedItems();
-                var element;
-                var archiveChainId;
-                var archiveDocumentId;
-                var documentName;
-                var environment;
-                var dtos = [];
-                for (var _i = 0, dataItems_1 = dataItems; _i < dataItems_1.length; _i++) {
-                    var item = dataItems_1[_i];
-                    element = (item.findControl("btnUDLink"));
-                    environment = +element.get_element().getAttribute("Environment");
-                    if (environment != Environment.Document) {
-                        continue;
-                    }
-                    archiveChainId = element.get_element().getAttribute("BiblosChainId");
-                    archiveDocumentId = element.get_element().getAttribute("BiblosDocumentId");
-                    documentName = element.get_element().getAttribute("BiblosDocumentName");
-                    var dto = {
-                        ArchiveChainId: archiveChainId,
-                        ChainType: ChainType.Miscellanea,
-                        ArchiveDocumentId: archiveDocumentId,
-                        ArchiveName: "",
-                        DocumentName: documentName,
-                        ReferenceDocument: null
-                    };
-                    dtos.push(dto);
+                _this.setWorkflowSessionStorage();
+                var url = "../Workflows/StartWorkflow.aspx?Type=Fasc&ManagerID=" + _this.radWindowManagerCollegamentiId + "&DSWEnvironment=Fascicle&Callback=" + window.location.href;
+                if (_this.workflowActivityId && !_this.isWorkflowActivityClosed) {
+                    url = url + "&ShowOnlyNoInstanceWorkflows=true";
                 }
-                sessionStorage.setItem(StartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL, JSON.stringify(dtos));
-                var url = "../Workflows/StartWorkflow.aspx?Type=Fasc".concat("&ManagerID=", _this.radWindowManagerCollegamentiId, "&DSWEnvironment=Fascicle&Callback=", window.location.href);
+                if (_this.isClosed) {
+                    url = url + "&ShowOnlyHasIsFascicleClosedRequired=true";
+                }
                 return _this.openWindow(url, "windowStartWorkflow", 730, 550);
             };
             _this.btnMove_OnClick = function (sender, args) {
@@ -388,17 +429,17 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 var dto;
                 for (var _i = 0, dataItems_2 = dataItems; _i < dataItems_2.length; _i++) {
                     var item = dataItems_2[_i];
-                    element = (item.findControl("btnUDLink"));
-                    uniqueId = element.get_element().getAttribute("UniqueId");
+                    element = (item.findControl(FascVisualizza.btnUDLink_CONTROL_NAME));
+                    uniqueId = element.get_element().getAttribute(FascVisualizza.UniqueId_ATTRIBUTE_NAME);
                     UDName = element.get_text();
-                    environment = element.get_element().getAttribute("Environment");
+                    environment = element.get_element().getAttribute(FascVisualizza.Environment_ATTRIBUTE_NAME);
                     dto = {};
                     dto.uniqueId = uniqueId;
                     dto.name = UDName;
                     dto.environment = Number(environment);
                     dtos.push(dto);
                 }
-                sessionStorage.setItem(FascMoveItems.FASC_MOVE_ITEMS_Session_key, JSON.stringify(dtos));
+                sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_FASC_MOVE_ITEMS, JSON.stringify(dtos));
                 var url = "FascMoveItems.aspx?Type=Fasc&idFascicle=" + _this.currentFascicleId + "&ItemsType=DocumentType&IdFascicleFolder=" + selectedFolder.UniqueId;
                 return _this.openWindow(url, "windowMoveItems", 750, 550);
             };
@@ -479,6 +520,36 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
             _this.hasActiveWorkflowActivityWorkflow = function () {
                 return !String.isNullOrEmpty(_this.workflowActivityId);
             };
+            _this.btnCopyToFascicle_OnClick = function (sender, args) {
+                var radGridUD = $find(_this.radGridUDId);
+                var dataItems = radGridUD.get_selectedItems();
+                if (dataItems.length == 0) {
+                    _this.showWarningMessage(_this.uscNotificationId, "Nessun documento selezionato");
+                    return;
+                }
+                var selectedFolder = _this.getSelectedFascicleFolder();
+                var dtos = [];
+                var element;
+                var uniqueId;
+                var environment;
+                var UDName;
+                var dto;
+                for (var _i = 0, dataItems_3 = dataItems; _i < dataItems_3.length; _i++) {
+                    var item = dataItems_3[_i];
+                    element = (item.findControl(FascVisualizza.btnUDLink_CONTROL_NAME));
+                    uniqueId = element.get_element().getAttribute(FascVisualizza.UniqueId_ATTRIBUTE_NAME);
+                    UDName = element.get_text();
+                    environment = element.get_element().getAttribute(FascVisualizza.Environment_ATTRIBUTE_NAME);
+                    dto = {};
+                    dto.uniqueId = uniqueId;
+                    dto.name = UDName;
+                    dto.environment = Number(environment);
+                    dtos.push(dto);
+                }
+                sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_FASC_MOVE_ITEMS, JSON.stringify(dtos));
+                var url = "../Fasc/FascRicerca.aspx?Type=Fasc&Action=SearchFascicles&ChoiseFolderEnabled=true&SelectedFascicleFolderId=" + selectedFolder.UniqueId + "&CurrentFascicleId=" + _this.currentFascicleId;
+                _this.openWindow(url, "windowFascicleSearch", 750, 600);
+            };
             _this._serviceConfigurations = serviceConfigurations;
             _this._handlerManager = new HandlerWorkflowManager(serviceConfigurations);
             $(document).ready(function () {
@@ -491,6 +562,8 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
         FascVisualizza.prototype.initialize = function () {
             var _this = this;
             _super.prototype.initialize.call(this);
+            this.cleanWorkflowSessionStorage();
+            this._currentDocumentToSign = undefined;
             this._windowInsertProtocol = $find(this.windowInsertProtocolloId);
             this._windowInsertProtocol.add_close(this.sendUDUpdate);
             this._windowStartWorkflow = $find(this.windowStartWorkflowId);
@@ -500,6 +573,8 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
             this._windowWorkflowInstanceLogs = $find(this.windowWorkflowInstanceLogId);
             this._windowMoveItems = $find(this.windowMoveItemsId);
             this._windowMoveItems.add_close(this.onMoveCloseWindow);
+            this._windowFascicleSearch = $find(this.windowFascicleSearchId);
+            this._windowFascicleSearch.add_close(this.onFascicleSearchCloseWindow);
             this._loadingPanel = $find(this.ajaxLoadingPanelId);
             this._ajaxManager = $find(this.ajaxManagerId);
             this._notificationInfo = $find(this.radNotificationInfoId);
@@ -510,29 +585,33 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
             this._btnLink = $find(this.btnLinkId);
             this._btnRemove = $find(this.btnRemoveId);
             this._btnAutorizza = $find(this.btnAutorizzaId);
+            this._btnSign = $find(this.btnSignId);
             this._btnWorkflow = $find(this.btnWorkflowId);
             this._btnOpen = $find(this.btnOpenId);
             this._manager = $find(this.radWindowManagerId);
-            this._btnComplete = $find(this.btnCompleteId);
+            this._btnCompleteWorkflow = $find(this.btnCompleteWorkflowId);
             this._btnWorkflowLogs = $find(this.btnWorkflowLogsId);
             this._btnFascicleLog = $find(this.btnFascicleLogId);
             this._btnSendToRoles = $find(this.btnSendToRolesId);
             this._btnUndo = $find(this.btnUndoId);
             this._btnMove = $find(this.btnMoveId);
+            this._btnCopyToFascicle = $find(this.btnCopyToFascicleId);
             this._btnEdit.add_clicking(this.btnEdit_OnClick);
             this._btnDocuments.add_clicking(this.btnDocuments_OnClick);
             this._btnClose.add_clicking(this.btnClose_OnClick);
             this._btnInsert.add_clicking(this.btnInsert_OnClick);
             this._btnLink.add_clicking(this.btnLink_OnClick);
             this._btnRemove.add_clicking(this.btnRemove_OnClick);
-            this._btnComplete.add_clicking(this.btnComplete_OnClick);
+            this._btnCompleteWorkflow.add_clicking(this.btnCompleteWorkflow_OnClick);
             this._btnAutorizza.add_clicking(this.btnAutorizza_OnClick);
+            this._btnSign.add_clicking(this.btnSign_OnClick);
             this._btnWorkflow.add_clicking(this.btnWorkflow_OnClick);
             this._btnWorkflowLogs.add_clicking(this.btnWorkflowLogs_OnClick);
             this._btnFascicleLog.add_clicking(this.btnFascicleLog_OnClick);
             this._btnOpen.add_clicking(this.btnOpen_OnClick);
             this._btnUndo.add_clicking(this.btnUndo_OnClick);
             this._btnMove.add_clicking(this.btnMove_OnClick);
+            this._btnCopyToFascicle.add_clicking(this.btnCopyToFascicle_OnClick);
             var documentUnitConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, FascicleBase.DOCUMENT_UNIT_TYPE_NAME);
             this._documentUnitService = new DocumentUnitService(documentUnitConfiguration);
             var udsRepositoryConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, FascicleBase.UDSREPOSITORY_TYPE_NAME);
@@ -562,9 +641,14 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 if (data == null)
                     return;
                 _this._fascicleModel = data;
+                var fascicleRoleModel = _this._fascicleModel.FascicleRoles.filter(function (x) { return x.IsMaster == true; })[0];
+                if (fascicleRoleModel != undefined) {
+                    var workflowRoleModel = { IdRole: fascicleRoleModel.Role.IdRole, TenantId: fascicleRoleModel.Role.TenantId };
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_PROPOSER_ROLES, JSON.stringify(workflowRoleModel));
+                }
                 var wfCheckActivityAction;
                 if (_this.workflowEnabled && _this.workflowActivityId) {
-                    wfCheckActivityAction = function () { return _this._handlerManager.manageHandlingWorkflowWithActivity(_this.workflowActivityId); };
+                    wfCheckActivityAction = function () { return _this._handlerManager.manageHandlingWorkflow(_this.workflowActivityId); };
                 }
                 else {
                     wfCheckActivityAction = function () { return _this._handlerManager.manageHandlingWorkflow(_this.currentFascicleId, Environment.Fascicle); };
@@ -594,6 +678,31 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 _this.showNotificationException(_this.uscNotificationId, exception);
             });
         };
+        FascVisualizza.prototype.getDocumentUnitAndFascicleAsync = function (uniqueId, currentFascicleId) {
+            var promise = $.Deferred();
+            this._fascicleDocumentUnitService.getByDocumentUnitAndFascicle(uniqueId, currentFascicleId, function (data) {
+                promise.resolve(data);
+            });
+            return promise.promise();
+        };
+        FascVisualizza.prototype.getFascicleDocumentUnits = function (qs, currentIdFascicleFolder) {
+            var promise = $.Deferred();
+            this._documentUnitService.getFascicleDocumentUnits(this._fascicleModel, qs, this.currentTenantAOOId, currentIdFascicleFolder, function (data) {
+                promise.resolve(data);
+            }, function (exception) {
+                promise.reject(exception);
+            });
+            return promise.promise();
+        };
+        FascVisualizza.prototype.getByFolder = function (selectedFolderId) {
+            var promise = $.Deferred();
+            this._fascicleDocumentService.getByFolder(this._fascicleModel.UniqueId, selectedFolderId, function (data) {
+                promise.resolve(data);
+            }, function (exception) {
+                promise.reject(exception);
+            });
+            return promise.promise();
+        };
         /**
          *------------------------- Methods -----------------------------
          */
@@ -615,6 +724,63 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 .fail(function (exception) { return promise.reject(exception); });
             return promise.promise();
         };
+        FascVisualizza.prototype.cleanWorkflowSessionStorage = function () {
+            sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL);
+            sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID);
+            sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_TITLE);
+            sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
+            sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENT_METADATAS);
+            sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_UDS_MODEL);
+        };
+        FascVisualizza.prototype.setWorkflowSessionStorage = function () {
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(this._fascicleModel));
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID, this.currentFascicleId);
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_UNIQUEID, this.currentFascicleId);
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_TITLE, this._fascicleModel.Title);
+            var radGridUD = $find(this.radGridUDId);
+            var dataItems = radGridUD.get_selectedItems();
+            var element;
+            var archiveChainId;
+            var archiveDocumentId;
+            var documentName;
+            var environment;
+            var uniqueId;
+            var dtos = [];
+            var referenceDocumentUnits = [];
+            for (var _i = 0, dataItems_4 = dataItems; _i < dataItems_4.length; _i++) {
+                var item = dataItems_4[_i];
+                element = (item.findControl(FascVisualizza.btnUDLink_CONTROL_NAME));
+                environment = +element.get_element().getAttribute(FascVisualizza.Environment_ATTRIBUTE_NAME);
+                uniqueId = element.get_element().getAttribute(FascVisualizza.UniqueId_ATTRIBUTE_NAME);
+                referenceDocumentUnits.push({
+                    Environment: environment,
+                    UniqueId: uniqueId
+                });
+                if (environment != Environment.Document) {
+                    continue;
+                }
+                archiveChainId = element.get_element().getAttribute(FascVisualizza.BiblosChainId_ATTRIBUTE_NAME);
+                archiveDocumentId = element.get_element().getAttribute(FascVisualizza.BiblosDocumentId_ATTRIBUTE_NAME);
+                documentName = element.get_element().getAttribute(FascVisualizza.BiblosDocumentName_ATTRIBUTE_NAME);
+                var dto = {
+                    ArchiveChainId: archiveChainId,
+                    ChainType: ChainType.Miscellanea,
+                    ArchiveDocumentId: archiveDocumentId,
+                    ArchiveName: "",
+                    DocumentName: documentName,
+                    ReferenceDocument: null
+                };
+                dtos.push(dto);
+            }
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL, JSON.stringify(dtos));
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENT_UNITS_REFERENCE_MODEL, JSON.stringify(referenceDocumentUnits));
+        };
+        FascVisualizza.prototype.openSignWindow = function (serializedDoc) {
+            this._loadingPanel.hide(this.pageContentId);
+            this._currentDocumentToSign = serializedDoc;
+            var url = "../Comm/SingleSign.aspx?" + serializedDoc;
+            this.openWindow(url, 'signWindow', 750, 500);
+        };
         FascVisualizza.prototype.hasAuthorizedWorkflows = function () {
             var promise = $.Deferred();
             this._workflowRepositoriyService.hasAuthorizedWorkflowRepositories(Environment.Fascicle, false, function (data) { return promise.resolve(data); }, function (exception) { return promise.reject(exception); });
@@ -630,14 +796,14 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
          */
         FascVisualizza.prototype.loadFascicoloSummary = function () {
             var _this = this;
-            var uscFascicolo = $("#".concat(this.uscFascicoloId)).data();
-            if (!jQuery.isEmptyObject(uscFascicolo)) {
-                uscFascicolo.workflowActivityId = this.workflowActivityId;
-                $("#".concat(this.uscFascicoloId)).bind(UscFascicolo.DATA_LOADED_EVENT, function (args) {
+            PageClassHelper.callUserControlFunctionSafe(this.uscFascicoloId)
+                .done(function (instance) {
+                instance.workflowActivityId = _this.workflowActivityId;
+                $("#".concat(_this.uscFascicoloId)).bind(UscFascicolo.DATA_LOADED_EVENT, function (args) {
                     _this.sendRefreshUDRequest();
                 });
-                uscFascicolo.loadData(this._fascicleModel);
-            }
+                instance.loadData(_this._fascicleModel);
+            });
         };
         /**
          * Metodo di callback inizializzazione
@@ -653,11 +819,10 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 this.showNotificationMessage(this.uscNotificationId, "Fascicolo n. ".concat(this._fascicleModel.Title, "<br />Impossibile visualizzare il fascicolo. Non si dispone dei diritti necessari."));
                 return;
             }
-            //Bind evento onLoaded dello user control uscFascicolo
-            $("#".concat(this.uscFascicoloId)).bind(UscFascicolo.LOADED_EVENT, function (args) {
+            PageClassHelper.callUserControlFunctionSafe(this.uscFascicoloId)
+                .done(function (instance) {
                 _this.loadFascicoloSummary();
             });
-            this.loadFascicoloSummary();
             var procedureFascicleType = FascicleType[FascicleType.Procedure];
             var isProcedureFascicle = this._fascicleModel.FascicleType.toString() == procedureFascicleType;
             var isPeriodicFascicle = this._fascicleModel.FascicleType.toString() == FascicleType[FascicleType.Period];
@@ -666,34 +831,40 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 isProcedureFascicle = this._fascicleModel.FascicleType.toString() == procedureFascicleType;
                 isPeriodicFascicle = this._fascicleModel.FascicleType.toString() == FascicleType[FascicleType.Period];
             }
-            var isClosed = this._fascicleModel.EndDate != null;
+            this.isClosed = this._fascicleModel.EndDate != null;
             this.setBtnCloseVisibility();
             this.setBtnOpenVisibility();
-            this._btnInsert.set_visible(!isClosed);
-            this._btnMove.set_visible(!isClosed);
-            this._btnRemove.set_visible(!isClosed);
-            this._btnSendToRoles.set_visible(!isClosed);
-            this._btnEdit.set_visible(!isClosed || isPeriodicFascicle);
-            this._btnLink.set_visible(!isClosed);
-            this._btnAutorizza.set_visible(!isClosed);
+            this._btnInsert.set_visible(!this.isClosed);
+            this._btnMove.set_visible(!this.isClosed);
+            this._btnRemove.set_visible(!this.isClosed);
+            this._btnSendToRoles.set_visible(!this.isClosed);
+            this._btnEdit.set_visible(!this.isClosed || isPeriodicFascicle);
+            this._btnLink.set_visible(!this.isClosed);
+            this._btnAutorizza.set_visible(!this.isClosed);
+            this._btnSign.set_visible(!this.isClosed);
+            this._btnCopyToFascicle.set_visible(!this.isClosed);
             this._btnDocuments.set_visible(viewRights.IsViewable || isPeriodicFascicle);
             var isWorkflowEnabled = this.workflowEnabled && isProcedureFascicle;
-            this._btnWorkflow.set_visible(isWorkflowEnabled && !isClosed && viewRights.HasAuthorizedWorkflows && viewRights.IsManageable);
-            this._btnComplete.set_visible(!isClosed && this.hasActiveWorkflowActivityWorkflow());
+            var workflowButtonVisibility = isWorkflowEnabled && viewRights.HasAuthorizedWorkflows && viewRights.IsManageable;
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_ISBUTTON_WORKFLOW_VISIBLE, String(workflowButtonVisibility));
+            this._btnWorkflow.set_visible(workflowButtonVisibility);
+            this._btnCompleteWorkflow.set_visible(!this.isClosed && this.hasActiveWorkflowActivityWorkflow());
             this._btnWorkflowLogs.set_visible(viewRights.IsManager || viewRights.IsSecretary);
             this._btnFascicleLog.set_visible(viewRights.IsManager || viewRights.IsSecretary);
-            this._btnUndo.set_visible(!isClosed && (viewRights.IsManager || viewRights.IsSecretary));
-            if (!isClosed) {
+            this._btnUndo.set_visible(!this.isClosed && (viewRights.IsManager || viewRights.IsSecretary));
+            if (!this.isClosed) {
                 this._btnEdit.set_visible((viewRights.IsEditable || viewRights.IsManager) && !isPeriodicFascicle);
                 this._btnLink.set_visible(viewRights.IsManageable);
                 this._btnAutorizza.set_visible((viewRights.IsEditable || viewRights.IsManager) && (isProcedureFascicle || isPeriodicFascicle));
+                this._btnSign.set_visible((viewRights.IsEditable || viewRights.IsManager) && (isProcedureFascicle || isPeriodicFascicle));
                 this._btnSendToRoles.set_visible(viewRights.IsViewable && this._fascicleModel.FascicleRoles.length != 0);
                 this._btnInsert.set_visible(viewRights.IsManageable || viewRights.IsManager);
                 this._btnMove.set_visible(viewRights.IsManageable || viewRights.IsManager);
                 this._btnRemove.set_visible(viewRights.IsManageable || viewRights.IsManager);
-                var uscFascFolder = $("#".concat(this.uscFascFoldersId)).data();
-                if (!jQuery.isEmptyObject(uscFascFolder)) {
-                    uscFascFolder.setManageFascicleFolderVisibility(viewRights.IsManageable || viewRights.IsManager);
+                this._btnCopyToFascicle.set_visible(viewRights.IsManageable || viewRights.IsManager);
+                var uscFascFolder_1 = $("#".concat(this.uscFascFoldersId)).data();
+                if (!jQuery.isEmptyObject(uscFascFolder_1)) {
+                    uscFascFolder_1.setManageFascicleFolderVisibility(viewRights.IsManageable || viewRights.IsManager);
                 }
                 if (this.hasActiveWorkflowActivityWorkflow()) {
                     this._workflowActivityService.getWorkflowActivity(this.workflowActivityId, function (dataWorkflow) {
@@ -702,15 +873,15 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                             var completeWorkflowUserEnabled = false;
                             var isHandler = false;
                             var isHandlingDocumentEnabled = false;
-                            var isActivityClosed = true;
+                            _this.isWorkflowActivityClosed = true;
                             if (_this._workflowActivity != null && _this._workflowActivity.WorkflowAuthorizations != null) {
                                 var userAuthorization = _this.filterWorkflowAuthorizationsByAccount(_this._workflowActivity.WorkflowAuthorizations, _this.currentUser);
                                 var status_1 = parseInt(WorkflowStatus[_this._workflowActivity.Status]);
                                 if (isNaN(status_1)) {
                                     status_1 = WorkflowStatus[_this._workflowActivity.Status.toString()];
                                 }
-                                isActivityClosed = (status_1 == WorkflowStatus.Done);
-                                completeWorkflowUserEnabled = ((userAuthorization.length > 0) && !isActivityClosed);
+                                _this.isWorkflowActivityClosed = (status_1 == WorkflowStatus.Done);
+                                completeWorkflowUserEnabled = ((userAuthorization.length > 0) && !_this.isWorkflowActivityClosed);
                                 isHandler = userAuthorization.filter(function (item) {
                                     if (item.IsHandler == true) {
                                         return item;
@@ -718,15 +889,15 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                                 }).length > 0;
                             }
                             isHandlingDocumentEnabled = (viewRights.IsManageable || (isHandler && completeWorkflowUserEnabled && _this.hasActiveWorkflowActivityWorkflow()));
-                            _this._btnComplete.set_visible(_this.hasActiveWorkflowActivityWorkflow() && completeWorkflowUserEnabled && isWorkflowEnabled);
+                            _this._btnCompleteWorkflow.set_visible(_this.hasActiveWorkflowActivityWorkflow() && completeWorkflowUserEnabled && isWorkflowEnabled);
                             _this._btnInsert.set_visible(isHandlingDocumentEnabled);
                             _this._btnMove.set_visible(isHandlingDocumentEnabled);
                             _this._btnRemove.set_visible(isHandlingDocumentEnabled);
-                            var uscFascFolder_1 = $("#".concat(_this.uscFascFoldersId)).data();
-                            if (!jQuery.isEmptyObject(uscFascFolder_1)) {
-                                uscFascFolder_1.setManageFascicleFolderVisibility(isHandlingDocumentEnabled);
+                            _this._btnCopyToFascicle.set_visible(isHandlingDocumentEnabled);
+                            var uscFascFolder_2 = $("#".concat(_this.uscFascFoldersId)).data();
+                            if (!jQuery.isEmptyObject(uscFascFolder_2)) {
+                                uscFascFolder_2.setManageFascicleFolderVisibility(isHandlingDocumentEnabled);
                             }
-                            _this._btnWorkflow.set_visible(isWorkflowEnabled && !isClosed && viewRights.HasAuthorizedWorkflows && viewRights.IsManageable && isActivityClosed);
                         }
                     }, function (exception) {
                         _this._loadingPanel.hide(_this.pageContentId);
@@ -736,10 +907,14 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 }
             }
             else {
-                var uscFascFolder = $("#".concat(this.uscFascFoldersId)).data();
-                if (!jQuery.isEmptyObject(uscFascFolder)) {
-                    uscFascFolder.setCloseAttributeFascicleFolder();
+                var uscFascFolder_3 = $("#".concat(this.uscFascFoldersId)).data();
+                if (!jQuery.isEmptyObject(uscFascFolder_3)) {
+                    uscFascFolder_3.setCloseAttributeFascicleFolder();
                 }
+            }
+            var uscFascFolder = $("#".concat(this.uscFascFoldersId)).data();
+            if (!jQuery.isEmptyObject(uscFascFolder)) {
+                uscFascFolder.fileManagementButtonsVisibility(viewRights.IsManager || viewRights.IsSecretary);
             }
             this._pnlButtons.show();
         };
@@ -758,14 +933,32 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
             wnd.center();
             return false;
         };
+        FascVisualizza.prototype.removeDocumentUnitFromFascicle = function (documentUnitId) {
+            var _this = this;
+            var promise = $.Deferred();
+            this.getDocumentUnitAndFascicleAsync(documentUnitId, this.currentFascicleId)
+                .done(function (data) {
+                var fascicleDocumentUnitModel = new FascicleDocumentUnitModel(_this.currentFascicleId);
+                fascicleDocumentUnitModel.DocumentUnit = data.DocumentUnit;
+                fascicleDocumentUnitModel.UniqueId = data.UniqueId;
+                _this.removeFascicleUD(fascicleDocumentUnitModel, _this._fascicleDocumentUnitService).done(function () {
+                    promise.resolve();
+                }).fail(function (exception) { return promise.reject(exception); });
+            })
+                .fail(function (exception) { return promise.reject(exception); });
+            return promise.promise();
+        };
         FascVisualizza.prototype.removeFascicleUD = function (model, service) {
             var _this = this;
+            var promise = $.Deferred();
             service.deleteFascicleUD(model, function (data) {
-                _this.sendRefreshUDRequest();
+                promise.resolve();
             }, function (exception) {
                 _this._loadingPanel.hide(_this.pageContentId);
                 _this.showNotificationException(_this.uscNotificationId, exception);
+                promise.reject();
             });
+            return promise.promise();
         };
         /**
          * Imposta l'attributo enable dei pulsanti
@@ -780,11 +973,13 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
             this._btnClose.set_enabled(value);
             this._btnLink.set_enabled(value);
             this._btnAutorizza.set_enabled(value);
+            this._btnSign.set_enabled(value);
             this._btnSendToRoles.set_enabled(value);
             this._btnWorkflow.set_enabled(value);
-            this._btnComplete.set_enabled(value);
+            this._btnCompleteWorkflow.set_enabled(value);
             this._btnWorkflowLogs.set_enabled(value);
             this._btnUndo.set_enabled(value);
+            this._btnCopyToFascicle.set_enabled(value);
         };
         FascVisualizza.prototype.loadActiveWorkflowActivities = function () {
             var _this = this;
@@ -891,6 +1086,26 @@ define(["require", "exports", "Fasc/FascBase", "UserControl/uscFascicolo", "App/
                 _this.setButtonEnable(false);
             });
         };
+        FascVisualizza.prototype.closeSignWindow = function (sender, args) {
+            if (args.get_argument() && this._currentDocumentToSign) {
+                this._loadingPanel.show(this.currentPageId);
+                var ajaxRequest = {};
+                ajaxRequest.ActionName = "Signed";
+                ajaxRequest.Value = new Array();
+                ajaxRequest.Value.push(args.get_argument());
+                ajaxRequest.Value.push(this._currentDocumentToSign);
+                this._ajaxManager = $find(this.ajaxManagerId);
+                this._ajaxManager.ajaxRequest(JSON.stringify(ajaxRequest));
+            }
+            this._currentDocumentToSign = undefined;
+        };
+        FascVisualizza.UniqueId_ATTRIBUTE_NAME = "UniqueId";
+        FascVisualizza.DocumentUnitName_ATTRIBUTE_NAME = "DocumentUnitName";
+        FascVisualizza.Environment_ATTRIBUTE_NAME = "Environment";
+        FascVisualizza.BiblosChainId_ATTRIBUTE_NAME = "BiblosChainId";
+        FascVisualizza.BiblosDocumentId_ATTRIBUTE_NAME = "BiblosDocumentId";
+        FascVisualizza.BiblosDocumentName_ATTRIBUTE_NAME = "BiblosDocumentName";
+        FascVisualizza.btnUDLink_CONTROL_NAME = "btnUDLink";
         return FascVisualizza;
     }(FascicleBase));
     return FascVisualizza;

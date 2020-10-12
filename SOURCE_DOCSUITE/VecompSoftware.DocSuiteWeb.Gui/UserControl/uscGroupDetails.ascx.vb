@@ -13,6 +13,9 @@ Partial Public Class uscGroupDetails
     Inherits DocSuite2008BaseControl
 
 #Region "Fields"
+    Private Const ADD_USER As String = "addUser"
+    Private Const DELETE_USER As String = "deleteUser"
+    Private Const IMPORT_USER As String = "importUser"
 #End Region
 
 #Region "Properties"
@@ -27,7 +30,21 @@ Partial Public Class uscGroupDetails
             ViewState("SelectedGroupId") = value
         End Set
     End Property
-
+    Public ReadOnly Property Button_AddUser As RadToolBarItem
+        Get
+            Return ActionsToolbar.FindItemByValue(uscGroupDetails.ADD_USER)
+        End Get
+    End Property
+    Public ReadOnly Property Button_DeleteUser As RadToolBarItem
+        Get
+            Return ActionsToolbar.FindItemByValue(uscGroupDetails.DELETE_USER)
+        End Get
+    End Property
+    Public ReadOnly Property Button_ImportUser As RadToolBarItem
+        Get
+            Return ActionsToolbar.FindItemByValue(uscGroupDetails.IMPORT_USER)
+        End Get
+    End Property
     Private ReadOnly Property SelectedGroup As SecurityGroups
         Get
             Return Facade.SecurityGroupsFacade.GetById(SelectedGroupId)
@@ -106,11 +123,12 @@ Partial Public Class uscGroupDetails
         dt.Columns.Add("Rights")
 
         If String.IsNullOrEmpty(SelectedGroup.GroupName) Then
-            If ProtocolEnv.IsPosteWebEnabled() Then
+            Dim lbl As String = If(ProtocolEnv.TNoticeEnabled, "TNotice", "Poste Web")
+            If ProtocolEnv.IsPosteWebEnabled() OrElse ProtocolEnv.TNoticeEnabled Then
                 Dim accounts As IList(Of POLAccount) = Facade.PosteOnLineAccountFacade.GetByRoles(New List(Of Role) From {currentRole})
                 If accounts.Any() Then
                     For Each account As POLAccount In accounts
-                        dt.Rows.Add("Poste Web", account.Name)
+                        dt.Rows.Add(lbl, account.Name)
                     Next
                 End If
             End If
@@ -145,13 +163,13 @@ Partial Public Class uscGroupDetails
             Dim docRights As String = String.Empty
             If CommonInstance.DocmEnabled Then
                 docType = DocSuiteContext.Current.DossierAndPraticheLabel
-                If (Diritti(roleGroup.DocumentRights, DocumentRoleRightPositions.Enabled)) Then
+                If (Diritti(roleGroup.DocumentRights, DossierRoleRightPositions.Enabled)) Then
                     docRights = String.Concat(docRights, "Abilitato")
                 End If
-                If (Diritti(roleGroup.DocumentRights, DocumentRoleRightPositions.Workflow)) Then
+                If (Diritti(roleGroup.DocumentRights, DossierRoleRightPositions.Workflow)) Then
                     docRights = String.Concat(docRights, If(String.IsNullOrEmpty(docRights), "Workflow", ", Workflow"))
                 End If
-                If (Diritti(roleGroup.DocumentRights, DocumentRoleRightPositions.Manager)) Then
+                If (Diritti(roleGroup.DocumentRights, DossierRoleRightPositions.Manager)) Then
                     docRights = String.Concat(docRights, If(String.IsNullOrEmpty(docRights), "Manager", ", Manager"))
                 End If
                 dt.Rows.Add(docType, docRights)
@@ -324,7 +342,13 @@ Partial Public Class uscGroupDetails
         LoadUsers(SelectedGroup)
         LoadGridRoles(SelectedGroup)
         LoadGridContainers(SelectedGroup)
+    End Sub
 
+    Public Sub LoadOnlyUsers()
+        pnlDetail.Style.Add("visibility", "visible")
+        Dim usersPanelItem As RadPanelItem = rpbGroups.FindItemByValue("rpiUsers")
+        usersPanelItem.Visible = True
+        LoadUsers(SelectedGroup)
     End Sub
 
     Public Sub LoadUsers(ByVal group As SecurityGroups)
@@ -335,6 +359,7 @@ Partial Public Class uscGroupDetails
         End If
 
         Dim item As RadPanelItem = rpbGroups.FindItemByValue("rpiUsers")
+        item.Visible = True
         item.Text = $"Utenti ({group.Id} - {group.UniqueId})"
 
         If (group.HasAllUsers) Then
@@ -381,14 +406,22 @@ Partial Public Class uscGroupDetails
         If group Is Nothing Then
             Exit Sub
         End If
+
+        Dim rolesPanelItem As RadPanelItem = rpbGroups.FindItemByValue("rpiRoles")
+        rolesPanelItem.Visible = True
+
         grdRoles.DataSource = Facade.RoleGroupFacade.GetBySecurityGroup(group, True)
         grdRoles.DataBind()
     End Sub
 
     Private Sub LoadGridContainers(ByVal group As SecurityGroups)
+
         If group Is Nothing Then
             Exit Sub
         End If
+
+        Dim containersPanelItem As RadPanelItem = rpbGroups.FindItemByValue("rpiContainers")
+        containersPanelItem.Visible = True
 
         grdContainers.DataSource = Facade.ContainerGroupFacade.GetBySecurityGroup(group, True)
         grdContainers.DataBind()

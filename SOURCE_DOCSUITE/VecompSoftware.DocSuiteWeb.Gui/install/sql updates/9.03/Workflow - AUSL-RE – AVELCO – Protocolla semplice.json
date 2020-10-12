@@ -1,0 +1,81 @@
+﻿{
+  "0": {
+    "Position": 0,
+    "Name": "PROTOCOLLA DOCUMENTO AVELCO",
+    "AuthorizationType": 1,
+    "ActivityOperation": {
+      "Action": 1,
+      "Area": 2
+    },
+    "ActivityType": 4,
+    "InputArguments": [
+      {
+        "Name": "_dsw_p_MappingTag",
+        "PropertyType": 8,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null,
+        "ValueJson": null
+      },
+      {
+        "Name": "_dsw_p_ExternalIdentifier",
+        "PropertyType": 256,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null,
+        "ValueJson": null
+      },
+      {
+        "Name": "_dsw_p_Model",
+        "PropertyType": 1,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null,
+        "ValueJson": null
+      }
+    ],
+    "OutputArguments": [
+      {
+        "Name": "_dsw_e_ProtocolNumber",
+        "PropertyType": 16,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ProtocolYear",
+        "PropertyType": 16,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ProtocolUniqueId",
+        "PropertyType": 8,
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null,
+        "ValueJson": null
+      }
+    ],
+    "EvaluationArguments": []
+  }
+}

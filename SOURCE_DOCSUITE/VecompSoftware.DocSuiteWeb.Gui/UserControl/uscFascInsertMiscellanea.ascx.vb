@@ -99,7 +99,7 @@ Partial Public Class uscFascInsertMiscellanea
     Private Function DeleteDocument(idDocument As Guid) As Boolean
         FileLogger.Debug(LoggerName, String.Format("uscFascInsertMiscellanea_AjaxRequest -> IdFascicle {0} - Delete document with Id: {1}", IdFascicle, idDocument))
         Try
-            Service.DetachDocument(FascMiscellaneaLocation.ProtBiblosDSDB, idDocument)
+            Service.DetachDocument(idDocument)
             Return True
         Catch ex As Exception
             FileLogger.Warn(LoggerName, String.Concat("Errore in eliminazione documento inserti: ", ex.Message), ex)

@@ -13,6 +13,7 @@ define(["require", "exports"], function (require, exports) {
             toMap.StartDate = source.StartDate;
             toMap.EndDate = source.EndDate;
             toMap.Note = source.Note;
+            toMap.TenantTypology = source.TenantTypology;
             return toMap;
         };
         return TenantMapper;

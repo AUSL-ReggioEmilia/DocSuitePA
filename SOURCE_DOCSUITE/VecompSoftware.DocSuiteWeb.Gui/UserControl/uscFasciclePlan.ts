@@ -89,7 +89,7 @@ class uscFasciclePlan {
      * @param sender
      * @param args
      */
-    btnProcedure_onClientClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnProcedure_onClientClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         this._manager.radconfirm("Sei sicuro di avviare un piano di fascicolazione per tutte le tipologie documentarie?", (arg) => {
             if (arg && this._rtvEnvironments.get_selectedNode() == this._rtvEnvironments.get_nodes().getNode(0)) {
                 let rootNode: Telerik.Web.UI.RadTreeNode = this._rtvEnvironments.get_nodes().getNode(0);
@@ -118,7 +118,7 @@ class uscFasciclePlan {
      * @param sender
      * @param args
      */
-    btnAddPeriodicPlan_onClientClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnAddPeriodicPlan_onClientClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvEnvironments.get_selectedNode();
         let rootNode: Telerik.Web.UI.RadTreeNode;
         rootNode = this._rtvEnvironments.get_nodes().getNode(0);
@@ -132,7 +132,7 @@ class uscFasciclePlan {
     * @param sender
     * @param args 
     */
-    btnRemovePeriodicPlan_onClientClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnRemovePeriodicPlan_onClientClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         this._manager.radconfirm("Sicuro di procedere?", (arg) => {
             if (arg) {
                 this._loadingPanel.show(this.pnlFasciclePlanId);

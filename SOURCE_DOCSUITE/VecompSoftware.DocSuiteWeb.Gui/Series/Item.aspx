@@ -175,7 +175,7 @@
             </td>
             <td>
                 <asp:DropDownList runat="server" CausesValidation="false" ID="ddlDocumentSeries" AutoPostBack="True" Visible="True" Width="300px" />
-                <asp:RequiredFieldValidator ID="rfvIdDocType" runat="server" ControlToValidate="ddlDocumentSeries" ErrorMessage="Campo Tipo Documento Obbligatorio" Display="Dynamic" />
+                <asp:RequiredFieldValidator ID="rfvIdDocType" runat="server" ControlToValidate="ddlDocumentSeries" ErrorMessage="Campo Tipo Documento obbligatorio" Display="Dynamic" />
             </td>
         </tr>
     </table>

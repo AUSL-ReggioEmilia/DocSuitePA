@@ -1,7 +1,9 @@
 ﻿Imports System.Collections.Generic
 Imports System.IO
 Imports System.Linq
+Imports System.Text.RegularExpressions
 Imports Newtonsoft.Json
+Imports OfficeOpenXml
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
@@ -39,6 +41,7 @@ Public Class UDSResults
     Private ctlLookup As String = "Lookup"
     Private ctlContact As String = "Contact"
     Private ctlAuthorization As String = "Authorization"
+
 #End Region
 
 #Region "Properties"
@@ -93,21 +96,13 @@ Public Class UDSResults
         End Get
     End Property
 
-    Public ReadOnly Property CurrentController As String
+    Public ReadOnly Property CurrentRepositoryName As String
         Get
-            Dim webApiPath As Uri = DocSuiteContext.Current.CurrentTenant.WebApiClientConfig.Addresses.Where(Function(x) x.AddressName.Eq(UDS_ADDRESS_NAME)).Select(Function(s) s.Address).FirstOrDefault()
-            Dim path As String = String.Empty
             If CurrentFinder.IdRepository.HasValue Then
-                Dim controllerName As String = Utils.GetWebAPIControllerName(CurrentRepository.Name)
-                If Char.IsDigit(controllerName.ElementAt(0)) Then
-                    controllerName = $"_{controllerName}"
-                End If
-
-                path = New Uri(webApiPath, controllerName).AbsoluteUri
+                Return CurrentRepository.Name
             Else
-                path = New Uri(webApiPath, "BaseController").AbsoluteUri 'prendere da configurazione
+                Return "BaseController"
             End If
-            Return path
         End Get
     End Property
     Public ReadOnly Property UDSRoleUrl As String
@@ -148,15 +143,14 @@ Public Class UDSResults
             Return Context.Request.QueryString.GetValueOrDefault(Of Boolean?)("isFromUDSLink", Nothing)
         End Get
     End Property
-
+    Public ReadOnly Property CurrentAction As String
+        Get
+            Return Context.Request.QueryString.GetValueOrDefault(Of String)("Action", Nothing)
+        End Get
+    End Property
     Public ReadOnly Property dgvUDSItems As String
         Get
             Return Request.Form("dgvUDSItems")
-        End Get
-    End Property
-    Public ReadOnly Property dgvColumns As String
-        Get
-            Return Request.Form("dgvColumns")
         End Get
     End Property
     Public ReadOnly Property dgvUDSAllItems As String
@@ -164,6 +158,13 @@ Public Class UDSResults
             Return Request.Form("dgvUDSAllItems")
         End Get
     End Property
+
+    Private ReadOnly Property IsActionCopyDocument As Boolean
+        Get
+            Return CurrentAction.Eq("CopyDocuments")
+        End Get
+    End Property
+
 #End Region
 
 #Region "Events"
@@ -171,8 +172,6 @@ Public Class UDSResults
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         InitializeAjax()
         If Not IsPostBack Then
-            btnEsportaPagina.Icon.SecondaryIconUrl = ImagePath.SmallExcel
-            btnEsportaTutto.Icon.SecondaryIconUrl = ImagePath.SmallExcel
             Initialize()
         End If
     End Sub
@@ -190,15 +189,24 @@ Public Class UDSResults
     End Sub
 
     Private Sub Initialize()
-        If Me.CurrentFinder Is Nothing Then
+        Title = $"{PAGE_RESULTS_TITLE}: {CurrentRepository.Name}"
+        If CurrentFinder Is Nothing Then
             Throw New DocSuiteException("Errore ricerca UDS", "Impossibile inizializzare dalla pagina di provenienza.")
         End If
+        btnEsportaPagina.Icon.SecondaryIconUrl = ImagePath.SmallExcel
+        btnEsportaTutto.Icon.SecondaryIconUrl = ImagePath.SmallExcel
+        btnDocuments.Visible = ProtocolEnv.EnableMultiChainView
 
         CreateDynamicColumn()
         InitializeFilterMenu()
-        Title = String.Concat(PAGE_RESULTS_TITLE, ": ", CurrentRepository.Name)
-        btnDocuments.Visible = ProtocolEnv.EnableMultiChainView
 
+        If IsActionCopyDocument Then
+            btnEsportaPagina.Visible = False
+            btnEsportaTutto.Visible = False
+            btnDocuments.Visible = False
+            btnSelectAll.Visible = False
+            btnDeselectAll.Visible = False
+        End If
     End Sub
 
     Private Sub InitializeFilterMenu()
@@ -210,9 +218,9 @@ Public Class UDSResults
 
     'Qui creo le nuove colonne 
     Private Sub CreateDynamicColumn()
-        Dim UDSModel As UDSModel = UDSModel.LoadXml(CurrentRepository.ModuleXML)
-        Dim jsModel As JsModel = CurrentConverter.ConvertToJs(UDSModel)
-        Dim newColumn As GridTemplateColumn
+        Dim udsModel As UDSModel = udsModel.LoadXml(CurrentRepository.ModuleXML)
+        Dim jsModel As JsModel = CurrentConverter.ConvertToJs(udsModel)
+        Dim newColumn As GridTemplateColumn = Nothing
 
         CommonColumnsVisibility(jsModel.elements.Where(Function(x) x.ctrlType = ctlTitle).First(), dgvUDS.MasterTableView.Columns)
 
@@ -221,6 +229,10 @@ Public Class UDSResults
                 CreateElementColumn(element, newColumn, dgvUDS.MasterTableView.Columns)
             End If
         Next
+        If Not udsModel.Model.StampaConformeEnabled Then
+            btnDocuments.Enabled = False
+            btnDocuments.ToolTip = "Funzionalità disattivata come da configurazione prevista per l'archivio selezionato"
+        End If
     End Sub
 
     Private Sub CreateElementColumn(element As Element, column As GridTemplateColumn, gridColumns As GridColumnCollection)
@@ -291,49 +303,178 @@ Public Class UDSResults
             Dim categoryColumn As GridTemplateColumn = CType(gridColumns.FindByUniqueName("Category_FullSearchComputed"), GridTemplateColumn)
             categoryColumn.Visible = False
         End If
+
+        If Not element.showLastChangedDate Then
+            Dim lastChangedDateColumn As GridTemplateColumn = CType(gridColumns.FindByUniqueName("LastChangedDate"), GridTemplateColumn)
+            lastChangedDateColumn.Visible = False
+        End If
+
+        If Not element.showLastChangedUser Then
+            Dim lastChangedUserColumn As GridTemplateColumn = CType(gridColumns.FindByUniqueName("LastChangedUser"), GridTemplateColumn)
+            lastChangedUserColumn.Visible = False
+        End If
     End Sub
-    Private Sub CreateColumns(columns As GridColumnCollection, dataField As List(Of String), headerText As List(Of String))
-        For index As Integer = 0 To dataField.Count - 1
-            Dim column As GridBoundColumn = New GridBoundColumn()
-            column.DataField = dataField(index)
-            column.HeaderText = headerText(index)
-            columns.Add(column)
-        Next
-    End Sub
-    Private Function getDataSourceFromJson(dataSource As List(Of Dictionary(Of String, String))) As DataTable
-        Dim dataTable As DataTable = New DataTable()
-        For Each columnName As String In dataSource.First().Keys
-            dataTable.Columns.Add(New DataColumn(columnName))
-        Next
-        For Each row As Dictionary(Of String, String) In dataSource
-            dataTable.Rows.Add(row.Values.ToArray())
-        Next
-        Return dataTable
+
+    Private Function IsDate(ByRef input As String) As Boolean
+        If input Is Nothing Then
+            Return False
+        End If
+
+        '2019-02-01T11:46:53.0371985+00:00
+        If (input.Contains("T"c) Or input.Contains("t"c)) Then
+            Dim parts As String() = input.Split("T"c, "t"c)
+            Return parts.Any(Function(x) Regex.IsMatch(x, "^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])$"))
+        End If
+        Return False
     End Function
+
+    Private Function IsJsonArray(ByRef value As String) As Boolean
+
+        If value Is Nothing Then
+            Return False
+        End If
+
+        Return value.StartsWith("[") AndAlso value.EndsWith("]")
+    End Function
+
+    Private Function MaybeParse(ByRef input As KeyValuePair(Of String, String)) As Object
+        If IsDate(input.Value) Then
+            Dim parsed As DateTimeOffset
+            Dim succeded As Boolean = DateTimeOffset.TryParse(input.Value, parsed)
+
+            If (succeded) Then
+                'to LocalTime to get the correct offset
+                'Date.Parse because EPPlus does not now DateTimeOffset
+                Return Date.Parse(parsed.ToLocalTime().ToString())
+            End If
+        ElseIf IsJsonArray(input.Value) Then
+            Try
+                Dim billTypes As List(Of String) = JsonConvert.DeserializeObject(Of List(Of String))(input.Value)
+                Return String.Join(",", billTypes)
+            Catch ex As Exception
+                Return input.Value
+            End Try
+
+        End If
+
+        Return input.Value
+    End Function
+
+    Private Sub MaybeSetColumnStyle(column As ExcelColumn, colIndex As Integer, value As String)
+        'NOTE: formatting is made over the column once, but because the header names may change in prod
+        'we have to check cell contents for value format shape. In the colIndices list we keep a track over
+        'the already formatted columns to avoid formatting them twice
+        Static Dim formattedColIndices As New List(Of Integer)
+
+        If formattedColIndices.Contains(colIndex) Then
+            Return
+        End If
+
+        If IsDate(value) Then
+            column.Style.Numberformat.Format = "yyyy-mm-dd"
+            formattedColIndices.Add(colIndex)
+        Else
+            column.Style.Numberformat.Format = "@"
+            formattedColIndices.Add(colIndex)
+        End If
+    End Sub
+
     Public Sub ExportGrid(ignorePagining As Boolean)
-            Dim dataSource As List(Of Dictionary(Of String, String))
+        Dim dataSource As List(Of Dictionary(Of String, String))
 
-            If ignorePagining = False Then
-                dataSource = JsonConvert.DeserializeObject(Of List(Of Dictionary(Of String, String)))(dgvUDSItems)
-            Else
-                dataSource = JsonConvert.DeserializeObject(Of List(Of Dictionary(Of String, String)))(dgvUDSAllItems)
+        If ignorePagining = False Then
+            dataSource = JsonConvert.DeserializeObject(Of List(Of Dictionary(Of String, String)))(dgvUDSItems)
+        Else
+            dataSource = JsonConvert.DeserializeObject(Of List(Of Dictionary(Of String, String)))(dgvUDSAllItems)
+        End If
+
+        If dataSource.Count = 0 Then
+            Return
+        End If
+
+        Dim propertyNames As List(Of String) = New List(Of String)()
+        Dim headerNames As List(Of String) = New List(Of String)()
+
+        For Each item As String In dataSource(0).Keys.ToList()
+            propertyNames.Add(item)
+
+            If item.Eq("_year") Then
+                headerNames.Add("Anno")
+                Continue For
+            End If
+            If item.Eq("_number") Then
+                headerNames.Add("Numero")
+                Continue For
+            End If
+            If item.Eq("_subject") Then
+                headerNames.Add("Oggetto")
+                Continue For
+            End If
+            If item.Eq("RegistrationUser") Then
+                headerNames.Add("Creato da ")
+                Continue For
+            End If
+            If item.Eq("RegistrationDate") Then
+                headerNames.Add("Data Registrazione")
+                Continue For
+            End If
+            If item.Eq("LastChangedUser") Then
+                headerNames.Add("Modificato da")
+                Continue For
+            End If
+            If item.Eq("LastChangedDate") Then
+                headerNames.Add("Data Modifica")
+                Continue For
+            End If
+            headerNames.Add(item)
+        Next
+
+        Dim value As KeyValuePair(Of String, String)
+
+        Using package As ExcelPackage = New ExcelPackage
+            Dim worksheet As ExcelWorksheet = package.Workbook.Worksheets.Add("registro")
+
+            'create headers
+            For colIndex As Integer = 0 To headerNames.Count - 1
+                worksheet.Cells(1, colIndex + 1).Value = headerNames(colIndex)
+                worksheet.Cells(1, colIndex + 1).Style.Font.Bold = True
+                Dim propertyKey As String = propertyNames(colIndex)
+
+                For rowIndex As Integer = 0 To dataSource.Count - 1
+                    'get value
+                    value = dataSource(rowIndex).Where(Function(x) x.Key = propertyKey).FirstOrDefault()
+
+                    'create value
+                    If (value.Value IsNot Nothing) Then
+                        worksheet.Cells(rowIndex + 2, colIndex + 1).Value = MaybeParse(value)
+                        'formatting
+                        'https://stackoverflow.com/questions/40209636/epplus-number-format
+                        MaybeSetColumnStyle(worksheet.Column(colIndex + 1), colIndex + 1, value.Value)
+                    Else
+                        worksheet.Cells(rowIndex + 2, colIndex + 1).Value = String.Empty
+                    End If
+
+                Next
+            Next
+
+            Dim archiveTypeState As Object = Web.HttpContext.Current.Session.Item("Archive.Search.ArchiveType")
+            Dim fileName As String = "registro.xlsx"
+
+            If archiveTypeState IsNot Nothing Then
+                fileName = $"{CStr(archiveTypeState)}_{fileName}"
             End If
 
-            If dataSource.Count <> 0 Then
-                Dim headerTextList As List(Of String) = JsonConvert.DeserializeObject(Of List(Of String))(dgvColumns)
-                Dim dataFieldsList As List(Of String) = dataSource.First().Keys.ToList()
-                CreateColumns(intermediateGrid.MasterTableView.Columns, dataFieldsList, headerTextList)
 
-                intermediateGrid.Visible = True
-                intermediateGrid.DataSource = getDataSourceFromJson(dataSource)
-                intermediateGrid.DataBind()
-                intermediateGrid.ExportSettings.IgnorePaging = ignorePagining
-                intermediateGrid.ExportSettings.ExportOnlyData = True
-                intermediateGrid.ExportSettings.OpenInNewWindow = True
-                intermediateGrid.ExportSettings.FileName = "registro"
-                intermediateGrid.MasterTableView.ExportToExcel()
-            End If
-        End Sub
+            With System.Web.HttpContext.Current.Response
+                .Clear()
+                .ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                .AppendHeader("content-disposition", "attachment;  filename=" + fileName)
+                .BinaryWrite(package.GetAsByteArray())
+                .End() ' Sends all currently buffered output To the client.
+            End With
+
+        End Using
+    End Sub
 #End Region
 
 End Class

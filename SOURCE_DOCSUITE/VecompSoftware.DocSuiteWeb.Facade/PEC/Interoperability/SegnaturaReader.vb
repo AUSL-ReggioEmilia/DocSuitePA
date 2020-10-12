@@ -667,7 +667,7 @@ Public Class SegnaturaReader
         ' Se non GERARCHICA restituisco il primo nodo trovato
         ' Altrimenti restituisco quello di più basso livello con annessa gerarchia...
 
-        Dim tor As ContactDTO
+        Dim tor As ContactDTO = Nothing
 
         ' Cerco PERSONA
         Dim persona As Contact = GetMittente("Persona")

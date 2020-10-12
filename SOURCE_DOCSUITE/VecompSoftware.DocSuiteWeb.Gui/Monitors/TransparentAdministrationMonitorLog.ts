@@ -159,12 +159,12 @@ class TransparentAdministrationMonitorLog extends TransparentAdministrationMonit
             this._loadingPanel.hide(this.uscAmmTraspMonitorLogGridId);
     }
 
-    btnSearch_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnSearch_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         let uscAmmTraspMonitorLogGrid: UscAmmTraspMonitorLogGrid = <UscAmmTraspMonitorLogGrid>$("#".concat(this.uscAmmTraspMonitorLogGridId)).data();
         this.loadResults(uscAmmTraspMonitorLogGrid, 0);
     }
 
-    btnClean_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnClean_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.cleanSearchFilters();
     }
 

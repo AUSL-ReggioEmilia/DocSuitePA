@@ -107,8 +107,8 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/PECMails/
                 ;
             }, error);
         };
-        PECMailService.prototype.getOutgoingPECMail = function (pecMailYear, pecMailNumber, pecMailDirection, callback, error) {
-            var url = this._configuration.ODATAUrl + "?$filter=Year eq " + pecMailYear + " and Number eq " + pecMailNumber + " and Direction eq " + pecMailDirection + " and IsActive ne 'Processed'&$expand=PECMailReceipts";
+        PECMailService.prototype.getOutgoingPECMail = function (idDocumentUnit, pecMailDirection, callback, error) {
+            var url = this._configuration.ODATAUrl + "?$filter=DocumentUnit/UniqueId eq " + idDocumentUnit + " and Direction eq " + pecMailDirection + " and IsActive ne 'Processed'&$expand=PECMailReceipts";
             this.getRequest(url, null, function (response) {
                 if (callback && response) {
                     var modelMapper = new PECMailViewModelMapper();
@@ -119,8 +119,8 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/PECMails/
                 ;
             }, error);
         };
-        PECMailService.prototype.getIncomingPECMail = function (pecMailYear, pecMailNumber, pecMailDirection, callback, error) {
-            var url = this._configuration.ODATAUrl + "?$filter=Year eq " + pecMailYear + " and Number eq " + pecMailNumber + " and Direction eq " + pecMailDirection + "&$expand=PECMailReceipts";
+        PECMailService.prototype.getIncomingPECMail = function (idDocumentUnit, pecMailDirection, callback, error) {
+            var url = this._configuration.ODATAUrl + "?$filter=DocumentUnit/UniqueId eq " + idDocumentUnit + " and Direction eq " + pecMailDirection + "&$expand=PECMailReceipts";
             this.getRequest(url, null, function (response) {
                 if (callback && response) {
                     var modelMapper = new PECMailViewModelMapper();
@@ -131,9 +131,9 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/PECMails/
                 ;
             }, error);
         };
-        PECMailService.prototype.countIncomingPECMail = function (pecMailYear, pecMailNumber, pecMailDirection, callback, error) {
+        PECMailService.prototype.countIncomingPECMail = function (idDocumentUnit, pecMailDirection, callback, error) {
             var url = this._configuration.ODATAUrl;
-            var data = "/$count?$filter=Year eq " + pecMailYear + " and Number eq " + pecMailNumber + " and Direction eq " + pecMailDirection + "&$expand=PECMailReceipts";
+            var data = "/$count?$filter=DocumentUnit/UniqueId eq " + idDocumentUnit + " and Direction eq " + pecMailDirection + "&$expand=PECMailReceipts";
             url = "" + url + data;
             this.getRequest(url, null, function (response) {
                 if (callback) {
@@ -141,9 +141,9 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/PECMails/
                 }
             }, error);
         };
-        PECMailService.prototype.countOutgoingPECMail = function (pecMailYear, pecMailNumber, pecMailDirection, callback, error) {
+        PECMailService.prototype.countOutgoingPECMail = function (idDocumentUnit, pecMailDirection, callback, error) {
             var url = this._configuration.ODATAUrl;
-            var data = "/$count?$filter=Year eq " + pecMailYear + " and Number eq " + pecMailNumber + " and Direction eq " + pecMailDirection + " and IsActive ne 'Processed'&$expand=PECMailReceipts";
+            var data = "/$count?$filter=DocumentUnit/UniqueId eq " + idDocumentUnit + " and Direction eq " + pecMailDirection + " and IsActive ne 'Processed'&$expand=PECMailReceipts";
             url = "" + url + data;
             this.getRequest(url, null, function (response) {
                 if (callback) {
@@ -175,8 +175,8 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/PECMails/
                 ;
             }, error);
         };
-        PECMailService.prototype.getProtocolledPecMail = function (pecMailYear, pecMailNumber, callback, error) {
-            var url = this._configuration.ODATAUrl + "?$filter=Year eq " + pecMailYear + " and Number eq " + pecMailNumber + " &$expand=pecmailreceipts";
+        PECMailService.prototype.getProtocolledPecMail = function (idDocumentUnit, callback, error) {
+            var url = this._configuration.ODATAUrl + "?$filter=DocumentUnit/UniqueId eq " + idDocumentUnit + "&$expand=pecmailreceipts";
             this.getRequest(url, null, function (response) {
                 if (callback && response) {
                     var modelMapper = new PECMailViewModelMapper();
@@ -187,9 +187,9 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/PECMails/
                 ;
             }, error);
         };
-        PECMailService.prototype.countProtocolledPecMail = function (pecMailYear, pecMailNumber, callback, error) {
+        PECMailService.prototype.countProtocolledPecMail = function (idDocumentUnit, callback, error) {
             var url = this._configuration.ODATAUrl;
-            var data = "/$count?$filter=Year eq " + pecMailYear + " and Number eq " + pecMailNumber;
+            var data = "/$count?$filter=DocumentUnit/UniqueId eq " + idDocumentUnit;
             url = "" + url + data;
             this.getRequest(url, null, function (response) {
                 if (callback) {

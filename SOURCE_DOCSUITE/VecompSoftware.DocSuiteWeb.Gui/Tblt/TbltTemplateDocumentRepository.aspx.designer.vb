@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class TbltTemplateDocumentRepository
-    
+
     '''<summary>
     '''RadWindowManager control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManager As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowManageTemplate control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowManageTemplate As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowLogTemplate control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowLogTemplate As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''splPage control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents splPage As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''splContent control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents splContent As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''uscTemplateDocumentRepository control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscTemplateDocumentRepository As Global.VecompSoftware.DocSuiteWeb.Gui.uscTemplateDocumentRepository
-    
+
     '''<summary>
     '''pnlDetails control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDetails As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlInformations control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlInformations As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblObject control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblObject As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblVersion control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblVersion As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblStatus control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStatus As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblTags control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblTags As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblIdentifier control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblIdentifier As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''previewSplitter control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents previewSplitter As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''previewPane control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents previewPane As Global.Telerik.Web.UI.RadPane
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -156,58 +156,4 @@ Partial Public Class TbltTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
-    '''<summary>
-    '''pnlButtons control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
-    '''<summary>
-    '''btnAggiungi control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnAggiungi As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''btnModifica control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnModifica As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''btnElimina control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnElimina As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''btnLog control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnLog As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''btnVisualizza control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnVisualizza As Global.Telerik.Web.UI.RadButton
 End Class

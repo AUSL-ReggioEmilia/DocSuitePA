@@ -89,7 +89,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                 sender.get_attributes().setAttribute('currentFilter', args.get_text());
                 if ((otherFascicleCount == undefined || currentOtherFascicleItems < otherFascicleCount) && !updating) {
                     sender.get_attributes().setAttribute('updating', 'true');
-                    _this._fascicleService.getFascicleByCategory(_this.selectedCategoryId, args.get_text(), function (data) {
+                    _this._fascicleService.getFascicleByCategory(_this.selectedCategoryId, args.get_text(), null, function (data) {
                         try {
                             _this.refreshFascicles(data.value);
                             var scrollToPosition = args.get_domEvent() == undefined;

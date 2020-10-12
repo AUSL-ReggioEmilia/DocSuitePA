@@ -9,6 +9,7 @@ Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Templates
 Imports VecompSoftware.DocSuiteWeb.Entity.Templates
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports System.Collections.Generic
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 
 Partial Class CommIntro
     Inherits CommBasePage
@@ -28,6 +29,8 @@ Partial Class CommIntro
             Return _currentTemplateCollaborationFinder
         End Get
     End Property
+
+    Private Property ShowErrorPanel As Boolean
 #End Region
 
 #Region " Events "
@@ -62,26 +65,33 @@ Partial Class CommIntro
 
         Version.Text = String.Format("Versione {0}", GetDSWVersion())
         If CommonShared.HasGroupAdministratorRight Then
+            AddVersion("VecompSoftware.Clients.WebAPI")
+            AddVersion("VecompSoftware.Core.Command")
+            AddVersion("VecompSoftware.DocSuiteWeb.Entity")
+            AddVersion("VecompSoftware.DocSuiteWeb.Model")
             AddVersion("VecompSoftware.DocSuiteWeb.Data")
+            AddVersion("VecompSoftware.DocSuiteWeb.Data.Entity")
             AddVersion("VecompSoftware.DocSuiteWeb.Facade")
-            AddVersion("VecompSoftware.DocSuiteWeb.Presentation")
             AddVersion("VecompSoftware.Helpers")
+            AddVersion("VecompSoftware.Helpers.EInvoice")
             AddVersion("VecompSoftware.Helpers.NHibernate")
-            AddVersion("VecompSoftware.Helpers.Pdf")
+            AddVersion("VecompSoftware.Helpers.PDF")
             AddVersion("VecompSoftware.Helpers.Web")
             AddVersion("VecompSoftware.Helpers.Compress")
+            AddVersion("VecompSoftware.Helpers.XML")
+            AddVersion("VecompSoftware.Helpers.XML.Converters")
             AddVersion("VecompSoftware.NHibernateManager")
             AddVersion("VecompSoftware.Services.Biblos")
             AddVersion("VecompSoftware.Services.Logging")
-            AddVersion("VecompSoftware.Services.Sharepoint")
+            AddVersion("VecompSoftware.Services.Command")
             AddVersion("VecompSoftware.Services.StampaConforme")
-            AddVersion("VecompSoftware.Services.WebPublication")
+            AddVersion("VecompSoftware.Services.SignService")
         Else
             rowVersions.Visible = False
         End If
 
         ' Se presente imposto il logo aziendale
-        imgLogo.ImageUrl = "Images/home/VecompLogo.gif"
+        imgLogo.ImageUrl = "Images/home/docsuite-pa-blue.png"
         Try
             If File.Exists(CommonInstance.AppPath & "Comm\Images\Home\AziendaLogo.Gif") Then
                 imgLogo.ImageUrl = "Images/home/AziendaLogo.gif"
@@ -99,22 +109,36 @@ Partial Class CommIntro
         CheckTemplateCollaborationsToRecover()
         'Gestione attività di avanzamento flusso atti in errore
         CheckResolutionActivities()
+        'Gestione caselle pec in errore
+        CheckPecMailBoxes()
+
+        InitializeErrorPanel()
     End Sub
 
 #End Region
 
 #Region " Methods "
-
+    Private Sub InitializeErrorPanel()
+        panelSeparator.Visible = ShowErrorPanel
+        errorPanel.Visible = ShowErrorPanel
+        mainPanel.Width = If(ShowErrorPanel, Unit.Percentage(80), Unit.Percentage(100))
+    End Sub
     Private Sub AddVersion(name As String)
         Dim assembly As Assembly = Assembly.Load(name)
-        Dim lblName As New Label()
-        lblName.Text = assembly.GetName().Name.Replace("VecompSoftware.", String.Empty)
-        lblName.Width = 300
+        If assembly Is Nothing Then
+            Return
+        End If
+
+        Dim lblName As New Label With {
+            .Text = assembly.GetName().Name.Replace("VecompSoftware.", String.Empty),
+            .Width = 300
+        }
         phVersions.Controls.Add(lblName)
 
-        Dim lbl As New Label()
-        lbl.Text = String.Format("V. {0} Revision {1}", assembly.GetName().Version.ToString(3), assembly.GetName().Version.Revision)
-        lbl.Width = 120
+        Dim lbl As New Label With {
+            .Text = String.Format("V. {0} Revision {1}", assembly.GetName().Version.ToString(3), assembly.GetName().Version.Revision),
+            .Width = 180
+        }
         phVersions.Controls.Add(lbl)
     End Sub
 
@@ -137,6 +161,7 @@ Partial Class CommIntro
             lblRecoveringProtocols.Text = String.Format(String.Format("{0} in stato di errore ancora da gestire.<br/>Utilizzare la gestione ""Recupero Errori"" oppure cliccare su Correggi", howManyProtocols), protocolliErrati)
             lblRecoveringProtocols.Visible = True
             btnProtocolCorrect.Visible = True
+            ShowErrorPanel = True
         End If
     End Sub
 
@@ -146,13 +171,18 @@ Partial Class CommIntro
         End If
 
         Try
-            CurrentTemplateCollaborationFinder.ResetDecoration()
-            CurrentTemplateCollaborationFinder.Status = TemplateCollaborationStatus.NotActive
-            Dim templates As ICollection(Of WebAPIDto(Of TemplateCollaboration)) = CurrentTemplateCollaborationFinder.DoSearch()
+            Dim templates As ICollection(Of WebAPIDto(Of TemplateCollaboration)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentTemplateCollaborationFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.Status = TemplateCollaborationStatus.NotActive
+                        Return finder.DoSearch()
+                    End Function)
+
             If templates.Count > 0 Then
                 lblRecoveringTemplateCollaborations.Text = String.Format("Sono presenti {0} Template in stato di errore ancora da gestire.<br/>Cliccare su Correggi Template", templates.Count)
                 lblRecoveringTemplateCollaborations.Visible = True
                 btnTemplateCollaborationCorrects.Visible = True
+                ShowErrorPanel = True
             End If
         Catch ex As Exception
             FileLogger.Error(LoggerName, ex.Message, ex)
@@ -170,6 +200,22 @@ Partial Class CommIntro
             lblRecoverResolutionActivities.Text = String.Format(String.Format("{0} in stato di errore ancora da gestire.<br/>Cliccare su Vedi attività in errore.", howManyActivities), errorActivities)
             lblRecoverResolutionActivities.Visible = True
             btnRecoverResolutionActivities.Visible = True
+            ShowErrorPanel = True
+        End If
+    End Sub
+
+    Private Sub CheckPecMailBoxes()
+        If Not CommonShared.HasGroupAdministratorRight OrElse Not DocSuiteContext.Current.ProtocolEnv.IsPECEnabled Then
+            Exit Sub
+        End If
+
+        Dim loginErrors As Long = Facade.PECMailboxFacade.CountLoginErrorPECBoxes()
+        If loginErrors > 0 Then
+            Dim howManyErrors As String = If(loginErrors = 1, "È presente 1 casella pec ", "Sono presenti {0} caselle pec ")
+            lblPECMailBoxError.Text = String.Format(String.Format("{0} in stato di errore ancora da gestire.<br/>Cliccare su Vedi caselle pec in errore.", howManyErrors), loginErrors)
+            lblPECMailBoxError.Visible = True
+            btnPecMailBoxError.Visible = True
+            ShowErrorPanel = True
         End If
     End Sub
 

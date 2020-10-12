@@ -7,12 +7,8 @@ import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import DossierService = require('App/Services/Dossiers/DossierService');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import DossierSummaryViewModel = require('App/ViewModels/Dossiers/DossierSummaryViewModel');
-import DossierRoleModel = require('App/Models/Dossiers/DossierRoleModel');
 import DomainUserService = require('App/Services/Securities/DomainUserService');
 import DomainUserModel = require('App/Models/Securities/DomainUserModel');
-import ContactModel = require('App/Models/Commons/ContactModel');
-import RoleModel = require('App/Models/Commons/RoleModel');
-import AuthorizationRoleType = require('App/Models/Commons/AuthorizationRoleType');
 import DossierBase = require('Dossiers/DossierBase');
 import AjaxModel = require('App/Models/AjaxModel');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
@@ -24,7 +20,17 @@ import WorkflowAuthorization = require('App/Models/Workflows/WorkflowAuthorizati
 import WorkflowPropertyHelper = require('App/Models/Workflows/WorkflowPropertyHelper');
 import WorkflowRoleModelMapper = require('App/Mappers/Workflows/WorkflowRoleModelMapper');
 import WorkflowPropertyModel = require('App/Models/Workflows/WorkflowProperty');
-import UscDynamicMetadataSummaryClient = require('UserControl/uscDynamicMetadataSummaryClient');
+import UscDynamicMetadataSummaryRest = require('UserControl/uscDynamicMetadataSummaryRest');
+import uscRoleRest = require('uscRoleRest');
+import RoleModel = require('App/Models/Commons/RoleModel');
+import uscContattiSelRest = require('UserControl/uscContattiSelRest');
+import ContactModel = require('APP/Models/Commons/ContactModel');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import uscCategoryRest = require('UserControl/uscCategoryRest');
+import EnumHelper = require('App/Helpers/EnumHelper');
+import DossierType = require('App/Models/Dossiers/DossierType');
+import DossierStatus = require('App/Models/Dossiers/DossierStatus');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class uscDossier extends DossierBase {
 
@@ -44,9 +50,15 @@ class uscDossier extends DossierBase {
     lblWorkflowHandlerUserId: string;
     rowWorkflowProposerId: string;
     workflowActivityId: string;
-    uscDynamicMetadataSummaryClientId: string;
+    uscDynamicMetadataSummaryRestId: string;
     metadataRepositoryEnabled: boolean;
     rowMetadataId: string;
+    uscRoleRestId: string;
+    uscResponsableRoleRestId: string;
+    uscContattiSelRestId: string;
+    uscCategoryRestId: string;
+    lblDossierTypeId: string;
+    lblDossierStatusId: string;
 
     public static LOADED_EVENT: string = "onLoaded";
     public static DATA_LOADED_EVENT: string = "onDataLoaded"
@@ -70,6 +82,12 @@ class uscDossier extends DossierBase {
     private _workflowActivity: WorkflowActivityModel;
     private _uscNotification: UscErrorNotification;
     private _rowMetadataRepository: JQuery;
+    private _uscRoleRest: uscRoleRest;
+    private _uscResponsableRoleRest: uscRoleRest;
+    private _uscContattiSelRest: uscContattiSelRest;
+    private _lblDossierType: JQuery;
+    private _lblDossierStatus: JQuery;
+    private _enumHelper: EnumHelper;
 
     /**
     * Costruttore
@@ -87,6 +105,7 @@ class uscDossier extends DossierBase {
     */
     initialize() {
 
+        this._enumHelper = new EnumHelper();
         this._lblDossierSubject = $("#".concat(this.lblDossierSubjectId));
         this._lblStartDate = $("#".concat(this.lblStartDateId));
         this._lblRegistrationUser = $("#".concat(this.lblRegistrationUserId));
@@ -99,9 +118,18 @@ class uscDossier extends DossierBase {
         this._lblWorkflowHandlerUser = $("#".concat(this.lblWorkflowHandlerUserId));
         this._ajaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
+        this._lblDossierType = $(`#${this.lblDossierTypeId}`);
+        this._lblDossierStatus = $(`#${this.lblDossierStatusId}`);
+
         this._loadingPanel.show(this.pageId);
         this._rowMetadataRepository = $("#".concat(this.rowMetadataId));
         this._rowMetadataRepository.hide();
+        $(`#${this.uscCategoryRestId}`).hide();
+
+        this._uscRoleRest = <uscRoleRest>$(`#${this.uscRoleRestId}`).data();
+        this._uscResponsableRoleRest = <uscRoleRest>$(`#${this.uscResponsableRoleRestId}`).data();
+        this._uscContattiSelRest = <uscContattiSelRest>$(`#${this.uscContattiSelRestId}`).data();
+
         let domainUserConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DomainUserModel");
         this._domainUserService = new DomainUserService(domainUserConfiguration);
 
@@ -128,6 +156,52 @@ class uscDossier extends DossierBase {
     */
     loadData(dossier: DossierSummaryViewModel): void {
         if (dossier == null) return;
+        let roles: RoleModel[] = [];
+        let responsableRole: RoleModel[] = [];
+
+        for (let role of dossier.Roles) {
+            let newRole: RoleModel = <RoleModel>{
+                UniqueId: role.UniqueId,
+                Name: role.Name,
+                EntityShortId: role.EntityShortId
+            }
+
+            if (role.IsMaster == true) {
+                responsableRole.push(newRole);
+            } else {
+                roles.push(newRole);
+            }
+        }
+
+        this._uscResponsableRoleRest.renderRolesTree(responsableRole);
+
+
+        if (roles.length == 0) {
+            $(`#${this.uscRoleRestId}`).hide();
+        } else {
+            this._uscRoleRest.renderRolesTree(roles);
+        }
+
+
+        let contacts: ContactModel[] = [];
+        for (let contact of dossier.Contacts) {
+            let newContact: ContactModel = <ContactModel>{
+                UniqueId: contact.UniqueId,
+                EntityId: contact.EntityShortId,
+                Description: contact.Name,
+                IdContactType: contact.Type,
+                IncrementalFather: contact.IncrementalFather
+            };
+            contacts.push(newContact);
+        }
+        this._uscContattiSelRest.renderContactsTree(contacts);
+
+        if (dossier.Category.IdParent) {
+            $(`#${this.uscCategoryRestId}`).show();
+            let uscCategoryRest: uscCategoryRest = <uscCategoryRest>$(`#${this.uscCategoryRestId}`).data();
+            uscCategoryRest.setToolbarVisibilityButtons();
+            uscCategoryRest.populateCategotyTree(dossier.Category);
+        }
 
         this._domainUserService.getUser(dossier.RegistrationUser,
             (user: DomainUserModel) => {
@@ -154,14 +228,15 @@ class uscDossier extends DossierBase {
             );
         }
 
-        if (this.metadataRepositoryEnabled && dossier.JsonMetadata) {
+        if (this.metadataRepositoryEnabled && dossier.MetadataDesigner) {
             this._rowMetadataRepository.show();
-            let uscDynamicMetadataSummaryClient: UscDynamicMetadataSummaryClient = <UscDynamicMetadataSummaryClient>$("#".concat(this.uscDynamicMetadataSummaryClientId)).data();
-            if (!jQuery.isEmptyObject(uscDynamicMetadataSummaryClient)) {
-                uscDynamicMetadataSummaryClient.loadMetadatas(dossier.JsonMetadata);
-                sessionStorage.setItem("CurrentMetadataValues", dossier.JsonMetadata);
+            let uscDynamicMetadataSummaryRest: UscDynamicMetadataSummaryRest = <UscDynamicMetadataSummaryRest>$("#".concat(this.uscDynamicMetadataSummaryRestId)).data();
+            if (!jQuery.isEmptyObject(uscDynamicMetadataSummaryRest)) {
+                uscDynamicMetadataSummaryRest.loadMetadatas(dossier.MetadataDesigner, dossier.MetadataValues);
+                sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_CURRENT_METADATA_VALUES, dossier.MetadataDesigner);
             }
         }
+        this.hideLoadingPanel();
     }
 
     /**
@@ -175,6 +250,8 @@ class uscDossier extends DossierBase {
         this._lblNumber.html(dossier.Number);
         this._lblContainer.html(dossier.ContainerName);
         this._lblStartDate.html(dossier.FormattedStartDate);
+        this._lblDossierType.html(this._enumHelper.getDossierTypeDescription(dossier.DossierType));
+        this._lblDossierStatus.html(this._enumHelper.getDossierStatusDescription(dossier.Status));
 
         this._lblWorkflowHandlerUser.html("");
         this._lblWorkflowProposerRole.html("");
@@ -249,10 +326,6 @@ class uscDossier extends DossierBase {
     private bindLoaded(): void {
         $("#".concat(this.pageId)).data(this);
         $("#".concat(this.pageId)).triggerHandler(uscDossier.LOADED_EVENT);
-    }
-
-    loadExternalDataCallback(): void {
-        this.hideLoadingPanel();
     }
 
     /**

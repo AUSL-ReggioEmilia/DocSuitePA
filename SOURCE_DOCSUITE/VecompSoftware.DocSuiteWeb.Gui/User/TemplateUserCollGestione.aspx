@@ -17,6 +17,7 @@
                     templateUserCollGestione.btnConfirmUniqueId = "<%= btnConfirm.UniqueID %>";
                     templateUserCollGestione.btnPublishUniqueId = "<%= btnPublish.UniqueID %>";
                     templateUserCollGestione.pnlMainPanelId = "<%= pnlMainPanel.ClientID %>";
+                    templateUserCollGestione.pnlDocumentUnitDraftId = "<%= pnlDocumentUnitDraft.ClientID %>";
                     templateUserCollGestione.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>";
                     templateUserCollGestione.ajaxFlatLoadingPanelId = "<%= MasterDocSuite.AjaxFlatLoadingPanel.ClientID%>";
                     templateUserCollGestione.ajaxManagerId = "<%= MasterDocSuite.AjaxManager.ClientID %>";
@@ -33,6 +34,11 @@
                     templateUserCollGestione.pnlButtonsId = "<%= pnlButtons.ClientID %>";
                     templateUserCollGestione.selectSignerOrderId = "<%= selectSignerOrder.ClientID %>";
                     templateUserCollGestione.deletableSignerId = "<%= deletableSigner.ClientID %>";
+                    templateUserCollGestione.chkDocumentUnitDraftEnabledId = "<%= chkDocumentUnitDraftEnabled.ClientID %>";
+                    templateUserCollGestione.chkSecretaryViewRightEnabledId = "<%= chkSecretaryViewRightEnabled.ClientID %>";
+                    templateUserCollGestione.chkPopupDocumentNotSignedAlertEnabledId = "<%= chkPopupDocumentNotSignedAlertEnabled.ClientID %>";
+                    templateUserCollGestione.chkBtnCheckoutEnabledId = "<%= chkBtnCheckoutEnabled.ClientID %>";
+                    templateUserCollGestione.rowDocumentUnitDraftId = "<%= rowDocumentUnitDraft.ClientID %>";
                     templateUserCollGestione.btnDeleteId = "<%= btnDelete.ClientID %>";
                     templateUserCollGestione.radWindowManagerId = "<%= MasterDocSuite.DefaultWindowManager.ClientID %>";
                     templateUserCollGestione.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
@@ -60,7 +66,7 @@
                 </td>
                 <td>
                     <telerik:RadDropDownList AutoPostBack="false" ID="ddlDocumentType" runat="server" />
-                    <asp:RequiredFieldValidator ControlToValidate="ddlDocumentType" Display="Dynamic" ErrorMessage="Campo Tipologia Documento Obbligatorio" ID="rfvDocumentType" runat="server" />
+                    <asp:RequiredFieldValidator ControlToValidate="ddlDocumentType" Display="Dynamic" ErrorMessage="Campo Tipologia Documento obbligatorio" ID="rfvDocumentType" runat="server" />
                 </td>
             </tr>
             <tr id="specificTypeRow" style="display: none;">
@@ -80,13 +86,13 @@
                     </asp:RadioButtonList>
                 </td>
             </tr>
-            <tr style="visibility:collapse">
+            <tr style="visibility: collapse">
                 <td class="label col-dsw-2">Firmatari eliminabili:</td>
                 <td>
                     <asp:CheckBox runat="server" ID="deletableSigner" />
                 </td>
             </tr>
-            <tr style="visibility:collapse">
+            <tr style="visibility: collapse">
                 <td class="label col-dsw-2">Firmatari aggiunti in testa:</td>
                 <td>
                     <asp:CheckBox runat="server" ID="selectSignerOrder" />
@@ -197,6 +203,37 @@
                 </td>
             </tr>
         </table>
+        <asp:Panel runat="server" ID="pnlDocumentUnitDraft">
+            <table class="datatable">
+                <tr>
+                    <th colspan="2">Opzioni</th>
+                </tr>
+                <tr id="rowDocumentUnitDraft" runat="server">
+                    <td class="label col-dsw-2">Abilita bozza unità documentale:</td>
+                    <td class="col-dsw-8">
+                        <asp:CheckBox runat="server" ID="chkDocumentUnitDraftEnabled" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label col-dsw-2">Abilita visualizzazione documenti alle segreterie:</td>
+                    <td class="col-dsw-8">
+                        <asp:CheckBox runat="server" ID="chkSecretaryViewRightEnabled" Checked="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label col-dsw-2">Abilita avviso pop up per documenti non firmati:</td>
+                    <td class="col-dsw-8">
+                        <asp:CheckBox runat="server" ID="chkPopupDocumentNotSignedAlertEnabled" Checked="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label col-dsw-2">Abilita pulsanti di checkin/checkout:</td>
+                    <td class="col-dsw-8">
+                        <asp:CheckBox runat="server" ID="chkBtnCheckoutEnabled" Checked="true" />
+                    </td>
+                </tr>
+            </table>
+        </asp:Panel>
     </div>
 </asp:Content>
 

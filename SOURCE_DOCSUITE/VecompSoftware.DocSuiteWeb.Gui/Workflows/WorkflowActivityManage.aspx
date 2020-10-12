@@ -41,7 +41,10 @@
 
                     new ResizeSensor($(".details-template")[0], function () {
                         var height = $(".details-template").height() - 4;
-                        $("#<%= pnlDocumentUnitSelect.ClientID %>").height(height);
+
+                        if (height > 0) {
+                            $("#gesticiPanelId").height(height);
+                        }
                     });
                 });
             });
@@ -165,7 +168,7 @@
                                         <Columns>
                                             <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding t-col-right-padding" ID="panelDocumentUnitSelect" runat="server">
                                                 <asp:Panel runat="server" ID="pnlDocumentUnitSelect">
-                                                    <div class="dsw-panel" style="height: 100px;">
+                                                    <div class="dsw-panel" style="margin-bottom: 0px;" id="gesticiPanelId">
                                                         <div class="dsw-panel-title">
                                                             Gestisci in
                                                         </div>
@@ -180,7 +183,7 @@
                                                     </div>
                                                 </asp:Panel>
                                             </telerik:LayoutColumn>
-                                            <telerik:LayoutColumn Span="8" CssClass="  t-col-left-padding t-col-right-padding" ID="panelManage" runat="server">
+                                            <telerik:LayoutColumn Span="8" CssClass="  t-col-left-padding t-col-right-padding  details-template" ID="panelManage" runat="server">
                                                 <asp:Panel runat="server" ID="pnlUDS" Style="display: none;">
                                                     <div class="dsw-panel" style="height: 100px;">
                                                         <div class="dsw-panel-title">

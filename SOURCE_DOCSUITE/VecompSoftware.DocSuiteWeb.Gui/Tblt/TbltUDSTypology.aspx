@@ -65,8 +65,8 @@
                         </telerik:RadToolBar>
                         <telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%">
                         <Items>
-                            <telerik:RadToolBarButton ToolTip="Aggiungi" Value="create" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
-                            <telerik:RadToolBarButton ToolTip="Modifica" Value="modify" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />                     
+                            <telerik:RadToolBarButton ToolTip="Aggiungi" Value="create" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+                            <telerik:RadToolBarButton ToolTip="Modifica" Value="modify" Text="Modifica" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />                     
                         </Items>
                     </telerik:RadToolBar>
                         

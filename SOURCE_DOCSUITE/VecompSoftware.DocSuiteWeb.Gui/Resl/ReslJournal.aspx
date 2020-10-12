@@ -78,7 +78,7 @@
                     <telerik:GridBoundColumn AllowFiltering="false" DataField="SignDate" HeaderText="Data ultima firma" UniqueName="SignDate" />
                 </Columns>
             </MasterTableView>
-            <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente" SortToolTip="Ordina" />
+            <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente" SortToolTip="Ordina" />
             <ClientSettings AllowDragToGroup="True" AllowGroupExpandCollapse="True">
                 <Selecting AllowRowSelect="true" />
             </ClientSettings>

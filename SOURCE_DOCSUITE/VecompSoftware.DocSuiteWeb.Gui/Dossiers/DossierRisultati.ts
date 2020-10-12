@@ -4,6 +4,7 @@ import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import UscDossierGrid = require('UserControl/uscDossierGrid');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class DossierRisultati extends DossierBase {
 
@@ -60,35 +61,37 @@ class DossierRisultati extends DossierBase {
     private loadResults(uscDossierGrid: UscDossierGrid, skip: number) {
         let top: number = skip + uscDossierGrid.getGridPageSize();
 
-        let filter: string = sessionStorage.getItem("DossierSearch");
+        let filter: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIER_SEARCH);
         let dossierSearchFilter: DossierSearchFilterDTO;
         if (filter) {
             dossierSearchFilter = <DossierSearchFilterDTO>JSON.parse(filter);
         }
 
-        this.service.getDossiers(skip, top, dossierSearchFilter,
-            (data) => {
-                if (!data) return;
-                uscDossierGrid.setDataSource(data);
+        dossierSearchFilter.Skip = skip;
+        dossierSearchFilter.Top = top;
 
-                this.service.countDossiers(dossierSearchFilter,
-                    (data) => {
-                        if (data == undefined) return;
-                        uscDossierGrid.setItemCount(data);
-                        this._loadingPanel.hide(this.uscDossierGridId);
-                    },
-                    (exception: ExceptionDTO) => {
-                        this._loadingPanel.hide(this.uscDossierGridId);
-                        $("#".concat(this.uscDossierGridId)).hide();
-                        this.showNotificationException(this.uscNotificationId, exception);
-                    }
-                );
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.uscDossierGridId);
-                $("#".concat(this.uscDossierGridId)).hide();
-                this.showNotificationException(this.uscNotificationId, exception);
-            });
+        this.service.getAuthorizedDossiers(dossierSearchFilter, (data) => {
+            if (!data) return;
+            uscDossierGrid.setDataSource(data);
+
+            this.service.countAuthorizedDossiers(dossierSearchFilter,
+                (data) => {
+                    if (data == undefined) return;
+                    uscDossierGrid.setItemCount(data);
+                    this._loadingPanel.hide(this.uscDossierGridId);
+                },
+                (exception: ExceptionDTO) => {
+                    this._loadingPanel.hide(this.uscDossierGridId);
+                    $("#".concat(this.uscDossierGridId)).hide();
+                    this.showNotificationException(this.uscNotificationId, exception);
+                }
+            );
+        },
+        (exception: ExceptionDTO) => {
+            this._loadingPanel.hide(this.uscDossierGridId);
+            $("#".concat(this.uscDossierGridId)).hide();
+            this.showNotificationException(this.uscNotificationId, exception);
+        });
     }
 }
 export = DossierRisultati;

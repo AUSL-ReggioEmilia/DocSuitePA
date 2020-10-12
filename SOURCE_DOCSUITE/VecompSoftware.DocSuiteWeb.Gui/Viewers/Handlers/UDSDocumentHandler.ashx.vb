@@ -41,7 +41,7 @@ Namespace Viewers.Handlers
         Public ReadOnly Property UDSLogFacade As WebApiFacade.UDSLogFacade
             Get
                 If _udsLogFacade Is Nothing Then
-                    _udsLogFacade = New WebApiFacade.UDSLogFacade(DocSuiteContext.Current.Tenants)
+                    _udsLogFacade = New WebApiFacade.UDSLogFacade(DocSuiteContext.Current.Tenants, Nothing)
                 End If
                 Return _udsLogFacade
             End Get

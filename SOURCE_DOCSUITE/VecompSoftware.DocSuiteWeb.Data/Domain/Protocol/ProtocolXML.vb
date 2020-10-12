@@ -160,7 +160,7 @@ Public Class ProtocolXML
         End Set
     End Property
 
-    <XmlArray("WorkflowMetadatas")>
+    <XmlArray("WorkflowMetadatas"), XmlArrayItem("WorkflowMetadata")>
     Public Property WorkflowMetadatas() As List(Of WorkflowMetadataXml)
 
     Public Function GetProtocol() As Protocol

@@ -11,7 +11,8 @@ Imports VecompSoftware.Helpers.Compress
 Public Class CommExport
     Inherits BaseCommExport
 
-    Public Shared Function InitializeExportTask(listID As IList(Of YearNumberCompositeKey)) As String
+    Private _protocolIds As IList(Of Guid)
+    Public Shared Function InitializeExportTask(listID As IList(Of Guid)) As String
 
         If listID.Count <= 0 Then
             Return "Nessun protocollo selezionato"
@@ -56,17 +57,17 @@ Public Class CommExport
         End If
         Return String.Empty
     End Function
-    Public Function ExportDocuments(ByVal ListID As IList(Of YearNumberCompositeKey)) As Boolean
-        _listId = ListID
+    Public Function ExportDocuments(ByVal ids As IList(Of Guid)) As Boolean
+        _protocolIds = ids
 
-        If _listId.Count > 0 Then
+        If _protocolIds.Count > 0 Then
             CommonUtil.SaveThreadContext()
 
             _exported = 0
             _errors = 0
             Dim task As MultiStepLongRunningTask = GlobalAsax.LongRunningTask
             task.TaskUser = DocSuiteContext.Current.User.UserName
-            task.StepsCount = _listId.Count
+            task.StepsCount = _protocolIds.Count
             task.SetCurrentFileName = New MultiStepLongRunningTask.SetCurrentFileNameDelegate(AddressOf SetCurrentYearNumber)
             task.TaskToExecute = New MultiStepLongRunningTask.TaskToExec(AddressOf ExportProtocolDocument)
             task.RunTask()
@@ -112,43 +113,38 @@ Public Class CommExport
     End Sub
 
     Private Sub ExportProtocolDocument(ByVal CurrentStep As Integer)
-        Dim protocolId As YearNumberCompositeKey = _listId(CurrentStep)
-        If protocolId IsNot Nothing Then
-            Dim prot As Protocol = FacadeFactory.Instance.ProtocolFacade.GetById(protocolId)
-            If prot.IdDocument.HasValue Then
-                ExportMainDocument(prot)
+        Dim protocolId As Guid = _protocolIds(CurrentStep)
+        Dim prot As Protocol = FacadeFactory.Instance.ProtocolFacade.GetById(protocolId)
+        If prot.IdDocument.HasValue Then
+            ExportMainDocument(prot)
 
-                'Esporto gli allegati
-                If prot.IdAttachments.HasValue AndAlso prot.IdAttachments.Value > 0 Then
-                    ExportProtocolAttachments(prot)
-                End If
+            'Esporto gli allegati
+            If prot.IdAttachments.HasValue AndAlso prot.IdAttachments.Value > 0 Then
+                ExportProtocolAttachments(prot)
+            End If
 
-                If Not prot.IdAnnexed.Equals(Guid.Empty) Then
-                    ExportProtocolAnnexed(prot)
-                End If
+            If Not prot.IdAnnexed.Equals(Guid.Empty) Then
+                ExportProtocolAnnexed(prot)
             End If
         End If
     End Sub
 
     Private Sub ExportMainDocument(prot As Protocol)
-        Dim server As String = prot.Location.DocumentServer
         Dim archive As String = prot.Location.ProtBiblosDSDB
-        Dim doc As BiblosDocumentInfo = New BiblosDocumentInfo(server, archive, prot.IdDocument.Value)
+        Dim doc As BiblosDocumentInfo = New BiblosDocumentInfo(archive, prot.IdDocument.Value)
         ExportDocuments(prot, New List(Of BiblosDocumentInfo) From {doc}, "P")
     End Sub
 
     Private Sub ExportProtocolAttachments(prot As Protocol)
-        Dim server As String = prot.Location.DocumentServer
         Dim archive As String = prot.Location.ProtBiblosDSDB
         Dim idAttachments As Integer = prot.IdAttachments.Value
-        Dim attachments As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(server, archive, idAttachments)
+        Dim attachments As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(archive, idAttachments)
         ExportDocuments(prot, attachments, "P-ALL")
     End Sub
 
     Private Sub ExportProtocolAnnexed(prot As Protocol)
-        Dim server As String = prot.Location.DocumentServer
         Dim idAnnexed As Guid = prot.IdAnnexed
-        Dim annexed As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(server, idAnnexed)
+        Dim annexed As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(idAnnexed)
         ExportDocuments(prot, annexed, "P-ANX")
     End Sub
 
@@ -160,11 +156,11 @@ Public Class CommExport
     ''' <returns>Nome del file</returns>
     Private Function SetCurrentYearNumber(ByVal currentStep As Integer) As String
 
-        If (currentStep < 0 Or currentStep > _listId.Count - 1) Then
+        If (currentStep < 0 Or currentStep > _protocolIds.Count - 1) Then
             Return String.Empty
         End If
 
-        Return _listId(currentStep).ToString()
+        Return _protocolIds(currentStep).ToString()
 
     End Function
 

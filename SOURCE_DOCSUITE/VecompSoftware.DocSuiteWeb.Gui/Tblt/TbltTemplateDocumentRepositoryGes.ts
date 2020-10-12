@@ -73,7 +73,7 @@ class TbltTemplateDocumentRepositoryGes {
    * @param eventArgs
    * @returns
    */
-    btnConfirm_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnConfirm_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         if (Page_IsValid) {
             this.showLoadingPanel(this.pnlMetadataId);
             this.showFlatLoadingPanel();
@@ -89,7 +89,7 @@ class TbltTemplateDocumentRepositoryGes {
      * @param eventArgs
      * @returns
      */
-    btnPublish_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnPublish_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         if (Page_IsValid) {
             this.showLoadingPanel(this.pnlMetadataId);
             this.showFlatLoadingPanel();

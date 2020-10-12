@@ -27,7 +27,7 @@ Public Class ProtCollegamenti
     Private Sub InitializeMail()
         If DocSuiteContext.Current.ProtocolEnv.EnableButtonLinkProtocolSend Then
             btnMail.Visible = True
-            MailFacade.RegisterOpenerMailWindow(btnMail, MailFacade.CreateProtocolLinkMailParameters(CurrentProtocolYear, CurrentProtocolNumber, btnMail.ID))
+            MailFacade.RegisterOpenerMailWindow(btnMail, MailFacade.CreateProtocolLinkMailParameters(CurrentProtocol.Id, btnMail.ID))
         End If
     End Sub
 
@@ -61,31 +61,29 @@ Public Class ProtCollegamenti
         Dim Right As Boolean = False
 
         ' Inizializza menu contestuale
-        If DocSuiteContext.IsFullApplication Then
-            Dim menuItemAdd As RadMenuItem = ContextMenuCollegamenti.FindItemByValue("Add")
-            Dim menuItemAddCurrentProtocol As RadMenuItem = ContextMenuCollegamentiCurrentProtocollo.FindItemByValue("Add")
-            Dim menuItemDelete As RadMenuItem = ContextMenuCollegamenti.FindItemByValue("Delete")
+        Dim menuItemAdd As RadMenuItem = ContextMenuCollegamenti.FindItemByValue("Add")
+        Dim menuItemAddCurrentProtocol As RadMenuItem = ContextMenuCollegamentiCurrentProtocollo.FindItemByValue("Add")
+        Dim menuItemDelete As RadMenuItem = ContextMenuCollegamenti.FindItemByValue("Delete")
 
-            Right = CurrentProtocolRights.IsLinkable
+        Right = CurrentProtocolRights.IsLinkable
 
-            If Right Then
-                ' Menu contestuale aggiungi
-                menuItemAdd.Enabled = True
-                menuItemAdd.Visible = True
-                menuItemAddCurrentProtocol.Enabled = True
-                menuItemAddCurrentProtocol.Visible = True
-                ' Menu contestuale delete
-                menuItemDelete.Enabled = True
-                menuItemDelete.Visible = True
-            Else
-                ' nasconde le voci del menu contestuale
-                menuItemAdd.Enabled = True
-                menuItemAdd.Visible = True
-                menuItemAddCurrentProtocol.Enabled = False
-                menuItemAddCurrentProtocol.Visible = False
-                menuItemDelete.Enabled = False
-                menuItemDelete.Visible = False
-            End If
+        If Right Then
+            ' Menu contestuale aggiungi
+            menuItemAdd.Enabled = True
+            menuItemAdd.Visible = True
+            menuItemAddCurrentProtocol.Enabled = True
+            menuItemAddCurrentProtocol.Visible = True
+            ' Menu contestuale delete
+            menuItemDelete.Enabled = True
+            menuItemDelete.Visible = True
+        Else
+            ' nasconde le voci del menu contestuale
+            menuItemAdd.Enabled = True
+            menuItemAdd.Visible = True
+            menuItemAddCurrentProtocol.Enabled = False
+            menuItemAddCurrentProtocol.Visible = False
+            menuItemDelete.Enabled = False
+            menuItemDelete.Visible = False
         End If
 
         If tvwProtocolLink.Nodes(0).Nodes.Count > 0 Then
@@ -118,10 +116,12 @@ Public Class ProtCollegamenti
             childNode.ImageUrl = iconRemove
         End If
         childNode.Value = protocol.Id.ToString()
-        If protocol.ProtocolLinked.Count > 0 Then
+        childNode.Attributes.Add("Year", protocol.Year.ToString())
+        childNode.Attributes.Add("Number", protocol.Number.ToString())
+        If protocol.ProtocolLinks.Count > 0 Then
             childNode.ExpandMode = TreeNodeExpandMode.ClientSide
         End If
-        childNode.Font.Bold = (protocol.Year = CurrentProtocolYear And protocol.Number = CurrentProtocolNumber)
+        childNode.Font.Bold = protocol.Id = CurrentProtocol.Id
         childNode.Expanded = True
         ' Menu contestuale
         childNode.ContextMenuID = "ContextMenuCollegamenti"
@@ -140,19 +140,17 @@ Public Class ProtCollegamenti
             vProtocol = CurrentProtocol
         Else
             ' Protocolli figli
-            Dim vId As Array = Split(vFather.Value, "/")
-            Dim vYear As Short = Short.Parse(vId(0))
-            Dim vNumber As Integer = Integer.Parse(vId(1))
-            vProtocol = Facade.ProtocolFacade.GetById(vYear, vNumber, False)
+            Dim parentId As Guid = Guid.Parse(vFather.Value)
+            vProtocol = Facade.ProtocolFacade.GetById(parentId, False)
         End If
         Dim vNode As RadTreeNode = Nothing
         ' Aggiunge i protocolli come nodi del treeview
-        If vProtocol.ProtocolLinked.Count > 0 Then
-            For Each link As Protocol In vProtocol.ProtocolLinked
-                vNode = CreateNode(link)
+        If vProtocol.ProtocolLinks.Count > 0 Then
+            For Each link As ProtocolLink In vProtocol.ProtocolLinks
+                vNode = CreateNode(link.ProtocolLinked)
                 'Se il nodo è già stato inserito allora va in errore
                 If nodeList.Find(Function(value As RadTreeNode) value.Value = vNode.Value) IsNot Nothing Then
-                    Throw New DocSuiteException("Rilevato collegamento circolare tra protocolli", String.Format("La pagina dei collegamenti è stata bloccata per la rilevazione di collegamenti circolari. Contattare l'assistenza e richiedere la verifica del protocollo {0}/{1}", CurrentProtocolYear, Right("0000000" & CurrentProtocolNumber, 7)), Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
+                    Throw New DocSuiteException("Rilevato collegamento circolare tra protocolli", $"La pagina dei collegamenti è stata bloccata per la rilevazione di collegamenti circolari. Contattare l'assistenza e richiedere la verifica del protocollo {CurrentProtocol.FullNumber}", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
                 End If
                 If Not vNode Is Nothing Then
                     vFather.Nodes.Add(vNode)
@@ -166,10 +164,11 @@ Public Class ProtCollegamenti
     End Sub
 
     Private Sub GetRootProtocols(ByVal sonProtocol As Protocol, ByRef rooList As IList(Of Protocol))
-        If sonProtocol.ProtocolLinkedTo.Count > 0 Then
-            For Each fatherProt As Protocol In sonProtocol.ProtocolLinkedTo
-                If fatherProt.Year > sonProtocol.Year OrElse (fatherProt.Year = sonProtocol.Year AndAlso fatherProt.Number > sonProtocol.Number) Then
-                    GetRootProtocols(fatherProt, rooList)
+        If sonProtocol.ProtocolParentLinks.Count > 0 Then
+            For Each parentLink As ProtocolLink In sonProtocol.ProtocolParentLinks
+                Dim fatherProtocol As Protocol = parentLink.Protocol
+                If fatherProtocol.Year > sonProtocol.Year OrElse (fatherProtocol.Year = sonProtocol.Year AndAlso fatherProtocol.Number > sonProtocol.Number) Then
+                    GetRootProtocols(fatherProtocol, rooList)
                 Else
                     rooList.Add(sonProtocol)
                 End If
@@ -210,19 +209,17 @@ Public Class ProtCollegamenti
         Dim vProtocol As Protocol
         Dim vParentNode As RadTreeNode = node.ParentNode
         If Not String.IsNullOrEmpty(vParentNode.Value) Then
-            ' Anno protocollo
-            Dim vId As Array = Split(vParentNode.Value, "/")
-            Dim vYear As Short = Short.Parse(vId(0))
-            ' Numero protocollo
-            Dim vNumber As Integer = Integer.Parse(vId(1))
-            vProtocol = Facade.ProtocolFacade.GetById(vYear, vNumber, False)
+            Dim parentId As Guid = Guid.Parse(vParentNode.Value)
+            vProtocol = Facade.ProtocolFacade.GetById(parentId, False)
             ' Se esiste il protocollo, elimina il collegamento al protocollo selezionato
             If vProtocol IsNot Nothing Then
-                For Each p As Protocol In vProtocol.ProtocolLinked
-                    If p.Id.ToString() = node.Value Then
+                Dim linkProtocol As Protocol
+                For Each pl As ProtocolLink In vProtocol.ProtocolLinks
+                    linkProtocol = pl.ProtocolLinked
+                    If linkProtocol.Id.ToString() = node.Value Then
                         ' Elimina il collegamento al protocollo
-                        Facade.ProtocolFacade.RemoveProtocolLink(vProtocol, p)
-                        vProtocol.ProtocolLinked.Remove(p)
+                        Facade.ProtocolFacade.RemoveProtocolLink(vProtocol, linkProtocol)
+                        vProtocol.ProtocolLinks.Remove(pl)
                         ' Aggiorna il treeview
                         vParentNode.Nodes.Clear()
                         LoadNodes(vParentNode, New List(Of RadTreeNode)())
@@ -243,15 +240,9 @@ Public Class ProtCollegamenti
     Private Sub ViewProtocol(ByVal node As RadTreeNode)
         ' Se un protocollo è selezionato lo visualizza
         If node IsNot Nothing Then
-            Dim vId As Array = Split(node.Value, "/")
-            ' Anno protocollo
-            Dim vYear As Short = Short.Parse(vId(0))
-            ' Numero protocollo
-            Dim vNumber As Integer = Integer.Parse(vId(1))
-            Dim s As String = "Year=" & vYear & "&Number=" & vNumber
-            s = CommonShared.AppendSecurityCheck(s)
+            Dim vUniqueId As Guid = Guid.Parse(node.Value)
             ' Redirect alla pagina di visualizzazione
-            Response.Redirect("~/Prot/ProtVisualizza.aspx?" & s)
+            Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={vUniqueId}&Type=Prot")}")
         End If
     End Sub
 #End Region

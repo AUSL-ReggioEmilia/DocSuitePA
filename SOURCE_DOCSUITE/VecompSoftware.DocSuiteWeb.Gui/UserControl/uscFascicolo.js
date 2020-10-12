@@ -1,7 +1,7 @@
 /// <reference path="../scripts/typings/telerik/telerik.web.ui.d.ts" />
 /// <reference path="../scripts/typings/moment/moment.d.ts" />
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
-define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/FascicleService", "App/Models/Fascicles/FascicleType", "App/Services/Securities/DomainUserService", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO", "App/Models/Workflows/WorkflowPropertyHelper", "App/Services/Workflows/WorkflowActivityService", "App/Mappers/Fascicles/FiltersGridUDFasciclesViewModelMapper", "UserControl/uscFascicleFolders"], function (require, exports, Environment, FascicleService, FascicleType, DomainUserService, ServiceConfigurationHelper, ExceptionDTO, WorkflowPropertyHelper, WorkflowActivityService, FiltersGridUDFasciclesViewModelMapper, UscFascicleFolders) {
+define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/FascicleService", "App/Models/Fascicles/FascicleType", "App/Services/Securities/DomainUserService", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO", "App/Models/Workflows/WorkflowPropertyHelper", "App/Services/Workflows/WorkflowActivityService", "App/Models/Fascicles/FascicleRoleModel", "App/Mappers/Fascicles/FiltersGridUDFasciclesViewModelMapper", "UserControl/uscFascicleFolders", "App/Helpers/PageClassHelper", "App/Models/Commons/UscRoleRestEventType", "App/Models/Commons/AuthorizationRoleType", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, Environment, FascicleService, FascicleType, DomainUserService, ServiceConfigurationHelper, ExceptionDTO, WorkflowPropertyHelper, WorkflowActivityService, FascicleRoleModel, FiltersGridUDFasciclesViewModelMapper, UscFascicleFolders, PageClassHelper, UscRoleRestEventType, AuthorizationRoleType, SessionStorageKeysHelper) {
     var uscFascicolo = /** @class */ (function () {
         /**
          * Costruttore
@@ -11,6 +11,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
             var _this = this;
             this._expandedFoldersPanel = true;
             this._notFireEvent = false;
+            this._rolesRemovedIds = [];
             /**
              *------------------------- Events -----------------------------
              */
@@ -30,16 +31,16 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                 var url = "";
                 switch (environment) {
                     case Environment.Protocol:
-                        url = "../Prot/ProtVisualizza.aspx?FromFascicle=true&Year=".concat(year.toString(), "&Number=", number.toString(), "&IdFascicle=", _this.currentFascicleId, "&Type=Prot");
+                        url = "../Prot/ProtVisualizza.aspx?FromFascicle=true&UniqueId=" + uniqueId + "&IdFascicle=" + _this.currentFascicleId + "&Type=Prot";
                         break;
                     case Environment.Resolution:
-                        url = "../Resl/ReslVisualizza.aspx?FromFascicle=true&IdResolution=".concat(incremental.toString(), "&Type=Resl", "&IdFascicle=", _this.currentFascicleId);
+                        url = "../Resl/ReslVisualizza.aspx?FromFascicle=true&IdResolution=" + incremental + "&Type=Resl&IdFascicle=" + _this.currentFascicleId;
                         break;
                     case Environment.DocumentSeries:
-                        url = "../Series/Item.aspx?FromFascicle=true&Type=Series&IdDocumentSeriesItem=".concat(incremental.toString(), "&Action=View&Type=Series", "&IdFascicle=", _this.currentFascicleId);
+                        url = "../Series/Item.aspx?FromFascicle=true&Type=Series&IdDocumentSeriesItem=" + incremental + "&Action=View&Type=Series&IdFascicle=" + _this.currentFascicleId;
                         break;
                     case Environment.UDS:
-                        url = "../UDS/UDSView.aspx?Type=UDS&FromFascicle=true&IdUDS=".concat(uniqueId.toString(), "&IdUDSRepository=", $(sender.get_element()).attr("UDSRepositoryId"), "&IdFascicle=", _this.currentFascicleId);
+                        url = "../UDS/UDSView.aspx?Type=UDS&FromFascicle=true&IdUDS=" + uniqueId + "&IdUDSRepository=" + $(sender.get_element()).attr("UDSRepositoryId") + "&IdFascicle=" + _this.currentFascicleId;
                         break;
                     default:
                         var serializedDoc = $(sender.get_element()).attr("SerializedDoc");
@@ -56,7 +57,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                 args.set_cancel(true);
                 _this._loadingPanel.show(_this.grdUDId);
                 var uniqueId = $(sender.get_element()).attr("IdFascicle");
-                var url = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(uniqueId.toString());
+                var url = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=" + uniqueId.toString();
                 window.location.href = url;
             };
             /**
@@ -116,11 +117,11 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                 args.set_cancel(true);
                 if (args.get_commandName() == "Filter") {
                     _this._loadingPanel.show(_this.grdUDId);
-                    $("#".concat(_this.pageId)).triggerHandler(uscFascicolo.REBIND_EVENT);
+                    $("#" + _this.pageId).triggerHandler(uscFascicolo.REBIND_EVENT);
                 }
                 if (args.get_commandName() == "Sort") {
                     _this._loadingPanel.show(_this.grdUDId);
-                    $("#".concat(_this.pageId)).triggerHandler(uscFascicolo.REBIND_EVENT);
+                    $("#" + _this.pageId).triggerHandler(uscFascicolo.REBIND_EVENT);
                 }
             };
             /**
@@ -238,7 +239,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                                 fascicleTypeTooltip = "Sotto fascicolo";
                                 break;
                         }
-                        var tileText = fascicleLink.FascicleLinked.Title.concat(" ", fascicleLink.FascicleLinked.FascicleObject);
+                        var tileText = fascicleLink.FascicleLinked.Title + " " + fascicleLink.FascicleLinked.FascicleObject;
                         model = {
                             Name: tileText, FascicleLinkUniqueId: fascicleLink.UniqueId, UniqueId: fascicleLink.FascicleLinked.UniqueId, Category: fascicleLink.FascicleLinked.Category.Name,
                             ImageUrl: imageUrl, OpenCloseTooltip: openCloseTooltip, FascicleTypeImageUrl: fascicleTypeImageUrl, FascicleTypeToolTip: fascicleTypeTooltip
@@ -260,18 +261,39 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                 }
                 _this._grid.get_masterTableView().fireCommand("Filter", "GridFilterCommandEventArgs");
             };
+            this.getSelectedVisibilityType = function () {
+                if (_this.isAuthorizePage) {
+                    return _this._fascicleVisibilityType;
+                }
+                return undefined;
+            };
+            this.getRaciRoles = function () {
+                var promise = $.Deferred();
+                PageClassHelper.callUserControlFunctionSafe(_this.uscRoleId)
+                    .done(function (instance) {
+                    return promise.resolve(instance.getRaciRoles());
+                });
+                return promise.promise();
+            };
+            this.getAddedRolesIds = function () {
+                return _this._rolesAddedIds;
+            };
+            this.getRemovedRolesIds = function () {
+                return _this._rolesRemovedIds;
+            };
+            this.setFascicleVisibilityTypeButtonCheck = function (fascicleVisibilityType) {
+                _this._fascicleVisibilityType = fascicleVisibilityType;
+            };
             this._service = new FascicleService(ServiceConfigurationHelper.getService(serviceConfigurations, "Fascicle"));
             this._serviceConfigurations = serviceConfigurations;
-            $(document).ready(function () {
-            });
         }
         /**
          * Inizializzazione
          */
         uscFascicolo.prototype.initialize = function () {
             var _this = this;
-            this._UDFascicleGrid = $("#".concat(this.UDFascicleGridId));
-            this._dynamicMetadataContent = $("#".concat(this.dynamicMetadataContentId));
+            this._UDFascicleGrid = $("#" + this.UDFascicleGridId);
+            this._dynamicMetadataContent = $("#" + this.dynamicMetadataContentId);
             this._loadingPanel = $find(this.ajaxLoadingPanelId);
             this._txtTitleUD = $find(this.txtTitleId);
             this._txtTitleUD.add_keyPress(this.txtTitle_OnKeyPressed);
@@ -290,34 +312,41 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
             this._isLinkedFasciclesGridOpen = false;
             this._isUDFascicleGridOpen = true;
             this._btnExpandDynamicMetadata.add_clicking(this.btnExpandDynamicMetadata_OnClick);
-            $("#".concat(this.rowDynamicMetadataId)).hide();
+            $("#" + this.rowDynamicMetadataId).hide();
             this._btnExpandDynamicMetadata.addCssClass("dsw-arrow-down");
             this._isDynamicMetadataContentOpen = true;
             this._dynamicMetadataContent.show();
             this._btnExpandUDFascicle.add_clicking(this.btnExpandUDFascicle_OnClick);
-            this._lblWorkflowHandlerUser = $("#".concat(this.lblWorkflowHandlerUserId));
-            this._pnlGridSearch = $("#".concat(this.pnlGrdSearchId));
+            this._lblWorkflowHandlerUser = $("#" + this.lblWorkflowHandlerUserId);
+            this._pnlGridSearch = $("#" + this.pnlGrdSearchId);
+            this._isCustomActionsContentOpen = true;
             var domainUserConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DomainUserModel");
             this._domainUserService = new DomainUserService(domainUserConfiguration);
             var workflowActivityConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowActivity');
             this._workflowActivityService = new WorkflowActivityService(workflowActivityConfiguration);
-            $("#".concat(this.rowAccountedRolesId)).hide();
+            $("#" + this.rowRolesId).hide();
             if (this.isEditPage) {
-                $("#".concat(this.rowManagerId)).hide();
-                $("#".concat(this.rowRolesId)).hide();
-                $("#".concat(this.pnlUDId)).hide();
+                $("#" + this.rowManagerId).hide();
+                $("#" + this.rowRolesId).hide();
+                $("#" + this.pnlUDId).hide();
             }
             if (this.isAuthorizePage) {
-                $("#".concat(this.rowManagerId)).hide();
-                $("#".concat(this.rowRolesId)).hide();
-                $("#".concat(this.rowAccountedRolesId)).show();
-                $("#".concat(this.pnlUDId)).hide();
+                $("#" + this.rowManagerId).hide();
+                $("#" + this.rowRolesId).hide();
+                $("#" + this.rowRolesId).show();
+                $("#" + this.pnlUDId).hide();
+                this.registerUscRoleRestEventHandlers();
+                PageClassHelper.callUserControlFunctionSafe(this.uscRoleId).done(function (instance) {
+                    instance.setToolbarVisibility(true);
+                    instance.renderRolesTree([]);
+                    instance.disableRaciRoleButton();
+                });
             }
             if (!this.isEditPage && !(this.fasciclesPanelVisibilities["GridSearchPanelVisibility"])) {
                 this._pnlGridSearch.hide();
                 this._grid.get_masterTableView().showFilterItem();
             }
-            $("#".concat(this.uscFascFoldersId)).bind(UscFascicleFolders.RESIZE_EVENT, function (args) {
+            $("#" + this.uscFascFoldersId).bind(UscFascicleFolders.RESIZE_EVENT, function (args) {
                 _this.expandCollapseFolders();
                 _this._expandedFoldersPanel = false;
             });
@@ -331,6 +360,13 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
             });
             this.initializeUDFilterDataSource();
             this.bindLoaded();
+            $("#" + this.uscFascFoldersId).on(UscFascicleFolders.REFRESH_GRID_EVENT, function () {
+                _this.refreshGridUD([], []);
+            });
+            $("#" + this.uscFascFoldersId).on(UscFascicleFolders.REFRESH_GRID_UPLOAD_DOCUMENTS, function (evt) {
+                _this._loadingPanel.show(_this.grdUDId);
+                $("#" + _this.pageId).triggerHandler(uscFascicolo.REBIND_EVENT);
+            });
         };
         /**
          *------------------------- Methods -----------------------------
@@ -347,6 +383,12 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
         //    filterModel.Title = (<any>this._txtTitleUD.get_element()).value;
         //    return filterModel;
         //}  
+        uscFascicolo.prototype.getFascSummaryColumn = function () {
+            return $("#" + this.fascSummaryColumnId);
+        };
+        uscFascicolo.prototype.getCustomActionsColumn = function () {
+            return $("#" + this.customActionsColumnId);
+        };
         uscFascicolo.prototype.initializeUDFilterDataSource = function () {
             var empty = { Name: '', Value: null };
             var protocol = { Name: 'Protocollo', Value: 'Protocollo' };
@@ -400,18 +442,18 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                                 className = "VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles.ReferenceType";
                             }
                             if (filter.get_columnUniqueName() == "Title") {
-                                filterQs = filterQs.concat("contains(tolower(Subject), '", filter.get_fieldValue().toLowerCase(), "')");
+                                filterQs = filterQs + "contains(tolower(Subject), '" + filter.get_fieldValue().toLowerCase() + "')";
                             }
                             else {
                                 if (filter.get_columnUniqueName() == "DocumentUnitName" && filter.get_fieldValue() == "Archivio") {
-                                    filterQs = filterQs.concat("Environment ge 100");
+                                    filterQs = filterQs + "Environment ge 100";
                                 }
                                 else {
-                                    filterQs = filterQs.concat(filter.get_columnUniqueName(), " eq ", className, "'", filter.get_fieldValue(), "'");
+                                    filterQs = "" + filterQs + filter.get_columnUniqueName() + " eq " + className + " '" + filter.get_fieldValue() + "'";
                                 }
                             }
                             if (currentIndex_1 < filtersCount_1) {
-                                filterQs = filterQs.concat(" and ");
+                                filterQs = filterQs + " and ";
                             }
                         }
                         ++currentIndex_1;
@@ -423,28 +465,28 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                 if (this._rcbUd.get_selectedItem() != null && this._rcbUd.get_selectedItem().get_value() != "") {
                     var selectedValue = this._rcbUd.get_selectedItem().get_value();
                     if (selectedValue == "Archivio") {
-                        filterQs = filterQs.concat("Environment ge 100 and ");
+                        filterQs = filterQs + "Environment ge 100 and ";
                     }
                     else {
-                        filterQs = filterQs.concat("DocumentUnitName eq '", this._rcbUd.get_selectedItem().get_value(), "' and ");
+                        filterQs = filterQs + "DocumentUnitName eq '" + this._rcbUd.get_selectedItem().get_value() + "' and ";
                     }
                 }
                 if (this._rcbReferenceType.get_selectedItem() != null && this._rcbReferenceType.get_selectedItem().get_value() != "")
-                    filterQs = filterQs.concat("ReferenceType eq VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles.ReferenceType'", this._rcbReferenceType.get_selectedItem().get_value(), "' and ");
-                filterQs = filterQs.concat("contains(Subject, '", this._txtTitleUD.get_element().value, "')");
+                    filterQs = filterQs + "ReferenceType eq VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles.ReferenceType'" + this._rcbReferenceType.get_selectedItem().get_value() + "' and ";
+                filterQs = filterQs + "contains(Subject, '" + this._txtTitleUD.get_element().value + "')";
             }
             var orders = this._grid.get_masterTableView().get_sortExpressions();
             var ordersCount = orders.get_count();
             if (ordersCount > 0) {
-                filterQs = filterQs.concat("&$orderby=");
+                filterQs = filterQs + "&$orderby=";
                 var currentIndex_2 = 1;
                 orders.forEach(function (order) {
-                    filterQs = filterQs.concat(order.FieldName);
+                    filterQs = "" + filterQs + order.FieldName;
                     if (order.SortOrder === 2) {
-                        filterQs = filterQs.concat(" desc");
+                        filterQs = filterQs + " desc";
                     }
                     if (currentIndex_2 < ordersCount) {
-                        filterQs = filterQs.concat(", ");
+                        filterQs = filterQs + ", ";
                     }
                     ++currentIndex_2;
                 });
@@ -455,8 +497,8 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
          * Scatena l'evento di "load completed" del controllo
          */
         uscFascicolo.prototype.bindLoaded = function () {
-            $("#".concat(this.pageId)).data(this);
-            $("#".concat(this.pageId)).triggerHandler(uscFascicolo.LOADED_EVENT);
+            $("#" + this.pageId).data(this);
+            $("#" + this.pageId).triggerHandler(uscFascicolo.LOADED_EVENT);
         };
         /**
          * Carica i dati dello user control
@@ -469,27 +511,47 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                 .done(function () {
                 _this.setSummaryData(fascicle);
                 _this.loadUscSummaryFascicle(fascicle);
+            })
+                .fail(function (exception) {
+                _this.showNotificationException(_this.uscNotificationId, exception);
             });
         };
+        uscFascicolo.prototype.loadDataWithoutFolders = function (fascicle) {
+            if (fascicle == null)
+                return;
+            this.setSummaryData(fascicle);
+            this.loadUscSummaryFascicle(fascicle);
+        };
         uscFascicolo.prototype.loadUscSummaryFascicle = function (fascicle) {
-            var uscFascSummary = $("#".concat(this.uscFascSummaryId)).data();
+            var uscFascSummary = $("#" + this.uscFascSummaryId).data();
             if (!jQuery.isEmptyObject(uscFascSummary)) {
                 uscFascSummary.workflowActivityId = this.workflowActivityId;
                 uscFascSummary.loadData(fascicle);
             }
         };
         uscFascicolo.prototype.loadFascFoldersData = function (fascicle) {
+            var _this = this;
             var promise = $.Deferred();
-            var uscFascFolders = $("#".concat(this.uscFascFoldersId)).data();
-            if (!jQuery.isEmptyObject(uscFascFolders)) {
-                uscFascFolders.setRootNode(fascicle.UniqueId);
-                uscFascFolders.loadFolders(fascicle.UniqueId)
-                    .done(function () { return promise.resolve(); })
+            PageClassHelper.callUserControlFunctionSafe(this.uscFascFoldersId)
+                .done(function (instance) {
+                instance.setRootNode(fascicle.UniqueId);
+                instance.loadFolders(fascicle.UniqueId)
+                    .done(function () {
+                    if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_FASCICE_ID) == fascicle.UniqueId &&
+                        sessionStorage.getItem(instance.SESSION_FascicleHierarchy) &&
+                        sessionStorage.getItem(instance.SESSION_FascicleHierarchy) != "[]") {
+                        instance.rebuildTreeFromSession(_this.currentFascicleId)
+                            .done(function () { return promise.resolve(); })
+                            .fail(function (exception) { return promise.reject(exception); });
+                    }
+                    else {
+                        sessionStorage.removeItem(instance.SESSION_FascicleHierarchy);
+                        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_FASCICE_ID, _this.currentFascicleId);
+                        promise.resolve();
+                    }
+                })
                     .fail(function (exception) { return promise.reject(exception); });
-            }
-            else {
-                return promise.resolve();
-            }
+            });
             return promise.promise();
         };
         /**
@@ -498,7 +560,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
          */
         uscFascicolo.prototype.setSummaryData = function (fascicle) {
             var _this = this;
-            sessionStorage.removeItem("CurrentMetadataValues");
+            sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_CURRENT_METADATA_VALUES);
             var fascicleTypeName = "";
             switch (FascicleType[fascicle.FascicleType.toString()]) {
                 case FascicleType.Procedure:
@@ -506,23 +568,25 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                     break;
                 case FascicleType.Period:
                     fascicleTypeName = "Fascicolo periodico";
-                    $("#".concat(this.rowManagerId)).hide();
+                    $("#" + this.rowManagerId).hide();
                     break;
                 case FascicleType.Legacy:
                     fascicleTypeName = "Fascicolo non a norma";
                     break;
                 case FascicleType.Activity:
                     fascicleTypeName = "Fascicolo di attività";
-                    $("#".concat(this.rowManagerId)).hide();
+                    $("#" + this.rowManagerId).hide();
                     break;
             }
             if ($.type(fascicle.FascicleType) === "string") {
                 fascicle.FascicleType = FascicleType[fascicle.FascicleType.toString()];
             }
-            $("#".concat(this.rowManagerId)).hide();
+            $("#" + this.rowManagerId).hide();
             if (fascicle.Contacts.length > 0 && !this.isEditPage) {
-                $("#".concat(this.rowManagerId)).show();
+                $("#" + this.rowManagerId).show();
             }
+            this.getCustomActionsColumn().hide();
+            this._loadCustomActions(fascicle);
             var handler = "";
             var role;
             if (!String.isNullOrEmpty(this.workflowActivityId)) {
@@ -551,7 +615,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                                     _this.loadExternalDataAjaxRequest(fascicle, user.DisplayName);
                                 }
                             }, function (exception) {
-                                _this._uscNotification = $("#".concat(_this.uscNotificationId)).data();
+                                _this._uscNotification = $("#" + _this.uscNotificationId).data();
                                 if (!jQuery.isEmptyObject(_this._uscNotification)) {
                                     _this._uscNotification.showNotification(exception);
                                 }
@@ -559,7 +623,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                         }
                     }
                 }, function (exception) {
-                    _this._uscNotification = $("#".concat(_this.uscNotificationId)).data();
+                    _this._uscNotification = $("#" + _this.uscNotificationId).data();
                     if (!jQuery.isEmptyObject(_this._uscNotification)) {
                         _this._uscNotification.showNotification(exception);
                     }
@@ -577,6 +641,9 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
             }
         };
         uscFascicolo.prototype.loadExternalDataAjaxRequest = function (fascicle, workflowHandler) {
+            if (this.isAuthorizePage) {
+                this.renderRoles(fascicle.FascicleRoles);
+            }
             var jsonFascicle = JSON.stringify(fascicle);
             this._ajaxManager = $find(this.ajaxManagerId);
             var ajaxModel = {};
@@ -586,21 +653,33 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
             ajaxModel.Value.push(jsonFascicle);
             ajaxModel.Value.push(JSON.stringify(!String.isNullOrEmpty(this.workflowActivityId)));
             ajaxModel.Value.push(workflowHandler);
-            if (!this.isEditPage && this.metadataRepositoryEnabled && fascicle.MetadataValues) {
-                $("#".concat(this.rowDynamicMetadataId)).show();
-                sessionStorage.setItem("CurrentMetadataValues", fascicle.MetadataValues);
+            if (!this.isEditPage && this.metadataRepositoryEnabled && fascicle.MetadataDesigner && fascicle.MetadataValues) {
+                $("#" + this.rowDynamicMetadataId).show();
+                var uscDynamicMetadataSummaryRest = $("#".concat(this.uscDynamicMetadataSummaryRestId)).data();
+                if (!jQuery.isEmptyObject(uscDynamicMetadataSummaryRest)) {
+                    uscDynamicMetadataSummaryRest.loadMetadatas(fascicle.MetadataDesigner, fascicle.MetadataValues);
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_CURRENT_METADATA_VALUES, fascicle.MetadataDesigner);
+                }
             }
             this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
         };
         /**
          * Callback del caricamento della lista dei manager
          */
-        uscFascicolo.prototype.loadExternalDataCallback = function () {
-            var uscFascicleFolder = $("#".concat(this.uscFascFoldersId)).data();
+        uscFascicolo.prototype.loadExternalDataCallback = function (fascicleVisibilityTypeButtonVisibility) {
+            var _this = this;
+            var uscFascicleFolder = $("#" + this.uscFascFoldersId).data();
             if (!jQuery.isEmptyObject(uscFascicleFolder)) {
-                uscFascicleFolder.selectFascicleNode();
+                if (!sessionStorage.getItem(uscFascicleFolder.SESSION_FascicleHierarchy) ||
+                    sessionStorage.getItem(uscFascicleFolder.SESSION_FascicleHierarchy) == "[]") {
+                    uscFascicleFolder.selectFascicleNode(false);
+                }
             }
-            $("#".concat(this.pageId)).triggerHandler(uscFascicolo.DATA_LOADED_EVENT);
+            $("#" + this.pageId).triggerHandler(uscFascicolo.DATA_LOADED_EVENT);
+            PageClassHelper.callUserControlFunctionSafe(this.uscRoleId).done(function (instance) {
+                instance.setVisibilityOnFascicleVisibilityTypeButton(fascicleVisibilityTypeButtonVisibility);
+                instance.setFascicleVisibilityTypeButtonCheck(_this._fascicleVisibilityType.toString());
+            });
         };
         /**
         * Metodo per il caricamento della griglia dei fascicoli collegati
@@ -614,7 +693,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                 _this.refreshLinkedFascicles(data);
                 return result.resolve();
             }, function (exception) {
-                _this._uscNotification = $("#".concat(_this.uscNotificationId)).data();
+                _this._uscNotification = $("#" + _this.uscNotificationId).data();
                 if (!jQuery.isEmptyObject(_this._uscNotification)) {
                     _this._uscNotification.showNotification(exception);
                 }
@@ -635,7 +714,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
             }
             var selectedFolder = this.getSelectedFascicleFolder();
             if (selectedFolder) {
-                $("#".concat(this.lblUDGridTitleId)).html("Documenti nel fascicolo (".concat(selectedFolder.Name, ")"));
+                $("#" + this.lblUDGridTitleId).html("Documenti nel fascicolo (" + selectedFolder.Name + ")");
             }
             var orders = this._grid.get_masterTableView().get_sortExpressions();
             var sort = [];
@@ -681,7 +760,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                 }
             }
             ;
-            $("#".concat(this.pageId)).triggerHandler(uscFascicolo.GRID_REFRESH_EVENT);
+            $("#" + this.pageId).triggerHandler(uscFascicolo.GRID_REFRESH_EVENT);
             for (var _i = 0, orders_1 = orders; _i < orders_1.length; _i++) {
                 var order = orders_1[_i];
                 var sortExpression = new Telerik.Web.UI.GridSortExpression();
@@ -694,7 +773,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
             this._loadingPanel.hide(this.grdUDId);
         };
         uscFascicolo.prototype.openPreviewWindow = function (serializedDoc) {
-            var url = '../Viewers/DocumentInfoViewer.aspx?'.concat(serializedDoc);
+            var url = "../Viewers/DocumentInfoViewer.aspx?" + serializedDoc;
             this.openWindow(url, 'windowPreviewDocument', 750, 450);
         };
         /**
@@ -714,7 +793,7 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
         };
         uscFascicolo.prototype.showNotificationException = function (uscNotificationId, exception, customMessage) {
             if (exception && exception instanceof ExceptionDTO) {
-                var uscNotification = $("#".concat(uscNotificationId)).data();
+                var uscNotification = $("#" + uscNotificationId).data();
                 if (!jQuery.isEmptyObject(uscNotification)) {
                     uscNotification.showNotification(exception);
                 }
@@ -724,13 +803,13 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
             }
         };
         uscFascicolo.prototype.showNotificationMessage = function (uscNotificationId, customMessage) {
-            var uscNotification = $("#".concat(uscNotificationId)).data();
+            var uscNotification = $("#" + uscNotificationId).data();
             if (!jQuery.isEmptyObject(uscNotification)) {
                 uscNotification.showNotificationMessage(customMessage);
             }
         };
         uscFascicolo.prototype.getSelectedFascicleFolder = function () {
-            var uscFascFolders = $("#".concat(this.uscFascFoldersId)).data();
+            var uscFascFolders = $("#" + this.uscFascFoldersId).data();
             if (!jQuery.isEmptyObject(uscFascFolders)) {
                 return uscFascFolders.getSelectedFascicleFolder(this.currentFascicleId);
             }
@@ -748,19 +827,136 @@ define(["require", "exports", "App/Models/Environment", "App/Services/Fascicles/
                 pnl.collapsePane(this.rsPnlFoldersId);
             }
         };
-        uscFascicolo.prototype.getSelectedAccountedVisibilityType = function () {
-            if (this.isAuthorizePage) {
-                var uscAccountedRoles = $("#".concat(this.uscSettoriAccountedId)).data();
-                if (!jQuery.isEmptyObject(uscAccountedRoles)) {
-                    return uscAccountedRoles.getFascicleVisibilityType();
+        uscFascicolo.prototype._loadCustomActions = function (fascicle) {
+            var currentDate = new Date();
+            var autoCloseThresholdDate = new Date(currentDate
+                .setDate(currentDate.getDate() - this.fascicleAutoCloseThresholdDays - this.fascicleAutoCloseWarningThresholdDays));
+            var isAutoClosable = fascicle.CustomActions && JSON.parse(fascicle.CustomActions).AutoClose &&
+                fascicle.LastChangedDate && fascicle.LastChangedDate.toString() <= autoCloseThresholdDate.toString();
+            if (isAutoClosable && !this.isEditPage) {
+                var customActions_1 = fascicle.CustomActions
+                    ? JSON.parse(fascicle.CustomActions)
+                    : {
+                        AutoClose: false,
+                        AutoCloseAndClone: false
+                    };
+                var customActionsIcons_1 = null;
+                if (customActions_1.AutoClose) {
+                    customActionsIcons_1 = [
+                        {
+                            UseIconFor: "AutoClose",
+                            IconURL: "../App_Themes/DocSuite2008/imgset32/auto-lock.png",
+                            Tooltip: "Chiusura amministrativa a 60 giorni"
+                        }
+                    ];
                 }
+                else {
+                    customActionsIcons_1 = [
+                        {
+                            UseIconFor: "AutoCloseAndClone",
+                            IconURL: "../App_Themes/DocSuite2008/imgset32/auto-lock-copy.png",
+                            Tooltip: "Chiusura amministrativa a fine anno e riapertura automatica"
+                        }
+                    ];
+                }
+                PageClassHelper.callUserControlFunctionSafe(this.uscCustomActionsRestId).done(function (instance) {
+                    instance.loadItems(customActions_1, customActionsIcons_1);
+                });
+                var fascSummaryColumn = this.getFascSummaryColumn();
+                var customActionsColumn = this.getCustomActionsColumn();
+                fascSummaryColumn.removeClass(uscFascicolo.FULLWIDTH_COL_SPAN);
+                fascSummaryColumn.addClass(uscFascicolo.SUMMARY_COL_SPAN);
+                customActionsColumn.addClass(uscFascicolo.ACTIONS_COL_SPAN);
+                customActionsColumn.show();
             }
-            return undefined;
+        };
+        uscFascicolo.prototype.registerUscRoleRestEventHandlers = function () {
+            var _this = this;
+            PageClassHelper.callUserControlFunctionSafe(this.uscRoleId)
+                .done(function (instance) {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, function (roleId) {
+                    _this.deleteRoleFromModel(roleId);
+                    return $.Deferred().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, function (newAddedRoles) {
+                    if (!uscFascicolo.masterRole) {
+                        _this.addRole(newAddedRoles, false);
+                        return $.Deferred().resolve();
+                    }
+                    var existedRole = newAddedRoles.filter(function (x) { return x.EntityShortId === uscFascicolo.masterRole.EntityShortId; })[0];
+                    if (existedRole) {
+                        alert("Non \u00E8 possibile selezionare il settore " + existedRole.Name + " in quanto gi\u00E0 presente come settore autorizzato del fascicolo");
+                        newAddedRoles = newAddedRoles.filter(function (x) { return x.IdRole !== existedRole.IdRole; });
+                    }
+                    _this.addRole(newAddedRoles, false);
+                    return $.Deferred().resolve(existedRole);
+                });
+                instance.registerEventHandler(UscRoleRestEventType.SetFascicleVisibilityType, function (visibilityType) {
+                    _this._fascicleVisibilityType = visibilityType;
+                    return $.Deferred().resolve();
+                });
+            });
+        };
+        uscFascicolo.prototype.addRole = function (newAddedRoles, isMaster) {
+            if (!newAddedRoles.length)
+                return;
+            this._rolesAddedIds = newAddedRoles.map(function (x) { return x.IdRole; });
+            var fascicleRoles = [];
+            if (this.getFascicleRolesToAdd()) {
+                fascicleRoles = this.getFascicleRolesToAdd();
+            }
+            for (var _i = 0, newAddedRoles_1 = newAddedRoles; _i < newAddedRoles_1.length; _i++) {
+                var newAddedRole = newAddedRoles_1[_i];
+                var fascicleRole = new FascicleRoleModel();
+                fascicleRole.IsMaster = isMaster;
+                fascicleRole.Role = newAddedRole;
+                fascicleRoles.push(fascicleRole);
+            }
+            this.setFascicleRolesToSession(fascicleRoles);
+        };
+        uscFascicolo.prototype.getFascicleRolesToAdd = function () {
+            var itemsFromSession = sessionStorage.getItem(this.clientId + "_FascicleRolesToAdd");
+            if (itemsFromSession) {
+                return JSON.parse(itemsFromSession);
+            }
+            return null;
+        };
+        uscFascicolo.prototype.setFascicleRolesToSession = function (fascicleRoles) {
+            if (!fascicleRoles) {
+                sessionStorage.removeItem(this.clientId + "_FascicleRolesToAdd");
+            }
+            sessionStorage[this.clientId + "_FascicleRolesToAdd"] = JSON.stringify(fascicleRoles);
+        };
+        uscFascicolo.prototype.deleteRoleFromModel = function (roleIdToDelete) {
+            if (!roleIdToDelete)
+                return;
+            this._rolesRemovedIds.push(roleIdToDelete);
+            var fascicleRoles = [];
+            if (this.getFascicleRolesToAdd()) {
+                fascicleRoles = this.getFascicleRolesToAdd();
+            }
+            fascicleRoles = fascicleRoles.filter(function (x) { return x.Role.IdRole !== roleIdToDelete && x.Role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) === -1; });
+            this.setFascicleRolesToSession(fascicleRoles);
+        };
+        uscFascicolo.prototype.renderRoles = function (fascicleRoles) {
+            PageClassHelper.callUserControlFunctionSafe(this.uscRoleId).done(function (instance) {
+                instance.setToolbarVisibility(true);
+                var fascicleRaciRoles = fascicleRoles.filter(function (x) { return x.IsMaster === false &&
+                    x.AuthorizationRoleType.toString() === AuthorizationRoleType[AuthorizationRoleType.Responsible]; });
+                if (fascicleRaciRoles) {
+                    instance.setRaciRoles(fascicleRaciRoles.map(function (x) { return x.Role; }));
+                }
+                instance.renderRolesTree(fascicleRoles.filter(function (x) { return x.IsMaster === false; }).map(function (x) { return x.Role; }));
+                instance.disableRaciRoleButton();
+            });
         };
         uscFascicolo.LOADED_EVENT = "onLoaded";
         uscFascicolo.DATA_LOADED_EVENT = "onDataLoaded";
         uscFascicolo.GRID_REFRESH_EVENT = "onGridRefresh";
         uscFascicolo.REBIND_EVENT = "onRebind";
+        uscFascicolo.ACTIONS_COL_SPAN = "t-col-4";
+        uscFascicolo.SUMMARY_COL_SPAN = "t-col-8";
+        uscFascicolo.FULLWIDTH_COL_SPAN = "t-col-12";
         return uscFascicolo;
     }());
     return uscFascicolo;

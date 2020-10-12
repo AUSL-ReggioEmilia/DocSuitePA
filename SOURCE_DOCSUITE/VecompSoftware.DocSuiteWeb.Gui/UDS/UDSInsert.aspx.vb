@@ -1,19 +1,23 @@
 ﻿Imports System.Collections.Generic
+Imports System.Linq
 Imports System.Web
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Workflows
-Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Model.Workflow
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.UDS
+Imports VecompSoftware.Helpers.WebAPI
 Imports VecompSoftware.Helpers.Workflow
 Imports VecompSoftware.Services.Biblos
+Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.Services.Logging
+Imports FascicleDocumentUnitFacade = VecompSoftware.DocSuiteWeb.Facade.WebAPI.Fascicles.FascicleDocumentUnitFacade
 
 Public Class UDSInsert
     Inherits UDSBasePage
@@ -31,7 +35,6 @@ Public Class UDSInsert
     Private Const UDS_SUMMARY_PATH As String = "~/UDS/UDSView.aspx?Type=UDS&IdUDS={0}&IdUDSRepository={1}"
     Private _currentFascicleDocumentUnitFacade As FascicleDocumentUnitFacade
     Private _fromCollaboration As Boolean?
-    Private Const ODATA_EQUAL_UDSID As String = "$filter=UDSId eq {0}"
     Private _currentRepositoryRigths As UDSRepositoryRightsUtil
     Private _fromProtocol? As Boolean
     Private _fromWorkFlow? As Boolean
@@ -82,7 +85,7 @@ Public Class UDSInsert
     Private ReadOnly Property CurrentFascicleDocumentUnitFacade As FascicleDocumentUnitFacade
         Get
             If _currentFascicleDocumentUnitFacade Is Nothing Then
-                _currentFascicleDocumentUnitFacade = New FascicleDocumentUnitFacade(DocSuiteContext.Current.Tenants)
+                _currentFascicleDocumentUnitFacade = New FascicleDocumentUnitFacade(DocSuiteContext.Current.Tenants.ToList(), CurrentTenant)
             End If
             Return _currentFascicleDocumentUnitFacade
         End Get
@@ -102,7 +105,7 @@ Public Class UDSInsert
         End Get
     End Property
 
-    Private ReadOnly Property CurrentRepositoryRigths As UDSRepositoryRightsUtil
+    Private ReadOnly Property CurrentRepositoryRights As UDSRepositoryRightsUtil
         Get
             If _currentRepositoryRigths Is Nothing Then
                 _currentRepositoryRigths = New UDSRepositoryRightsUtil(CurrentUDSRepository, DocSuiteContext.Current.User.FullUserName, UDSSource)
@@ -132,7 +135,7 @@ Public Class UDSInsert
         End Get
     End Property
 
-    Private ReadOnly Property FromWorkFlow As Boolean
+    Private ReadOnly Property FromWorkflow As Boolean
         Get
             If Not _fromWorkFlow.HasValue Then
                 _fromWorkFlow = IdWorkflowActivity.HasValue
@@ -165,6 +168,25 @@ Public Class UDSInsert
             End If
 
             Dim model As UDSModel = uscUDS.GetUDSModel()
+            If model.Model.Metadata IsNot Nothing Then
+                Dim numberField As NumberField
+                For Each medatada As Section In model.Model.Metadata
+                    If medatada.Items IsNot Nothing Then
+                        For Each item As FieldBaseType In medatada.Items
+                            numberField = TryCast(item, NumberField)
+                            If numberField IsNot Nothing AndAlso (numberField.MaxValueSpecified OrElse numberField.MinValueSpecified) AndAlso numberField.ValueSpecified Then
+                                If numberField.MaxValueSpecified AndAlso numberField.Value > numberField.MaxValue Then
+                                    AjaxManager.ResponseScripts.Add(String.Format(ON_ERROR_FUNCTION, $"Errore Errore nella fase di invio: Il valore di {item.Label} non può essere superiore a {numberField.MaxValue}"))
+                                    Return
+                                ElseIf numberField.MinValueSpecified AndAlso numberField.Value < numberField.MinValue Then
+                                    AjaxManager.ResponseScripts.Add(String.Format(ON_ERROR_FUNCTION, $"Errore nella fase di invio: Il valore di {item.Label} non può essere inferiore a {numberField.MinValue}"))
+                                    Return
+                                End If
+                            End If
+                        Next
+                    End If
+                Next
+            End If
             Dim sendedCommandId As Guid
             CheckAllDocumentSigned(model.Model.Documents)
 
@@ -177,9 +199,6 @@ Public Class UDSInsert
                     If IdCollaboration.HasValue Then
                         Dim collaboration As Collaboration = Facade.CollaborationFacade.GetById(IdCollaboration.Value)
                         model.FillCollaborations(New List(Of ReferenceModel) From {New ReferenceModel() With {.EntityId = IdCollaboration.Value, .UniqueId = collaboration.UniqueId, .TemplateName = collaboration.TemplateName}})
-                        If ProtocolEnv.SecureDocumentEnabled Then
-                            Facade.CollaborationFacade.FinalizeSecureDocument(collaboration)
-                        End If
                     End If
                     If IdProtocol.HasValue Then
                         model.FillProtocols(New List(Of ReferenceModel) From {New ReferenceModel() With {.UniqueId = IdProtocol.Value}})
@@ -212,6 +231,10 @@ Public Class UDSInsert
 
             FileLogger.Info(LoggerName, $"Command sended with Id {sendedCommandId} and CorrelationId {correlationId}")
             btnSave.Enabled = False
+        Catch ex As DocSuiteSignRequiredException
+            FileLogger.Error(LoggerName, ex.Message, ex)
+            Dim exceptionMessage As String = String.Format("Errore nella fase di invio: {0}", ex.Message)
+            AjaxManager.ResponseScripts.Add(String.Format(ON_ERROR_FUNCTION, HttpUtility.JavaScriptStringEncode(exceptionMessage)))
         Catch ex As Exception
             FileLogger.Error(LoggerName, ex.Message, ex)
             Dim exceptionMessage As String = String.Format("Errore nella fase di invio: {0}", ProtocolEnv.DefaultErrorMessage)
@@ -264,8 +287,8 @@ Public Class UDSInsert
         End If
         Dim url As String = UDS_SUMMARY_PATH
         If IsWorkflowOperation Then
-            AddWorkflowProperties(UDSRepositoryId, UDSId)
-            url = String.Concat(url, String.Format("&IsWorkflowOperation=True&IdWorkflowActivity={0}", CurrentIdWorkflowActivity))
+            PushWorkflowNotify(UDSRepositoryId, UDSId)
+            url = String.Concat(url, $"&IsWorkflowOperation=True&IdWorkflowActivity={CurrentIdWorkflowActivity}")
         End If
         Response.Redirect(String.Format(url, UDSId, UDSRepositoryId))
     End Sub
@@ -295,7 +318,7 @@ Public Class UDSInsert
             Throw New ArgumentNullException("CurrentIdUDS")
         End If
 
-        If Action.Eq(uscUDS.ACTION_TYPE_EDIT) AndAlso Not CurrentRepositoryRigths.IsEditable Then
+        If Action.Eq(uscUDS.ACTION_TYPE_EDIT) AndAlso Not CurrentRepositoryRights.IsEditable Then
             Throw New DocSuiteException("Utente senza diritti di modifica")
         End If
 
@@ -319,6 +342,12 @@ Public Class UDSInsert
         btnSave.Enabled = Action.Eq(uscUDS.ACTION_TYPE_EDIT)
         btnSave.Text = If(Action.Eq(uscUDS.ACTION_TYPE_INSERT) OrElse Action.Eq(uscUDS.ACTION_TYPE_DUPLICATE), BTN_SAVE_INSERT_TITLE, BTN_SAVE_EDIT_TITLE)
         uscUDS.ActionType = Action
+        uscUDS.HasActiveWorkflowActivity = False
+
+        If Action.Eq(uscUDS.ACTION_TYPE_EDIT) AndAlso CurrentIdUDS.HasValue Then
+            uscUDS.HasActiveWorkflowActivity = CurrentRepositoryRights.CurrentUserWorkflowActivity.HasValue
+        End If
+
     End Sub
 
     Private Function GetCheck(ByVal field As String, ByVal right As Integer) As Boolean
@@ -380,32 +409,29 @@ Public Class UDSInsert
     End Sub
 
     Private Sub InitializeFromWorkflow()
-        Dim udsNameWorkflowProperty As WorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByActivityAndName(CurrentIdWorkflowActivity, WorkflowPropertyHelper.DSW_FIELD_UDS_NAME)
-        If udsNameWorkflowProperty Is Nothing Then
-            Throw New DocSuiteException(String.Format("Nessuna workflow property presente con nome {0}", WorkflowPropertyHelper.DSW_FIELD_UDS_NAME))
+        Dim dsw_e_UDSName As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_FIELD_UDS_NAME, CurrentIdWorkflowActivity)
+        If dsw_e_UDSName Is Nothing Then
+            Throw New DocSuiteException($"Nessuna workflow property presente con nome {WorkflowPropertyHelper.DSW_FIELD_UDS_NAME}")
         End If
-        Dim currentRepository As UDSRepository = CurrentUDSRepositoryFacade.GetMaxVersionByName(udsNameWorkflowProperty.ValueString)
+        Dim currentRepository As UDSRepository = CurrentUDSRepositoryFacade.GetMaxVersionByName(dsw_e_UDSName.ValueString)
         If currentRepository Is Nothing Then
             Exit Sub
         End If
 
-
-        Dim signedDocRequiredWorkflowProperty As WorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByActivityAndName(CurrentIdWorkflowActivity, WorkflowPropertyHelper.DSW_PROPERTY_SIGNED_DOC_REQUIRED)
-        If signedDocRequiredWorkflowProperty IsNot Nothing Then
-            'TODO: Dovrebbe essere un dizionario con Nome Controllo: valore booleano
-            'WorkflowSignedDocRequired = JsonConvert.DeserializeObject(Of Dictionary(Of string, bool))(signedDocRequiredWorkflowProperty.ValueString, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
+        Dim dsw_p_SignedDocRequired As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNED_DOC_REQUIRED, CurrentIdWorkflowActivity)
+        If dsw_p_SignedDocRequired IsNot Nothing Then
             Dim model As UDSModel = UDSModel.LoadXml(currentRepository.ModuleXML)
             If model.Model.Documents IsNot Nothing AndAlso model.Model.Documents.Document IsNot Nothing Then
-                WorkflowSignedDocRequired.Add(model.Model.Documents.Document.Label, signedDocRequiredWorkflowProperty.ValueBoolean.Value)
+                WorkflowSignedDocRequired.Add(model.Model.Documents.Document.Label, dsw_p_SignedDocRequired.ValueBoolean.Value)
             End If
         End If
 
         uscUDS.WorkflowSignedDocRequired = WorkflowSignedDocRequired
 
         uscUDS.CurrentUDSRepositoryId = currentRepository.Id
-        Dim udsModelWorkflowProperty As WorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByActivityAndName(CurrentIdWorkflowActivity, WorkflowPropertyHelper.DSW_PROPERTY_MODEL)
-        If udsModelWorkflowProperty IsNot Nothing Then
-            Dim dto As UDSDto = CurrentUDSFacade.ReadUDSWorkflowJson(udsModelWorkflowProperty.ValueString, currentRepository)
+        Dim dsw_p_Model As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_MODEL, CurrentIdWorkflowActivity)
+        If dsw_p_Model IsNot Nothing Then
+            Dim dto As UDSDto = CurrentUDSFacade.ReadUDSWorkflowJson(dsw_p_Model.ValueString, currentRepository)
             uscUDS.UDSItemSource = dto.UDSModel
         End If
     End Sub
@@ -414,16 +440,14 @@ Public Class UDSInsert
         If docInstances Is Nothing Then
             Return True
         End If
-
-        For Each instance As DocumentInstance In docInstances
-
-            If Action.Eq(uscUDS.ACTION_TYPE_EDIT) AndAlso String.IsNullOrEmpty(instance.DocumentContent) Then
-                Return True
-            End If
-            If Not Helpers.PDF.SignTools.CheckSigned(Convert.FromBase64String(instance.DocumentContent)) Then
+        Dim biblos As BiblosDocumentInfo
+        For Each instance As DocumentInstance In docInstances.Where(Function(f) Not String.IsNullOrEmpty(f.IdDocumentToStore))
+            biblos = New BiblosDocumentInfo(Guid.Parse(instance.IdDocumentToStore))
+            If Not Helpers.PDF.SignTools.CheckSigned(biblos.Stream) Then
                 Return False
             End If
         Next
+
         Return True
     End Function
 
@@ -451,63 +475,50 @@ Public Class UDSInsert
 
         If documents.Document IsNot Nothing AndAlso IsSignRequired(documents.Document) Then
             If Not CheckDocumentInstancesSigned(documents.Document.Instances) Then
-                Throw New Exception(String.Format(NOT_SIGNED_DOCUMENT_MESSAGE, documents.Document.Label))
+                Throw New DocSuiteSignRequiredException(documents.Document.Label)
             End If
         End If
 
         If documents.DocumentAttachment IsNot Nothing AndAlso IsSignRequired(documents.DocumentAttachment) Then
             If Not CheckDocumentInstancesSigned(documents.DocumentAttachment.Instances) Then
-                Throw New Exception(String.Format(NOT_SIGNED_DOCUMENT_MESSAGE, documents.DocumentAttachment.Label))
+                Throw New DocSuiteSignRequiredException(documents.DocumentAttachment.Label)
             End If
         End If
 
         If documents.DocumentAnnexed IsNot Nothing AndAlso IsSignRequired(documents.DocumentAnnexed) Then
             If Not CheckDocumentInstancesSigned(documents.DocumentAnnexed.Instances) Then
-                Throw New Exception(String.Format(NOT_SIGNED_DOCUMENT_MESSAGE, documents.DocumentAnnexed.Label))
+                Throw New DocSuiteSignRequiredException(documents.DocumentAnnexed.Label)
             End If
         End If
     End Sub
 
-    Private Sub AddWorkflowProperties(UDSRepositoryId As Guid, UDSId As Guid)
+    Private Sub PushWorkflowNotify(UDSRepositoryId As Guid, UDSId As Guid)
         If IsWorkflowOperation Then
-            Dim workflowActivityFacade As WorkflowActivityFacade = New WorkflowActivityFacade(DocSuiteContext.Current.User.FullUserName)
-            Dim activity As WorkflowActivity = workflowActivityFacade.GetById(CurrentIdWorkflowActivity)
+            Dim worklowAcyivity As WorkflowActivity = GetWorkflowActivity(CurrentIdWorkflowActivity)
             Dim source As UDSDto = GetSource(UDSRepositoryId, UDSId)
+            Dim workflowNotify As WorkflowNotify = New WorkflowNotify(CurrentIdWorkflowActivity) With {
+                    .WorkflowName = worklowAcyivity?.WorkflowInstance?.WorkflowRepository?.Name}
 
-            Dim propertyId As WorkflowProperty = New WorkflowProperty(DocSuiteContext.Current.User.FullUserName) With {
-                .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_ID,
-                .PropertyType = WorkflowPropertyType.PropertyGuid,
-                .WorkflowType = WorkflowType.Activity,
-                .ValueGuid = UDSId
-            }
-
-            Dim propertyYear As WorkflowProperty = New WorkflowProperty(DocSuiteContext.Current.User.FullUserName) With {
-                .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_YEAR,
-                .PropertyType = WorkflowPropertyType.PropertyInt,
-                .WorkflowType = WorkflowType.Activity,
-                .ValueInt = source.Year
-            }
-
-            Dim propertyNumber As WorkflowProperty = New WorkflowProperty(DocSuiteContext.Current.User.FullUserName) With {
-                .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_NUMBER,
-                .PropertyType = WorkflowPropertyType.PropertyInt,
-                .WorkflowType = WorkflowType.Activity,
-                .ValueInt = source.Number
-            }
-
-            Dim propertyRepositoryId As WorkflowProperty = New WorkflowProperty(DocSuiteContext.Current.User.FullUserName) With {
-                .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID,
-                .PropertyType = WorkflowPropertyType.PropertyGuid,
-                .WorkflowType = WorkflowType.Activity,
-                .ValueGuid = UDSRepositoryId
-            }
-
-            activity.WorkflowProperties.Add(propertyId)
-            activity.WorkflowProperties.Add(propertyYear)
-            activity.WorkflowProperties.Add(propertyNumber)
-            activity.WorkflowProperties.Add(propertyRepositoryId)
-            activity.Status = WorkflowStatus.Progress
-            workflowActivityFacade.Save(activity)
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID,
+                                                   .PropertyType = ArgumentType.PropertyGuid,
+                                                   .ValueGuid = UDSRepositoryId})
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_UDS_ID, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_ID,
+                                                   .PropertyType = ArgumentType.PropertyGuid,
+                                                   .ValueGuid = UDSId})
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_UDS_YEAR, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_YEAR,
+                                                   .PropertyType = ArgumentType.PropertyInt,
+                                                   .ValueInt = source.Year})
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_UDS_NUMBER, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_NUMBER,
+                                                   .PropertyType = ArgumentType.PropertyInt,
+                                                   .ValueInt = source.Number})
+            Dim webApiHelper As WebAPIHelper = New WebAPIHelper()
+            If Not WebAPIImpersonatorFacade.ImpersonateSendRequest(webApiHelper, workflowNotify, DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration) Then
+                Throw New Exception("Settaggio proprietà workflow non riuscita.")
+            End If
         End If
     End Sub
 
@@ -533,7 +544,7 @@ Public Class UDSInsert
         If toDetach.Count > 0 Then
             For Each idDocument As Guid In toDetach
                 FileLogger.Debug(LoggerName, String.Format("DetachDocuments -> UDS Id {0} - Detach document with Id: {1}", CurrentIdUDS, idDocument))
-                Service.DetachDocument(container.UDSLocation.DocumentServer, idDocument)
+                Service.DetachDocument(idDocument)
             Next
         End If
     End Sub

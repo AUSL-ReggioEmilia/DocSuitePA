@@ -3,7 +3,7 @@
 <%@ Register Src="~/UserControl/uscSettori.ascx" TagName="uscSettori" TagPrefix="uc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscMetadataRepositorySel.ascx" TagName="uscMetadataRepositorySel" TagPrefix="usc" %>
-
+<%@ Register Src="~/UserControl/uscCategoryRest.ascx" TagName="uscCategoryRest" TagPrefix="usc" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphContent">
     <telerik:RadScriptBlock runat="server">
@@ -26,13 +26,18 @@
                     dossierRicerca.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                     dossierRicerca.searchTableId = "<%= searchTable.ClientID %>";
                     dossierRicerca.btnCleanId = "<%= btnClean.ClientID %>";
-                    dossierRicerca.dossierStatusRowId = "<%= dossierStatusRow.ClientID%>";
                     dossierRicerca.hasTxtYearDefaultValue = false;
                     dossierRicerca.metadataRepositoryEnabled = <%=ProtocolEnv.MetadataRepositoryEnabled.ToString().ToLower()%>;
                     dossierRicerca.rowMetadataRepositoryId = "<%= rowMetadataRepository.ClientID%>";
-                    dossierRicerca.rowMetadataValueId = "<%= rowMetadataValue.ClientID%>"
                     dossierRicerca.uscMetadataRepositorySelId = "<%= uscMetadataRepositorySel.PageContentDiv.ClientID%>";
-                    dossierRicerca.txtMetadataValueId = "<%= txtMetadataValue.ClientID%>";
+                    dossierRicerca.currentTenantId = "<%= CurrentTenant.UniqueId %>";
+                    dossierRicerca.metadataTableId = "<%= metadataTable.ClientID %>";
+                    dossierRicerca.isWindowPopupEnable = <%= IsWindowPopupEnable.ToString().ToLower() %>;
+                    dossierRicerca.uscCategoryRestId = "<%= uscCategoryRest.MainContent.ClientID %>";
+                    dossierRicerca.rcbDossierTypeId = "<%= rcbDossierType.ClientID %>";
+                    dossierRicerca.rblDossierStatusId = "<%= rblDossierStatus.ClientID %>";
+                    dossierRicerca.dossierStatusEnabled = <%= DossierStatusEnabled.ToString().ToLower() %>;
+                    dossierRicerca.dossierStatusRowId = "<%= dossierStatusRow.ClientID %>";
                     dossierRicerca.initialize();
                 });
             });
@@ -66,12 +71,20 @@
             </td>
         </tr>
 
-        <tr id="dossierStatusRow" runat="server">
-            <td class="label col-dsw-3 disabled">Stato:</td>
+        <tr>
+            <td class="label col-dsw-3">Tipologia:</td>
             <td class="col-dsw-7">
-                <asp:RadioButtonList ID="rblDossierStatus" runat="server" RepeatDirection="Horizontal" Enabled="false">
+                <telerik:RadComboBox ID="rcbDossierType" runat="server" />
+            </td>
+        </tr>
+
+        <tr id="dossierStatusRow" runat="server">
+            <td class="label col-dsw-3">Stato:</td>
+            <td class="col-dsw-7">
+                <asp:RadioButtonList ID="rblDossierStatus" runat="server" RepeatDirection="Horizontal">
                     <asp:ListItem Value="All">Tutti</asp:ListItem>
                     <asp:ListItem Value="Open" Selected="True">Aperti</asp:ListItem>
+                    <asp:ListItem Value="Canceled">Annullati</asp:ListItem>
                     <asp:ListItem Value="Closed">Chiusi</asp:ListItem>
                 </asp:RadioButtonList>
             </td>
@@ -125,23 +138,26 @@
             </td>
         </tr>
 
-        <%-- <tr runat="server">
-            <td class="label disabled">Settore Responsabile:
-            </td>
+        <tr>
+            <td class="label">Classificatore:</td>
             <td>
-                <uc:uscSettori Caption="Autorizzazione" HeaderVisible="false" ID="uscSettore1" MultiSelect="false" Required="false" runat="server" ShowActive="True" />
-            </td>
-        </tr>--%>
-        <tr id="rowMetadataRepository">
-            <td class="label">Tipologia metadati:</td>
-            <td>
-                <usc:uscMetadataRepositorySel runat="server" ID="uscMetadataRepositorySel" Caption="Metadati dinamici" Required="False" UseSessionStorage="true" />
+                <usc:uscCategoryRest runat="server" ID="uscCategoryRest" IsRequired="false" />
             </td>
         </tr>
-        <tr id="rowMetadataValue">
-            <td class="label">Valore metadati:</td>
+    </table>
+    <table class="datatable" id="metadataTable" runat="server">
+        <tr>
+            <th colspan="2">Metadati</th>
+        </tr>
+        <tr id="rowMetadataRepository">
+            <td class="label col-dsw-3" style="vertical-align: top;">Tipologia metadati:</td>
             <td class="col-dsw-7">
-                <telerik:RadTextBox ID="txtMetadataValue" MaxLength="255" runat="server" Width="300px" />
+                <usc:uscMetadataRepositorySel runat="server" 
+                    ID="uscMetadataRepositorySel" 
+                    EnableAdvancedMetadataSearch="true" 
+                    Caption="Metadati dinamici" 
+                    Required="False" 
+                    UseSessionStorage="true" />
             </td>
         </tr>
     </table>

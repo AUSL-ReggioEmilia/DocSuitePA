@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.DocSuiteWeb.Data.Entity</RootNamespace>
     <AssemblyName>VecompSoftware.DocSuiteWeb.Data.Entity</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -103,25 +103,12 @@
     <Compile Include="UDS\UDSSchemaRepository.cs" />
     <Compile Include="Workflows\WorkflowActivity.cs" />
     <Compile Include="Workflows\WorkflowAuthorization.cs" />
-    <Compile Include="Workflows\WorkflowAuthorizationType.cs" />
     <Compile Include="Workflows\WorkflowInstance.cs" />
-    <Compile Include="Workflows\WorkflowActivityLog.cs" />
-    <Compile Include="Workflows\WorkflowProperty.cs" />
-    <Compile Include="Workflows\WorkflowPropertyType.cs" />
     <Compile Include="Workflows\WorkflowRepository.cs" />
-    <Compile Include="Workflows\WorkflowRoleMapping.cs" />
-    <Compile Include="Workflows\WorkflowRole.cs" />
     <Compile Include="Workflows\WorkflowStatus.cs" />
     <Compile Include="Workflows\ActivityType.cs" />
-    <Compile Include="Workflows\WorkflowType.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Collaborations\" />
-    <Folder Include="DocumentSeries\" />
-    <Folder Include="Resolutions\" />
-    <Folder Include="Tasks\" />
-    <Folder Include="Tenders\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="favicon.ico" />
   </ItemGroup>

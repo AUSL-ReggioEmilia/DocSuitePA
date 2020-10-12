@@ -16,17 +16,16 @@ define(["require", "exports", "App/Models/Templates/TemplateDocumentRepositorySt
              * @param sender
              * @param eventArgs
              */
-            this.btnAggiungi_Clicked = function (sender, eventArgs) {
+            this.btnAggiungi_Clicked = function () {
                 _this._manager.add_close(_this.closeInsertWindow);
                 _this._manager.open('../Tblt/TbltTemplateDocumentRepositoryGes.aspx?Action=Insert', 'windowManageTemplate', null);
-                _this._manager.center();
             };
             /**
              * Evento scatenato al click del pulsante Modifica
              * @param sender
              * @param eventArgs
              */
-            this.btnModifica_Clicked = function (sender, eventArgs) {
+            this.btnModifica_Clicked = function () {
                 var userControl = $('#'.concat(_this.uscTemplateDocumentRepositoryId)).data();
                 var selectedTemplate = userControl.getSelectedTemplateDocument();
                 if (selectedTemplate == undefined) {
@@ -35,14 +34,13 @@ define(["require", "exports", "App/Models/Templates/TemplateDocumentRepositorySt
                 }
                 _this._manager.add_close(_this.closeEditWindow);
                 _this._manager.open('../Tblt/TbltTemplateDocumentRepositoryGes.aspx?Action=Edit&TemplateId='.concat(selectedTemplate.UniqueId, "&TemplateIdArchiveChain=", selectedTemplate.IdArchiveChain), 'windowManageTemplate', null);
-                _this._manager.center();
             };
             /**
              * Evento scatenato al click del pulsante Visualizza
              * @param sender
              * @param eventArgs
              */
-            this.btnVisualizza_Clicked = function (sender, eventArgs) {
+            this.btnVisualizza_Clicked = function () {
                 var userControl = $('#'.concat(_this.uscTemplateDocumentRepositoryId)).data();
                 var selectedTemplate = userControl.getSelectedTemplateDocument();
                 if (selectedTemplate == undefined) {
@@ -57,7 +55,7 @@ define(["require", "exports", "App/Models/Templates/TemplateDocumentRepositorySt
              * @param sender
              * @param eventArgs
              */
-            this.btnElimina_Clicked = function (sender, eventArgs) {
+            this.btnElimina_Clicked = function () {
                 var userControl = $('#'.concat(_this.uscTemplateDocumentRepositoryId)).data();
                 var templateToDelete = userControl.getSelectedTemplateDocument();
                 if (templateToDelete == undefined) {
@@ -69,7 +67,11 @@ define(["require", "exports", "App/Models/Templates/TemplateDocumentRepositorySt
                 _this._manager.radconfirm("Sei sicuro di voler eliminare l'elemento selezionato?", function (arg) {
                     if (arg) {
                         _this.showLoadingPanel(_this.splitterPageId);
-                        $find(_this.ajaxManagerId).ajaxRequestWithTarget(_this.btnEliminaUniqueId, templateToDelete.IdArchiveChain);
+                        var ajaxModel = {};
+                        ajaxModel.Value = new Array(templateToDelete.IdArchiveChain);
+                        ajaxModel.ActionName = "DeleteTemplate";
+                        _this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+                        //(<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequestWithTarget(this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.DELETE_OPTION).get_value(), templateToDelete.IdArchiveChain);
                     }
                 }, 300, 160);
             };
@@ -78,7 +80,7 @@ define(["require", "exports", "App/Models/Templates/TemplateDocumentRepositorySt
              * @param sender
              * @param eventArgs
              */
-            this.btnLog_Clicked = function (sender, eventArgs) {
+            this.btnLog_Clicked = function () {
                 var url = "../Tblt/TbltLog.aspx?Type=Comm&TableName=TemplateDocumentRepository";
                 var userControl = $('#'.concat(_this.uscTemplateDocumentRepositoryId)).data();
                 var selectedTemplate = userControl.getSelectedTemplateDocument();
@@ -86,7 +88,12 @@ define(["require", "exports", "App/Models/Templates/TemplateDocumentRepositorySt
                     url += "&entityUniqueId=".concat(selectedTemplate.UniqueId);
                 }
                 _this._manager.open(url, 'windowLogTemplate', null);
-                _this._manager.center();
+            };
+            this.actionToolbar_ButtonClicked = function (sender, args) {
+                var currentActionButtonItem = args.get_item();
+                var currentAction = _this.toolbarActions().filter(function (item) { return item[0] == currentActionButtonItem.get_value(); })
+                    .map(function (item) { return item[1]; })[0];
+                currentAction();
             };
             this.closeInsertWindow = function (sender, args) {
                 if (args.get_argument() != null) {
@@ -110,6 +117,17 @@ define(["require", "exports", "App/Models/Templates/TemplateDocumentRepositorySt
             }
             this._templateDocumentRepositoryService = new TemplateDocumentRepositoryService(serviceConfiguration);
         }
+        TbltTemplateDocumentRepository.prototype.toolbarActions = function () {
+            var _this = this;
+            var items = [
+                [TbltTemplateDocumentRepository.CREATE_OPTION, function () { return _this.btnAggiungi_Clicked(); }],
+                [TbltTemplateDocumentRepository.DELETE_OPTION, function () { return _this.btnElimina_Clicked(); }],
+                [TbltTemplateDocumentRepository.MODIFY_OPTION, function () { return _this.btnModifica_Clicked(); }],
+                [TbltTemplateDocumentRepository.LOG_OPTION, function () { return _this.btnLog_Clicked(); }],
+                [TbltTemplateDocumentRepository.VIEW_OPTION, function () { return _this.btnVisualizza_Clicked(); }]
+            ];
+            return items;
+        };
         /**
         *------------------------- Methods -----------------------------
         */
@@ -119,19 +137,14 @@ define(["require", "exports", "App/Models/Templates/TemplateDocumentRepositorySt
         TbltTemplateDocumentRepository.prototype.initialize = function () {
             var _this = this;
             this.hideDetailsPanel();
-            this._btnAggiungi = $find(this.btnAggiungiId);
-            this._btnAggiungi.add_clicked(this.btnAggiungi_Clicked);
-            this._btnModifica = $find(this.btnModificaId);
-            this._btnModifica.add_clicked(this.btnModifica_Clicked);
-            this._btnVisualizza = $find(this.btnVisualizzaId);
-            this._btnVisualizza.add_clicked(this.btnVisualizza_Clicked);
-            this._btnElimina = $find(this.btnEliminaId);
-            this._btnElimina.add_clicked(this.btnElimina_Clicked);
-            this._btnLog = $find(this.btnLogId);
-            this._btnLog.add_clicked(this.btnLog_Clicked);
             this._previewSplitter = $find(this.previewSplitterId);
             this._previewPane = $find(this.previewPaneId);
             this._manager = $find(this.managerId);
+            this._ajaxManager = $find(this.ajaxManagerId);
+            this._actionToolbar = $find(this.actionToolbarId);
+            if (this._actionToolbar) {
+                this._actionToolbar.add_buttonClicked(this.actionToolbar_ButtonClicked);
+            }
             this.showLoadingPanel(this.splitterPageId);
             //parte caricamento treeview e dati gia presenti in tabella
             $("#".concat(this.uscTemplateDocumentRepositoryId)).on(uscTemplateDocumentRepository.ON_SELECTED_NODE_EVENT, function (args, data) {
@@ -261,23 +274,17 @@ define(["require", "exports", "App/Models/Templates/TemplateDocumentRepositorySt
          * @param templateDocumentNodeSelected
          */
         TbltTemplateDocumentRepository.prototype.setButtonVisibility = function (templateDocumentNodeSelected) {
-            this._btnAggiungi.set_enabled(!templateDocumentNodeSelected);
-            this._btnModifica.set_enabled(templateDocumentNodeSelected);
-            this._btnElimina.set_enabled(templateDocumentNodeSelected);
-            this._btnVisualizza.set_enabled(templateDocumentNodeSelected);
-            this._btnLog.set_enabled(templateDocumentNodeSelected);
+            this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.CREATE_OPTION).set_enabled(!templateDocumentNodeSelected);
+            this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.MODIFY_OPTION).set_enabled(templateDocumentNodeSelected);
+            this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.DELETE_OPTION).set_enabled(templateDocumentNodeSelected);
+            this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.VIEW_OPTION).set_enabled(templateDocumentNodeSelected);
+            this._actionToolbar.findItemByValue(TbltTemplateDocumentRepository.LOG_OPTION).set_enabled(templateDocumentNodeSelected);
         };
         /**
          * Metodo che resetta lo stato dei pulsanti dato dall'ajaxificazione degli stessi
          */
         TbltTemplateDocumentRepository.prototype.resetButtonsState = function () {
-            this._btnAggiungi = $find(this.btnAggiungiId);
-            this._btnModifica = $find(this.btnModificaId);
-            this._btnVisualizza = $find(this.btnVisualizzaId);
-            this._btnElimina = $find(this.btnEliminaId);
-            //Reset in quanto il pulsante viene ricreato
-            this._btnElimina.add_clicked(this.btnElimina_Clicked);
-            this._btnLog = $find(this.btnLogId);
+            this._actionToolbar = $find(this.actionToolbarId);
         };
         /**
          * Callback per la cancellazione di un template
@@ -332,6 +339,11 @@ define(["require", "exports", "App/Models/Templates/TemplateDocumentRepositorySt
                 uscNotification.showWarningMessage(customMessage);
             }
         };
+        TbltTemplateDocumentRepository.CREATE_OPTION = "create";
+        TbltTemplateDocumentRepository.MODIFY_OPTION = "modify";
+        TbltTemplateDocumentRepository.DELETE_OPTION = "delete";
+        TbltTemplateDocumentRepository.LOG_OPTION = "log";
+        TbltTemplateDocumentRepository.VIEW_OPTION = "view";
         return TbltTemplateDocumentRepository;
     }());
     return TbltTemplateDocumentRepository;

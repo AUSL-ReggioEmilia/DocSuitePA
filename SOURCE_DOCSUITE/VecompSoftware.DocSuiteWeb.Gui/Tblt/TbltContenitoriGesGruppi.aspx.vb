@@ -13,6 +13,7 @@ Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Commons
 Imports APIEntity = VecompSoftware.DocSuiteWeb.Entity.Commons
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.DTO.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 
 Partial Public Class TbltContenitoriGesGruppi
     Inherits CommonBasePage
@@ -60,6 +61,18 @@ Partial Public Class TbltContenitoriGesGruppi
                 End If
             End If
             Return _currentContainer
+        End Get
+    End Property
+
+    Public ReadOnly Property Active As Boolean
+        Get
+            Return GetKeyValue(Of Boolean)("Active")
+        End Get
+    End Property
+
+    Public ReadOnly Property Environment As String
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of String)("Environment", String.Empty)
         End Get
     End Property
 
@@ -152,14 +165,24 @@ Partial Public Class TbltContenitoriGesGruppi
     Private ReadOnly Property AllowedLevels As ICollection(Of WebAPIDto(Of APIEntity.PrivacyLevel))
         Get
             If _allowedLevels Is Nothing Then
-                CurrentPrivacyLevelFinder.ResetDecoration()
-                CurrentPrivacyLevelFinder.MinimumLevel = CurrentContainer.PrivacyLevel
-                CurrentPrivacyLevelFinder.EnablePaging = False
-                _allowedLevels = CurrentPrivacyLevelFinder.DoSearch()
+                _allowedLevels = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentPrivacyLevelFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.MinimumLevel = CurrentContainer.PrivacyLevel
+                        finder.EnablePaging = False
+                        Return finder.DoSearch()
+                    End Function)
             End If
             Return _allowedLevels
         End Get
     End Property
+    Protected ReadOnly Property ShowReadonlySecurityGroups As Boolean
+        Get
+            Dim _readOnlyMode As Boolean = Request.QueryString.GetValueOrDefault("ReadonlySecurityGroups", False)
+            Return _readOnlyMode
+        End Get
+    End Property
+
 
 #End Region
 
@@ -169,7 +192,6 @@ Partial Public Class TbltContenitoriGesGruppi
 
         InitializeAjaxSettings()
         InitializeControls()
-
 
         If Not Page.IsPostBack Then
             Dim menuJson As IDictionary(Of String, MenuNodeModel) = DocSuiteContext.Current.DocSuiteMenuConfiguration
@@ -187,9 +209,137 @@ Partial Public Class TbltContenitoriGesGruppi
             InitializeLocations()
             InitializeRights()
             InitializeGroups(GroupName)
+
         End If
+
+        uscGruppi.Visible = Not ShowReadonlySecurityGroups
+        btnConfermaDiritti.Visible = Not ShowReadonlySecurityGroups
     End Sub
 
+    Protected Sub TbltContenitoriGesGruppi_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
+        Dim currentArguments As String() = e.Argument.Split("|"c)
+
+        Dim node As New RadTreeNode
+        Select Case currentArguments(0).ToLowerInvariant()
+            Case "copy"
+                CopyContainerGroups(Integer.Parse(currentArguments(1)))
+        End Select
+    End Sub
+
+    Private Sub CopyContainerGroups(ByVal containerId As Integer)
+        Dim selectedContainerToCopy As Container = Facade.ContainerFacade.GetById(containerId, False)
+        Dim containerGroup As ContainerGroup
+
+        Dim containersToCopy As IList(Of ContainerGroup) = selectedContainerToCopy.ContainerGroups.Where(Function(x) Not CurrentContainer.ContainerGroups.Any(Function(y) y.Name = x.Name)).ToList()
+
+        For Each container As ContainerGroup In containersToCopy
+            uscGruppi.AddGroup(container.Name)
+            If String.IsNullOrEmpty(uscGruppi.SelectedNode.Value) Then
+                ' Nuovi diritti di un gruppo sul contenitore
+                containerGroup = New ContainerGroup()
+                containerGroup = PrepareContainer(containerGroup)
+
+                containerGroup.ProtocolRightsString = container.ProtocolRightsString
+                containerGroup.DocumentRights = container.DocumentRights
+                containerGroup.ResolutionRights = container.ResolutionRights
+                containerGroup.DocumentSeriesRights = container.DocumentSeriesRights
+                containerGroup.DeskRights = container.DeskRights
+                containerGroup.UDSRights = container.UDSRights
+                containerGroup.FascicleRights = container.FascicleRights
+
+                containerGroup.Container = CurrentContainer
+
+                containerGroup.SecurityGroup = Facade.SecurityGroupsFacade.GetGroupByName(uscGruppi.SelectedNode.Text)
+                If containerGroup.SecurityGroup Is Nothing Then
+                    AjaxAlert("Impossibile salvare la modifica. Il gruppo non esiste.")
+                End If
+
+                Facade.ContainerGroupFacade.Save(containerGroup)
+                CurrentContainer.ContainerGroups.Add(containerGroup)
+                InitializeGroups(uscGruppi.SelectedNode.Text)
+
+            End If
+            Dim grpName As String = GroupName
+            uscGruppi.GroupName = container.Name
+            uscGruppi.Refresh()
+        Next
+
+    End Sub
+    Private Sub LoadContainers()
+
+        Dim finder As New Facade.ContainerFinder()
+        finder.Name = String.Empty
+
+        If Not String.IsNullOrEmpty(Environment) Then
+            finder.LocationTypeIn = {DirectCast([Enum].Parse(GetType(LocationTypeEnum), Environment, True), LocationTypeEnum)}
+        End If
+
+        Dim containers As ICollection(Of Container) = finder.List()
+        For Each item As Container In containers
+
+            If Active = True AndAlso item.IsActive = 1 Then
+                AddNode(item)
+            End If
+            If Active = False AndAlso item.IsActive = 0 Then
+                AddNode(item)
+            End If
+
+        Next
+
+        If Active = True Then
+            For Each item As Container In containers
+                If item.IsActive = 1 Then
+                    AddNode(item)
+                End If
+            Next
+        End If
+
+        If Active = False Then
+            For Each item As Container In containers
+
+                If item.IsActive = 0 Then
+                    AddNode(item)
+                End If
+
+            Next
+        End If
+
+    End Sub
+
+    Private Sub AddNode(ByVal container As Container)
+        Dim currentNode As RadTreeNode = rtvContainersCopy.FindNodeByValue(container.Id.ToString())
+        If currentNode IsNot Nothing Then
+            Exit Sub
+        End If
+
+        Dim nodeToAdd As RadTreeNode = CreateNode(container)
+        If nodeToAdd.Value = CurrentContainer.Id.ToString Then
+            nodeToAdd.Enabled = False
+        End If
+        rtvContainersCopy.Nodes(0).Nodes.Add(nodeToAdd)
+    End Sub
+
+    Private Function CreateNode(ByVal container As Container) As RadTreeNode
+        Dim vNode As New RadTreeNode()
+        vNode.Text = container.Name
+        vNode.Value = container.Id.ToString()
+        If container.DocmLocation Is Nothing AndAlso container.DocumentSeriesLocation Is Nothing AndAlso container.ProtLocation Is Nothing AndAlso
+            container.ReslLocation Is Nothing AndAlso container.UDSLocation Is Nothing Then
+            vNode.Text = String.Concat(vNode.Text, " (*)")
+            vNode.ToolTip = "Nessun deposito documentale abilitato"
+        End If
+
+        vNode.ImageUrl = ImagePath.SmallBoxOpen
+        If Not Convert.ToBoolean(container.IsActive) Then
+            vNode.CssClass = "notActive"
+        End If
+        If container.ContainerGroups.Any(Function(x) x.SecurityGroup Is Nothing) Then
+            vNode.ToolTip = "A questo nodo non è associato un gruppo di sicurezza"
+        End If
+
+        vNode.Attributes.Add("UniqueId", container.UniqueId.ToString())
+        Return vNode
+    End Function
     Private Sub BtnConfermaDirittiClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnConfermaDiritti.Click
 
         If uscGruppi.SelectedNode Is Nothing Then
@@ -256,6 +406,13 @@ Partial Public Class TbltContenitoriGesGruppi
 
     End Sub
 
+    Private Sub btnCopiaClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnCopia.Click
+        Dim containerGroup As Object = uscGruppi.CurrentGroups
+        Dim currentContainerGroup As Object = CurrentContainer.ContainerGroups
+        LoadContainers()
+        AjaxManager.ResponseScripts.Add("OpenContenitoriCopyWindow();")
+    End Sub
+
     Private Sub UscGruppiNodeClick(ByVal sender As Object, ByVal e As Telerik.Web.UI.RadTreeNodeEventArgs) Handles uscGruppi.NodeClick
         Dim group As ContainerGroup = CType(uscGruppi.GetGroup(e.Node.Text), ContainerGroup)
         If (group Is Nothing) Then
@@ -283,10 +440,10 @@ Partial Public Class TbltContenitoriGesGruppi
         uscGruppi.CurrentGroupFacade = Facade.ContainerGroupFacade
         uscGruppi.GroupName = GroupName
         uscGruppi.ContainerImageURL = ImagePath.SmallBoxOpen
-
     End Sub
 
     Private Sub InitializeAjaxSettings()
+        AddHandler AjaxManager.AjaxRequest, AddressOf TbltContenitoriGesGruppi_AjaxRequest
         AjaxManager.AjaxSettings.AddAjaxSetting(uscGruppi, pnlDiritti)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlDiritti)
         AjaxManager.AjaxSettings.AddAjaxSetting(uscGruppi, pnlPrivacy)
@@ -294,6 +451,11 @@ Partial Public Class TbltContenitoriGesGruppi
         AjaxManager.AjaxSettings.AddAjaxSetting(uscGruppi, btnConfermaDiritti)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, btnConfermaDiritti)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConfermaDiritti, uscGruppi)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnConfirmCopyContainer, windowContainersCopy)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnCopia, rtvContainersCopy)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnConfirmCopyContainer, rtvContainersCopy)
+        AjaxManager.AjaxSettings.AddAjaxSetting(windowContainersCopy, rtvContainersCopy)
+
     End Sub
 
     Private Sub InitializeLocations()
@@ -353,16 +515,64 @@ Partial Public Class TbltContenitoriGesGruppi
         pnlDiritti.Visible = False
         pnlPrivacy.Visible = False
         btnConfermaDiritti.Visible = False
+
+        If ShowReadonlySecurityGroups Then
+            SetReadonlyCheckboxes()
+        End If
+
+    End Sub
+    Private Sub SetReadonlyCheckboxes()
+        For Each listItem As ListItem In cblProt.Items
+            listItem.Enabled = False
+        Next
+
+        For Each listItem As ListItem In cblDocm.Items
+            listItem.Enabled = False
+        Next
+
+        For Each listItem As ListItem In cblResl.Items
+            listItem.Enabled = False
+        Next
+
+        For Each listItem As ListItem In cblSeries.Items
+            listItem.Enabled = False
+        Next
+
+        For Each listItem As ListItem In cblDesks.Items
+            listItem.Enabled = False
+        Next
+
+        For Each listItem As ListItem In cblUDS.Items
+            listItem.Enabled = False
+        Next
+
+        For Each listItem As ListItem In cblFascicles.Items
+            listItem.Enabled = False
+        Next
     End Sub
 
     Private Sub InitializeProtocolRight(distributionEnabled As Boolean)
         cblProt.Items.Clear()
+        Dim text As String
         For Each val As ProtocolContainerRightPositions In [Enum].GetValues(GetType(ProtocolContainerRightPositions))
             If (val = ProtocolContainerRightPositions.DocDistribution AndAlso Not distributionEnabled) OrElse
                (val = ProtocolContainerRightPositions.Privacy AndAlso Not DocSuiteContext.Current.SimplifiedPrivacyEnabled) Then
                 Continue For
             End If
-            AddItem(cblProt, val.GetDescription(), val, False)
+            If Not ProtocolEnv.IsInteropEnabled AndAlso (val = ProtocolContainerRightPositions.InteropIn OrElse val = ProtocolContainerRightPositions.InteropOut) Then
+                Continue For
+            End If
+            If Not ProtocolEnv.IsPECEnabled AndAlso val = ProtocolContainerRightPositions.PECIn Then
+                Continue For
+            End If
+            If val = ProtocolContainerRightPositions.PECOut AndAlso Not ProtocolEnv.IsPECEnabled AndAlso Not ProtocolEnv.TNoticeEnabled Then
+                Continue For
+            End If
+            text = val.GetDescription()
+            If val = ProtocolContainerRightPositions.PECOut AndAlso ProtocolEnv.TNoticeEnabled Then
+                text = If(ProtocolEnv.IsPECEnabled, $"{val.GetDescription()} & Invio TNotice", "Invio TNotice")
+            End If
+            AddItem(cblProt, text, val, False)
         Next
     End Sub
 
@@ -489,7 +699,7 @@ Partial Public Class TbltContenitoriGesGruppi
     Private Sub InitializeRightsPanel(ByVal node As RadTreeNode)
         Dim nodeVisibility As Boolean = Not node Is Nothing AndAlso Not node.ParentNode Is Nothing
         pnlDiritti.Visible = nodeVisibility
-        btnConfermaDiritti.Visible = nodeVisibility
+        btnConfermaDiritti.Visible = nodeVisibility AndAlso Not ShowReadonlySecurityGroups
         If nodeVisibility AndAlso DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso CurrentContainer.PrivacyEnabled Then
             pnlPrivacy.Visible = nodeVisibility
         End If
@@ -540,6 +750,22 @@ Partial Public Class TbltContenitoriGesGruppi
         For Each li As ListItem In cblSeries.Items
             li.Selected = False
         Next li
+
+        'Inizializzazione pannello Archivi
+        showPanel = (CurrentContainer.UDSLocation) IsNot Nothing
+        lblUDS.Visible = showPanel
+        cblUDS.Visible = showPanel
+        For Each li As ListItem In cblUDS.Items
+            li.Selected = False
+        Next li
+
+        showPanel = (CurrentContainer.DeskLocation) IsNot Nothing
+        lblDesks.Visible = showPanel
+        cblDesks.Visible = showPanel
+        For Each li As ListItem In cblDesks.Items
+            li.Selected = False
+        Next li
+
     End Sub
 
     Private Function CheckPageHasRightsSelected() As Boolean

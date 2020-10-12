@@ -24,6 +24,9 @@ namespace VecompSoftware.DocSuiteWeb.API
         string GetDocumentTypes();
 
         [OperationContract]
+        string GetServiceCategories();
+
+        [OperationContract]
         string InsertProtocol(string protocolDTO, string taskDTO);
 
         [OperationContract]

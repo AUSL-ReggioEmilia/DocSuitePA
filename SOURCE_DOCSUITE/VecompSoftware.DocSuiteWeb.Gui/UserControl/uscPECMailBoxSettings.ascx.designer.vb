@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscPECMailBoxSettings
-    
+
     '''<summary>
     '''rwPECMailBoxSettings control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rwPECMailBoxSettings As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''pnlPageContent control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlPageContent As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblPECMailBoxId control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblPECMailBoxId As Global.System.Web.UI.WebControls.HiddenField
-    
+
     '''<summary>
     '''txtMailboxName control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtMailboxName As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtMailboxNameRequireValidator control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtMailboxNameRequireValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''txtUsername control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtUsername As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtUsernameRequireValidator control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtUsernameRequireValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''txtPassword control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtPassword As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtPasswordRequireValidator control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtPasswordRequireValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''chkIsInterop control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkIsInterop As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkIsProtocol control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkIsProtocol As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkIsPublicProtocol control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkIsPublicProtocol As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''ddlLocation control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlLocation As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''ddlLocationRequireValidator control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlLocationRequireValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''ddlINServerType control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlINServerType As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''txtINServerName control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtINServerName As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtINPort control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtINPort As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtINPortRequireValidator control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtINPortRequireValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''chkINSsl control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkINSsl As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''txtOUTServerName control.
     '''</summary>
@@ -192,7 +192,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOUTServerName As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtOUTPort control.
     '''</summary>
@@ -201,7 +201,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOUTPort As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtOUTPortRequireValidator control.
     '''</summary>
@@ -210,7 +210,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOUTPortRequireValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''chkOUTSsl control.
     '''</summary>
@@ -219,7 +219,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOUTSsl As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkManaged control.
     '''</summary>
@@ -228,7 +228,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkManaged As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkUnmanaged control.
     '''</summary>
@@ -237,7 +237,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkUnmanaged As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkIsHandleEnabled control.
     '''</summary>
@@ -246,7 +246,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkIsHandleEnabled As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''ddlProfileAdd control.
     '''</summary>
@@ -255,7 +255,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlProfileAdd As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''ddlJeepServiceIn control.
     '''</summary>
@@ -264,7 +264,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlJeepServiceIn As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''ddlJeepServiceOut control.
     '''</summary>
@@ -273,7 +273,7 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlJeepServiceOut As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''ddlInvoiceType control.
     '''</summary>
@@ -282,16 +282,16 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlInvoiceType As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
-    '''chkHumanEnabled control.
+    '''chkLoginError control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents chkHumanEnabled As Global.System.Web.UI.WebControls.CheckBox
-    
+    Protected WithEvents chkLoginError As Global.System.Web.UI.WebControls.CheckBox
+
     '''<summary>
     '''btnSave control.
     '''</summary>

@@ -38,7 +38,7 @@ Partial Public Class UDSAutorizza
         End Get
     End Property
 
-    Private ReadOnly Property CurrentRepositoryRigths As UDSRepositoryRightsUtil
+    Private ReadOnly Property CurrentRepositoryRights As UDSRepositoryRightsUtil
         Get
             If _currentRepositoryRigths Is Nothing Then
                 _currentRepositoryRigths = New UDSRepositoryRightsUtil(CurrentUDSRepository, DocSuiteContext.Current.User.FullUserName, UDSSource)
@@ -125,7 +125,7 @@ Partial Public Class UDSAutorizza
 
     Private Sub Initialize()
 
-        If Not CurrentRepositoryRigths.IsAuthorizable Then
+        If Not CurrentRepositoryRights.IsAuthorizable Then
             Dim errorMessage As String = "Non è possibile visualizzare l'Archivio richiesto. Verificare se si dispone di sufficienti autorizzazioni."
             Throw New DocSuiteException(String.Format("Archivio: {0} n. {1}/{2:0000000} ", UDSSource.UDSModel.Model.Title, UDSSource.Year, UDSSource.Number, errorMessage))
         End If

@@ -884,11 +884,11 @@ Public Class Segnatura
 
         Dim descrizioneElement As XmlElement = _xmlSignature.CreateElement("Descrizione")
 
-        Dim doc As New BiblosDocumentInfo(_protocol.Location.DocumentServer, _protocol.Location.ProtBiblosDSDB, _protocol.IdDocument.Value)
+        Dim doc As New BiblosDocumentInfo(_protocol.Location.ProtBiblosDSDB, _protocol.IdDocument.Value)
         If Not IsNothing(doc) Then
             descrizioneElement.AppendChild(BuildDocumento(doc.Name, _protocol.ProtocolObject))
             If _protocol.IdAttachments.HasValue And _protocol.IdAttachments.Value > 0 Then
-                Dim attachments As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(_protocol.Location.DocumentServer, _protocol.Location.ProtBiblosDSDB, _protocol.IdAttachments.Value)
+                Dim attachments As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(_protocol.Location.ProtBiblosDSDB, _protocol.IdAttachments.Value)
                 If attachments.Count > 0 Then
                     Dim attachsElement As XmlNode = descrizioneElement.AppendChild(_xmlSignature.CreateElement("Allegati"))
                     For Each attachment As BiblosDocumentInfo In attachments

@@ -7,6 +7,7 @@ Imports NHibernate.SqlCommand
 Imports VecompSoftware.NHibernateManager.Dao
 Imports VecompSoftware.Helpers.NHibernate
 Imports NHibernate.Linq
+Imports VecompSoftware.NHibernateManager
 
 Public Class NHibernateRoleDao
     Inherits BaseNHibernateDao(Of Role)
@@ -88,31 +89,19 @@ Public Class NHibernateRoleDao
         Return criteria.List(Of Role)()
     End Function
     Public Function RoleUsedProtocol(ByRef role As Role) As Boolean
-        Dim sTmp As String = ConnectionName
-        ConnectionName = System.Enum.GetName(GetType(EnvironmentDataCode), EnvironmentDataCode.ProtDB)
-
-        Dim query As String = "SELECT COUNT(PR.Id.Id) FROM ProtocolRole AS PR WHERE PR.Id.Id = " & role.Id
-        Dim hQuery As IQuery = NHibernateSession.CreateQuery(query)
-
-        If sTmp <> ConnectionName Then
-            ConnectionName = sTmp
-        End If
-
-        Return hQuery.UniqueResult(Of Long)() > 0
+        Dim criteria As ICriteria = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").CreateCriteria(Of ProtocolRole)()
+        criteria.CreateAlias("Role", "R", JoinType.InnerJoin)
+        criteria.Add(Restrictions.Eq("R.Id", role.Id))
+        criteria.SetProjection(Projections.Count("Id"))
+        Return criteria.UniqueResult(Of Long)() > 0
     End Function
 
     Public Function RoleUsedResolution(ByRef role As Role) As Boolean
-        Dim sTmp As String = ConnectionName
-        ConnectionName = "ReslDB"
-
-        Dim query As String = "SELECT COUNT(RR.Id.IdRole) FROM ResolutionRole AS RR WHERE RR.Id.IdRole = " & role.Id
-        Dim hQuery As IQuery = NHibernateSession.CreateQuery(query)
-
-        If sTmp <> ConnectionName Then
-            ConnectionName = sTmp
-        End If
-
-        Return hQuery.UniqueResult(Of Long)() > 0
+        Dim criteria As ICriteria = NHibernateSessionManager.Instance.GetSessionFrom("ReslDB").CreateCriteria(Of ResolutionRole)()
+        criteria.CreateAlias("Role", "R", JoinType.InnerJoin)
+        criteria.Add(Restrictions.Eq("R.Id", role.Id))
+        criteria.SetProjection(Projections.Count("Id"))
+        Return criteria.UniqueResult(Of Long)() > 0
     End Function
 
     Public Function RoleUsedDocument(ByRef role As Role) As Boolean
@@ -345,8 +334,8 @@ Public Class NHibernateRoleDao
         Return criteria.List(Of Role)()
     End Function
 
-    Public Function GetRolesBySG(idGroupIn As IList(Of Integer), env As DSWEnvironment, rightPosition As Integer?, isActive As Boolean?, name As String, root As Boolean?, parent As Role, Optional tenantId As Guid? = Nothing, Optional roleUserType As RoleUserType? = Nothing) As IList(Of Role)
-        Dim criteria As ICriteria = CreateGetRoleCriteria(env, rightPosition, isActive, name, root, parent, False, tenantId, roleUserType)
+    Public Function GetRolesBySG(idGroupIn As IList(Of Integer), env As DSWEnvironment, rightPosition As Integer?, isActive As Boolean?, name As String, root As Boolean?, parent As Role, Optional tenantId As Guid? = Nothing, Optional roleUserType As RoleUserType? = Nothing, Optional multitenantEnabled As Boolean = False) As IList(Of Role)
+        Dim criteria As ICriteria = CreateGetRoleCriteria(env, rightPosition, isActive, name, root, parent, False, tenantId, roleUserType, multitenantEnabled:=multitenantEnabled)
         criteria.CreateAliasIfNotExists("R.RoleGroups", "RG")
         criteria.Add(Restrictions.In("RG.SecurityGroup.Id", idGroupIn.ToArray()))
 

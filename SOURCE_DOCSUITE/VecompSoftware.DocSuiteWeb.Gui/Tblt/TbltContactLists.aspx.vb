@@ -2,6 +2,7 @@
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
 Imports VecompSoftware.Services.Logging
 
@@ -34,6 +35,11 @@ Partial Public Class TbltContactLists
 
 #Region "Events"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
+
         InitializeAjax()
         If Not Page.IsPostBack Then
             Initialize()

@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="Dossier - Visualizza" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="DossierVisualizza.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.DossierVisualizza" %>
 
-<%@ Register Src="../UserControl/uscDossier.ascx" TagName="uscDossier" TagPrefix="uc" %>
-<%@ Register Src="../UserControl/uscDossierFolders.ascx" TagName="uscDossierFolders" TagPrefix="uc" %>
+<%@ Register Src="~/UserControl/uscDossier.ascx" TagName="uscDossier" TagPrefix="uc" %>
+<%@ Register Src="~/UserControl/uscDossierFolders.ascx" TagName="uscDossierFolders" TagPrefix="uc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 
 
@@ -23,6 +23,8 @@
                     dossierVisualizza.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>";
                     dossierVisualizza.btnDocumentiId = "<%=btnDocumenti.ClientID%>";
                     dossierVisualizza.btnModificaId = "<%=btnModifica.ClientID%>";
+                    dossierVisualizza.btnSendToRolesId = "<%=btnSendToRoles.ClientID%>";
+                    dossierVisualizza.btnSendToSecretariesId = "<%=btnSendToSecretaries.ClientID%>";
                     dossierVisualizza.btnCloseId = "<%=btnClose.ClientID%>";
                     dossierVisualizza.btnAutorizzaId = "<%=btnAutorizza.ClientID%>";
                     dossierVisualizza.btnAvviaWorkflowId = "<%=btnWorkflow.ClientID%>";
@@ -30,7 +32,6 @@
                     dossierVisualizza.windowStartWorkflowId = "<%= windowStartWorkflow.ClientID %>";
                     dossierVisualizza.btnLogId = "<%=btnLog.ClientID%>";
                     dossierVisualizza.btnInsertiId = "<%=btnInserti.ClientID%>";
-                    dossierVisualizza.logEnabled = "<%= IsLogEnabled %>";
                     dossierVisualizza.miscellaneaLocationEnabled = JSON.parse("<%= IsMiscellaneaLocationEnabled %>".toLowerCase());
                     dossierVisualizza.actionPage = "<%= Action %>";
                     dossierVisualizza.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
@@ -40,7 +41,10 @@
                     dossierVisualizza.btnCompleteWorkflowId = "<%= btnCompleteWorkflow.ClientID%>";
                     dossierVisualizza.workflowActivityId = "<%= IdWorkflowActivity%>";
                     dossierVisualizza.workflowEnabled = "<%= WorkflowEnabled%>";
+                    dossierVisualizza.sendToSecretariesEnabled = "<%= DossierSendToSecretariesEnabled%>";
                     dossierVisualizza.radNotificationId = "<%= radNotificationInfo.ClientID%>";
+                    dossierVisualizza.currentFascicleId = "<%= IdFascicle %>";
+                    dossierVisualizza.isWindowPopupEnable = <%= IsWindowPopupEnable.ToString().ToLower() %>;
                     dossierVisualizza.initialize();
                 });
             });
@@ -74,7 +78,7 @@
                 </telerik:RadPageLayout>
             </telerik:RadPane>
             <telerik:RadSplitBar runat="server" CollapseMode="None"></telerik:RadSplitBar>
-            <telerik:RadPane runat="server" ID="dossierPane" Collapsed="false">
+            <telerik:RadPane runat="server" ID="dossierPane" Collapsed="true">
                 <telerik:RadPageLayout runat="server" ID="pageContent" Height="100%" HtmlTag="Div">
                     <Rows>
                         <telerik:LayoutRow Height="100%" HtmlTag="Div" Style="padding-bottom: 30px;">
@@ -85,14 +89,16 @@
                         <telerik:LayoutRow Height="30px" Style="bottom: 0; position: absolute;">
                             <Content>
                                 <asp:Panel runat="server" ID="footer" CssClass=".footer-buttons-wrapper">
-                                    <telerik:RadButton ID="btnDocumenti" runat="server" Width="150px" Text="Documenti" AutoPostBack="false"></telerik:RadButton>
+                                    <telerik:RadButton ID="btnDocumenti" runat="server" Width="150px" Text="Documenti" AutoPostBack="false" d></telerik:RadButton>
                                     <telerik:RadButton ID="btnModifica" runat="server" Width="150px" Text="Modifica" AutoPostBack="false"></telerik:RadButton>
+                                    <telerik:RadButton ID="btnSendToRoles" runat="server" Width="150px" Text="Invia settori"></telerik:RadButton>
+                                    <telerik:RadButton ID="btnSendToSecretaries" runat="server" Width="150px" Text="Invia segreterie"></telerik:RadButton>
                                     <telerik:RadButton ID="btnClose" runat="server" Width="150px" Text="Chiudi" Visible="false"></telerik:RadButton>
-                                    <telerik:RadButton ID="btnAutorizza" runat="server" Width="150px" Text="Autorizza" Visible="false" />
+                                    <telerik:RadButton ID="btnAutorizza" runat="server" Width="150px" Text="Autorizza" AutoPostBack="false" />
                                     <telerik:RadButton ID="btnWorkflow" runat="server" Width="150px" Text="Avvia attività" AutoPostBack="false" Visible="false" />
-                                    <telerik:RadButton ID="btnLog" runat="server" Width="150px" Text="Log"></telerik:RadButton>
                                     <telerik:RadButton ID="btnCompleteWorkflow" runat="server" Width="150" Text="Stato attività" Visible="false" />
                                     <telerik:RadButton ID="btnInserti" runat="server" Width="150px" Text="Inserti" AutoPostBack="false"></telerik:RadButton>
+                                    <telerik:RadButton ID="btnLog" runat="server" Width="150px" Text="Log"></telerik:RadButton>
                                 </asp:Panel>
                             </Content>
                         </telerik:LayoutRow>

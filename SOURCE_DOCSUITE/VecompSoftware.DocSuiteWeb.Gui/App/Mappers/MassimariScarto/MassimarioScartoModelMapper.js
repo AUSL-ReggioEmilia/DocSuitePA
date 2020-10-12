@@ -26,6 +26,7 @@ define(["require", "exports", "App/Mappers/BaseMapper", "App/Models/MassimariSca
             toMap.Status = source.Status;
             toMap.Name = source.Name;
             toMap.Code = source.Code;
+            toMap.FullCode = source.FullCode;
             toMap.Note = source.Note;
             toMap.ConservationPeriod = source.ConservationPeriod;
             toMap.StartDate = source.StartDate;

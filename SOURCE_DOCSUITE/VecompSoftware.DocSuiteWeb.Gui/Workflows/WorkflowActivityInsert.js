@@ -53,6 +53,8 @@ define(["require", "exports", "Workflows/WorkflowActivityInsertBase", "App/Model
                 _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER] = _this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER, ArgumentType.Json, JSON.stringify(workflowAccountModel));
                 _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME] = _this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME, ArgumentType.PropertyString, "DocSuite");
                 _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION] = _this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION, ArgumentType.PropertyString, _this.docSuiteVersion);
+                //TenantAOO
+                _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = _this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, ArgumentType.PropertyGuid, _this.idTenantAOO);
                 _this.workflowStartService.startWorkflow(_this._workflowStartModel, function (data) {
                     _this._btnConfirm.set_enabled(true);
                     window.location.href = "../User/UserWorkflow.aspx?Type=Comm";
@@ -111,7 +113,14 @@ define(["require", "exports", "Workflows/WorkflowActivityInsertBase", "App/Model
                     var comboItem = new Telerik.Web.UI.DropDownListItem();
                     comboItem.set_text(workflowRepository.Name);
                     comboItem.set_value(workflowRepository.UniqueId);
-                    _this._ddlWorkflowActivity.get_items().add(comboItem);
+                    if (_this.workflowRepositoriesResult.length == 1) {
+                        _this._ddlWorkflowActivity.get_items().insert(0, comboItem);
+                        _this._ddlWorkflowActivity.findItemByValue(comboItem.get_value()).select();
+                        _this._ddlWorkflowActivity.set_enabled(false);
+                    }
+                    else {
+                        _this._ddlWorkflowActivity.get_items().add(comboItem);
+                    }
                 }
                 _this._loadingPanel.hide(_this.ddlWorkflowActivityId);
             }, function (exception) {
@@ -135,7 +144,10 @@ define(["require", "exports", "Workflows/WorkflowActivityInsertBase", "App/Model
                 workflowDocumentModel.Documents.push(obj);
             }
             referenceModel.ReferenceModel = JSON.stringify(workflowDocumentModel);
-            this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL, ArgumentType.Json, JSON.stringify(referenceModel));
+            var document = JSON.parse(referenceModel.ReferenceModel);
+            if (document.Documents.length != 0) {
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL, ArgumentType.Json, JSON.stringify(referenceModel));
+            }
         };
         WorkflowActivityInsert.prototype.addContact = function () {
             var uscContacts = $("#".concat(this.uscSettoriId)).data();

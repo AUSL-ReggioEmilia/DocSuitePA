@@ -3,70 +3,22 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 
 <Serializable()>
 Partial Public Class Protocol
-    Inherits DomainObject(Of YearNumberCompositeKey)
+    Inherits DomainObject(Of Guid)
     Implements IAuditable
     Implements IFormattable
+    Implements ISupportTenant
 
 #Region " Fields "
 
-    Private _location As Location
-    Private _attachLocation As Location
-    Private _container As Container
-    Private _category As Category
-    Private _type As ProtocolType
-    Private _docType As DocumentType
-    Private _object As String
-    Private _documentDate As Date?
-    Private _documentProtocol As String
-    Private _lastChangedUser As String
-    Private _lastChangedDate As DateTimeOffset?
-    Private _registrationUser As String
-    Private _registrationDate As DateTimeOffset
-    Private _idDocument As Integer?
-    Private _idAttachments As Integer?
-    Private _documentCode As String
-    Private _documents As IList(Of Document)
-    Private _lastChangedReason As String
-    Private _alternativeRecipient As String
     Private _checkPublication As String
-    Private _roles As IList(Of ProtocolRole)
-    Private _roleUsers As IList(Of ProtocolRoleUser)
-    Private _protocolLinked As IList(Of Protocol)
-    Private _protocolLinkedTo As IList(Of Protocol)
-    Private _recipients As IList(Of Recipient)
-    Private _contacts As IList(Of ProtocolContact)
-    Private _manualContacts As IList(Of ProtocolContactManual)
-    Private _contactIssues As IList(Of ProtocolContactIssue)
-    Private _logs As IList(Of ProtocolLog)
-    Private _pecMails As IList(Of PECMail)
     Private _advancedProtocol As AdvancedProtocol
-    Private _docAreaImportStatus As DocAreaImportStatus
-    Private _handlerDate As Date?
-    'DOCAREA
-    Private _isModified As Nullable(Of Boolean)
-    Private _idHummingbird As Nullable(Of Long)
-    'Change Object
-    Private _objectChangeReason As String
-    'Journal
-    Private _journalDate As Date?
-    Private _journalLog As ProtocolJournalLog
-    'Check
-    Private _checkDate As Date?
-    'Conservation
     Private _conservationStatus As Char?
-    Private _lastConservationDate As Date?
-    Private _hasConservatedDocs As Boolean = False
-    'TOPMEDIA
-    Private _tdIdDocument As Integer?
-    Private _tdError As String
-
-    Private _idProtocolKind As Short
 
 #End Region
 
 #Region " Properties "
 
-    Public Overridable Property AccountingDate() As Date?
+    Public Overridable Property AccountingDate As Date?
         Get
             Return AdvanceProtocol.AccountingDate
         End Get
@@ -75,7 +27,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property AccountingNumber() As Integer?
+    Public Overridable Property AccountingNumber As Integer?
         Get
             Return AdvanceProtocol.AccountingNumber
         End Get
@@ -84,16 +36,16 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property AccountingYear() As Nullable(Of Short)
+    Public Overridable Property AccountingYear As Short?
         Get
             Return AdvanceProtocol.AccountingYear
         End Get
-        Set(ByVal value As Nullable(Of Short))
+        Set(ByVal value As Short?)
             AdvanceProtocol.AccountingYear = value
         End Set
     End Property
 
-    Public Overridable Property AccountingSectional() As String
+    Public Overridable Property AccountingSectional As String
         Get
             Return AdvanceProtocol.AccountingSectional
         End Get
@@ -111,7 +63,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property Package() As Integer?
+    Public Overridable Property Package As Integer?
         Get
             Return AdvanceProtocol.Package
         End Get
@@ -120,7 +72,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property PackageOrigin() As Char
+    Public Overridable Property PackageOrigin As Char
         Get
             Return AdvanceProtocol.PackageOrigin
         End Get
@@ -129,7 +81,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property PackageIncremental() As Integer?
+    Public Overridable Property PackageIncremental As Integer?
         Get
             Return AdvanceProtocol.PackageIncremental
         End Get
@@ -138,7 +90,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property PackageLot() As Integer?
+    Public Overridable Property PackageLot As Integer?
         Get
             Return AdvanceProtocol.PackageLot
         End Get
@@ -147,7 +99,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property InvoiceDate() As Date?
+    Public Overridable Property InvoiceDate As Date?
         Get
             Return AdvanceProtocol.InvoiceDate
         End Get
@@ -156,7 +108,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property InvoiceNumber() As String
+    Public Overridable Property InvoiceNumber As String
         Get
             Return AdvanceProtocol.InvoiceNumber
         End Get
@@ -174,30 +126,17 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property Year() As Short
-        Get
-            Return Id.Year.Value
-        End Get
-        Set(ByVal value As Short)
-            Id.Year = value
-        End Set
-    End Property
+    Public Overridable Property Year As Short
 
-    Public Overridable Property Number() As Integer
-        Get
-            Return Id.Number.Value
-        End Get
-        Set(ByVal value As Integer)
-            Id.Number = value
-        End Set
-    End Property
+    Public Overridable Property Number As Integer
 
     Public Overridable Property AdvanceProtocol() As AdvancedProtocol
         Get
             If _advancedProtocol Is Nothing Then
                 _advancedProtocol = New AdvancedProtocol()
-                _advancedProtocol.Id = New YearNumberCompositeKey(Year, Number)
-                _advancedProtocol.UniqueIdProtocol = Me.UniqueId
+                _advancedProtocol.Protocol = Me
+                _advancedProtocol.Year = Year
+                _advancedProtocol.Number = Number
             End If
             Return _advancedProtocol
         End Get
@@ -207,177 +146,44 @@ Partial Public Class Protocol
     End Property
 
     Public Overridable Property RegistrationDate() As DateTimeOffset Implements IAuditable.RegistrationDate
-        Get
-            Return _registrationDate
-        End Get
-        Set(ByVal value As DateTimeOffset)
-            _registrationDate = value
-        End Set
-    End Property
 
-    Public Overridable Property AttachLocation() As Location
-        Get
-            Return _attachLocation
-        End Get
-        Set(ByVal value As Location)
-            _attachLocation = value
-        End Set
-    End Property
+    Public Overridable Property AttachLocation As Location
 
-    Public Overridable Property Location() As Location
-        Get
-            Return _location
-        End Get
-        Set(ByVal value As Location)
-            _location = value
-        End Set
-    End Property
+    Public Overridable Property Location As Location
 
-    Public Overridable Property Container() As Container
-        Get
-            Return _container
-        End Get
-        Set(ByVal value As Container)
-            _container = value
-        End Set
-    End Property
+    Public Overridable Property Container As Container
 
-    Public Overridable Property Category() As Category
-        Get
-            Return _category
-        End Get
-        Set(ByVal value As Category)
-            _category = value
-        End Set
-    End Property
+    Public Overridable Property Category As Category
 
-    Public Overridable Property Roles() As IList(Of ProtocolRole)
-        Get
-            Return _roles
-        End Get
-        Set(ByVal value As IList(Of ProtocolRole))
-            _roles = value
-        End Set
-    End Property
+    Public Overridable Property Roles As IList(Of ProtocolRole)
 
-    Public Overridable Property RoleUsers() As IList(Of ProtocolRoleUser)
-        Get
-            Return _roleUsers
-        End Get
-        Set(ByVal value As IList(Of ProtocolRoleUser))
-            _roleUsers = value
-        End Set
-    End Property
+    Public Overridable Property RoleUsers As IList(Of ProtocolRoleUser)
 
-    Public Overridable Property ProtocolObject() As String
-        Get
-            Return _object
-        End Get
-        Set(ByVal value As String)
-            _object = value
-        End Set
-    End Property
+    Public Overridable Property ProtocolObject As String
 
-    Public Overridable Property DocumentDate() As Date?
-        Get
-            Return _documentDate
-        End Get
-        Set(ByVal value As Date?)
-            _documentDate = value
-        End Set
-    End Property
+    Public Overridable Property DocumentDate As Date?
 
-    Public Overridable Property DocumentProtocol() As String
-        Get
-            Return _documentProtocol
-        End Get
-        Set(ByVal value As String)
-            _documentProtocol = value
-        End Set
-    End Property
+    Public Overridable Property DocumentProtocol As String
 
-    Public Overridable Property Type() As ProtocolType
-        Get
-            Return _type
-        End Get
-        Set(ByVal value As ProtocolType)
-            _type = value
-        End Set
-    End Property
+    Public Overridable Property Type As ProtocolType
 
-    Public Overridable Property DocumentType() As DocumentType
-        Get
-            Return _docType
-        End Get
-        Set(ByVal value As DocumentType)
-            _docType = value
-        End Set
-    End Property
+    Public Overridable Property DocumentType As DocumentType
 
-    Public Overridable Property Documents() As IList(Of Document)
-        Get
-            Return _documents
-        End Get
-        Set(ByVal value As IList(Of Document))
-            _documents = value
-        End Set
-    End Property
+    Public Overridable Property Documents As IList(Of Document)
 
     Public Overridable Property LastChangedDate As DateTimeOffset? Implements IAuditable.LastChangedDate
-        Get
-            Return _lastChangedDate
-        End Get
-        Set(ByVal value As DateTimeOffset?)
-            _lastChangedDate = value
-        End Set
-    End Property
 
     Public Overridable Property LastChangedUser As String Implements IAuditable.LastChangedUser
-        Get
-            Return _lastChangedUser
-        End Get
-        Set(ByVal value As String)
-            _lastChangedUser = value
-        End Set
-    End Property
 
-    Public Overridable Property RegistrationUser() As String Implements IAuditable.RegistrationUser
-        Get
-            Return _registrationUser
-        End Get
-        Set(ByVal value As String)
-            _registrationUser = value
-        End Set
-    End Property
+    Public Overridable Property RegistrationUser As String Implements IAuditable.RegistrationUser
 
-    Public Overridable Property IdDocument() As Integer?
-        Get
-            Return _idDocument
-        End Get
-        Set(ByVal value As Integer?)
-            _idDocument = value
-        End Set
-    End Property
+    Public Overridable Property IdDocument As Integer?
 
-    Public Overridable Property IdAttachments() As Integer?
-        Get
-            Return _idAttachments
-        End Get
-        Set(ByVal value As Integer?)
-            _idAttachments = value
-        End Set
-    End Property
+    Public Overridable Property IdAttachments As Integer?
 
-    Public Overridable Property DocumentCode() As String
-        Get
-            Return _documentCode
-        End Get
-        Set(ByVal value As String)
-            _documentCode = value
-        End Set
-    End Property
+    Public Overridable Property DocumentCode As String
 
-    Public Overridable Property Status() As ProtocolStatus
+    Public Overridable Property Status As ProtocolStatus
         Get
             Return AdvanceProtocol.Status
         End Get
@@ -390,27 +196,13 @@ Partial Public Class Protocol
     ''' <remarks>
     ''' TODO: nel db è uno short
     ''' </remarks>
-    Public Overridable Property IdStatus() As Integer?
+    Public Overridable Property IdStatus As Integer?
 
-    Public Overridable Property LastChangedReason() As String
-        Get
-            Return _lastChangedReason
-        End Get
-        Set(ByVal value As String)
-            _lastChangedReason = value
-        End Set
-    End Property
+    Public Overridable Property LastChangedReason As String
 
-    Public Overridable Property AlternativeRecipient() As String
-        Get
-            Return _alternativeRecipient
-        End Get
-        Set(ByVal value As String)
-            _alternativeRecipient = value
-        End Set
-    End Property
+    Public Overridable Property AlternativeRecipient As String
 
-    Public Overridable Property CheckPublication() As Boolean
+    Public Overridable Property CheckPublication As Boolean
         Get
             If String.IsNullOrEmpty(_checkPublication) OrElse _checkPublication.Eq("0"c) Then
                 Return False
@@ -427,7 +219,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property ServiceCategory() As String
+    Public Overridable Property ServiceCategory As String
         Get
             Return AdvanceProtocol.ServiceCategory
         End Get
@@ -436,7 +228,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property Subject() As String
+    Public Overridable Property Subject As String
         Get
             Return AdvanceProtocol.Subject
         End Get
@@ -445,7 +237,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property ServiceField() As String
+    Public Overridable Property ServiceField As String
         Get
             Return AdvanceProtocol.ServiceField
         End Get
@@ -454,7 +246,7 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property Note() As String
+    Public Overridable Property Note As String
         Get
             Return AdvanceProtocol.Note
         End Get
@@ -463,99 +255,34 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property IsClaim() As Nullable(Of Boolean)
+    Public Overridable Property IsClaim As Boolean?
         Get
             Return AdvanceProtocol.IsClaim
         End Get
-        Set(ByVal value As Nullable(Of Boolean))
+        Set(ByVal value As Boolean?)
             AdvanceProtocol.IsClaim = value
         End Set
     End Property
 
-    Public Overridable Property ProtocolLinked() As IList(Of Protocol)
-        Get
-            Return _protocolLinked
-        End Get
-        Protected Set(ByVal value As IList(Of Protocol))
-            _protocolLinked = value
-        End Set
-    End Property
+    Public Overridable Property ProtocolLinks As IList(Of ProtocolLink)
 
-    Public Overridable Property ProtocolLinkedTo() As IList(Of Protocol)
-        Get
-            Return _protocolLinkedTo
-        End Get
-        Protected Set(ByVal value As IList(Of Protocol))
-            _protocolLinkedTo = value
-        End Set
-    End Property
+    Public Overridable Property ProtocolParentLinks As IList(Of ProtocolLink)
 
-    Public Overridable Property Recipients() As IList(Of Recipient)
-        Get
-            Return _recipients
-        End Get
-        Protected Set(ByVal value As IList(Of Recipient))
-            _recipients = value
-        End Set
-    End Property
+    Public Overridable Property Recipients As IList(Of Recipient)
 
-    Public Overridable Property Contacts() As IList(Of ProtocolContact)
-        Get
-            Return _contacts
-        End Get
-        Protected Set(ByVal value As IList(Of ProtocolContact))
-            _contacts = value
-        End Set
-    End Property
+    Public Overridable Property Contacts As IList(Of ProtocolContact)
 
-    Public Overridable Property ContactIssues() As IList(Of ProtocolContactIssue)
-        Get
-            Return _contactIssues
-        End Get
-        Protected Set(ByVal value As IList(Of ProtocolContactIssue))
-            _contactIssues = value
-        End Set
-    End Property
+    Public Overridable Property ContactIssues As IList(Of ProtocolContactIssue)
 
+    Public Overridable Property ProtocolLogs As IList(Of ProtocolLog)
 
-    Public Overridable Property ProtocolLogs() As IList(Of ProtocolLog)
-        Get
-            Return _logs
-        End Get
-        Protected Set(ByVal value As IList(Of ProtocolLog))
-            _logs = value
-        End Set
-    End Property
+    Public Overridable Property DocAreaImportStatus As DocAreaImportStatus
 
-    'DOCAREA
-    Public Overridable Property DocAreaImportStatus() As DocAreaImportStatus
-        Get
-            Return _docAreaImportStatus
-        End Get
-        Set(ByVal value As DocAreaImportStatus)
-            _docAreaImportStatus = value
-        End Set
-    End Property
+    Public Overridable Property ManualContacts As IList(Of ProtocolContactManual)
 
-    Public Overridable Property ManualContacts() As IList(Of ProtocolContactManual)
-        Get
-            Return _manualContacts
-        End Get
-        Protected Set(ByVal value As IList(Of ProtocolContactManual))
-            _manualContacts = value
-        End Set
-    End Property
+    Public Overridable Property PecMails As IList(Of PECMail)
 
-    Public Overridable Property PecMails() As IList(Of PECMail)
-        Get
-            Return _pecMails
-        End Get
-        Protected Set(ByVal value As IList(Of PECMail))
-            _pecMails = value
-        End Set
-    End Property
-
-    Public Overridable ReadOnly Property OutgoingPecMailsActive() As IList(Of PECMail)
+    Public Overridable ReadOnly Property OutgoingPecMailsActive As IList(Of PECMail)
         Get
             If PecMails Is Nothing Then
                 Return Nothing
@@ -565,7 +292,7 @@ Partial Public Class Protocol
         End Get
     End Property
 
-    Public Overridable ReadOnly Property OutgoingPecMailsProcessingError() As IList(Of PECMail)
+    Public Overridable ReadOnly Property OutgoingPecMailsProcessingError As IList(Of PECMail)
         Get
             If PecMails Is Nothing Then
                 Return Nothing
@@ -575,7 +302,7 @@ Partial Public Class Protocol
         End Get
     End Property
 
-    Public Overridable ReadOnly Property OutgoingPecMailAll() As IList(Of PECMail)
+    Public Overridable ReadOnly Property OutgoingPecMailAll As IList(Of PECMail)
         Get
             If PecMails Is Nothing Then
                 Return Nothing
@@ -589,7 +316,7 @@ Partial Public Class Protocol
         End Get
     End Property
 
-    Public Overridable ReadOnly Property IngoingPecMails() As IList(Of PECMail)
+    Public Overridable ReadOnly Property IngoingPecMails As IList(Of PECMail)
         Get
             If PecMails Is Nothing Then
                 Return Nothing
@@ -598,78 +325,29 @@ Partial Public Class Protocol
         End Get
     End Property
 
-    Public Overridable ReadOnly Property FullNumber() As String
+    Public Overridable ReadOnly Property FullNumber As String
         Get
             Return String.Format("{0}/{1:0000000}", Year, Number)
         End Get
     End Property
 
-    Public Overridable Property HandlerDate() As Date?
-        Get
-            Return _handlerDate
-        End Get
-        Set(value As Date?)
-            _handlerDate = value
-        End Set
-    End Property
+    Public Overridable Property HandlerDate As Date?
 
     ''DOCAREA
-    Public Overridable Property IsModified() As Nullable(Of Boolean)
-        Get
-            Return _isModified
-        End Get
-        Set(ByVal value As Nullable(Of Boolean))
-            _isModified = value
-        End Set
-    End Property
+    Public Overridable Property IsModified As Boolean?
 
     'DOCAREA
-    Public Overridable Property IdHummingbird() As Nullable(Of Long)
-        Get
-            Return _idHummingbird
-        End Get
-        Set(ByVal value As Nullable(Of Long))
-            _idHummingbird = value
-        End Set
-    End Property
+    Public Overridable Property IdHummingbird As Long?
 
     'Change Object
-    Public Overridable Property ObjectChangeReason() As String
-        Get
-            Return _objectChangeReason
-        End Get
-        Set(ByVal value As String)
-            _objectChangeReason = value
-        End Set
-    End Property
+    Public Overridable Property ObjectChangeReason As String
 
     'Journal Log
-    Public Overridable Property JournalDate() As Date?
-        Get
-            Return _journalDate
-        End Get
-        Set(ByVal value As Date?)
-            _journalDate = value
-        End Set
-    End Property
+    Public Overridable Property JournalDate As Date?
 
-    Public Overridable Property JournalLog() As ProtocolJournalLog
-        Get
-            Return _journalLog
-        End Get
-        Set(ByVal value As ProtocolJournalLog)
-            _journalLog = value
-        End Set
-    End Property
+    Public Overridable Property JournalLog As ProtocolJournalLog
 
-    Public Overridable Property CheckDate() As Date?
-        Get
-            Return _checkDate
-        End Get
-        Set(ByVal value As Date?)
-            _checkDate = value
-        End Set
-    End Property
+    Public Overridable Property CheckDate As Date?
 
     'Conservation
     Public Overridable Property ConservationStatus As Char?
@@ -681,23 +359,9 @@ Partial Public Class Protocol
         End Set
     End Property
 
-    Public Overridable Property LastConservationDate() As Date?
-        Get
-            Return _lastConservationDate
-        End Get
-        Set(ByVal value As Date?)
-            _lastConservationDate = value
-        End Set
-    End Property
+    Public Overridable Property LastConservationDate As Date?
 
-    Public Overridable Property HasConservatedDocs() As Boolean
-        Get
-            Return _hasConservatedDocs
-        End Get
-        Set(ByVal value As Boolean)
-            _hasConservatedDocs = value
-        End Set
-    End Property
+    Public Overridable Property HasConservatedDocs As Boolean
 
     ' ProtocolParer
     Public Overridable Property ProtocolParer As ProtocolParer
@@ -716,55 +380,31 @@ Partial Public Class Protocol
 
 
     Public Overridable Property IdProtocolKind As Short
-        Get
-            Return _idProtocolKind
-        End Get
-        Set(value As Short)
-            _idProtocolKind = value
-        End Set
-    End Property
 
     Public Overridable Property DematerialisationChainId As Guid?
 
     Public Overridable Property ProtocolDocumentSeriesItems As IList(Of ProtocolDocumentSeriesItem)
 
-#Region "TOPMEDIA"
+    Public Overridable Property TDIdDocument As Integer?
 
-    Public Overridable Property TDIdDocument() As Integer?
-        Get
-            Return _tdIdDocument
-        End Get
-        Set(ByVal value As Integer?)
-            _tdIdDocument = value
-        End Set
-    End Property
+    Public Overridable Property TDError As String
 
-    Public Overridable Property TDError() As String
-        Get
-            Return _tdError
-        End Get
-        Set(ByVal value As String)
-            _tdError = value
-        End Set
-    End Property
-
-#End Region
+    Public Overridable Property IdTenantAOO As Guid? Implements ISupportTenant.IdTenantAOO
 
 #End Region
 
 #Region " Constructor "
 
     Public Sub New()
-        Id = New YearNumberCompositeKey()
-        UniqueId = Guid.NewGuid()
-        _roles = New List(Of ProtocolRole)
-        _protocolLinked = New List(Of Protocol)
-        _protocolLinkedTo = New List(Of Protocol)
-        _recipients = New List(Of Recipient)
-        _contacts = New List(Of ProtocolContact)
-        _manualContacts = New List(Of ProtocolContactManual)
-        _contactIssues = New List(Of ProtocolContactIssue)
-        _docAreaImportStatus = New DocAreaImportStatus()
+        Id = Guid.NewGuid()
+        Roles = New List(Of ProtocolRole)
+        ProtocolLinks = New List(Of ProtocolLink)
+        ProtocolParentLinks = New List(Of ProtocolLink)
+        Recipients = New List(Of Recipient)
+        Contacts = New List(Of ProtocolContact)
+        ManualContacts = New List(Of ProtocolContactManual)
+        ContactIssues = New List(Of ProtocolContactIssue)
+        DocAreaImportStatus = New DocAreaImportStatus()
         Users = New List(Of ProtocolUser)
         RejectedRoles = New List(Of ProtocolRejectedRole)
         ProtocolDocumentSeriesItems = New List(Of ProtocolDocumentSeriesItem)
@@ -804,10 +444,9 @@ Partial Public Class Protocol
             End If
             pcm.Contact = contact
             pcm.Protocol = Me
-            pcm.UniqueIdProtocol = UniqueId
             ManualContacts.Add(pcm)
-            pcm.Id.Id = ManualContacts.Count
-            pcm.Contact.FullIncrementalPath = pcm.Id.Id.ToString()
+            pcm.Incremental = ManualContacts.Count
+            pcm.Contact.FullIncrementalPath = pcm.Incremental.ToString()
         End If
     End Sub
 
@@ -823,7 +462,6 @@ Partial Public Class Protocol
                 pc.Type = "CC"
             End If
             pc.Protocol = Me
-            pc.UniqueIdProtocol = UniqueId
             'TODO: verificare Copia Conoscenza
 
             Contacts.Add(pc)
@@ -848,7 +486,6 @@ Partial Public Class Protocol
                 pc.Type = "CC"
             End If
             pc.Protocol = Me
-            pc.UniqueIdProtocol = UniqueId
             Contacts.Add(pc)
         End If
     End Sub
@@ -863,10 +500,9 @@ Partial Public Class Protocol
             End If
             pcm.Contact = contact
             pcm.Protocol = Me
-            pcm.UniqueIdProtocol = UniqueId
             ManualContacts.Add(pcm)
-            pcm.Id.Id = ManualContacts.Count
-            pcm.Contact.FullIncrementalPath = pcm.Id.Id.ToString()
+            pcm.Incremental = ManualContacts.Count
+            pcm.Contact.FullIncrementalPath = pcm.Incremental.ToString()
         End If
     End Sub
 
@@ -894,7 +530,6 @@ Partial Public Class Protocol
         End If
 
         pr.Protocol = Me
-        pr.UniqueIdProtocol = UniqueId
         Roles.Add(pr)
     End Sub
 
@@ -902,7 +537,6 @@ Partial Public Class Protocol
         Dim protocolUser As ProtocolUser = New ProtocolUser()
         protocolUser.Account = user.Key
         protocolUser.Type = ProtocolUserType.Authorization
-        protocolUser.UniqueIdProtocol = UniqueId
         protocolUser.Protocol = Me
         Users.Add(protocolUser)
     End Sub
@@ -912,29 +546,24 @@ Partial Public Class Protocol
         protRole.Role = role
         protRole.Rights = rights
         protRole.Protocol = Me
-        protRole.UniqueIdProtocol = UniqueId
         Roles.Add(protRole)
     End Sub
 
     Public Overridable Sub RemoveRole(role As Role)
-        Dim protRole As New ProtocolRole()
-        protRole.Role = role
-        protRole.Protocol = Me
-        Roles.Remove(protRole)
+        If Roles Is Nothing OrElse Roles.IsNullOrEmpty() Then
+            Exit Sub
+        End If
+
+        Dim toRemove As ProtocolRole = Roles.Single(Function(x) x.Role.Id = role.Id)
+        Roles.Remove(toRemove)
     End Sub
 
     Public Overridable Overloads Function Contains(role As Role) As Boolean
-        Dim pr As New ProtocolRole()
-        pr.Role = role
-        pr.Protocol = Me
-        Return Roles.Contains(pr)
-    End Function
+        If Roles Is Nothing OrElse Roles.IsNullOrEmpty() Then
+            Return False
+        End If
 
-    Public Overridable Overloads Function Contains(pruk As ProtocolRoleUserKey) As Boolean
-        Dim pru As New ProtocolRoleUser
-        pru.Id = pruk
-        pru.Protocol = Me
-        Return RoleUsers.Contains(pru)
+        Return Roles.Any(Function(x) x.Role.Id = role.Id)
     End Function
 
     Public Overridable Function ContainsRole(roleId As Integer) As Boolean
@@ -1033,9 +662,9 @@ Partial Public Class Protocol
 
         Select Case format.ToLowerInvariant()
             Case "g"
-                Return String.Format("{0} del {1} ({2})", Id.ToString(), RegistrationDate.ToLocalTime().ToString, ProtocolObject)
+                Return String.Format("{0} del {1} ({2})", FullNumber, RegistrationDate.ToLocalTime().ToString, ProtocolObject)
             Case "s"
-                Return String.Format("Protocollo {0} del {1:dd/MM/yyyy}", Id, RegistrationDate.ToLocalTime())
+                Return String.Format("Protocollo {0} del {1:dd/MM/yyyy}", FullNumber, RegistrationDate.ToLocalTime())
         End Select
 
         Return ToString("g")
@@ -1051,4 +680,5 @@ Partial Public Class Protocol
     End Function
 
 #End Region
+
 End Class

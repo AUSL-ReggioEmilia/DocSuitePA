@@ -23,7 +23,6 @@
                     fascVisualizza.windowStartWorkflowId = "<%= windowStartWorkflow.ClientID %>";
                     fascVisualizza.windowWorkflowInstanceLogId = "<%= windowWorkflowInstanceLog.ClientID%>";
                     fascVisualizza.currentPageId = "<%= Me.ClientID %>";
-                    fascVisualizza.radWindowManagerId = "<%= MasterDocSuite.DefaultWindowManager.ClientID %>";
                     fascVisualizza.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                     fascVisualizza.pageContentId = "<%= pageContent.ClientID %>";
                     fascVisualizza.btnInserisciId = "<%= btnInserisci.ClientID %>";
@@ -52,6 +51,9 @@
                     fascVisualizza.uscFascFoldersId = "<%= uscFascicolo.UscFascicleFolder.PageContentDiv.ClientID %>";
                     fascVisualizza.btnMoveId = "<%= btnMove.ClientID %>";
                     fascVisualizza.windowMoveItemsId = "<%= windowMoveItems.ClientID %>";
+                    fascVisualizza.btnCopyToFascicleId = "<%= btnCopyToFascicle.ClientID %>";
+                    fascVisualizza.windowFascicleSearchId = "<%= windowFascicleSearch.ClientID %>";
+                    fascVisualizza.currentTenantAOOId = "<%= CurrentTenant.TenantAOO.UniqueId %>";
                     fascVisualizza.initialize();
                 });
             });
@@ -71,6 +73,7 @@
             <telerik:RadWindow Height="650" Width="1000" runat="server" Title="Log attività" ID="windowWorkflowInstanceLog" />
             <telerik:RadWindow Height="500" ID="windowMoveItems" runat="server" Title="Sposta documento" Width="650" />
             <telerik:RadWindow Height="500" ID="signWindow" OnClientClose="closeSignWindow" ReloadOnShow="true" runat="server" Title="Firma documento" Width="600px" Behaviors="Maximize,Close,Resize" />
+            <telerik:RadWindow Height="400" ID="windowFascicleSearch" runat="server" Title="Cerca fascicolo" Width="650" />
         </Windows>
     </telerik:RadWindowManager>
 
@@ -108,6 +111,7 @@
         <asp:Panel runat="server">
             <telerik:RadButton ID="btnInserisci" runat="server" Width="150px" Text="Inserisci" div-style="display:none" />
             <telerik:RadButton ID="btnMove" runat="server" Width="150px" Text="Sposta" div-style="display:none" />
+            <telerik:RadButton ID="btnCopyToFascicle" runat="server" Width="150px" Text="Copia in" AutoPostBack="false" div-style="display:none" />
             <telerik:RadButton ID="btnRemove" runat="server" Width="150px" Text="Rimuovi" div-style="display:none" />
             <telerik:RadButton ID="btnSendToRoles" runat="server" Width="150px" Text="Invio settori" />
             <telerik:RadButton ID="btnLink" runat="server" Width="150px" Text="Collegamenti" div-style="display:none" />

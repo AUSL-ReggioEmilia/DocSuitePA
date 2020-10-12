@@ -7,6 +7,7 @@ import FascicleFinderViewModel = require('App/ViewModels/Fascicles/FascicleFinde
 import UDSRepositoryModel = require('App/Models/UDS/UDSRepositoryModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import Environment = require('App/Models/Environment');
+import DocumentUnitSearchFilterDTO = require('App/DTOs/DocumentUnitSearchFilterDTO');
 
 class DocumentUnitService extends BaseService {
     private _configuration: ServiceConfiguration;
@@ -30,20 +31,8 @@ class DocumentUnitService extends BaseService {
      * @param callback
      * @param error
      */
-    findDocumentUnits(skip: number, top: number, finderModel: FascicleFinderViewModel, fascicleModel: FascicleModel,
-        callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-
-        let year: string = (finderModel.Year && finderModel.Year > 0) ? finderModel.Year.toString() : null;
-        let number: string = (!!finderModel.Number) ? "'".concat(finderModel.Number, "'") : null;
-        let documentUnitName: string = (!!finderModel.UdType) ? "'".concat(finderModel.UdType, "'") : null;
-        let categoryId: string = (finderModel.CategoryId) ? finderModel.CategoryId.toString() : null;
-        let containerId: string = (finderModel.ContainerId) ? finderModel.ContainerId.toString() : null;
-        let subject: string = (!!finderModel.Subject) ? "'".concat(finderModel.Subject, "'") : null;
-        let includeChildClassification: boolean = finderModel.IncludeChildClassification;
-
-        let url: string = this._configuration.ODATAUrl.concat("/DocumentUnitService.AuthorizedDocumentUnits(skip=", skip.toString(), ",top=", top.toString(), ",idFascicle=", fascicleModel.UniqueId,
-            ",year=", year, ",number=", number, ",documentUnitName=", documentUnitName, ",categoryId=", categoryId, ",containerId=", containerId, ",subject=", subject, ",includeChildClassification=", includeChildClassification.toString(), ")");
-
+    findDocumentUnits(finderModel: DocumentUnitSearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`/DocumentUnitService.AuthorizedDocumentUnits(finder=@p0)?@p0=${JSON.stringify(finderModel)}`);
         this.getRequest(url, null, (response: any) => {
             let instances: Array<DocumentUnitModel> = new Array<DocumentUnitModel>();
             let mapper = new DocumentUnitModelMapper();
@@ -55,19 +44,8 @@ class DocumentUnitService extends BaseService {
     /**
    * Recupera il count totale delle document units
    */
-    countDocumentUnits(finderModel: FascicleFinderViewModel, fascicleModel: FascicleModel, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-
-        let year: string = (finderModel.Year && finderModel.Year > 0) ? finderModel.Year.toString() : null;
-        let number: string = (!!finderModel.Number) ? "'".concat(finderModel.Number, "'") : null;
-        let documentUnitName: string = (!!finderModel.UdType) ? "'".concat(finderModel.UdType, "'") : null;
-        let categoryId: string = (finderModel.CategoryId) ? finderModel.CategoryId.toString() : null;
-        let containerId: string = (finderModel.ContainerId) ? finderModel.ContainerId.toString() : null;
-        let subject: string = (!!finderModel.Subject) ? "'".concat(finderModel.Subject, "'") : null;
-        let includeChildClassification: boolean = finderModel.IncludeChildClassification;
-
-        let url: string = this._configuration.ODATAUrl.concat("/DocumentUnitService.CountAuthorizedDocumentUnits(idFascicle=", fascicleModel.UniqueId,
-            ",year=", year, ",number=", number, ",documentUnitName=", documentUnitName, ",categoryId=", categoryId, ",containerId=", containerId, ",subject=", subject, ",includeChildClassification=", includeChildClassification.toString(), ")");
-
+    countDocumentUnits(finderModel: DocumentUnitSearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`/DocumentUnitService.CountAuthorizedDocumentUnits(finder=@p0)?@p0=${JSON.stringify(finderModel)}`);
         this.getRequest(url, null, (response: any) => {
             if (callback && response) {
                 callback(response.value);
@@ -83,11 +61,11 @@ class DocumentUnitService extends BaseService {
      * @param callback
      * @param error
      */
-    getFascicleDocumentUnits(model: FascicleModel, qs: string, idFascicleFolder?: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getFascicleDocumentUnits(model: FascicleModel, qs: string, idTenantAOO: string, idFascicleFolder?: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         if (!idFascicleFolder) {
             idFascicleFolder = null;
         }
-        let url: string = this._configuration.ODATAUrl.concat("/DocumentUnitService.FascicleDocumentUnits(idFascicle=", model.UniqueId, ",idFascicleFolder=", idFascicleFolder,")");
+        let url: string = this._configuration.ODATAUrl.concat(`/DocumentUnitService.FascicleDocumentUnits(idFascicle=@p1,idFascicleFolder=@p2,idTenantAOO=@p3)?@p1=${model.UniqueId}&@p2=${idFascicleFolder}&@p3=${idTenantAOO}`);
         this.getRequest(url, qs,
             (response: any) => {
                 if (callback) callback(response.value);
@@ -109,6 +87,14 @@ class DocumentUnitService extends BaseService {
                     callback(mapper.Map(response.value[0]));
                 }
             }, error);
+    }
+
+    getDocumentUnitsFullText(fullTextSearch: string, idTenant: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        fullTextSearch = fullTextSearch.replace("'", "''");
+        let url: string = this._configuration.ODATAUrl.concat(`/DocumentUnitService.FullTextSearchDocumentUnits(filter='${fullTextSearch}',idTenant=${idTenant})`);
+        this.getRequest(url, null, (response: any) => {
+            if (callback) callback(response.value);
+        }, error);
     }
 }
 

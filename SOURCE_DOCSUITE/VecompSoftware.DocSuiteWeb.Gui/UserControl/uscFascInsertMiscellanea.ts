@@ -62,11 +62,11 @@ class uscFascInsertMiscellanea extends FascicleBase {
     *------------------------- Events -----------------------------
     */
 
-    btnUploadDocument_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnUploadDocument_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this.openUploadDocumentWindow("CommonSelMiscellanea", "True");
     }
 
-    _btnUploadZipDocument_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    _btnUploadZipDocument_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this.openUploadDocumentWindow("CommonUploadZIPMiscellanea", "False");
     }
     /**

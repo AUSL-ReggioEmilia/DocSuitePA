@@ -1,6 +1,4 @@
 ﻿<%@ Page Title="Altre attività sui documenti" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="UserWorkflow.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.UserWorkflow" %>
-
-
 <asp:Content ContentPlaceHolderID="cphHeader" runat="server">
 
     <telerik:RadScriptBlock runat="server">
@@ -56,6 +54,14 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="label">Filtro date:
+                            </td>
+                            <td>
+                                <telerik:RadDatePicker DateInput-LabelWidth="20%" DateInput-LabelCssClass="strongRiLabel" Style="height: auto !important;" Width="200" DateInput-Label="Da" ID="rdpDateFilterFrom" runat="server" />
+                                <telerik:RadDatePicker DateInput-LabelWidth="20%" DateInput-LabelCssClass="strongRiLabel" Style="height: auto !important;" Width="200" DateInput-Label="A" ID="rdpDateFilterTo" runat="server" />
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="label">Stato:
                             </td>
                             <td>
@@ -74,10 +80,26 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="label">Modalità visualizzazione:
+                            </td>
+                            <td>
+                                <table id="Table1" runat="server" cellspacing="0" cellpadding="2" border="0" width="100%">
+                                    <tr>
+                                        <td style="vertical-align: middle; font-size: 8pt">
+                                            <asp:RadioButtonList ID="rdbViewer" runat="server" RepeatDirection="Horizontal">
+                                                <asp:ListItem Text="Tabella" Value="0" Selected="True" />
+                                                <asp:ListItem Text="Raggruppata" Value="1" />
+                                            </asp:RadioButtonList>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="2">
                                 <div>
-                                    <asp:Button ID="btnSearch" runat="server" Width="200px" Text="Aggiorna visualizzazione" />
-                                    <asp:Button ID="btnClearFilters" runat="server" Text="Azzera filtri" />
+                                    <telerik:RadButton ID="btnSearch" runat="server" Width="200px" Text="Aggiorna visualizzazione" />
+                                    <telerik:RadButton ID="btnClearFilters" runat="server" Text="Azzera filtri" />
                                 </div>
                             </td>
                         </tr>
@@ -98,68 +120,9 @@
                 </SortExpressions>
                 <ItemStyle CssClass="Scuro" />
                 <AlternatingItemStyle CssClass="Chiaro" />
-                <DetailTables>
-                    <telerik:GridTableView Name="NestedWorkflowActivity" AutoGenerateColumns="false" Width="100%" NoDetailRecordsText="Nessun registrazione" ShowHeader="false">
-                        <Columns>
-                            <telerik:GridImageColumn ImageUrl="~/App_Themes/DocSuite2008/imgset16/Tag_16x.png" HeaderText="I">
-                                <ItemStyle HorizontalAlign="Left" Width="7px" />
-                            </telerik:GridImageColumn>
-                            <telerik:GridTemplateColumn DataField="WorkflowActivityName" HeaderText="Attività" UniqueName="WorkflowActivityName" SortExpression="Name" AllowSorting="True" ItemStyle-Width="" GroupByExpression="WorkflowActivityName Group By WorkflowActivityName">
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Left" Width="10%" />
-                                <ItemTemplate>
-                                    <asp:HyperLink ID="lnkWorkflowActivityName" onclick="return ShowLoadingPanel();" runat="server" />
-                                </ItemTemplate>
-                            </telerik:GridTemplateColumn>
-                            <telerik:GridTemplateColumn HeaderText="Richiedente/Mittente" FooterStyle-HorizontalAlign="Left" UniqueName="WorkflowProposerRoleName" AllowSorting="False" Groupable="false">
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="15%" />
-                                <ItemTemplate>
-                                    <asp:Label ID="lblWorkflowProposerRoleName" runat="server" />
-                                </ItemTemplate>
-                            </telerik:GridTemplateColumn>
-                            <telerik:GridDateTimeColumn DataField="WorkflowActivityPublicationDate" DataType="System.DateTime" SortExpression="WorkflowActivityPublicationDate" HeaderText="Data richiesta" DataFormatString="{0:dd/MM/yyyy}" UniqueName="WorkflowActivityPublicationDate">
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
-                            </telerik:GridDateTimeColumn>
-                            <telerik:GridTemplateColumn DataField="WorkflowSubject" HeaderText="Note" FooterStyle-HorizontalAlign="Left" UniqueName="WorkflowSubject" SortExpression="Subject" AllowSorting="True" GroupByExpression="WorkflowSubject Group By WorkflowSubject">
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="30.49%" />
-                                <ItemTemplate>
-                                    <asp:Label ID="lblWorkflowSubject" runat="server" />
-                                </ItemTemplate>
-                            </telerik:GridTemplateColumn>
-                            <telerik:GridTemplateColumn HeaderText="Destinatario" FooterStyle-HorizontalAlign="Left" UniqueName="WorkflowReceiverRoleName" AllowSorting="False" Groupable="false">
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="12%" />
-                                <ItemTemplate>
-                                    <asp:Label ID="lblWorkflowReceiverRoleName" runat="server" />
-                                </ItemTemplate>
-                            </telerik:GridTemplateColumn>
-                            <telerik:GridTemplateColumn HeaderText="In carico a" FooterStyle-HorizontalAlign="Left" UniqueName="WorkflowIsHandler" AllowSorting="False" Groupable="false">
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="12%" />
-                                <ItemTemplate>
-                                    <asp:Label ID="lblWorkflowIsHandler" runat="server" />
-                                </ItemTemplate>
-                            </telerik:GridTemplateColumn>
-                            <telerik:GridTemplateColumn DataField="WorkflowActivityStatus" HeaderText="Stato" SortExpression="Status" UniqueName="WorkflowActivityStatus" AllowSorting="True" GroupByExpression="WorkflowActivityStatus Group By WorkflowActivityStatus">
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemTemplate>
-                                    <asp:Label ID="lblWorkflowActivityStatus" runat="server" />
-                                </ItemTemplate>
-                            </telerik:GridTemplateColumn>
-                            <telerik:GridDateTimeColumn DataField="WorkflowActivityLastChangedDate" DataType="System.DateTime" SortExpression="LastChangedDate" HeaderText="Data ultimo aggiornamento" DataFormatString="{0:dd/MM/yyyy}" UniqueName="WorkflowActivityLastChangedDate">
-                                <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
-                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="5%" />
-                            </telerik:GridDateTimeColumn>
-                        </Columns>
-                    </telerik:GridTableView>
-                </DetailTables>
                 <Columns>
                     <telerik:GridBoundColumn DataField="WorkflowActivityId" HeaderText="WorkflowActivityId" Visible="false" />
-                    <telerik:GridBoundColumn DataField="WorkflowInstanceId" HeaderText="WorkflowInstanceId" Visible="false" />
+                    <telerik:GridBoundColumn DataField="WorkflowInstanceId" HeaderText="WorkflowInstanceId" Visible="false"/>
                     <telerik:GridTemplateColumn DataField="WorkflowActivityStart" HeaderText="I" UniqueName="WorkflowActivityStart" SortExpression="Name" AllowSorting="False" ItemStyle-Width="" Groupable="false">
                         <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
                         <ItemStyle HorizontalAlign="Left" Width="7px" />
@@ -223,8 +186,8 @@
                 <Selecting AllowRowSelect="false" CellSelectionMode="None" UseClientSelectColumnOnly="false" EnableDragToSelectRows="False" />
                 <Scrolling AllowScroll="true" ScrollHeight="100%" />
             </ClientSettings>
-            <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente" SortToolTip="Ordina" />
-            <GroupingSettings ShowUnGroupButton="true" UnGroupButtonTooltip="Rimuovi" />
+            <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente" SortToolTip="Ordina" />
+            <GroupingSettings ShowUnGroupButton="false" UnGroupButtonTooltip="Rimuovi" />
         </telerik:RadGrid>
     </div>
 </asp:Content>

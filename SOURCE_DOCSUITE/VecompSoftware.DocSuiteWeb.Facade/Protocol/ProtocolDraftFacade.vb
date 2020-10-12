@@ -6,7 +6,7 @@ Imports System.Linq
 Imports VecompSoftware.Services.Logging
 
 Public Class ProtocolDraftFacade
-    Inherits BaseProtocolFacade(Of ProtocolDraft, Integer, NHibernateProtocolDraftDao)
+    Inherits BaseProtocolFacade(Of ProtocolDraft, Guid, NHibernateProtocolDraftDao)
 
     Public Function AddProtocolDraft(collaboration As Collaboration, description As String, data As String) As ProtocolDraft
         Dim protocolXml As CollaborationXmlData
@@ -27,7 +27,17 @@ Public Class ProtocolDraftFacade
             Case GetType(ResolutionXML)
                 draftType = 1
         End Select
-        Dim draft As New ProtocolDraft() With {.Collaboration = collaboration, .Description = description, .Data = data, .DraftType = draftType, .IsActive = 1, .RegistrationDate = DateTime.Now, .LastChangedUser = "", .RegistrationUser = "", .LastChangedDate = DateTimeOffset.UtcNow}
+        Dim draft As ProtocolDraft = New ProtocolDraft() With {
+            .Collaboration = collaboration,
+            .Description = description,
+            .Data = data,
+            .DraftType = draftType,
+            .IsActive = 1,
+            .RegistrationDate = DateTime.Now,
+            .LastChangedUser = "",
+            .RegistrationUser = "",
+            .LastChangedDate = DateTimeOffset.UtcNow
+        }
         _dao.Save(draft)
         Return draft
     End Function

@@ -45,6 +45,8 @@ interface DSWSignalR {
     sendServerMessage(hubMethodName: string, data: any, onDoneCallback: (data?: any[]) => void, onErrorCallback?: (error: any) => void): void;
 
     sendServerMessages(hubMethodName: string, correlationId: string, value: any, topicName: string, eventName: string, onDoneCallback: (data?: any[]) => void, onErrorCallback?: (error: any) => void): void;
+
+    newGuid(): string;
 }
 
 declare var DSWSignalR: DSWSignalR;

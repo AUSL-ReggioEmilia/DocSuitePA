@@ -144,15 +144,6 @@
       <one-to-many class="Role" />
     </bag>
   </class>
-  
-  <class name="TenantRole" table="TenantRoles">
-    <id name="Id" column="IdTenantRole">
-      <generator class="assigned" />
-    </id>
-    <property name="RegistrationDate" column="RegistrationDate" not-null="true" />
-    <property name="IdTenant" column="IdTenant" not-null="true" />
-    <property name="EntityShortId" column="EntityShortId" not-null="true" />
-  </class>
 
   <class name="RoleGroup" table="RoleGroup">
     <id name="Id" column="IdRoleGroup" >
@@ -193,12 +184,14 @@
     <property name="StartDate" column="StartDate" />
     <property name="EndDate" column="EndDate" />
     <property name="IdMetadataRepository" column="IdMetadataRepository" />
+    <property name="IdTenantAOO" column="IdTenantAOO" />
 
     <many-to-one name="CategorySchema" column="IdCategorySchema" class="CategorySchema" />
     <bag name="Children" table="Category" lazy="true">
       <key column="idParent" />
       <one-to-many class="Category" />
     </bag>
+    <filter name="TenantFilter" condition=":tenantAOOId = IdTenantAOO" />
   </class>
 
   <class name="CategorySchema" table="CategorySchemas">
@@ -228,11 +221,9 @@
     </id>
     <property name="UniqueId" column="UniqueId" not-null="true" />
     <property name="Name" column="Name" type="AnsiString" />
-    <property name="DocumentServer" column="DocumentServer" type="AnsiString" />
     <property name="ProtBiblosDSDB" column="ProtBiblosDSDB" type="AnsiString" />
     <property name="DocmBiblosDSDB" column="DocmBiblosDSDB" type="AnsiString" />
     <property name="ReslBiblosDSDB" column="ReslBiblosDSDB" type="AnsiString" />
-    <property name="ConservationServer" column="ConservationServer" type="AnsiString" />
     <property name="ConsBiblosDSDB" column="ConsBiblosDSDB" type="AnsiString" />
   </class>
 
@@ -263,7 +254,8 @@
     <property name="LastUsedIdRole" column="LastUsedIdRole" />
     <property name="LastUsedIdRoleUser" column="LastUsedIdRoleUser" />
     <property name="LastUsedYearReg" column="LastUsedYearReg" />
-    <property name="LastUsedNumberReg" column="LastUsedNumberReg" />    
+    <property name="LastUsedNumberReg" column="LastUsedNumberReg" />
+    <property name="IdTenantAOO" column="IdTenantAOO" insert="false" update="false" />
     <property name="UniqueId">
       <column name="UniqueId" not-null="true" />
     </property>
@@ -279,6 +271,7 @@
     <property name="LastChangedDate">
       <column name="LastChangedDate" not-null="false" />
     </property>
+    <filter name="TenantFilter" condition=":tenantAOOId = IdTenantAOO" />
   </class>
 
   <class name="CommonObject" table="Object">
@@ -380,15 +373,6 @@
     </bag>
   </class>
 
-  <class name="TenantContact" table="TenantContacts">
-    <id name="Id" column="IdTenantContact">
-      <generator class="assigned" />
-    </id>
-    <property name="RegistrationDate" column="RegistrationDate" not-null="true" />
-    <property name="IdTenant" column="IdTenant" not-null="true" />
-    <property name="EntityId" column="EntityId" not-null="true" />
-  </class>
-
   <class name="ContactPlaceName" table="ContactPlaceName">
     <id name="Id" column="idPlaceName">
       <generator class="assigned" />
@@ -434,16 +418,12 @@
       <many-to-many class="DistributionList" column="idDistributionList">
       </many-to-many>
     </bag>
-    <bag name="Protocols" table="ProtocolRecipient" cascade="all-delete-orphan">
+    <bag name="Protocols" table="ProtocolRecipient" cascade="all-delete-orphan" inverse="true">
       <key column="idRecipient" />
-      <many-to-many class="Protocol">
-        <column name="Year" />
-        <column name="Number" />
-      </many-to-many>
+      <many-to-many class="Protocol" column="UniqueId" />
     </bag>
   </class>
 
-  <!--AUSL-RE-->
   <class name="ContactTitle" table="ContactTitle">
     <id name="Id" column="IdTitle">
       <generator class="assigned" />
@@ -530,16 +510,6 @@
     <many-to-one name="Group" column="idGroup" class="SecurityGroups" />
   </class>
 
-  <class name="DBInfo" table="Information_Schema.Columns">
-    <composite-id class="DBInfoCompositeKey" name="Id" unsaved-value="any">
-      <key-property name="TableName" column="TABLE_NAME" />
-      <key-property name="ColumnName" column="COLUMN_NAME" />
-    </composite-id>
-    <property name="DataType" column="DATA_TYPE" type="AnsiString" />
-    <property name="MaxLength" column="CHARACTER_MAXIMUM_LENGTH" />
-  </class>
-
-
   <class name="ContactName" table="ContactNames">
     <id name="Id" column="IdContactName">
       <generator class="identity" />
@@ -582,4 +552,8 @@
     </many-to-one >
 
   </class>
+
+  <filter-def name="TenantFilter">
+    <filter-param name="tenantAOOId" type="Guid" />
+  </filter-def>
 </hibernate-mapping>

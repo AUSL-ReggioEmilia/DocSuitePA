@@ -23,7 +23,7 @@ Namespace ExtensionMethods
 
             '' Altrimenti lo ricalcolo
             If pecAttachment.IDDocument <> Guid.Empty Then
-                Dim attachment As New BiblosDocumentInfo(pecAttachment.Mail.Location.DocumentServer, pecAttachment.IDDocument)
+                Dim attachment As New BiblosDocumentInfo(pecAttachment.IDDocument)
                 pecAttachment.Size = attachment.Size
                 Return pecAttachment.Size.Value
             End If
@@ -38,7 +38,7 @@ Namespace ExtensionMethods
         ''' <remarks></remarks>
         <Extension()>
         Public Function Document(ByRef pecAttachment As PECMailAttachment) As BiblosDocumentInfo
-            Return New BiblosDocumentInfo(pecAttachment.Mail.Location.DocumentServer, pecAttachment.IDDocument)
+            Return New BiblosDocumentInfo(pecAttachment.IDDocument)
         End Function
 
         ''' <summary>
@@ -51,7 +51,7 @@ Namespace ExtensionMethods
         Public Function ToDocumentInfoList(ByRef pecAttachments As IList(Of PECMailAttachment)) As IList(Of DocumentInfo)
             Dim documents As New List(Of DocumentInfo)
             For Each currentAttachment As PECMailAttachment In pecAttachments
-                Dim bdi As New BiblosDocumentInfo(currentAttachment.Mail.Location.DocumentServer, currentAttachment.IDDocument)
+                Dim bdi As New BiblosDocumentInfo(currentAttachment.IDDocument)
                 bdi.Caption = currentAttachment.AttachmentName
                 documents.Add(bdi)
             Next

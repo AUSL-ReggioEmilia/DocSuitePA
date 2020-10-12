@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/Fascicles/FascicleType", "Fasc/FascBase", "App/Helpers/ServiceConfigurationHelper", "App/Models/Fascicles/FascicleReferenceType", "App/Models/Fascicles/FascicleDocumentUnitModel", "App/Services/Fascicles/FascicleDocumentUnitService", "App/DTOs/ValidationExceptionDTO", "UserControl/uscFascicleInsert", "App/Models/Commons/MetadataRepositoryModel", "App/Models/FascicolableActionType", "../app/core/extensions/string"], function (require, exports, FascicleModel, FascicleType, FascicleBase, ServiceConfigurationHelper, FascicleReferenceType, FascicleDocumentUnitModel, FascicleDocumentUnitService, ValidationExceptionDTO, UscFascicleInsert, MetadataRepositoryModel, FascicolableActionType) {
+define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/Fascicles/FascicleType", "Fasc/FascBase", "App/Helpers/ServiceConfigurationHelper", "App/Models/Fascicles/FascicleReferenceType", "App/Models/Fascicles/FascicleDocumentUnitModel", "App/Services/Fascicles/FascicleDocumentUnitService", "App/DTOs/ValidationExceptionDTO", "UserControl/uscFascicleInsert", "App/Models/Commons/MetadataRepositoryModel", "App/Models/FascicolableActionType", "App/Helpers/SessionStorageKeysHelper", "../app/core/extensions/string"], function (require, exports, FascicleModel, FascicleType, FascicleBase, ServiceConfigurationHelper, FascicleReferenceType, FascicleDocumentUnitModel, FascicleDocumentUnitService, ValidationExceptionDTO, UscFascicleInsert, MetadataRepositoryModel, FascicolableActionType, SessionStorageKeysHelper) {
     var FascInserimento = /** @class */ (function (_super) {
         __extends(FascInserimento, _super);
         /**
@@ -130,7 +130,7 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
          * @param contact
          * @param category
          */
-        FascInserimento.prototype.insertCallback = function (responsibleContact, metadataModel) {
+        FascInserimento.prototype.insertCallback = function (responsibleContact, metadataDesignerModel, metadataValueModel) {
             var _this = this;
             var uscFascInsert = $("#".concat(this.uscFascInsertId)).data();
             if (!jQuery.isEmptyObject(uscFascInsert)) {
@@ -141,26 +141,30 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
                     contactModel.EntityId = responsibleContact;
                     fascicleModel_1.Contacts.push(contactModel);
                 }
-                if (!!metadataModel) {
-                    fascicleModel_1.MetadataValues = metadataModel;
-                    if (sessionStorage.getItem("MetadataRepository")) {
+                if (!!metadataValueModel) {
+                    fascicleModel_1.MetadataDesigner = metadataDesignerModel;
+                    fascicleModel_1.MetadataValues = metadataValueModel;
+                    if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY)) {
                         var metadataRepository = new MetadataRepositoryModel();
-                        metadataRepository.UniqueId = sessionStorage.getItem("MetadataRepository");
+                        metadataRepository.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
                         fascicleModel_1.MetadataRepository = metadataRepository;
                     }
                 }
-                this.service.insertFascicle(fascicleModel_1, function (data) {
-                    if (_this.currentUDId && _this.environment) {
-                        fascicleModel_1.UniqueId = data.UniqueId;
-                        _this.insertFascicolableUD(fascicleModel_1);
-                    }
-                    else {
-                        window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(data.UniqueId);
-                    }
-                }, function (exception) {
-                    _this._loadingPanel.hide(_this.fasciclePageContentId);
-                    _this._btnInserimento.set_enabled(true);
-                    _this.showNotificationException(_this.uscNotificationId, exception);
+                uscFascInsert.getCustomActions().done(function (customActions) {
+                    fascicleModel_1.CustomActions = JSON.stringify(customActions);
+                    _this.service.insertFascicle(fascicleModel_1, null, function (data) {
+                        if (_this.currentUDId && _this.environment) {
+                            fascicleModel_1.UniqueId = data.UniqueId;
+                            _this.insertFascicolableUD(fascicleModel_1);
+                        }
+                        else {
+                            window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(data.UniqueId);
+                        }
+                    }, function (exception) {
+                        _this._loadingPanel.hide(_this.fasciclePageContentId);
+                        _this._btnInserimento.set_enabled(true);
+                        _this.showNotificationException(_this.uscNotificationId, exception);
+                    });
                 });
             }
         };

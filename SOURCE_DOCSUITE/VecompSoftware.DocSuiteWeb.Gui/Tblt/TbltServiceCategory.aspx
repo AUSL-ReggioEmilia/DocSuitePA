@@ -26,12 +26,12 @@
                 var treeView = $find("<%= RadTreeViewServiceCategories.ClientID %>");
                 var selectedNode = treeView.get_selectedNode();
                 switch (operation) {
-                case "Rename":
-                    parameters += "&idServiceCategory=" + selectedNode.get_value();
-                    break;
-                case "Delete":
-                    parameters += "&idServiceCategory=" + selectedNode.get_value();
-                    break;
+                    case "Rename":
+                        parameters += "&idServiceCategory=" + selectedNode.get_value();
+                        break;
+                    case "Delete":
+                        parameters += "&idServiceCategory=" + selectedNode.get_value();
+                        break;
                 }
                 parameters += "&Type=Comm&DBName=ProtDB";
                 var url = '<%= ResolveUrl("~/Tblt/TbltServiceCategoryGes.aspx?") %>' + parameters;
@@ -90,21 +90,28 @@
 
             //Allinea i pulsanti con il contextMenu
             function AdjustButtons(menu) {
-                AdjustButtonWithItem('<%= btnAggiungi.ClientID %>', menu, 'Add');
-                AdjustButtonWithItem('<%= btnRinomina.ClientID %>', menu, 'Rename');
-                AdjustButtonWithItem('<%= btnElimina.ClientID %>', menu, 'Delete');
+                AdjustButtonWithItem('<%= FolderToolBar.FindItemByValue("create").ClientID %>', menu, 'Add');
+                AdjustButtonWithItem('<%= FolderToolBar.FindItemByValue("modify").ClientID %>', menu, 'Rename');
+                AdjustButtonWithItem('<%= FolderToolBar.FindItemByValue("delete").ClientID %>', menu, 'Delete');
             }
 
         </script>
     </telerik:RadScriptBlock>
-    
+
     <telerik:RadWindowManager EnableViewState="False" ID="rwmDialogManager" runat="server">
         <Windows>
             <telerik:RadWindow ID="wdEditServiceCategory" OnClientClose="OnClientClose" runat="server" Title="Gestione Categorie Servizio" />
         </Windows>
-    </telerik:RadWindowManager> 
+    </telerik:RadWindowManager>
 </asp:Content>
 <asp:Content ContentPlaceHolderID="cphContent" runat="server">
+    <telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%">
+        <Items>
+            <telerik:RadToolBarButton ToolTip="Aggiungi" Value="create" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+            <telerik:RadToolBarButton ToolTip="Modifica" Value="modify" Text="Modifica" Enabled="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+            <telerik:RadToolBarButton runat="server" ToolTip="Elimina" Value="delete" Text="Elimina" Enabled="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
+        </Items>
+    </telerik:RadToolBar>
     <telerik:RadTreeView ID="RadTreeViewServiceCategories" runat="server" Width="100%">
         <ContextMenus>
             <telerik:RadTreeViewContextMenu ID="ContextMenuRoles" runat="server" CollapseAnimation-Type="none">
@@ -123,14 +130,4 @@
             </telerik:RadTreeNode>
         </Nodes>
     </telerik:RadTreeView>
-</asp:Content>
-<asp:Content ContentPlaceHolderID="cphFooter" runat="server">
-    <asp:Panel runat="server" ID="pnlButtons">
-        <asp:Button ID="btnAggiungi" runat="server" OnClientClick="OpenEditWindow('wdEditServiceCategory','Add');"
-            CssClass="button" UseSubmitBehavior="false" Text="Aggiungi"></asp:Button>
-        <asp:Button ID="btnRinomina" OnClientClick="OpenEditWindow('wdEditServiceCategory','Rename');"
-            CssClass="button" runat="server" UseSubmitBehavior="false" Text="Modifica"></asp:Button>
-        <asp:Button ID="btnElimina" OnClientClick="OpenEditWindow('wdEditServiceCategory','Delete');"
-            CssClass="button" runat="server" UseSubmitBehavior="false" Text="Elimina"></asp:Button>
-    </asp:Panel>
 </asp:Content>

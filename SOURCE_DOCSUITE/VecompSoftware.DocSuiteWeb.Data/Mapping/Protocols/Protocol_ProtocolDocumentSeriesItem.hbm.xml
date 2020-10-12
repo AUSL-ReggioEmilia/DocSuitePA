@@ -10,16 +10,16 @@
       <column name="Timestamp" not-null="true" sql-type="timestamp" />
     </version>
 
-    <property name="UniqueIdProtocol" column="UniqueIdProtocol" />
+    <property name="Year" column="Year" not-null="true" update="false" />
+    <property name="Number" column="Number" not-null="true" update="false" />
     <property name="UniqueIdDocumentSeriesItem" column="UniqueIdDocumentSeriesItem" />
     <property name="LastChangedUser" column="LastChangedUser" />
     <property name="LastChangedDate" column="LastChangedDate" />
     <property name="RegistrationUser" column="RegistrationUser" />
     <property name="RegistrationDate" column="RegistrationDate" />
     
-    <many-to-one name="Protocol" class="Protocol">      
-        <column name="Year" />
-        <column name="Number" />      
+    <many-to-one name="Protocol" class="Protocol" not-null="true">      
+        <column name="UniqueIdProtocol" />
     </many-to-one>
 
     <many-to-one name="DocumentSeriesItem" column="IdDocumentSeriesItem" class="DocumentSeriesItem" />

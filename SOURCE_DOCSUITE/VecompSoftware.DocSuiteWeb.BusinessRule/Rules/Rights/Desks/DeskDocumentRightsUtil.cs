@@ -56,7 +56,7 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Desks
                     return _isDocumentCheckOut.Value;
                 }
 
-                _isDocumentCheckOut = CurrentDeskDocumentFacade.IsCheckOut(CurrentDocument.DocumentServer, CurrentDocument.IdDocumentBiblos.Value);
+                _isDocumentCheckOut = CurrentDeskDocumentFacade.IsCheckOut(CurrentDocument.IdDocumentBiblos.Value);
                 return _isDocumentCheckOut.Value;
             }
         }
@@ -95,8 +95,7 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Desks
                     return string.Empty;
                 }
 
-                _currentUserDocumentCheckOut = CurrentDeskDocumentFacade.IdUserCheckOut(CurrentDocument.DocumentServer,
-                                                    CurrentDocument.IdDeskDocument, CurrentDocument.IdDocumentBiblos.Value);
+                _currentUserDocumentCheckOut = CurrentDeskDocumentFacade.IdUserCheckOut(CurrentDocument.IdDeskDocument, CurrentDocument.IdDocumentBiblos.Value);
                 return _currentUserDocumentCheckOut;
             }
         }

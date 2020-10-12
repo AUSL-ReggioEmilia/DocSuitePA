@@ -32,6 +32,9 @@
     <property name="DocumentUnitReferencedId">
       <column name="DocumentUnitReferencedId" not-null="false" />
     </property>
+    <property name="IdTenant">
+      <column name="IdTenant" not-null="false" />
+    </property>
     <property name="RegistrationUser">
       <column name="RegistrationUser" not-null="true" />
     </property>
@@ -44,14 +47,6 @@
     <property name="LastChangedUser">
       <column name="LastChangedUser" not-null="false" />
     </property>
-    <bag name="WorkflowProperties" cascade="save-update">
-      <key column="IdWorkflowActivity" />
-      <one-to-many class="WorkflowProperty" />
-    </bag>
-    <bag name="WorkflowActivityLogs">
-      <key column="IdWorkflowActivity" />
-      <one-to-many class="WorkflowActivityLog" />
-    </bag>
     <bag name="WorkflowAuthorizations">
       <key column="IdWorkflowActivity" />
       <one-to-many class="WorkflowAuthorization" />

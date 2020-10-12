@@ -13,7 +13,7 @@ interface WorkflowEvaluationProperty {
     ValueBoolean?: boolean;
     ValueGuid?: string;
     ValueString: string;
-    WorkflowRepository: WorkflowRepositoryModel
+    WorkflowRepository: WorkflowRepositoryModel;
 }
 export = WorkflowEvaluationProperty;
 

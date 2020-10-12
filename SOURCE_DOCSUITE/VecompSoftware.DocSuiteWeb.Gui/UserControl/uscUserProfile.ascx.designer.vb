@@ -338,6 +338,42 @@ Partial Public Class uscUserProfile
     Protected WithEvents cbSignDefault As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
+    '''trRemoteSignDelegate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRemoteSignDelegate As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''defaultContainer2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents defaultContainer2 As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''uscRemoteDelegations control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscRemoteDelegations As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
+
+    '''<summary>
+    '''uscRemoteBeenDelegated control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscRemoteBeenDelegated As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
+
+    '''<summary>
     '''pnlMobilePhone control.
     '''</summary>
     '''<remarks>

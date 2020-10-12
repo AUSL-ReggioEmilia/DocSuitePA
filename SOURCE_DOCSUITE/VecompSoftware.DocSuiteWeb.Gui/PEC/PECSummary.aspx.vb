@@ -12,6 +12,9 @@ Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.Helpers.Web
 Imports VecompSoftware.Services.Biblos.Models
+Imports Newtonsoft.Json
+Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 
 Public Class PECSummary
     Inherits PECBasePage
@@ -110,24 +113,26 @@ Public Class PECSummary
             End If
             '' Gestione del download dell'eml originale - Se l'utente è amministratore o è presente nel gruppo
             If CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupOriginalEmlRight Then
-                Dim mainChain As BiblosChainInfo = New BiblosChainInfo(CurrentPecMail.Location.DocumentServer, CurrentPecMail.IDMailContent)
-                If Not mainChain.HasActiveDocuments() Then
-                    btnOriginalEml.Visible = True
-                    btnOriginalEml.Enabled = False
-                    btnOriginalEml.Text = String.Format("Scarica {0} originale", PecLabel)
-                    btnOriginalEml.ToolTip = "La PEC originale è stata rimossa in quanto storica e non più di interesse."
-                Else
-                    Dim original As DocumentInfo = Facade.PECMailFacade.GetOriginalEml(CurrentPecMail)
-                    If original IsNot Nothing Then
-                        btnOriginalEml.Text = String.Format("Scarica {0} originale", PecLabel)
-                        ' btnOriginalEml.PostBackUrl = original.DownloadLink()
+                If CurrentPecMail.IDMailContent <> Guid.Empty Then
+                    Dim mainChain As BiblosChainInfo = New BiblosChainInfo(CurrentPecMail.IDMailContent)
+                    If Not mainChain.HasActiveDocuments() Then
                         btnOriginalEml.Visible = True
-                        btnOriginalEml.Enabled = True
+                        btnOriginalEml.Enabled = False
+                        btnOriginalEml.Text = String.Format("Scarica {0} originale", PecLabel)
+                        btnOriginalEml.ToolTip = "La PEC originale è stata rimossa in quanto storica e non più di interesse."
+                    Else
+                        Dim original As DocumentInfo = Facade.PECMailFacade.GetOriginalEml(CurrentPecMail)
+                        If original IsNot Nothing Then
+                            btnOriginalEml.Text = String.Format("Scarica {0} originale", PecLabel)
+                            ' btnOriginalEml.PostBackUrl = original.DownloadLink()
+                            btnOriginalEml.Visible = True
+                            btnOriginalEml.Enabled = True
+                        End If
                     End If
                 End If
 
-                If cmdPECView.Visible Then
-                    Dim chain As BiblosChainInfo = New BiblosChainInfo(CurrentPecMail.Location.DocumentServer, CurrentPecMail.IDAttachments)
+                If cmdPECView.Visible AndAlso CurrentPecMail.IDAttachments <> Guid.Empty Then
+                    Dim chain As BiblosChainInfo = New BiblosChainInfo(CurrentPecMail.IDAttachments)
                     If chain.HasActiveDocuments() Then
                         cmdPECView.Enabled = True
                     Else
@@ -142,6 +147,23 @@ Public Class PECSummary
             Facade.PECMailLogFacade.Read(CurrentPecMail)
 
             InitializePec()
+        End If
+    End Sub
+
+    Protected Sub PECSummary_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
+
+        Dim ajaxModel As AjaxModel = Nothing
+        Try
+            ajaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument)
+        Catch
+            Exit Sub
+        End Try
+
+        If ajaxModel IsNot Nothing Then
+            Select Case ajaxModel.ActionName
+                Case "FisicalRemovePEC"
+                    FisicalRemovePEC()
+            End Select
         End If
     End Sub
 
@@ -191,10 +213,7 @@ Public Class PECSummary
             Return
         End If
 
-        Dim qs As String = "Year={0}&Number={1}&PType={2}"
-        qs = String.Format(qs, Me.CurrentPecMail.Year, Me.CurrentPecMail.Number, Prot.PosteWeb.Item.TypeRaccomandata)
-        qs = CommonShared.AppendSecurityCheck(qs)
-        Response.Redirect("../Prot/PosteWebItem.aspx?" & qs)
+        Response.Redirect($"~/Prot/PosteWebItem.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentPecMail.DocumentUnit.Id}&PType={Prot.PosteWeb.Item.TypeRaccomandata}")}")
     End Sub
 
     Private Sub cmdPECView_Click(sender As Object, e As EventArgs) Handles cmdPECView.Click
@@ -219,11 +238,40 @@ Public Class PECSummary
         Response.Redirect("~/PEC/PECSummary.aspx?" & qs)
     End Sub
 
+    Private Sub btnFisicalRemovePEC_Click(sender As Object, e As EventArgs) Handles btnFisicalRemovePEC.Click
+        windowManager.RadConfirm("Sei sicuro di voler eliminare il PEC?", "confirmFisicalRemovePEC", 400, 150, Nothing, "Elimina Fisica PEC")
+    End Sub
+
+    Private Sub FisicalRemovePEC()
+        FacadeFactory.Instance.TableLogFacade.Insert("PECMailBox", LogEvent.INS, String.Format("Il PECMail è stato eliminata fisicamente: {0}, {1}, {2}", CurrentPecMail.Id, CurrentPecMail.MailSubject, CurrentPecMail.MailDate), CurrentPecMail.Id)
+
+        'Errore [HibernateException: The length of the string value exceeds the length configured in the mapping/parameter.
+
+        'Dim serializeSettings As JsonSerializerSettings = New JsonSerializerSettings()
+        'serializeSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        'Dim pecMailJson As String = JsonConvert.SerializeObject(CurrentPecMail, Formatting.Indented, serializeSettings)
+        ''FacadeFactory.Instance.TableLogFacade.Insert("PECMailBox", LogEvent.INS, pecMailJson, CurrentPecMail.Id)
+
+        DetachDocuments()
+
+        Facade.PECMailFacade.Delete(CurrentPecMail)
+
+        Dim outgoing As Boolean = CurrentPecMail.Direction.Equals(PECMailDirection.Outgoing)
+        If outgoing Then
+            Response.Redirect(String.Format("PECOutgoingMails.aspx?Type=Pec&ProtocolBox={0}", ProtocolBoxEnabled))
+            Return
+        End If
+        Response.Redirect(String.Format("PECIncomingMails.aspx?Type=Pec&ProtocolBox={0}", ProtocolBoxEnabled))
+
+    End Sub
+
 #End Region
 
 #Region " Methods "
 
     Private Sub InitializeAjax()
+        AddHandler AjaxManager.AjaxRequest, AddressOf PECSummary_AjaxRequest
+
         AjaxManager.AjaxSettings.AddAjaxSetting(btnPECToDocumentUnit, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnAttachPec, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnReply, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
@@ -231,6 +279,7 @@ Public Class PECSummary
         AjaxManager.AjaxSettings.AddAjaxSetting(btnMail, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(cmdPECView, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnDelete, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnFisicalRemovePEC, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnRestore, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnForward, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnReceipt, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
@@ -246,6 +295,7 @@ Public Class PECSummary
         AjaxManager.AjaxSettings.AddAjaxSetting(btnMail, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(cmdPECView, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnDelete, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnFisicalRemovePEC, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnRestore, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnForward, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnReceipt, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
@@ -357,12 +407,15 @@ Public Class PECSummary
 
         btnReceipt.Enabled = CurrentPecMailRights.IsReceiptViewable
 
+        If CommonShared.HasGroupPECFisicalDeleteRight AndAlso ProtocolEnv.RemovePECEnabledInPECMailBoxes.Contains(CurrentPecMail.MailBox.Id) Then
+            btnFisicalRemovePEC.Enabled = True
+        End If
     End Sub
 
     Private Sub InitializePec()
 
-        If CurrentPecMail.HasDocumentUnit() AndAlso CurrentPecMail.DocumentUnitType = DSWEnvironment.Protocol Then
-            Dim protocol As Protocol = Facade.ProtocolFacade.GetById(CurrentPecMail.Year.Value, CurrentPecMail.Number.Value)
+        If CurrentPecMail.HasDocumentUnit() AndAlso CurrentPecMail.DocumentUnit.Environment = DSWEnvironment.Protocol Then
+            Dim protocol As Protocol = Facade.ProtocolFacade.GetById(CurrentPecMail.DocumentUnit.Id)
             uscProtocolPreview.CurrentProtocol = protocol
         Else
             uscProtocolPreview.Visible = False
@@ -419,26 +472,80 @@ Public Class PECSummary
         End If
         Dim log As PECMailLog
 
-
         tblAnnullamento.Visible = False
         lblInfo.Text = "-"
         If CurrentPecMail IsNot Nothing Then
             log = Facade.PECMailLogFacade.GetLogTypeByPEC(CurrentPecMail, PECMailLogType.Move)
             If log IsNot Nothing Then
-                lblInfo.Text = String.Concat(log.Description, " in data ", log.Date.ToShortDateString())
+                lblInfo.Text = $"{log.Description} in data {log.Date.ToShortDateString()}"
             End If
-            log = Facade.PECMailLogFacade.GetLogTypeByPEC(CurrentPecMail, PECMailLogType.Delete)
-            If log IsNot Nothing Then
-                lblDeleteInfo.Text = String.Concat(log.Description, " in data ", log.Date.ToShortDateString())
-                tblAnnullamento.Visible = True
+            If CurrentPecMail.IsActive <> 1 Then
+                log = Facade.PECMailLogFacade.GetLogTypeByPEC(CurrentPecMail, PECMailLogType.Delete)
+                If log IsNot Nothing Then
+                    lblDeleteInfo.Text = $"{log.Description} in data {log.Date.ToShortDateString()}"
+                    tblAnnullamento.Visible = True
+                End If
             End If
         End If
-
 
         If CurrentPecMail.Direction = PECMailDirection.Outgoing Then
             uscPecHistory.PecHistory = Facade.PECMailFacade.GetOutgoingMailHistory(CurrentPecMail.Id)
         End If
         uscPecHistory.BindData()
+    End Sub
+
+    Private Sub DetachDocuments()
+        If CurrentPecMail.IDSmime <> Guid.Empty Then
+            Try
+                Service.DetachDocument(CurrentPecMail.IDSmime)
+            Catch ex As Exception
+                Throw New DocSuiteException("Annullamento PEC", String.Format("Errore in fase Detach del documento con IDSmine = {0}, impossible eseguire.", CurrentPecMail.IDSmime), ex)
+            End Try
+        End If
+
+        If CurrentPecMail.IDSegnatura <> Guid.Empty Then
+            Try
+                Service.DetachDocument(CurrentPecMail.IDSegnatura)
+            Catch ex As Exception
+                Throw New DocSuiteException("Annullamento PEC", String.Format("Errore in fase Detach del documento con IDSegnatura = {0}, impossible eseguire.", CurrentPecMail.IDSegnatura), ex)
+            End Try
+        End If
+        If CurrentPecMail.IDPostacert <> Guid.Empty Then
+            Try
+                Service.DetachDocument(CurrentPecMail.IDPostacert)
+            Catch ex As Exception
+                Throw New DocSuiteException("Annullamento PEC", String.Format("Errore in fase Detach del documento con IDPostacert = {0}, impossible eseguire.", CurrentPecMail.IDPostacert), ex)
+            End Try
+        End If
+        If CurrentPecMail.IDMailContent <> Guid.Empty Then
+            Try
+                Service.DetachDocument(CurrentPecMail.IDMailContent)
+            Catch ex As Exception
+                Throw New DocSuiteException("Annullamento PEC", String.Format("Errore in fase Detach del documento con IDMailContent = {0}, impossible eseguire.", CurrentPecMail.IDMailContent), ex)
+            End Try
+        End If
+        If CurrentPecMail.IDEnvelope <> Guid.Empty Then
+            Try
+                Service.DetachDocument(CurrentPecMail.IDEnvelope)
+            Catch ex As Exception
+                Throw New DocSuiteException("Annullamento PEC", String.Format("Errore in fase Detach del documento con IDEnvelope = {0}, impossible eseguire.", CurrentPecMail.IDEnvelope), ex)
+            End Try
+        End If
+        If CurrentPecMail.IDDaticert <> Guid.Empty Then
+            Try
+                Service.DetachDocument(CurrentPecMail.IDDaticert)
+            Catch ex As Exception
+                Throw New DocSuiteException("Annullamento PEC", String.Format("Errore in fase Detach del documento con IDDaticert = {0}, impossible eseguire.", CurrentPecMail.IDDaticert), ex)
+            End Try
+        End If
+        If CurrentPecMail.IDAttachments <> Guid.Empty Then
+            Try
+                Service.DetachDocument(CurrentPecMail.IDAttachments)
+            Catch ex As Exception
+                Throw New DocSuiteException("Annullamento PEC", String.Format("Errore in fase Detach del documento con IDAttachments = {0}, impossible eseguire.", CurrentPecMail.IDAttachments), ex)
+            End Try
+        End If
+
     End Sub
 
     Private Sub InitIcons()

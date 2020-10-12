@@ -20,6 +20,16 @@ Public Class DocSuiteUser
 
 #End Region
 
+#Region " Constructor "
+    Public Sub New()
+
+    End Sub
+
+    Public Sub New(domain As String)
+        _domain = domain
+    End Sub
+#End Region
+
 #Region " Properties "
 
     Public ReadOnly Property Identity() As IIdentity
@@ -78,7 +88,6 @@ Public Class DocSuiteUser
                 If String.IsNullOrEmpty(identityName) Then
                     Return String.Empty
                 End If
-                _domain = identityName
                 If identityName.Contains("\") Then
                     _domain = CType(identityName.Split("\"c).GetValue(0), String)
                 End If

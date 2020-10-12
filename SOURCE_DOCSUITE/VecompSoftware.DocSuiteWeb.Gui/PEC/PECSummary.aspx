@@ -12,10 +12,19 @@
                 var currentUpdatedControl = "<%= pnlMainContent.ClientID%>";
                 currentLoadingPanel.show(currentUpdatedControl);
 
-
                 var ajaxFlatLoadingPanel = $find("<%= MasterDocSuite.AjaxFlatLoadingPanel.ClientID%>");
                 var pnlButtons = "<%= pnlButtons.ClientID%>";
                 ajaxFlatLoadingPanel.show(pnlButtons);
+            }
+
+            function HideLoadingPanel() {
+                var currentLoadingPanel = $find("<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>");
+                var currentUpdatedControl = "<%= pnlMainContent.ClientID%>";
+                currentLoadingPanel.hide(currentUpdatedControl);
+
+                var ajaxFlatLoadingPanel = $find("<%= MasterDocSuite.AjaxFlatLoadingPanel.ClientID%>");
+                var pnlButtons = "<%= pnlButtons.ClientID%>";
+                ajaxFlatLoadingPanel.hide(pnlButtons);
             }
 
             function StartDownload(url) {
@@ -27,11 +36,29 @@
                 link.href = value;
                 link.click();
             }
+
+            function confirmFisicalRemovePEC(arg) {
+                if (arg) {
+                    let ajaxModel = {};
+                    ajaxModel.ActionName = "FisicalRemovePEC";
+                    $find('<% = MasterDocSuite.AjaxManager.ClientID%>').ajaxRequest(JSON.stringify(ajaxModel));
+                } else {
+                    HideLoadingPanel()
+                }
+             }     
         </script>
+        <style>
+            #ctl00_DefaultLoadingPanelctl00_cphContent_pnlMainContent {
+            z-index: 1 !important;
+            }
+            </style>
     </telerik:RadCodeBlock>
     <asp:Panel runat="server" ID="pnlDestination" CssClass="hiddenField">
         <asp:Label ID="lblDestination" runat="server" />
     </asp:Panel>
+    <telerik:RadWindowManager runat="server" ID="windowManager">
+
+    </telerik:RadWindowManager>
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="cphContent" runat="server">
@@ -167,6 +194,7 @@
             <asp:Button ID="btnUnhandle" runat="server" Text="Rilascia" Visible="False" Width="150" CommandArgument="False" Enabled="true" />
             <asp:Button ID="btnHandle" runat="server" Text="Prendi in carico" Visible="False" Width="150" CommandArgument="True" Enabled="true" />
             <asp:Button ID="btnDelete" OnClientClick="ShowLoadingPanel();" PostBackUrl="~/PEC/PECDelete.aspx?Type=PEC" runat="server" Text="Elimina" Width="150" />
+            <asp:Button ID="btnFisicalRemovePEC" OnClientClick="ShowLoadingPanel();" runat="server" Text="Rimuovi PEC" Width="150" Enabled="false"/>
             <asp:Button ID="btnRestore" runat="server" Text="Ripristina" Width="150" />
             <asp:Button ID="btnForward" OnClientClick="ShowLoadingPanel();" PostBackUrl="~/PEC/PECInsert.aspx" runat="server" Width="150" />
             <asp:Button ID="btnReceipt" runat="server" Text="Ricevuta" Visible="False" Width="150" />

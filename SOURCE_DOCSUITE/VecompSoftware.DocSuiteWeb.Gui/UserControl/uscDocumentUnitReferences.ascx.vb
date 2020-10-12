@@ -14,15 +14,18 @@ Partial Class uscDocumentUnitReferences
     Public Property ShowProtocolMessageLinks As Boolean
     Public Property ShowProtocolDocumentSeriesLinks As Boolean
     Public Property ShowPECIncoming As Boolean
+    Public Property ShowTNotice As Boolean
     Public Property ShowPECOutgoing As Boolean
     Public Property ShowDocumentSeriesMessageLinks As Boolean
-    Public Property ShowDocumentSeriesResolutionsLinks As Boolean 
+    Public Property ShowDocumentSeriesResolutionsLinks As Boolean
     Public Property ShowDocumentSeriesProtocolsLinks As Boolean
     Public Property ShowResolutionlMessageLinks As Boolean
     Public Property ShowResolutionDocumentSeriesLinks As Boolean
     Public Property ShowFasciclesLinks As Boolean
     Public Property ShowDossierLinks As Boolean
     Public Property ShowActiveWorkflowActivities As Boolean
+    Public Property ShowDoneWorkflowActivities As Boolean
+    Public Property ShowRemoveUDSLinksButton As Boolean
 
     Private _administrationTrasparenteProtocol As String
     Public ReadOnly Property AdministrationTrasparenteProtocol As String
@@ -53,7 +56,6 @@ Partial Class uscDocumentUnitReferences
             Return _protocolDocumentSeriesButton
         End Get
     End Property
-
 
 #Region " Events "
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load

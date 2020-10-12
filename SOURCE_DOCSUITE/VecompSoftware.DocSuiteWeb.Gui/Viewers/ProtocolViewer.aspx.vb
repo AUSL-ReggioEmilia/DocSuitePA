@@ -14,6 +14,7 @@ Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 
 Namespace Viewers
     Public Class ProtocolViewer
@@ -75,7 +76,7 @@ Namespace Viewers
         Private ReadOnly Property ProtocolList As List(Of Protocol)
             Get
                 If Not ProtocolsKeys.IsNullOrEmpty() AndAlso _protocols Is Nothing Then
-                    _protocols = ProtocolsKeys.Select(Function(k) FacadeFactory.Instance.ProtocolFacade.GetByUniqueId(k)).ToList()
+                    _protocols = ProtocolsKeys.Select(Function(k) FacadeFactory.Instance.ProtocolFacade.GetById(k)).ToList()
                 End If
                 If _protocols Is Nothing Then
                     _protocols = New List(Of Protocol)()
@@ -185,7 +186,7 @@ Namespace Viewers
             If Not Page.IsPostBack AndAlso Not Page.IsCallback Then
                 MasterDocSuite.TitleVisible = False
                 If Not MultipleProtocols Then
-                    btnSend.PostBackUrl = String.Format("{0}?recipients=false&Year={1}&Number={2}&overridepreviouspageurl=true&Type=Prot&FromViewer=true", btnSend.PostBackUrl, CurrentProtocolYear, CurrentProtocolNumber)
+                    btnSend.PostBackUrl = String.Format("{0}?recipients=false&UniqueId={1}&overridepreviouspageurl=true&Type=Prot&FromViewer=true", btnSend.PostBackUrl, CurrentProtocol.Id)
                 End If
                 BindViewerLight()
                 If ProtocolEnv.SendProtocolMessageFromViewerEnabled Then
@@ -196,7 +197,7 @@ Namespace Viewers
                     If MultipleProtocols Then
                         serialized = JsonConvert.SerializeObject(ProtocolsKeys)
                     Else
-                        serialized = JsonConvert.SerializeObject(New List(Of Guid) From {CurrentProtocol.UniqueId})
+                        serialized = JsonConvert.SerializeObject(New List(Of Guid) From {CurrentProtocol.Id})
                     End If
                     btnMailProtocol.PostBackUrl = String.Format("~/MailSenders/AggregateToProtocol.aspx?multiple=true&keys={0}&ToSendProtocolType={1}&FromViewer=true", HttpUtility.UrlEncode(serialized), SendDocumentUnitType.ToMail)
                     btnPECProtocol.PostBackUrl = String.Format("~/MailSenders/AggregateToProtocol.aspx?multiple=true&keys={0}&ToSendProtocolType={1}&FromViewer=true", HttpUtility.UrlEncode(serialized), SendDocumentUnitType.ToPec)
@@ -209,10 +210,10 @@ Namespace Viewers
 
             If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso Not MultipleProtocols AndAlso CurrentProtocolRights.IsEditable AndAlso CurrentProtocol.Container.PrivacyEnabled Then
                 ViewerLight.ModifyPrivacyEnabled = True
-                ViewerLight.CurrentDocumentUnitID = CurrentProtocol.UniqueId
+                ViewerLight.CurrentDocumentUnitID = CurrentProtocol.Id
                 ViewerLight.CurrentLocationId = CurrentProtocol.Location.Id
             End If
-
+            ViewerLight.CheckViewableRight = True
             ViewerLight.AlwaysDocumentTreeOpen = ProtocolEnv.ViewLightAlwaysOpenPages.Contains("ProtocolViewer")
         End Sub
         Private Sub BtnAssegnaClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnAssegna.Click
@@ -227,7 +228,7 @@ Namespace Viewers
             For Each doc As DocumentInfo In checkedDocuments.Where(Function(f) f.Attributes.ContainsKey(ViewerLight.BIBLOS_ATTRIBUTE_UniqueId))
                 haveEnvironment = doc.Attributes.ContainsKey(ViewerLight.BIBLOS_ATTRIBUTE_Environment) AndAlso [Enum].TryParse(doc.Attributes(ViewerLight.BIBLOS_ATTRIBUTE_Environment), documentEnvironment)
                 If Guid.TryParse(doc.Attributes(ViewerLight.BIBLOS_ATTRIBUTE_UniqueId), uniqueId) AndAlso (Not haveEnvironment OrElse documentEnvironment = DSWEnvironment.Protocol) Then
-                    protocol = FacadeFactory.Instance.ProtocolFacade.GetByUniqueId(uniqueId)
+                    protocol = FacadeFactory.Instance.ProtocolFacade.GetById(uniqueId)
                     If protocol IsNot Nothing AndAlso Facade.DocumentFacade.CheckPrivacy(doc, protocol.Container.Id,
                                                                                          protocol.Roles.Where(Function(r) String.IsNullOrEmpty(r.Type) OrElse Not r.Type.Eq(ProtocolRoleTypes.Privacy)).Select(Function(t) t.Role.UniqueId).ToArray(),
                                                                                          protocol.Roles.Where(Function(r) Not String.IsNullOrEmpty(r.Type) AndAlso r.Type.Eq(ProtocolRoleTypes.Privacy)).Select(Function(t) t.Role.UniqueId).ToArray(),
@@ -274,7 +275,7 @@ Namespace Viewers
                     currentRelatedUDS = GetRelatedUDS(prot)
                     If currentRelatedUDS IsNot Nothing Then
                         datasource.Add(UDSFacade.GetUDSTreeDocuments(currentRelatedUDS, Sub(document As BiblosDocumentInfo, documentType As Helpers.UDS.UDSDocumentType)
-                                                                                            document.AddAttribute(ViewerLight.BIBLOS_ATTRIBUTE_UniqueId, prot.UniqueId.ToString())
+                                                                                            document.AddAttribute(ViewerLight.BIBLOS_ATTRIBUTE_UniqueId, prot.Id.ToString())
                                                                                             document.AddAttribute(ViewerLight.BIBLOS_ATTRIBUTE_Environment, DirectCast(DSWEnvironment.UDS, Integer).ToString())
                                                                                         End Sub))
                     End If
@@ -284,7 +285,7 @@ Namespace Viewers
                 Dim currentRelatedUDS As UDSDto = GetRelatedUDS(CurrentProtocol)
                 If currentRelatedUDS IsNot Nothing Then
                     datasource.Add(UDSFacade.GetUDSTreeDocuments(currentRelatedUDS, Sub(document As BiblosDocumentInfo, documentType As Helpers.UDS.UDSDocumentType)
-                                                                                        document.AddAttribute(ViewerLight.BIBLOS_ATTRIBUTE_UniqueId, CurrentProtocol.UniqueId.ToString())
+                                                                                        document.AddAttribute(ViewerLight.BIBLOS_ATTRIBUTE_UniqueId, CurrentProtocol.Id.ToString())
                                                                                         document.AddAttribute(ViewerLight.BIBLOS_ATTRIBUTE_Environment, DirectCast(DSWEnvironment.UDS, Integer).ToString())
                                                                                     End Sub))
                 End If
@@ -298,11 +299,14 @@ Namespace Viewers
                 Return Nothing
             End If
 
-            CurrentUDSDocumentUnitFinder.ResetDecoration()
-            CurrentUDSDocumentUnitFinder.EnablePaging = False
-            CurrentUDSDocumentUnitFinder.ExpandRepository = True
-            CurrentUDSDocumentUnitFinder.IdDocumentUnit = protocol.UniqueId
-            Dim result As ICollection(Of WebAPIDto(Of Entity.UDS.UDSDocumentUnit)) = CurrentUDSDocumentUnitFinder.DoSearch()
+            Dim result As ICollection(Of WebAPIDto(Of Entity.UDS.UDSDocumentUnit)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentUDSDocumentUnitFinder,
+                            Function(impersonationType, finder)
+                                finder.ResetDecoration()
+                                finder.EnablePaging = False
+                                finder.ExpandRepository = True
+                                finder.IdDocumentUnit = protocol.UniqueId
+                                Return finder.DoSearch()
+                            End Function)
 
             If result Is Nothing Then
                 Return Nothing

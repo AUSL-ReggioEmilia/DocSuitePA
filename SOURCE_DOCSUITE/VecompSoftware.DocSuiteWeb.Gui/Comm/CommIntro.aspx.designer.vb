@@ -12,7 +12,16 @@ Option Explicit On
 
 
 Partial Public Class CommIntro
-    
+
+    '''<summary>
+    '''mainPanel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents mainPanel As Global.Telerik.Web.UI.RadPane
+
     '''<summary>
     '''imgLogo control.
     '''</summary>
@@ -21,7 +30,7 @@ Partial Public Class CommIntro
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgLogo As Global.System.Web.UI.WebControls.Image
-    
+
     '''<summary>
     '''Version control.
     '''</summary>
@@ -30,7 +39,7 @@ Partial Public Class CommIntro
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Version As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rowVersions control.
     '''</summary>
@@ -39,7 +48,7 @@ Partial Public Class CommIntro
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowVersions As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''phVersions control.
     '''</summary>
@@ -48,7 +57,7 @@ Partial Public Class CommIntro
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents phVersions As Global.System.Web.UI.WebControls.PlaceHolder
-    
+
     '''<summary>
     '''UserConnected control.
     '''</summary>
@@ -57,7 +66,7 @@ Partial Public Class CommIntro
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UserConnected As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''UserMail control.
     '''</summary>
@@ -66,7 +75,7 @@ Partial Public Class CommIntro
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UserMail As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''UserDomain control.
     '''</summary>
@@ -75,88 +84,7 @@ Partial Public Class CommIntro
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UserDomain As Global.System.Web.UI.WebControls.Label
-    
-    '''<summary>
-    '''rowRecoverProtocols control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rowRecoverProtocols As Global.Telerik.Web.UI.LayoutRow
-    
-    '''<summary>
-    '''lblRecoveringProtocols control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblRecoveringProtocols As Global.System.Web.UI.WebControls.Label
-    
-    '''<summary>
-    '''btnProtocolCorrect control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnProtocolCorrect As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''rowRecoverTemplateCollaborations control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rowRecoverTemplateCollaborations As Global.Telerik.Web.UI.LayoutRow
-    
-    '''<summary>
-    '''lblRecoveringTemplateCollaborations control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblRecoveringTemplateCollaborations As Global.System.Web.UI.WebControls.Label
-    
-    '''<summary>
-    '''btnTemplateCollaborationCorrects control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnTemplateCollaborationCorrects As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''rowRecoverResolutionActivities control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rowRecoverResolutionActivities As Global.Telerik.Web.UI.LayoutRow
-    
-    '''<summary>
-    '''lblRecoverResolutionActivities control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblRecoverResolutionActivities As Global.System.Web.UI.WebControls.Label
-    
-    '''<summary>
-    '''btnRecoverResolutionActivities control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnRecoverResolutionActivities As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''imbUtente control.
     '''</summary>
@@ -165,4 +93,130 @@ Partial Public Class CommIntro
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imbUtente As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''panelSeparator control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panelSeparator As Global.Telerik.Web.UI.RadSplitBar
+
+    '''<summary>
+    '''errorPanel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents errorPanel As Global.Telerik.Web.UI.RadPane
+
+    '''<summary>
+    '''rowRecoverProtocols control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowRecoverProtocols As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''lblRecoveringProtocols control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRecoveringProtocols As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btnProtocolCorrect control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnProtocolCorrect As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''rowRecoverTemplateCollaborations control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowRecoverTemplateCollaborations As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''lblRecoveringTemplateCollaborations control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRecoveringTemplateCollaborations As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btnTemplateCollaborationCorrects control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnTemplateCollaborationCorrects As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''rowRecoverResolutionActivities control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowRecoverResolutionActivities As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''lblRecoverResolutionActivities control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRecoverResolutionActivities As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btnRecoverResolutionActivities control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnRecoverResolutionActivities As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''rowErrorPECMailBoxes control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowErrorPECMailBoxes As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''lblPECMailBoxError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblPECMailBoxError As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btnPecMailBoxError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnPecMailBoxError As Global.Telerik.Web.UI.RadButton
 End Class

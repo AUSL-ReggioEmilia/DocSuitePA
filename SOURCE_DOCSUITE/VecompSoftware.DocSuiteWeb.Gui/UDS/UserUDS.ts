@@ -196,7 +196,7 @@ class UserUDS extends UserUDSBase {
         this.loadResults(skip);
     }
 
-    btnSearch_onClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnSearch_onClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         if (this._rcbRepositoryName.get_selectedItem()) {
             this.loadResults(0);
         }

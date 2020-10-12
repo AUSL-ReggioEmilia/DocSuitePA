@@ -1,6 +1,5 @@
 ﻿import BaseMapper = require('App/Mappers/BaseMapper');
-import DocumentUnitRoleModel = require('../../Models/DocumentUnits/DocumentUnitRoleModel');
-import DocumentUnitModelMapper = require('./DocumentUnitModelMapper');
+import DocumentUnitRoleModel = require('App/Models/DocumentUnits/DocumentUnitRoleModel');
 
 class DocumentUnitRoleMapper extends BaseMapper<DocumentUnitRoleModel> {
     constructor() {

@@ -38,7 +38,7 @@ Public Class ContainerSecurityPrint
         MyBase.CreateGroupSecurityRow(tbl, location)
     End Sub
 
-    Protected Sub CreateLocationRow(ByRef tbl As DSTable, ByVal type As String, ByVal id As String, ByVal name As String, ByVal server As String, ByVal archive As String, ByVal lineBox As Boolean, ByVal textBold As Boolean)
+    Protected Sub CreateLocationRow(ByRef tbl As DSTable, ByVal type As String, ByVal id As String, ByVal name As String, ByVal archive As String, ByVal lineBox As Boolean, ByVal textBold As Boolean)
         Dim cellStyle As New DSTableCellStyle()
         'stili comuni a tutte le celle
         cellStyle.Font.Bold = textBold
@@ -70,13 +70,6 @@ Public Class ContainerSecurityPrint
         'cella nome
         tbl.CurrentRow.CreateEmpytCell()
         tbl.CurrentRow.CurrentCell.Text = name
-        cellStyle.Width = Unit.Percentage(25)
-        cellStyle.HorizontalAlignment = HorizontalAlign.Left
-        tbl.CurrentRow.CurrentCell.ApplyStyle(cellStyle)
-
-        'cella server
-        tbl.CurrentRow.CreateEmpytCell()
-        tbl.CurrentRow.CurrentCell.Text = server
         cellStyle.Width = Unit.Percentage(25)
         cellStyle.HorizontalAlignment = HorizontalAlign.Left
         tbl.CurrentRow.CurrentCell.ApplyStyle(cellStyle)
@@ -123,25 +116,25 @@ Public Class ContainerSecurityPrint
         'locazioni
         CreateLocationSecurityRow(TablePrint, "Locazioni")
         'intestazione locazioni
-        CreateLocationRow(TablePrint, "Tipo", "Id", "Nome", "Server", "Archivio", True, True)
+        CreateLocationRow(TablePrint, "Tipo", "Id", "Nome", "Archivio", True, True)
         'recupera la location attravErso i facade perchè su un altro DB
         If DocSuiteContext.Current.IsDocumentEnabled AndAlso container.DocmLocation IsNot Nothing Then
             location = Facade.LocationFacade.GetById(container.DocmLocation.Id, False, "DocmDB")
             If location IsNot Nothing Then
-                CreateLocationRow(TablePrint, DocSuiteContext.Current.DossierAndPraticheLabel, location.Id.ToString(), location.Name, location.DocumentServer, location.DocmBiblosDSDB, False, False)
+                CreateLocationRow(TablePrint, DocSuiteContext.Current.DossierAndPraticheLabel, location.Id.ToString(), location.Name, location.DocmBiblosDSDB, False, False)
             End If
         End If
         If DocSuiteContext.Current.IsProtocolEnabled AndAlso container.ProtLocation IsNot Nothing Then
             location = Facade.LocationFacade.GetById(container.ProtLocation.Id, False, "ProtDB")
             If location IsNot Nothing Then
-                CreateLocationRow(TablePrint, "Protocollo", location.Id.ToString(), location.Name, location.DocumentServer, location.ProtBiblosDSDB, False, False)
+                CreateLocationRow(TablePrint, "Protocollo", location.Id.ToString(), location.Name, location.ProtBiblosDSDB, False, False)
 
             End If
         End If
         If DocSuiteContext.Current.IsResolutionEnabled AndAlso container.ReslLocation IsNot Nothing Then
             location = Facade.LocationFacade.GetById(container.ReslLocation.Id, False, "ReslDB")
             If location IsNot Nothing Then
-                CreateLocationRow(TablePrint, lblResl, location.Id.ToString(), location.Name, location.DocumentServer, location.ReslBiblosDSDB, False, False)
+                CreateLocationRow(TablePrint, lblResl, location.Id.ToString(), location.Name, location.ReslBiblosDSDB, False, False)
             End If
         End If
         'aggiungi spazio

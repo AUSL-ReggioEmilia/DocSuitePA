@@ -91,7 +91,7 @@ Partial Public Class UserFDQMultiple
                     Exit Sub
                 End If
                 If DirectCast(dataGridItem.FindControl("chkSignDoc"), CheckBox).Checked Then
-                    Dim doc As New BiblosDocumentInfo(coll.Location.DocumentServer, coll.Location.ProtBiblosDSDB, Integer.Parse(dataGridItem("IdDocument").Text), 0)
+                    Dim doc As New BiblosDocumentInfo(coll.Location.ProtBiblosDSDB, Integer.Parse(dataGridItem("IdDocument").Text), 0)
                     Dim dir As New DirectoryInfo(Path.Combine(TempDir, "In"))
                     doc.SaveToDisk(dir, dataGridItem("FileName").Text)
                 End If
@@ -136,10 +136,7 @@ Partial Public Class UserFDQMultiple
             Case "Docu"
                 Dim coll As Collaboration = Facade.CollaborationFacade.GetById(Integer.Parse(e.CommandArgument))
                 If coll IsNot Nothing Then
-                    'Dim location As Location = coll.Location
-                    'Dim script As String = SmartClientFacade.GetBiblosSmartClientScript(location.DocumentServer, location.ProtBiblosDSDB, coll.GetFirstDocumentVersioning(), Nothing)
                     Throw New NotImplementedException("Passaggio a ViewerLight non implementato")
-                    'Response.Redirect(CommonUtil.GetInstance().AppBiblosDSPage & CommonUtil.ChkGenera(script))
                 End If
         End Select
     End Sub
@@ -259,7 +256,7 @@ Partial Public Class UserFDQMultiple
                 document.Signature = Facade.CollaborationFacade.GenerateSignature(coll, DateTime.Now, "")
                 Dim location As Location = Facade.LocationFacade.GetById(ProtocolEnv.CollaborationLocation)
 
-                idChain = document.ArchiveInBiblos(location.DocumentServer, location.ProtBiblosDSDB, idChain).BiblosChainId
+                idChain = document.ArchiveInBiblos(location.ProtBiblosDSDB, idChain).BiblosChainId
 
                 FileLogger.Info(LoggerName, DocSuiteContext.Current.User.FullUserName & " - BiblosInsert DONE - " & idChain)
 

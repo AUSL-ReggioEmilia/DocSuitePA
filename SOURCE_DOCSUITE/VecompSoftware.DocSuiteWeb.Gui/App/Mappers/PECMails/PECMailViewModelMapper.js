@@ -54,8 +54,7 @@ define(["require", "exports", "App/Helpers/EnumHelper"], function (require, expo
             toMap.ReceivedAsCc = source.ReceivedAsCc;
             toMap.Size = source.Size;
             toMap.MultipleType = source.MultipleType;
-            toMap.IdUDS = source.IdUDS;
-            toMap.DocumentUnitType = source.DocumentUnitType;
+            toMap.IdDocumentUnit = (source.DocumentUnit != undefined ? source.DocumentUnit.UniqueId : null);
             toMap.EntityId = source.EntityId;
             toMap.UniqueId = source.UniqueId;
             toMap.InvoiceStatus = source.InvoiceStatus;

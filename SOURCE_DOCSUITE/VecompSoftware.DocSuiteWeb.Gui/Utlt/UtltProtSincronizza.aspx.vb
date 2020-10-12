@@ -44,7 +44,7 @@ Partial Public Class UtltProtSincronizza
         Get
             If _protocols Is Nothing Then
                 Dim headers As IList(Of ProtocolHeader) = Finder.DoSearchHeader()
-                Dim identifiers As IList(Of YearNumberCompositeKey) = headers.Select(Function(h) New YearNumberCompositeKey(h.Year, h.Number)).ToList()
+                Dim identifiers As IList(Of Guid) = headers.Select(Function(h) h.UniqueId).ToList()
                 _protocols = Facade.ProtocolFacade.GetProtocols(identifiers, NHibernateProtocolDao.FetchingStrategy.BasicDataAndLocation)
             End If
             Return _protocols
@@ -123,10 +123,8 @@ Partial Public Class UtltProtSincronizza
     Private Sub gvProtocols_ItemCommand(ByVal source As Object, ByVal e As GridCommandEventArgs) Handles gvProtocols.ItemCommand
         Select Case e.CommandName
             Case "ShowProt"
-                Dim splitted As String() = e.CommandArgument.ToString().Split("|"c)
-                Dim parameters As String = "Year={0}&Number={1}"
-                parameters = String.Format(parameters, splitted(0), splitted(1))
-                Response.Redirect("../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(parameters))
+                Dim uniqueIdProtocol As Guid = Guid.Parse(e.CommandArgument.ToString())
+                Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={uniqueIdProtocol}&Type=Prot")}")
 
         End Select
     End Sub
@@ -150,7 +148,7 @@ Partial Public Class UtltProtSincronizza
         Try
             FacadeFactory.Instance.ProtocolFacade.RaiseAfterInsert(Protocols(currentStep))
             Dim currentProtocol As Protocol = Protocols(currentStep)
-            currentProtocol = FacadeFactory.Instance.ProtocolFacade.GetById(currentProtocol.Year, currentProtocol.Number)
+            currentProtocol = FacadeFactory.Instance.ProtocolFacade.GetById(currentProtocol.Id)
             If currentProtocol.TDIdDocument.HasValue AndAlso String.IsNullOrEmpty(currentProtocol.TDError) Then
                 ProtocolImported += 1
             End If

@@ -33,7 +33,7 @@ Public Class NHibernateProtocolContactFinder2
 
     Public Property IdContactIn As Integer()
     Public Property Year As Short?
-    Public Property IdProtocolIn As YearNumberCompositeKey()
+    Public Property IdProtocolIn As ICollection(Of Guid)
     Public Property Description As String
     Public Property DescriptionSearchBehaviour As TextSearchBehaviour
 
@@ -46,41 +46,28 @@ Public Class NHibernateProtocolContactFinder2
         DecorateCriteria(criteria)
         Return criteria.List(Of ProtocolContact)()
     End Function
-    Public Overridable Function GetProtocolKeys() As IList(Of YearNumberCompositeKey)
-        Dim criteria As ICriteria = CreateCriteria()
-        DecorateCriteria(criteria)
-        criteria.SetProjection(Projections.Distinct(Projections.Property("PC.Protocol.Id")))
-        Return criteria.List(Of YearNumberCompositeKey)()
-    End Function
 
     Protected Overrides Function CreateCriteria() As ICriteria
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolContact)("PC")
         criteria.CreateAliasIfNotExists("PC.Contact", "C")
+        criteria.CreateAliasIfNotExists("PC.Protocol", "P")
         Return criteria
     End Function
     Protected Overridable Sub DecorateCriteria(ByRef criteria As ICriteria)
         If Not IdContactIn.IsNullOrEmpty() Then
-            criteria.Add(Restrictions.In("PC.Id", IdContactIn))
+            criteria.Add(Restrictions.In("PC.Contact.Id", IdContactIn))
         End If
         If Year.HasValue Then
-            criteria.Add(Restrictions.Eq("PC.Protocol.Id.Year", Year))
+            criteria.Add(Restrictions.Eq("P.Year", Year))
         End If
         If Not IdProtocolIn.IsNullOrEmpty() Then
-            Dim disj As New Disjunction()
-            disj.Add(Expression.Sql("1=0"))
-            Dim restrictions As IEnumerable(Of AbstractCriterion) = IdProtocolIn.GroupBy(Function(g) g.Year.Value).Select(Function(g) GetRestrictionFrom(g))
-            restrictions.ToList().ForEach(Sub(r) disj.Add(r))
-            criteria.Add(disj)
+            criteria.Add(Restrictions.InG("P.Id", IdProtocolIn))
         End If
         If Not String.IsNullOrEmpty(Description) Then
             Dim descriptionLike As AbstractCriterion = AbstractCriterionBuilder.TextLike("C.Description", Description.Trim(), DescriptionSearchBehaviour)
             criteria.Add(descriptionLike)
         End If
     End Sub
-
-    Private Function GetRestrictionFrom(grouping As IGrouping(Of Short, YearNumberCompositeKey)) As AbstractCriterion
-        Return Restrictions.And(Restrictions.Eq("PC.Protocol.Id.Year", grouping.Key), Restrictions.In("PC.Protocol.Id.Number", grouping.Select(Function(k) k.Number).ToArray()))
-    End Function
 
 #End Region
 

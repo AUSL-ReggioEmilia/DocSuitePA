@@ -128,7 +128,7 @@ class TbltUDSTypology {
         }
     }
 
-    private btnAggiungi_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnAggiungi_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._currentSelectedNode;
         if (selectedNode == undefined || selectedNode.get_value() == null || selectedNode.get_value() == "") {
             this.showWarningMessage(this.uscNotificationId, 'Nessuna tipologia selezionata');
@@ -139,7 +139,7 @@ class TbltUDSTypology {
         this.openWindow(url, 600, 450, "Tipologie - Aggiungi Archivio");
     }
 
-    private btnRimuovi_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnRimuovi_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._currentSelectedNode;
         if (selectedNode == undefined || selectedNode.get_value() == null || selectedNode.get_value() == "") {
             this.showWarningMessage(this.uscNotificationId, 'Nessuna tipologia selezionata');

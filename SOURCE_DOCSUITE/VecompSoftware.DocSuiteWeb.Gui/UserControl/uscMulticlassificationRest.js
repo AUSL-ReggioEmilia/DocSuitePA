@@ -1,4 +1,4 @@
-define(["require", "exports", "../App/Helpers/ServiceConfigurationHelper", "../App/Services/DocumentUnits/DocumentUnitFascicleCategoriesService"], function (require, exports, ServiceConfigurationHelper, DocumentUnitFascicleCategoriesService) {
+define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Services/DocumentUnits/DocumentUnitFascicleCategoriesService"], function (require, exports, ServiceConfigurationHelper, DocumentUnitFascicleCategoriesService) {
     var UscMulticlassificationRest = /** @class */ (function () {
         function UscMulticlassificationRest(serviceConfigurations) {
             this._serviceConfigurations = serviceConfigurations;

@@ -15,7 +15,7 @@ import UscErrorNotification = require('UserControl/uscErrorNotification');
 import AjaxModel = require('App/Models/AjaxModel');
 import CategoryFascicleRightsService = require('App/Services/Commons/CategoryFascicleRightsService');
 import CategoryFascicleRightModel = require('App/Models/Commons/CategoryFascicleRightModel');
-import RoleModel = require('../App/Models/Commons/RoleModel');
+import RoleModel = require('App/Models/Commons/RoleModel');
 
 class TbltCreaFascicolo {
 
@@ -77,7 +77,7 @@ class TbltCreaFascicolo {
         this._categoryFascicleRightService = new CategoryFascicleRightsService(categoryFascicleRightService);
     }
 
-    btnSave_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnSave_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         this._loadingPanel.show(this.pageLayoutId);
         let item = <CategoryFascicleModel>{};
         item.FascicleType = FascicleType['Period'];

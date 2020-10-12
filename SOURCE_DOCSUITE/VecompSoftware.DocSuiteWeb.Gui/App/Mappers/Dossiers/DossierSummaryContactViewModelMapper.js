@@ -11,6 +11,7 @@ define(["require", "exports", "App/ViewModels/BaseEntityViewModel"], function (r
             toMap.EntityShortId = source.IdContact;
             toMap.Name = source.Description;
             toMap.Type = source.ContactType;
+            toMap.IncrementalFather = source.IncrementalFather;
             return toMap;
         };
         return DossierSummaryContactViewModelMapper;

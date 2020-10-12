@@ -881,7 +881,7 @@ Partial Public Class uscResolution
         If Not ResolutionEnv.ParerEnabled Then
             tblParer.Visible = False
             If CurrentResolution.UltimaPaginaDate.HasValue Then
-                lbDataDematerializzazione.Text = CurrentResolution.UltimaPaginaDate.Value.ToString("dd/MM/yyyy", Globalization.CultureInfo.InvariantCulture)
+                lbDataDematerializzazione.Text = CurrentResolution.UltimaPaginaDate.Value.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
                 tblParer.Visible = True
                 linkUriVersamento.Text = String.Empty
             End If
@@ -893,11 +893,11 @@ Partial Public Class uscResolution
         If Facade.ResolutionParerFacade.Exists(CurrentResolution) Then
             ' Sezione Atto Dematerializzato
             If CurrentParer.ArchivedDate.HasValue Then
-                lbDataVersamento.Text = CurrentParer.ArchivedDate.Value.ToString("dd/MM/yyyy", Globalization.CultureInfo.InvariantCulture)
+                lbDataVersamento.Text = CurrentParer.ArchivedDate.Value.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
             End If
             linkUriVersamento.NavigateUrl = CurrentParer.ParerUri
             If CurrentResolution.UltimaPaginaDate.HasValue Then
-                lbDataDematerializzazione.Text = CurrentResolution.UltimaPaginaDate.Value.ToString("dd/MM/yyyy", Globalization.CultureInfo.InvariantCulture)
+                lbDataDematerializzazione.Text = CurrentResolution.UltimaPaginaDate.Value.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
             End If
 
             parerInfo.ImageUrl = "../Comm/Images/info.png"

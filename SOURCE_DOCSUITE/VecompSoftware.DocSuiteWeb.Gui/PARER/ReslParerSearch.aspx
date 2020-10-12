@@ -12,7 +12,7 @@
                     <asp:ListItem Value=""></asp:ListItem>
                 </asp:DropDownList>
                 <asp:RequiredFieldValidator runat="server" ID="rfvDocumentType" ControlToValidate="ddlDocumentType"
-                    Display="Dynamic" ErrorMessage="Campo Tipologia Documento Obbligatorio">
+                    Display="Dynamic" ErrorMessage="Campo Tipologia Documento obbligatorio">
                 </asp:RequiredFieldValidator>
             </td>
         </tr>

@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows/WorkflowRepositoryModelMapper", "App/Models/ODATAResponseModel", "App/Models/Workflows/WorkflowDSWEnvironmentType", "../../core/extensions/string"], function (require, exports, BaseService, WorkflowRepositoryModelMapper, ODATAResponseModel, WorkflowDSWEnvironmentType) {
+define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows/WorkflowRepositoryModelMapper", "App/Models/ODATAResponseModel", "App/Models/Workflows/WorkflowDSWEnvironmentType", "../../Mappers/Commons/RoleModelMapper", "../../core/extensions/string"], function (require, exports, BaseService, WorkflowRepositoryModelMapper, ODATAResponseModel, WorkflowDSWEnvironmentType, RoleModelMapper) {
     var WorkflowRepositoryService = /** @class */ (function (_super) {
         __extends(WorkflowRepositoryService, _super);
         function WorkflowRepositoryService(configuration) {
@@ -21,7 +21,7 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows
             return _this;
         }
         WorkflowRepositoryService.prototype.getById = function (uniqueId, callback, error) {
-            var url = this._configuration.ODATAUrl.concat("?$filter=UniqueId eq ", uniqueId, "&$expand=WorkflowRoleMappings($expand=Role),WorkflowEvaluationProperties($orderby=Name)");
+            var url = this._configuration.ODATAUrl.concat("?$filter=UniqueId eq ", uniqueId, "&$expand=WorkflowRoleMappings($expand=Role),WorkflowEvaluationProperties($orderby=Name),Roles($expand=Father)");
             this.getRequest(url, null, function (response) {
                 if (callback) {
                     callback(response.value[0]);
@@ -30,7 +30,7 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows
         };
         WorkflowRepositoryService.prototype.getByName = function (name, callback, error) {
             var url = this._configuration.ODATAUrl;
-            url = url.concat("?$orderby=Name");
+            url = url.concat("?$orderby=Name&$expand=Roles($expand=Father)");
             if (!String.isNullOrEmpty(name)) {
                 url = url.concat("&$filter=contains(Name, '", name, "')");
             }
@@ -40,9 +40,9 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows
                 }
             }, error);
         };
-        WorkflowRepositoryService.prototype.getByEnvironment = function (environment, filters, anyEnv, documentRequired, callback, error) {
+        WorkflowRepositoryService.prototype.getByEnvironment = function (environment, filters, anyEnv, documentRequired, showOnlyNoInstanceWorkflows, showOnlyHasIsFascicleClosedRequired, callback, error) {
             var url = this._configuration.ODATAUrl;
-            url = url.concat("/WorkflowRepositoryService.GetAuthorizedActiveWorkflowRepositories(environment=" + environment + ",anyEnv=" + anyEnv + ",documentRequired=" + documentRequired + ")?$orderby=Name");
+            url = url.concat("/WorkflowRepositoryService.GetAuthorizedActiveWorkflowRepositories(environment=" + environment + ",anyEnv=" + anyEnv + ",documentRequired=" + documentRequired + ",showOnlyNoInstanceWorkflows=" + showOnlyNoInstanceWorkflows + ",showOnlyHasIsFascicleClosedRequired=" + showOnlyHasIsFascicleClosedRequired + ")?$orderby=Name");
             if (!String.isNullOrEmpty(filters)) {
                 url = url.concat("&$filter=contains(tolower(Name), '", filters.toLowerCase(), "')");
             }
@@ -98,6 +98,20 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows
                 }
             }, error);
         };
+        WorkflowRepositoryService.prototype.getWorkflowRepositoryRoles = function (uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl.concat("?$expand=Roles($expand=Father)&$filter=UniqueId eq " + uniqueId);
+            this.getRequest(url, null, function (response) {
+                if (callback && response) {
+                    var modelMapper_2 = new RoleModelMapper();
+                    var workflowRoles_1 = [];
+                    $.each(response.value[0].Roles, function (i, value) {
+                        workflowRoles_1.push(modelMapper_2.Map(value));
+                    });
+                    callback(workflowRoles_1);
+                }
+                ;
+            }, error);
+        };
         WorkflowRepositoryService.prototype.hasAuthorizedWorkflowRepositories = function (environment, anyenv, callback, error) {
             var url = this._configuration.ODATAUrl;
             url = url.concat("/WorkflowRepositoryService.HasAuthorizedWorkflowRepositories(environment=", environment.toString(), ",anyEnv=", anyenv.toString(), ")");
@@ -110,6 +124,14 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Workflows
                     callback(response.value);
                 }
             }, error);
+        };
+        WorkflowRepositoryService.prototype.updateWorkflowRepository = function (model, callback, error) {
+            var url = this._configuration.WebAPIUrl;
+            this.putRequest(url, JSON.stringify(model), callback, error);
+        };
+        WorkflowRepositoryService.prototype.insertWorkflowRepository = function (model, callback, error) {
+            var url = this._configuration.WebAPIUrl;
+            this.postRequest(url, JSON.stringify(model), callback, error);
         };
         return WorkflowRepositoryService;
     }(BaseService));

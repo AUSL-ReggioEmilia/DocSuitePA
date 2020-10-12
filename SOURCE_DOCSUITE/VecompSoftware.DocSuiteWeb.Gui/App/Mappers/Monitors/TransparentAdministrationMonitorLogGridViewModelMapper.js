@@ -14,7 +14,8 @@ define(["require", "exports"], function (require, exports) {
             toMap.Rating = source.Rating.split('|').join(',');
             toMap.DocumentUnitName = source.DocumentUnitName;
             toMap.IdDocumentUnit = source.IdDocumentUnit;
-            toMap.DocumentUnitTitle = "<a href=\"../Series/Item.aspx?UniqueId=" + source.IdDocumentUnit + "&Action=2&PreviousPage=" + location.href + "\">" + source.DocumentUnitTitle + "</a>";
+            toMap.DocumentUnitTitle = source.DocumentUnitTitle;
+            toMap.DocumentUnitSummaryUrl = "<a href=\"../Series/Item.aspx?Type=Series&UniqueId=" + source.IdDocumentUnit + "&Action=2&PreviousPage=" + location.href + "\">" + source.DocumentUnitTitle + "</a>";
             toMap.IdRole = source.IdRole;
             toMap.RoleName = source.RoleName;
             return toMap;

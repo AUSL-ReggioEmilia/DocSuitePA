@@ -18,20 +18,15 @@ Public Class ProtAllega
     ''' Elenco dei protocolli collegati che han passato i documenti al protocollo in inserimento.
     ''' </summary>
     ''' <remarks>Stringa di ID separata da virgole.</remarks>
-    Public Property SessionProtInserimentoLinks As String
+    Public Property SessionProtInserimentoLinks As IList(Of Guid)
         Get
-            If Not Session.Item("ProtInserimento-Link") Is Nothing Then
-                Return Session.Item("ProtInserimento-Link").ToString()
-            Else
-                Return String.Empty
+            If Session("ProtInserimento-Link") IsNot Nothing Then
+                Return DirectCast(Session("ProtInserimento-Link"), IList(Of Guid))
             End If
+            Return Nothing
         End Get
-        Set(value As String)
-            If String.IsNullOrEmpty(value) Then
-                Session.Remove("ProtInserimento-Link")
-            Else
-                Session.Item("ProtInserimento-Link") = value
-            End If
+        Set(value As IList(Of Guid))
+            Session("ProtInserimento-Link") = value
         End Set
     End Property
 
@@ -202,13 +197,17 @@ Public Class ProtAllega
         Dim closeWindow As String = String.Format("CloseWindow('{0}');", jsStringEncoded)
         MasterDocSuite.AjaxManager.ResponseScripts.Add(closeWindow)
 
-        Dim idProt As YearNumberCompositeKey = uscProtocolPreview.CurrentProtocolId
+        Dim idProt As Guid = uscProtocolPreview.CurrentProtocolId.Value
 
-        Dim protocolId As String = String.Format("{0}/{1}", idProt.Year, idProt.Number)
         Dim protocolNumber As String = WebHelper.UploadDocumentRename("prot", Int16.Parse(hf_selectYear.Value), Int32.Parse(hf_selectNumber.Value))
-        If Not SessionProtInserimentoLinks.Contains(protocolId) Then
-            SessionProtInserimentoLinks = String.Format("{0}{1},", SessionProtInserimentoLinks, protocolId)
+        If SessionProtInserimentoLinks Is Nothing Then
+            SessionProtInserimentoLinks = New List(Of Guid)
         End If
+
+        If Not SessionProtInserimentoLinks.Contains(idProt) Then
+            SessionProtInserimentoLinks.Add(idProt)
+        End If
+
         If Not SessionProtocolNumber.Contains(protocolNumber) Then
             SessionProtocolNumber = protocolNumber
         End If

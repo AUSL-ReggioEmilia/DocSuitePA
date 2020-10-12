@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscDocumentUnitReferences
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscDocumentUnitReferences
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''manager control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscDocumentUnitReferences
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents manager As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''searchMessages control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscDocumentUnitReferences
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents searchMessages As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''manager1 control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscDocumentUnitReferences
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents manager1 As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''searchPECDetails control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscDocumentUnitReferences
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents searchPECDetails As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''rpbDocuments control.
     '''</summary>
@@ -66,7 +66,25 @@ Partial Public Class uscDocumentUnitReferences
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rpbDocuments As Global.Telerik.Web.UI.RadPanelBar
-    
+
+    '''<summary>
+    '''btnExpandDocumentUnitReference control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnExpandDocumentUnitReference As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''documentUnitReferenceInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents documentUnitReferenceInfo As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
     '''<summary>
     '''RadTreeDocuments control.
     '''</summary>
@@ -75,7 +93,7 @@ Partial Public Class uscDocumentUnitReferences
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadTreeDocuments As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>

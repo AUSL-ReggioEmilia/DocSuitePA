@@ -14,9 +14,6 @@
     <property name="Status">
       <column name="Status" not-null="true" />
     </property>
-    <property name="Json">
-      <column name="Json" not-null="false" />
-    </property>
     <many-to-one name="WorkflowRepository">
       <column name="IdWorkflowRepository" not-null="true" />
     </many-to-one>
@@ -32,10 +29,6 @@
     <property name="RegistrationDate">
       <column name="RegistrationDate" not-null="true" />
     </property>
-    <bag name="WorkflowProperties" cascade="save-update">
-      <key column="IdWorkflowInstance" />
-      <one-to-many class="WorkflowProperty" />
-    </bag>
     <bag name="WorkflowActivities" cascade="save-update">
       <key column="IdWorkflowInstance" />
       <one-to-many class="WorkflowActivity" />

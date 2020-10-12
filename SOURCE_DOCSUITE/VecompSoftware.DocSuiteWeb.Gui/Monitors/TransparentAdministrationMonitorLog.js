@@ -237,6 +237,10 @@ define(["require", "exports", "Monitors/TransparentAdministrationMonitorLogBase"
                         return;
                     _this.gridResult = data;
                     uscAmmTraspMonitorLogGrid.setDataSource(_this.gridResult);
+                    for (var _i = 0, _a = _this.gridResult; _i < _a.length; _i++) {
+                        var item = _a[_i];
+                        item.DocumentUnitSummaryUrl = "";
+                    }
                     _this._txtTransparentAdministrationMonitorLogItems.value = JSON.stringify(data);
                     _this._loadingPanel.hide(_this.uscAmmTraspMonitorLogGridId);
                 }, function (exception) {

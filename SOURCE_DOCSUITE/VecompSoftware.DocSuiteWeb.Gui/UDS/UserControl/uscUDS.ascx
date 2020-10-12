@@ -2,9 +2,9 @@
 <%@ Register Src="uscUDSDynamics.ascx" TagPrefix="usc" TagName="UDSDynamics" %>
 <%@ Register Src="uscUDSStaticDataInsert.ascx" TagPrefix="usc" TagName="UDSDataInsert" %>
 <%@ Register Src="uscUDSStaticDataFinder.ascx" TagPrefix="usc" TagName="UDSDataFinder" %>
-<%@ Register Src="~/UserControl/uscPecHistory.ascx" TagPrefix="usc" TagName="PecHistory" %>
 <%@ Register Src="~/UserControl/uscDocumentUnitReferences.ascx" TagName="uscDocumentUnitReferences" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscMulticlassificationRest.ascx" TagName="uscMulticlassificationRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscDocumentUnitConservationRest.ascx" TagPrefix="usc" TagName="uscDocumentUnitConservationRest" %>
 
 <telerik:RadScriptBlock runat="server">
     <script type="text/javascript">
@@ -41,6 +41,17 @@
         function SetMetadataSessionStorage(metadatas, udsModel) {
             sessionStorage.setItem('DocumentMetadatas', metadatas);
             sessionStorage.setItem('UDSModel', udsModel);
+        }
+
+        function SetCurrentMetadataSessionStorage(metadatas) {
+            var metadataModel = metadatas.$values;
+            var dictMetadatas = [];
+            var metadata;
+            for (i = 0; i < metadataModel.length; i++) {
+                metadata = metadataModel[i];
+                dictMetadatas.push({ KeyName: metadata.Label, Value: metadata.Value != undefined ? metadata.Value : null });
+            }
+            sessionStorage.setItem('CurrentUDSMetadata', JSON.stringify(dictMetadatas));
         }
     </script>
 </telerik:RadScriptBlock>
@@ -159,132 +170,6 @@
                                 <usc:uscMulticlassificationRest  runat="server" ID="uscMulticlassificationRest" Visible="false"/>
                             </asp:Panel>
 
-                            <%-- PEC in ingresso --%>
-                            <table id="tblIngoingPEC" runat="server" visible="false" class="datatable">
-                                <tr>
-                                    <th colspan="2">
-                                        <asp:Literal ID="ingoingPecTitle" runat="server" />
-                                        <asp:ImageButton CausesValidation="False" ID="btnExpandIngoingPec" CssClass="contactCount" runat="server" />
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <asp:Repeater ID="rptIngoingPEC" runat="server" Visible="false">
-                                            <HeaderTemplate>
-                                                <table class="dataform">
-                                                    <tbody>
-                                            </HeaderTemplate>
-                                            <ItemTemplate>
-                                                <tr>
-                                                    <td class="label" style="width: 15%; vertical-align: top;">Data:
-                                                    </td>
-                                                    <td style="width: 85%">
-                                                        <asp:Label ID="lblPECIngoingDate" runat="server"></asp:Label>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" style="width: 15%; vertical-align: top;">Oggetto:
-                                                    </td>
-                                                    <td style="width: 85%">
-                                                        <a id="aIncoming" runat="server"></a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" style="width: 15%; vertical-align: top;">Mittente:
-                                                    </td>
-                                                    <td style="width: 85%">
-                                                        <asp:Label ID="lblPECIngoingSender" runat="server"></asp:Label>
-                                                    </td>
-                                                </tr>
-                                            </ItemTemplate>
-                                            <SeparatorTemplate>
-                                                <tr>
-                                                    <td>
-                                                        <hr />
-                                                    </td>
-                                                </tr>
-                                            </SeparatorTemplate>
-                                            <FooterTemplate>
-                                                </tbody>
-                        </table>
-                                            </FooterTemplate>
-                                        </asp:Repeater>
-                                    </td>
-                                </tr>
-                            </table>
-
-                            <%-- Messaggi PEC Inviati --%>
-                            <table id="tblOutgoingPEC" runat="server" visible="false" class="datatable">
-                                <tr>
-                                    <th colspan="2">
-                                        <asp:Literal runat="server" ID="outgoingPecTitle" />
-                                        <asp:ImageButton CausesValidation="False" ID="btnExpandOutgoingPec" CssClass="contactCount" runat="server" />
-                                        <asp:Image ID="outgoingPecWarns" runat="server" Visible="false" />
-                                        <asp:Image ID="outgoingPecErrors" runat="server" Visible="false" />
-                                        <asp:CheckBox ID="chkShowOtherStatusPec" runat="server" Text="Visualizza tutte" AutoPostBack="true" Checked="false" />
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <asp:Repeater ID="rptOutgoingPEC" runat="server" Visible="false">
-                                            <HeaderTemplate>
-                                                <table class="dataform">
-                                                    <tbody>
-                                            </HeaderTemplate>
-                                            <ItemTemplate>
-
-                                                <tr>
-                                                    <td class="label" style="width: 15%; vertical-align: top;">Data:
-                                                    </td>
-                                                    <td style="width: 85%">
-                                                        <asp:Label ID="lblPECOutgoingDate" runat="server"></asp:Label>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" style="width: 15%; vertical-align: top;">Oggetto:
-                                                    </td>
-                                                    <td style="width: 85%">
-                                                        <a id="aOutgoing" runat="server"></a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" style="width: 15%; vertical-align: top;">Mittente:
-                                                    </td>
-                                                    <td style="width: 85%">
-                                                        <asp:Label ID="lblPECOutgoingMittente" runat="server"></asp:Label>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" style="width: 15%; vertical-align: top;">Destinatari:
-                                                    </td>
-                                                    <td style="width: 85%">
-                                                        <asp:Label ID="lblPECOutgoingSender" runat="server"></asp:Label>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" style="width: 15%; vertical-align: top;">Messaggi di servizio:
-                                                    </td>
-                                                    <td style="width: 85%">
-                                                        <usc:PecHistory ID="uscPecHistory" runat="server" />
-                                                    </td>
-                                                </tr>
-                                            </ItemTemplate>
-                                            <SeparatorTemplate>
-                                                <tr>
-                                                    <td colspan="2">
-                                                        <hr />
-                                                    </td>
-                                                </tr>
-                                            </SeparatorTemplate>
-                                            <FooterTemplate>
-                                                </tbody>
-                                                </table>
-                                            </FooterTemplate>
-                                        </asp:Repeater>
-                                    </td>
-                                </tr>
-                            </table>
-
                             <%-- Informazioni --%>
                             <table class="datatable">
                                 <tr>
@@ -373,21 +258,7 @@
                                 </tr>
                             </table>
                             <%-- PARER --%>
-                            <table id="tblParer" class="datatable" runat="server" visible="false">
-                                <tr>
-                                    <th>Stato di conservazione
-                                        <asp:ImageButton runat="server" Style="position: absolute; right: 37px;" ID="parerInfo" />
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="margin: 5px">
-                                            <asp:Image runat="server" ID="parerIcon" Style="vertical-align: middle" />
-                                            <asp:Label runat="server" ID="parerLabel" Text=""></asp:Label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
+                            <usc:uscDocumentUnitConservationRest runat="server" id="uscDocumentUnitConservationRest" Visible="false" />
                         </Content>
                     </telerik:CompositeLayoutColumn>
                 </Columns>
@@ -483,7 +354,16 @@
                     <telerik:CompositeLayoutColumn>
                         <Content>
                             <asp:Panel runat="server">
-                                <usc:uscDocumentUnitReferences Visible="false" ID="uscDocumentUnitReferences" runat="server" ShowArchiveLinks="true" ShowProtocolLinks="true" ShowFascicleLinks="true" ShowActiveWorkflowActivities="true" />
+                                <usc:uscDocumentUnitReferences 
+                                    Visible="false" 
+                                    ID="uscDocumentUnitReferences" 
+                                    runat="server" 
+                                    ShowPECOutgoing="true"
+                                    ShowPECIncoming="true"
+                                    ShowArchiveLinks="true" 
+                                    ShowProtocolLinks="true" 
+                                    ShowFascicleLinks="true" 
+                                    ShowActiveWorkflowActivities="true" />
                             </asp:Panel>
                         </Content>
                     </telerik:CompositeLayoutColumn>

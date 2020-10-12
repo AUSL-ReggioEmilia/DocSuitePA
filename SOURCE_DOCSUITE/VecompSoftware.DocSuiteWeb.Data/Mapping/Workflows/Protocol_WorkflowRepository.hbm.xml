@@ -25,19 +25,7 @@
     <property name="ActiveTo">
       <column name="ActiveTo" not-null="false" />
     </property>
-    
-    <property name="Xaml">
-      <column name="Xaml" not-null="true" />
-    </property>
-    
-    <property name="Json">
-      <column name="Json" />
-    </property>
-
-    <property name="CustomActivities">
-      <column name="CustomActivities" />
-    </property>
-    
+        
     <property name="Status">
       <column name="Status" not-null="true" />
     </property>
@@ -62,16 +50,7 @@
       <key column="IdWorkflowRepository" />
       <one-to-many class="WorkflowInstance" />
     </bag>
-    
-    <bag name="WorkflowRoles" cascade="save-update">
-      <key column="IdWorkflowRepository" />
-      <one-to-many class="WorkflowRole" />
-    </bag>
-    
-    <bag name="WorkflowRoleMappings" cascade="save-update">
-      <key column="IdWorkflowRepository" />
-      <one-to-many class="WorkflowRole" />
-    </bag>
+   
     
   </class>
 

@@ -14,7 +14,7 @@ Public Class AllineaProgressiviProtocollo
 
     Private Sub btnConferma_Click(sender As Object, e As System.EventArgs) Handles btnConferma.Click
         Dim parameter As Parameter = Facade.ParameterFacade.GetCurrentAndRefresh()
-        Facade.ParameterFacade.UpdateLastUsedNumber(parameter.LastUsedYear)
+        Facade.ParameterFacade.UpdateProtocolLastUsedNumber(parameter.LastUsedYear)
 
         AjaxAlert("Allineamento eseguito con successo.")
 

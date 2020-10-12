@@ -30,6 +30,8 @@
                     commonSelCategoryREST.pnlDescriptionId = "<%= pnlDescription.ClientID %>";
                     commonSelCategoryREST.parentId = <%= ParentIdToPage %>;
                     commonSelCategoryREST.includeParentDescendants = <%= IncludeParentDescendants.ToString().ToLower() %>;
+                    commonSelCategoryREST.currentTenantAOOId = "<%= CurrentTenant.TenantAOO.UniqueId %>";
+                    commonSelCategoryREST.showProcesses = <%= (ShowProcesses AndAlso ProtocolEnv.ProcessEnabled).ToString().ToLower() %>;
                     commonSelCategoryREST.initialize();
                 });
             });

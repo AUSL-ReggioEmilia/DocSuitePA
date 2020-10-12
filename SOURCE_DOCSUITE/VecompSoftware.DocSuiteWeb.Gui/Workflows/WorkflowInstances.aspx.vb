@@ -1,6 +1,4 @@
-﻿Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Public Class WorkflowInstances
+﻿Public Class WorkflowInstances
     Inherits CommonBasePage
 
 #Region " Fields "
@@ -10,18 +8,18 @@ Public Class WorkflowInstances
 #Region " Properties "
     Protected ReadOnly Property WorkflowRepositoryName As String
         Get
-            Return GetKeyValue(Of String)("WorkflowRepositoryName")
-        End Get
-    End Property
-
-    Protected ReadOnly Property WorkflowRepositoryStatus As String
-        Get
-            Return GetKeyValue(Of String)("WorkflowRepositoryStatus")
+            Return GetKeyValueOrDefault("WorkflowRepositoryName", String.Empty)
         End Get
     End Property
 #End Region
 
 #Region "Events"
+    Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not IsPostBack Then
+            dtpWorkflowRepositoryActiveFrom.SelectedDate = DateTime.Today.AddDays(-ProtocolEnv.DesktopDayDiff).Date
+            dtpWorkflowRepositoryActiveTo.SelectedDate = DateTime.Today.Date.AddDays(1).AddMilliseconds(-1)
+        End If
+    End Sub
 #End Region
 
 #Region "Methods"

@@ -7,8 +7,6 @@
 import ServiceConfiguration=require('App/Services/ServiceConfiguration');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import WorkflowActivityService = require('App/Services/Workflows/WorkflowActivityService');
-import WorkflowPropertyService = require('App/Services/Workflows/WorkflowPropertyService');
-import WorkflowRepositoryService = require('App/Services/Workflows/WorkflowRepositoryService');
 import WorkflowNotifyService = require('App/Services/Workflows/WorkflowNotifyService');
 import WorkflowActivityStatus = require('App/Models/Workflows/WorkflowActivityStatus');
 import WorkflowNotifyModel = require('App/Models/Workflows/WorkflowNotifyModel');
@@ -20,9 +18,11 @@ import WorkflowActivityModel = require('App/Models/Workflows/WorkflowActivityMod
 import WorkflowPropertyHelper = require('App/Models/Workflows/WorkflowPropertyHelper');
 import WorkflowPropertyModel = require('App/Models/Workflows/WorkflowProperty');
 import RoleModel = require('App/Models/Commons/RoleModel');
-import WorkflowRepositoryModel = require('App/Models/Workflows/WorkflowRepositoryModel');
 import UpdateActionType = require("App/Models/UpdateActionType");
 import AjaxModel = require('App/Models/AjaxModel');
+import HandlerWorkflowManager = require('App/Managers/HandlerWorkflowManager');
+import WorkflowArgumentModel = require('App/Models/Workflows/WorkflowArgumentModel');
+import ArgumentType = require('App/Models/Workflows/ArgumentType');
 
 declare var Page_IsValid: any;
 declare var ValidatorEnable: any;
@@ -43,8 +43,6 @@ class uscCompleteWorkflow {
     private _serviceConfigurations: ServiceConfiguration[];
     private _btnConfirm: Telerik.Web.UI.RadButton;
     private _workflowActivityService: WorkflowActivityService;
-    private _workflowPropertyService: WorkflowPropertyService;
-    private _workflowRepositoryService: WorkflowRepositoryService;
     private _workflowNotifyService: WorkflowNotifyService;
     private _lblMotivation: JQuery;
     private _workflowActivity: WorkflowActivityModel;
@@ -65,7 +63,7 @@ class uscCompleteWorkflow {
     *---------------------Events---------------------
     */
 
-    btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         if (!Page_IsValid) {
             return;
@@ -102,23 +100,17 @@ class uscCompleteWorkflow {
     *Initialize
     */
     initialize() {
-        this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
+        this._loadingPanel = $find(this.ajaxLoadingPanelId) as Telerik.Web.UI.RadAjaxLoadingPanel;
         this._loadingPanel.show(this.contentId);
         this._rblActivityStatus = $("#".concat(this.rblActivityStatusId));
         this._rblActivityStatus.on('change', this.radioListButtonChanged);
         this._lblMotivation = $("#".concat(this.lblMotivationId));
-        this._btnConfirm = <Telerik.Web.UI.RadButton>$find(this.btnConfirmId);
+        this._btnConfirm = $find(this.btnConfirmId) as Telerik.Web.UI.RadButton;
         this._btnConfirm.add_clicking(this.btnConfirm_OnClick);
-        let workflowActivityConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowActivity');
+        const workflowActivityConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowActivity');
         this._workflowActivityService = new WorkflowActivityService(workflowActivityConfiguration);
 
-        let workflowPropertyConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowProperty');
-        this._workflowPropertyService = new WorkflowPropertyService(workflowPropertyConfiguration);
-
-        let workflowRepositoryConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowRepository');
-        this._workflowRepositoryService = new WorkflowRepositoryService(workflowRepositoryConfiguration);
-
-        let workflowNotifyConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowNotify');
+        const workflowNotifyConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowNotify');
         this._workflowNotifyService = new WorkflowNotifyService(workflowNotifyConfiguration);
 
         ValidatorEnable(document.getElementById(this.ctrlTxtWfId), false);
@@ -163,11 +155,11 @@ class uscCompleteWorkflow {
         if (confirm("Conferma il completamento e restituisci al richiedente?")) {
 
             //update della proprietà acceptance activity
-            let acceptanceModel: WorkflowAcceptanceModel = <WorkflowAcceptanceModel>{};
+            const acceptanceModel: WorkflowAcceptanceModel = {} as WorkflowAcceptanceModel;
             acceptanceModel.Status = response;
             acceptanceModel.Owner = this.currentUser;
             acceptanceModel.Executor = this.currentUser;
-            let txt = <Telerik.Web.UI.RadTextBox>$find(this.txtWfId);
+            const txt: Telerik.Web.UI.RadTextBox = $find(this.txtWfId) as Telerik.Web.UI.RadTextBox;
             acceptanceModel.AcceptanceReason = txt.get_textBoxValue();
 
             let proposerRole: string;
@@ -179,55 +171,36 @@ class uscCompleteWorkflow {
                 }
             });
 
-            let proposerProperty = JSON.parse(proposerRole);
-            acceptanceModel.ProposedRole = <RoleModel>proposerProperty;
+            const proposerProperty = JSON.parse(proposerRole);
+            acceptanceModel.ProposedRole = proposerProperty as RoleModel;
             acceptanceModel.AcceptanceDate = new Date();          
 
+            this._loadingPanel.show(this.contentId);
 
-            let propertyToUpdate: WorkflowPropertyModel = <WorkflowPropertyModel>{};
-            propertyToUpdate.WorkflowActivity = this._workflowActivity;
+            const workflowNotifyModel: WorkflowNotifyModel = {} as WorkflowNotifyModel;
+            workflowNotifyModel.WorkflowActivityId = this.workflowActivityId;
+            workflowNotifyModel.WorkflowName = this._workflowActivity.WorkflowInstance?.WorkflowRepository?.Name;
+            workflowNotifyModel.ModuleName = HandlerWorkflowManager.DOCSUITE_MODULE_NAME;
+            workflowNotifyModel.OutputArguments = {};
 
-            this._workflowActivity.WorkflowProperties.forEach(function (item: WorkflowPropertyModel){
-                if (item.Name === WorkflowPropertyHelper.DSW_FIELD_ACCEPTANCE){
-                    item.ValueString = JSON.stringify(acceptanceModel);
-                    propertyToUpdate = item;
-                    return;
-                }
-            });
+            const propAcceptance: WorkflowArgumentModel = {} as WorkflowArgumentModel;
+            propAcceptance.Name = WorkflowPropertyHelper.DSW_FIELD_ACCEPTANCE;
+            propAcceptance.PropertyType = ArgumentType.Json;
+            propAcceptance.ValueString = JSON.stringify(acceptanceModel);
+            workflowNotifyModel.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACCEPTANCE] = propAcceptance;
 
-            this._workflowPropertyService.updateProperty(propertyToUpdate,
+            const propManualComplete: WorkflowArgumentModel = {} as WorkflowArgumentModel;
+            propManualComplete.Name = WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE;
+            propManualComplete.PropertyType = ArgumentType.PropertyBoolean;
+            propManualComplete.ValueBoolean = true;
+            workflowNotifyModel.OutputArguments[WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE] = propManualComplete;
+
+            this._workflowNotifyService.notifyWorkflow(workflowNotifyModel,
                 (data: any) => {
-                    if (data == null) return;
-                    this._loadingPanel.show(this.contentId);
-                    //mandare workflow notify           
-                    this._workflowRepositoryService.getByWorkflowActivityId(this.workflowActivityId,
-                        (data: any) => {
-                            if (data == null) return;
-                            let workflowRepository: WorkflowRepositoryModel = <WorkflowRepositoryModel>data;
-                            let notify: WorkflowNotifyModel = <WorkflowNotifyModel>{};
-                            notify.WorkflowActivityId = this.workflowActivityId;
-                            notify.WorkflowName = workflowRepository.Name;
-                            this._workflowNotifyService.notifyWorkflow(notify,
-                                (data: any) => {
-                                    this._loadingPanel.hide(this.contentId);
-                                    let result: AjaxModel = <AjaxModel>{};
-                                    result.ActionName = "Stato attività aggiornato"
-                                    this.closeWindow(result);
-                                },
-                                (exception: ExceptionDTO) => {
-                                    this._loadingPanel.hide(this.contentId);
-                                    this._btnConfirm.set_enabled(true);
-                                    this.showNotificationException(this.uscNotificationId, exception);
-                                }
-                            );
-                        },
-                        (exception: ExceptionDTO) => {
-                            this._loadingPanel.hide(this.contentId);
-                            this._btnConfirm.set_enabled(true);
-                            this.showNotificationException(this.uscNotificationId, exception);
-                        }
-                    );
-
+                    this._loadingPanel.hide(this.contentId);
+                    const result: AjaxModel = {} as AjaxModel;
+                    result.ActionName = "Stato attività aggiornato"
+                    this.closeWindow(result);
                 },
                 (exception: ExceptionDTO) => {
                     this._loadingPanel.hide(this.contentId);
@@ -256,7 +229,7 @@ class uscCompleteWorkflow {
         if (this._workflowActivity.WorkflowAuthorizations) {
             this._workflowActivityService.updateHandlingWorkflowActivity(this._workflowActivity, activity,
                 (data: any) => {
-                    let result: AjaxModel = <AjaxModel>{};
+                    const result: AjaxModel = {} as AjaxModel;
                     result.ActionName = message;
                     result.Value = new Array<string>();
                     result.Value.push(this.workflowActivityId);
@@ -276,8 +249,8 @@ class uscCompleteWorkflow {
 */
     getRadWindow = () => {
         let wnd: Telerik.Web.UI.RadWindow = null;
-        if ((<any>window).radWindow) wnd = <Telerik.Web.UI.RadWindow>(<any>window).radWindow;
-        else if ((<any>window.frameElement).radWindow) wnd = <Telerik.Web.UI.RadWindow>(<any>window.frameElement).radWindow;
+        if ((<any>window).radWindow) wnd = (<any>window).radWindow as Telerik.Web.UI.RadWindow;
+        else if ((<any>window.frameElement).radWindow) wnd = (<any>window.frameElement).radWindow as Telerik.Web.UI.RadWindow;
         return wnd;
     }
 
@@ -285,13 +258,13 @@ class uscCompleteWorkflow {
      * Chiude la RadWindow
     */
     closeWindow = (message?: AjaxModel) => {        
-        let wnd: Telerik.Web.UI.RadWindow = this.getRadWindow();
+        const wnd: Telerik.Web.UI.RadWindow = this.getRadWindow();
         wnd.close(message);
     }
 
     protected showNotificationException(uscNotificationId: string, exception: ExceptionDTO, customMessage?: string) {
         if (exception && exception instanceof ExceptionDTO) {
-            let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(uscNotificationId)).data();
+            const uscNotification: UscErrorNotification = $("#".concat(uscNotificationId)).data() as UscErrorNotification;
             if (!jQuery.isEmptyObject(uscNotification)) {
                 uscNotification.showNotification(exception);
             }
@@ -303,14 +276,14 @@ class uscCompleteWorkflow {
     }
 
     protected showNotificationMessage(uscNotificationId: string, customMessage: string) {
-        let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(uscNotificationId)).data();
+        const uscNotification: UscErrorNotification = $("#".concat(uscNotificationId)).data() as UscErrorNotification;
         if (!jQuery.isEmptyObject(uscNotification)) {
             uscNotification.showNotificationMessage(customMessage);
         }
     }
 
     protected radioListButtonChanged = () => {
-        let checkedChoice = Number(this._rblActivityStatus.find('input:checked').val());
+        const checkedChoice = Number(this._rblActivityStatus.find('input:checked').val());
 
         switch (checkedChoice) {
             case WorkflowActivityStatus.Done:
@@ -318,8 +291,8 @@ class uscCompleteWorkflow {
 
                 this._motivationEnabled = false;
 
-                let motivationProp: Array<WorkflowPropertyModel> = this._workflowActivity.WorkflowProperties.filter(function (item) {
-                    if (item.Name == WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_END_MOTIVATION_REQUIRED) {
+                const motivationProp: Array<WorkflowPropertyModel> = this._workflowActivity.WorkflowProperties.filter(function (item) {
+                    if (item.Name === WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_END_MOTIVATION_REQUIRED) {
                         return item;                        
                     }
                 });              
@@ -331,7 +304,7 @@ class uscCompleteWorkflow {
                 ValidatorEnable(document.getElementById(this.ctrlTxtWfId), this._motivationEnabled);
 
                 $('#'.concat(this.pnlWorkflowNoteId)).hide();
-                let motivationProperties: WorkflowPropertyModel[] = this._workflowActivity.WorkflowProperties.filter(item => item.Name == WorkflowPropertyHelper.DSW_ACTION_METADATA_MOTIVATION_LABEL);
+                const motivationProperties: WorkflowPropertyModel[] = this._workflowActivity.WorkflowProperties.filter(item => item.Name === WorkflowPropertyHelper.DSW_ACTION_METADATA_MOTIVATION_LABEL);
                 if (motivationProperties && motivationProperties.length > 0) {
                     this._lblMotivation.html(motivationProperties[0].ValueString);
                     $('#'.concat(this.pnlWorkflowNoteId)).show();

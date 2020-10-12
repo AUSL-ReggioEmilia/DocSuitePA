@@ -31,13 +31,13 @@
     <property name="ZipCode" type="System.String">
       <column name="ZipCode" />
     </property>
-    <property name="RegistrationDate" type="System.Nullable`1[[System.DateTime]]">
-      <column name="RegistrationDate" not-null="false" />
+    <property name="RegistrationDate" type="System.DateTimeOffset">
+      <column name="RegistrationDate" not-null="true" />
     </property>
     <property name="RegistrationUser" type="System.String">
       <column name="RegistrationUser" />
     </property>
-    <property name="LastChangedDate" type="System.Nullable`1[[System.DateTime]]">
+    <property name="LastChangedDate" type="System.Nullable`1[[System.DateTimeOffset]]">
       <column name="LastChangedDate" not-null="false" />
     </property>
     <property name="LastChangedUser" type="System.String">

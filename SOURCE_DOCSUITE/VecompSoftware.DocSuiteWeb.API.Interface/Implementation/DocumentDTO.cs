@@ -23,25 +23,20 @@ namespace VecompSoftware.DocSuiteWeb.API
             this.Name = Path.GetFileName(name);
         }
 
-        public DocumentDTO(string biblosServer, string biblosArchive, int biblosId)
+        public DocumentDTO(string biblosArchive, int biblosId)
         {
-            this.BiblosServer = biblosServer;
             this.BiblosArchive = biblosArchive;
             this.BiblosId = biblosId;
         }
 
-        public DocumentDTO(string biblosServer, Guid biblosGuid)
+        public DocumentDTO(Guid biblosGuid)
         {
-            this.BiblosServer = biblosServer;
             this.BiblosGuid = biblosGuid.ToString();
         }
 
         #endregion
 
         #region [ Properties ]
-
-        public string BiblosServer { get; set; }
-
         public string BiblosGuid { get; set; }
 
         public string BiblosArchive { get; set; }
@@ -73,12 +68,12 @@ namespace VecompSoftware.DocSuiteWeb.API
 
         public bool HasBiblosGuid()
         {
-            return !string.IsNullOrWhiteSpace(this.BiblosServer) && !string.IsNullOrWhiteSpace(this.BiblosGuid);
+            return !string.IsNullOrWhiteSpace(this.BiblosGuid);
         }
 
         public bool HasBiblosId()
         {
-            return !string.IsNullOrWhiteSpace(this.BiblosServer) && !string.IsNullOrWhiteSpace(this.BiblosArchive) && this.BiblosId.HasValue;
+            return!string.IsNullOrWhiteSpace(this.BiblosArchive) && this.BiblosId.HasValue;
         }
 
         public bool HasBiblosReference()

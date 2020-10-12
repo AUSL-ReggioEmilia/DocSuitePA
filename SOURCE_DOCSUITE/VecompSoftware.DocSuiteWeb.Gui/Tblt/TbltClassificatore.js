@@ -2,7 +2,7 @@
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
 /// <reference path="../scripts/typings/dsw/dsw.signalr.d.ts" />
 /// <amd-dependency path="../app/core/extensions/string" />
-define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/MetadataRepositoryService", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO", "App/Services/Commons/CategoryFascicleService", "App/Models/Commons/CategoryModel", "App/Models/Fascicles/FascicleType", "App/Services/Commons/CategoryFascicleRightsService", "../app/core/extensions/string"], function (require, exports, WindowHelper, MetadataRepositoryService, ServiceConfigurationHelper, ExceptionDTO, CategoryFascicleService, CategoryModel, FascicleType, CategoryFascicleRightsService) {
+define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/MetadataRepositoryService", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO", "App/Services/Commons/CategoryFascicleService", "App/Models/Commons/CategoryModel", "App/Models/Fascicles/FascicleType", "App/Helpers/PageClassHelper", "../app/core/extensions/string"], function (require, exports, WindowHelper, MetadataRepositoryService, ServiceConfigurationHelper, ExceptionDTO, CategoryFascicleService, CategoryModel, FascicleType, PageClassHelper) {
     var TbltClassificatore = /** @class */ (function () {
         /**
          * Costruttore
@@ -57,10 +57,6 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
                 var active = treeNode.get_attributes().getAttribute("Active") == "True";
                 var isLeaf = (treeNode.get_attributes().getAttribute("HasChildren") == "False");
                 var isRecoverable = (treeNode.get_attributes().getAttribute("IsRecoverable") == "True");
-                var mustHaveFascicle = (treeNode.get_attributes().getAttribute("MustHaveFascicle").toUpperCase() === 'true'.toUpperCase());
-                var hasFascicle = (treeNode.get_attributes().getAttribute("HasFascicle").toUpperCase() === 'true'.toUpperCase());
-                var hasProcedureFascicle = (treeNode.get_attributes().getAttribute("HasProcedureFascicle").toUpperCase() === 'true'.toUpperCase());
-                var isSubFascicle = (treeNode.get_attributes().getAttribute("IsSubFascicle") == "True");
                 switch (strNodeType) {
                     case "Category":
                     case "SubCategory":
@@ -155,8 +151,39 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
                 var parentNode = treeView.get_selectedNode().get_parent();
                 _this.orderPositionNode(node, parentNode);
             };
+            this.actionToolbar_ButtonClicked = function (sender, args) {
+                var currentActionButtonItem = args.get_item();
+                var currentAction = _this.toolbarActions().filter(function (item) { return item[0] == currentActionButtonItem.get_commandName(); })
+                    .map(function (item) { return item[1]; })[0];
+                currentAction();
+            };
+            this.btnUpdateCustomActions_onClick = function (sender, args) {
+                PageClassHelper.callUserControlFunctionSafe(_this.uscCustomActionsRestId)
+                    .done(function (instance) {
+                    var ajaxModel = {
+                        ActionName: "UpdateCustomActions",
+                        Value: [JSON.stringify(instance.getCustomActions())]
+                    };
+                    $find(_this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
+                });
+            };
             this._serviceConfigurations = serviceConfigurations;
         }
+        TbltClassificatore.prototype.toolbarActions = function () {
+            var _this = this;
+            var items = [
+                [TbltClassificatore.ADD_COMMANDNAME, function () { return _this.openEditWindow('rwEdit', 'Add'); }],
+                [TbltClassificatore.DELETE_COMMANDNAME, function () { return _this.openEditWindow('rwEdit', 'Delete'); }],
+                [TbltClassificatore.EDIT_COMMANDNAME, function () { return _this.openEditWindow('rwEdit', 'Rename'); }],
+                [TbltClassificatore.RECOVER_COMMANDNAME, function () { return _this.openEditWindow('rwEdit', 'Recovery'); }],
+                [TbltClassificatore.LOG_COMMANDNAME, function () { return _this.openLogWindow('rwLog'); }],
+                [TbltClassificatore.ADDMASSIMARIO_COMMANDNAME, function () { return _this.openAddMassimarioScartoWindow('rwAddMassimario'); }],
+                [TbltClassificatore.ADDMETADATA_COMMANDNAME, function () { return _this.openAddMetadataRepository(); }],
+                [TbltClassificatore.RUNFASCICLEPLAN_COMMANDNAME, function () { return _this.runFasciclePlan(); }],
+                [TbltClassificatore.CLOSEFASCICLEPLAN_COMMANDNAME, function () { return _this.closeFasciclePlan(); }]
+            ];
+            return items;
+        };
         /**
          * Initialize
          */
@@ -166,9 +193,6 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
             wndManager.getWindowByName('rwLog').add_close(this.onCloseFunctionCallback);
             wndManager.getWindowByName('rwAddMassimario').add_close(this.onCloseMetadataCallback);
             wndManager.getWindowByName('rwMetadata').add_close(this.onCloseFunctionCallback);
-            var treeView = $find(this.treeViewCategoryId);
-            var categoryFascicleRightsService = ServiceConfigurationHelper.getService(this._serviceConfigurations, "CategoryFascicleRight");
-            this._categoryFascicleRightsService = new CategoryFascicleRightsService(categoryFascicleRightsService);
             var categoryFascicleService = ServiceConfigurationHelper.getService(this._serviceConfigurations, "CategoryFascicle");
             this._categoryFascicleService = new CategoryFascicleService(categoryFascicleService);
             this._pnlFasciclePlan = $("#".concat(this.pnlFasciclePlanId));
@@ -177,6 +201,8 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
             if (this.metadataRepositoryEnabled) {
                 this._metadataRepositoryService = new MetadataRepositoryService(ServiceConfigurationHelper.getService(this._serviceConfigurations, "MetadataRepository"));
             }
+            this._actionToolbar = $find(this.actionsToolbarId);
+            this._actionToolbar.add_buttonClicked(this.actionToolbar_ButtonClicked);
         };
         TbltClassificatore.prototype.loadDetail = function (node) {
             this._pnlFasciclePlan = $("#".concat(this.pnlFasciclePlanId));
@@ -191,19 +217,17 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
             if (strNodeType != "Root") {
                 var strActive = node.get_attributes().getAttribute("Active") == 'True';
                 var isLeaf = (node.get_attributes().getAttribute("HasChildren") == "False");
-                var mustHaveFascicle = (node.get_attributes().getAttribute("MustHaveFascicle").toUpperCase() === 'true'.toUpperCase());
-                var hasFascicle = (node.get_attributes().getAttribute("HasFascicle").toUpperCase() === 'true'.toUpperCase());
                 var hasProcedureFascicle = (node.get_attributes().getAttribute("HasProcedureFascicle").toUpperCase() === 'true'.toUpperCase());
                 var isRecoverable = (node.get_attributes().getAttribute("IsRecoverable") == "True");
                 var isSubFascicle = (node.get_attributes().getAttribute("IsSubFascicle") == "True");
-                this.setEnabledButtons(strNodeType, strActive, isLeaf, hasProcedureFascicle, hasFascicle, isRecoverable, isSubFascicle);
+                this.setEnabledButtons(strNodeType, strActive, isLeaf, hasProcedureFascicle, isRecoverable, isSubFascicle);
                 var uscFasciclePlan = $("#".concat(this.uscFasciclePlanId)).data();
                 if (!jQuery.isEmptyObject(uscFasciclePlan)) {
                     uscFasciclePlan.loadNodes(node.get_value());
                 }
             }
             else {
-                this.setEnabledButtons(strNodeType, true, false, false, false, false, false);
+                this.setEnabledButtons(strNodeType, true, false, false, false, false);
             }
         };
         TbltClassificatore.prototype.loadDetailSelectedNode = function () {
@@ -221,24 +245,24 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
          * @returns
          */
         TbltClassificatore.prototype.alignButtons = function (menu) {
-            var btnAggiungi = $get(this.btnAggiungiId);
-            var btnModifica = $get(this.btnModificaId);
-            var btnElimina = $get(this.btnEliminaId);
-            var btnRecovery = $get(this.btnRecoveryId);
-            var btnLog = $get(this.btnLogId);
-            var btnMassimarioScarto = $get(this.btnMassimarioScartoId);
+            var btnAggiungi = this._actionToolbar.findButtonByCommandName(TbltClassificatore.ADD_COMMANDNAME);
+            var btnModifica = this._actionToolbar.findButtonByCommandName(TbltClassificatore.EDIT_COMMANDNAME);
+            var btnElimina = this._actionToolbar.findButtonByCommandName(TbltClassificatore.DELETE_COMMANDNAME);
+            var btnRecovery = this._actionToolbar.findButtonByCommandName(TbltClassificatore.RECOVER_COMMANDNAME);
+            var btnLog = this._actionToolbar.findButtonByCommandName(TbltClassificatore.LOG_COMMANDNAME);
+            var btnMassimarioScarto = this._actionToolbar.findButtonByCommandName(TbltClassificatore.ADDMASSIMARIO_COMMANDNAME);
             if (btnAggiungi)
-                btnAggiungi.disabled = !menu.findItemByValue('Add').get_enabled();
+                btnAggiungi.set_enabled(menu.findItemByValue('Add').get_enabled());
             if (btnModifica)
-                btnModifica.disabled = !menu.findItemByValue('Rename').get_enabled();
+                btnAggiungi.set_enabled(menu.findItemByValue('Rename').get_enabled());
             if (btnLog)
-                btnLog.disabled = !menu.findItemByValue('Log').get_enabled();
+                btnLog.set_enabled(menu.findItemByValue('Log').get_enabled());
             if (btnRecovery)
-                btnRecovery.disabled = !menu.findItemByValue('Recovery').get_enabled();
+                btnRecovery.set_enabled(menu.findItemByValue('Recovery').get_enabled());
             if (btnElimina)
-                btnElimina.disabled = !menu.findItemByValue('Delete').get_enabled();
+                btnElimina.set_enabled(menu.findItemByValue('Delete').get_enabled());
             if (btnMassimarioScarto)
-                btnMassimarioScarto.disabled = !menu.findItemByValue('Rename').get_enabled();
+                btnMassimarioScarto.set_enabled(menu.findItemByValue('Rename').get_enabled());
         };
         /**
          * Setta la visibilità dei pulsanti
@@ -250,41 +274,41 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
          * @param mustHaveFascicle
          * @returns
          */
-        TbltClassificatore.prototype.setEnabledButtons = function (strNodeType, active, isLeaf, hasProcedureFascicle, mustHasFascicle, isRecoverable, isSubFascicle) {
-            var btnAggiungi = $get(this.btnAggiungiId);
-            var btnModifica = $get(this.btnModificaId);
-            var btnElimina = $get(this.btnEliminaId);
-            var btnRecovery = $get(this.btnRecoveryId);
-            var btnLog = $get(this.btnLogId);
-            var btnMassimarioScarto = $get(this.btnMassimarioScartoId);
-            var btnMetadata = $get(this.btnMetadataId);
-            var btnRunFasciclePlan = $find(this.btnRunFasciclePlanId);
-            var btnCloseFasciclePlan = $find(this.btnCloseFasciclePlanId);
+        TbltClassificatore.prototype.setEnabledButtons = function (strNodeType, active, isLeaf, hasProcedureFascicle, isRecoverable, isSubFascicle) {
+            var btnAggiungi = this._actionToolbar.findButtonByCommandName(TbltClassificatore.ADD_COMMANDNAME);
+            var btnModifica = this._actionToolbar.findButtonByCommandName(TbltClassificatore.EDIT_COMMANDNAME);
+            var btnElimina = this._actionToolbar.findButtonByCommandName(TbltClassificatore.DELETE_COMMANDNAME);
+            var btnRecovery = this._actionToolbar.findButtonByCommandName(TbltClassificatore.RECOVER_COMMANDNAME);
+            var btnLog = this._actionToolbar.findButtonByCommandName(TbltClassificatore.LOG_COMMANDNAME);
+            var btnMassimarioScarto = this._actionToolbar.findButtonByCommandName(TbltClassificatore.ADDMASSIMARIO_COMMANDNAME);
+            var btnMetadata = this._actionToolbar.findButtonByCommandName(TbltClassificatore.ADDMETADATA_COMMANDNAME);
+            var btnRunFasciclePlan = this._actionToolbar.findButtonByCommandName(TbltClassificatore.RUNFASCICLEPLAN_COMMANDNAME);
+            var btnCloseFasciclePlan = this._actionToolbar.findButtonByCommandName(TbltClassificatore.CLOSEFASCICLEPLAN_COMMANDNAME);
             switch (strNodeType) {
                 case "Category":
                 case "SubCategory":
                     if (btnAggiungi)
-                        btnAggiungi.disabled = !active;
+                        btnAggiungi.set_enabled(active);
                     if (btnModifica)
-                        btnModifica.disabled = !active;
+                        btnModifica.set_enabled(active);
                     if (btnMassimarioScarto)
-                        btnMassimarioScarto.disabled = !active;
+                        btnMassimarioScarto.set_enabled(active);
                     if (btnLog)
-                        btnLog.disabled = false;
+                        btnLog.set_enabled(true);
                     if (active) {
                         if (btnRecovery)
-                            btnRecovery.disabled = true;
+                            btnRecovery.set_enabled(false);
                         if (btnElimina)
-                            btnElimina.disabled = (isLeaf != true);
+                            btnElimina.set_enabled(isLeaf);
                     }
                     else {
                         if (btnRecovery)
-                            btnRecovery.disabled = !isRecoverable;
+                            btnRecovery.set_enabled(isRecoverable);
                         if (btnElimina)
-                            btnElimina.disabled = true;
+                            btnElimina.set_enabled(false);
                     }
                     if (btnMetadata)
-                        btnMetadata.disabled = !active;
+                        btnMetadata.set_enabled(active);
                     if (btnRunFasciclePlan)
                         btnRunFasciclePlan.set_enabled(!hasProcedureFascicle || isSubFascicle);
                     if (btnCloseFasciclePlan)
@@ -292,35 +316,35 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
                     break;
                 case "Group":
                     if (btnAggiungi)
-                        btnAggiungi.disabled = true;
+                        btnAggiungi.set_enabled(false);
                     if (btnModifica)
-                        btnModifica.disabled = true;
+                        btnModifica.set_enabled(false);
                     if (btnMassimarioScarto)
-                        btnMassimarioScarto.disabled = true;
+                        btnMassimarioScarto.set_enabled(false);
                     if (btnLog)
-                        btnLog.disabled = true;
+                        btnLog.set_enabled(false);
                     if (btnRecovery)
-                        btnRecovery.disabled = true;
+                        btnRecovery.set_enabled(false);
                     if (btnElimina)
-                        btnElimina.disabled = true;
+                        btnElimina.set_enabled(false);
                     if (btnMetadata)
-                        btnMetadata.disabled = true;
+                        btnMetadata.set_enabled(false);
                     break;
                 default:
                     if (btnAggiungi)
-                        btnAggiungi.disabled = false;
+                        btnAggiungi.set_enabled(true);
                     if (btnModifica)
-                        btnModifica.disabled = true;
+                        btnModifica.set_enabled(false);
                     if (btnMassimarioScarto)
-                        btnMassimarioScarto.disabled = true;
+                        btnMassimarioScarto.set_enabled(false);
                     if (btnLog)
-                        btnLog.disabled = true;
+                        btnLog.set_enabled(false);
                     if (btnRecovery)
-                        btnRecovery.disabled = true;
+                        btnRecovery.set_enabled(false);
                     if (btnElimina)
-                        btnElimina.disabled = true;
+                        btnElimina.set_enabled(false);
                     if (btnMetadata)
-                        btnMetadata.disabled = true;
+                        btnMetadata.set_enabled(false);
                     if (btnRunFasciclePlan)
                         btnRunFasciclePlan.set_enabled(!hasProcedureFascicle);
                     if (btnCloseFasciclePlan)
@@ -377,14 +401,12 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
                 var active = selectedNode.get_attributes().getAttribute("Active") == 'True';
                 var isLeaf = (selectedNode.get_attributes().getAttribute("HasChildren") == "False");
                 var isRecoverable = (selectedNode.get_attributes().getAttribute("IsRecoverable") == "True");
-                var mustHaveFascicle = (selectedNode.get_attributes().getAttribute("MustHaveFascicle").toUpperCase() === 'true'.toUpperCase());
-                var hasFascicle = (selectedNode.get_attributes().getAttribute("HasFascicle").toUpperCase() === 'true'.toUpperCase());
                 var hasProcedureFascicle = (selectedNode.get_attributes().getAttribute("HasProcedureFascicle").toUpperCase() === 'true'.toUpperCase());
                 var isSubFascicle = (selectedNode.get_attributes().getAttribute("IsSubFascicle") == "True");
-                this.setEnabledButtons(strNodeType, active, isLeaf, hasProcedureFascicle, mustHaveFascicle, isRecoverable, isSubFascicle);
+                this.setEnabledButtons(strNodeType, active, isLeaf, hasProcedureFascicle, isRecoverable, isSubFascicle);
             }
             else {
-                this.setEnabledButtons('Root', true, false, false, false, false, false);
+                this.setEnabledButtons('Root', true, false, false, false, false);
             }
         };
         /**
@@ -582,7 +604,7 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
                 btnCreateFascicle.innerText = "Piano di fascicolazione";
                 btnCreateFascicle.disabled = true;
             }
-            this.setEnabledButtons(strNodeType, true, false, false, false, false, false);
+            this.setEnabledButtons(strNodeType, true, false, false, false, false);
         };
         TbltClassificatore.prototype.showNotificationMessage = function (uscNotificationId, customMessage) {
             var uscNotification = $("#".concat(uscNotificationId)).data();
@@ -614,7 +636,6 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
         };
         TbltClassificatore.prototype.setVisibilityPanel = function (number) {
             var numberOfSettori = parseInt(number, 10);
-            this._pnlSettoriId = $("#".concat(this.pnlSettoriId));
             var _pnlDetailsId = $("#".concat(this.pnlDetailsId));
             if (numberOfSettori == 0) {
                 _pnlDetailsId.hide();
@@ -637,6 +658,35 @@ define(["require", "exports", "App/Helpers/WindowHelper", "App/Services/Commons/
                 }
             }
         };
+        TbltClassificatore.prototype.loadCustomActions = function (isVisible, customActionsJson) {
+            var _this = this;
+            if (isVisible) {
+                PageClassHelper.callUserControlFunctionSafe(this.uscCustomActionsRestId)
+                    .done(function (instance) {
+                    if (!jQuery.isEmptyObject(instance)) {
+                        var customActions = customActionsJson
+                            ? JSON.parse(customActionsJson)
+                            : {
+                                AutoClose: false,
+                                AutoCloseAndClone: false
+                            };
+                        instance.loadItems(customActions);
+                        _this._btnUpdateCustomActions = $find(_this.btnUpdateCustomActionsId);
+                        _this._btnUpdateCustomActions.add_clicked(_this.btnUpdateCustomActions_onClick);
+                        _this._btnUpdateCustomActions.set_visible(!instance.isSummary);
+                    }
+                });
+            }
+        };
+        TbltClassificatore.ADD_COMMANDNAME = "AddCategory";
+        TbltClassificatore.DELETE_COMMANDNAME = "DeleteCategory";
+        TbltClassificatore.EDIT_COMMANDNAME = "EditCategory";
+        TbltClassificatore.RECOVER_COMMANDNAME = "RecoverCategory";
+        TbltClassificatore.LOG_COMMANDNAME = "LogCategory";
+        TbltClassificatore.ADDMASSIMARIO_COMMANDNAME = "AddMassimario";
+        TbltClassificatore.ADDMETADATA_COMMANDNAME = "AddMetadata";
+        TbltClassificatore.RUNFASCICLEPLAN_COMMANDNAME = "RunFasciclePlan";
+        TbltClassificatore.CLOSEFASCICLEPLAN_COMMANDNAME = "CloseFasciclePlan";
         return TbltClassificatore;
     }());
     return TbltClassificatore;

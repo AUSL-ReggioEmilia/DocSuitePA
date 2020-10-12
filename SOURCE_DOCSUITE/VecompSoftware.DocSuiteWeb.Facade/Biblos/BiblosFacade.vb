@@ -1,23 +1,21 @@
 ﻿Imports System.IO
-Imports VecompSoftware.Helpers.PDF
+Imports System.Linq
+Imports System.Web
+Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
 Imports VecompSoftware.Helpers
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports System.Web
-Imports VecompSoftware.Services.Biblos.Models
-Imports System.Linq
 Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.PDF
+Imports VecompSoftware.Services.Biblos.Models
 
 Public Class BiblosFacade
-    Public Const SECURE_DOCUMENT_ATTRIBUTE As String = "SecureDocumentId"
     Public Const DOCUMENT_POSITION_ATTRIBUTE As String = "Position"
     Public Const FILENAME_ATTRIBUTE As String = "Filename"
     Public Const SIGNATURE_ATTRIBUTE As String = "Signature"
     Public Const PRIVACYLEVEL_ATTRIBUTE As String = "PrivacyLevel"
     Public Const NOTE_ATTRIBUTE As String = "Note"
     Public Const REGISTRATION_USER_ATTRIBUTE As String = "RegistrationUser"
-
+    Public Const SING_MODELS_ATTRIBUTE As String = "SignModels"
     Overridable ReadOnly Property CustomPdfError As FileInfo
         Get
             Dim tor As FileInfo = Nothing

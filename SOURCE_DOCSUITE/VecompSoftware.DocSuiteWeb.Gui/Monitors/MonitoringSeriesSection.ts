@@ -115,11 +115,11 @@ class MonitoringSeriesSection extends MonitoringSeriesSectionBase {
         this.loadResults(skip);
     }
 
-    btnSearch_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnSearch_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.loadResults(0);
     }
 
-    btnClean_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnClean_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.cleanSearchFilters();
     }
 

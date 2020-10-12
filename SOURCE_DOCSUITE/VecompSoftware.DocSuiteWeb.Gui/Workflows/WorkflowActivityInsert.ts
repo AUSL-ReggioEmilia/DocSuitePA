@@ -48,6 +48,7 @@ class WorkflowActivityInsert extends WorkflowActivityInsertBase {
     workflowRepositoriesResult: WorkflowRepositoryModel[];
 
     docSuiteVersion: string;
+    idTenantAOO: string;
 
     private _ddlWorkflowActivity: Telerik.Web.UI.RadDropDownList;
     private _btnConfirm: Telerik.Web.UI.RadButton;
@@ -128,6 +129,9 @@ class WorkflowActivityInsert extends WorkflowActivityInsertBase {
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME, ArgumentType.PropertyString, "DocSuite");
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION, ArgumentType.PropertyString, this.docSuiteVersion);
 
+        //TenantAOO
+        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, ArgumentType.PropertyGuid, this.idTenantAOO);
+
         (<WorkflowStartService>this.workflowStartService).startWorkflow(this._workflowStartModel,
             (data: any) => {
                 this._btnConfirm.set_enabled(true);
@@ -153,7 +157,13 @@ class WorkflowActivityInsert extends WorkflowActivityInsertBase {
                     comboItem.set_text(workflowRepository.Name);
                     comboItem.set_value(workflowRepository.UniqueId);
 
-                    this._ddlWorkflowActivity.get_items().add(comboItem);
+                    if (this.workflowRepositoriesResult.length == 1) {
+                        this._ddlWorkflowActivity.get_items().insert(0, comboItem);
+                        this._ddlWorkflowActivity.findItemByValue(comboItem.get_value()).select();
+                        this._ddlWorkflowActivity.set_enabled(false);
+                    } else {
+                        this._ddlWorkflowActivity.get_items().add(comboItem);
+                    }
                 }
 
                 this._loadingPanel.hide(this.ddlWorkflowActivityId);
@@ -182,11 +192,16 @@ class WorkflowActivityInsert extends WorkflowActivityInsertBase {
         }
 
         referenceModel.ReferenceModel = JSON.stringify(workflowDocumentModel);
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL, ArgumentType.Json, JSON.stringify(referenceModel));
+
+        let document: any = JSON.parse(referenceModel.ReferenceModel);
+
+        if (document.Documents.length != 0) {
+            this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL, ArgumentType.Json, JSON.stringify(referenceModel));
+        }
     }
 
     addContact(): void {
-        let uscContacts: UscContattiSel = <UscContattiSel>$("#".concat(this.uscSettoriId)).data(); 
+        let uscContacts: UscContattiSel = <UscContattiSel>$("#".concat(this.uscSettoriId)).data();
         let workflowAccounts: WorkflowAccountModel[] = [];
         let contactsModel: ContactModel[] = JSON.parse(uscContacts.getContacts());
 
@@ -203,7 +218,7 @@ class WorkflowActivityInsert extends WorkflowActivityInsertBase {
 
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS, ArgumentType.Json, JSON.stringify(workflowAccounts));
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_ACTION_PARALLEL_ACTIVITY] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_ACTION_PARALLEL_ACTIVITY, ArgumentType.PropertyBoolean, true);
-        
+
     }
 
     getUscDocument = () => {

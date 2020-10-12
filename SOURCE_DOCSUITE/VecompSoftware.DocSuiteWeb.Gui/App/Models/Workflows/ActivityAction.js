@@ -19,6 +19,11 @@ define(["require", "exports"], function (require, exports) {
         ActivityAction[ActivityAction["CancelDocumentUnit"] = 15] = "CancelDocumentUnit";
         ActivityAction[ActivityAction["ToApprove"] = 16] = "ToApprove";
         ActivityAction[ActivityAction["ToShare"] = 17] = "ToShare";
+        ActivityAction[ActivityAction["UpdateArchive"] = 18] = "UpdateArchive";
+        ActivityAction[ActivityAction["UpdateFascicle"] = 19] = "UpdateFascicle";
+        ActivityAction[ActivityAction["ToIntegration"] = 20] = "ToIntegration";
+        ActivityAction[ActivityAction["GenerateReport"] = 21] = "GenerateReport";
+        ActivityAction[ActivityAction["CopyFascicleContents"] = 22] = "CopyFascicleContents";
     })(ActivityAction || (ActivityAction = {}));
     return ActivityAction;
 });

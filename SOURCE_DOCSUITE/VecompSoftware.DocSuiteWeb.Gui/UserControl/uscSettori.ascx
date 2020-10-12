@@ -187,7 +187,7 @@
                             <span class="templateText">Spunta per Copia Conoscenza</span>
                         </ItemTemplate>
                     </telerik:RadToolBarButton>
-                    <telerik:RadToolBarButton CausesValidation="False" ID="btnPrivacy" Value="checkPrivacy" CommandName="checkPrivacy" ToolTip="Riservatezza/privacy" Text="Riservatezza/privacy" />
+                    <telerik:RadToolBarButton CausesValidation="False" ID="btnPrivacy" ImageUrl="~/App_Themes/DocSuite2008/imgset16/lock.png" Value="checkPrivacy" CommandName="checkPrivacy" ToolTip="Riservatezza/privacy" Text="Riservatezza/privacy" />
                     <telerik:RadToolBarButton CausesValidation="False" ID="btnFascicleVisibilityType" Value="checkFascicleVisibilityType" CommandName="checkFascicleVisibilityType" ToolTip="Cambia Visibilità" Text="Rendi i documenti disponibili ai settori autorizzati" CheckOnClick="True" AllowSelfUnCheck="True" />
                     <telerik:RadToolBarButton CausesValidation="False" ID="btnPropagateAuthorizations" Value="checkPropagateAuthorizations" CommandName="checkPropagateAuthorizations" ToolTip="Propaga autorizzazioni alle sottocartelle" Text="Propaga le autorizzazioni alle sottocartelle" CheckOnClick="True" AllowSelfUnCheck="True" />
                 </Items>

@@ -9,6 +9,7 @@ Imports VecompSoftware.NHibernateManager.Dao
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.Services.Logging
 Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 
 ''' <summary> Base class for Facade implementation </summary>
 ''' <typeparam name="T">Domain Object</typeparam>
@@ -37,15 +38,15 @@ Public MustInherit Class FacadeNHibernateBase(Of T, TIdT, TDaoType As INHibernat
 #End Region
 
 #Region " Properties "
-    Public ReadOnly Property TenantName As String
+    Public ReadOnly Property CurrentTenant As Tenant
         Get
-            Return DocSuiteContext.Current.ProtocolEnv.CorporateAcronym
-        End Get
-    End Property
-
-    Public ReadOnly Property TenantId As Guid
-        Get
-            Return DocSuiteContext.Current.CurrentTenant.TenantId
+            Dim tenant As Tenant = Nothing
+            If FacadeUtil.NeedTenantAction IsNot Nothing Then
+                FacadeUtil.NeedTenantAction(Sub(t As Tenant)
+                                                tenant = t
+                                            End Sub)
+            End If
+            Return tenant
         End Get
     End Property
 

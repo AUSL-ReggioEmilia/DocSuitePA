@@ -56,7 +56,7 @@ Partial Public Class UtltProtRicerca
         Dim protocols As IList(Of Protocol) = New List(Of Protocol)
         If protocolHeaders.Count > 0 Then
             For Each protHeader As ProtocolHeader In protocolHeaders
-                protocols.Add(Facade.ProtocolFacade.GetById(protHeader.Year.Value, protHeader.Number.Value))
+                protocols.Add(Facade.ProtocolFacade.GetById(protHeader.UniqueId))
             Next
         End If
 

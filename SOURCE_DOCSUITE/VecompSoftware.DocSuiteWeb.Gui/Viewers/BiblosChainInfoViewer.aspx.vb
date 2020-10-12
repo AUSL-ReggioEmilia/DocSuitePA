@@ -20,10 +20,9 @@ Public Class BiblosChainInfoViewer
 
         Dim rootLabel As String = Request.QueryString.GetValueOrDefault(Of String)("Label", String.Empty)
 
-        Dim serverName As String = Request.QueryString.GetValue(Of String)("Server")
         Dim idChain As Guid = Request.QueryString.GetValue(Of Guid)("ChainId")
 
-        Dim docs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(serverName, idChain)
+        Dim docs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(idChain)
         If rootLabel.Eq("Allegati riservati") Then
             For Each item As BiblosDocumentInfo In docs
                 item.AddAttribute(ViewerLight.BIBLOS_ATTRIBUTE_IsPublic, "True")

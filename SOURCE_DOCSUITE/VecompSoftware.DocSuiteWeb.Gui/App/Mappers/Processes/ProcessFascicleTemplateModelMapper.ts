@@ -2,9 +2,11 @@
 import ProcessFascicleTemplateModel = require("App/Models/Processes/ProcessFascicleTemplateModel");
 import ProcessModelMapper = require("App/Mappers/Processes/ProcessModelMapper");
 import DossierFolderModelMapper = require("App/Mappers/Dossiers/DossierFolderModelMapper");
+import BaseMapper = require("App/Mappers/BaseMapper");
 
-class ProcessFascicleTemplateModelMapper implements IMapper<ProcessFascicleTemplateModel>{
+class ProcessFascicleTemplateModelMapper extends BaseMapper<ProcessFascicleTemplateModel> implements IMapper<ProcessFascicleTemplateModel>{
     constructor() {
+        super();
     }
     public Map(source: any): ProcessFascicleTemplateModel {
         let toMap: ProcessFascicleTemplateModel = <ProcessFascicleTemplateModel>{};

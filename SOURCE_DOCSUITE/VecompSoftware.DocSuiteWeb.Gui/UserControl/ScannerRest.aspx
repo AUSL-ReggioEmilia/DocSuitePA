@@ -1,15 +1,16 @@
 ﻿<%@ Page AutoEventWireup="false" CodeBehind="ScannerRest.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.ScannerRest" Language="vb" %>
+
 <!DOCTYPE html>
 <html>
 
 <head>
     <title>Scansione </title>
 
-    <link  rel="stylesheet" href="<%=Page.ResolveUrl("~/Content/scanner.css")%>" />
+    <link rel="stylesheet" href="<%=Page.ResolveUrl("~/Content/scanner.css")%>" />
 
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/Scripts/dynamsoft/v15/dynamsoft.webtwain.config.js")%>"></script>
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/Scripts/dynamsoft/v15/dynamsoft.webtwain.initiate.js")%>"></script>
-    <script src="<%=Page.ResolveUrl("~/Scripts/jquery-3.3.1.js")%>"></script>
+    <script src="<%=Page.ResolveUrl("~/Scripts/jquery-3.5.1.js")%>"></script>
 
 </head>
 
@@ -87,7 +88,7 @@
                                         <div class="divType">
                                             <div class="mark_arrow expanded"></div>
                                             <p class="title-menu">
-                                            Scansione personalizzata
+                                                Scansione personalizzata
                                             </p>
 
                                         </div>
@@ -120,7 +121,7 @@
                                         <input type="text" size="20" id="txt_fileName" value="" />
                                         <input type="hidden" id="txt_fileNameforSave" value="immagine_da_scanner" />
                                     </li>
-                                    <li id="html_btnSave" style="display:none">
+                                    <li id="html_btnSave" style="display: none">
                                         <input id="btnSave" class="btnOrg" type="button" value="Memorizza scansione" onclick="encodeImages(false)" />
                                     </li>
                                 </ul>
@@ -173,9 +174,9 @@
                     return false;
                 }
             }
-
+            var totalimg = DWObject.HowManyImagesInBuffer;      
             var imagesToScan = [];
-            for (var i = 0; i <= currentIndex; i++) {
+            for (var i = 0; i <= totalimg-1; i++) {
                 imagesToScan.push(i);
             }
 

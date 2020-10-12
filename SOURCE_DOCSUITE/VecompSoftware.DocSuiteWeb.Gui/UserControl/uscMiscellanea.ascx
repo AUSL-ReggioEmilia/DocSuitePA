@@ -92,8 +92,8 @@
                     <telerik:GridTemplateColumn UniqueName="Actions" AllowFiltering="false" HeaderText="Azioni" HeaderStyle-Width="10%" >
                         <ClientItemTemplate>
                             # if(EditEnabled){ #                          
-                                <img src="~/App_Themes/DocSuite2008/imgset16/pencil.png" style="cursor:pointer" title="Modifica" alt="Modifica" onclick="openEditWindow('#=IdDocument#', '#=IdChain#', '#=LocationId#')" />
-                                <img src="~/App_Themes/DocSuite2008/imgset16/delete.png" title="Elimina" alt="Elimina" style="cursor:pointer" onclick="openDeleteWindow('#=IdDocument#', '#=IdChain#')" />
+                                <img src="../App_Themes/DocSuite2008/imgset16/pencil.png" style="cursor:pointer" title="Modifica" alt="Modifica" onclick="openEditWindow('#=IdDocument#', '#=IdChain#', '#=LocationId#')" />
+                                <img src="../App_Themes/DocSuite2008/imgset16/delete.png" title="Elimina" alt="Elimina" style="cursor:pointer" onclick="openDeleteWindow('#=IdDocument#', '#=IdChain#')" />
                             # }#                            
                             # if(!IsSigned){ #
                                 <img src="../App_Themes/DocSuite2008/imgset16/card_chip_gold.png" title="Firma documento" style="cursor:pointer" onclick="initializeSign('#=IdDocument#')" />

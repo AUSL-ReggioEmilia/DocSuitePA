@@ -30,7 +30,7 @@ User Story 10183: [DSW] Se ho DossierEnabled il menù pratiche va tolto
 User Story 10184: [YAC] In fase di avvio di Workflow aggiungere la relazione tra WorkflowInstance e il Dossier/Fascicolo
 User Story 10194: [AUSL-RE] Indicare chi ha preso in carico il workflow associato al fascicolo
 User Story 10215: [AUSL-RE]In Inserimento fascicolo,gestire il settore Proponente come intersezione tra i settori dell'utente e quelli abilitati al classificatore (e viceversa per la Gestione del Classificatore).
-User Story 10254: [AUSL-RE] Nei Dossier quando voglio avviare workflow devo caricare automaticamente il settore responsabile del dossier nel campo settore richiedente
+User Story 10254: [AUSL-RE] Nei Dossier quando voglio avviare workflow devo caricare automaticamente il Settore responsabile del dossier nel campo settore richiedente
 User Story 10257: [***REMOVED***] Refactor del Layout della pagina di Amministrazione Trasparente
 User Story 10258: [***REMOVED***] Parametrizzazione della griglia di ricerca
 User Story 10259: [***REMOVED***] Aggiunta degli annessi non pubblicati ai risultati di ricerca della pagina di Amministrazione Trasparente
@@ -38,7 +38,7 @@ User Story 10260: [***REMOVED***] Implementazione del campo di ricerca "full tex
 User Story 10261: [AUSL-RE AUSL-PC] Modificare la tabella DossierFolders aggiungendo l'hierarcyId
 User Story 10269: [AUSL-RE] Nei dati del Dossier rendere visibile richiedente WF, Presa in carico e nelle note la descrizione del workflow
 User Story 10276: [AUSL-RE] In inserimento di fascicolo restringere i responsabili di procedimento disponibili a quelli definiti nel classificatore selezionato
-User Story 10277: [AUSL-RE] In inserimento di fascicolo restringere i responsabili di procedimento definiti sul settore responsabile selezionato
+User Story 10277: [AUSL-RE] In inserimento di fascicolo restringere i responsabili di procedimento definiti sul Settore responsabile selezionato
 User Story 10278: [AUSL-RE] In inserimento di fascicolo restringere i settori responsabili in base al classificatore selezionato
 User Story 10340: [AUSL-RE AUSL-PC] Caricamento delle sottocartelle al click "Espandi nodo" nei Dossier
 User Story 10341: [AUSL-RE AUSL-PC] Permettere la creazione di sottocartelle di una cartella nella pagina dei dossier

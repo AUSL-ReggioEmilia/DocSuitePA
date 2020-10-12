@@ -88,9 +88,13 @@ var UdsDesigner;
             _this.idContainer = "";
             _this.enableWorkflowCheckBox = !($("#workflowManager")[0].getAttribute("value") == 'True');
             _this.modifyEnable = true;
+            _this.showLastChangedDate = false;
+            _this.showLastChangedUser = false;
             _this.subjectResultVisibility = true;
             _this.categoryResultVisibility = true;
             _this.hideRegistrationIdentifier = false;
+            _this.stampaConformeEnabled = true;
+            _this.showArchiveInProtocolSummaryEnabled = true;
             _this.requiredRevisionUDSRepository = false;
             _this.initializeEvents();
             return _this;
@@ -122,6 +126,8 @@ var UdsDesigner;
             this.containerSearchable = obj.containerSearchable;
             this.createContainer = obj.createContainer;
             this.hideRegistrationIdentifier = obj.hideRegistrationIdentifier;
+            this.stampaConformeEnabled = obj.stampaConformeEnabled;
+            this.showArchiveInProtocolSummaryEnabled = obj.showArchiveInProtocolSummaryEnabled;
             this.requiredRevisionUDSRepository = obj.requiredRevisionUDSRepository;
             if (this.createContainer) {
                 this.idContainer = "";
@@ -135,6 +141,8 @@ var UdsDesigner;
             this.subjectResultVisibility = obj.subjectResultVisibility;
             this.categoryResultVisibility = obj.categoryResultVisibility;
             this.modifyEnable = obj.modifyEnable;
+            this.showLastChangedDate = obj.showLastChangedDate;
+            this.showLastChangedUser = obj.showLastChangedUser;
         };
         TitleCtrl.prototype.getValues = function () {
             if (this.createContainer) {
@@ -172,12 +180,16 @@ var UdsDesigner;
                 signatureMetadataEnabled: this.signatureMetadataEnabled,
                 enabledCancelMotivation: this.enabledCancelMotivation,
                 hideRegistrationIdentifier: this.hideRegistrationIdentifier,
+                stampaConformeEnabled: this.stampaConformeEnabled,
+                showArchiveInProtocolSummaryEnabled: this.showArchiveInProtocolSummaryEnabled,
                 requiredRevisionUDSRepository: this.requiredRevisionUDSRepository,
                 enableAutomaticSignature: this.enableManualSignature,
                 enableWorkflowCheckBox: this.enableWorkflowCheckBox,
                 subjectResultVisibility: this.subjectResultVisibility,
                 categoryResultVisibility: this.categoryResultVisibility,
-                modifyEnable: this.modifyEnable
+                modifyEnable: this.modifyEnable,
+                showLastChangedDate: this.showLastChangedDate,
+                showLastChangedUser: this.showLastChangedUser
             };
         };
         TitleCtrl.prototype.selectedItemChanged = function (e, scope) {
@@ -445,6 +457,8 @@ var UdsDesigner;
             _this.resultVisibility = false;
             _this.resultPosition = 0;
             _this.format = "";
+            _this.minValue = null;
+            _this.maxValue = null;
             return _this;
         }
         NumberCtrl.prototype.setValues = function (obj) {
@@ -462,6 +476,8 @@ var UdsDesigner;
             this.columns = obj.columns;
             this.rows = obj.rows;
             this.format = obj.format;
+            this.minValue = obj.minValue;
+            this.maxValue = obj.maxValue;
         };
         NumberCtrl.prototype.getValues = function () {
             return {
@@ -479,7 +495,9 @@ var UdsDesigner;
                 resultPosition: this.resultPosition,
                 columns: this.columns,
                 rows: this.rows,
-                format: this.format
+                format: this.format,
+                minValue: this.minValue,
+                maxValue: this.maxValue
             };
         };
         NumberCtrl.prototype.changeRequired = function (e, scope) {
@@ -699,21 +717,20 @@ var UdsDesigner;
             _this.readOnly = false;
             _this.searchable = true;
             _this.required = true;
-            _this.enableMultifile = true;
+            _this.enableMultifile = false;
             _this.enableUpload = true;
             _this.enableScanner = true;
             _this.enableSign = true;
             _this.copyProtocol = false;
             _this.copyResolution = false;
             _this.copySeries = false;
+            _this.copyUDS = false;
             _this.archives = [];
             _this.isLoadingArchives = false;
             _this.archiveReadOnly = false;
             _this.signRequired = false;
             _this.createBiblosArchive = true;
             _this.documentDeletable = false;
-            _this.dematerialisationEnabled = false;
-            _this.enableDematerialisationCheckBox = !($("#dematerialisationEnabled")[0].getAttribute("value") == 'True');
             return _this;
         }
         DocumentCtrl.prototype.setValues = function (obj) {
@@ -729,12 +746,12 @@ var UdsDesigner;
             this.copyProtocol = obj.copyProtocol;
             this.copyResolution = obj.copyResolution;
             this.copySeries = obj.copySeries;
+            this.copyUDS = obj.copyUDS;
             this.archiveReadOnly = obj.archiveReadOnly;
             this.signRequired = obj.signRequired;
             this.createBiblosArchive = obj.createBiblosArchive;
             this.required = obj.required;
             this.documentDeletable = obj.documentDeletable;
-            this.dematerialisationEnabled = obj.dematerialisationEnabled;
             this.modifyEnable = obj.modifyEnable;
             this.columns = obj.columns;
             this.rows = obj.rows;
@@ -755,11 +772,11 @@ var UdsDesigner;
                 copyProtocol: this.copyProtocol,
                 copyResolution: this.copyResolution,
                 copySeries: this.copySeries,
+                copyUDS: this.copyUDS,
                 archiveReadOnly: this.archiveReadOnly,
                 signRequired: this.signRequired,
                 createBiblosArchive: this.createBiblosArchive,
                 documentDeletable: this.documentDeletable,
-                dematerialisationEnabled: this.dematerialisationEnabled,
                 modifyEnable: this.modifyEnable,
                 columns: this.columns,
                 rows: this.rows
@@ -800,7 +817,7 @@ var UdsDesigner;
             _this.ctrlType = "Contact";
             _this.label = "Contatti";
             _this.enableAD = true;
-            _this.enableAddressBook = false;
+            _this.enableAddressBook = true;
             _this.enableADDistribution = false;
             _this.enableManual = true;
             _this.enableExcelImport = false;
@@ -963,7 +980,7 @@ var UdsDesigner;
         function EnumCtrl() {
             var _this = _super.call(this) || this;
             _this.ctrlType = "Enum";
-            _this.label = "Scelta Multipla";
+            _this.label = "Scelta multipla";
             _this.defaultValue = "";
             _this.defaultSearchValue = "";
             _this.readOnly = false;
@@ -976,6 +993,7 @@ var UdsDesigner;
             _this.resultPosition = 0;
             _this.multipleValues = false;
             _this.multipleEnabled = true;
+            $("#deleteSelectedItem").hide();
             return _this;
         }
         EnumCtrl.prototype.setValues = function (obj) {
@@ -1018,7 +1036,15 @@ var UdsDesigner;
             };
         };
         EnumCtrl.prototype.deleteItem = function (e, scope) {
+            if (scope.ctrl.defaultValue === scope.ctrl.enumOptions[scope.index]) {
+                scope.ctrl.defaultValue = "";
+                $("#deleteSelectedItem").hide();
+            }
             scope.ctrl.enumOptions.splice(scope.index, 1);
+        };
+        EnumCtrl.prototype.deleteSelectedItem = function (e, scope) {
+            scope.ctrl.defaultValue = "";
+            $("#deleteSelectedItem").hide();
         };
         EnumCtrl.prototype.selectedValue = function (e, scope) {
             scope.ctrl.OpenEnumDetailsModal(e, scope);
@@ -1072,6 +1098,9 @@ var UdsDesigner;
             var elements = scope.ctrl.getValues();
             scope.ctrl.defaultValue = e.target.innerText;
             scope.ctrl.binder.bind($("#EnumOption")[0], scope.ctrl);
+            if (scope.ctrl.defaultValue !== "") {
+                $("#deleteSelectedItem").show();
+            }
         };
         EnumCtrl.prototype.changeRequired = function (e, scope) {
             $(".element").each(function (index, item) {
@@ -1179,9 +1208,20 @@ var UdsDesigner;
             var elements = scope.ctrl.getValues();
             scope.ctrl.defaultValue = e.target.innerText;
             scope.ctrl.binder.bind($("#StatusOption")[0], scope.ctrl);
+            if (scope.ctrl.defaultValue !== "") {
+                $("#deleteSelectedItem").show();
+            }
         };
         StatusCtrl.prototype.deleteItem = function (e, scope) {
+            if (scope.ctrl.defaultValue === scope.ctrl.statusValue) {
+                scope.ctrl.defaultValue = "";
+                $("#deleteSelectedItem").hide();
+            }
             scope.ctrl.statusType.splice(scope.index, 1);
+        };
+        StatusCtrl.prototype.deleteSelectedItem = function (e, scope) {
+            scope.ctrl.defaultValue = "";
+            $("#deleteSelectedItem").hide();
         };
         StatusCtrl.prototype.selectedValore = function (e, scope) {
             scope.ctrl.openStatusDetailsModal(e, scope);

@@ -26,6 +26,7 @@ class RoleModelMapper extends BaseMapper<RoleModel>{
         toMap.ServiceCode = source.ServiceCode;
         toMap.ActiveFrom = source.ActiveFrom ? moment(source.ActiveFrom).format("DD/MM/YYYY") : "";
         toMap.Children = source.Children && source.Children.length ? source.Children.map(childRole => this.Map(childRole)) : [];
+        toMap.CategoryFascicleRights = source.CategoryFascicleRights;
 
         return toMap;
     }

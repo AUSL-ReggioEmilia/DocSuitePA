@@ -6,6 +6,7 @@ class UDSLink {
     currentIdUDS: string;
     selectedUDSRepositoryId: string;
     ajaxManagerId: string;
+    currentAction: string;
 
     private UDS_RESULTS_PAGE_URL: string = "UDSResults.aspx?Type=UDS&isFromUDSLink=True";
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
@@ -32,7 +33,7 @@ class UDSLink {
         ajaxModel.ActionName = "CurentFinderChanged";
         ajaxModel.Value.push(this.selectedUDSRepositoryId);
         (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
-        window.location.href = this.UDS_RESULTS_PAGE_URL + "&IdUDS=" + this.currentIdUDS + "&IdUDSRepository=" + this.selectedUDSRepositoryId;
+        window.location.href = `${this.UDS_RESULTS_PAGE_URL}&IdUDS=${this.currentIdUDS}&IdUDSRepository=${this.selectedUDSRepositoryId}&Action=${this.currentAction}`;
     }    
 }
 

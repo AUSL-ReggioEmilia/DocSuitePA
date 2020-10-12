@@ -4,6 +4,7 @@ Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.Commons
+Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Entity.MassimariScarto
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
@@ -16,7 +17,7 @@ Public Class uscFascicleInsert
 
 #Region " Fields "
     Dim _currentCategory As Category
-    Private Const CATEGORY_CHANGE_HANDLER As String = "uscFascicleInsert.onCategoryChanged('{0}', '{1}');"
+    Private Const CATEGORY_CHANGE_HANDLER As String = "uscFascicleInsert.onCategoryChanged('{0}', '{1}', '{2}');"
     Private Const INITIALIZE_CALLBACK As String = "uscFascicleInsert.initializeCallback();"
     Private Const CATEGORY_NOT_FASCICOLABLE_WARNING As String = "uscFascicleInsert.printCategoryNotFascicolable();"
     Private Const FASCICLE_TYPE_SELECTED_CALLBACK As String = "uscFascicleInsert.fascicleTypeSelectedCallback();"
@@ -77,7 +78,7 @@ Public Class uscFascicleInsert
     Private ReadOnly Property CurrentMassimarioScartoFacade As MassimarioScartoFacade
         Get
             If _currentMassimarioScartoFacade Is Nothing Then
-                _currentMassimarioScartoFacade = New MassimarioScartoFacade(DocSuiteContext.Current.Tenants)
+                _currentMassimarioScartoFacade = New MassimarioScartoFacade(DocSuiteContext.Current.Tenants, BasePage.CurrentTenant)
             End If
             Return _currentMassimarioScartoFacade
         End Get
@@ -115,66 +116,25 @@ Public Class uscFascicleInsert
         RefreshControls(False)
     End Sub
 
-    Private Sub uscSettoreMaster_RoleChange(ByVal sender As Object, ByVal e As EventArgs) Handles uscSettoreMaster.RoleAdded, uscSettoreMaster.RoleRemoved
-        If Not uscSettoreMaster.HasSelectedRole Then
-            uscContattiResp.SearchInRoleContacts = Nothing
-            uscContattiResp.RoleContactsProcedureType = Nothing
-            uscContattiResp.UpdateButtons()
-            Exit Sub
-        End If
-
-        If uscSettoreMaster.GetRoles().Any() Then
-            uscContattiResp.SearchInRoleContacts = uscSettoreMaster.GetRoles().FirstOrDefault().Id
-            uscContattiResp.CategoryContactsProcedureType = RoleUserType.RP.ToString()
-            uscContattiResp.RoleContactsProcedureType = RoleUserType.RP.ToString()
-        End If
-
-        uscContattiResp.UpdateButtons()
-
-        Dim idRole As Integer = Integer.Parse(uscSettoreMaster.TreeViewControl.GetAllNodes().First().Value)
-        AjaxManager.ResponseScripts.Add($"uscFascicleInsert.setCategoryRole({idRole})")
-    End Sub
-
-    Private Sub uscSettoreMaster_RoleAdding(sender As Object, e As RoleEventArgs) Handles uscSettoreMaster.RoleAdding
-        If uscSettori.HasSelectedRole Then
-            e.Cancel = uscSettori.GetRoles().Any(Function(x) x.Id = e.Role.Id)
-            If e.Cancel Then
-                BasePage.AjaxAlert($"Non è possibile selezionare il settore {e.Role.Name} in quanto già presente come settore autorizzato del fascicolo")
-            End If
-        End If
-    End Sub
-
-    Private Sub uscSettori_RoleAdding(sender As Object, e As RoleEventArgs) Handles uscSettori.RoleAdding
-        If uscSettoreMaster.HasSelectedRole Then
-            e.Cancel = uscSettoreMaster.GetRoles().Any(Function(x) x.Id = e.Role.Id)
-            If e.Cancel Then
-                BasePage.AjaxAlert($"Non è possibile selezionare il settore {e.Role.Name} in quanto già presente come settore responsabile del fascicolo")
-            End If
-        End If
-    End Sub
-
     Private Sub uscClassificatore_CategoryChange(ByVal sender As Object, ByVal e As EventArgs) Handles uscClassificatore.CategoryAdded, uscClassificatore.CategoryRemoved
         If uscClassificatore.SelectedCategories.Count = 0 Then
-            uscSettoreMaster.IdCategorySelected = Nothing
             uscContattiResp.SearchInCategoryContacts = Nothing
             uscContattiResp.CategoryContactsProcedureType = String.Empty
             uscContattiResp.UpdateButtons()
-            AjaxManager.ResponseScripts.Add(String.Format(CATEGORY_CHANGE_HANDLER, String.Empty, String.Empty))
+            AjaxManager.ResponseScripts.Add(String.Format(CATEGORY_CHANGE_HANDLER, String.Empty, String.Empty, String.Empty))
             Exit Sub
         End If
         Dim category As Category = Facade.CategoryFacade.GetById(uscClassificatore.SelectedCategories.First())
         Dim categoryHasSpecialRole As Boolean = False
         If Not String.IsNullOrEmpty(rdlFascicleType.SelectedValue) AndAlso rdlFascicleType.SelectedValue.Equals(DirectCast(FascicleType.Procedure, Integer).ToString()) Then
             categoryHasSpecialRole = CurrentCategoryFascicleRightFacade.HasSpecialRole(category.Id)
-            If Not categoryHasSpecialRole Then
-                uscSettoreMaster.IdCategorySelected = category.Id
-            End If
         End If
         Dim idMetadataRepository As String = String.Empty
         If category.IdMetadataRepository.HasValue Then
             idMetadataRepository = category.IdMetadataRepository.Value.ToString()
         End If
         Dim categoryFascicle As CategoryFascicle = CurrentCategoryFascicleFacade.GetProcedureFascicles(category.Id).FirstOrDefault()
+        Dim customActions As String = String.Empty
         If categoryFascicle IsNot Nothing Then
             If categoryFascicle.Manager IsNot Nothing Then
                 uscContattiResp.DataSource = New List(Of ContactDTO) From {New ContactDTO(categoryFascicle.Manager, ContactDTO.ContactType.Address)}
@@ -185,17 +145,22 @@ Public Class uscFascicleInsert
             End If
             uscContattiResp.CategoryContactsProcedureType = RoleUserType.RP.ToString()
             uscContattiResp.UpdateButtons()
+            customActions = categoryFascicle.CustomActions
         End If
         Dim massimarioScarto As MassimarioScarto = GetMassimario(category.Id)
         If massimarioScarto IsNot Nothing Then
-            AjaxManager.ResponseScripts.Add(String.Format(CATEGORY_CHANGE_HANDLER, massimarioScarto.ConservationPeriod, idMetadataRepository))
+            AjaxManager.ResponseScripts.Add(String.Format(CATEGORY_CHANGE_HANDLER, massimarioScarto.ConservationPeriod, idMetadataRepository, customActions))
             Exit Sub
         End If
-        AjaxManager.ResponseScripts.Add(String.Format(CATEGORY_CHANGE_HANDLER, String.Empty, idMetadataRepository))
+        AjaxManager.ResponseScripts.Add(String.Format(CATEGORY_CHANGE_HANDLER, String.Empty, idMetadataRepository, customActions))
     End Sub
 
     Protected Sub FascInserimento_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
-        Select Case e.Argument
+        Dim ajaxModel As AjaxModel = TryParseJsonModel(Of AjaxModel)(e.Argument)
+        If ajaxModel Is Nothing Then
+            Exit Sub
+        End If
+        Select Case ajaxModel.ActionName
             Case "Initialize"
                 Initialize()
                 If Not String.IsNullOrEmpty(rdlFascicleType.SelectedItem.Value) Then
@@ -204,13 +169,10 @@ Public Class uscFascicleInsert
                 AjaxManager.ResponseScripts.Add(INITIALIZE_CALLBACK)
 
             Case "FascicleTypeSelected"
-                RefreshControls()
-                uscSettori.RemoveAllRoles()
-                uscSettoreMaster.DataBind()
-
-                Dim roleRestriction As Integer? = Nothing
-                If uscSettoreMaster.HasSelectedRole Then
-                    roleRestriction = uscSettoreMaster.TreeViewControl.GetAllNodes.First().Value
+                RefreshControls(True, If(ajaxModel.Value.Count > 0, ajaxModel.Value(0), Nothing))
+                Dim roleRestriction As Integer
+                If ajaxModel.Value.Count > 0 Then
+                    Integer.TryParse(ajaxModel.Value(0), roleRestriction)
                 End If
                 If RespContactDTO Is Nothing Then
                     Dim contactFascicleId As Integer? = Nothing
@@ -235,13 +197,7 @@ Public Class uscFascicleInsert
     Private Sub InitializeAjax()
         AddHandler AjaxManager.AjaxRequest, AddressOf FascInserimento_AjaxRequest
         AjaxManager.AjaxSettings.AddAjaxSetting(uscClassificatore, uscContattiResp)
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscSettori)
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscSettoreMaster)
-        AjaxManager.AjaxSettings.AddAjaxSetting(uscSettori, uscSettori)
-        AjaxManager.AjaxSettings.AddAjaxSetting(uscSettoreMaster, uscSettoreMaster)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscContattiResp)
-        AjaxManager.AjaxSettings.AddAjaxSetting(rdlFascicleType, uscSettori)
-        AjaxManager.AjaxSettings.AddAjaxSetting(uscClassificatore, uscSettoreMaster)
         AjaxManager.AjaxSettings.AddAjaxSetting(uscClassificatore, uscMetadataRepositorySel)
     End Sub
 
@@ -265,69 +221,44 @@ Public Class uscFascicleInsert
     End Function
 
 
-    Private Sub RefreshControls(Optional clearUscSession As Boolean = True)
+    Private Sub RefreshControls(Optional clearUscSession As Boolean = True, Optional roleMasterId As String = Nothing)
         If (Not ProtocolEnv.FascicleAuthorizedRoleCaption.IsNullOrEmpty()) Then
-            uscSettori.Caption = ProtocolEnv.FascicleAuthorizedRoleCaption.ToString()
+            uscRole.Caption = ProtocolEnv.FascicleAuthorizedRoleCaption.ToString()
         End If
         If (String.IsNullOrEmpty(rdlFascicleType.SelectedValue)) Then
             uscContattiResp.IsRequired = False
             Exit Sub
         End If
         uscContattiResp.RoleContactsProcedureType = Nothing
-        uscSettori.Required = Convert.ToInt32(rdlFascicleType.SelectedValue).Equals(FascicleType.Activity)
         uscContattiResp.IsRequired = Convert.ToInt32(rdlFascicleType.SelectedValue).Equals(FascicleType.Procedure)
-        If Convert.ToInt32(rdlFascicleType.SelectedValue).Equals(FascicleType.Activity) Then
-            uscSettori.MultiSelect = False
-            uscSettori.MultipleRoles = False
-            uscSettori.RoleRestictions = RoleRestrictions.OnlyMine
-            uscSettori.Environment = DSWEnvironment.Any
-            uscSettori.AnyRightInAnyEnvironment = True
-            uscSettori.FascicleVisibilityTypeEnabled = False
-        End If
 
         If Convert.ToInt32(rdlFascicleType.SelectedValue).Equals(FascicleType.Procedure) Then
-            uscSettori.MultiSelect = True
-            uscSettori.MultipleRoles = True
-            uscSettori.RoleRestictions = RoleRestrictions.None
-            uscSettori.AnyRightInAnyEnvironment = False
-            uscSettori.FascicleVisibilityTypeEnabled = True
-            uscSettoreMaster.MultiSelect = False
-            uscSettoreMaster.MultipleRoles = False
-            uscSettoreMaster.RoleRestictions = RoleRestrictions.OnlyMine
-            If uscSettoreMaster.HasSelectedRole Then
-                Dim idRole As Integer = Integer.Parse(uscSettoreMaster.TreeViewControl.GetAllNodes().First().Value)
+            If roleMasterId IsNot Nothing Then
+                Dim idRole As Integer
+                Integer.TryParse(roleMasterId, idRole)
                 AjaxManager.ResponseScripts.Add($"uscFascicleInsert.setCategoryRole({idRole})")
-            End If
-            If uscClassificatore.SelectedCategories.Count > 0 Then
-                Dim categoryId As Integer = uscClassificatore.SelectedCategories.First()
-                If Not CurrentCategoryFascicleRightFacade.HasSpecialRole(categoryId) Then
-                    uscSettoreMaster.IdCategorySelected = categoryId
-                End If
             End If
             uscContattiResp.RoleContactsProcedureType = RoleUserType.RP.ToString()
         End If
 
 
         If Convert.ToInt32(rdlFascicleType.SelectedValue).Equals(FascicleType.Period) Then
-            uscSettoreMaster.Required = Not ProtocolEnv.FascicleContainerEnabled
-            uscSettori.MultiSelect = True
-            uscSettori.MultipleRoles = True
-            uscSettori.RoleRestictions = RoleRestrictions.None
-            uscSettori.AnyRightInAnyEnvironment = False
-            uscSettoreMaster.MultiSelect = False
-            uscSettoreMaster.MultipleRoles = False
-            uscSettoreMaster.RoleRestictions = RoleRestrictions.OnlyMine
             radStartDate.ValidateRequestMode = ValidateRequestMode.Enabled
         End If
-        uscSettori.Initialize(clearUscSession)
-        uscSettoreMaster.Initialize(clearUscSession)
-        'in questo modo non si perdono i settori selezionati nel settore master
-        uscSettoreMaster.GetRoles()
 
+        AjaxManager.ResponseScripts.Add(FASCICLE_TYPE_SELECTED_CALLBACK)
     End Sub
 
-    Public Function GetDynamicValues() As MetadataModel
+    Public Function GetDynamicValues() As Tuple(Of MetadataDesignerModel, ICollection(Of MetadataValueModel))
         Return uscDynamicMetadata.GetControlValues()
+    End Function
+
+    Private Function TryParseJsonModel(Of T)(json As String) As T
+        Try
+            Return JsonConvert.DeserializeObject(Of T)(json)
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 #End Region
 

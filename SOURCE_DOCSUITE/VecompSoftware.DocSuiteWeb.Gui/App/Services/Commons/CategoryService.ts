@@ -43,6 +43,20 @@ class CategoryService extends BaseService {
         }, error);
     }
 
+    getRolesByCategoryId(categoryId: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        let qs: string = `$filter=EntityShortId eq ${categoryId}&$expand=CategoryFascicles($expand=CategoryFascicleRights($expand=Role($expand=Father))),MetadataRepository,MassimarioScarto`;
+        this.getRequest(url, qs, (response: any) => {
+            if (callback) {
+                let instance: CategoryModel = new CategoryModel();
+                let categoryMapper: CategoryModelMapper = new CategoryModelMapper();
+                instance = categoryMapper.Map(response.value[0]);
+
+                callback(instance);
+            }
+        }, error);
+    }
+
     /**
      * Modifica un Classificatore esistente
      * @param model
@@ -68,7 +82,7 @@ class CategoryService extends BaseService {
                 if (response && response.value) {
                     let categoryMapper: CategoryTreeViewModelMapper = new CategoryTreeViewModelMapper();
                     instance = categoryMapper.Map(response.value[0]);
-                }                
+                }
 
                 callback(instance);
             }
@@ -77,7 +91,7 @@ class CategoryService extends BaseService {
 
     findTreeCategories(finder: CategorySearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        url = url.concat(`/CategoryService.FindCategories(finder=@p0)?@p0=${JSON.stringify(finder)}&$orderby=FullCode`);
+        url = url.concat(`/CategoryService.FindCategories(finder=@p0)?@p0=${JSON.stringify(finder)}&$orderby=FullCode,Name`);
         this.getRequest(url, undefined, (response: any) => {
             if (callback) {
                 let instances: CategoryTreeViewModel[] = [];
@@ -86,6 +100,50 @@ class CategoryService extends BaseService {
                     instances = categoryMapper.MapCollection(response.value);
                 }
                 callback(instances);
+            }
+        }, error);
+    }
+
+    findFascicolableCategory(idCategory: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        url = url.concat(`/CategoryService.FindFascicolableCategory(idCategory=${idCategory})`);
+        this.getRequest(url, undefined, (response: any) => {
+            if (callback) {
+                let instance: CategoryTreeViewModel;
+                if (response && response.value) {
+                    let categoryMapper: CategoryTreeViewModelMapper = new CategoryTreeViewModelMapper();
+                    instance = categoryMapper.Map(response.value[0]);
+                }
+
+                callback(instance);
+            }
+        }, error);
+    }
+
+    getOnlyFascicolableCategories(tenantAOOId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}?$expand=CategoryFascicles,Parent&$filter=TenantAOO/UniqueId eq ${tenantAOOId} and(CategoryFascicles/any(cf:cf/FascicleType ne 'SubFascicle'))&$orderby=FullCode,Name`;
+        this.getRequest(url, null, (response: any) => {
+            if (callback) {
+                let categories: CategoryModel[] = [];
+                if (response && response.value) {
+                    let categoryMaper: CategoryModelMapper = new CategoryModelMapper();
+                    categories = categoryMaper.MapCollection(response.value);
+                }
+                callback(categories);
+            }
+        }, error);
+    }
+
+    getCategoriesByIds(categoryIds: number[], tenantAOOId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}?$filter=TenantAOO/UniqueId eq ${tenantAOOId} and EntityShortId in [${categoryIds.join(",")}]&$expand=CategoryFascicles,Parent&$orderby=FullCode,Name`;
+        this.getRequest(url, null, (response: any) => {
+            if (callback) {
+                let categories: CategoryModel[] = [];
+                if (response && response.value) {
+                    let categoryMaper: CategoryModelMapper = new CategoryModelMapper();
+                    categories = categoryMaper.MapCollection(response.value);
+                }
+                callback(categories);
             }
         }, error);
     }

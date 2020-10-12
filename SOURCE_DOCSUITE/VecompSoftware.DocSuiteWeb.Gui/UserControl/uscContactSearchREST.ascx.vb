@@ -1,4 +1,7 @@
-﻿Public Class uscContactSearchRest
+﻿Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+
+Public Class uscContactSearchRest
     Inherits DocSuite2008BaseControl
 
 #Region " Fields "
@@ -48,7 +51,16 @@
             Return pnlMainContent
         End Get
     End Property
-
+    Public ReadOnly Property IdTenant() As String
+        Get
+            If FilterByTenantEnabled Then
+                Return DirectCast(Session("CurrentTenant"), Tenant).UniqueId.ToString()
+            Else
+                Return String.Empty
+            End If
+        End Get
+    End Property
+    Public Property FilterByTenantEnabled As Boolean = True
     Public Property FilterByParentId As Integer?
 #End Region
 

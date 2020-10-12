@@ -1,4 +1,5 @@
-﻿Imports Newtonsoft.Json
+﻿Imports System.Collections.Generic
+Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Metadata
@@ -8,7 +9,7 @@ Public Class FascPeriodInserimento
 
 #Region " Fields "
 
-    Private Const FASCICLE_PERIOD_INSERT_CALLBACK As String = "fascPeriodInserimento.insertCallback('{0}');"
+    Private Const FASCICLE_PERIOD_INSERT_CALLBACK As String = "fascPeriodInserimento.insertCallback('{0}','{1}');"
 
 #End Region
 
@@ -38,13 +39,14 @@ Public Class FascPeriodInserimento
             End If
             Select Case ajaxModel.ActionName
                 Case "Insert"
-                    Dim metadataModel As MetadataModel = Nothing
+                    Dim metadataModel As Tuple(Of MetadataDesignerModel, ICollection(Of MetadataValueModel)) = Nothing
                     If ProtocolEnv.MetadataRepositoryEnabled Then
                         metadataModel = uscFascicleInsert.GetDynamicValues()
                     End If
 
                     AjaxManager.ResponseScripts.Add(String.Format(FASCICLE_PERIOD_INSERT_CALLBACK,
-                                                                  If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel), Nothing)))
+                                                                  If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item1), Nothing),
+                                                                  If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item2), Nothing)))
                     Exit Select
             End Select
         Catch

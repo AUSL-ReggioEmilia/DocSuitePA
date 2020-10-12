@@ -85,7 +85,7 @@ Public Class ResolutionRights
                     AndAlso CurrentResolution.Container IsNot Nothing _
                     AndAlso CurrentContainerFacade.CheckContainerRight(CurrentResolution.Container.Id, DSWEnvironment.Resolution, ResolutionRightPositions.PrivacyAttachments, Nothing)
             End If
-            Return _isPrivacyAttachmentAllowed
+            Return _isPrivacyAttachmentAllowed.Value
         End Get
     End Property
 
@@ -193,7 +193,7 @@ Public Class ResolutionRights
             If Not _isFlushAnnexedEnable.HasValue Then
                 _isFlushAnnexedEnable = False
                 If Facade.ResolutionFacade.HasAnnexed(CurrentResolution) Then
-                    _isFlushAnnexedEnable = DocSuiteContext.IsFullApplication AndAlso (IsExecutive Or IsAdoptable Or IsAdministrable)
+                    _isFlushAnnexedEnable = IsExecutive OrElse IsAdoptable OrElse IsAdministrable
                 End If
             End If
             Return _isFlushAnnexedEnable.Value

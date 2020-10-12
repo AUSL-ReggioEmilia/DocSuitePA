@@ -148,6 +148,36 @@
                     $("#<%= chkZip.ClientID %>").prop("checked", false);
                 }
             }
+
+            function showImageOnSelectedItemChanging(sender, eventArgs) {
+                var input = sender.get_inputDomElement();
+
+                input.style.background = "url(" + eventArgs.get_item().get_imageUrl() + ") no-repeat";
+                input.style.paddingLeft = "17px";
+                input.style.backgroundPositionY = "bottom";
+            }
+
+            function OnClientLoad(sender) {
+                var input = sender.get_inputDomElement();
+
+                input.style.background = "url(" + sender.get_selectedItem().get_imageUrl() + ") no-repeat";
+                input.style.paddingLeft = "17px";
+                input.style.backgroundPositionY = "bottom";
+            }
+
+            function validateSelection(sender, args) {
+                var selectedPECMailBoxItem = args.get_item();
+                var input = sender.get_inputDomElement();
+                var hasLoginError = !!selectedPECMailBoxItem.get_attributes().getAttribute("hasLoginError");
+
+                if (hasLoginError) {
+                    alert("La casella PEC ha un problema di configurazione. Avvisare il responsabile per la corretta configurazione");
+                    input.classList.add("text-red");
+                } else {
+                    input.classList.remove("text-red");
+                }
+
+            }
         </script>
     </telerik:RadCodeBlock>
     <asp:Panel runat="server" ID="WarningPanel" CssClass="hiddenField">
@@ -203,7 +233,16 @@
             </tr>
             <tr>
                 <td class="DXChiaro">
-                    <asp:DropDownList ID="ddlMailFrom" runat="server" />
+                    <telerik:RadComboBox runat="server"
+                        RenderMode="Lightweight"
+                        ID="ddlMailFrom"
+                        DataTextField="MailBoxName"
+                        DataValueField="Id"
+                        AutoPostBack="true"
+                        Width="300px"
+                        OnClientSelectedIndexChanging="showImageOnSelectedItemChanging" 
+                        OnClientSelectedIndexChanged="validateSelection"
+                        OnClientLoad="OnClientLoad"/>
                 </td>
             </tr>
         </table>
@@ -312,6 +351,6 @@
 <asp:Content ID="Content2" runat="server" ContentPlaceHolderID="cphFooter">
     <asp:Panel ID="pnlButtons" runat="server">
         <telerik:RadButton ID="cmdSend" runat="server" Text="Invia" Enabled="false" Width="120px" SingleClick="true" />
-        <telerik:RadButton ID="cmdInsertSign" UseSubmitBehavior="false" runat="server" Text="Inserisci Firma" Visible="false" Width="120px" ValidationGroup="dsw_alone" />
+        <telerik:RadButton ID="cmdInsertSign" UseSubmitBehavior="false" runat="server" Text="Inserisci firma" Visible="false" Width="120px" ValidationGroup="dsw_alone" />
     </asp:Panel>
 </asp:Content>

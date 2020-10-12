@@ -148,7 +148,7 @@ class UscContainerDossierOptions {
      * @param idContainer
      */
     loadFolders(idContainer: number) {
-        $("#".concat(this.uscMetadataSelId)).on(UscMetadataRepositorySel.SELECTED_INDEX_EVENT, this.uscMetadataSel_onSelectedIndexChanged);
+        $("#".concat(this.uscMetadataSelId)).on(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, this.uscMetadataSel_onSelectedIndexChanged);
         $("#".concat(this.chkMetadataReadonlyId)).on("click", this.chkMetadataReadonly_onCheckedChanged);
         this._tlbMetadata = $find(this.tlbMetadataId) as Telerik.Web.UI.RadToolBar;
         this._tlbMetadata.add_buttonClicked(this.tlbMetadata_OnButtonClicked);
@@ -168,6 +168,7 @@ class UscContainerDossierOptions {
             let tmpDossierId: string = Guid.newGuid();
             uscDossierFolders.setRootNode('', tmpDossierId);
             uscDossierFolders.loadNodes([]);
+            uscDossierFolders.setToolbarButtonsVisibility(true);
             uscDossierFolders.showLoadingPanel();
             this._containerPropertyService.getByContainer(idContainer, "DossierFoldersModel",
                 (data: any) => {

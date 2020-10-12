@@ -43,7 +43,7 @@ Partial Public Class ProtAnnulla
             CancelProtocolDocuments()
             CancelProtocol()
         End If
-        Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"Year={CurrentProtocolYear}&Number={CurrentProtocolNumber}&StatusCancel=on")}")
+        Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&StatusCancel=on")}")
     End Sub
 
 #End Region
@@ -54,7 +54,7 @@ Partial Public Class ProtAnnulla
         'documenti
         If CurrentProtocol.IdDocument.HasValue AndAlso CurrentProtocol.IdDocument.Value <> 0 Then
             Try
-                UscDocumentUpload1.LoadBiblosDocuments(CurrentProtocol.Location.DocumentServer, CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdDocument.Value, False, True)
+                UscDocumentUpload1.LoadBiblosDocuments(CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdDocument.Value, False, True)
             Catch ex As Exception
                 Throw New DocSuiteException("Annullamento protocollo", "Errore in lettura catena", ex)
             End Try
@@ -63,7 +63,7 @@ Partial Public Class ProtAnnulla
         If CurrentProtocol.IdAttachments.HasValue AndAlso CurrentProtocol.IdAttachments.Value <> 0 Then
             Try
                 Dim loc As UIDLocation = Facade.ProtocolFacade.GetAttachmentLocation(CurrentProtocol)
-                UscDocumentUpload2.LoadBiblosDocuments(loc.Server, loc.Archive, CurrentProtocol.IdAttachments.Value, True, True)
+                UscDocumentUpload2.LoadBiblosDocuments(loc.Archive, CurrentProtocol.IdAttachments.Value, True, True)
             Catch ex As Exception
                 Throw New DocSuiteException("Annullamento protocollo", "Errore in lettura catena", ex)
             End Try
@@ -100,7 +100,7 @@ Partial Public Class ProtAnnulla
     Private Sub CancelProtocolDocuments()
         If CurrentProtocol.IdDocument.HasValue AndAlso CurrentProtocol.IdDocument <> 0 Then
             Try
-                Service.DetachDocument(CurrentProtocol.Location.DocumentServer, CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdDocument.Value)
+                Service.DetachDocument(CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdDocument.Value)
             Catch ex As Exception
                 Throw New DocSuiteException("Annullamento protocollo", "Errore in fase Detach del documento, impossibile eseguire.", ex)
             End Try
@@ -109,7 +109,7 @@ Partial Public Class ProtAnnulla
         If CurrentProtocol.IdAttachments.HasValue AndAlso CurrentProtocol.IdAttachments <> 0 Then
             Try
                 Dim attachmentLocation As UIDLocation = Facade.ProtocolFacade.GetAttachmentLocation(CurrentProtocol)
-                Service.DetachDocument(attachmentLocation.Server, attachmentLocation.Archive, CurrentProtocol.IdAttachments.Value)
+                Service.DetachDocument(attachmentLocation.Archive, CurrentProtocol.IdAttachments.Value)
             Catch ex As Exception
                 Throw New DocSuiteException("Annullamento protocollo", "Errore in fase Detach degli allegati, impossibile eseguire.", ex)
             End Try
@@ -117,7 +117,7 @@ Partial Public Class ProtAnnulla
 
         If CurrentProtocol.IdAnnexed <> Guid.Empty Then
             Try
-                Service.DetachDocument(CurrentProtocol.Location.DocumentServer, CurrentProtocol.IdAnnexed)
+                Service.DetachDocument(CurrentProtocol.IdAnnexed)
             Catch ex As Exception
                 Throw New DocSuiteException("Annullamento protocollo", "Errore in fase Detach degli annessi, impossibile eseguire.", ex)
             End Try
@@ -134,9 +134,7 @@ Partial Public Class ProtAnnulla
         protFacade.Update(CurrentProtocol)
         Facade.ProtocolFacade.RaiseAfterCancel(CurrentProtocol)
 
-        If ProtocolEnv.IsLogEnabled Then
-            Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PA, txtAnnulla.Text)
-        End If
+        Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PA, txtAnnulla.Text)
 
         'Gestione PEC
         If chkDisableUnlinkPec.Checked Then

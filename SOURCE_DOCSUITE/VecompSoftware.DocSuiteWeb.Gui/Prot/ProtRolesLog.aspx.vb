@@ -7,26 +7,14 @@ Partial Public Class ProtRolesLog
 
 #Region " Properties "
 
-    Private ReadOnly Property Year() As Short
-        Get
-            Return Request.QueryString.GetValue(Of Short)("Year")
-        End Get
-    End Property
-
-    Private ReadOnly Property Number() As Integer
-        Get
-            Return Request.QueryString.GetValue(Of Integer)("Number")
-        End Get
-    End Property
-
 #End Region
 
 #Region " Events "
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        Title = String.Format("Protocollo - Movimentazioni {0}", ProtocolFacade.ProtocolFullNumber(Year, Number))
         InitializeAjaxSettings()
         If Not Page.IsPostBack Then
+            Title = $"Protocollo - Movimentazioni {CurrentProtocol.Id}"
             Initialize()
         End If
 
@@ -44,14 +32,14 @@ Partial Public Class ProtRolesLog
         Dim protLogFinder As NHibernateProtocolLogFinder = Facade.ProtocolLogFinder
 
         protLogFinder.SystemUser = String.Empty
-        protLogFinder.ProtocolYear = Year
-        protLogFinder.ProtocolNumber = Number
+        protLogFinder.UniqueIdProtocol = CurrentProtocol.Id
         protLogFinder.PageSize = ProtocolEnv.SearchMaxRecords
         protLogFinder.LogType = ProtocolLogEvent.AR.ToString()
 
         GridProt.Finder = protLogFinder
         GridProt.PageSize = protLogFinder.PageSize
-        GridProt.MasterTableView.SortExpressions.AddSortExpression("Id DESC")
+        GridProt.MasterTableView.SortExpressions.AddSortExpression("Year DESC")
+        GridProt.MasterTableView.SortExpressions.AddSortExpression("Number DESC")
         GridProt.DataBindFinder()
     End Sub
 

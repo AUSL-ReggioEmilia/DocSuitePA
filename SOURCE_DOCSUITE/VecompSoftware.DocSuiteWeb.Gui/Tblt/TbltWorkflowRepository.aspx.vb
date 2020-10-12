@@ -1,6 +1,7 @@
 ﻿Imports System.Collections.Generic
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Partial Class TbltWorkflowRepository
     Inherits CommonBasePage
@@ -14,6 +15,12 @@ Partial Class TbltWorkflowRepository
 
 #Region "Events"
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            AjaxManager.ResponseScripts.Add("CloseWindow();")
+            Exit Sub
+        End If
+
         InitializeAjax()
         If Not IsPostBack Then
             Initialize()

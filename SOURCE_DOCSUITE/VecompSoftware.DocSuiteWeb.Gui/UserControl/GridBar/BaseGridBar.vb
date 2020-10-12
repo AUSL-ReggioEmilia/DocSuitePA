@@ -183,7 +183,7 @@ Public MustInherit Class BaseGridBar
         Me.Print()
     End Sub
 
-    Private Sub btnSetRead_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+    Protected Overridable Sub SetReadedSelectedItems()
         Dim selected As Boolean = False
         Dim errorMessage As String = String.Empty
 
@@ -198,7 +198,15 @@ Public MustInherit Class BaseGridBar
             selected = False
         End Try
 
+        SendSetReadEvent(selected, errorMessage)
+    End Sub
+
+    Protected Sub SendSetReadEvent(selected As Boolean, errorMessage As String)
         RaiseEvent SetRead(Me, New SelectedEventArgs(selected, errorMessage))
+    End Sub
+
+    Private Sub btnSetRead_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        SetReadedSelectedItems()
     End Sub
     
 #End Region

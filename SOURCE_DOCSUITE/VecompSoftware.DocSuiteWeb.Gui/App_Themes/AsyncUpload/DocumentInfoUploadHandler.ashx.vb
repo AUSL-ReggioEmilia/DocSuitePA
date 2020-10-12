@@ -20,7 +20,7 @@ Public Class DocumentInfoUploadHandler
         If TypeOf configuration Is BiblosDocumentInfoUploadConfiguration Then
             Dim config As BiblosDocumentInfoUploadConfiguration = TryCast(configuration, BiblosDocumentInfoUploadConfiguration)
             Dim doc As New MemoryDocumentInfo(file.InputStream.ToByteArray(), file.GetName())
-            Dim tor As BiblosDocumentInfo = doc.ArchiveInBiblos(config.Server, config.Archive)
+            Dim tor As BiblosDocumentInfo = doc.ArchiveInBiblos(config.Archive)
 
             result.DocumentInfoSerialized = HttpUtility.UrlEncode(tor.ToQueryString().AsEncodedQueryString())
 

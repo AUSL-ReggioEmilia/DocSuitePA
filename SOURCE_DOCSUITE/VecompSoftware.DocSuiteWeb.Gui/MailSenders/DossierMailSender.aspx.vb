@@ -1,8 +1,13 @@
 ﻿Imports System.Collections.Generic
+Imports System.Linq
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Commons
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Entity.Dossiers
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class DossierMailSender
     Inherits DossierBasePage
@@ -13,7 +18,16 @@ Public Class DossierMailSender
 
 #Region " Properties "
 
-
+    Private ReadOnly Property SendToRoles As Boolean
+        Get
+            Return Request.QueryString.GetValueOrDefault("SendToRoles", False)
+        End Get
+    End Property
+    Private ReadOnly Property SendToSecretaries As Boolean
+        Get
+            Return Request.QueryString.GetValueOrDefault("SendToSecretaries", False)
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
@@ -78,8 +92,28 @@ Public Class DossierMailSender
             MailSenderControl.EnableCheckBoxRecipients = True
         End If
 
-        MailSenderControl.DataBind()
+        MailSenderControl.Recipients = New List(Of ContactDTO)
+        If SendToRoles Then
+            MailSenderControl.Recipients = RoleFacade.CopyGetValidContacts(CurrentDossier.DossierRoles.Where(Function(f) f.Role IsNot Nothing AndAlso f.AuthorizationRoleType = Entity.Commons.AuthorizationRoleType.Accounted _
+                                                                               AndAlso Not String.IsNullOrWhiteSpace(f.Role.EMailAddress)).Select(Function(f) f.Role).ToList())
+        End If
+        If SendToSecretaries Then
+            Dim result As ICollection(Of WebAPIDto(Of Model.Entities.Commons.RoleUserModel)) _
+            = WebAPIImpersonatorFacade.ImpersonateFinder(RoleUserFromDossierFinder,
+                                                   Function(impersionationType As ImpersonationType, finder As RoleUserFromDossierFinder)
+                                                       finder.ResetDecoration()
+                                                       finder.EnablePaging = False
+                                                       finder.RoleUserFinderModel = New Model.Entities.Commons.RoleUserFinderModel()
+                                                       finder.RoleUserFinderModel.IdDossier = Me.CurrentDossier.UniqueId
+                                                       Return finder.DoSearchHeader()
+                                                   End Function)
 
+            For Each item As WebAPIDto(Of Model.Entities.Commons.RoleUserModel) In result.Where(Function(f) Not String.IsNullOrWhiteSpace(f.Entity.Email))
+                MailSenderControl.Recipients.Add(MailFacade.CreateManualContact(item.Entity.Account, item.Entity.Email, ContactType.Person, True, True))
+            Next
+        End If
+
+        MailSenderControl.DataBind()
     End Sub
 
     Private Sub MailSenderControlEvent(sender As Object, e As EventArgs) Handles MailSenderControl.CancelByUser, MailSenderControl.ConfirmByUser

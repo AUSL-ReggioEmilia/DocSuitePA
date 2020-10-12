@@ -11,7 +11,7 @@
                     commonSelRoleRest = new CommonSelRoleRest(tenantModelConfiguration.serviceConfiguration);
                     commonSelRoleRest.pnlMainContentId = "<%= pnlMainContent.ClientID %>";
                     commonSelRoleRest.rolesTreeId = "<%= RolesTreeView.ClientID %>";
-                    commonSelRoleRest.multiTenantEnabled = "<%= MultiTenantEnabled %>".toLowerCase();
+                    commonSelRoleRest.onlyMyRoles = <%= OnlyMyRoles.ToString().ToLower() %>;
                     commonSelRoleRest.descriptionSearchBtnId = "<%= btnSearch.ClientID %>";
                     commonSelRoleRest.descriptionFilterInputId = "<%= descriptionFilterInput.ClientID %>";
                     commonSelRoleRest.codeSearchBtnId = "<%= btnSearchCode.ClientID %>";
@@ -22,6 +22,10 @@
                     commonSelRoleRest.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                     commonSelRoleRest.multipleRolesEnabled = "<%= MultipleRolesEnabled %>".toLowerCase();
                     commonSelRoleRest.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>";
+                    commonSelRoleRest.entityType = "<%= EntityType %>";
+                    commonSelRoleRest.entityId = "<%= EntityId %>";
+                    commonSelRoleRest.tenantId = "<%= CurrentTenant.UniqueId %>";
+                    commonSelRoleRest.loadAllRoles =<%= LoadAllRoles.ToString().ToLower() %>;
                     commonSelRoleRest.initialize();
                 });
             });

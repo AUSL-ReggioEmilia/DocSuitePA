@@ -43,7 +43,7 @@ class uscPECMailBoxSettings extends TbltPECMailBoxBase {
   ddlJeepServiceInId: string;
   ddlJeepServiceOutId: string;
   ddlInvoiceTypeId: string;
-  chkHumanEnabledId: string;
+  chkLoginErrorId: string;
   locations: LocationViewModel[];
   pecMailBoxConfigurations: PECMailBoxConfigurationViewModel[];
   jeepServiceHosts: JeepServiceHostViewModel[];
@@ -71,7 +71,7 @@ class uscPECMailBoxSettings extends TbltPECMailBoxBase {
   private _ddlJeepServiceIn: HTMLSelectElement;
   private _ddlJeepServiceOut: HTMLSelectElement;
   private _ddlInvoiceType: HTMLSelectElement;
-  private _chkHumanEnabled: HTMLInputElement;
+  private _chkLoginError: HTMLInputElement;
 
   constructor(serviceConfigurations: ServiceConfiguration[]) {
     super(ServiceConfigurationHelper.getService(serviceConfigurations, TbltPECMailBoxBase.PECMailBox_TYPE_NAME));
@@ -104,7 +104,7 @@ class uscPECMailBoxSettings extends TbltPECMailBoxBase {
     this._ddlJeepServiceIn = <HTMLSelectElement>document.getElementById(this.ddlJeepServiceInId);
     this._ddlJeepServiceOut = <HTMLSelectElement>document.getElementById(this.ddlJeepServiceOutId);
     this._ddlInvoiceType = <HTMLSelectElement>document.getElementById(this.ddlInvoiceTypeId);
-    this._chkHumanEnabled = <HTMLInputElement>document.getElementById(this.chkHumanEnabledId);
+    this._chkLoginError = <HTMLInputElement>document.getElementById(this.chkLoginErrorId);
     this._rwPECMailBoxSettings = <Telerik.Web.UI.RadWindow>$find(this.rwPECMailBoxSettingsId);
     this._rwPECMailBoxSettings.add_show(this.rwPECMailBoxSettings_Show);
     this.loadDropdowns();
@@ -182,7 +182,7 @@ class uscPECMailBoxSettings extends TbltPECMailBoxBase {
         this._chkManaged.checked = pecMailBox.Managed;
         this._chkUnmanaged.checked = pecMailBox.Unmanaged;
         this._chkIsHandleEnabled.checked = pecMailBox.IsHandleEnabled;
-        this._chkHumanEnabled.checked = pecMailBox.HumanEnabled;
+        this._chkLoginError.checked = pecMailBox.LoginError;
         
         this._ddlLocation.options.selectedIndex =
           this.locations.findIndex(x => x.EntityShortId === pecMailBox.Location.EntityShortId) + 1;
@@ -216,7 +216,7 @@ class uscPECMailBoxSettings extends TbltPECMailBoxBase {
     this._chkManaged.checked = false;
     this._chkUnmanaged.checked = false;
     this._chkIsHandleEnabled.checked = false;
-    this._chkHumanEnabled.checked = true;
+    this._chkLoginError.checked = true;
     
     this._ddlLocation.options.selectedIndex = 0;
     this._ddlINServerType.options.selectedIndex = 0;
@@ -256,7 +256,7 @@ class uscPECMailBoxSettings extends TbltPECMailBoxBase {
           pecMailBoxModel.IdJeepServiceOutgoingHost = this.jeepServiceHosts.length !== 0
             ? this.jeepServiceHosts[this._ddlJeepServiceOut.options.selectedIndex].UniqueId
             : "";
-          pecMailBoxModel.HumanEnabled = this._chkHumanEnabled.checked;
+          pecMailBoxModel.LoginError = this._chkLoginError.checked;
           pecMailBoxModel.Location = this.locations[this._ddlLocation.options.selectedIndex - 1];
           pecMailBoxModel.InvoiceType = this._ddlInvoiceType.options[this._ddlInvoiceType.selectedIndex].value;
           
@@ -298,7 +298,7 @@ class uscPECMailBoxSettings extends TbltPECMailBoxBase {
         IdJeepServiceOutgoingHost: this.jeepServiceHosts.length !== 0
           ? this.jeepServiceHosts[this._ddlJeepServiceOut.options.selectedIndex].UniqueId
           : "",
-        HumanEnabled: this._chkHumanEnabled.checked,
+        LoginError: this._chkLoginError.checked,
         Location: this.locations[this._ddlLocation.selectedIndex],
         InvoiceType: this._ddlInvoiceType.options[this._ddlInvoiceType.selectedIndex].value,
         RulesetDefinition: "",

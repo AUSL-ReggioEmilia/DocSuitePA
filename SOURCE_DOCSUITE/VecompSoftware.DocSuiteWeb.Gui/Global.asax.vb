@@ -1,15 +1,17 @@
 ﻿Imports System.Configuration
-Imports System.IO.Compression
-Imports Limilabs.Mail.Licensing
-Imports System.Reflection
-Imports HibernatingRhinos.Profiler.Appender.NHibernate
-Imports System.Web.Optimization
-Imports VecompSoftware.NHibernateManager
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports System.IO
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.DocSuiteWeb.Data
+Imports System.Reflection
 Imports System.Web
+Imports System.Web.Optimization
+Imports HibernatingRhinos.Profiler.Appender.NHibernate
+Imports Limilabs.Mail.Licensing
+Imports NHibernate
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.NHibernateManager
+Imports VecompSoftware.Services.Logging
 
 Public Class GlobalAsax
     Inherits HttpApplication
@@ -51,11 +53,14 @@ Public Class GlobalAsax
             validateLimilabsLicense()
         End If
 
+        ApplyTenantListenerCallback()
+
+        VecompSoftware.Services.StampaConforme.Service.InitializeSignatureTemplateXml(DocSuiteContext.Current.ProtocolEnv.SignatureTemplate)
+
         Dim ass As Assembly = Assembly.GetExecutingAssembly()
         FileLogger.Info(LoggerName, String.Format("START [{0}] Versione [{1}]", ass.GetName().Name, ass.GetName().Version.ToString(4)))
 
         AddHandler PostAuthenticateRequest, AddressOf Application_PostAuthenticateRequest
-
     End Sub
 
     Sub Application_BeginRequest(ByVal sender As Object, ByVal e As EventArgs)
@@ -143,6 +148,17 @@ Public Class GlobalAsax
             Case Else
                 Throw New DocSuiteException("Stato licenza MailLicense.xml sconosciuto")
         End Select
+    End Sub
+
+    Private Sub ApplyTenantListenerCallback()
+        Dim instance As DocSuiteTenantListener = New DocSuiteTenantListener()
+        EventListenerUtil.CustomEventInstances.Add(NameOf(TenantInsertEventListener), Sub(obj As ISupportTenant) instance.Handle(obj))
+
+        Dim defaultFilterInstance As DocSuiteTenantDefaultFilterListener = New DocSuiteTenantDefaultFilterListener()
+        NHibernateSessionUtil.ApplyFilterActions.Add(Sub(session As ISession) defaultFilterInstance.Handle(session))
+
+        Dim needTenantInstance As DocSuiteNeedTenantListener = New DocSuiteNeedTenantListener()
+        FacadeUtil.NeedTenantAction = Sub(lambda As Action(Of Tenant)) needTenantInstance.Handle(lambda)
     End Sub
 
 #End Region

@@ -38,12 +38,6 @@ Partial Public Class CommonSelContactDomain
         End Get
     End Property
 
-    Public ReadOnly Property IsIP4DRestriction As Boolean
-        Get
-            Return Request.QueryString("IP4DRestriction").GetValueOrDefault(False)
-        End Get
-    End Property
-
 #End Region
 
 #Region " Events "
@@ -57,9 +51,6 @@ Partial Public Class CommonSelContactDomain
 
     Private Sub Initialize()
         btnConfermaNuovo.Visible = ButtonConfermaNuovoVisible
-        If IsIP4DRestriction AndAlso Not ProtocolEnv.IP4DGroups.IsNullOrEmpty() Then
-            uscUserSearch.ADRestrictionGroups = ProtocolEnv.IP4DGroups
-        End If
     End Sub
 
     Private Sub btnConfirm_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnConfirm.Click
@@ -115,8 +106,6 @@ Partial Public Class CommonSelContactDomain
         Dim jsScript As String = String.Format("var jsonRes= '{0}'; {1}", serialized, jsActionCallBack)
         AjaxManager.ResponseScripts.Add(jsScript)
     End Sub
-
-
 
 #End Region
 

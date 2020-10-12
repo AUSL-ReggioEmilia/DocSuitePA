@@ -230,7 +230,7 @@ Partial Public Class DocmAtti
                 uscResolutionSelect.TextBoxYear.Text = CurrentDocumentYear.ToString()
                 btnInserimento.Visible = True
             Case "Modify"
-                If DocSuiteContext.IsFullApplication And Add = "ON" Then
+                If Add = "ON" Then
                     Title = "Modifica Collegamento Atto"
                 Else
                     Title = "Visualizza Collegamento Atto"
@@ -238,7 +238,7 @@ Partial Public Class DocmAtti
                 documentObject = Facade.DocumentObjectFacade.GetById(New YearNumberIncrCompositeKey(CurrentDocumentYear, CurrentDocumentNumber, IncrementalObject))
                 If documentObject IsNot Nothing Then
                     BindData(documentObject)
-                    If DocSuiteContext.IsFullApplication AndAlso Add.Eq("ON") Then
+                    If Add.Eq("ON") Then
                         If documentObject.idObjectStatus <> "A" Then
                             btnModifica.Visible = True
                             btnCancella.Visible = True
@@ -315,7 +315,7 @@ Partial Public Class DocmAtti
 
     Private Sub RoleTvw()
         ' Controlla i diritti
-        Dim roleRightsList As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DocumentRoleRightPositions.Enabled, True)
+        Dim roleRightsList As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -326,7 +326,7 @@ Partial Public Class DocmAtti
             Next
         End If
         roleRightsList.Clear()
-        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DocumentRoleRightPositions.Workflow, True)
+        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -337,7 +337,7 @@ Partial Public Class DocmAtti
             Next
         End If
         roleRightsList.Clear()
-        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DocumentRoleRightPositions.Manager, True)
+        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList

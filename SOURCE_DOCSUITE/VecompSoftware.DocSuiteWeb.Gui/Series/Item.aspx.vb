@@ -12,6 +12,8 @@ Imports VecompSoftware.DocSuiteWeb.DTO.DocumentSeries
 Imports VecompSoftware.DocSuiteWeb.DTO.Resolutions
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Facade.Formattables
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Resolutions
 Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI.Fascicles
@@ -460,7 +462,7 @@ Namespace Series
         Private ReadOnly Property CurrentFascicleDocumentUnitFacade As FascicleDocumentUnitFacade
             Get
                 If _currentFascicleDocumentUnitFacade Is Nothing Then
-                    _currentFascicleDocumentUnitFacade = New FascicleDocumentUnitFacade(DocSuiteContext.Current.Tenants)
+                    _currentFascicleDocumentUnitFacade = New FascicleDocumentUnitFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
                 End If
                 Return _currentFascicleDocumentUnitFacade
             End Get
@@ -488,10 +490,9 @@ Namespace Series
         Private ReadOnly Property CurrentProtocol() As Protocol
             Get
                 If _currentProtocol Is Nothing AndAlso (Action = DocumentSeriesAction.FromProtocol) Then
-                    Dim year As Short? = Request.QueryString.GetValueOrDefault(Of Short)("ProtYear", Nothing)
-                    Dim number As Integer? = Request.QueryString.GetValueOrDefault(Of Integer)("ProtNumber", Nothing)
-                    If number IsNot Nothing AndAlso year IsNot Nothing Then
-                        _currentProtocol = Facade.ProtocolFacade.GetById(year.Value, number.Value, False)
+                    Dim uniqueIdProtocol As Guid? = Request.QueryString.GetValueOrDefault(Of Guid?)("UniqueIdProtocol", Nothing)
+                    If uniqueIdProtocol.HasValue Then
+                        _currentProtocol = Facade.ProtocolFacade.GetById(uniqueIdProtocol.Value, False)
                     End If
                 End If
                 Return _currentProtocol
@@ -660,12 +661,6 @@ Namespace Series
             uscUnpublishedAnnexed.FilenameAutomaticRenameEnabled = ProtocolEnv.IsFilenameAutomaticRenameEnabled
             uscUnpublishedAnnexed.DocumentsDragAndDropEnabled = dragAndDropEnabled
             uscUnpublishedAnnexed.DocumentsRenameEnabled = renameEnabled
-
-            If ProtocolEnv.DematerialisationEnabled Then
-                uscUploadDocument.CheckDematerialisationCompliance = True
-                uscUploadAnnexed.CheckDematerialisationCompliance = False
-                uscUnpublishedAnnexed.CheckDematerialisationCompliance = False
-            End If
 
             ' Se la serie documentale è di tipo AVCP o Bandi di gara, setto la possibilità di selezionare UN SOLO settore di appartenenza
             If IsBandiDiGaraSeries OrElse IsAVCPSeries Then
@@ -847,10 +842,6 @@ Namespace Series
 
             CurrentDocumentSeriesItem.Priority = chkPriority.Checked
 
-            If Action = DocumentSeriesAction.FromCollaboration AndAlso ProtocolEnv.SecureDocumentEnabled Then
-                Facade.CollaborationFacade.FinalizeSecureDocument(CurrentCollaboration)
-            End If
-
             ' Salvo l'Item in DB
             Facade.DocumentSeriesItemFacade.SaveDocumentSeriesItem(CurrentDocumentSeriesItem, DocumentSeriesYearNumber, chain, uscUploadAnnexed.DocumentInfosAdded, uscUnpublishedAnnexed.DocumentInfosAdded, status, String.Empty)
 
@@ -864,39 +855,6 @@ Namespace Series
                 End If
                 ' Aggiungere log in Protocol
                 Facade.ProtocolLogFacade.Log(CurrentProtocol, ProtocolLogEvent.SD, message)
-            End If
-
-            'Log di Serializzazione comando 'SB' per attestazione conformità
-            If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso uscUploadDocument.DocumentInfosDematerialisationAdded IsNot Nothing AndAlso uscUploadDocument.DocumentInfosDematerialisationAdded.Count > 0 Then
-                Dim dematerialisationRequestModel As DocumentManagementRequestModel = New DocumentManagementRequestModel()
-                Dim workflowReferenceBiblosModel As WorkflowReferenceBiblosModel
-                Dim mainDocumentArchived As BiblosDocumentInfo
-
-                For Each mainDocument As DocumentInfo In uscUploadDocument.DocumentInfosDematerialisationAdded
-                    workflowReferenceBiblosModel = New WorkflowReferenceBiblosModel()
-
-                    If mainDocument IsNot Nothing AndAlso Not String.IsNullOrEmpty(mainDocument.Name) AndAlso Not String.IsNullOrEmpty(mainDocument.Hash) AndAlso chain.ArchivedDocuments IsNot Nothing AndAlso Not CurrentDocumentSeriesItem.IdMain.IsEmpty() Then
-                        workflowReferenceBiblosModel.DocumentName = mainDocument.Name
-                        workflowReferenceBiblosModel.ChainType = ChainType.MainChain
-                        workflowReferenceBiblosModel.ArchiveChainId = CurrentDocumentSeriesItem.IdMain
-                        workflowReferenceBiblosModel.ArchiveName = CurrentDocumentSeriesItem.Location.ProtBiblosDSDB
-
-                        mainDocumentArchived = chain.ArchivedDocuments.Where(Function(x) x.Hash = mainDocument.Hash).FirstOrDefault()
-                        If mainDocumentArchived IsNot Nothing AndAlso Not mainDocumentArchived.DocumentId.IsEmpty() Then
-                            workflowReferenceBiblosModel.ArchiveDocumentId = mainDocumentArchived.DocumentId
-                            dematerialisationRequestModel.Documents.Add(workflowReferenceBiblosModel)
-                        End If
-                    End If
-                Next
-
-                If dematerialisationRequestModel.Documents IsNot Nothing AndAlso dematerialisationRequestModel.Documents.Count > 0 Then
-                    Dim documentUnit As WorkflowReferenceModel = New WorkflowReferenceModel()
-                    documentUnit.ReferenceId = CurrentDocumentSeriesItem.UniqueId
-                    documentUnit.ReferenceType = DSWEnvironmentType.DocumentSeries
-                    dematerialisationRequestModel.DocumentUnit = documentUnit
-                    dematerialisationRequestModel.RegistrationUser = DocSuiteContext.Current.User.FullUserName
-                    Facade.DocumentSeriesItemLogFacade.AddLog(CurrentDocumentSeriesItem, DocumentSeriesItemLogType.SB, JsonConvert.SerializeObject(dematerialisationRequestModel), True)
-                End If
             End If
 
             ' Se l'Item è proveniente da una Resolution ne salvo il collegamento e registro su LOG Applicativo
@@ -1116,7 +1074,7 @@ Namespace Series
                     For Each doc As DocumentUnitModel In DocumentUnitsToDelete
                         Select Case doc.Environment
                             Case DSWEnvironment.Protocol
-                                Facade.ProtocolDocumentSeriesItemFacade.RemoveLinkProtocolToDocumentSeriesItem(doc.Year, doc.Number, CurrentDocumentSeriesItem)
+                                Facade.ProtocolDocumentSeriesItemFacade.RemoveLinkProtocolToDocumentSeriesItem(doc.UniqueId, CurrentDocumentSeriesItem)
 
                                 Dim message As String = String.Format("Disassociato in {3} {0}: {1}/{2:000000}", CurrentDocumentSeriesItem.DocumentSeries.Container.Name, CurrentDocumentSeriesItem.Year, CurrentDocumentSeriesItem.Number, ProtocolEnv.DocumentSeriesName)
                                 If CurrentDocumentSeriesItem.Status.Equals(DocumentSeriesItemStatus.Draft) Then
@@ -1190,18 +1148,18 @@ Namespace Series
                     Dim chain As New BiblosChainInfo()
                     ' Riversare gli attributi da attuale catena
                     chain.AddAttributes(attributes)
-                    Service.DetachDocument(CurrentDocumentSeriesItem.Location.DocumentServer, CurrentDocumentSeriesItem.IdMain)
-                    CurrentDocumentSeriesItem.IdMain = chain.ArchiveInBiblos(CurrentDocumentSeriesItem.Location.DocumentServer, CurrentDocumentSeriesItem.Location.ProtBiblosDSDB)
+                    Service.DetachDocument(CurrentDocumentSeriesItem.IdMain)
+                    CurrentDocumentSeriesItem.IdMain = chain.ArchiveInBiblos(CurrentDocumentSeriesItem.Location.ProtBiblosDSDB)
                     CurrentDocumentSeriesItem.HasMainDocument = False
                     uscUploadDocument.LoadDocumentInfo(New List(Of DocumentInfo))
                     message = "Catena documenti svuotata."
                 Case cmdFlushAnnexed.ID
-                    Service.DetachDocument(CurrentDocumentSeriesItem.LocationAnnexed.DocumentServer, CurrentDocumentSeriesItem.IdAnnexed)
+                    Service.DetachDocument(CurrentDocumentSeriesItem.IdAnnexed)
                     CurrentDocumentSeriesItem.IdAnnexed = Guid.Empty
                     uscUploadAnnexed.LoadDocumentInfo(New List(Of DocumentInfo))
                     message = "Catena annessi svuotata."
                 Case cmdFlushUnpublishedAnnexed.ID
-                    Service.DetachDocument(CurrentDocumentSeriesItem.LocationUnpublishedAnnexed.DocumentServer, CurrentDocumentSeriesItem.IdUnpublishedAnnexed)
+                    Service.DetachDocument(CurrentDocumentSeriesItem.IdUnpublishedAnnexed)
                     CurrentDocumentSeriesItem.IdUnpublishedAnnexed = Guid.Empty
                     uscUnpublishedAnnexed.LoadDocumentInfo(New List(Of DocumentInfo))
                     message = "Catena annessi non pubblicati svuotata."
@@ -1351,7 +1309,7 @@ Namespace Series
 
             Select Case dto.Environment
                 Case DSWEnvironment.Protocol
-                    seriesLink.NavigateUrl = String.Format("~/Prot/ProtVisualizza.aspx?Year={0}&Number={1}&Type=Prot", dto.Year, dto.Number)
+                    seriesLink.NavigateUrl = $"~/Prot/ProtVisualizza.aspx?UniqueId={dto.UniqueId}&Type=Prot"
                     Exit Select
                 Case DSWEnvironment.Resolution
                     seriesLink.NavigateUrl = String.Format("../Resl/ReslVisualizza.aspx?IdResolution={0}&Type=Resl", dto.EntityId)
@@ -1476,7 +1434,7 @@ Namespace Series
                 uscUploadDocument.ClearNodes()
                 uscUploadAnnexed.ClearNodes()
                 uscUnpublishedAnnexed.ClearNodes()
-                Dim documents As List(Of DocumentInfo) = Facade.DocumentSeriesItemFacade.GetMainChainInfo(source).Documents.Cast(Of DocumentInfo).ToList()
+                Dim documents As List(Of DocumentInfo) = Facade.DocumentSeriesItemFacade.GetMainChainInfo(source).Documents.Select(Function(s) New TempFileDocumentInfo(s.Name, s.SaveUniqueToTemp())).Cast(Of DocumentInfo).ToList()
                 If Not documents.IsNullOrEmpty() Then
                     uscUploadDocument.LoadDocumentInfo(documents, False, True, False, True)
                     uscUploadDocument.InitializeNodesAsAdded(True)
@@ -1700,11 +1658,15 @@ Namespace Series
 
         Private Sub InitializeKindConstraint()
             If (CurrentResolutionModel.ResolutionKind.HasValue) Then
-                CurrentResolutionKindDocumentSeriesFinder.ResetDecoration()
-                CurrentResolutionKindDocumentSeriesFinder.IdResolutionKind = CurrentResolutionModel.ResolutionKind.Value
-                CurrentResolutionKindDocumentSeriesFinder.IdDocumentSeries = CurrentDocumentSeriesItem.DocumentSeries.Id
-                CurrentResolutionKindDocumentSeriesFinder.ExpandProperties = True
-                Dim results As ICollection(Of WebAPIDto(Of Entity.Resolutions.ResolutionKindDocumentSeries)) = CurrentResolutionKindDocumentSeriesFinder.DoSearch()
+                Dim results As ICollection(Of WebAPIDto(Of Entity.Resolutions.ResolutionKindDocumentSeries)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentResolutionKindDocumentSeriesFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.IdResolutionKind = CurrentResolutionModel.ResolutionKind.Value
+                        finder.IdDocumentSeries = CurrentDocumentSeriesItem.DocumentSeries.Id
+                        finder.ExpandProperties = True
+                        Return finder.DoSearch()
+                    End Function)
+
                 If (results IsNot Nothing AndAlso results.Count > 0) Then
                     Dim kindSeries As Entity.Resolutions.ResolutionKindDocumentSeries = results.Select(Function(s) s.Entity).Single()
                     If (kindSeries.DocumentSeriesConstraint IsNot Nothing) Then
@@ -1744,17 +1706,20 @@ Namespace Series
             uscUploadDocument.ButtonAddDocument.Visible = False
             uscUploadDocument.ButtonRemoveEnabled = False
             uscUploadDocument.ButtonCopySeries.Visible = False
+            uscUploadDocument.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
             uscUploadDocument.ButtonPreviewEnabled = CurrentDocumentSeriesItemRights.IsReadable
 
             uscUploadAnnexed.ButtonAddDocument.Visible = False
             uscUploadAnnexed.ButtonRemoveEnabled = False
             uscUploadAnnexed.ButtonCopySeries.Visible = False
             uscUploadAnnexed.ButtonPreviewEnabled = CurrentDocumentSeriesItemRights.IsReadable
+            uscUploadAnnexed.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
 
             uscUnpublishedAnnexed.ButtonAddDocument.Visible = False
             uscUnpublishedAnnexed.ButtonRemoveEnabled = False
             uscUnpublishedAnnexed.ButtonCopySeries.Visible = False
             uscUnpublishedAnnexed.ButtonPreviewEnabled = CurrentDocumentSeriesItemRights.IsReadable
+            uscUnpublishedAnnexed.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
 
             ItemSubject.ReadOnly = True
             ItemSubCategory.ReadOnly = True
@@ -2351,6 +2316,7 @@ Namespace Series
             control.ButtonScannerEnabled = allowAdd
             control.ButtonCopySeries.Visible = allowAdd AndAlso ProtocolEnv.CopyFromSeries
             control.ButtonCopyProtocol.Visible = allowAdd AndAlso ProtocolEnv.CopyProtocolDocumentsEnabled
+            control.ButtonCopyUDS.Visible = allowAdd AndAlso ProtocolEnv.UDSEnabled
 
             If DocSuiteContext.Current.IsResolutionEnabled Then
                 control.ButtonCopyResl.Visible = allowAdd AndAlso ResolutionEnv.CopyReslDocumentsEnabled
@@ -2898,10 +2864,15 @@ Namespace Series
         Private Sub LoadConstraints()
             If CurrentDocumentSeriesItem.DocumentSeries IsNot Nothing Then
                 tblConstraints.Visible = True
-                CurrentDocumentSeriesConstraintFinder.ResetDecoration()
-                CurrentDocumentSeriesConstraintFinder.EnablePaging = False
-                CurrentDocumentSeriesConstraintFinder.IdSeries = CurrentDocumentSeriesItem.DocumentSeries.Id
-                Dim results As ICollection(Of WebAPIDto(Of DocumentArchives.DocumentSeriesConstraint)) = CurrentDocumentSeriesConstraintFinder.DoSearch()
+
+                Dim results As ICollection(Of WebAPIDto(Of DocumentArchives.DocumentSeriesConstraint)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentDocumentSeriesConstraintFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.EnablePaging = False
+                        finder.IdSeries = CurrentDocumentSeriesItem.DocumentSeries.Id
+                        Return finder.DoSearch()
+                    End Function)
+
                 If results Is Nothing OrElse results.Count = 0 Then
                     tblConstraints.Visible = False
                     Return
@@ -2968,7 +2939,6 @@ Namespace Series
             TogglePublication(True)
             tblSubsection.Visible = (CurrentDocumentSeriesItem.DocumentSeries.SubsectionEnabled.GetValueOrDefault(False))
             pnlRoles.Visible = (CurrentDocumentSeriesItem.DocumentSeries.RoleEnabled.GetValueOrDefault(False))
-            uscUploadDocument.CheckDematerialisationCompliance = True
             ' Imposto i diritti di inserimento
             cmdSaveDraft.Enabled = DocumentSeriesItemRights.CheckDocumentSeriesRight(CurrentDocumentSeriesItem.DocumentSeries, DocumentSeriesContainerRightPositions.Draft)
             cmdOk.Enabled = DocumentSeriesItemRights.CheckDocumentSeriesRight(CurrentDocumentSeriesItem.DocumentSeries, DocumentSeriesContainerRightPositions.Insert)
@@ -3123,27 +3093,27 @@ Namespace Series
         Private Sub DeleteDocuments(toDetachIds As IList(Of Guid), location As Location)
             For Each idDocument As Guid In toDetachIds
                 FileLogger.Debug(LoggerName, String.Format("CmdOkEditClick -> IdSeriesItem {0} - Delete document with Id: {1}", CurrentDocumentSeriesItem.Id, idDocument))
-                Service.DetachDocument(location.DocumentServer, idDocument)
+                Service.DetachDocument(idDocument)
             Next
         End Sub
 
         Private Sub InitializeDocumentControls()
             uscUploadDocument.Caption = String.Empty
-            If (ProtocolEnv.DocumentSeriesDocumentsLabel.ContainsKey(ChainType.MainChain)) Then
-                uscUploadDocument.Caption = ProtocolEnv.DocumentSeriesDocumentsLabel(ChainType.MainChain)
-                uscUploadDocument.TreeViewCaption = ProtocolEnv.DocumentSeriesDocumentsLabel(ChainType.MainChain)
+            If (ProtocolEnv.DocumentSeriesDocumentsLabel.ContainsKey(Model.Entities.DocumentUnits.ChainType.MainChain)) Then
+                uscUploadDocument.Caption = ProtocolEnv.DocumentSeriesDocumentsLabel(Model.Entities.DocumentUnits.ChainType.MainChain)
+                uscUploadDocument.TreeViewCaption = ProtocolEnv.DocumentSeriesDocumentsLabel(Model.Entities.DocumentUnits.ChainType.MainChain)
             End If
 
             uscUploadAnnexed.Caption = String.Empty
-            If (ProtocolEnv.DocumentSeriesDocumentsLabel.ContainsKey(ChainType.AnnexedChain)) Then
-                uscUploadAnnexed.Caption = ProtocolEnv.DocumentSeriesDocumentsLabel(ChainType.AnnexedChain)
-                uscUploadAnnexed.TreeViewCaption = ProtocolEnv.DocumentSeriesDocumentsLabel(ChainType.AnnexedChain)
+            If (ProtocolEnv.DocumentSeriesDocumentsLabel.ContainsKey(Model.Entities.DocumentUnits.ChainType.AnnexedChain)) Then
+                uscUploadAnnexed.Caption = ProtocolEnv.DocumentSeriesDocumentsLabel(Model.Entities.DocumentUnits.ChainType.AnnexedChain)
+                uscUploadAnnexed.TreeViewCaption = ProtocolEnv.DocumentSeriesDocumentsLabel(Model.Entities.DocumentUnits.ChainType.AnnexedChain)
             End If
 
             uscUnpublishedAnnexed.Caption = String.Empty
-            If (ProtocolEnv.DocumentSeriesDocumentsLabel.ContainsKey(ChainType.UnpublishedAnnexedChain)) Then
-                uscUnpublishedAnnexed.Caption = ProtocolEnv.DocumentSeriesDocumentsLabel(ChainType.UnpublishedAnnexedChain)
-                uscUnpublishedAnnexed.TreeViewCaption = ProtocolEnv.DocumentSeriesDocumentsLabel(ChainType.UnpublishedAnnexedChain)
+            If (ProtocolEnv.DocumentSeriesDocumentsLabel.ContainsKey(Model.Entities.DocumentUnits.ChainType.UnpublishedAnnexedChain)) Then
+                uscUnpublishedAnnexed.Caption = ProtocolEnv.DocumentSeriesDocumentsLabel(Model.Entities.DocumentUnits.ChainType.UnpublishedAnnexedChain)
+                uscUnpublishedAnnexed.TreeViewCaption = ProtocolEnv.DocumentSeriesDocumentsLabel(Model.Entities.DocumentUnits.ChainType.UnpublishedAnnexedChain)
             End If
         End Sub
 
@@ -3256,6 +3226,7 @@ Namespace Series
                 End If
             End If
 
+            Facade.ProtocolDocumentSeriesItemFacade.GetByProtocol(Guid.Parse("507f6947-46cd-4612-8a9c-ab0901187e7f"))
             ' Verifico se ci sono Protocolli collegati            
             If DocSuiteContext.Current.IsProtocolEnabled Then
                 Dim prots As IList(Of Protocol) = Facade.ProtocolDocumentSeriesItemFacade.GetProtocols(CurrentDocumentSeriesItem)

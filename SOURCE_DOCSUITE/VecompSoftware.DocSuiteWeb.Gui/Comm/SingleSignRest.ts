@@ -7,15 +7,15 @@ import EnumHelper = require("App/Helpers/EnumHelper");
 import UserLogsModel = require("App/Models/UserLogs/UserLogsModel");
 import ProviderSignType = require("App/Models/SignDocuments/ProviderSignType");
 import GuidHelper = require("App/Helpers/GuidHelper");
-import ArubaSignModel = require("../App/Models/SignDocuments/ArubaSignModel");
-import SignType = require("../App/Models/SignDocuments/SignType");
-import SignRequestType = require("../App/Models/SignDocuments/SignRequestType");
-import ProxySignModel = require("../App/Models/SignDocuments/ProxySignModel");
-import SignModel = require("../App/Models/SignDocuments/SignModel");
-import GenericHelper = require("../App/Helpers/GenericHelper");
-import WorkflowSignModel = require("../App/Models/Workflows/WorkflowSignModel");
-import BiblosDocumentsService = require("../App/Services/Biblos/BiblosDocumentsService");
-import DocumentModel = require("../App/Models/Workflows/DocumentModel");
+import ArubaSignModel = require("App/Models/SignDocuments/ArubaSignModel");
+import SignType = require("App/Models/SignDocuments/SignType");
+import SignRequestType = require("App/Models/SignDocuments/SignRequestType");
+import ProxySignModel = require("App/Models/SignDocuments/ProxySignModel");
+import SignModel = require("App/Models/SignDocuments/SignModel");
+import GenericHelper = require("App/Helpers/GenericHelper");
+import WorkflowSignModel = require("App/Models/Workflows/WorkflowSignModel");
+import BiblosDocumentsService = require("App/Services/Biblos/BiblosDocumentsService");
+import DocumentModel = require("App/Models/Workflows/DocumentModel");
 
 class SingleSignRest {
     typeOfSign: string;

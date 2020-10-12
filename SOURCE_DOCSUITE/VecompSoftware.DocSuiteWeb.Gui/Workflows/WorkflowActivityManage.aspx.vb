@@ -10,9 +10,11 @@ Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Collaborations
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
 Imports VecompSoftware.Helpers
@@ -31,7 +33,7 @@ Public Class WorkflowActivityManage
 #Region " Fields "
     Private _whiteList() As String
     Private _blackList() As String
-    Private Const CONFIRM_CALLBACK As String = "workflowActivityManage.confirmCallback('{0}','{1}',{2},'{3}');"
+    Private Const CONFIRM_CALLBACK As String = "workflowActivityManage.confirmCallback('{0}','{1}',{2},'{3}','{4}');"
     Private Const LOAD_CALLBACK As String = "workflowActivityManage.loadCallback('{0}');"
     Private Const INSERT_MISCELLANEA As String = "InsertMiscellanea"
     Private _allAttachmentDocuments As List(Of DocumentInfo)
@@ -126,12 +128,18 @@ Public Class WorkflowActivityManage
             Return _blackList
         End Get
     End Property
+    Public ReadOnly Property FolderSelectionEnabled As Boolean
+        Get
+            Return GetKeyValueOrDefault("FolderSelectionEnabled", True)
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         InitializeAjax()
         If Not IsPostBack Then
+            uscFascicleSearch.FolderSelectionEnabled = FolderSelectionEnabled
             grdUD.DataSource = New List(Of String)
             InitializeButton()
         End If
@@ -184,6 +192,8 @@ Public Class WorkflowActivityManage
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, grdUD)
         AjaxManager.AjaxSettings.AddAjaxSetting(rblDocumentUnit, btnConfirm, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlUDSArchives, btnConfirm, MasterDocSuite.AjaxFlatLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, btnConfirm, MasterDocSuite.AjaxFlatLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(pnlFascicleSelect, btnConfirm, MasterDocSuite.AjaxFlatLoadingPanel)
     End Sub
 
     Protected Sub WorkFlowManageAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
@@ -210,10 +220,13 @@ Public Class WorkflowActivityManage
                 End Try
 
             Case INSERT_MISCELLANEA
-                Dim idFascicle As Guid = Guid.Parse(AjaxModel.Value(0))
-                ManageDocuments(idFascicle)
+                Dim idFascicle As Guid = Guid.Parse(ajaxModel.Value(0))
+                Dim idFascicleFolder As Guid = Guid.Parse(ajaxModel.Value(1))
+                ManageDocuments(idFascicle, idFascicleFolder)
         End Select
     End Sub
+
+
 
     Private Sub LoadUD(models As IList(Of DocumentUnitModel))
         grdUD.DataSource = models
@@ -274,11 +287,13 @@ Public Class WorkflowActivityManage
     Private Function GetDocumentInstances(documents As IList(Of DocumentInfo)) As DocumentInstance()
         Dim documentInstances As IList(Of DocumentInstance) = New List(Of DocumentInstance)
         If documents.Any() Then
+            Dim documentStored As BiblosDocumentInfo = Nothing
             For Each document As DocumentInfo In documents
                 If TypeOf document Is BiblosPdfDocumentInfo Then
-                    documentInstances.Add(New DocumentInstance() With {.DocumentContent = Convert.ToBase64String(document.Stream), .DocumentName = document.Name})
+                    documentStored = document.ArchiveInBiblos(CommonShared.CurrentWorkflowLocation.ProtBiblosDSDB, Guid.Empty)
+                    documentInstances.Add(New DocumentInstance() With {.IdDocumentToStore = documentStored.DocumentId.ToString(), .DocumentName = document.Name})
                 Else
-                    documentInstances.Add(New DocumentInstance() With {.IdDocument = DirectCast(document, BiblosDocumentInfo).DocumentId.ToString()})
+                    documentInstances.Add(New DocumentInstance() With {.StoredChainId = DirectCast(document, BiblosDocumentInfo).DocumentId.ToString()})
                 End If
             Next
         End If
@@ -287,7 +302,7 @@ Public Class WorkflowActivityManage
 
     Private Function LoadWorkFlowDocument(idArchiveChains As Guid) As List(Of DocumentUnitModel)
         Dim documentModels As List(Of DocumentUnitModel) = New List(Of DocumentUnitModel)
-        Dim documents As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(String.Empty, idArchiveChains)
+        Dim documents As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(idArchiveChains)
         Dim mappedDoc As DocumentUnitModel
         Dim noteAttribute As KeyValuePair(Of String, String)
         Dim items As NameValueCollection
@@ -329,7 +344,7 @@ Public Class WorkflowActivityManage
         Return False ' File non in WhiteList e GrayList disabilitata
     End Function
 
-    Private Sub ManageDocuments(idFascicle As Guid)
+    Private Sub ManageDocuments(idFascicle As Guid, idFascicleFolder As Guid)
         If idFascicle.Equals(Guid.Empty) Then
             Throw New ArgumentNullException("Nessun fascicolo definito per l'inserimento")
         End If
@@ -340,12 +355,16 @@ Public Class WorkflowActivityManage
             Exit Sub
         End If
 
-        CurrentFascicleFolderFinder.ResetDecoration()
-        CurrentFascicleFolderFinder.ExpandProperties = True
-        CurrentFascicleFolderFinder.IdFascicle = idFascicle
-        CurrentFascicleFolderFinder.ReadDefaultFolder = True
+        Dim currentFascicleFolder As FascicleFolder = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentFascicleFolderFinder,
+                            Function(impersonationType, finder)
+                                finder.ResetDecoration()
+                                finder.ExpandProperties = True
+                                finder.IdFascicle = idFascicle
+                                finder.ReadDefaultFolder = False
+                                finder.UniqueId = idFascicleFolder
+                                Return finder.DoSearch().Select(Function(f) f.Entity).SingleOrDefault()
+                            End Function)
 
-        Dim currentFascicleFolder As FascicleFolder = CurrentFascicleFolderFinder.DoSearch().SingleOrDefault().Entity
         Dim chainId As Guid = Guid.Empty
         If currentFascicleFolder.FascicleDocuments.Count > 0 Then
             chainId = currentFascicleFolder.FascicleDocuments.Where(Function(x) x.ChainType = Entity.DocumentUnits.ChainType.Miscellanea).Select(Function(s) s.IdArchiveChain).SingleOrDefault()
@@ -358,11 +377,11 @@ Public Class WorkflowActivityManage
             Dim savedtemplate As BiblosDocumentInfo = biblosFunc(addedDocument)
             chainId = savedtemplate.ChainId
         Next
-        AjaxManager.ResponseScripts.Add(String.Format(CONFIRM_CALLBACK, chainId, idFascicle, isNewIdArchiveChain.ToString().ToLower(), String.Empty))
+        AjaxManager.ResponseScripts.Add(String.Format(CONFIRM_CALLBACK, chainId, idFascicle, isNewIdArchiveChain.ToString().ToLower(), idFascicleFolder, String.Empty))
     End Sub
 
     Private Function SaveBiblosDocument(document As DocumentInfo, chainId As Guid) As BiblosDocumentInfo
-        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(FascMiscellaneaLocation.DocumentServer, ArchiveName, chainId)
+        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(ArchiveName, chainId)
         Return storedBiblosDocumentInfo
     End Function
 

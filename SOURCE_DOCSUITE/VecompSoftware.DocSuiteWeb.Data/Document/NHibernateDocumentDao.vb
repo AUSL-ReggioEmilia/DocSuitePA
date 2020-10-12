@@ -131,4 +131,10 @@ Public Class NHibernateDocumentDao
         Return Nothing
     End Function
 
+    Public Function GetByServiceNumber(ByVal serviceNumber As String) As IList(Of Document)
+        criteria = NHibernateSession.CreateCriteria(persitentType, "D")
+        criteria.Add(Restrictions.Like("D.ServiceNumber", serviceNumber, MatchMode.Anywhere))
+        Return criteria.List(Of Document)()
+    End Function
+
 End Class

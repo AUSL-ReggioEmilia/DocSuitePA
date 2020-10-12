@@ -110,6 +110,53 @@
                 var copyToPec = "<%= (CopyToPEC.HasValue AndAlso CopyToPEC.Value) %>";
                 return copyToPec == "True";
             }
+
+            function getContact(IdUDS, label) {
+                var getContactR = "";
+                var murl = "<%= UDSContactUrl %>?$filter=IdUDS eq " + IdUDS + " and ContactLabel eq '" + label + "'&$expand=Relation";
+                $.ajaxSetup({
+                    async: false
+                });
+                console.log(murl);
+                $.getJSON(murl, function (result) {
+                    var nvalue = result.value.length;
+                    if (result.value[0]) {
+                        if (result.value[0].hasOwnProperty("ContactManual") && result.value[0].ContactManual != null) {
+                            var obj = jQuery.parseJSON(result.value[0].ContactManual);
+                            getContactR = "" + obj.Contact.Description;
+                        } else if (result.value[0].hasOwnProperty("Relation")) {
+                            var obj = result.value[0].Relation.Description.replace("|", " ");
+                            getContactR = "" + obj;
+                        }
+                        if (nvalue > 1) {
+                            getContactR = getContactR + ",..";
+                        }
+                    }
+                });
+                return getContactR;
+            }
+
+            function getAuthorization(IdUDS) {
+                var getAutho = "";
+                var murl = "<%= UDSRoleUrl %>?$filter=IdUDS eq " + IdUDS + "&$expand=Relation ";
+                $.ajaxSetup({
+                    async: false
+                });
+                $.getJSON(murl, function (result) {
+                    var nvalue = result.value.length;
+                    if (result.value[0] && result.value[0].hasOwnProperty("Relation")) {
+                        getAutho = "" + result.value[0].Relation.Name;
+                        if (nvalue > 1) { getAutho = getAutho + ",.."; }
+                    }
+                });
+                return getAutho;
+            }
+
+            function getEnum(enumValue) {
+                if (!enumValue) return "";
+                var values = JSON.parse(enumValue);
+                return values.join(', ');
+            }
         </script>
     </telerik:RadScriptBlock>
 

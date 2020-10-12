@@ -16,13 +16,14 @@
                     tbltSecurityUsers.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                     tbltSecurityUsers.ajaxManagerId = "<%= AjaxManager.ClientID %>";
                     tbltSecurityUsers.actionsToolbarId = "<%= ActionsToolbar.ClientID %>";
+                    tbltSecurityUsers.toolbarSpecialActionId = "<%= ToolbarActions.ClientID %>";
                     tbltSecurityUsers.initialize();
                 });
             });
 
         </script>
 
-         <style>
+        <style>
             #ctl00_cphContent_rtvUsers {
                 height: 90%;
             }
@@ -44,90 +45,112 @@
     <div class="splitterWrapper">
         <telerik:RadSplitter runat="server" ID="splitterMain" Width="100%" ResizeWithParentPane="False" Height="100%">
             <telerik:RadPane runat="server" ID="paneSelection" Width="50%" Height="100%" Scrolling="None">
-                        <%--OnButtonClick=""--%>
-                        <telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="ToolBarSearch" runat="server" Width="100%">
-                            <Items>
-                                <telerik:RadToolBarButton Value="searchAccount">
-                                    <ItemTemplate>
-                                        <telerik:RadTextBox ID="txtAccount" EmptyMessage="Nome" runat="server" Width="170px"></telerik:RadTextBox>
-                                    </ItemTemplate>
-                                </telerik:RadToolBarButton>
-                                <telerik:RadToolBarButton IsSeparator="true" />
-                                <telerik:RadToolBarButton Value="domainOptions">
-                                    <ItemTemplate>
-                                        <telerik:RadDropDownList ID="rcbDomain" runat="server" Width="160px"></telerik:RadDropDownList>
-                                    </ItemTemplate>
-                                </telerik:RadToolBarButton>
-                                <telerik:RadToolBarButton IsSeparator="true" />
-                                <telerik:RadToolBarButton Text="Cerca" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
-                            </Items>
-                        </telerik:RadToolBar>
-                        <telerik:RadToolBar AutoPostBack="false" 
-                                            CssClass="ToolBarContainer" 
-                                            RenderMode="Lightweight" 
-                                            EnableRoundedCorners="False"    
-                                            EnableShadows="False"   
-                                            ID="ActionsToolbar" runat="server" Width="100%">
-                            <Items>
-                                <telerik:RadToolBarButton ID="btnAddUser"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png"
-                                    AutoPostBack="false"
-                                    CommandName="AddUser"
-                                    Tooltip="Aggiungi utente"/>
-                                <telerik:RadToolBarButton ID="btnDeleteUser"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png"
-                                    AutoPostBack="false"
-                                    CommandName="DeleteUser"
-                                    Tooltip="Elimina utente"/>
-                                <telerik:RadToolBarButton ID="btnGroupsAdd"
-                                    runat="server"
-                                    ImageUrl="~/Comm/Images/Interop/Gruppo.gif"
-                                    AutoPostBack="false"
-                                    CommandName="AddGroups"
-                                    Tooltip="Aggiungi gruppi"
-                                    Style="display:none;"/>
-                                <telerik:RadToolBarButton ID="btnCopyFromUser"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/document_copies.png"
-                                    AutoPostBack="false"
-                                    CommandName="CopyFromUser"
-                                    Tooltip="Copia da utente"
-                                    Style="display:none;"/>
-                                <telerik:RadToolBarButton ID="btnGuidedGroupsAdd"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/GroupMembers.png"
-                                    AutoPostBack="false"
-                                    CommandName="GuidedGroupsAdd"
-                                    Tooltip="Aggiungere gruppi guidati"
-                                    Style="display:none;"/>
-                                <telerik:RadToolBarButton ID="btnDelete"
-                                    runat="server"
-                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/delete.png"
-                                    AutoPostBack="false"
-                                    CommandName="Delete"
-                                    Tooltip="Elimina"
-                                    Style="display:none;"/>
-                                <telerik:RadToolBarButton ID="btnPrivacy"
-                                    runat="server"
-                                    AutoPostBack="false"
-                                    CommandName="Privacy"
-                                    Visible="false"/>
-                            </Items>
-                        </telerik:RadToolBar>
-                        <telerik:RadTreeView ID="rtvUsers" runat="server" Width="100%">
-                            <Nodes>
-                                <telerik:RadTreeNode Expanded="true" NodeType="Root" Selected="true" runat="server" Font-Bold="true" Text="Utenti" Value="" />
-                            </Nodes>
-                        </telerik:RadTreeView>
-                    </telerik:RadPane>
+                <%--OnButtonClick=""--%>
+                <telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="ToolBarSearch" runat="server" Width="100%">
+                    <Items>
+                        <telerik:RadToolBarButton Value="searchAccount">
+                            <ItemTemplate>
+                                <telerik:RadTextBox ID="txtAccount" EmptyMessage="Nome" runat="server" Width="170px"></telerik:RadTextBox>
+                            </ItemTemplate>
+                        </telerik:RadToolBarButton>
+                        <telerik:RadToolBarButton IsSeparator="true" />
+                        <telerik:RadToolBarButton Value="domainOptions">
+                            <ItemTemplate>
+                                <telerik:RadDropDownList ID="rcbDomain" runat="server" Width="160px"></telerik:RadDropDownList>
+                            </ItemTemplate>
+                        </telerik:RadToolBarButton>
+                        <telerik:RadToolBarButton IsSeparator="true" />
+                        <telerik:RadToolBarButton Value="search" Text="Cerca" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
+                        <telerik:RadToolBarButton IsSeparator="true" />
+                        <telerik:RadToolBarButton Value="unconfiguredUsers" Text="Mostra utenti non configurati" />
+                    </Items>
+                </telerik:RadToolBar>
+                <telerik:RadToolBar AutoPostBack="false"
+                    CssClass="ToolBarContainer"
+                    RenderMode="Lightweight"
+                    EnableRoundedCorners="False"
+                    EnableShadows="False"
+                    ID="ActionsToolbar" runat="server" Width="100%">
+                    <Items>
+                        <telerik:RadToolBarButton ID="btnAddUser"
+                            runat="server"
+                            ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png"
+                            AutoPostBack="false"
+                            CommandName="AddUser"
+                            ToolTip="Aggiungi utente"
+                            Text="Aggiungi" />
+                        <telerik:RadToolBarButton ID="btnDeleteUser"
+                            runat="server"
+                            ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png"
+                            AutoPostBack="false"
+                            CommandName="DeleteUser"
+                            ToolTip="Elimina utente"
+                            Text="Elimina" />
+                    </Items>
+                </telerik:RadToolBar>
+                <telerik:RadTreeView ID="rtvUsers" runat="server" Width="100%">
+                    <Nodes>
+                        <telerik:RadTreeNode Expanded="true" NodeType="Root" Selected="true" runat="server" Font-Bold="true" Text="Utenti" Value="" />
+                    </Nodes>
+                </telerik:RadTreeView>
+            </telerik:RadPane>
 
             <telerik:RadSplitBar runat="server" CollapseMode="None"></telerik:RadSplitBar>
 
             <telerik:RadPane runat="server" Width="50%">
                 <asp:Panel runat="server" ID="pnlDetails" CssClass="dsw-panel" Style="margin-top: 5px;">
                     <div class="dsw-panel-content">
+                        <telerik:RadToolBar AutoPostBack="false"
+                            CssClass="ToolBarContainer"
+                            RenderMode="Lightweight"
+                            EnableRoundedCorners="False"
+                            EnableShadows="False"
+                            ID="ToolbarActions" runat="server" Width="100%">
+                            <Items>
+                                <telerik:RadToolBarButton ID="btnGroupsAdd"
+                                    runat="server"
+                                    ImageUrl="~/Comm/Images/Interop/Gruppo.gif"
+                                    AutoPostBack="false"
+                                    CommandName="AddGroups"
+                                    ToolTip="Aggiungi gruppi"
+                                    Style="display: none;"
+                                    Text="Aggiungi"
+                                    Value="AddGroups" />
+                                <telerik:RadToolBarButton ID="btnCopyFromUser"
+                                    runat="server"
+                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/document_copies.png"
+                                    AutoPostBack="false"
+                                    CommandName="CopyFromUser"
+                                    ToolTip="Copia da utente"
+                                    Style="display: none;"
+                                    Text="Copia"
+                                    Value="CopyFromUser" />
+                                <telerik:RadToolBarButton ID="btnGuidedGroupsAdd"
+                                    runat="server"
+                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/GroupMembers.png"
+                                    AutoPostBack="false"
+                                    CommandName="GuidedGroupsAdd"
+                                    ToolTip="Aggiungere gruppi guidati"
+                                    Style="display: none;"
+                                    Text="Aggiungi gruppi"
+                                    Value="GuidedGroupsAdd" />
+                                <telerik:RadToolBarButton ID="btnDelete"
+                                    runat="server"
+                                    ImageUrl="~/App_Themes/DocSuite2008/imgset16/delete.png"
+                                    AutoPostBack="false"
+                                    CommandName="Delete"
+                                    ToolTip="Elimina"
+                                    Style="display: none;"
+                                    Text="Elimina"
+                                    Value="Delete" />
+                                <telerik:RadToolBarButton ID="btnPrivacy"
+                                    runat="server"
+                                    AutoPostBack="false"
+                                    CommandName="Privacy"
+                                    Visible="false"
+                                    Text="Privacy" />
+                            </Items>
+                        </telerik:RadToolBar>
                         <telerik:RadPanelBar runat="server" AllowCollapseAllItems="true" ExpandMode="MultipleExpandedItems" Width="100%" ID="rpbGroups">
                             <Items>
                                 <telerik:RadPanelItem Value="rpiGroups" Text="Gruppi" Expanded="true" runat="server">
@@ -137,7 +160,7 @@
                                     </ContentTemplate>
                                 </telerik:RadPanelItem>
 
-                                 <%-- Contenitori--%>
+                                <%-- Contenitori--%>
                                 <telerik:RadPanelItem Text="Contenitori" Expanded="true">
                                     <ContentTemplate>
                                         <telerik:RadGrid runat="server" ID="grdContainers" AutoGenerateColumns="False" Style="margin-top: 2px;" GridLines="none" ItemStyle-BackColor="LightGray">
@@ -176,12 +199,12 @@
                                     </ContentTemplate>
                                 </telerik:RadPanelItem>
 
-                                 <%-- Settori--%>
+                                <%-- Settori--%>
                                 <telerik:RadPanelItem Text="Settori" Expanded="true">
                                     <ContentTemplate>
                                         <telerik:RadGrid runat="server" ID="grdRoles" AutoGenerateColumns="False" Style="margin-top: 2px;" GridLines="none" ItemStyle-BackColor="LightGray" expa>
                                             <MasterTableView Width="100%" DataKeyNames="Id" NoMasterRecordsText="Nessun settore presente">
-                                                 <DetailTables>
+                                                <DetailTables>
                                                     <telerik:GridTableView DataKeyNames="GroupName" Name="Groups" runat="server" Width="100%" ShowHeader="false" AlternatingItemStyle-BackColor="WhiteSmoke" ItemStyle-BackColor="Snow" ItemStyle-BorderWidth="2px">
                                                         <DetailTables>
                                                             <telerik:GridTableView Name="Rights" runat="server" Width="100%" ShowHeader="false" AlternatingItemStyle-BackColor="WhiteSmoke" ItemStyle-BackColor="Snow" ItemStyle-BorderWidth="2px">

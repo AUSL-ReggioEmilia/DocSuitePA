@@ -162,7 +162,7 @@ namespace VecompSoftware.DocSuiteWeb.Gui.WebComponent.Grid
 
         private void ConfigureSorting()
         {
-            SortingSettings.SortedAscToolTip = "Ordine Crescente";
+            SortingSettings.SortedAscToolTip = "Ordine crescente";
             SortingSettings.SortedDescToolTip = "Ordine Decrescente";
             SortingSettings.SortToolTip = "Ordina";
             MasterTableView.AllowMultiColumnSorting = false;

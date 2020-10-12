@@ -66,6 +66,9 @@ Public Class CollaborationSignsFacade
 
             Dim activeSigner As CollaborationSign = coll.GetFirstCollaborationSignActive()
             activeSigner.IsActive = 0S
+            If DocSuiteContext.Current.ProtocolEnv.ForceCollaborationSignDateEnabled AndAlso Not activeSigner.SignDate.HasValue Then
+                activeSigner.SignDate = _dao.GetServerDate()
+            End If
             UpdateOnly(activeSigner)
 
             Dim signers As List(Of CollaborationSign) = coll.CollaborationSigns.OrderBy(Function(s) s.Incremental).ToList()
@@ -144,11 +147,11 @@ Public Class CollaborationSignsFacade
             ' Disattivo il precedente firmatario
             UpdateOnly(activeSign)
 
-            Dim delta As Short = shiftedSigns.Item(shiftedSigns.Count - 1).Incremental
+            'Dim delta As Short = shiftedSigns.Item(shiftedSigns.Count - 1).Incremental
             shiftedSigns.RemoveAt(0) ' Rimuovo il firmatario disattivato dalla lista delle firme da spostare
             For Each item As CollaborationSign In shiftedSigns
                 Dim shifted As CollaborationSign = getNewCollaborationSigns(item)
-                shifted.Incremental += delta
+                shifted.Incremental += 1S
                 Save(shifted)
                 coll.CollaborationSigns.Remove(item) ' Vedi inverse="true" su mapping
                 Delete(item)
@@ -300,6 +303,27 @@ Public Class CollaborationSignsFacade
     Public Function GetEffectiveSigners(idCollaboration As Integer) As ICollection(Of CollaborationSign)
         Return _dao.GetEffectiveSigners(idCollaboration)
     End Function
+
+    Public Function GetCollaborationSignModel(idCollaboration As Integer) As List(Of CollaborationSignModel)
+        Dim colSignModel As CollaborationSignModel
+        Dim CollaborationSigners As IList(Of CollaborationSign) = SearchFull(idCollaboration)
+        Dim signerModels As New List(Of CollaborationSignModel)
+        For Each collaborationSign As CollaborationSign In CollaborationSigners
+            colSignModel = New CollaborationSignModel() With
+              {
+              .SignName = collaborationSign.SignName,
+              .SignUser = collaborationSign.SignUser,
+              .SignEmail = collaborationSign.SignEMail,
+              .IsRequired = collaborationSign.IsRequired,
+              .SignDate = collaborationSign.SignDate,
+              .Incremental = collaborationSign.Incremental
+              }
+            signerModels.Add(colSignModel)
+        Next
+        Return signerModels
+    End Function
+
+
 #End Region
 
 End Class

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
-using VecompSoftware.DocSuiteWeb.Model.Parameters;
 using VecompSoftware.WebAPIManager;
 using VecompSoftware.WebAPIManager.Finder;
 
@@ -13,11 +8,11 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Tenants
 {
     public class UserTenantFinder : BaseWebAPIFinder<Tenant, TenantTableValuedModel>
     {
-        public UserTenantFinder(TenantModel tenant) : base(tenant)
+        public UserTenantFinder(Model.Parameters.TenantModel tenant) : base(tenant)
         {
         }
 
-        public UserTenantFinder(IReadOnlyCollection<TenantModel> tenants) : base(tenants)
+        public UserTenantFinder(IReadOnlyCollection<Model.Parameters.TenantModel> tenants) : base(tenants)
         {
         }
 
@@ -25,6 +20,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Tenants
 
         public string Username { get; set; }
         public string Domain { get; set; }
+        public bool OnlyInternalTenants { get; set; }
 
         #endregion
 
@@ -33,6 +29,11 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Tenants
         {
             string FX_GetUserTenants = CommonDefinition.OData.TenantService.FX_GetUserTenants;
             odataQuery = odataQuery.Function(FX_GetUserTenants);
+
+            if (OnlyInternalTenants)
+            {
+                odataQuery = odataQuery.Filter("TenantTypology eq 'InternalTenant'");
+            }
             return odataQuery;
         }
 

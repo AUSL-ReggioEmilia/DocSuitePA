@@ -77,6 +77,24 @@ Partial Public Class TbltRepositoryGes
     Protected WithEvents cbEnvironment As Global.Telerik.Web.UI.RadComboBox
 
     '''<summary>
+    '''statusDataSource control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents statusDataSource As Global.Telerik.Web.UI.RadClientDataSource
+
+    '''<summary>
+    '''cbStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cbStatus As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
     '''btnWorkflowSelectorOk control.
     '''</summary>
     '''<remarks>

@@ -18,7 +18,6 @@ Partial Class TbltSettore
     Private Const MOVE_OPTION As String = "move"
     Private Const CLONE_OPTION As String = "clone"
     Private Const PRINT_OPTION As String = "print"
-    Private Const RECOVER_OPTION As String = "recover"
     Private Const GROUPS_OPTION As String = "groups"
     Private Const HISTORY_OPTION As String = "history"
     Private Const LOG_OPTION As String = "log"
@@ -328,7 +327,6 @@ Partial Class TbltSettore
             FolderToolBar.FindItemByValue(CREATE_OPTION).Visible = False
             FolderToolBar.FindItemByValue(DELETE_OPTION).Visible = False
             FolderToolBar.FindItemByValue(MODIFY_OPTION).Visible = False
-            FolderToolBar.FindItemByValue(RECOVER_OPTION).Visible = False
             FolderToolBar.FindItemByValue(MOVE_OPTION).Visible = False
             FolderToolBar.FindItemByValue(PRINT_OPTION).Visible = False
             FolderToolBar.FindItemByValue(GROUPS_OPTION).Visible = False
@@ -346,7 +344,6 @@ Partial Class TbltSettore
         FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = False
         FolderToolBar.FindItemByValue(MODIFY_OPTION).Enabled = False
         FolderToolBar.FindItemByValue(MOVE_OPTION).Enabled = False
-        FolderToolBar.FindItemByValue(RECOVER_OPTION).Enabled = False
         FolderToolBar.FindItemByValue(PRINT_OPTION).Enabled = False
         FolderToolBar.FindItemByValue(GROUPS_OPTION).Enabled = False
         FolderToolBar.FindItemByValue(LOG_OPTION).Enabled = False
@@ -362,7 +359,6 @@ Partial Class TbltSettore
             FolderToolBar.FindItemByValue(CREATE_OPTION).Enabled = True
             FolderToolBar.FindItemByValue(MODIFY_OPTION).Enabled = False
             FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = False
-            FolderToolBar.FindItemByValue(RECOVER_OPTION).Enabled = False
             FolderToolBar.FindItemByValue(MOVE_OPTION).Enabled = False
             FolderToolBar.FindItemByValue(PRINT_OPTION).Enabled = False
             FolderToolBar.FindItemByValue(GROUPS_OPTION).Enabled = False
@@ -375,7 +371,9 @@ Partial Class TbltSettore
         Dim recovery As String = node.Attributes("Recovery")
         Select Case recovery
             Case "true"
-                FolderToolBar.FindItemByValue(RECOVER_OPTION).Enabled = True
+                FolderToolBar.FindItemByValue(DELETE_OPTION).Text = "Recupera"
+            Case Else
+                FolderToolBar.FindItemByValue(DELETE_OPTION).Text = "Elimina"
         End Select
         Select Case node.Attributes("NodeType").ToUpper()
             Case "ROLE", "SUBROLE"
@@ -395,7 +393,6 @@ Partial Class TbltSettore
                 FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = False
                 FolderToolBar.FindItemByValue(MOVE_OPTION).Enabled = False
                 FolderToolBar.FindItemByValue(PRINT_OPTION).Enabled = False
-                FolderToolBar.FindItemByValue(RECOVER_OPTION).Enabled = False
                 FolderToolBar.FindItemByValue(LOG_OPTION).Enabled = True
                 FolderToolBar.FindItemByValue(GROUPS_OPTION).Enabled = False
                 FolderToolBar.FindItemByValue(FUNCTION_OPTION).Enabled = False
@@ -407,7 +404,6 @@ Partial Class TbltSettore
         FolderToolBar.FindItemByValue(CREATE_OPTION).Enabled = False
         FolderToolBar.FindItemByValue(MODIFY_OPTION).Enabled = ProtocolEnv.ManageDisableItemsEnabled
         FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = True
-        FolderToolBar.FindItemByValue(RECOVER_OPTION).Enabled = True
         FolderToolBar.FindItemByValue(MOVE_OPTION).Enabled = ProtocolEnv.ManageDisableItemsEnabled
         FolderToolBar.FindItemByValue(PRINT_OPTION).Enabled = False
         FolderToolBar.FindItemByValue(GROUPS_OPTION).Enabled = False
@@ -416,6 +412,7 @@ Partial Class TbltSettore
         FolderToolBar.FindItemByValue(CLONE_OPTION).Enabled = False
         Exit Sub
     End Sub
+
     Protected Sub FolderToolBar_ButtonClick(sender As Object, e As RadToolBarEventArgs) Handles FolderToolBar.ButtonClick
         Select Case e.Item.Value
             Case CREATE_OPTION
@@ -430,8 +427,6 @@ Partial Class TbltSettore
                 AjaxManager.ResponseScripts.Add("OpenEditWindow('windowEditRoles','Clone');")
             Case PRINT_OPTION
                 AjaxManager.ResponseScripts.Add("OpenPrintWindow('windowPrintRoles');")
-            Case RECOVER_OPTION
-                AjaxManager.ResponseScripts.Add("OpenPrintWindow('windowEditRoles','Delete');")
             Case GROUPS_OPTION
                 AjaxManager.ResponseScripts.Add("OpenGroupsWindow();")
             Case HISTORY_OPTION
@@ -543,13 +538,13 @@ Partial Class TbltSettore
         If locations = 2 Then
             dto.Location = DocSuiteContext.Current.DossierAndPraticheLabel
             If CommonInstance.DocmEnabled Then
-                If Diritti(roleGroup.DocumentRights, DocumentRoleRightPositions.Enabled) Then
+                If Diritti(roleGroup.DocumentRights, DossierRoleRightPositions.Enabled) Then
                     docRights = String.Concat(docRights, "Abilitato")
                 End If
-                If Diritti(roleGroup.DocumentRights, DocumentRoleRightPositions.Workflow) Then
+                If Diritti(roleGroup.DocumentRights, DossierRoleRightPositions.Workflow) Then
                     docRights = String.Concat(docRights, If(String.IsNullOrEmpty(docRights), "Workflow", ", Workflow"))
                 End If
-                If Diritti(roleGroup.DocumentRights, DocumentRoleRightPositions.Manager) Then
+                If Diritti(roleGroup.DocumentRights, DossierRoleRightPositions.Manager) Then
                     docRights = String.Concat(docRights, If(String.IsNullOrEmpty(docRights), "Manager", ", Manager"))
                 End If
             End If

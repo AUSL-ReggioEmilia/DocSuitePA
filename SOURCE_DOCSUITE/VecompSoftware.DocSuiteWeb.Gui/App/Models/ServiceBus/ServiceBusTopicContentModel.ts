@@ -2,7 +2,7 @@
     $id: string;
     $type: string;
     Contents: string;
-    CorrelatedCommands: object;
+    CorrelatedMessages: object;
     CorrelationId: string;
     CreationTime: Date;
     CustomProperties: object;

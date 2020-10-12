@@ -1,0 +1,124 @@
+Epic 21840: [SM] Nuovo modulo "Gestione Tenants/TenantAPP centrali dello Stato"
+Epic 21947: [AUSL-PC] Integrazione anagrafica SETI 
+Epic 22598: [AUSL-RE] Task 8013 - Progetti Servizio Tecnico Archivio e Conservazione
+Epic 22824: [ENEA] Flussi digitali PER - Fase 1
+
+
+Feature 7341: [AGENAS] Workflow : Permettere cambio responsabile per collaborazioni di tipo Workflow
+Feature 13196: [DSW BIBLOSDS] Evolutive Preservation Portal
+Feature 19210: [BIBLOSDS] Migliorie al PreservationPortal per gestione task di conservazione
+Feature 21841: [SM] Management AOO: Adeguamento APP Angular per la lettura dei Tanants dal dadabase di management mediante WebAPI
+Feature 21843: [SM] Management AOO: Adeguamento DocSuite alla gestione Tenant/TenantAOO con nuova colonna "TenantTypology"
+Feature 21849: [SM] Management AOO: Creazione tabella "Tenants" nel database "DocSuiteAOOManagement"
+Feature 21851: [SM] Management AOO: Adeguamento ManagementWebAPI per la lettura dei tenants e l'invio dei comandi per la creazione dei tenants nel database di management
+Feature 21881: [SM] Management AOO: Creare modulo integration "VSW.Management.Tenants" per la creazione dei contatti nel database centrale
+Feature 21891: [SM] Management AOO: Creare modulo integration "VSW.SyncAOO.Tenants" per la creazione dei tenant nelle singole AOO mediante WebAPI
+Feature 21895: [SM] Management AOO: Creare modulo integration "VSW.ReadAOO.Tenants" per la lettura dei tenant e TenantAPP dalle WebAPI di tutte le AOO
+Feature 21907: [SM] Workflow : Aggiungere opzione "Selezione AOO" durante avvio di workflow
+Feature 21924: [BIBLOSDS] Configurazione guidata nel PreservationPortal per rendere un archivio conservabile
+Feature 21988: [AUSL-PC] Dossier: Integrazione anagrafica SETI 
+Feature 21997: [AUSL-RE] Metadati di Dossier/Fascicolo: Permettere l'ordinamento dei metadati
+Feature 22015: [SM] Amministrazione: Creazione tool di importazione Settori/Classificatore/Utenti per settori
+Feature 22055: [SM] BiblosDS: Realizzare la funzionalità di avere archivi remoti tra server di Biblos diversi "Anonimizzazione" 
+Feature 22144: [AUSL-RE] Fascicolo: Permettere di selezionare più unità documentali (Protocolli/Atti/UDS) dal fascicolo, e avviare il workflow generalista 
+Feature 22259: [SM] SyncActa: Introdurre la modalità di sincronizzazione dei "Fascicoli e Serie" e Classificatore di Protocollo
+Feature 22262: [SM] Integrazione AUS: Adeguamenti per la gestione del modello di "errore" 
+Feature 22275: [SM] Settori: Automatismo di creazione del Contatto di Rubrica durante la creazione dei settori
+Feature 22351: [SM] Gestione Serie e Volumi: Permettere la funzione "copia/incolla" di un template di Fascicolo
+Feature 22410: [SM] Gestione Serie e Volumi: Visualizzare solo le classificazioni della AOO corrente e non tutte.
+Feature 22528: [SM]Fascicoli: Permettere la selezione dei metadati di fascicoli nella pagina di modifica
+Feature 22618: [AUSL-RE] Designer archivi : Implementare l'opzione "StampaConformeEnabled" nelle proprietà generali dell'archivio
+Feature 22663: [AUSL-RE] Designer archivi : Implementare l'opzione "ShowArchiveInProtocolSummaryEnabled" nelle proprietà generali dell'archivio
+Feature 22825: [ENEA] Stampa conforme : Il riepilogo dei firmatari di collaborazione deve essere prodotto anche se il documenti non è firmato digitalmente
+Feature 22827: [ENEA] Menu DocSuite : Il menu docsuite deve adattarsi in funzione del diritti dell'utente corrente
+Feature 22828: [ENEA] Collaborazione : Adeguamenti alle nuove regole del flusso PER
+Feature 22867: [AGENAS] Archivi : Nella pagina di ricerca introdurre il filtro per intervallo sui campi di tipo "Numeric"
+
+
+User Story 7113: [DSW] Allineare la UI di Tabelle> Settori con lo standard proposto in Tabelle>Classificatore
+User Story 7407: [DSW] In TbltSecurityGroupWizard inserire gli user control per settori e classificatori
+User Story 8397: [DSW]Bonifica grafica dei Settori in dsw
+User Story 21842: [SM] Management AOO: Adeguamento APP Angular per la lettura dei Tanants dal dadabase di management mediante WebAPI
+User Story 21844: [SM] Management AOO: Aggiungere colonna TenantTypology alla tabella TenantAOO e Tenants
+User Story 21845: [SM] Management AOO: Adeguare la pagina tbltTenants per la gestione TenantTypology 
+User Story 21846: [SM] Management AOO: Adeguare la pagina User/UserProfile.aspx per la gestione TenantTypology 
+User Story 21847: [SM] Management AOO: Adeguare le entità Tenant e TenantAOO 
+User Story 21848: [SM] Management AOO: Adeguare TenantAOOService 
+User Story 21850: [SM] Management AOO: Creazione tabella "Tenants" nel database "DocSuiteAOOManagement"
+User Story 21852: [SM] Management AOO: Creazione nel framework dei comandi ed eventi TenantAOO e Tenant. 
+User Story 21853: [SM] Management AOO: Adeguamento ManagementWebAPI per la lettura dei tenants e l'invio dei comandi per la creazione dei tenants nel database di management
+User Story 21896: [SM] Management AOO: Creare modulo integration "VSW.ReadAOO.Tenants" per la lettura dei tenant e TenantAPP dalle WebAPI di tutte le AOO
+User Story 21897: [SM] Management AOO: Business logic  "VSW.ReadAOO.Tenants" per la lettura dei tenant e TenantAPP dalle WebAPI di tutte le AOO
+User Story 21908: [SM] Workflow : Creare nuovo usercontrol uscTenantSelRest.ascx per la selezione delle "Selezione AOO"
+User Story 21911: [SM] Workflow : Aggiungere proprietà "_dsw_p_WorkflowStartTenantRequired" in  WorkflowEvaluationPropertyType
+User Story 21914: [SM] Workflow : Modificare lo user control uscStartWorkflow in modo tale da agganciare uscTenantSelRest.ascx
+User Story 21955: [BIBLOSDS] Nuova colonna PreservationConfiguration nella tabella Archive
+User Story 21989: [AUSL-PC] Integrazione anagrafica SETI : Creare un parametro di ProtocolEnv "SETIIntegrationEnabled" 
+User Story 21990: [AUSL-PC] Integrazione anagrafica SETI : Creare un nuovo layer VecompSoftware.Services.AnagraficaAnAs
+User Story 21991: [AUSL-PC] Integrazione anagrafica SETI : Aggiungere SETIFieldEnabled al MetadataModel
+User Story 21992: [AUSL-PC] Integrazione anagrafica SETI : Adeguare il Modificare designer dei metadati "TbltMetadataRepositoryDesigner.aspx"
+User Story 21993: [AUSL-PC] Integrazione anagrafica SETI : Creare uno usercontrol uscAnAsContactSel
+User Story 21996: [AUSL-PC] Integrazione anagrafica SETI : Modificare uscDynamicMetadata.ascx con le logiche SetiEnabled
+User Story 21998: [AUSL-PC] Integrazione anagrafica SETI : Adeguare designer dei metadati "TbltMetadataRepositoryDesigner.aspx" per impostare l'ordinamento
+User Story 21999: [AUSL-PC] Integrazione anagrafica SETI : Adeguare designer dei metadati "TbltMetadataRepositoryDesigner.aspx" per impostare l'ordinamento
+User Story 22016: [SM] Amministrazione: Creazione tool DSWInitializeConfiguration 
+User Story 22017: [SM] DSWInitializeConfiguration  : Business logica import tabella dei settori
+User Story 22018: [SM] DSWInitializeConfiguration  : Business logica import tabella dei classificatore e piano di fascicolazione
+User Story 22019: [SM] DSWInitializeConfiguration  : Business logica import tabella dei SecurityUser/RoleUser
+User Story 22056: [SM] BiblosDS: Realizzare la funzionalità di avere archivi remoti tra server di Biblos diversi "Anonimizzazione" 
+User Story 22145: [AUSL-RE] Fascicolo: Mappare in typescript le modifiche al modello WorkflowReferenceModel.ts
+User Story 22146: [AUSL-RE] Fascicolo: Adeguare l'avvio di workflow da FascVisualizza.ts per inserire le DocumentUnits selezionate nel modello di Workflow
+User Story 22147: [AUSL-RE] Fascicolo: Modificare l'avvio di workflow nelle WebAPI in modo tale da considerare le documentunits del modello WorkflowReferenceModel
+User Story 22151: [BIBLOSDS] Nella griglia dei task da eseguire visualizzare solamente i task in quel momento attivi e non anche i successivi che non sarebbero eseguibili.
+User Story 22203: [BIBLOSDS] Nuova funzionalità di "Forza chiusura conservazione" se il risultato dell'attività di conservazione è "Nessun documento disponibile per la conservazione".
+User Story 22229: [BIBLOSDS] Nuova funzionalità di "Chiusura anno" per poter effettuare una conservazione annuale parallela alle conservazioni già eseguite.
+User Story 22260: [SM] SyncActa: Introdurre la modalità di creazione in DocSuite del Classificatore durante la migrazione dei Protocolli
+User Story 22261: [SM] SyncActa: Introdurre la modalità sincronizzazione delle Serie e dei Fascicoli Acta
+User Story 22263: [SM] Integrazione AUS: Adeguamenti al framework per leggere correttamente il modello di errore
+User Story 22266: [SM] Integrazione AUS: Adeguamenti alla docsuite per visualizzare l'errore AUS nella treeview
+User Story 22276: [SM] Settori: Creare il parametro di ProtocolEnv "ContactRoleGenerateEnabled"
+User Story 22277: [SM] Settori: Creare automaticamente il contatto di settore, con relativa autorizzazione.
+User Story 22352: [SM] Gestione Serie e Volumi: Permettere la funzione "copia/incolla" di un template di Fascicolo
+User Story 22411: [SM] Gestione Serie e Volumi: Visualizzare solo le classificazioni della AOO corrente e non tutte.
+User Story 22626: [AUSL-RE] Designer archivi : Nel framework creare l'opzione StampaConformeEnabled nell'XSD del UDS Helper
+User Story 22627: [AUSL-RE] Designer archivi : Adeguare nel designer la funzione "Abilita funzionalità copia conforme"
+User Story 22628: [AUSL-RE] Archivi : Adeguare UDSView.aspx secondo le funzionalità "Abilita funzionalità copia conforme"
+User Story 22664: [AUSL-RE] Designer archivi : Adeguare nel designer la funzione "Abilita visualizzazione nel sommario di protocollo"
+User Story 22665: [AUSL-RE] Designer archivi : Nel framework creare l'opzione ShowArchiveInProtocolSummaryEnabled nell'XSD del UDS Helper
+User Story 22666: [AUSL-RE] Archivi : Adeguare  uscProtocollo.aspx i secondo le funzionalità "Abilita visualizzazione nel sommario di protocollo"
+User Story 22708: [AGENAS] Workflow Cambio responsabile: Adeguare l'helper workflow nel framewok
+User Story 22709: [AGENAS] Workflow Cambio responsabile: Gestire in docsuite il cambio responsbile di collaborazioni di tipo workflow
+User Story 22710: [AGENAS] Workflow Cambio responsabile: Gestire nelle WebAPI la custom action DSW_ACTION_COLLABORATION_CHANGE_SIGNER
+User Story 22826: [ENEA] Stampa conforme : Il riepilogo dei firmatari di collaborazione deve essere prodotto anche se il documenti non è firmato digitalmente
+User Story 22829: [ENEA] Collaborazione : Disabilitare l’inserimento libero di collaborazione, quindi l’utente può solo selezionare un template di collaborazione
+User Story 22830: [ENEA] Collaborazione : Il proponente appare in automatico come primo sottoscrittore (e come se lo avesse mandato a se stesso e proseguito in automatico) 
+User Story 22831: [ENEA] Collaborazione : Nella selezione dei responsabili visualizzare solo i responsabili e vicari ma mai le segreterie
+User Story 22832: [ENEA] Template di Collaborazione : Poter definire se le segreterie dei responsabili possono o no vedere i documenti della collaborazione
+User Story 22833: [ENEA] Collaborazione : Nel CollaborationDocumentHandler verificare se l'utente corrente ha diritti di visualizazione del documento
+User Story 22834: [ENEA] Collaborazione : Creare la funzione odata HasViewableRight nel controller di Collaborations
+User Story 22835: [ENEA] Menu DocSuite : Creare la funzione odata GetCurrentRights nel controller DomainUsersController
+User Story 22836: [ENEA] Menu DocSuite : Il menu docsuite deve adattarsi in funzione del diritti dell'utente corrente
+User Story 22837: [ENEA] Menu DocSuite : Predisporre nel readme di rilascio i parametri per disattivare il TenantAOO e fare in modo che il CurrentTenant sia automaticamente settato.
+User Story 22868: [AGENAS] Archivi : Nella pagina di ricerca introdurre il filtro per intervallo sui campi di tipo "Numeric"
+User Story 22869: [AGENAS] Archivi : Nella pagina di ricerca migliorare il dimensionamento dei filtro "Data"
+
+
+Bug 21685: [CTT]Stampa conforme: errori di renderizzazione 
+Bug 21894: [CNOCDL]Stampa conforme: errore di produzione PDF di excel con più pagine 
+Bug 21898: [AUSL-RE]Stampa conforme: errore visualizzazione file .jpg
+Bug 22326: [SM]Il classificatore non carica il classificatore ma solo serie e volumi.
+Bug 22619: [AGENAS]Serie e archivi: problema ricerca su campi "Contatti"
+Bug 22631: [CNOCDL] Il file postacert salvato dal JS usa un encodig errato
+Bug 22632: [***REMOVED***]Stampa conforme genera errore per alcune tipologie di p7m
+Bug 22668: [AUSL-PC]Segnalazione template di collaborazione
+Bug 22670: [AGENAS]Designer archivi: Problematiche "sola lettura" "visibile in ricerca" del classificatore
+Bug 22671: [AUSL-RE]Il modulo PEC del JS produce “n” volte lo stesso record in errore. 
+Bug 22718: [AUSL-RE]Nel visualizzatore documentale dei fascicolo l'ordinamento è randomico
+Bug 22719: [AUSL-RE]Modulo JeepService import series: Miglioramento gestione recupero errore
+Bug 22722: [AGENAS] Stampa conforme: errore nullpoint nel metodo BuildPDF
+Bug 22723: [AUSL-RE]Modulo JeepService PEC: Se i il file daticert non ha il campo oggetto viene generato un errore.
+
+
+Issue 20341: [***REMOVED***]Email utente settore non compare in sommario di protocollo
+Issue 20793: [AGENAS]numero di protocollo nelle esportazioni Excel da liste PEC (in arrivo) e da casella di protocollazione
+Issue 22649: [***REMOVED***] Log di errore in conversione PDF da scanner senza firme

@@ -1,0 +1,85 @@
+Epic 24267: [AUSL-RE][AUSL-PC] Portale SPID: Modifiche evolutive portale SPID
+Epic 24312: [SM] Workflow: Modifiche evolutive ai workflow per automatismi Spesa Pubblica
+
+
+Feature 24268: [AUSL-RE]Portale SPID: Introduzione portale in modalità "A serizio"
+Feature 24277: [AUSL-PC]Portale SPID: Rimozione vincolo “unico provider LEPIDA” nel Portale SPID.
+Feature 24279: [AUSL-PC]Portale COVID: Integrazione portale documentale (COVID) allo SPID
+Feature 24296: [AUSL-PC]Portale COVID: Introduzione del portale l’architettura a WebService REST al posto della lettura da filesystem
+Feature 24313: [SM] Scrivania: Viste di scrivania Dossier e Fascicoli
+Feature 24320: [SM] Dossier: Miglioramento business rules in apertura fascicoli e chiusura Dossier
+Feature 24321: [SM] Workflow: Validazione sull'avvio di workflow da fascicolo se e solo se il fascicolo rispetta alcune condizioni sui documenti di cartella selezionata. 
+Feature 24322: [SM] Workflow: Attestazione di contenuto di Fascicolo
+Feature 24323: [SM] Workflow: Riapri fascicolo chiuso
+Feature 24326: [SM] Dossier: Aggiungere la gestione del classificazione, tipologia e stato nei dossier
+Feature 24327: [SM] Dossier: Introduzione alla gestione delle autorizzazioni "settore responsabile" e "settore autorizzato"
+Feature 24328: [SM] Dossier: Invia email di settori
+Feature 24369: [AUSL-PC]FPS:  Prevedere una parametrizzazione del FPS per poter inviare avviare in automatico i workflow “invia a SWAF” post protocollazione
+Feature 24481: [SM] Workflow: Creare una nuova tipologia di workflow "Avvia fase da fascicolo"
+
+
+User Story 24255: [AUSL-RE] Activex Firma multipla : Adeguare la pagina di firma multipla permettendo la selezione CADES/PADES.
+User Story 24256: [AUSL-RE] Activex Firma multipla : Modificare l'activex che comunica con la smartcard mediante SDK di Comped.
+User Story 24269: [AUSL-RE]Portale SPID: Migrare apps angular 10 
+User Story 24274: [AUSL-RE]Portale SPID: Aggiungere nel action "INDEX" del controller "Home" la possibilità di gestire i parametri in querystring
+User Story 24275: [AUSL-RE]Portale SPID: Modificare il callback di autenticazione SPID adeguandolo alla modalità a servizio
+User Story 24276: [AUSL-RE]Portale SPID: Modificare il catalogo delle APP per gestire APP a servizi 
+User Story 24278: [AUSL-PC]Portale SPID: Rimozione vincolo “unico provider LEPIDA” nel Portale SPID.
+User Story 24284: [AUSL-PC]Portale COVID: Integrazione portale documentale (COVID) allo SPID
+User Story 24297: [AUSL-PC]Portale COVID: Introduzione del portale COVID all’architettura a WebService REST
+User Story 24300: [AUSL-PC]Integrazione SWAF: Ricezione degli eventi dal portale COVID e notifica a SWAF
+User Story 24301: [AUSL-PC]Integrations : Creazione modulo integration "AUSLPC.SWAF"
+User Story 24302: [AUSL-PC]Public WebAPI: Nuovi workflow per la notifica di eventi dal portale COVID
+User Story 24303: [AUSL-PC]Integrazione SWAF: Creare nel framework il nuovo evento EventPublicIntegration che ospiterà il modello DocSuiteEvent
+User Story 24339: [SM] Dossier: Aggiungere al database la colonna IdCategory
+User Story 24340: [SM] Dossier: Aggiungere al database la colonna Type 
+User Story 24341: [SM] Dossier: Aggiungere al database la colonna Status  
+User Story 24344: [SM] Dossier: Adeguare mapping e services dell’entità Dossier delle WebAPI per la gestione del campo Status
+User Story 24345: [SM] Dossier: Adeguare la pagina di inserimento di Dossier con la selezione del classificatore (non obbligatorio)
+User Story 24346: [SM] Dossier: Modificare il sommario di Dossier mostrando il classificatore
+User Story 24347: [SM] Dossier: In ricerca di Dossier, permettere la ricerca per classificazione.
+User Story 24348: [SM] Dossier: Bonificare il listener di creazione e aggiornamento di Dossier per la gestione del classificatore
+User Story 24349: [SM] Dossier: Adeguare i moduli dell’integrations ***REMOVED***/AGENAS con la modifica al classificatore
+User Story 24350: [SM] Dossier: Adeguare mapping e services dell’entità Dossier delle WebAPI per la gestione della tipologia
+User Story 24351: [SM] Dossier: Modificare il sommario di Dossier mostrando l'informazione della tipologia
+User Story 24352: [SM] Dossier: In ricerca di Dossier, permettere la ricerca per tipologia
+User Story 24353: [SM] Dossier: Adeguare la pagina di inserimento di Dossier con la selezione della tipologia (dato obbligatorio)
+User Story 24354: [SM] Dossier: Adeguare i moduli dell’integrations ***REMOVED***/AGENAS con la modifica alla tipologia
+User Story 24355: [SM] Dossier: Bonificare il listener di creazione e aggiornamento di Dossier per la gestione della tipologia
+User Story 24356: [SM] Dossier: Adeguare mapping e services dell’entità Dossier delle WebAPI per la gestione del classificatore
+User Story 24357: [SM] Dossier: Bonificare il listener di creazione e aggiornamento di Dossier per la gestione dello Status 
+User Story 24358: [SM] Dossier: In ricerca di Dossier, permettere la ricerca per Status
+User Story 24359: [SM] Dossier: Modificare il sommario di Dossier mostrando l'informazione della stato
+User Story 24363: [SM] Dossier: Aggiungere un nuovo pulsante "crea fascicolo da template di contenitore" se la cartella contiene una definizione json.
+User Story 24370: [AUSL-PC]FPS:  Prevedere una parametrizzazione del FPS per poter inviare avviare in automatico i workflow “invia a SWAF” post protocollazione
+User Story 24371: [AUSL-PC]Listeners: Modificare il ModelInsert/ModelUpdate in modo tale da inviare l'evento "EventShareDocumentUnit" se presente nelle WorkflowActions
+User Story 24372: [AUSL-PC]Public WebAPI: Verificare e completare l'avvio di public workflow per inserimento di UDS 
+User Story 24378: [SM] Dossier: Modificare pagina di inserimento dossier per aggiunta selezione settore responsabile e settore autorizzato (come fatto in fascicolo)
+User Story 24379: [SM] Dossier: Adeguare le logiche di business in modo tale che se l'utente ha diritti di sola visualizzazione, sia inibita la gestione del Dossier
+User Story 24380: [SM] Dossier: Aggiungendo il pulsante "Autorizza" nella pagina di sommario
+User Story 24381: [SM] Dossier: Nuova pagina DossierAutorizza.aspx per gestione settori di tipo Accounted
+User Story 24382: [SM] Dossier: Adeguare le logiche di business nei DossierService e DossierRoleService delle WebAPI per la gestione della tipologia di DossierRole
+User Story 24383: [SM] Dossier: In aggiunta o rimozione di DossierRole dal service DossierRoleService aggiungere CustomValidation Dossiers.HasModifyRights
+User Story 24393: [SM] Dossier: Modificare il sommario di Dossier inserendo il pulsante "Invia settori"
+User Story 24394: [SM] Dossier: Modificare la pagina DossierMailSender.aspx per gestione "invio settori" 
+User Story 24398: [SM] Dossier: Creare la funzione odata GetRoleUsersFromDossier nel controller odata RoleUsers
+User Story 24401: [SM] Scrivania: Modificare pagina UserDesktop.aspx per le nuove viste di scrivania Dossier e Fascicoli
+User Story 24411: [SM] Scrivania: Modificare pagina UserFascicle.aspx per aggancio nuove viste di scrivania dei Fascicoli
+User Story 24416: [SM] Scrivania: Creare nuova pagina User/UserDossier.aspx per la gestione delle viste di scrivania
+User Story 24480: [AUSL-PC]FPS:  Prevedere una parametrizzazione del FPS per poter inviare avviare in automatico i workflow “invia a SWAF” post protocollazione
+User Story 24499: [SM] Workflow designer: Creare il nuovo usercontrol uscWorkflowDesignerValidations
+User Story 24500: [SM] Workflow Engine: Implementare le regole di business della workflowproperty _dsw_v_Workflow_StartValidations
+User Story 24508: [SM] Fascicolo: Predisposizione del GeneratorParameter per l'avvio del workflow di attestazione
+User Story 24509: [SM] Workflow: Gestione del workflow di attestazione di fascicolo
+User Story 24516: [SM] Workflow: Sviluppare le logiche di business nelle WebAPI per il workflow "Avvia fase"
+User Story 24526: [AUSL-PC]FPS: Modifica la gestione del manualcontact_mapdefinition per aggiunta "Data di nascita" 
+User Story 24527: [SM] Dossier: Aggiungere un nuovo pulsante "crea fascicolo da template di contenitore" se la cartella contiene una definizione json.
+User Story 24536: [SM] Workflow: Sviluppare le logiche di business nelle WebAPI per l'aggiornamento della data di presa in carico
+User Story 24537: [SM] Workflow: Cambiare la logica di presa in carico in HandlerWorkflowManager.ts
+User Story 24551: [SM] Workflow: Gestire lo uscWorkflowFolderSelRest all'interno di uscStartWorkflow
+User Story 24555: [SM] Workflow: Creare nuovo UserControl uscWorkflowFolderSelRest per la selezione di Folder 
+User Story 24556: [SM] Workflow: Cambiamenti generalisti nello uscStartWorkflow
+User Story 24602: [SM] Fascicolo: Mostrare il pulsante "Avvia attività" anche se il fascicolo è chiuso
+User Story 24605: [SM] Fascicolo: Adeguare lo usercontrol uscStartWorkflow se per avvio workflow da fascicoli è chiuso
+User Story 24606: [SM] Fascicolo: Adeguare il metodo ODATA GetAuthorizedActiveWorkflowRepositories per la gestione del nuovo parametro ShowOnlyHasIsFascicleClosedRequired 
+User Story 24621: [SM] Workflow: Gestione della proprietà _dsw_a_Fascicle_CreateLink WorkflowBaseService

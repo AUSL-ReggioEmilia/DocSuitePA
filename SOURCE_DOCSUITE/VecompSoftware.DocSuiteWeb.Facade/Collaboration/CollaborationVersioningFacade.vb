@@ -9,6 +9,7 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Services.Logging
 Imports VecompSoftware.Services.Biblos.Models
+Imports Newtonsoft.Json
 
 <ComponentModel.DataObject()>
 Public Class CollaborationVersioningFacade
@@ -195,11 +196,11 @@ Public Class CollaborationVersioningFacade
     ''' <remarks>Imposta anche la caption col CV relativo.</remarks>
     Public Function GetBiblosDocument(versioning As CollaborationVersioning, Optional ignoreState As Boolean = False) As BiblosDocumentInfo
         Dim location As Location = versioning.Collaboration.Location
-        Dim uid As New UIDDocument(location.DocumentServer, location.ProtBiblosDSDB, versioning.IdDocument, 0)
+        Dim uid As New UIDDocument(location.ProtBiblosDSDB, versioning.IdDocument, 0)
         Dim chainId As Guid = Service.GetChainGuid(uid)
-        Dim document As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentChildren(location.DocumentServer, chainId, ignoreState).First()
+        Dim document As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentChildren(chainId, ignoreState).First()
         If document.IsRemoved Then
-            document = New BiblosDeletedDocumentInfo(document.Server, document.DocumentId)
+            document = New BiblosDeletedDocumentInfo(document.DocumentId)
         End If
         Return SetDocumentCaption(Of BiblosDocumentInfo)(document, versioning)
     End Function
@@ -363,7 +364,7 @@ Public Class CollaborationVersioningFacade
         cv.CollaborationIncremental = collaborationIncremental
         cv.Incremental = GetLastIncremental(cv).GetValueOrDefault(0) + 1S
 
-        Dim saved As Integer = document.ArchiveInBiblos(collaboration.Location.DocumentServer, collaboration.Location.ProtBiblosDSDB).BiblosChainId
+        Dim saved As Integer = document.ArchiveInBiblos(collaboration.Location.ProtBiblosDSDB).BiblosChainId
 
         cv.IdDocument = saved
         cv.DocumentName = document.Name
@@ -543,9 +544,9 @@ Public Class CollaborationVersioningFacade
         Dim signature As String = Factory.CollaborationFacade.GetSignature(versioning.Collaboration.Id)
         FileLogger.Info(LoggerName, "GetSignature: " & signature)
         document.Signature = signature
-        FileLogger.Info(LoggerName, String.Format("SaveToBiblos: {0}.{1}", versioning.Collaboration.Location.DocumentServer, versioning.Collaboration.Location.ProtBiblosDSDB))
+        FileLogger.Info(LoggerName, String.Format("SaveToBiblos: {0}", versioning.Collaboration.Location.ProtBiblosDSDB))
 
-        Dim checkedInChainId As Integer = document.ArchiveInBiblos(versioning.Collaboration.Location.DocumentServer, versioning.Collaboration.Location.ProtBiblosDSDB).BiblosChainId
+        Dim checkedInChainId As Integer = document.ArchiveInBiblos(versioning.Collaboration.Location.ProtBiblosDSDB).BiblosChainId
 
         Dim cv As New CollaborationVersioning()
         cv.Collaboration = versioning.Collaboration

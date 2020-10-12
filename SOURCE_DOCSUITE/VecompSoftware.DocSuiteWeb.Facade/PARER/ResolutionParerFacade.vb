@@ -1,7 +1,7 @@
 ﻿Imports System
 Imports VecompSoftware.DocSuiteWeb.Data
 
-<ComponentModel.DataObject()> _
+<ComponentModel.DataObject()>
 Public Class ResolutionParerFacade
     Inherits BaseProtocolFacade(Of ResolutionParer, Int32, NHibernateResolutionParerDao)
 
@@ -29,6 +29,7 @@ Public Class ResolutionParerFacade
         Correct
         Warning
         [Error]
+        NotNeeded
     End Enum
 
     ''' <summary>
@@ -37,11 +38,12 @@ Public Class ResolutionParerFacade
     ''' <remarks></remarks>
     Public Shared ConservationsStatus As Dictionary(Of ResolutionParerConservationStatus, String) =
         New Dictionary(Of ResolutionParerConservationStatus, String)() From
-            {{ResolutionParerConservationStatus.Nothing, "Non soggetto alla conservazione anticipata"},
+            {{ResolutionParerConservationStatus.Nothing, "Documento non ancora versato"},
              {ResolutionParerConservationStatus.Correct, "Conservazione corretta"},
              {ResolutionParerConservationStatus.Warning, "Conservazione con avviso"},
              {ResolutionParerConservationStatus.Error, "Conservazione con errori"},
-             {ResolutionParerConservationStatus.Undefined, "Stato conservazione non definito"}
+             {ResolutionParerConservationStatus.Undefined, "Stato conservazione non definito"},
+             {ResolutionParerConservationStatus.NotNeeded, "Documento non soggetto a versamento"}
         }
 
     Public Function GetConservationStatus(resolution As Resolution) As ResolutionParerConservationStatus
@@ -57,7 +59,10 @@ Public Class ResolutionParerFacade
         If Not String.IsNullOrEmpty(item.ParerUri) _
             AndAlso Not item.HasError _
             AndAlso String.IsNullOrEmpty(item.LastError) Then
-            Return ResolutionParerConservationStatus.Correct
+            If item.ParerUri.StartsWith("urn:") Then
+                Return ResolutionParerConservationStatus.Correct
+            End If
+            Return ResolutionParerConservationStatus.NotNeeded
         End If
 
         If String.IsNullOrEmpty(item.ParerUri) _

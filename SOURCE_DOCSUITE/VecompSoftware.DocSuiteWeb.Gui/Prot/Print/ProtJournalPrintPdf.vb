@@ -77,12 +77,12 @@ Public Class ProtJournalPrintPdf
                 cTipo = ProtocolContactCommunicationType.Recipient
         End Select
 
-        Dim contacts As IList(Of ProtocolContact) = Facade.ProtocolContactFacade.GetByComunicationType(protocol.Year, protocol.Number, cTipo)
+        Dim contacts As IList(Of ProtocolContact) = Facade.ProtocolContactFacade.GetByComunicationType(protocol, cTipo)
         If contacts.Count > 0 Then
             ContactFacade.FormatContacts(contacts, text)
         End If
 
-        Dim mcontacts As IList(Of ProtocolContactManual) = Facade.ProtocolContactManualFacade.GetByComunicationType(protocol.Year, protocol.Number, cTipo)
+        Dim mcontacts As IList(Of ProtocolContactManual) = Facade.ProtocolContactManualFacade.GetByComunicationType(protocol, cTipo)
         If mcontacts.Count > 0 Then
             ContactFacade.FormatContacts(mcontacts, text)
         End If

@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http;
 using VecompSoftware.Clients.WebAPI.Http;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.DTO.OData;
@@ -30,6 +31,7 @@ namespace VecompSoftware.WebAPIManager.Finder
         private IDictionary<string, string> _sortExpressions;
         private IDictionary<string, IFilterExpression> _filterExpressions;
         private int _virtualCount;
+        private Func<ICredential, HttpClientHandler> _customAuthFunc;
 
         private const string _oDataDateConversion = "yyyyMMddHHmmss";
         #endregion
@@ -46,6 +48,7 @@ namespace VecompSoftware.WebAPIManager.Finder
             _mapper = new WebAPIDtoMapper<T>();
             //_tenant = CloneTenantModel(tenants.Single(f => f.CurrentTenant)); dosn't work
             _tenant = CloneTenantModel(tenants.First());
+            _customAuthFunc = null;
             ResetDecoration();
             EnablePaging = true;
             EnableTopOdata = true;
@@ -184,18 +187,12 @@ namespace VecompSoftware.WebAPIManager.Finder
             return odataQuery;
         }
 
-        private void SetEntityODATA(IHttpClientConfiguration config, string controllerName)
+        protected WebApiHttpClient GetWebAPIClient(TenantModel tenant)
         {
-            string entityName = typeof(T).Name;
-            IWebApiControllerEndpoint controller = config.EndPoints.Single(f => f.EndpointName.Equals(entityName, StringComparison.InvariantCultureIgnoreCase));
-            controller.AddressName = WebApiHttpClient.ODATA_ADDRESS_NAME;
-            controller.ControllerName = controllerName;
-        }
-
-        protected WebApiHttpClient GetWebAPIClient(TenantModel tenant, TenantEntityConfiguration config)
-        {
-            SetEntityODATA(tenant.WebApiClientConfig, config.ODATAControllerName);
-            return new WebApiHttpClient(tenant.WebApiClientConfig, tenant.OriginalConfiguration, (s) => FileLogger.Debug(LogName.WebAPIClientLog, s));
+            WebApiHttpClient webApiHttpClient = new WebApiHttpClient(tenant.WebApiClientConfig, tenant.OriginalConfiguration, 
+                (s) => FileLogger.Debug(LogName.WebAPIClientLog, s), _customAuthFunc);
+            webApiHttpClient.SetEntityODATA<T>();
+            return webApiHttpClient;
         }
 
         protected IODATAQueryManager GetODataQuery()
@@ -228,7 +225,7 @@ namespace VecompSoftware.WebAPIManager.Finder
         {
             ICollection<WebAPIDto<T>> elements = CurrentTenantExecutionWebAPI<T>((tenant, results) =>
             {
-                WebApiHttpClient httpClient = GetWebAPIClient(tenant, tenant.Entities.GetFromType<T>());
+                WebApiHttpClient httpClient = GetWebAPIClient(tenant);
                 IODATAQueryManager odataQuery = GetODataQuery();
                 odataQuery = DecorateFinder(odataQuery);
                 if (EnableTopOdata)
@@ -256,7 +253,7 @@ namespace VecompSoftware.WebAPIManager.Finder
         {
             ICollection<WebAPIDto<THeader>> searchHeaderList = CurrentTenantExecutionWebAPI<THeader>((tenant, results) =>
             {
-                WebApiHttpClient httpClient = GetWebAPIClient(tenant, tenant.Entities.GetFromType<T>());
+                WebApiHttpClient httpClient = GetWebAPIClient(tenant);
                 IODATAQueryManager odataQuery = GetODataQuery();
                 odataQuery = DecorateFinder(odataQuery);
                 if (EnableTopOdata)
@@ -269,6 +266,11 @@ namespace VecompSoftware.WebAPIManager.Finder
             }, FinalizeDoSearchHeader, "DoSearchHeader");
 
             return searchHeaderList;
+        }
+
+        public void SetCustomAuthenticationInizializer(Func<ICredential, HttpClientHandler> authenticationInitializer)
+        {
+            _customAuthFunc = authenticationInitializer;
         }
 
         private ICollection<WebAPIDto<T>> FinalizeDoSearch(IEnumerable<WebAPIDto<T>> source)
@@ -454,7 +456,7 @@ namespace VecompSoftware.WebAPIManager.Finder
                     break;
 
                 case FilterExpression.FilterType.Contains:
-                    filterExpression = string.Concat("contains(", propertyFormatted, ", '", filter.FilterValue, "')");
+                    filterExpression = string.Concat("contains(tolower(", propertyFormatted, "), '", filter.FilterValue.ToString().ToLower(), "')");
                     break;
 
                 case FilterExpression.FilterType.IsEnum:

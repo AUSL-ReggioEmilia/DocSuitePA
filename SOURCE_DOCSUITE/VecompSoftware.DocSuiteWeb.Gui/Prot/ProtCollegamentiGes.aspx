@@ -45,7 +45,7 @@
     <table class="datatable">
         <tr>
             <th colspan="3">
-               Protocollo <%=CurrentProtocol.Id.ToString()%>
+               Protocollo <%=CurrentProtocol.FullNumber%>
             </th>
         </tr>
         <tr>

@@ -47,6 +47,7 @@
     <Items>
         <telerik:RadToolBarButton ImageUrl="../App_Themes/DocSuite2008/imgset16/mail_send.png" Text="Invia" ToolTip="Invia" Value="MailSender_Send" />
         <telerik:RadToolBarButton ImageUrl="../App_Themes/DocSuite2008/imgset16/cancel.png" Text="Annulla" ToolTip="Annulla" Value="MailSender_Cancel" />
+        <telerik:RadToolBarButton ImageUrl="../App_Themes/DocSuite2008/imgset16/text_signature.png" Text="Inserisci firma" ToolTip="Inserisci firma" Value="MailSender_InsertSignature" />
         <telerik:RadToolBarButton
             Checked="True" CheckOnClick="true" CommandName="needDisposition" ToolTip="Abilita la notifica via mail della di ricezione e lettura" Value="needDisposition">
             <ItemTemplate>

@@ -2,18 +2,17 @@
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
 
   <class name="Protocol" table="Protocol">
-    
-    <composite-id class="YearNumberCompositeKey" name="Id">
-      <key-property column="Year" name="Year" />
-      <key-property column="Number" name="Number" />
-    </composite-id>
+
+    <id name="Id" column="UniqueId" >
+      <!--<generator class="guid.comb" />-->
+    </id>
 
     <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
       <column name="Timestamp" not-null="true" sql-type="timestamp" />
     </version>
     
-    <property name="Year" column="Year" insert="false" update="false" />
-    <property name="Number" column="Number" insert="false" update="false" />
+    <property name="Year" column="Year" update="false" />
+    <property name="Number" column="Number" update="false" />
     <property name="ProtocolObject" column="Object" type="AnsiString" />
     <property name="DocumentDate" column="DocumentDate" />
     <property name="DocumentProtocol" column="DocumentProtocol" type="AnsiString" />
@@ -41,9 +40,10 @@
     <property name="TDError" column="TDError" type="AnsiString" />
     <property name="HandlerDate" column="HandlerDate" />
     <property name="IdProtocolKind" column="idProtocolKind" />
-    <property name="UniqueId" column="UniqueId" unique="true" />
     <property name="DematerialisationChainId" column="DematerialisationChainId" />
-    <one-to-one fetch="join" cascade="all-delete-orphan" class="Protocol+AdvancedProtocol" name="AdvanceProtocol" outer-join="false" constrained="false" />
+    <property name="IdTenantAOO" column="IdTenantAOO" />
+
+    <one-to-one name="AdvanceProtocol" class="AdvancedProtocol" cascade="all-delete-orphan" property-ref="Protocol" />
     
     <component class="DocAreaImportStatus" name="DocAreaImportStatus">
       <property name="Code" column="DocAreaStatus" />
@@ -57,130 +57,120 @@
     <many-to-one class="DocumentType" name="DocumentType" column="idDocType" />
     <many-to-one class="ProtocolType" name="Type" column="idType" />
     <many-to-one name="JournalLog" class="ProtocolJournalLog" column="IdProtocolJournalLog" />
-    <many-to-one name="ProtocolParer" class="ProtocolParer" insert="false" update="false">
-      <column name="Year" />
-      <column name="Number" />
-    </many-to-one>
+
+    <one-to-one name="ProtocolParer" class="ProtocolParer" cascade="none" property-ref="Protocol" />
 
     <bag name="RoleUsers" table="ProtocolRoleUser" cascade="all-delete-orphan" inverse="true">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <one-to-many class="ProtocolRoleUser" />
     </bag>
+    
     <bag name="Roles" table="ProtocolRole" cascade="all-delete-orphan" inverse="true">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <one-to-many class="ProtocolRole" />
     </bag>
-    <bag name="ProtocolLinked" table="ProtocolLinks" cascade="none" inverse="true">
+    
+    <bag name="ProtocolLinks" table="ProtocolLinks" cascade="none" inverse="true">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocolParent" />
       </key>
-      <many-to-many class="Protocol">
-        <column name="YearSon" />
-        <column name="NumberSon" />
-      </many-to-many>
+      <one-to-many class="ProtocolLink" />
     </bag>
+
+    <bag name="ProtocolParentLinks" table="ProtocolLinks" cascade="none" inverse="true">
+      <key>
+        <column name="UniqueIdProtocolSon" />
+      </key>
+      <one-to-many class="ProtocolLink" />
+    </bag>
+    
     <bag inverse="true" table="ProtocolContactIssue" cascade="none" name="ContactIssues">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <one-to-many class="ProtocolContactIssue" />
     </bag>
-    <bag name="ProtocolLinkedTo" table="ProtocolLinks" cascade="none" inverse="true">
-      <key>
-        <column name="YearSon" />
-        <column name="NumberSon" />
-      </key>
-      <many-to-many class="Protocol">
-        <column name="Year" />
-        <column name="Number" />
-      </many-to-many>
-    </bag>
+    
     <bag name="Recipients" table="ProtocolRecipient" cascade="none" inverse="true">
-      <key>
-        <column name="Year" />
-        <column name="Number" />
-      </key>
-      <many-to-many class="Recipient" column="idRecipient">
-      </many-to-many>
+      <key column="UniqueId" />
+      <many-to-many class="Recipient" column="idRecipient" />      
     </bag>
+    
     <bag name="Contacts" table="ProtocolContact" cascade="all-delete-orphan" inverse="true">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <one-to-many class="ProtocolContact" />
       <filter condition=":Type=ComunicationType" name="ContactComType">
       </filter>
     </bag>
+    
     <bag name="ManualContacts" table="ProtocolContactManual" cascade="all-delete-orphan" inverse="true">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <one-to-many class="ProtocolContactManual" />
       <filter condition=":Type=ComunicationType" name="ManualContactComType">
       </filter>
     </bag>
-    <bag name="PecMails" table="PECMail" where="DocumentUnitType=1" cascade="none" inverse="true" fetch="join">
+    
+    <bag name="PecMails" table="PECMail" cascade="none" inverse="true">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="IdDocumentUnit" />
       </key>
       <one-to-many class="PECMail" />
     </bag>
+    
     <bag name="ProtocolLogs" table="ProtocolLog" cascade="none" inverse="true">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <one-to-many class="ProtocolLog" />
       <filter condition=":User=SystemUser" name="LogUser" />
       <filter condition=":Type=LogType" name="LogType" />
     </bag>
+    
     <bag name="Messages" table="ProtocolMessage" cascade="none" inverse="true" fetch="select">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <one-to-many class="ProtocolMessage" />
     </bag>
+    
     <bag name="TaskHeader" table="TaskHeaderProtocol" cascade="none" inverse="true" >
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <many-to-many class="TaskHeader" column="IdTaskHeader" />
     </bag>
+    
     <bag name="Users" table="ProtocolUsers" cascade="all-delete-orphan" inverse="true">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <one-to-many class="ProtocolUser" />
     </bag>
+    
     <bag name="RejectedRoles" table="ProtocolRejectedRoles" cascade="all-delete-orphan" inverse="true">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <one-to-many class="ProtocolRejectedRole" />
     </bag>
+    
     <bag name="ProtocolDocumentSeriesItems" table="ProtocolDocumentSeriesItems" cascade="all-delete-orphan" inverse="true">
       <key>
-        <column name="Year" />
-        <column name="Number" />
+        <column name="UniqueIdProtocol" />
       </key>
       <one-to-many class="ProtocolDocumentSeriesItem" />
     </bag>
-  </class>
+
+    <filter name="TenantFilter" condition=":tenantAOOId = IdTenantAOO" />
+  </class>  
 
   <filter-def name="ContactComType">
     <filter-param name="Type" type="AnsiString" />
@@ -196,6 +186,6 @@
 
   <filter-def name="LogType">
     <filter-param name="Type" type="AnsiString" />
-  </filter-def>
+  </filter-def>  
   
 </hibernate-mapping>

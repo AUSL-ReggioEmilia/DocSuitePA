@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscTemplateDocumentRepository
-    
+
     '''<summary>
     '''ToolBarSearch control.
     '''</summary>
@@ -21,7 +21,16 @@ Partial Public Class uscTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ToolBarSearch As Global.Telerik.Web.UI.RadToolBar
-    
+
+    '''<summary>
+    '''FolderToolBar control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FolderToolBar As Global.Telerik.Web.UI.RadToolBar
+
     '''<summary>
     '''racTagsDataSource control.
     '''</summary>
@@ -30,7 +39,7 @@ Partial Public Class uscTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents racTagsDataSource As Global.Telerik.Web.UI.RadClientDataSource
-    
+
     '''<summary>
     '''ToolBarTags control.
     '''</summary>
@@ -39,7 +48,7 @@ Partial Public Class uscTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ToolBarTags As Global.Telerik.Web.UI.RadToolBar
-    
+
     '''<summary>
     '''rtvTemplateDocument control.
     '''</summary>
@@ -48,7 +57,7 @@ Partial Public Class uscTemplateDocumentRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtvTemplateDocument As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>

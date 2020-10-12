@@ -49,6 +49,12 @@ Partial Class TbltContenitori
         End Get
     End Property
 
+    Public ReadOnly Property SelectedEnvironment As String
+        Get
+            Return EnvironmentsComboBox.SelectedValue.ToString()
+        End Get
+    End Property
+
     Public ReadOnly Property SearchActive As Boolean
         Get
             Dim toolBarItem As RadToolBarItem = ToolBar.FindItemByValue("searchActive")
@@ -142,6 +148,7 @@ Partial Class TbltContenitori
     Private Sub rtvContainers_NodeClick(ByVal sender As Object, ByVal e As Telerik.Web.UI.RadTreeNodeEventArgs) Handles rtvContainers.NodeClick
         e.Node.ExpandChildNodes()
         If (String.IsNullOrEmpty(e.Node.Value)) Then
+            SetDefaultToolbarButtonsState()
             Exit Sub
         End If
         LoadDetails()
@@ -298,6 +305,7 @@ Partial Class TbltContenitori
     Private Sub LoadContainers()
         Dim finder As New ContainerFinder()
         finder.Name = SearchCategoryTextBox.Text
+
         If Not String.IsNullOrEmpty(EnvironmentsComboBox.SelectedValue) Then
             finder.LocationTypeIn = {DirectCast([Enum].Parse(GetType(LocationTypeEnum), EnvironmentsComboBox.SelectedValue, True), LocationTypeEnum)}
         End If
@@ -376,8 +384,6 @@ Partial Class TbltContenitori
         Dim selectedContainer As Container = Facade.ContainerFacade.GetById(Integer.Parse(rtvContainers.SelectedValue))
         pnlDetails.Visible = True
         pnlPrivacy.Visible = DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso CommonShared.HasGroupAdministratorRight
-        pnlSecureDocument.Visible = ProtocolEnv.SecureDocumentEnabled
-        lblSecureDocumentEnabled.Text = If(selectedContainer.ManageSecureDocument, "Attiva", "Non Attiva")
         If pnlPrivacy.Visible Then
             lblIsPrivacy.Text = If(selectedContainer.PrivacyEnabled, "Attiva", "Non Attiva")
             pnlPrivacyLevel.Visible = lblIsPrivacy.Text.Equals("Attiva") AndAlso Not String.IsNullOrEmpty(selectedContainer.PrivacyLevel.ToString)
@@ -442,7 +448,7 @@ Partial Class TbltContenitori
             Case RECOVER_OPTION
                 AjaxManager.ResponseScripts.Add("OpenEditWindow('windowEditContainers','Recovery');")
             Case MODIFICA_OPTION
-                AjaxManager.ResponseScripts.Add("OpenGroupsWindow('windowGroupContainers');")
+                AjaxManager.ResponseScripts.Add($"OpenGroupsWindow('windowGroupContainers', {If(String.IsNullOrEmpty(SelectedEnvironment), "null", SelectedEnvironment)} );")
             Case PROPERTIES_OPTION
                 AjaxManager.ResponseScripts.Add("OpenPropertiesWindow('windowPropertiesContainers');")
             Case OPTION_OPTION
@@ -783,6 +789,15 @@ Partial Class TbltContenitori
         If (ProtocolEnv.DocumentSeriesEnabled AndAlso selectedContainer.DocumentSeriesLocation IsNot Nothing AndAlso series IsNot Nothing) Then
             rdlOptions.Items.Add(New DropDownListItem("Obblighi trasparenza", DOCUMENTSERIES_CONSTRAINT_OPTION))
         End If
+    End Sub
+
+    Private Sub SetDefaultToolbarButtonsState()
+        FolderToolBar.FindItemByValue(MODIFY_OPTION).Enabled = False
+        FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = False
+        FolderToolBar.FindItemByValue(OPTION_OPTION).Enabled = False
+        FolderToolBar.FindItemByValue(RECOVER_OPTION).Enabled = False
+        FolderToolBar.FindItemByValue(PRINT_OPTION).Enabled = False
+        FolderToolBar.FindItemByValue(MODIFICA_OPTION).Enabled = False
     End Sub
 #End Region
 

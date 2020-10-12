@@ -22,6 +22,7 @@ Imports VecompSoftware.Services.SignService.ProxySignService.Models
 Imports VecompSoftware.DocSuiteWeb.Model.Documents.Signs
 Imports VecompSoftware.Services.SignService.Services
 Imports VecompSoftware.Services.SignService.ArubaSignService.Models
+Imports VecompSoftware.Helpers.Signer.CAdES
 
 Public Class SingleSign
     Inherits CommonBasePage
@@ -79,7 +80,11 @@ Public Class SingleSign
     Private ReadOnly Property CurrentUserLog As UserLog
         Get
             If _currentUserLog Is Nothing Then
-                _currentUserLog = Facade.UserLogFacade.GetByUser(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
+                If Not String.IsNullOrEmpty(DelegatedUser) Then
+                    _currentUserLog = Facade.UserLogFacade.GetByUser(DelegatedUser)
+                Else
+                    _currentUserLog = Facade.UserLogFacade.GetByUser(DocSuiteContext.Current.User.FullUserName)
+                End If
             End If
             Return _currentUserLog
         End Get
@@ -144,6 +149,12 @@ Public Class SingleSign
         End Get
     End Property
 
+    Private ReadOnly Property DelegatedUser As String
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of String)("DelegatedUser", String.Empty)
+        End Get
+    End Property
+
 #End Region
 
 #Region " Events "
@@ -188,7 +199,7 @@ Public Class SingleSign
                 PdfButton.Enabled = True
                 PAdESButton.Enabled = True
             End If
-            If ProtocolEnv.DefaultSignType.Eq(SignType.CAdES.ToString()) Then
+            If ProtocolEnv.DefaultSignType.Eq(CAdES.SignType.CAdES.ToString()) Then
                 OriginalButton.Checked = True
                 CAdESButton.Checked = True
             End If
@@ -206,7 +217,7 @@ Public Class SingleSign
                     signTypeDropdown.FindItemByValue("3").Remove()
                 End If
             End If
-
+            DisableControls()
             LoadDocumentSource()
             ' Carico il componente di firma con lo stream di default
             AjaxManager.ResponseScripts.Add("openDefault();")
@@ -215,6 +226,12 @@ Public Class SingleSign
 
     End Sub
 
+    Private Sub DisableControls()
+        If Not String.IsNullOrEmpty(DelegatedUser) Then
+            signTypeDropdown.Enabled = False
+            PinTextbox.Enabled = False
+        End If
+    End Sub
     Private Sub PopulatePin(pin As String)
 
         Dim ss As String = String.Format("document.getElementById('{0}').value = '{1}';", PinTextbox.ClientID, pin)
@@ -477,13 +494,13 @@ Public Class SingleSign
 
                 Dim remoteSignProperty As RemoteSignProperty = CurrentUserProfile.Value.Item(Signs.ProviderSignType.ArubaAutomatic)
                 Dim arubaSignModel As ArubaSignModel = New ArubaSignModel With {
-                    .DelegatedDomain = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_DELEGATED_DOMAIN),
-                    .DelegatedPassword = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_DELEGATED_PASSWORD),
-                    .DelegatedUser = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_DELEGATED_USER),
+                    .DelegatedDomain = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_DELEGATED_DOMAIN),
+                    .DelegatedPassword = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_DELEGATED_PASSWORD),
+                    .DelegatedUser = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_DELEGATED_USER),
                     .OTPPassword = remoteSignProperty.OTP,
-                    .OTPAuthType = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_OTP_AUTHTYPE),
-                    .User = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_USER),
-                    .CertificateId = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_CERTIFICATEID),
+                    .OTPAuthType = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_OTP_AUTHTYPE),
+                    .User = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_USER),
+                    .CertificateId = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_CERTIFICATEID),
                     .RequestType = SignModel.SignRequestType.Pades
                 }
                 If CAdESButton.Checked Then
@@ -558,10 +575,10 @@ Public Class SingleSign
                 Dim remoteSignProperty As RemoteSignProperty = selectedSignOption.Value.Value
                 Dim arubaSignModel As ArubaSignModel = New ArubaSignModel()
                 arubaSignModel.OTPPassword = OtpTextbox.Text
-                arubaSignModel.OTPAuthType = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_OTP_AUTHTYPE)
+                arubaSignModel.OTPAuthType = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_OTP_AUTHTYPE)
                 arubaSignModel.User = selectedSignOption.Value.Value.Alias
                 arubaSignModel.UserPassword = PinTextbox.Text
-                arubaSignModel.CertificateId = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_CERTIFICATEID)
+                arubaSignModel.CertificateId = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_CERTIFICATEID)
                 arubaSignModel.SignType = SignModel.SignType.Remote
                 arubaSignModel.RequestType = SignModel.SignRequestType.Pades
                 If CAdESButton.Checked Then
@@ -660,6 +677,16 @@ Public Class SingleSign
             End If
             If defaultSignOption.HasValue Then
                 signTypeDropdown.SelectedValue = defaultSignOption.Value.Key.ToString("D")
+            End If
+            If Not String.IsNullOrEmpty(DelegatedUser) Then
+                If DocSuiteContext.Current.HasInfocertProxySign Then
+                    defaultSignOption = CurrentUserProfile.Value.FirstOrDefault(Function(x) x.Key = Signs.ProviderSignType.InfocertAutomatic)
+                    signTypeDropdown.SelectedValue = Convert.ToString(Signs.ProviderSignType.InfocertAutomatic)
+                End If
+                If DocSuiteContext.Current.HasArubaActalisSign Then
+                    defaultSignOption = CurrentUserProfile.Value.FirstOrDefault(Function(x) x.Key = Signs.ProviderSignType.ArubaAutomatic)
+                    signTypeDropdown.SelectedValue = Convert.ToString(Signs.ProviderSignType.ArubaAutomatic)
+                End If
             End If
         Else
             signTypeDropdown.SelectedIndex = 0

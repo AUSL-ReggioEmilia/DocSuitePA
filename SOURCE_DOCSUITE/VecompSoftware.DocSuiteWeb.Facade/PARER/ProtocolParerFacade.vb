@@ -4,7 +4,7 @@ Imports VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
 
 <ComponentModel.DataObject()>
 Public Class ProtocolParerFacade
-    Inherits BaseProtocolFacade(Of ProtocolParer, YearNumberCompositeKey, NHibernateProtocolParerDao)
+    Inherits BaseProtocolFacade(Of ProtocolParer, Guid, NHibernateProtocolParerDao)
 
     ''' <summary>
     ''' Status previsti per il Parer
@@ -17,21 +17,25 @@ Public Class ProtocolParerFacade
         Correct
         Warning
         [Error]
+        NotNeeded
     End Enum
 
     ''' <summary> Controlla se soggetto alla conservazione sostitutiva. </summary>
     Public Function Exists(parent As Protocol) As Boolean
-        Return _dao.Exists(parent.Id)
+        Return _dao.ExistsProtocol(parent.Id)
     End Function
 
     ''' <summary> Controlla se soggetto alla conservazione sostitutiva. </summary>
     Public Function Exists(year As Short, number As Integer) As Boolean
-        Dim id As New YearNumberCompositeKey(year, number)
-        Return _dao.Exists(id)
+        Return _dao.ExistsProtocol(year, number)
     End Function
 
     Public Function GetByProtocol(protocol As Protocol) As ProtocolParer
         Return _dao.GetByProtocol(protocol)
+    End Function
+
+    Public Function GetByProtocol(year As Short, number As Integer) As ProtocolParer
+        Return _dao.GetByProtocol(year, number)
     End Function
 
     ''' <summary> Dizionario statico che racchiude tutti i possibili stati del Parer con relativa descrizione. </summary>
@@ -40,25 +44,29 @@ Public Class ProtocolParerFacade
     ''' </remarks>
     Public Shared ConservationsStatus As Dictionary(Of ProtocolParerConservationStatus, String) =
         New Dictionary(Of ProtocolParerConservationStatus, String)() From
-            {{ProtocolParerConservationStatus.Nothing, "Non soggetto alla conservazione anticipata"},
+            {{ProtocolParerConservationStatus.Nothing, "Documento non ancora versato"},
              {ProtocolParerConservationStatus.Correct, "Conservazione corretta"},
              {ProtocolParerConservationStatus.Warning, "Conservazione con avviso"},
              {ProtocolParerConservationStatus.Error, "Conservazione con errori"},
-             {ProtocolParerConservationStatus.Undefined, "Stato conservazione non definito"}
+             {ProtocolParerConservationStatus.Undefined, "Stato conservazione non definito"},
+             {ProtocolParerConservationStatus.NotNeeded, "Documento non soggetto a versamento"}
         }
 
     Public Function GetConservationStatus(protocol As Protocol) As ProtocolParerConservationStatus
         Return GetConservationStatus(GetByProtocol(protocol))
     End Function
 
-    Public Function GetConservationStatus(item As ProtocolParer) As ProtocolParerConservationStatus
+    Public Shared Function GetConservationStatus(item As ProtocolParer) As ProtocolParerConservationStatus
         '' Se ricevo un protocolParer nullo significa che il protocollo non è soggetto a Parer
         If item Is Nothing Then Return ProtocolParerConservationStatus.Nothing
 
         If Not String.IsNullOrEmpty(item.ParerUri) _
             AndAlso Not item.HasError _
             AndAlso String.IsNullOrEmpty(item.LastError) Then
-            Return ProtocolParerConservationStatus.Correct
+            If item.ParerUri.StartsWith("urn:") Then
+                Return ProtocolParerConservationStatus.Correct
+            End If
+            Return ProtocolParerConservationStatus.NotNeeded
         End If
 
         If String.IsNullOrEmpty(item.ParerUri) _
@@ -82,9 +90,12 @@ Public Class ProtocolParerFacade
         If item Is Nothing Then Return ProtocolParerConservationStatus.Nothing
 
         If Not String.IsNullOrEmpty(item.ParerUri) _
-            AndAlso Not item.HasError.Value _
+            AndAlso Not item.HasError _
             AndAlso String.IsNullOrEmpty(item.LastError) Then
-            Return ProtocolParerConservationStatus.Correct
+            If item.ParerUri.StartsWith("urn:") Then
+                Return ProtocolParerConservationStatus.Correct
+            End If
+            Return ProtocolParerConservationStatus.NotNeeded
         End If
 
         If String.IsNullOrEmpty(item.ParerUri) _

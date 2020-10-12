@@ -29,6 +29,12 @@ Public Class UDSLink
         End Get
     End Property
 
+    Public ReadOnly Property CurrentAction As String
+        Get
+            Return Context.Request.QueryString.GetValueOrDefault(Of String)("Action", Nothing)
+        End Get
+    End Property
+
     Private Property CurrentFinder As UDSFinderDto
         Get
             If Session("CurrentFinder") IsNot Nothing Then

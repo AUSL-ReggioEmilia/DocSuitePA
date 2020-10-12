@@ -60,7 +60,7 @@ define(["require", "exports", "App/Mappers/BaseMapper"], function (require, expo
             toMap.RegistrationDate = source.RegistrationDate;
             toMap.LastChangedUser = source.LastChangedUser;
             toMap.LastChangedDate = source.LastChangedDate;
-            toMap.HumanEnabled = source.HumanEnabled;
+            toMap.LoginError = source.LoginError;
             toMap.Location = source.Location;
             toMap.InvoiceType = source.InvoiceType;
             return toMap;

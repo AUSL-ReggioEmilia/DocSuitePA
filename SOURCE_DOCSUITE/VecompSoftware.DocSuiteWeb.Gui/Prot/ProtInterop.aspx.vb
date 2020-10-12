@@ -173,9 +173,9 @@ Partial Class ProtInterop
             If Not HasSenders Then
                 For Each contactDto As ContactDTO In uscProtocollo.ControlSenders.GetContacts(False)
                     Select Case contactDto.Type
-                        Case ContactDTO.ContactType.Address
+                        Case contactDto.ContactType.Address
                             CurrentProtocol.AddSender(contactDto.Contact, contactDto.IsCopiaConoscenza)
-                        Case ContactDTO.ContactType.Manual
+                        Case contactDto.ContactType.Manual
                             CurrentProtocol.AddSenderManual(contactDto.Contact, contactDto.IsCopiaConoscenza)
                     End Select
                 Next
@@ -289,21 +289,21 @@ Partial Class ProtInterop
         Dim s As String = String.Empty
         'verifica Protocollo
         If CurrentProtocol Is Nothing Then
-            Throw New DocSuiteException("Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber), "Protocollo Inesistente", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
+            Throw New DocSuiteException($"Protocollo ID {CurrentProtocolId}", "Protocollo Inesistente", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
         End If
 
         ' i protocolli in ingresso non sono spedibili via interoperabilità
         If CurrentProtocol.Type.Id = -1 Then
-            Throw New DocSuiteException("Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber), "I protocolli in ingresso non possono essere inviati attraverso l'interoperabilità", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
+            Throw New DocSuiteException($"Protocollo n. {CurrentProtocol.FullNumber}", "I protocolli in ingresso non possono essere inviati attraverso l'interoperabilità", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
         End If
 
         'If Not RolesCheckUserRight() Then
         If Not CurrentProtocolRights.IsPecSendable Then
-            Throw New DocSuiteException("Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber), "Mancano diritti di Autorizzazione sul protocollo", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
+            Throw New DocSuiteException($"Protocollo n. {CurrentProtocol.FullNumber}", "Mancano diritti di Autorizzazione sul protocollo", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
         End If
 
         If Not DocSuiteContext.Current.ProtocolEnv.IsInteropEnabled Then
-            Throw New DocSuiteException("Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber), "Interoperabilità non abilitata", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
+            Throw New DocSuiteException($"Protocollo n. {CurrentProtocol.FullNumber}", "Interoperabilità non abilitata", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
         End If
 
         Dim senders As New List(Of ContactDTO)
@@ -311,7 +311,7 @@ Partial Class ProtInterop
         CurrentProtocol.GetManualContacts(senders, New List(Of ContactDTO))
 
         If senders.Count > 1 Then
-            Throw New DocSuiteException("Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber), "Il mittente dev'essere univoco", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
+            Throw New DocSuiteException($"Protocollo n. {CurrentProtocol.FullNumber}", "Il mittente dev'essere univoco", Request.Url.ToString(), DocSuiteContext.Current.User.FullUserName)
         End If
 
         Me.HasSenders = (senders.Count > 0)
@@ -383,7 +383,7 @@ Partial Class ProtInterop
 
             For Each mailbox As PECMailBox In mailBoxes
                 If (CurrentProtocolRights.IsInteroperable AndAlso InteropMessage AndAlso mailbox.IsForInterop) _
-                    OrElse CurrentProtocolRights.IsPecSendable AndAlso Not InteropMessage AndAlso Not mailbox.IsForInterop Then
+                    OrElse CurrentProtocolRights.IsPECSendable AndAlso Not InteropMessage AndAlso Not mailbox.IsForInterop Then
                     ddlPECAddress.Items.Add(New ListItem(mailbox.MailBoxName, mailbox.Id.ToString))
                 End If
             Next
@@ -407,14 +407,14 @@ Partial Class ProtInterop
 
     Private Sub SetDocumenti()
 
-        uscProtDocument.LoadBiblosDocuments(CurrentProtocol.Location.DocumentServer, CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdDocument.Value, False, True)
+        uscProtDocument.LoadBiblosDocuments(CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdDocument.Value, False, True)
         If uscProtDocument.SendSourceDocument Then
             uscProtDocument.TreeViewControl.Nodes(0).Checkable = False
         End If
 
         If CurrentProtocol.IdAttachments.HasValue AndAlso CurrentProtocol.IdAttachments > 0 Then
             uscProtAttachs.Visible = True
-            uscProtAttachs.LoadBiblosDocuments(CurrentProtocol.Location.DocumentServer, CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdAttachments.Value, True, True)
+            uscProtAttachs.LoadBiblosDocuments(CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdAttachments.Value, True, True)
             If uscProtAttachs.SendSourceDocument Then
                 uscProtAttachs.TreeViewControl.Nodes(0).Checkable = False
             End If
@@ -472,10 +472,10 @@ Partial Class ProtInterop
         End If
     End Function
 
-    Private Overloads Function PopulateAttachments(server As String, archive As String, idchain As Integer?, ByVal main As Boolean) As List(Of PECMailAttachment)
+    Private Overloads Function PopulateAttachments(archive As String, idchain As Integer?, ByVal main As Boolean) As List(Of PECMailAttachment)
         Dim retAttachs As New List(Of PECMailAttachment)
 
-        Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(server, archive, idchain.Value)
+        Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(archive, idchain.Value)
         For Each doc As BiblosDocumentInfo In docs
 
             Dim attach As New PECMailAttachment() With {
@@ -498,8 +498,8 @@ Partial Class ProtInterop
 
         For Each n As Telerik.Web.UI.RadTreeNode In p_nodes
             currentFileRef = n.Value.Split("|"c)
-            If currentFileRef.Length.Equals(4) Then
-                Dim doc As New BiblosDocumentInfo(currentFileRef(0), currentFileRef(1), Integer.Parse(currentFileRef(2)), Integer.Parse(currentFileRef(3)))
+            If currentFileRef.Length.Equals(3) Then
+                Dim doc As New BiblosDocumentInfo(currentFileRef(0), Integer.Parse(currentFileRef(1)), Integer.Parse(currentFileRef(2)))
 
                 Dim item As New PECMailAttachment
                 item.IsMain = False
@@ -514,10 +514,10 @@ Partial Class ProtInterop
     ''' <summary> Accodamento in DB </summary>
     Private Function InsertMailInDB(ByVal protocol As Protocol, ByVal mailbox As PECMailBox, ByVal segnatura As String, ByVal mailBody As String) As PECMail
 
-        Dim pecMail As New PECMail()
+        Dim pecMail As PECMail = New PECMail()
         pecMail.Year = protocol.Year
         pecMail.Number = protocol.Number
-        pecMail.DocumentUnitType = DSWEnvironment.Protocol
+        pecMail.DocumentUnit = Facade.DocumentUnitFacade.GetById(protocol.Id)
         pecMail.Direction = PECMailDirection.Outgoing
         pecMail.MailSubject = protocol.ProtocolObject
         pecMail.MailType = PECMailTypes.Invio
@@ -553,8 +553,8 @@ Partial Class ProtInterop
 
         ' allegati
         Dim attachments As New List(Of PECMailAttachment)
-        attachments.AddRange(PopulateAttachments(protocol.Location.DocumentServer, protocol.Location.ProtBiblosDSDB, protocol.IdDocument, True))
-        attachments.AddRange(PopulateAttachments(protocol.Location.DocumentServer, protocol.Location.ProtBiblosDSDB, protocol.IdAttachments, False))
+        attachments.AddRange(PopulateAttachments(protocol.Location.ProtBiblosDSDB, protocol.IdDocument, True))
+        attachments.AddRange(PopulateAttachments(protocol.Location.ProtBiblosDSDB, protocol.IdAttachments, False))
         ' Aggiungo gli originali qualora selezionati.
         If uscProtDocument.SendSourceDocument Then
             attachments.AddRange(PopulateAttachments(uscProtDocument.TreeViewControl.CheckedNodes))
@@ -610,7 +610,7 @@ Partial Class ProtInterop
 
         retval.Year = CurrentProtocol.Year
         retval.Number = CurrentProtocol.Number
-        retval.DocumentUnitType = DSWEnvironment.Protocol
+        retval.DocumentUnit = Facade.DocumentUnitFacade.GetById(CurrentProtocol.Id)
         retval.MailSubject = CurrentProtocol.ProtocolObject
         retval.Direction = PECMailDirection.Outgoing
         retval.MailType = PECMailTypes.Invio
@@ -644,8 +644,8 @@ Partial Class ProtInterop
 
         ' Popolo lista allegati.
         Dim attachments As New List(Of PECMailAttachment)
-        attachments.AddRange(PopulateAttachments(CurrentProtocol.Location.DocumentServer, CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdDocument, True))
-        attachments.AddRange(PopulateAttachments(CurrentProtocol.Location.DocumentServer, CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdAttachments, False))
+        attachments.AddRange(PopulateAttachments(CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdDocument, True))
+        attachments.AddRange(PopulateAttachments(CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdAttachments, False))
 
         ' Aggiungo gli originali qualora selezionati.
         If uscProtDocument.SendSourceDocument Then

@@ -17,6 +17,7 @@ define(["require", "exports", "App/Models/Dossiers/DossierFolderStatus"], functi
             toMap.idFascicle = source.Fascicle ? source.Fascicle.UniqueId : null;
             toMap.idCategory = source.Category ? source.Category.EntityShortId : null;
             toMap.idRole = (source.DossierFolderRoles && source.DossierFolderRoles[0] && source.DossierFolderRoles[0].Role) ? source.DossierFolderRoles[0].Role.EntityShortId : null;
+            toMap.JsonMetadata = source.JsonMetadata;
             return toMap;
         };
         return DossierFolderSummaryModelMapper;

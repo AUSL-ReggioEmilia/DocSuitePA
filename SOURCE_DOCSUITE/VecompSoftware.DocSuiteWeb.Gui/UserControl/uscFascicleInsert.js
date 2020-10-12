@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/Fascicles/FascicleRoleModel", "App/Models/Fascicles/FascicleType", "App/Models/Fascicles/VisibilityType", "Fasc/FascBase", "App/Helpers/ServiceConfigurationHelper", "UserControl/uscMetadataRepositorySel", "App/Helpers/EnumHelper", "App/Services/Commons/ContainerService"], function (require, exports, FascicleModel, FascicleRoleModel, FascicleType, VisibilityType, FascicleBase, ServiceConfigurationHelper, UscMetadataRepositorySel, EnumHelper, ContainerService) {
+define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/Fascicles/FascicleRoleModel", "App/Models/Fascicles/FascicleType", "App/Models/Fascicles/VisibilityType", "Fasc/FascBase", "App/Helpers/ServiceConfigurationHelper", "UserControl/uscMetadataRepositorySel", "App/Helpers/EnumHelper", "App/Services/Commons/ContainerService", "App/Helpers/PageClassHelper", "App/Models/Commons/UscRoleRestEventType", "App/Models/Commons/AuthorizationRoleType"], function (require, exports, FascicleModel, FascicleRoleModel, FascicleType, VisibilityType, FascicleBase, ServiceConfigurationHelper, UscMetadataRepositorySel, EnumHelper, ContainerService, PageClassHelper, UscRoleRestEventType, AuthorizationRoleType) {
     var uscFascicleInsert = /** @class */ (function (_super) {
         __extends(uscFascicleInsert, _super);
         /**
@@ -31,7 +31,7 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
              * Evento scatenato al cambio di selezione del classificatore
              * @param conservationYear
              */
-            _this.onCategoryChanged = function (conservationYear, idMetadataRepository) {
+            _this.onCategoryChanged = function (conservationYear, idMetadataRepository, customActionsJson) {
                 if (_this.selectedFascicleType == FascicleType.Procedure) {
                     var txtConservation = $find(_this.txtConservationId);
                     if (conservationYear && Number(conservationYear) != -1)
@@ -57,6 +57,12 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
                         }
                     }
                 }
+                if (customActionsJson !== "") {
+                    PageClassHelper.callUserControlFunctionSafe(_this.uscCustomActionsRestId)
+                        .done(function (instance) {
+                        instance.loadItems(JSON.parse(customActionsJson));
+                    });
+                }
             };
             /**
              * Evento scatenato al cambio di selezione di una tipologia di Fascicolo
@@ -75,6 +81,24 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
                     return;
                 }
                 _this.setPageBehaviourAfterFascicleTypeChanged();
+                PageClassHelper.callUserControlFunctionSafe(_this.uscRoleMasterId)
+                    .done(function (instance) {
+                    instance.forceBehaviourValidationState(_this.selectedFascicleType === FascicleType.Procedure);
+                    instance.enableValidators(_this.selectedFascicleType === FascicleType.Procedure);
+                });
+                PageClassHelper.callUserControlFunctionSafe(_this.uscRoleId)
+                    .done(function (instance) {
+                    instance.forceBehaviourValidationState(_this.selectedFascicleType !== FascicleType.Procedure);
+                    instance.enableValidators(_this.selectedFascicleType !== FascicleType.Procedure);
+                    instance.disableRaciRoleButton();
+                });
+                PageClassHelper.callUserControlFunctionSafe(_this.uscCustomActionsRestId)
+                    .done(function (instance) {
+                    instance.loadItems({
+                        AutoClose: false,
+                        AutoCloseAndClone: false
+                    });
+                });
             };
             _this.ddlContainer_onSelectedIndexChanged = function (sender, args) {
                 var uscClassificatore = $("#".concat(_this.uscClassificatoreId)).data();
@@ -118,48 +142,8 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
                 //    contactModel.EntityId = contact;
                 //    fascicleModel.Contacts.push(contactModel);
                 //}
-                var uscRoles = $("#".concat(_this.uscSettoriId)).data();
-                if (!jQuery.isEmptyObject(uscRoles)) {
-                    if (_this.selectedFascicleType == FascicleType.Procedure) {
-                        fascicleModel.VisibilityType = uscRoles.getFascicleVisibilityType();
-                    }
-                    var source = JSON.parse(uscRoles.getRoles());
-                    if (source != null) {
-                        var role = void 0;
-                        var fascicleRole = void 0;
-                        for (var _i = 0, source_1 = source; _i < source_1.length; _i++) {
-                            var s = source_1[_i];
-                            role = {};
-                            fascicleRole = new FascicleRoleModel();
-                            role.IdRole = s.EntityShortId;
-                            role.EntityShortId = s.EntityShortId;
-                            role.TenantId = s.TenantId;
-                            fascicleRole.Role = role;
-                            fascicleModel.FascicleRoles.push(fascicleRole);
-                        }
-                    }
-                }
-                if (fascicleModel.FascicleType != FascicleType.Activity) {
-                    var uscMasterRoles = $("#".concat(_this.uscMasterRolesId)).data();
-                    if (!jQuery.isEmptyObject(uscMasterRoles)) {
-                        var source = JSON.parse(uscMasterRoles.getRoles());
-                        if (source != null) {
-                            var role = void 0;
-                            var fascicleRole = void 0;
-                            for (var _a = 0, source_2 = source; _a < source_2.length; _a++) {
-                                var s = source_2[_a];
-                                role = {};
-                                fascicleRole = new FascicleRoleModel();
-                                role.IdRole = s.EntityShortId;
-                                role.EntityShortId = s.EntityShortId;
-                                role.TenantId = s.TenantId;
-                                fascicleRole.Role = role;
-                                fascicleRole.IsMaster = true;
-                                fascicleModel.FascicleRoles.push(fascicleRole);
-                            }
-                        }
-                    }
-                }
+                fascicleModel.VisibilityType = _this._fascicleVisibilityType;
+                fascicleModel.FascicleRoles = _this.populateFascicleRoles();
                 return fascicleModel;
             };
             _this.getSelectedFascicleType = function () {
@@ -167,14 +151,6 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
             };
             _this.enableValidators = function (enabled) {
                 ValidatorEnable($get(_this.rfvConservationId), enabled);
-                var uscMasterRoles = $("#".concat(_this.uscMasterRolesId)).data();
-                if (!jQuery.isEmptyObject(uscMasterRoles)) {
-                    uscMasterRoles.enableValidators(enabled);
-                }
-                var uscRoles = $("#".concat(_this.uscSettoriId)).data();
-                if (!jQuery.isEmptyObject(uscRoles)) {
-                    uscRoles.enableValidators(enabled);
-                }
                 var uscOggetto = $("#".concat(_this.uscOggettoId)).data();
                 if (!jQuery.isEmptyObject(uscOggetto)) {
                     uscOggetto.enableVaidators(enabled);
@@ -199,14 +175,6 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
                     isProcedure = true;
                 }
                 ValidatorEnable($get(_this.rfvConservationId), isProcedure);
-                var uscMasterRoles = $("#".concat(_this.uscMasterRolesId)).data();
-                if (!jQuery.isEmptyObject(uscMasterRoles)) {
-                    uscMasterRoles.enableValidators(isProcedure);
-                }
-                var uscRoles = $("#".concat(_this.uscSettoriId)).data();
-                if (!jQuery.isEmptyObject(uscRoles)) {
-                    uscRoles.enableValidators(!isProcedure);
-                }
                 var uscContattiResp = $("#".concat(_this.uscContattiRespId)).data();
                 if (!jQuery.isEmptyObject(uscContattiResp)) {
                     uscContattiResp.enableValidators(isProcedure);
@@ -237,55 +205,27 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(uscFascicleInsert.prototype, "fascicleDataRow", {
-            get: function () {
-                return $("#" + this.fascicleDataRowId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscFascicleInsert.prototype, "contattiRespRow", {
-            get: function () {
-                return $("#" + this.contattiRespRowId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscFascicleInsert.prototype, "isMasterRow", {
-            get: function () {
-                return $("#" + this.isMasterRowId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscFascicleInsert.prototype, "startDateRow", {
-            get: function () {
-                return $("#" + this.rowStartDateId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscFascicleInsert.prototype, "metadataRepositoryRow", {
-            get: function () {
-                return $("#" + this.metadataRepositoryRowId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscFascicleInsert.prototype, "fascicleTypologyRow", {
-            get: function () {
-                return $("#" + this.fascicleTypologyRowId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscFascicleInsert.prototype, "containerRow", {
-            get: function () {
-                return $("#" + this.containerRowId);
-            },
-            enumerable: true,
-            configurable: true
-        });
+        uscFascicleInsert.prototype.fascicleDataRow = function () {
+            return $("#" + this.fascicleDataRowId);
+        };
+        uscFascicleInsert.prototype.contattiRespRow = function () {
+            return $("#" + this.contattiRespRowId);
+        };
+        uscFascicleInsert.prototype.isMasterRow = function () {
+            return $("#" + this.isMasterRowId);
+        };
+        uscFascicleInsert.prototype.startDateRow = function () {
+            return $("#" + this.rowStartDateId);
+        };
+        uscFascicleInsert.prototype.metadataRepositoryRow = function () {
+            return $("#" + this.metadataRepositoryRowId);
+        };
+        uscFascicleInsert.prototype.fascicleTypologyRow = function () {
+            return $("#" + this.fascicleTypologyRowId);
+        };
+        uscFascicleInsert.prototype.containerRow = function () {
+            return $("#" + this.containerRowId);
+        };
         /**
          * Initialize
          */
@@ -307,18 +247,26 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
                 var txtConservation = $find(this.txtConservationId);
                 txtConservation.set_value("0");
             }
-            this.metadataRepositoryRow.hide();
+            this.metadataRepositoryRow().hide();
             if (this.selectedFascicleType && this.selectedFascicleType == FascicleType.Period) {
                 this.initializeFasciclePeriodic();
-            }
-            else if (!this.activityFascicleEnabled) {
-                this.setProcedureTypeSelected();
             }
             if (this.activityFascicleEnabled && !this.selectedFascicleType) {
                 this.initializeEmptyFascicleTypeSelected();
             }
+            this._fascicleVisibilityType = VisibilityType.Confidential;
+            this.registerUscRoleRestEventHandlers();
+            PageClassHelper.callUserControlFunctionSafe(this.uscRoleId).done(function (instance) {
+                instance.setToolbarVisibility(true);
+                instance.renderRolesTree([]);
+            });
+            PageClassHelper.callUserControlFunctionSafe(this.uscRoleMasterId).done(function (instance) {
+                instance.setToolbarVisibility(true);
+                instance.renderRolesTree([]);
+            });
+            sessionStorage.removeItem(this.clientId + "_FascicleRolesToAdd");
             if (this.metadataRepositoryEnabled) {
-                this.metadataRepositoryRow.show();
+                this.metadataRepositoryRow().show();
                 this.setMetadataRepositorySelectedIndexEvent();
             }
             this._loadingPanel.show(this.fasciclePageContentId);
@@ -339,13 +287,20 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
                     }
                     initializeContainersAction()
                         .done(function () {
-                        $find(_this.ajaxManagerId).ajaxRequest("Initialize");
+                        var ajaxModel = {
+                            ActionName: "Initialize",
+                            Value: []
+                        };
+                        $find(_this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
                     })
                         .fail(function (exception) { return promise.reject(exception); });
                     return promise.promise();
                 };
                 deferredInitializeAction()
                     .always(function () {
+                    if (!_this.activityFascicleEnabled && (!_this.selectedFascicleType || _this.selectedFascicleType != FascicleType.Period)) {
+                        _this.setProcedureTypeSelected();
+                    }
                     _this.bindLoaded();
                     _this._loadingPanel.hide(_this.fasciclePageContentId);
                 });
@@ -469,7 +424,14 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
                     initializeContainersAction()
                         .done(function () {
                         setTimeout(function () {
-                            $find(_this.ajaxManagerId).ajaxRequest("FascicleTypeSelected");
+                            var ajaxModel = {
+                                ActionName: "FascicleTypeSelected",
+                                Value: []
+                            };
+                            if (_this._selectedResponsibleRole) {
+                                ajaxModel.Value.push(_this._selectedResponsibleRole.EntityShortId.toString());
+                            }
+                            $find(_this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
                         }, 500);
                     })
                         .fail(function (exception) { return promise.reject(exception); });
@@ -507,6 +469,51 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
             }
         };
         uscFascicleInsert.prototype.fascicleTypeSelectedCallback = function () {
+            var _this = this;
+            switch (+this._rdlFascicleType.get_selectedItem().get_value()) {
+                case FascicleType.Activity: {
+                    PageClassHelper.callUserControlFunctionSafe(this.uscRoleId)
+                        .done(function (instance) {
+                        instance.requiredValidationEnabled = "true";
+                        instance.multipleRoles = "false";
+                        instance.onlyMyRoles = "true";
+                        instance.setConfiguration({
+                            isReadOnlyMode: false
+                        });
+                    });
+                    break;
+                }
+                case FascicleType.Procedure: {
+                    PageClassHelper.callUserControlFunctionSafe(this.uscRoleId)
+                        .done(function (instance) {
+                        instance.multipleRoles = "true";
+                        instance.onlyMyRoles = "false";
+                        instance.setConfiguration({
+                            isReadOnlyMode: true
+                        });
+                    });
+                    PageClassHelper.callUserControlFunctionSafe(this.uscRoleMasterId)
+                        .done(function (instance) {
+                        instance.multipleRoles = "false";
+                        instance.onlyMyRoles = "true";
+                    });
+                    break;
+                }
+                case FascicleType.Period: {
+                    PageClassHelper.callUserControlFunctionSafe(this.uscRoleId)
+                        .done(function (instance) {
+                        instance.multipleRoles = "true";
+                        instance.onlyMyRoles = "false";
+                    });
+                    PageClassHelper.callUserControlFunctionSafe(this.uscRoleMasterId)
+                        .done(function (instance) {
+                        instance.requiredValidationEnabled = "" + !_this.fascicleContainerEnabled;
+                        instance.multipleRoles = "false";
+                        instance.onlyMyRoles = "true";
+                    });
+                    break;
+                }
+            }
             this._deferredFascicleSelectedTypeActions.forEach(function (item) { return item.resolve(); });
         };
         uscFascicleInsert.prototype.printCategoryNotFascicolable = function () {
@@ -514,19 +521,19 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
         };
         uscFascicleInsert.prototype.initializeFascicleProcedure = function () {
             if (this.fascicleContainerEnabled) {
-                this.containerRow.show();
+                this.containerRow().show();
                 ValidatorEnable($get(this.rfvContainerId), true);
                 $("#" + this.rfvContainerId).show();
             }
             else {
-                this.containerRow.hide();
+                this.containerRow().hide();
                 ValidatorEnable($get(this.rfvContainerId), false);
                 $("#" + this.rfvContainerId).hide();
             }
-            this.fascicleDataRow.show();
-            this.contattiRespRow.show();
-            this.isMasterRow.show();
-            this.startDateRow.hide();
+            this.fascicleDataRow().show();
+            this.contattiRespRow().show();
+            this.isMasterRow().show();
+            this.startDateRow().hide();
             if (!String.isNullOrEmpty(this.pnlConservationId)) {
                 $("#".concat(this.pnlConservationId)).show();
             }
@@ -534,35 +541,35 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
         uscFascicleInsert.prototype.initializeFascicleActivity = function () {
             ValidatorEnable($get(this.rfvContainerId), false);
             $("#" + this.rfvContainerId).hide();
-            this.containerRow.hide();
-            this.fascicleDataRow.show();
-            this.contattiRespRow.hide();
-            this.isMasterRow.hide();
-            this.startDateRow.hide();
+            this.containerRow().hide();
+            this.fascicleDataRow().show();
+            this.contattiRespRow().hide();
+            this.isMasterRow().hide();
+            this.startDateRow().hide();
             if (!String.isNullOrEmpty(this.pnlConservationId)) {
                 $("#".concat(this.pnlConservationId)).hide();
             }
         };
         uscFascicleInsert.prototype.initializeFasciclePeriodic = function () {
             if (this.fascicleContainerEnabled) {
-                this.containerRow.show();
+                this.containerRow().show();
                 ValidatorEnable($get(this.rfvContainerId), true);
                 $("#" + this.rfvContainerId).hide();
             }
             else {
-                this.containerRow.hide();
+                this.containerRow().hide();
                 ValidatorEnable($get(this.rfvContainerId), false);
                 $("#" + this.rfvContainerId).hide();
-                this.isMasterRow.show();
+                this.isMasterRow().show();
             }
-            this.fascicleDataRow.show();
-            this.contattiRespRow.hide();
-            this.fascicleTypologyRow.hide();
+            this.fascicleDataRow().show();
+            this.contattiRespRow().hide();
+            this.fascicleTypologyRow().hide();
         };
         uscFascicleInsert.prototype.initializeEmptyFascicleTypeSelected = function () {
             ValidatorEnable($get(this.rfvContainerId), false);
             $("#" + this.rfvContainerId).hide();
-            this.fascicleDataRow.hide();
+            this.fascicleDataRow().hide();
         };
         /**
     * Scateno l'evento di "Load Completed" del controllo
@@ -579,13 +586,15 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
         };
         uscFascicleInsert.prototype.setMetadataRepositorySelectedIndexEvent = function () {
             var _this = this;
-            $("#".concat(this.uscMetadataRepositorySelId)).off(UscMetadataRepositorySel.SELECTED_INDEX_EVENT);
-            $("#".concat(this.uscMetadataRepositorySelId)).on(UscMetadataRepositorySel.SELECTED_INDEX_EVENT, function (args, data) {
-                var uscDynamicMetadata = $("#".concat(_this.uscDynamicMetadataId)).data();
-                if (!jQuery.isEmptyObject(uscDynamicMetadata)) {
-                    setTimeout(function () {
-                        uscDynamicMetadata.loadDynamicMetadata(data);
-                    }, 500);
+            $("#".concat(this.uscMetadataRepositorySelId)).off(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT);
+            $("#".concat(this.uscMetadataRepositorySelId)).on(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, function (args, data) {
+                if (data) {
+                    var uscDynamicMetadata_1 = $("#".concat(_this.uscDynamicMetadataId)).data();
+                    if (!jQuery.isEmptyObject(uscDynamicMetadata_1)) {
+                        setTimeout(function () {
+                            uscDynamicMetadata_1.loadDynamicMetadata(data);
+                        }, 500);
+                    }
                 }
             });
         };
@@ -594,6 +603,131 @@ define(["require", "exports", "App/Models/Fascicles/FascicleModel", "App/Models/
             if (!jQuery.isEmptyObject(uscClassificatore)) {
                 uscClassificatore.setShowRoleParam(idRole);
             }
+        };
+        uscFascicleInsert.prototype.getCustomActions = function () {
+            var promise = $.Deferred();
+            PageClassHelper.callUserControlFunctionSafe(this.uscCustomActionsRestId)
+                .done(function (instance) {
+                promise.resolve(instance.getCustomActions());
+            });
+            return promise.promise();
+        };
+        uscFascicleInsert.prototype.registerUscRoleRestEventHandlers = function () {
+            var _this = this;
+            PageClassHelper.callUserControlFunctionSafe(this.uscRoleId)
+                .done(function (instance) {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, function (roleId) {
+                    _this.deleteRoleFromModel(roleId);
+                    return $.Deferred().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, function (newAddedRoles) {
+                    var existedRole;
+                    _this.addRoleToModel(_this.uscRoleMasterId, newAddedRoles, function (role) {
+                        existedRole = role;
+                    });
+                    return $.Deferred().resolve(existedRole);
+                });
+            });
+            PageClassHelper.callUserControlFunctionSafe(this.uscRoleMasterId)
+                .done(function (instance) {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, function (roleId) {
+                    _this.deleteRoleFromModel(roleId);
+                    return $.Deferred().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, function (newAddedRoles) {
+                    var existedRole;
+                    _this.addRoleToModel(_this.uscRoleId, newAddedRoles, function (role) {
+                        existedRole = role;
+                    });
+                    if (!existedRole) {
+                        _this._selectedResponsibleRole = newAddedRoles[0];
+                    }
+                    return $.Deferred().resolve(existedRole, true);
+                });
+                instance.registerEventHandler(UscRoleRestEventType.SetFascicleVisibilityType, function (visibilityType) {
+                    _this._fascicleVisibilityType = visibilityType;
+                    return $.Deferred().resolve();
+                });
+            });
+        };
+        uscFascicleInsert.prototype.addRoleToModel = function (toCheckControlId, newAddedRoles, existedRoleCallback) {
+            var _this = this;
+            PageClassHelper.callUserControlFunctionSafe(toCheckControlId)
+                .done(function (instance) {
+                var existedRole = instance.existsRole(newAddedRoles);
+                if (existedRole) {
+                    alert("Non \u00E8 possibile selezionare il settore " + existedRole.Name + " in quanto gi\u00E0 presente come settore " + (toCheckControlId == _this.uscRoleMasterId ? "responsabile" : "autorizzato") + " del fascicolo");
+                    existedRoleCallback(existedRole);
+                    newAddedRoles = newAddedRoles.filter(function (x) { return x.IdRole !== existedRole.IdRole; });
+                }
+                if (toCheckControlId === _this.uscRoleMasterId) {
+                    _this.setCategoryRole(newAddedRoles[0].EntityShortId);
+                    return _this.addRole(newAddedRoles, false);
+                }
+            });
+        };
+        uscFascicleInsert.prototype.addRole = function (newAddedRoles, isMaster) {
+            if (!newAddedRoles.length)
+                return;
+            var fascicleRoles = [];
+            if (this.getFascicleRolesToAdd()) {
+                fascicleRoles = this.getFascicleRolesToAdd();
+            }
+            for (var _i = 0, newAddedRoles_1 = newAddedRoles; _i < newAddedRoles_1.length; _i++) {
+                var newAddedRole = newAddedRoles_1[_i];
+                var fascicleRole = new FascicleRoleModel();
+                fascicleRole.IsMaster = isMaster;
+                fascicleRole.Role = newAddedRole;
+                fascicleRoles.push(fascicleRole);
+            }
+            this.setFascicleRolesToSession(fascicleRoles);
+        };
+        uscFascicleInsert.prototype.getFascicleRolesToAdd = function () {
+            var itemsFromSession = sessionStorage.getItem(this.clientId + "_FascicleRolesToAdd");
+            if (itemsFromSession) {
+                return JSON.parse(itemsFromSession);
+            }
+            return null;
+        };
+        uscFascicleInsert.prototype.setFascicleRolesToSession = function (fascicleRoles) {
+            if (!fascicleRoles) {
+                sessionStorage.removeItem(this.clientId + "_FascicleRolesToAdd");
+            }
+            sessionStorage[this.clientId + "_FascicleRolesToAdd"] = JSON.stringify(fascicleRoles);
+        };
+        uscFascicleInsert.prototype.deleteRoleFromModel = function (roleIdToDelete) {
+            if (!roleIdToDelete)
+                return;
+            var fascicleRoles = [];
+            if (this.getFascicleRolesToAdd()) {
+                fascicleRoles = this.getFascicleRolesToAdd();
+            }
+            fascicleRoles = fascicleRoles.filter(function (x) { return x.Role.IdRole !== roleIdToDelete && x.Role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) === -1; });
+            this.setFascicleRolesToSession(fascicleRoles);
+        };
+        uscFascicleInsert.prototype.populateFascicleRoles = function () {
+            var fascicleRoles = this.getFascicleRolesToAdd();
+            if (this._selectedResponsibleRole) {
+                if (!fascicleRoles) {
+                    fascicleRoles = [];
+                }
+                fascicleRoles.push({
+                    Role: this._selectedResponsibleRole,
+                    IsMaster: true
+                });
+            }
+            var uscRole = $("#" + this.uscRoleId).data();
+            var raciRoles = uscRole.getRaciRoles();
+            var _loop_1 = function (fascicleRole) {
+                fascicleRole.AuthorizationRoleType = (raciRoles && raciRoles.some(function (x) { return x.EntityShortId === fascicleRole.Role.EntityShortId; })) || fascicleRole.IsMaster
+                    ? AuthorizationRoleType.Responsible
+                    : AuthorizationRoleType.Accounted;
+            };
+            for (var _i = 0, fascicleRoles_1 = fascicleRoles; _i < fascicleRoles_1.length; _i++) {
+                var fascicleRole = fascicleRoles_1[_i];
+                _loop_1(fascicleRole);
+            }
+            return fascicleRoles;
         };
         uscFascicleInsert.LOADED_EVENT = "onLoaded";
         uscFascicleInsert.FASCICLE_TYPE_CHANGED_EVENT = "onFascicleTypeChanged";

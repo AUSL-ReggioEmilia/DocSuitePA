@@ -16,6 +16,7 @@ class MetadataRepositoryModel {
     LastChangedDate?: Date;
     JsonMetadata: string;
     UniqueId: string;
+    Id: string;
 }
 
 export = MetadataRepositoryModel;

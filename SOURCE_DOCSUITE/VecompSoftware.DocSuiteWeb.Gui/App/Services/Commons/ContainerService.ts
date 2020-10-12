@@ -22,15 +22,15 @@ class ContainerService extends BaseService {
         this._configuration = configuration;
     }
 
-    getDossierInsertAuthorizedContainers(callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.concat("/ContainerService.GetDossierInsertAuthorizedContainers()");
+    getDossierInsertAuthorizedContainers(tenantId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`/ContainerService.GetDossierInsertAuthorizedContainers(tenantId=${tenantId})`);
         this.getRequest(url, undefined, (response: any) => {
             if (callback) callback(response.value);
         }, error);
     }
 
-    getAnyDossierAuthorizedContainers(callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.concat("/ContainerService.GetAnyDossierAuthorizedContainers()");
+    getAnyDossierAuthorizedContainers(tenantId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`/ContainerService.GetAnyDossierAuthorizedContainers(tenantId=${tenantId})`);
         this.getRequest(url, undefined, (response: any) => {
             if (callback) callback(response.value);
         }, error);

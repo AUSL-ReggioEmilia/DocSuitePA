@@ -23,6 +23,10 @@ define(["require", "exports"], function (require, exports) {
             toMap.IdArchiveChain = source.IdArchiveChain;
             toMap.ActivityAction = source.ActivityAction;
             toMap.ActivityArea = source.ActivityArea;
+            if (toMap.RegistrationDate) {
+                toMap.RegistrationDateFormatted = moment(source.RegistrationDate).format("DD/MM/YYYY");
+            }
+            toMap.WorkflowActivityLogs = source.WorkflowActivityLogs;
             return toMap;
         };
         return WorkflowActivityModelMapper;

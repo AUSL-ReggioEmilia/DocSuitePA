@@ -13,11 +13,13 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfigurationHelper", "UserControl/uscFascicleFolders", "App/Models/Environment", "App/DTOs/ExceptionDTO", "App/Services/Fascicles/FascicleDocumentUnitService", "App/Services/Fascicles/FascicleDocumentService", "App/Models/UpdateActionType", "App/Models/DocumentUnits/ChainType", "App/Models/Fascicles/FascicleModel", "App/Services/Fascicles/FascicleFolderService", "App/Helpers/GuidHelper"], function (require, exports, FascBase, ServiceConfigurationHelper, uscFascicleFolders, Environment, ExceptionDTO, FascicleDocumentUnitService, FascicleDocumentService, UpdateActionType, ChainType, FascicleModel, FascicleFolderService, Guid) {
+define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfigurationHelper", "UserControl/uscFascicleFolders", "App/Models/Environment", "App/DTOs/ExceptionDTO", "App/Services/Fascicles/FascicleDocumentUnitService", "App/Services/Fascicles/FascicleDocumentService", "App/Models/UpdateActionType", "App/Models/DocumentUnits/ChainType", "App/Models/Fascicles/FascicleModel", "App/Services/Fascicles/FascicleFolderService", "App/Helpers/GuidHelper", "App/Models/FascicolableActionType", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, FascBase, ServiceConfigurationHelper, uscFascicleFolders, Environment, ExceptionDTO, FascicleDocumentUnitService, FascicleDocumentService, UpdateActionType, ChainType, FascicleModel, FascicleFolderService, Guid, FascicolableActionType, SessionStorageKeysHelper) {
     var FascMoveItems = /** @class */ (function (_super) {
         __extends(FascMoveItems, _super);
         function FascMoveItems(serviceConfigurations) {
             var _this = _super.call(this, ServiceConfigurationHelper.getService(serviceConfigurations, FascBase.FASCICLE_TYPE_NAME)) || this;
+            _this.destinationFascicleId = "";
+            _this.moveToFascicle = false;
             _this._miscellaneaDeferreds = [];
             /**
              *------------------------- Events -----------------------------
@@ -27,7 +29,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
              */
             _this.btnConfirm_OnClick = function (sender, args) {
                 var uscFascicleFolder = $("#" + _this.uscFascicleFoldersId).data();
-                var selectedFolder = uscFascicleFolder.getSelectedFascicleFolder(_this.idFascicle);
+                var selectedFolder = uscFascicleFolder.getSelectedFascicleFolder(_this.moveToFascicle ? _this.destinationFascicleId : _this.idFascicle);
                 if (!selectedFolder || !selectedFolder.Typology) {
                     _this.showWarningMessage(_this.uscNotificationId, "Selezionare una cartella del Fascicolo");
                     sender.enableAfterSingleClick();
@@ -38,7 +40,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
                     sender.enableAfterSingleClick();
                     return;
                 }
-                var moveActions = _this.ItemTypeMoveActions.filter(function (item) { return item[0] == _this.itemsType; })
+                var moveActions = _this.ItemTypeMoveActions().filter(function (item) { return item[0] == _this.itemsType; })
                     .map(function (item) { return item[1]; });
                 if (!moveActions || moveActions.length == 0) {
                     _this.showNotificationMessage(_this.uscNotificationId, "E' avvenuto un errore durante la procedura di sposta");
@@ -86,18 +88,14 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
             _this._serviceConfigurations = serviceConfigurations;
             return _this;
         }
-        Object.defineProperty(FascMoveItems.prototype, "ItemTypeMoveActions", {
-            get: function () {
-                var _this = this;
-                var items = [
-                    [FascMoveItems.DOCUMENT_ITEMS_TYPE, function (folderId) { return _this.moveDocuments(folderId); }],
-                    [FascMoveItems.FOLDER_ITEMS_TYPE, function (folderId) { return _this.moveFolders(folderId); }]
-                ];
-                return items;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        FascMoveItems.prototype.ItemTypeMoveActions = function () {
+            var _this = this;
+            var items = [
+                [FascMoveItems.DOCUMENT_ITEMS_TYPE, function (folderId) { return _this.moveDocuments(folderId); }],
+                [FascMoveItems.FOLDER_ITEMS_TYPE, function (folderId) { return _this.moveFolders(folderId); }]
+            ];
+            return items;
+        };
         /**
          *------------------------- Methods -----------------------------
          */
@@ -136,7 +134,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
             $("#" + this.lblItemSelectedDescriptionId).text(description);
         };
         FascMoveItems.prototype.isSessionStorageReaded = function () {
-            var selectedItems = sessionStorage.getItem(FascMoveItems.FASC_MOVE_ITEMS_Session_key);
+            var selectedItems = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_FASC_MOVE_ITEMS);
             if (!selectedItems) {
                 return false;
             }
@@ -171,8 +169,8 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
             var uscFascicleFolder = $("#" + this.uscFascicleFoldersId).data();
             if (!jQuery.isEmptyObject(uscFascicleFolder)) {
                 uscFascicleFolder.setManageFascicleFolderVisibility(true);
-                uscFascicleFolder.setRootNode(this.idFascicle, "Cartelle del fascicolo");
-                uscFascicleFolder.loadFolders(this.idFascicle);
+                uscFascicleFolder.setRootNode(this.moveToFascicle ? this.destinationFascicleId : this.idFascicle, "Cartelle del fascicolo");
+                uscFascicleFolder.loadFolders(this.moveToFascicle ? this.destinationFascicleId : this.idFascicle);
             }
         };
         FascMoveItems.prototype.getIconByEnvironment = function (env) {
@@ -229,7 +227,14 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
                         _this._fascicleDocumentUnitService.getByDocumentUnitAndFascicle(toMoveItem.uniqueId, _this.idFascicle, function (data) {
                             data.FascicleFolder = {};
                             data.FascicleFolder.UniqueId = folderId;
-                            _this._fascicleDocumentUnitService.updateFascicleUD(data, UpdateActionType.FascicleMoveToFolder, function (data) { return promise.resolve(); }, function (exception) { return promise.reject(exception); });
+                            if (_this.moveToFascicle) { // Copia in
+                                data.UniqueId = "";
+                                data.Fascicle.UniqueId = _this.destinationFascicleId;
+                                _this._fascicleDocumentUnitService.insertFascicleUD(data, FascicolableActionType.AutomaticDetection, function (data) { return promise.resolve(); }, function (exception) { return promise.reject(exception); });
+                            }
+                            else {
+                                _this._fascicleDocumentUnitService.updateFascicleUD(data, UpdateActionType.FascicleMoveToFolder, function (data) { return promise.resolve(); }, function (exception) { return promise.reject(exception); });
+                            }
                         }, function (exception) { return promise.reject(exception); });
                         return promise.promise();
                     };
@@ -241,7 +246,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
                 }
                 $.when.apply(null, deferredActions)
                     .done(function () {
-                    _this._fascicleDocumentService.getByFolder(_this.idFascicle, folderId, function (data) {
+                    _this._fascicleDocumentService.getByFolder(_this.moveToFascicle ? _this.destinationFascicleId : _this.idFascicle, folderId, function (data) {
                         var idArchiveChain;
                         if (data && data.length > 0) {
                             idArchiveChain = data[0].IdArchiveChain;
@@ -320,7 +325,6 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
         FascMoveItems.prototype.hideLoading = function () {
             this._loadingPanel.hide(this.pnlPageId);
         };
-        FascMoveItems.FASC_MOVE_ITEMS_Session_key = "FascMoveItemsSessionKey";
         FascMoveItems.MOVE_MISCELLANEA_DOCUMENT_AJAX_ACTION_NAME = "MoveMiscellaneaDocument";
         FascMoveItems.DOCUMENT_ITEMS_TYPE = "DocumentType";
         FascMoveItems.FOLDER_ITEMS_TYPE = "FolderType";

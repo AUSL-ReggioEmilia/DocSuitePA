@@ -212,6 +212,15 @@ Partial Public Class UDSInvoiceSearch
     Protected WithEvents udsInvoiceGrid As Global.Telerik.Web.UI.RadGrid
 
     '''<summary>
+    '''pnlButtons control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''btnUpload control.
     '''</summary>
     '''<remarks>

@@ -537,7 +537,7 @@ Public Class uscDeskDocument
                 Case "TEMPLATEDOCUMENT"
                     Dim idArchiveChain As Guid = Nothing
                     If Guid.TryParse(arguments(2), idArchiveChain) Then
-                        Dim docs As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentsLatestVersion(String.Empty, idArchiveChain)
+                        Dim docs As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentsLatestVersion(idArchiveChain)
                         Dim newName As String = String.Empty
                         Dim tmpFile As TempFileDocumentInfo = Nothing
                         For Each doc As BiblosDocumentInfo In docs
@@ -1078,7 +1078,7 @@ Public Class uscDeskDocument
         Dim biblosSerializeKey As String = windowRenameDocument.Attributes.Item(BIBLOS_KEY)
         Dim dto As DeskDocumentResult = DeskDocumentDataSource.SingleOrDefault(Function(x) x.BiblosSerializeKey.Eq(biblosSerializeKey))
         Try
-            Dim toUpdate As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentInfo(dto.DocumentServer, dto.IdDocumentBiblos, Nothing, True).FirstOrDefault()
+            Dim toUpdate As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentInfo(dto.IdDocumentBiblos, Nothing, True).FirstOrDefault()
             toUpdate.Name = String.Concat(Path.GetFileNameWithoutExtension(newname), toUpdate.Extension)
             Dim deskVersioning As DeskDocumentVersion = CurrentDeskDocumentVersionFacade.GetLastVersionByIdDeskDocument(dto.IdDeskDocument.Value)
             DeskDocumentFacade.RenameDoc(CurrentDesk, CurrentDeskRoleUser, deskVersioning, toUpdate, DocSuiteContext.Current.User.FullUserName)

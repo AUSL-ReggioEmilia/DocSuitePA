@@ -86,7 +86,7 @@ class DossierFolderInserimento extends DossierBase {
    * @param eventArgs
    * @returns
    */
-    btmConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btmConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         if (!Page_IsValid) {
             return;
         }

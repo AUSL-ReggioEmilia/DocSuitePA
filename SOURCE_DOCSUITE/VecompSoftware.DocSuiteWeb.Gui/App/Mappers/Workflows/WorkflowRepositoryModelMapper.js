@@ -33,6 +33,7 @@ define(["require", "exports", "App/Mappers/BaseMapper"], function (require, expo
             toMap.Status = source.Status;
             toMap.DSWEnvironment = source.DSWEnvironment;
             toMap.WorkflowRoleMappings = source.WorkflowRoleMappings;
+            toMap.Roles = source.Roles;
             return toMap;
         };
         return WorkflowRepositoryModelMapper;

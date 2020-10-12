@@ -71,12 +71,12 @@ Public Class UserDiario
             Dim item As UserDiary = e.Item.DataItem
 
             With DirectCast(e.Item.FindControl("imgSelection"), RadButton)
-                .CommandName = "ProtLogs:" & item.Codice
+                .CommandName = $"ProtLogs:{item.UniqueIdProtocol}"
             End With
 
             With DirectCast(e.Item.FindControl("lbProtocollo"), LinkButton)
                 .Text = item.Codice
-                .CommandName = "ProtRefs:" & item.Codice
+                .CommandName = $"ProtRefs:{item.UniqueIdProtocol}"
             End With
 
             With DirectCast(e.Item.FindControl("lblObject"), Label)
@@ -237,6 +237,7 @@ Public Class UserDiario
     Protected Sub odsProtocol_Selecting(ByVal sender As System.Object, ByVal e As ObjectDataSourceSelectingEventArgs) Handles odsProtocol.Selecting
         e.Cancel = Not pnlProtGrid.Visible
         SetDataSourceParameter(e.InputParameters)
+        e.InputParameters.Item(2) = CurrentTenant.TenantAOO.UniqueId
     End Sub
 
     Protected Sub odsDocument_Selecting(ByVal sender As System.Object, ByVal e As ObjectDataSourceSelectingEventArgs) Handles odsDocument.Selecting
@@ -350,9 +351,8 @@ Public Class UserDiario
             Case "Prot"
                 selPage = "../Prot/ProtLog.aspx?"
                 sommPage = "../Prot/ProtVisualizza.aspx?"
-                Dim year As String = Mid$(commandName, 10, 4)
-                Dim number As String = Mid$(commandName, 15, 7)
-                parameters = String.Format("Type={0}&Year={1}&Number={2}", paramType, year, number)
+                Dim uniqueId As Guid = Guid.Parse(commandName.Substring(9))
+                parameters = String.Format("Type={0}&UniqueId={1}", paramType, uniqueId)
             Case "Docm"
                 selPage = "../Docm/DocmLog.aspx?"
                 sommPage = "../Docm/DocmVisualizza.aspx?"

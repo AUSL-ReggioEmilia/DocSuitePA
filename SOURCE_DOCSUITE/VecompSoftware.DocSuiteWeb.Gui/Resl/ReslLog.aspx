@@ -44,7 +44,7 @@
                     </telerik:GridBoundColumn>
                 </Columns>
             </MasterTableView>
-            <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente"
+            <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente"
                 SortToolTip="Ordina" />
         </DocSuite:BindGrid>
     </div>

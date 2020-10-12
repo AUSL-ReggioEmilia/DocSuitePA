@@ -2,24 +2,21 @@
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
 
   <class name="ProtocolContactManual" table="ProtocolContactManual">
-    
-    <composite-id class="YearNumberIdCompositeKey" name="Id" unsaved-value="any">
-      <key-property column="Year" name="Year" />
-      <key-property column="Number" name="Number" />
-      <key-property column="Incremental" name="Id" />
-    </composite-id>
+
+    <id name="Id" column="UniqueId" >
+      <generator class="guid.comb" />
+    </id>
 
     <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
       <column name="Timestamp" not-null="true" sql-type="timestamp" />
     </version>
-    
-    <property column="ComunicationType" name="ComunicationType" type="AnsiString" />
-    <property name="Type" column="Type" type="AnsiString" />
-    <property name="IdAD" column="idAD" type="AnsiString" />
 
-    <property name="UniqueId">
-      <column name="UniqueId" not-null="true" unique="true" />
-    </property>
+    <property name="Year" column="Year" not-null="true" update="false" />
+    <property name="Number" column="Number" not-null="true" update="false" />
+    <property name="Incremental" column="Incremental" not-null="true" />
+    <property name="ComunicationType" column="ComunicationType" />
+    <property name="Type" column="Type" />
+    <property name="IdAD" column="idAD" />
 
     <property name="RegistrationUser">
       <column name="RegistrationUser" not-null="true" />
@@ -35,10 +32,6 @@
 
     <property name="LastChangedDate">
       <column name="LastChangedDate" not-null="false" />
-    </property>
-
-    <property name="UniqueIdProtocol">
-      <column name="UniqueIdProtocol" not-null="true"/>
     </property>
 
     <property name="SDIIdentification">
@@ -73,9 +66,8 @@
       </many-to-one>
     </component>
     
-    <many-to-one name="Protocol" class="Protocol" insert="false" update="false">
-      <column name="Year" />
-      <column name="Number" />
+    <many-to-one name="Protocol" class="Protocol" not-null="true">
+      <column name="UniqueIdProtocol" />
     </many-to-one>
     
   </class>

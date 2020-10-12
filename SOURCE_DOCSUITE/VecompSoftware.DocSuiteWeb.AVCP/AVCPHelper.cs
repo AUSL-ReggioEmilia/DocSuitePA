@@ -12,39 +12,6 @@ namespace VecompSoftware.DocSuiteWeb.AVCP
         public const string AvcpNamespacePrefix = "legge190";
 
 
-        public static string GetDocumentTitle(int AnnoAtto, string CodiceServizio, int NumeroAtto)
-        {
-            return string.Format("Avcp {0}", GetDocumentCode(
-              AnnoAtto,
-              CodiceServizio,
-              NumeroAtto));
-        }
-
-
-        public static string GetDocumentCode(int AnnoAtto, string CodiceServizio, int NumeroAtto)
-        {
-            return string.Format("{0}{1}/{2:000000}",
-              AnnoAtto,
-              string.IsNullOrEmpty(CodiceServizio) ? "" : "/" + CodiceServizio,
-              NumeroAtto);
-        }
-
-
-        public static string UpdateXml(string xml, UpdateData data)
-        {
-            pubblicazione pub = XmlUtil.Deserialize<AVCP.pubblicazione>(xml);
-
-            pub.metadata.titolo = data.titolo;
-            pub.metadata.@abstract = data.@abstract;
-            pub.metadata.dataPubbicazioneDataset = data.dataPubblicazione;
-            pub.metadata.entePubblicatore = data.entePubblicatore;
-            pub.metadata.annoRiferimento = data.annoDocumento;
-            pub.metadata.urlFile = data.urlFile;
-            pub.metadata.licenza = data.licenza;
-
-            return Serialize(pub);
-        }
-
         public static string Serialize(AVCP.pubblicazione pub)
         {
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();

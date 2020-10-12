@@ -64,7 +64,7 @@ Public Class UDSInvoicesUpload
             Return
         End If
         Dim location As Location = FacadeFactory.Instance.LocationFacade.GetById(DocSuiteContext.Current.ProtocolEnv.CollaborationLocation)
-        Dim biblosDocumentInfo As BiblosDocumentInfo = e.Document.ArchiveInBiblos(location.DocumentServer, location.ProtBiblosDSDB)
+        Dim biblosDocumentInfo As BiblosDocumentInfo = e.Document.ArchiveInBiblos(location.ProtBiblosDSDB)
         AjaxManager.ResponseScripts.Add(String.Format(CORRELATED_CHAINID_CALLBACK, biblosDocumentInfo.ChainId.ToString(), "false"))
         AjaxManager.ResponseScripts.Add(String.Format(CORRELATED_IDDOCUMENT_CALLBACK, biblosDocumentInfo.DocumentId.ToString()))
     End Sub
@@ -85,7 +85,7 @@ Public Class UDSInvoicesUpload
             Try
                 Dim uploadedDocument As DocumentInfo = uscDocumentUpload.DocumentInfos.First()
                 Dim location As Location = FacadeFactory.Instance.LocationFacade.GetById(DocSuiteContext.Current.ProtocolEnv.CollaborationLocation)
-                Dim biblosDocumentInfo As BiblosDocumentInfo = New BiblosDocumentInfo(location.ProtBiblosDSDB, Guid.Parse(HFcorrelatedIdDocument.Value), Guid.Parse(HFcorrelatedChainId.Value))
+                Dim biblosDocumentInfo As BiblosDocumentInfo = New BiblosDocumentInfo(Guid.Parse(HFcorrelatedIdDocument.Value), Guid.Parse(HFcorrelatedChainId.Value))
                 Dim content As List(Of KeyValuePair(Of String, Byte())) = New List(Of KeyValuePair(Of String, Byte()))
                 Dim model As List(Of InvoicePreviewModel) = JsonConvert.DeserializeObject(Of List(Of InvoicePreviewModel))(ajaxModel.Value(0))
                 Dim zipCompress As ZipCompress = New ZipCompress()

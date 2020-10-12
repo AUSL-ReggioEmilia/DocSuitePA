@@ -69,15 +69,15 @@ Public Class NHibernateProtocolContactFinder
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persistentType, "PC")
 
         If Not IdContacts Is Nothing Then
-            criteria.Add(Expression.In("Id.IdContact", IdContacts))
+            criteria.Add(Expression.In("Contact.Id", IdContacts))
         End If
 
         If Year.HasValue Then
-            criteria.Add(Restrictions.Eq("Id.Year", Year.Value))
+            criteria.Add(Restrictions.Eq("Protocol.Year", Year.Value))
         End If
 
         If Number.HasValue Then
-            criteria.Add(Restrictions.Eq("Id.Number", Number.Value))
+            criteria.Add(Restrictions.Eq("Protocol.Number", Number.Value))
         End If
 
         Return criteria

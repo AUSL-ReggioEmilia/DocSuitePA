@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class DossierFascicleFolderInserimento
-    
+
     '''<summary>
     '''RadScriptBlock control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class DossierFascicleFolderInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''radNotification control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class DossierFascicleFolderInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents radNotification As Global.Telerik.Web.UI.RadNotification
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class DossierFascicleFolderInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
+
     '''<summary>
     '''frmDecorator control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class DossierFascicleFolderInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents frmDecorator As Global.Telerik.Web.UI.RadFormDecorator
-    
+
     '''<summary>
     '''pageContent control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class DossierFascicleFolderInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pageContent As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''fascicleTypeRow control.
     '''</summary>
@@ -66,16 +66,16 @@ Partial Public Class DossierFascicleFolderInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents fascicleTypeRow As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
-    '''uscFascicleInsert control.
+    '''dynamicUscFascicleInsertControls control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscFascicleInsert As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascicleInsert
-    
+    Protected WithEvents dynamicUscFascicleInsertControls As Global.System.Web.UI.WebControls.PlaceHolder
+
     '''<summary>
     '''RadPageLayout1 control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class DossierFascicleFolderInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadPageLayout1 As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''btnConferma control.
     '''</summary>

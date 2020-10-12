@@ -3,11 +3,12 @@
   
   <class name="TaskHeaderProtocol">
     <id name="Id" column="Id" generator="native" />
-    
+
+    <property name="Year" column="Year" update="false" />
+    <property name="Number" column="Number" update="false" />
     <many-to-one name="Header" column="IdTaskHeader" class="TaskHeader" cascade="none" />
-    <many-to-one name="Protocol" class="Protocol" cascade="none">
-      <column name="Year" />
-      <column name="Number" />
+    <many-to-one name="Protocol" class="Protocol" cascade="none" not-null="true">
+      <column name="UniqueIdProtocol" />
     </many-to-one>
     
   </class>

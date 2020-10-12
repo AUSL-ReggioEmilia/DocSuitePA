@@ -21,6 +21,7 @@ Partial Public Class CommonUploadDocument
     Public Const ExcelImportQueryItem As String = "Excel"
     Private Const MultipleSelectionQueryItem As String = "MultiDoc"
     Private Const AllowZipDocQueryItem As String = "allowzipdoc"
+    Private Const AllowUnlimitFileSizeQueryItem As String = "allowunlimitfilesize"
 
     Private _allowedExtensions As List(Of String)
     Private _fileExtensionWhiteList As List(Of String)
@@ -47,6 +48,33 @@ Partial Public Class CommonUploadDocument
     Private ReadOnly Property IsZipAllowed As Boolean
         Get
             Return Request.QueryString.GetValueOrDefault(Of Boolean)(AllowZipDocQueryItem, False)
+        End Get
+    End Property
+
+    Private ReadOnly Property IsAllowUnlimitFileSize As Boolean
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of Boolean)(AllowUnlimitFileSizeQueryItem, False)
+        End Get
+    End Property
+
+    Public ReadOnly Property WarningUploadThreshold As Long
+        Get
+            Return ProtocolEnv.WarningUploadThreshold
+        End Get
+    End Property
+
+    Public ReadOnly Property WarningUploadThresholdType As String
+        Get
+            Return ProtocolEnv.WarningUploadThresholdType
+        End Get
+    End Property
+
+    Public ReadOnly Property MaxUploadThreshold As Integer
+        Get
+            If IsAllowUnlimitFileSize Then
+                Return 0
+            End If
+            Return ProtocolEnv.MaxUploadThreshold
         End Get
     End Property
 
@@ -108,18 +136,6 @@ Partial Public Class CommonUploadDocument
                 End If
             End If
             Return _clientSideFileExtensionBlackList
-        End Get
-    End Property
-
-    Public ReadOnly Property WarningUploadThreshold As Integer
-        Get
-            Return ProtocolEnv.WarningUploadThreshold
-        End Get
-    End Property
-
-    Public ReadOnly Property WarningUploadThresholdType As String
-        Get
-            Return ProtocolEnv.WarningUploadThresholdType
         End Get
     End Property
 
@@ -278,7 +294,7 @@ Partial Public Class CommonUploadDocument
             AsyncUploadDocument.AllowedFileExtensions = FileExtensionWhiteList.ToArray()
         End If
 
-        AsyncUploadDocument.MaxFileSize = ProtocolEnv.MaxUploadThreshold
+        AsyncUploadDocument.MaxFileSize = MaxUploadThreshold
     End Sub
 
 #End Region

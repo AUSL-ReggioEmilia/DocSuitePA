@@ -146,6 +146,7 @@ Public Class UscSearchADUser
         node.Attributes.Add("Account", adUser.Account)
         node.Attributes.Add("DisplayName", adUser.GetFullUserName())
         node.Attributes.Add("Description", adUser.Name)
+        node.Attributes.Add("Domain", adUser.Domain)
 
         tvwContactDomain.Nodes(0).Nodes.Add(node)
     End Sub

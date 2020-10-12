@@ -1,4 +1,4 @@
-define(["require", "exports", "App/Models/Dossiers/DossierLogType", "App/Models/UDS/UDSLogType", "App/Models/Workflows/WorkflowStatus", "App/Models/UDS/UDSTypologyStatus", "App/Models/Commons/LocationTypeEnum", "App/Models/Workflows/WorkflowInstanceLogType", "App/Models/PECMails/InvoiceTypeEnum", "App/Models/PECMails/InvoiceStatusEnum", "App/Models/PECMails/PECMailDirection", "App/Models/Workflows/ActivityType", "App/Models/Tenants/TenantConfigurationTypeEnum", "App/Models/Tenants/TenantWorkflowRepositoryTypeEnum", "App/Models/Workflows/WorkflowPropertyType", "App/Models/Workflows/WorkflowEvaluationPropertyType", "App/Models/Fascicles/FascicleType", "App/Models/Fascicles/FascicleLogType", "App/Models/Workflows/ActivityAction", "App/Models/SignDocuments/ProviderSignType", "App/Models/DocumentUnits/ChainType"], function (require, exports, DossierLogType, UDSLogType, WorkflowStatus, UDSTypologyStatus, LocationTypeEnum, WorkflowInstanceLogType, InvoiceTypeEnum, InvoiceStatusEnum, PECMailDirection, ActivityType, TenantConfigurationTypeEnum, TenantWorkflowRepositoryTypeEnum, WorkflowPropertyType, WorkflowEvaluationPropertyType, FascicleType, FascicleLogType, ActivityAction, ProviderSignType, ChainType) {
+define(["require", "exports", "App/Models/Dossiers/DossierLogType", "App/Models/UDS/UDSLogType", "App/Models/Workflows/WorkflowStatus", "App/Models/UDS/UDSTypologyStatus", "App/Models/Commons/LocationTypeEnum", "App/Models/Workflows/WorkflowInstanceLogType", "App/Models/PECMails/InvoiceTypeEnum", "App/Models/PECMails/InvoiceStatusEnum", "App/Models/PECMails/PECMailDirection", "App/Models/Workflows/ActivityType", "App/Models/Tenants/TenantConfigurationTypeEnum", "App/Models/Tenants/TenantWorkflowRepositoryTypeEnum", "App/Models/Workflows/WorkflowPropertyType", "App/Models/Workflows/ArgumentType", "App/Models/Fascicles/FascicleType", "App/Models/Fascicles/FascicleLogType", "App/Models/Workflows/ActivityAction", "App/Models/SignDocuments/ProviderSignType", "App/Models/DocumentUnits/ChainType", "App/Models/Workflows/ActivityArea", "App/Models/Commons/AUSSubjectType", "App/Models/Workflows/WorkflowAuthorizationType", "App/Models/Dossiers/DossierType", "App/Models/Dossiers/DossierStatus", "App/Models/Commons/WorkflowValidationRulesType"], function (require, exports, DossierLogType, UDSLogType, WorkflowStatus, UDSTypologyStatus, LocationTypeEnum, WorkflowInstanceLogType, InvoiceTypeEnum, InvoiceStatusEnum, PECMailDirection, ActivityType, TenantConfigurationTypeEnum, TenantWorkflowRepositoryTypeEnum, WorkflowPropertyType, ArgumentType, FascicleType, FascicleLogType, ActivityAction, ProviderSignType, ChainType, ActivityArea, AUSSubjectType, WorkflowAuthorizationType, DossierType, DossierStatus, WorkflowValidationRulesType) {
     var EnumHelper = /** @class */ (function () {
         function EnumHelper() {
         }
@@ -169,11 +169,8 @@ define(["require", "exports", "App/Models/Dossiers/DossierLogType", "App/Models/
                 case ActivityType.DematerialisationStatement: {
                     return "Attestazione di conformità";
                 }
-                case ActivityType.DossierAssignment: {
-                    return "Presa in carico del dossier";
-                }
-                case ActivityType.FascicleAssignment: {
-                    return "Presa in carico del dascicolo";
+                case ActivityType.Assignment: {
+                    return "Presa in carico";
                 }
                 case ActivityType.PecToProtocol: {
                     return "Protocolla da PEC";
@@ -478,23 +475,23 @@ define(["require", "exports", "App/Models/Dossiers/DossierLogType", "App/Models/
         };
         EnumHelper.prototype.getWorkflowStartupDescription = function (workflowStartup) {
             switch (workflowStartup) {
-                case WorkflowEvaluationPropertyType.Boolean:
+                case ArgumentType.PropertyBoolean:
                     return WorkflowPropertyType.PropertyBoolean;
-                case WorkflowEvaluationPropertyType.Integer:
+                case ArgumentType.PropertyInt:
                     return WorkflowPropertyType.PropertyInt;
-                case WorkflowEvaluationPropertyType.String:
+                case ArgumentType.PropertyString:
                     return WorkflowPropertyType.PropertyString;
-                case WorkflowEvaluationPropertyType.Json:
+                case ArgumentType.Json:
                     return WorkflowPropertyType.Json;
-                case WorkflowEvaluationPropertyType.Date:
+                case ArgumentType.PropertyDate:
                     return WorkflowPropertyType.PropertyDate;
-                case WorkflowEvaluationPropertyType.Double:
+                case ArgumentType.PropertyDouble:
                     return WorkflowPropertyType.PropertyDouble;
-                case WorkflowEvaluationPropertyType.Guid:
+                case ArgumentType.PropertyGuid:
                     return WorkflowPropertyType.PropertyGuid;
-                case WorkflowEvaluationPropertyType.RelationGuid:
+                case ArgumentType.RelationGuid:
                     return WorkflowPropertyType.RelationGuid;
-                case WorkflowEvaluationPropertyType.RelationInt:
+                case ArgumentType.RelationInt:
                     return WorkflowPropertyType.RelationInt;
             }
         };
@@ -516,12 +513,20 @@ define(["require", "exports", "App/Models/Dossiers/DossierLogType", "App/Models/
             switch (description) {
                 case "Attività":
                     return FascicleType.Activity;
+                case "Activity":
+                    return FascicleType.Activity;
                 case "Periodico":
+                    return FascicleType.Period;
+                case "Period":
                     return FascicleType.Period;
                 case "Procedimento":
                     return FascicleType.Procedure;
+                case "Procedure":
+                    return FascicleType.Procedure;
                 case "Sottofascicolo":
-                    return FascicleType.Legacy;
+                    return FascicleType.SubFascicle;
+                case "SubFascicle":
+                    return FascicleType.SubFascicle;
             }
         };
         EnumHelper.prototype.getWorkflowActivityActionDescription = function (type) {
@@ -545,22 +550,104 @@ define(["require", "exports", "App/Models/Dossiers/DossierLogType", "App/Models/
                 case ActivityAction.ToSecure:
                     return "ToSecure";
                 case ActivityAction.ToFascicle:
-                    return "ToFascsicle";
+                    return "ToFascicle";
                 case ActivityAction.ToDocumentUnit:
                     return "ToDocumentUnit";
                 case ActivityAction.ToArchive:
                     return "ToArchive";
                 case ActivityAction.ToMessage:
                     return "ToMessage";
+                case ActivityAction.CancelProtocol:
+                    return "CancelProtocol";
                 case ActivityAction.CancelArchive:
                     return "CancelArchive";
                 case ActivityAction.CancelDocumentUnit:
                     return "CancelDocumentUnit";
                 case ActivityAction.ToApprove:
                     return "ToApprove";
+                case ActivityAction.ToShare:
+                    return "ToShare";
+                case ActivityAction.UpdateArchive:
+                    return "UpdateArchive";
+                case ActivityAction.UpdateFascicle:
+                    return "UpdateFascicle";
+                case ActivityAction.ToIntegration:
+                    return "ToIntegration";
+                case ActivityAction.GenerateReport:
+                    return "GenerateReport";
+                case ActivityAction.CopyFascicleContents:
+                    return "CopyFascicleContents";
                 default: {
                     return "";
                 }
+            }
+        };
+        EnumHelper.prototype.getActivityAreaDescription = function (type) {
+            switch (ActivityArea[type.toString()]) {
+                case ActivityArea.Build: {
+                    return "Build";
+                }
+                case ActivityArea.Collaboration: {
+                    return "Collaboration";
+                }
+                case ActivityArea.Desk: {
+                    return "Desk";
+                }
+                case ActivityArea.Dossier: {
+                    return "Dossier";
+                }
+                case ActivityArea.Fascicle: {
+                    return "Fascicle";
+                }
+                case ActivityArea.Link: {
+                    return "Link";
+                }
+                case ActivityArea.Message: {
+                    return "Message";
+                }
+                case ActivityArea.PEC: {
+                    return "PEC";
+                }
+                case ActivityArea.Protocol: {
+                    return "Protocol";
+                }
+                case ActivityArea.Resolution: {
+                    return "Resolution";
+                }
+                case ActivityArea.UDS: {
+                    return "UDS";
+                }
+                default: {
+                    return "";
+                }
+            }
+        };
+        EnumHelper.prototype.getWorkflowAuthorizationType = function (type) {
+            switch (type) {
+                case WorkflowAuthorizationType.AllRoleUser:
+                    return "AllRoleUser";
+                case WorkflowAuthorizationType.AllSecretary:
+                    return "AllSecretary";
+                case WorkflowAuthorizationType.AllSigner:
+                    return "AllSigner";
+                case WorkflowAuthorizationType.AllManager:
+                    return "AllManager";
+                case WorkflowAuthorizationType.AllOChartRoleUser:
+                    return "AllOChartRoleUser";
+                case WorkflowAuthorizationType.AllOChartManager:
+                    return "AllOChartManager";
+                case WorkflowAuthorizationType.AllOChartHierarchyManager:
+                    return "AllOChartHierarchyManager";
+                case WorkflowAuthorizationType.UserName:
+                    return "UserName";
+                case WorkflowAuthorizationType.ADGroup:
+                    return "ADGroup";
+                case WorkflowAuthorizationType.MappingTags:
+                    return "MappingTags";
+                case WorkflowAuthorizationType.AllDematerialisationManager:
+                    return "AllDematerialisationManager";
+                default:
+                    return "";
             }
         };
         EnumHelper.prototype.getRemoteSignDescription = function (type) {
@@ -595,6 +682,138 @@ define(["require", "exports", "App/Models/Dossiers/DossierLogType", "App/Models/
                 default: {
                     return "";
                 }
+            }
+        };
+        EnumHelper.prototype.getAUSSubjectTypeDescription = function (type) {
+            switch (type) {
+                case AUSSubjectType.NaturalPersons: {
+                    return "Persone fisiche";
+                }
+                case AUSSubjectType.EconomicOperators: {
+                    return "Operatori economici";
+                }
+                default: {
+                    return "";
+                }
+            }
+        };
+        EnumHelper.prototype.getCustomActionDescription = function (propertyName) {
+            switch (propertyName) {
+                case "AutoClose": {
+                    return "Chiusura amministrativa a 60 giorni";
+                }
+                case "AutoCloseAndClone": {
+                    return "Chiusura amministrativa a fine anno e riapertura automatica";
+                }
+                default: {
+                    return "";
+                }
+            }
+        };
+        EnumHelper.prototype.getDossierTypeDescription = function (type) {
+            switch (DossierType[type.toString()]) {
+                case DossierType.Person: {
+                    return "Persona fisica o giuridica";
+                }
+                case DossierType.PhysicalObject: {
+                    return "Oggetto fisico";
+                }
+                case DossierType.Procedure: {
+                    return "Procedimento";
+                }
+                case DossierType.Process: {
+                    return "Serie archivistica";
+                }
+                default: {
+                    return "";
+                }
+            }
+        };
+        EnumHelper.prototype.getDossierStatusDescription = function (type) {
+            switch (DossierStatus[type.toString()]) {
+                case DossierStatus.Open: {
+                    return "Aperto";
+                }
+                case DossierStatus.Canceled: {
+                    return "Annullato";
+                }
+                case DossierStatus.Closed: {
+                    return "Chiuso";
+                }
+                default: {
+                    return "";
+                }
+            }
+        };
+        EnumHelper.prototype.getValidationRuleType = function (description) {
+            switch (description) {
+                case "Esiste cartella di fascicolo":
+                    return "IsExist";
+                case "La cartella contiene almeno un file/inserto":
+                    return "HasFile";
+                case "La cartella contiene almeno una unità documentale":
+                    return "HasDocumentUnit";
+                case "La cartella contiene almeno un file/inserto firmato digitalmente":
+                    return "HasSignedFile";
+                default: {
+                    return "";
+                }
+            }
+        };
+        EnumHelper.prototype.getValidationRuleDescription = function (type) {
+            switch (WorkflowValidationRulesType[type.toString()]) {
+                case WorkflowValidationRulesType.IsExist: {
+                    return "Esiste cartella di fascicolo";
+                }
+                case WorkflowValidationRulesType.HasFile: {
+                    return "La cartella contiene almeno un file/inserto";
+                }
+                case WorkflowValidationRulesType.HasDocumentUnit: {
+                    return "La cartella contiene almeno una unità documentale";
+                }
+                case WorkflowValidationRulesType.HasSignedFile: {
+                    return "La cartella contiene almeno un file/inserto firmato digitalmente";
+                }
+                default: {
+                    return "";
+                }
+            }
+        };
+        /**
+         * Returns the correct enum value as number from input of type number | string | misspelled-string | number-as-string
+         */
+        EnumHelper.prototype.fixEnumValue = function (model, _type) {
+            if (typeof model === "string") {
+                try {
+                    // if value is a number passed as a string
+                    var parsed = parseInt(model, 10);
+                    if (parsed) {
+                        return _type[_type[parsed]];
+                    }
+                }
+                catch (_a) { }
+                //if it's a string and is correctly spelled, we will imediately have a value
+                var value = _type[model];
+                if (value !== undefined && value !== null) {
+                    return value;
+                }
+                else {
+                    // string enum value but misspelled (lower/upper case)
+                    var keys = Object
+                        .keys(_type).map(function (key) { return _type[key]; })
+                        .filter(function (value) { return typeof value === 'string'; })
+                        .filter(function (value) { return value.toLowerCase() === model.toLowerCase(); });
+                    if (keys.length > 0) {
+                        value = _type[keys[0]];
+                    }
+                    else {
+                        throw new Error("Enum value " + model + " is invalid");
+                    }
+                    return value;
+                }
+            }
+            else {
+                return model;
             }
         };
         return EnumHelper;

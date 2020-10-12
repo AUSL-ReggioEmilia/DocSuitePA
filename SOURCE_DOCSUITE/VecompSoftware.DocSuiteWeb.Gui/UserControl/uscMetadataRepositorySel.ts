@@ -6,6 +6,10 @@ import MetadataRepositoryModel = require('App/Models/Commons/MetadataRepositoryM
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import ODATAResponseModel = require('App/Models/ODATAResponseModel');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
+import uscSetiContactSel = require('./uscSetiContactSel');
+import MetadataDesignerViewModel = require('App/ViewModels/Metadata/MetadataDesignerViewModel');
+import UscAdvancedSearchDynamicMetadataRest = require('UserControl/UscAdvancedSearchDynamicMetadataRest');
+import MetadataFinderViewModel = require('App/ViewModels/Metadata/MetadataFinderViewModel');
 
 class uscMetadataRepositorySel {
     rcbMetadataRepositoryId: string;
@@ -13,13 +17,24 @@ class uscMetadataRepositorySel {
     maxNumberElements: string;
     selectedRepositoryId: string;
     metadataPageContentId: string;
+    setiContactEnabledId: boolean;
+    uscSetiContactSelId: string;
+    setiVisibilityButtonId: boolean;
+    uscAdvancedSearchDynamicMetadataRestId: string;
+    enableAdvancedMetadataSearchBtnId: string;
+    txtMetadataValueId: string;
+    advancedMetadataRepositoryEnabled: boolean;
 
     private _rcbMetadataRepository: Telerik.Web.UI.RadComboBox;
+    private _uscAdvancedSearchDynamicMetadataRest: UscAdvancedSearchDynamicMetadataRest;
     private _serviceConfigurations: ServiceConfiguration[];
     private _metadataRepositoryConfiguration: ServiceConfiguration;
     private _metadataRepositoryService: MetadataRepositoryService;
+    private _enableAdvancedMetadataSearchBtn: HTMLInputElement;
+    private _txtMetadataValue: Telerik.Web.UI.RadTextBox;
 
-    public static SELECTED_INDEX_EVENT: string = "onSelectedIndexChangeEvent";
+    public static SELECTED_REPOSITORY_EVENT: string = "onSelectedRepositoryChangeEvent";
+    public static SELECTED_SETI_CONTACT_EVENT: string = "onSelectedSetiContactEvent";
 
     /**
 * Costruttore
@@ -68,7 +83,8 @@ class uscMetadataRepositorySel {
             if (metadataRestrictionsAttribute) {
                 metadataRestrictions = JSON.parse(metadataRestrictionsAttribute);
             }
-            this._metadataRepositoryService.getAvailableMetadataRepositories(sender.get_text(), metadataRestrictions, this.maxNumberElements, numberOfItems,
+            let safeEncoding: string = sender.get_text().replace(/'/g, '%27%27');
+            this._metadataRepositoryService.getAvailableMetadataRepositories(safeEncoding, metadataRestrictions, this.maxNumberElements, numberOfItems,
                 (data: ODATAResponseModel<MetadataRepositoryViewModel>) => {
                     if (data) {
                         if (data.count > 0) {
@@ -101,6 +117,18 @@ class uscMetadataRepositorySel {
     private rcbMetadataRepository_OnDropDownOpened = (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxRequestEventArgs) => {
     }
 
+    private _setMetadataValueElementsState(isMetadaRepositorySelected: boolean): void {
+        let currentAdvancedSearchBtnState: boolean = this._enableAdvancedMetadataSearchBtn.checked;
+        this._enableAdvancedMetadataSearchBtn.disabled = !isMetadaRepositorySelected;
+        this._enableAdvancedMetadataSearchBtn.checked = isMetadaRepositorySelected ? currentAdvancedSearchBtnState : false;
+
+        if (!$.isEmptyObject(this._uscAdvancedSearchDynamicMetadataRest) && !this._enableAdvancedMetadataSearchBtn.checked) {
+            this._uscAdvancedSearchDynamicMetadataRest.clearAdvancedSearchPanelContent();
+        }
+
+        this._txtMetadataValue.clear();
+        this._txtMetadataValue.set_visible(!this._enableAdvancedMetadataSearchBtn.checked);
+    }
 
     private rcbMetadataRepository_OnSelectedIndexChange = (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
         let domEvent: Sys.UI.DomEvent = args.get_domEvent();
@@ -109,8 +137,29 @@ class uscMetadataRepositorySel {
             sender.clearItems();
             this.setMoreResultBoxText("Visualizzati 1 di 1");
         }
-        if (selectedItem) {
-            $("#".concat(this.metadataPageContentId)).triggerHandler(uscMetadataRepositorySel.SELECTED_INDEX_EVENT, selectedItem.get_value());
+
+        let isMetadataRepositorySelected: boolean = selectedItem && selectedItem.get_text() !== "";
+
+        if (this.advancedMetadataRepositoryEnabled) {
+            this._setMetadataValueElementsState(isMetadataRepositorySelected);
+        }
+
+        if (isMetadataRepositorySelected) {
+
+            if (this.advancedMetadataRepositoryEnabled && this._enableAdvancedMetadataSearchBtn.checked) {
+                this._uscAdvancedSearchDynamicMetadataRest.loadMetadataRepository(selectedItem.get_value());
+            }
+
+            $("#".concat(this.metadataPageContentId)).triggerHandler(uscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, selectedItem.get_value());
+            this.getSelectedMetadata().then(data => {
+                if (data && data.JsonMetadata) {
+                    let metadataVM: MetadataDesignerViewModel = JSON.parse(data.JsonMetadata);
+                    $("#".concat(this.uscSetiContactSelId)).triggerHandler(uscSetiContactSel.SHOW_SETI_CONTACT_BUTTON, this.setiContactEnabledId && metadataVM.SETIFieldEnabled && this.setiVisibilityButtonId);
+                }
+            })
+        } else {
+            //notify that no repository is selected to clear the metadata values control contents
+            $("#".concat(this.metadataPageContentId)).triggerHandler(uscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, null);
         }
     }
     /**
@@ -124,11 +173,32 @@ class uscMetadataRepositorySel {
         this._rcbMetadataRepository.add_itemsRequested(this.rcbMetadataRepository_OnItemsRequested);
         this._rcbMetadataRepository.add_dropDownOpened(this.rcbMetadataRepository_OnDropDownOpened);
         this._rcbMetadataRepository.add_selectedIndexChanged(this.rcbMetadataRepository_OnSelectedIndexChange);
+        this._uscAdvancedSearchDynamicMetadataRest = <UscAdvancedSearchDynamicMetadataRest>$("#".concat(this.uscAdvancedSearchDynamicMetadataRestId)).data();
+
+        if (this.advancedMetadataRepositoryEnabled) {
+            this.initializeMetadataPanel();
+        }
 
         let scrollContainer: JQuery = $(this._rcbMetadataRepository.get_dropDownElement()).find('div.rcbScroll');
         $(scrollContainer).scroll(this.rcbLookup_onScroll);
 
         $("#".concat(this.metadataPageContentId)).data(this);
+        $("#".concat(this.uscSetiContactSelId)).data(this);
+    }
+
+    private initializeMetadataPanel(): void {
+        let $advancedMetadataSearchBtn = $(`#${this.enableAdvancedMetadataSearchBtnId}`);
+        this._enableAdvancedMetadataSearchBtn = <HTMLInputElement>$advancedMetadataSearchBtn[0];
+        $advancedMetadataSearchBtn.on("change", () => {
+            let advancedMetadataSearchEnabled: boolean = this._enableAdvancedMetadataSearchBtn.checked;
+            this._txtMetadataValue.set_visible(!advancedMetadataSearchEnabled);
+
+            let selectedMetadataRepositoryId: string = this.getSelectedMetadataRepositoryId();
+            this._uscAdvancedSearchDynamicMetadataRest.setPanelSearchType(advancedMetadataSearchEnabled, selectedMetadataRepositoryId);
+        });
+
+        this._txtMetadataValue = <Telerik.Web.UI.RadTextBox>$find(this.txtMetadataValueId);
+        this._setMetadataValueElementsState(false);
     }
 
     private setValues(repositories: MetadataRepositoryViewModel[]) {
@@ -157,13 +227,15 @@ class uscMetadataRepositorySel {
         this._rcbMetadataRepository.get_moreResultsBoxMessageElement().innerText = message;
     }
 
-    setComboboxText(id: string) {
+    setComboboxText(id: string, generateMetadataInputs: boolean = true) {
         this._metadataRepositoryService.getById(id,
             (data: MetadataRepositoryViewModel) => {
                 if (data) {
                     this._rcbMetadataRepository.set_text(data.Name);
                     this._rcbMetadataRepository.set_value(data.UniqueId);
-                    $("#".concat(this.metadataPageContentId)).triggerHandler(uscMetadataRepositorySel.SELECTED_INDEX_EVENT, data.UniqueId);
+                    if (generateMetadataInputs) {
+                        $("#".concat(this.metadataPageContentId)).triggerHandler(uscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, data.UniqueId);
+                    }
                 }
             },
             (exception: ExceptionDTO) => {
@@ -218,6 +290,27 @@ class uscMetadataRepositorySel {
 
     enableSelection(): void {
         this._rcbMetadataRepository.set_enabled(true);
+    }
+
+    getMetadataFinderModels(): [MetadataFinderViewModel[], boolean] {
+        let metadataFinderModels: [MetadataFinderViewModel[], boolean] = this._uscAdvancedSearchDynamicMetadataRest.getMetadataFinderModels();
+
+        return metadataFinderModels;
+    }
+
+    getMetadataFilterValues(): [string, MetadataFinderViewModel[], boolean] {
+        let metadataFilterValues: [string, MetadataFinderViewModel[], boolean] = [null, [], true];
+
+        if (this._enableAdvancedMetadataSearchBtn.checked) {
+            let [metadataFinderModels, metadataValuesAreValid]: [MetadataFinderViewModel[], boolean] = this.getMetadataFinderModels();
+            metadataFilterValues[1] = metadataFinderModels;
+            metadataFilterValues[2] = metadataValuesAreValid;
+        } else {
+            let metadataValueFilter: string = this._txtMetadataValue.get_value();
+            metadataFilterValues[0] = metadataValueFilter;
+        }
+
+        return metadataFilterValues;
     }
 }
 

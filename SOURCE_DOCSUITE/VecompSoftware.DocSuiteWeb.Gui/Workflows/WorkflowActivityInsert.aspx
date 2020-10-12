@@ -28,6 +28,8 @@
                     workflowActivityInsert.email = "<%= Email %>";
                     workflowActivityInsert.dataScadentaId = "<%= dataScadenza.ClientID %>"
                     workflowActivityInsert.docSuiteVersion = "<%=DSWVersion%>";
+                    workflowActivityInsert.idTenantAOO = "<%= If(CurrentTenant Is Nothing, String.Empty, CurrentTenant.TenantAOO.UniqueId) %>";
+
                     workflowActivityInsert.initialize();
                 });
             });

@@ -1,6 +1,7 @@
 Imports System.IO
+Imports System.Web
 Imports VecompSoftware.DocSuiteWeb.Data
-
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 
 Public MustInherit Class BaseCommImport : Implements ICommImport
 
@@ -69,6 +70,15 @@ Public MustInherit Class BaseCommImport : Implements ICommImport
     Public Shared ReadOnly Property ErrorsTable() As DataTable
         Get
             Return _errorsTable
+        End Get
+    End Property
+
+    Public ReadOnly Property CurrentTenant As Tenant
+        Get
+            If HttpContext.Current.Session("CurrentTenant") IsNot Nothing Then
+                Return DirectCast(HttpContext.Current.Session("CurrentTenant"), Tenant)
+            End If
+            Return Nothing
         End Get
     End Property
 

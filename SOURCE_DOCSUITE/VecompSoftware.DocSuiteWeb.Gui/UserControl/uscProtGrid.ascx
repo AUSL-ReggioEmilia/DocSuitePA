@@ -89,9 +89,10 @@
                     <ItemStyle HorizontalAlign="Center"/>
                     <ItemTemplate>
                         <asp:ImageButton ID="ibtViewDocuments" runat="server" CommandName="ViewDocuments" />
+                        <asp:HiddenField runat="server" ID="hf_protocol_unique" Value="" />
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
-                <telerik:GridTemplateColumn UniqueName="colViewLinks" HeaderText="Collegamenti" HeaderImageUrl="~/Comm/Images/DocSuite/Collegamento16.gif" AllowFiltering="false" Groupable="false">
+                <telerik:GridTemplateColumn UniqueName="colViewLinks" HeaderText="Collegamenti" HeaderImageUrl="~/Comm/Images/DocSuite/Link16.png" AllowFiltering="false" Groupable="false">
                     <HeaderStyle HorizontalAlign="Center" CssClass="headerImage"/>
                     <ItemStyle HorizontalAlign="Center" />
                     <ItemTemplate>
@@ -110,7 +111,6 @@
                     <ItemStyle HorizontalAlign="center"/>
                     <ItemTemplate>
                         <asp:LinkButton runat="server" ID="lbtViewProtocol" CommandName="ViewProtocol" />
-                        <asp:HiddenField runat="server" ID="hf_protocol_unique" Value="" />
                     </ItemTemplate>
                 </DocSuite:YearNumberBoundColumn>
                 <DocSuite:YearNumberBoundColumn UniqueName="colFullProtocolNumber" HeaderText="Protocollo" CurrentFilterFunction="EqualTo" Groupable="false" SortExpression="Id" Visible="False">
@@ -169,6 +169,13 @@
                     <ItemStyle HorizontalAlign="Left"/>
                     <ItemTemplate>
                         <asp:Label ID="lblProtocolObject" runat="server" />
+                    </ItemTemplate>
+                </telerik:GridTemplateColumn>
+                <telerik:GridTemplateColumn UniqueName="PU.RegistrationUser" Visible="False" HeaderText="Evidenza da" Groupable="false" AllowFiltering="false">
+                    <HeaderStyle HorizontalAlign="Center" Wrap="false" />
+                    <ItemStyle HorizontalAlign="Left" />
+                    <ItemTemplate>
+                        <asp:Label ID="lblHighlightRegistrationUser" runat="server" />
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
                 <telerik:GridTemplateColumn UniqueName="PU.Note" Visible="False" HeaderText="Note" Groupable="false" AllowFiltering="true" CurrentFilterFunction="Contains">

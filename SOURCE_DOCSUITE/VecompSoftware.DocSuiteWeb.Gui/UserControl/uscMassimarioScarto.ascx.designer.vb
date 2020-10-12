@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscMassimarioScarto
-    
+
     '''<summary>
     '''ToolBarSearch control.
     '''</summary>
@@ -21,7 +21,16 @@ Partial Public Class uscMassimarioScarto
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ToolBarSearch As Global.Telerik.Web.UI.RadToolBar
-    
+
+    '''<summary>
+    '''FolderToolBar control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FolderToolBar As Global.Telerik.Web.UI.RadToolBar
+
     '''<summary>
     '''rtvMassimario control.
     '''</summary>
@@ -30,7 +39,7 @@ Partial Public Class uscMassimarioScarto
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtvMassimario As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>

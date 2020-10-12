@@ -109,7 +109,7 @@
 				    </telerik:GridBoundColumn>
 			    </Columns>
 		    </MasterTableView>
-		    <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente"
+		    <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente"
 			    SortToolTip="Ordina" />
 		    <ClientSettings AllowGroupExpandCollapse="True" AllowDragToGroup="True">
 			    <Selecting AllowRowSelect="true" />

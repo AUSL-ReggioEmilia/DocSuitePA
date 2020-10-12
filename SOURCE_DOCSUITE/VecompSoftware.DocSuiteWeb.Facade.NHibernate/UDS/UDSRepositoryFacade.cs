@@ -8,6 +8,7 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.UDS;
 using VecompSoftware.DocSuiteWeb.DTO.UDS;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.EntityMapper.UDS;
 using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
 using VecompSoftware.Helpers.UDS;
@@ -101,12 +102,9 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
         {
             CommandFacade<ICommandInsertUDSData> commandFacade = new CommandFacade<ICommandInsertUDSData>();
             IdentityContext identity = new IdentityContext(DocSuiteContext.Current.User.FullUserName);
-            string tenantName = DocSuiteContext.Current.ProtocolEnv.CorporateAcronym;
-            Guid tenantId = DocSuiteContext.Current.CurrentTenant.TenantId;
-
             UDSBuildModel commandModel = CreateUDSCommandModel(idRepository, idRepository, model);
 
-            ICommandInsertUDSData commandInsert = new CommandInsertUDSData(correlationId, tenantName, tenantId, identity, commandModel);
+            ICommandInsertUDSData commandInsert = new CommandInsertUDSData(correlationId, CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, identity, commandModel);
             commandFacade.Push(commandInsert);
             return commandInsert.Id;
         }
@@ -115,12 +113,9 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
         {
             CommandFacade<ICommandUpdateUDSData> commandFacade = new CommandFacade<ICommandUpdateUDSData>();
             IdentityContext identity = new IdentityContext(DocSuiteContext.Current.User.FullUserName);
-            string tenantName = DocSuiteContext.Current.ProtocolEnv.CorporateAcronym;
-            Guid tenantId = DocSuiteContext.Current.CurrentTenant.TenantId;
-
             UDSBuildModel commandModel = CreateUDSCommandModel(idRepository, idUDS, model);
 
-            ICommandUpdateUDSData commandUpdate = new CommandUpdateUDSData(correlationId, tenantName, tenantId, identity, commandModel);
+            ICommandUpdateUDSData commandUpdate = new CommandUpdateUDSData(correlationId, CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, identity, commandModel);
             commandFacade.Push(commandUpdate);
             return commandUpdate.Id;
         }
@@ -129,12 +124,10 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
         {
             CommandFacade<ICommandDeleteUDSData> commandFacade = new CommandFacade<ICommandDeleteUDSData>();
             IdentityContext identity = new IdentityContext(DocSuiteContext.Current.User.FullUserName);
-            string tenantName = DocSuiteContext.Current.ProtocolEnv.CorporateAcronym;
-            Guid tenantId = DocSuiteContext.Current.CurrentTenant.TenantId;
 
             UDSBuildModel commandModel = CreateUDSCommandModel(idRepository, idUDS, model);
             commandModel.CancelMotivation = cancelMotivation;
-            ICommandDeleteUDSData commandCancel = new CommandDeleteUDSData(correlationId, tenantName, tenantId, identity, commandModel);
+            ICommandDeleteUDSData commandCancel = new CommandDeleteUDSData(correlationId, CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, identity, commandModel);
             commandFacade.Push(commandCancel);
             return commandCancel.Id;
         }
@@ -295,7 +288,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
             IList<BiblosDocumentInfo> docInfos = new List<BiblosDocumentInfo>();
             foreach (DocumentInstance instance in document.Instances)
             {
-                IList<BiblosDocumentInfo> bibDocs = BiblosDocumentInfo.GetDocuments(document.BiblosArchive, Guid.Parse(instance.IdDocument));
+                IList<BiblosDocumentInfo> bibDocs = BiblosDocumentInfo.GetDocuments(Guid.Parse(instance.StoredChainId));
                 foreach (BiblosDocumentInfo doc in bibDocs)
                 {
                     docInfos.Add(doc);

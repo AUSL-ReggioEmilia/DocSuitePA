@@ -171,7 +171,7 @@
             <td class="label" style="width: 20%">Lettera Regione: </td>
             <td align="left" style="width: 80%">
                 <usc:uscSelTemplate runat="server" ID="uscDocumento" ButtonSelectVisible="true" IsRequired="true"
-                    Multiple="false" TreeViewCaption="Lettera Regione" RequiredErrorMessage="Documento Obbligatorio"
+                    Multiple="false" TreeViewCaption="Lettera Regione" RequiredErrorMessage="Documento obbligatorio"
                     Type="Resl" />
             </td>
         </tr>

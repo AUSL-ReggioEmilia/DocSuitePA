@@ -98,7 +98,7 @@ class uscAmmTraspMonitorLog extends TransparentAdministrationMonitorLogBase {
         this.bindLoaded();
     }
 
-    openMonitor = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    openMonitor = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.actionType = "Edit";
         this.canClearData = true;
         this.loadLastLogData();
@@ -202,7 +202,7 @@ class uscAmmTraspMonitorLog extends TransparentAdministrationMonitorLogBase {
         $("#".concat(this.pageContentId)).data(this);
     }
 
-    Save_Clicked = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    Save_Clicked = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         if (this.getUscRole(this.uscOwnerRoleId) === null) {
             alert('Campo Settori Obbligatorio');
             return;

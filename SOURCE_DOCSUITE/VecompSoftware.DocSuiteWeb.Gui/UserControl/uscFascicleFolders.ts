@@ -18,7 +18,16 @@ import FascicleModel = require('App/Models/Fascicles/FascicleModel');
 import FascicleService = require('App/Services/Fascicles/FascicleService');
 import CategoryModel = require('App/Models/Commons/CategoryModel');
 import FascMoveItems = require('Fasc/FascMoveItems');
-import FascicleMoveItemViewModel = require('../App/ViewModels/Fascicles/FascicleMoveItemViewModel');
+import FascicleMoveItemViewModel = require('App/ViewModels/Fascicles/FascicleMoveItemViewModel');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import uscErrorNotification = require('UserControl/uscErrorNotification');
+import FascicleDocumentService = require('App/Services/Fascicles/FascicleDocumentService');
+import ChainType = require('App/Models/DocumentUnits/ChainType');
+import FascicleDocumentModel = require('App/Models/Fascicles/FascicleDocumentModel');
+import DocumentUnitModel = require('App/Models/DocumentUnits/DocumentUnitModel');
+import Guid = require('App/Helpers/GuidHelper');
+import uscStartWorkflow = require('./uscStartWorkflow');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class uscFascicleFolders {
 
@@ -44,6 +53,9 @@ class uscFascicleFolders {
     foldersToDisabled: string[];
     viewOnlyFolders: boolean;
     doNotUpdateDatabase: string;
+    fascicleFoldersModel: FascicleSummaryFolderViewModel[];
+    chainId: string;
+    scannerLightRestEnabled: string;
 
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
     private _serviceConfigurations: ServiceConfiguration[];
@@ -74,6 +86,8 @@ class uscFascicleFolders {
     public static SUBFASCICLE_TREE_NODE_CLICK: string = "onSubFascicleTreeNodeClick";
     public static ROOT_NODE_CLICK: string = "onRootTreeNodeClick";
     public static RESIZE_EVENT: string = "onResize";
+    public static REFRESH_GRID_EVENT: string = "onRefresh";
+    public static REFRESH_GRID_UPLOAD_DOCUMENTS: string = "onGridUpdateDocument";
 
     private folder_close_path: string = "../App_Themes/DocSuite2008/imgset16/folder_closed.png";
     private folder_open_path: string = "../App_Themes/DocSuite2008/imgset16/folder_open.png";
@@ -85,7 +99,22 @@ class uscFascicleFolders {
     private tooltip_folder = "Cartella con sottocartelle";
     private tooltip_internet_folder = "Cartella pubblica";
     private tooltip_auto_folder = "Cartella di sottofascicolo";
-    /**
+
+    public SESSION_FascicleHierarchy;
+    public SESSION_FascicleId: string = "FascicleId_Tree";
+    public TYPOLOGY_ATTRIBUTE: string = "Typology";
+    public HASCHILDREN_ATTRIBUTE: string = "hasChildren";
+
+    public static REFRESH_FolderHierarchy: string = "refreshFolder";
+    public static UPLOAD_file: string = "uploadFile";
+    public static SCANNER: string = "scanner";
+
+    public static SCAN_DOCUMENT: string = "Scan_document";
+    public static CHAIN_ID: string = "chainId";
+
+
+    private _fascicleDocumentService: FascicleDocumentService;
+    /*
     * Costruttore
     * @param webApiConfiguration
     */
@@ -144,7 +173,7 @@ class uscFascicleFolders {
                         dto.name = currentSelectedNode.get_text();
                         dto.uniqueId = selectedNodeId;
 
-                        sessionStorage.setItem(FascMoveItems.FASC_MOVE_ITEMS_Session_key, JSON.stringify([dto]));
+                        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_FASC_MOVE_ITEMS, JSON.stringify([dto]));
 
                         let url: string = `FascMoveItems.aspx?Type=Fasc&idFascicle=${idFascicle}&ItemsType=FolderType&IdFascicleFolder=${selectedNodeId}`;
                         this.openWindow(url, "managerMoveFolder", 480, 300);
@@ -153,9 +182,9 @@ class uscFascicleFolders {
                 }
                 case "deleteFolder": {
 
-                    let hasChildren: boolean = currentSelectedNode.get_attributes().getAttribute("hasChildren");
+                    let hasChildren: boolean = currentSelectedNode.get_attributes().getAttribute(this.HASCHILDREN_ATTRIBUTE);
                     let hasDocuments: boolean = currentSelectedNode.get_attributes().getAttribute("hasDocuments");
-                    let level: number = currentSelectedNode.get_attributes().getAttribute("fascicleFolderLevel");
+                    let level: number = currentSelectedNode.get_level() + 1;
                     let hasAttribute: boolean = false;
                     if (currentSelectedNode.get_attributes().getAttribute("idCategory")) {
                         hasAttribute = true;
@@ -186,6 +215,29 @@ class uscFascicleFolders {
                     }
                     break;
                 }
+
+                case uscFascicleFolders.REFRESH_FolderHierarchy: {
+                    sessionStorage.removeItem(this.SESSION_FascicleHierarchy);
+                    this.setRootNode(sessionStorage.getItem(this.SESSION_FascicleId));
+                    this.loadFolders(sessionStorage.getItem(this.SESSION_FascicleId))
+                        .done(() => this.selectFascicleNode());                    
+                    break;
+                }
+
+                case uscFascicleFolders.UPLOAD_file: {
+                    let url: string = `../UserControl/CommonUploadDocument.aspx`;
+                    this.openWindow(url, "managerUploadFile", 480, 300, this.closeDocumentWnd);
+                    break;
+                }
+                case uscFascicleFolders.SCANNER: {
+                    sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_COMPONENT_SCANNER);
+                    let url: string = "";
+                    if (this.scannerLightRestEnabled.toLocaleLowerCase() == "true") {
+                        url = `../UserControl/ScannerRest.aspx?&multipleEnabled=True`;
+                    }
+                    this.openWindow(url, "managerScannerDocument", 800, 500, this.closeScannerWnd);
+                    break;
+                }
             }
         }
     }
@@ -196,12 +248,12 @@ class uscFascicleFolders {
     * @param args
     */
     treeView_ClientNodeExpanding = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => {
-
         if (!args.get_node()) {
             return;
         }
         let node: Telerik.Web.UI.RadTreeNode = args.get_node();
-        sender.set_loadingStatusPosition(Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
+
+        node.showLoadingStatus('', Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
 
         if (this.doNotUpdateDatabase === "False") {
             this._fascicleFolderService.getChildren(node.get_value(),
@@ -238,7 +290,6 @@ class uscFascicleFolders {
         this._managerMoveFolder = <Telerik.Web.UI.RadWindow>$find(this.managerMoveFolderId);
         this._managerMoveFolder.add_close(this.closeMoveWindow);
         this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.managerId);
-        this._loadingPanel.show(this.pageId);
         this._btnCreateFolder = this._folderToolBar.findItemByValue("createFolder");
         this._btnDeleteFolder = this._folderToolBar.findItemByValue("deleteFolder");
         this._btnModifyFolder = this._folderToolBar.findItemByValue("modifyFolder");
@@ -257,19 +308,32 @@ class uscFascicleFolders {
             this._pnlFascicleFolder.css("margin-top", "0");
         }
 
+        let fascicleDocumentConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "FascicleDocument");
+        this._fascicleDocumentService = new FascicleDocumentService(fascicleDocumentConfiguration);
+
+        this.SESSION_FascicleHierarchy = `FascicleHierarchy_${this.pageId}`;
+
         let fascicleFolderConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "FascicleFolder");
         this._fascicleFolderService = new FascicleFolderService(fascicleFolderConfiguration);
 
         let fascicleConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Fascicle");
         this._fascicleService = new FascicleService(fascicleConfiguration);
 
+        this.clearSessionStorageCache();
+
         this.bindLoaded();
+    }
+
+    private clearSessionStorageCache(): void {
+        if (sessionStorage.getItem(this.SESSION_FascicleHierarchy)) {
+            sessionStorage.removeItem(this.SESSION_FascicleHierarchy);
+        }
     }
 
     /**
 * Evento al click del pulsante per la espandere o comprimere la gliglia delle UD presenti nel fascicolo
 */
-    btnExpandFascicleFolders_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnExpandFascicleFolders_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         this.changeVisibilityFascicleFolders(this._isPnlFascicleFolderOpen);
         $("#".concat(this.pageId)).triggerHandler(uscFascicleFolders.RESIZE_EVENT);
@@ -307,6 +371,15 @@ class uscFascicleFolders {
         return promise.promise();
     }
 
+    fileManagementButtonsVisibility(right: boolean): void {
+        if (right && this.scannerLightRestEnabled.toLocaleLowerCase() == "true") {
+            this._folderToolBar.findItemByValue(uscFascicleFolders.SCANNER).set_visible(right);
+        } else {
+            this._folderToolBar.findItemByValue(uscFascicleFolders.SCANNER).set_visible(false);
+        }
+        this._folderToolBar.findItemByValue(uscFascicleFolders.UPLOAD_file).set_visible(right);
+    }
+
     setManageFascicleFolderVisibility(right: boolean): void {
         this._treeFascicleFolders.get_attributes().setAttribute("treeViewReadOnly", right.toString());
         this._folderToolBar.set_enabled(right);
@@ -323,7 +396,7 @@ class uscFascicleFolders {
     * @param dossierFolder
     */
     private setNodeAttribute(node: Telerik.Web.UI.RadTreeNode, fascicleFolder: FascicleSummaryFolderViewModel): Telerik.Web.UI.RadTreeNode {
-        node.get_attributes().setAttribute("Typology", fascicleFolder.Typology);
+        node.get_attributes().setAttribute(this.TYPOLOGY_ATTRIBUTE, fascicleFolder.Typology);
         node.set_text(fascicleFolder.Name);
         node.set_value(fascicleFolder.UniqueId);
         node.get_attributes().setAttribute("idParent", null);
@@ -345,11 +418,21 @@ class uscFascicleFolders {
         node.get_attributes().setAttribute("hasDocuments", null);
         node.get_attributes().setAttribute("hasDocuments", fascicleFolder.hasDocuments);
 
-        node.get_attributes().setAttribute("hasChildren", null);
-        node.get_attributes().setAttribute("hasChildren", fascicleFolder.hasChildren);
+        node.get_attributes().setAttribute(this.HASCHILDREN_ATTRIBUTE, null);
+        node.get_attributes().setAttribute(this.HASCHILDREN_ATTRIBUTE, fascicleFolder.hasChildren);
 
         node.get_attributes().setAttribute("fascicleFolderLevel", null);
         node.get_attributes().setAttribute("fascicleFolderLevel", fascicleFolder.FascicleFolderLevel);
+
+        if (!fascicleFolder.FascicleDocuments) {
+            node.get_attributes().setAttribute(uscFascicleFolders.CHAIN_ID, Guid.empty);
+        }
+        else {
+            let inserts: FascicleDocumentModel = $.grep(fascicleFolder.FascicleDocuments, (x) => x.ChainType.toString() == ChainType[ChainType.Miscellanea])[0];
+            if (inserts != undefined) {
+                node.get_attributes().setAttribute(uscFascicleFolders.CHAIN_ID, inserts.IdArchiveChain);
+            }
+        }
 
         node.set_imageUrl(this.folder_close_path);
 
@@ -386,25 +469,52 @@ class uscFascicleFolders {
         return node;
     }
 
-    selectFascicleNode(): void {
+    selectFascicleNode(triggerHandler: boolean = true): void {
         let fascicleNode: Telerik.Web.UI.RadTreeNode = this._treeFascicleFolders.get_nodes().getNode(0).get_nodes().getNode(0);
-        this.setSelectedNode(fascicleNode);
+        this.setSelectedNode(fascicleNode, triggerHandler);
     }
 
-    setSelectedNode(node: Telerik.Web.UI.RadTreeNode) {
+    setSelectedNode(node: Telerik.Web.UI.RadTreeNode, triggerHandler: boolean = true) {
         let idFascicle: string = this._treeFascicleFolders.get_nodes().getNode(0).get_value();
         this.currentFascicleId = node.get_value();
         node.set_selected(true);
         this.setFascicleFolder(idFascicle);
-        this.setVisibilityButtonsByStatus();
+        this.setVisibilityButtonsByStatus(triggerHandler);
+        this.createModelInSession();
+    }
+
+    private createTreeFromSession() {
+        this.fascicleFoldersModel = JSON.parse(sessionStorage.getItem(this.SESSION_FascicleHierarchy));
+        this.fascicleFoldersModel = this.fascicleFoldersModel.reverse();
+        this._treeFascicleFolders.get_nodes().getNode(0).expand();
+    }
+
+    private createModelInSession(): void {
+        let fascicleFolderParent: FascicleSummaryFolderViewModel[] = [];
+        this.getParentsById(this._treeFascicleFolders.get_selectedNode(), fascicleFolderParent);
+        sessionStorage.setItem(this.SESSION_FascicleHierarchy, JSON.stringify(fascicleFolderParent));
+    }
+
+    private getParentsById(node: Telerik.Web.UI.RadTreeNode, parents: FascicleSummaryFolderViewModel[]) {
+        if (node.get_level() > 0) {
+            let fascFolder: FascicleSummaryFolderViewModel = <FascicleSummaryFolderViewModel>{
+                Name: node.get_text(),
+                UniqueId: node.get_value(),
+                Typology: node.get_attributes().getAttribute(this.TYPOLOGY_ATTRIBUTE),
+                hasChildren: node.get_attributes().getAttribute(this.HASCHILDREN_ATTRIBUTE)
+            };
+            parents.push(fascFolder);
+
+            this.getParentsById(node.get_parent(), parents);
+        }
     }
 
     /*
     * Imposto il valore del nodo Root 
     */
     setRootNode(fascicleId: string): void
-    setRootNode(fascicleId: string, nodeText: string): void
-    setRootNode(fascicleId: string, nodeText?: any): void {
+    setRootNode(fascicleId: string, nodeText: string, setAsSelected?: boolean): void
+    setRootNode(fascicleId: string, nodeText?: any, setAsSelected: boolean = true): void {
         let rootNode: Telerik.Web.UI.RadTreeNode = this._treeFascicleFolders.get_nodes().getNode(0);
         if (nodeText) {
             rootNode.set_text(nodeText);
@@ -413,7 +523,7 @@ class uscFascicleFolders {
         }
         rootNode.set_value(fascicleId);
         rootNode.set_expanded(true);
-        rootNode.set_selected(true);
+        rootNode.set_selected(setAsSelected);
 
         this._treeFascicleFolders.commitChanges();
 
@@ -446,6 +556,8 @@ class uscFascicleFolders {
 
         parentSelectedNode.get_nodes().clear();
 
+        let idFascicle: string = parentSelectedNode.get_value();
+        let lastSelectedFolder: FascicleSummaryFolderViewModel = this.getSelectedFascicleFolder(idFascicle);
         let newNode: Telerik.Web.UI.RadTreeNode;
         $.each(fascicleFolders, (index: number, fascicleFolder: FascicleSummaryFolderViewModel) => {
             if (this._treeFascicleFolders.findNodeByValue(fascicleFolder.UniqueId) != undefined) {
@@ -454,18 +566,22 @@ class uscFascicleFolders {
 
             newNode = new Telerik.Web.UI.RadTreeNode();
             parentSelectedNode.get_nodes().add(newNode);
-
             this.setNodeAttribute(newNode, fascicleFolder);
 
             if (this.foldersToDisabled && this.foldersToDisabled.some((s) => s == fascicleFolder.UniqueId)) {
                 newNode.set_cssClass(`${newNode.get_cssClass()} rtDisabled`);
             }
 
+            if (lastSelectedFolder && lastSelectedFolder.UniqueId === fascicleFolder.UniqueId) {
+                newNode.set_selected(true);
+            }
         });
         this._treeFascicleFolders.commitChanges();
         $("#".concat(this.treeFascicleFoldersId)).triggerHandler(uscFascicleFolders.ON_END_LOAD_EVENT);
 
         this._loadingPanel.hide(this.pageId);
+        parentSelectedNode.set_expanded(true);
+        parentSelectedNode.hideLoadingStatus();
     }
 
     /**
@@ -526,13 +642,13 @@ class uscFascicleFolders {
 
             if (parentNode != this._treeFascicleFolders.get_nodes().getNode(0)) {
                 this._btnModifyFolder.set_enabled(false);
-                let attributeStatus: string = parentNode.get_attributes().getAttribute("Typology");
+                let attributeStatus: string = parentNode.get_attributes().getAttribute(this.TYPOLOGY_ATTRIBUTE);
                 this.typology = FascicleFolderTypology[attributeStatus];
 
-                let attributeChildren: boolean = parentNode.get_attributes().getAttribute("hasChildren");
+                let attributeChildren: boolean = parentNode.get_attributes().getAttribute(this.HASCHILDREN_ATTRIBUTE);
 
                 if (!attributeChildren) {
-                    parentNode.get_attributes().setAttribute("hasChildren", true);
+                    parentNode.get_attributes().setAttribute(this.HASCHILDREN_ATTRIBUTE, true);
                 }
                 parentNode.set_imageUrl(this.folder_close_path);
                 parentNode.set_expandedImageUrl(this.folder_open_path)
@@ -574,6 +690,15 @@ class uscFascicleFolders {
         }
     }
 
+    treeView_ClientNodeClicking = (sender: Telerik.Web.UI.RadTreeView, eventArgs: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => {
+        let isSelectable: boolean = eventArgs.get_node().get_attributes().getAttribute("selectable");
+
+        if (isSelectable !== undefined && isSelectable === false) {
+            eventArgs.set_cancel(true);
+            return;
+        }
+    }
+
     /**
     * Evento scatenato al click di un nodo
     * @param sender
@@ -581,7 +706,15 @@ class uscFascicleFolders {
     */
     treeView_ClientNodeClicked = (sender: Telerik.Web.UI.RadTreeView, eventArgs: Telerik.Web.UI.RadTreeNodeEventArgs) => {
         sender.set_loadingStatusPosition(Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
-        this.setSelectedNode(eventArgs.get_node());
+        if (sessionStorage.getItem(this.SESSION_FascicleHierarchy) == null ||
+            sessionStorage.getItem(this.SESSION_FascicleHierarchy) == "[]") {
+               this.setSelectedNode(eventArgs.get_node());
+        } else {
+            this.createModelInSession();
+            let idFascicle: string = this._treeFascicleFolders.get_nodes().getNode(0).get_value();
+            this.setFascicleFolder(idFascicle);
+            this.setVisibilityButtonsByStatus();
+        }
     }
 
     /*
@@ -616,10 +749,8 @@ class uscFascicleFolders {
                     this.removeNode(fascicleFolder.UniqueId);
                     this.hiddenInputs();
                 }
+                this.setSelectedNode(parentNode);
             }
-
-            document.getElementsByTagName("body")[0].setAttribute("class", "comm chrome");
-
         }, 400, 300);
     }
     private hiddenInputs() {
@@ -636,7 +767,7 @@ class uscFascicleFolders {
             if (parentNode && parentNode.get_nodes()) {
                 parentNode.get_nodes().remove(nodeToRemove);
                 if (parentNode != this._treeFascicleFolders.get_nodes().getNode(0) && parentNode.get_nodes().get_count() == 0) {
-                    parentNode.get_attributes().setAttribute("hasChildren", false);
+                    parentNode.get_attributes().setAttribute(this.HASCHILDREN_ATTRIBUTE, false);
                     parentNode.set_imageUrl(this.folder_open_path);
                 }
                 this._treeFascicleFolders.commitChanges();
@@ -661,8 +792,8 @@ class uscFascicleFolders {
         if (currentSelectedNode.get_attributes().getAttribute("idCategory")) {
             fascicleFolder.idCategory = currentSelectedNode.get_attributes().getAttribute("idCategory");
         }
-        if (currentSelectedNode.get_attributes().getAttribute("Typology")) {
-            fascicleFolder.Typology = currentSelectedNode.get_attributes().getAttribute("Typology");
+        if (currentSelectedNode.get_attributes().getAttribute(this.TYPOLOGY_ATTRIBUTE)) {
+            fascicleFolder.Typology = currentSelectedNode.get_attributes().getAttribute(this.TYPOLOGY_ATTRIBUTE);
         }
 
         if (currentSelectedNode.get_attributes().getAttribute("idParent")) {
@@ -671,16 +802,23 @@ class uscFascicleFolders {
         if (currentSelectedNode.get_attributes().getAttribute("idFascicle")) {
             fascicleFolder.idFascicle = currentSelectedNode.get_attributes().getAttribute("idFascicle");
         }
-
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_SELECTED_FASCICLE_FOLDER_ID, JSON.stringify(fascicleFolder));
         sessionStorage[`${this.pageId}_${currentFascicleId}`] = JSON.stringify(fascicleFolder);
     }
 
     getSelectedFascicleFolder(currentFascicleId): FascicleSummaryFolderViewModel {
-        let selectedFolder: string = sessionStorage.getItem(`${this.pageId}_${currentFascicleId}`);
-        if (!selectedFolder) {
-            return undefined;
+        if (sessionStorage.getItem(this.SESSION_FascicleHierarchy) == null ||
+            sessionStorage.getItem(this.SESSION_FascicleHierarchy) == "[]") {
+            let selectedFolder: string = sessionStorage.getItem(`${this.pageId}_${currentFascicleId}`);
+            if (!selectedFolder) {
+                return undefined;
+            }
+            return JSON.parse(selectedFolder) as FascicleSummaryFolderViewModel;
+
+        } else {
+            let selectedFolderFromSession: FascicleSummaryFolderViewModel[] = JSON.parse(sessionStorage.getItem(this.SESSION_FascicleHierarchy));
+            return selectedFolderFromSession[0];
         }
-        return JSON.parse(selectedFolder) as FascicleSummaryFolderViewModel;
     }
 
     /**
@@ -690,14 +828,63 @@ class uscFascicleFolders {
     * @param width
     * @param height
     */
-    openWindow(url, name, width, height): boolean {
+    openWindow(url, name, width, height, oncloseCallback = null): boolean {
         let manager: Telerik.Web.UI.RadWindowManager = <Telerik.Web.UI.RadWindowManager>$find(this.managerWindowsId);
         let wnd: Telerik.Web.UI.RadWindow = manager.open(url, name, null);
+        if (oncloseCallback) {
+            wnd.add_close(oncloseCallback);
+        }
         wnd.setSize(width, height);
         wnd.set_modal(true);
         wnd.center();
         return false;
     }
+
+    closeDocumentWnd = (sender, args) => {
+        sender.remove_close(this.closeDocumentWnd);
+        this.chainId = this._treeFascicleFolders.get_selectedNode().get_attributes().getAttribute(uscFascicleFolders.CHAIN_ID);
+        let model: AjaxModel = <AjaxModel>{};
+        model.ActionName = "Upload_document";
+        if (args.get_argument() !== null) {
+            var argument = args.get_argument();
+            model.Value = [argument, this.chainId];
+            this._ajaxManager.ajaxRequest(JSON.stringify(model));
+        }
+    }
+
+    closeScannerWnd = (sender, args) => {
+        sender.remove_close(this.closeScannerWnd);
+        this.chainId = this._treeFascicleFolders.get_selectedNode().get_attributes().getAttribute(uscFascicleFolders.CHAIN_ID);
+        var documents = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_COMPONENT_SCANNER);
+        let model: AjaxModel = <AjaxModel>{};
+        model.ActionName = uscFascicleFolders.SCAN_DOCUMENT;
+        if (documents) {
+            model.Value = [documents, this.chainId];
+            this._ajaxManager.ajaxRequest(JSON.stringify(model));
+        }
+    }
+
+    bindMiscellanea(chainId: string): void {
+        if (this.chainId == Guid.empty || this.chainId == undefined) {
+            let fascicleDocumentModel: FascicleDocumentModel = <FascicleDocumentModel>{};
+            fascicleDocumentModel.ChainType = ChainType.Miscellanea;
+            fascicleDocumentModel.IdArchiveChain = chainId;
+            fascicleDocumentModel.Fascicle = <FascicleModel>{ UniqueId: this._treeFascicleFolders.get_nodes().getNode(0).get_value() };
+            fascicleDocumentModel.FascicleFolder = <FascicleFolderModel>{};
+            fascicleDocumentModel.FascicleFolder.UniqueId = this._treeFascicleFolders.get_selectedNode().get_value();
+
+            this._fascicleDocumentService.insertFascicleDocument(fascicleDocumentModel,
+                (data: any) => {
+                },
+                (exception: ExceptionDTO) => {
+                    this._loadingPanel.hide(this.pageContentId);
+                    this.showNotificationException(this.uscNotificationId, exception);
+                }
+            );
+        }
+        $(`#${this.pageId}`).triggerHandler(uscFascicleFolders.REFRESH_GRID_UPLOAD_DOCUMENTS);
+    }
+
 
     /**
      * Metodo che nasconde il loading 
@@ -710,7 +897,7 @@ class uscFascicleFolders {
         this._loadingPanel.show(this.pageId);
     }
 
-    setVisibilityButtonsByStatus() {
+    setVisibilityButtonsByStatus(triggerHandler: boolean = true) {
         let isClosed: boolean = false;
         let currentSelectedNode: Telerik.Web.UI.RadTreeNode = this._treeFascicleFolders.get_selectedNode();
         if (this._treeFascicleFolders.get_attributes().getAttribute("isClosed")) {
@@ -719,13 +906,15 @@ class uscFascicleFolders {
 
         if (isClosed || currentSelectedNode == this._treeFascicleFolders.get_nodes().getNode(0)) {
             this.hiddenInputs();
-            $("#".concat(this.pageId)).triggerHandler(uscFascicleFolders.ROOT_NODE_CLICK);
+            if (triggerHandler) {
+                $("#".concat(this.pageId)).triggerHandler(uscFascicleFolders.ROOT_NODE_CLICK);
+            }            
             return;
         }
-        let attributeStatus: string = currentSelectedNode.get_attributes().getAttribute("Typology");
+        let attributeStatus: string = currentSelectedNode.get_attributes().getAttribute(this.TYPOLOGY_ATTRIBUTE);
         this.typology = <FascicleFolderTypology>FascicleFolderTypology[attributeStatus];
 
-        let hasChildren: boolean = currentSelectedNode.get_attributes().getAttribute("hasChildren");
+        let hasChildren: boolean = currentSelectedNode.get_attributes().getAttribute(this.HASCHILDREN_ATTRIBUTE);
         let hasDocuments: boolean = currentSelectedNode.get_attributes().getAttribute("hasDocuments");
         let hasCategory: string = currentSelectedNode.get_attributes().getAttribute("idCategory");
         let level: number = currentSelectedNode.get_attributes().getAttribute("fascicleFolderLevel");
@@ -745,7 +934,9 @@ class uscFascicleFolders {
                 this._btnDeleteFolder.set_enabled(!(hasCategory || hasDocuments || hasChildren || level < 3) && manageable);
                 this._btnModifyFolder.set_enabled(false);
                 this._btnMoveFolder.set_enabled(false);
-                $("#".concat(this.pageId)).triggerHandler(uscFascicleFolders.FASCICLE_TREE_NODE_CLICK);
+                if (triggerHandler) {
+                    $("#".concat(this.pageId)).triggerHandler(uscFascicleFolders.FASCICLE_TREE_NODE_CLICK);
+                }                
                 break;
             }
             case FascicleFolderTypology.SubFascicle: {
@@ -753,8 +944,9 @@ class uscFascicleFolders {
                 this._btnDeleteFolder.set_enabled(!(hasCategory || hasDocuments || hasChildren || level < 3) && manageable);
                 this._btnModifyFolder.set_enabled(!(hasCategory || level < 3) && manageable);
                 this._btnMoveFolder.set_enabled(manageable);
-
-                $("#".concat(this.pageId)).triggerHandler(uscFascicleFolders.SUBFASCICLE_TREE_NODE_CLICK);
+                if (triggerHandler) {
+                    $("#".concat(this.pageId)).triggerHandler(uscFascicleFolders.SUBFASCICLE_TREE_NODE_CLICK);
+                }                
                 break;
             }
         }
@@ -781,6 +973,86 @@ class uscFascicleFolders {
 
     getFascicleFolderTree(): Telerik.Web.UI.RadTreeView {
         return this._treeFascicleFolders;
+    }
+
+    rebuildTreeFromSession(fascicleId: string): JQueryPromise<void> {
+        let promise: JQueryDeferred<void> = $.Deferred<void>();
+        sessionStorage.setItem(this.SESSION_FascicleId, fascicleId);        
+        this.createTreeFromSession();
+
+        for (let fascicleFolder of this.fascicleFoldersModel) {
+            $(document).queue((next) => {
+                this.populateTree(fascicleFolder)
+                    .done(() => {
+                        if (fascicleFolder.UniqueId == this.fascicleFoldersModel[this.fascicleFoldersModel.length - 1].UniqueId) {
+                            let toSelectNode: Telerik.Web.UI.RadTreeNode = this._treeFascicleFolders.findNodeByValue(this.fascicleFoldersModel[this.fascicleFoldersModel.length - 1].UniqueId);
+                            if (toSelectNode) {
+                                this.setSelectedNode(toSelectNode, false);
+                            } else {
+                                this.selectFascicleNode(false);
+                            }                         
+                        }
+                        next();
+                    })
+                    .fail((exception: ExceptionDTO) => {
+                        $(document).clearQueue();
+                        promise.reject(exception);
+                        return;
+                    });
+            });
+        }
+        
+        $(document).queue((next) => {
+            this._loadingPanel.hide(this.pageId);
+            promise.resolve();
+            next();
+        });
+        return promise.promise();
+    }
+
+    private populateTree(fascicleFolder: FascicleSummaryFolderViewModel): JQueryPromise<void> {
+        let promise: JQueryDeferred<void> = $.Deferred<void>();
+        this._fascicleFolderService.getChildren(fascicleFolder.UniqueId,
+            (data: any) => {
+                if (!data || data.length == 0) {
+                    promise.resolve();
+                    return;
+                }
+                let fascicleFolders: FascicleSummaryFolderViewModel[] = data as FascicleSummaryFolderViewModel[];
+                let parentNode: Telerik.Web.UI.RadTreeNode = this._treeFascicleFolders.findNodeByValue(fascicleFolder.UniqueId);
+                parentNode.get_nodes().clear();
+                this.buildFascicleFolder(fascicleFolders, parentNode);
+                parentNode.set_expanded(true);
+                promise.resolve();
+            },
+            (exception: ExceptionDTO) => promise.reject(exception)
+        );
+        return promise.promise();
+    }
+
+    private buildFascicleFolder(data: FascicleSummaryFolderViewModel[], parentNode: Telerik.Web.UI.RadTreeNode) {
+        this._treeFascicleFolders.trackChanges();
+        for (let i = 0; i < data.length; i++) {
+            let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode;
+            node.set_text(data[i].Name);
+            node.set_value(data[i].UniqueId);
+            node.set_imageUrl(this.folder_close_path);
+            parentNode.get_nodes().add(node);
+
+            this.setNodeAttribute(node, data[i]);
+
+            if (data[i].hasChildren && this.fascicleFoldersModel.some(f => f.Name == data[i].Name)) {
+                node.set_expanded(true);
+                if (node.get_nodes().getNode(0).get_text() == "") {
+                    node.get_nodes().remove(node.get_nodes().getNode(0));
+                }
+            } else if (!data[i].hasChildren) {
+                node.set_expanded(false);
+            } else {
+                node.set_expanded(false);
+            }            
+        }
+        this._treeFascicleFolders.commitChanges();
     }
 }
 export = uscFascicleFolders;

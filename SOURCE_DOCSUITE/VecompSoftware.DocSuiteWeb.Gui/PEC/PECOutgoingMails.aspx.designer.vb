@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class PECOutgoingMails
-    
+
     '''<summary>
     '''RadWindowManager control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManager As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''wndProgress control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents wndProgress As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''RadCodeBlock1 control.
     '''</summary>
@@ -39,16 +39,16 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
-    
+
     '''<summary>
-    '''ddlMailBox control.
+    '''ddlMailbox control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ddlMailBox As Global.System.Web.UI.WebControls.DropDownList
-    
+    Protected WithEvents ddlMailbox As Global.Telerik.Web.UI.RadComboBox
+
     '''<summary>
     '''txtFilterRecipient control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtFilterRecipient As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtFinderSubject control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtFinderSubject As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''dtpShowSentFrom control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dtpShowSentFrom As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''dtpShowSentTo control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dtpShowSentTo As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''rdbSenderFilter control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdbSenderFilter As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''chkAnomalies control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkAnomalies As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''trIncludeMultiSended control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trIncludeMultiSended As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''cbIncludeMultiSended control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cbIncludeMultiSended As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''trMessageMultiSended control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trMessageMultiSended As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lnlMessageMultiSended control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lnlMessageMultiSended As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''cmdRefreshGrid control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdRefreshGrid As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''cmdClearFilters control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdClearFilters As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''pnlFilterRight control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlFilterRight As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''tblFilterVisualizza control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblFilterVisualizza As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''chkShowRecorded control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkShowRecorded As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''dtpShowRecordedFrom control.
     '''</summary>
@@ -192,7 +192,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dtpShowRecordedFrom As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''dtpShowRecordedTo control.
     '''</summary>
@@ -201,7 +201,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dtpShowRecordedTo As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''hrFilterEsito control.
     '''</summary>
@@ -210,7 +210,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents hrFilterEsito As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''tblFilterEsito control.
     '''</summary>
@@ -219,7 +219,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblFilterEsito As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''rdbFilterPECResult control.
     '''</summary>
@@ -228,7 +228,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdbFilterPECResult As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''collapseSection control.
     '''</summary>
@@ -237,7 +237,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents collapseSection As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''dgMail control.
     '''</summary>
@@ -246,7 +246,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dgMail As Global.VecompSoftware.DocSuiteWeb.Presentation.BindGrid
-    
+
     '''<summary>
     '''cmdNewMail control.
     '''</summary>
@@ -255,7 +255,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdNewMail As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''cmdDelete control.
     '''</summary>
@@ -264,7 +264,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdDelete As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''cmdForward control.
     '''</summary>
@@ -273,7 +273,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdForward As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''cmdViewLog control.
     '''</summary>
@@ -282,7 +282,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdViewLog As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''cmdResend control.
     '''</summary>
@@ -291,7 +291,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdResend As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnOpenModalRaccomandata control.
     '''</summary>
@@ -300,7 +300,7 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnOpenModalRaccomandata As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnExport control.
     '''</summary>

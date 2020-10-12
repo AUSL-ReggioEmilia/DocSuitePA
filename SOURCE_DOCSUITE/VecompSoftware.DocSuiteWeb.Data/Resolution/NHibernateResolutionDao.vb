@@ -629,7 +629,7 @@ Public Class NHibernateResolutionDao
             '-- Aggiornamento ResolutionWorkflow x Pubblicazione
             Dim inc As Short
             Dim incFather As Short
-
+            Dim nextstep As Short
             Dim keylist As String() = IdResolutionList.Split(","c)
 
             For Each key As String In keylist
@@ -638,7 +638,7 @@ Public Class NHibernateResolutionDao
                 Dim daoWork As New NHibernateResolutionWorkflowDao("ReslDB")
                 incFather = daoWork.GetActiveIncremental(idResolution, 1S)
                 inc = daoWork.GetMaxIncremental(idResolution) + 1S
-
+                nextstep = daoWork.GetActiveStep(idResolution) + 1S
                 If incFather <> 0 Then
                     command = New SqlClient.SqlCommand()
                     command.Connection = NHibernateSession.Connection
@@ -663,7 +663,8 @@ Public Class NHibernateResolutionDao
                 sql = idResolution & ","
                 sql &= inc & ","
                 sql &= If(incFather <> 0, incFather, "NULL") & ","
-                sql &= "4,1,"
+                sql &= nextstep & ","
+                sql &= "1,"
                 sql &= "'" & UserConnected & "',"
                 sql &= "'" & String.Format("{0:yyyyMMdd}", GetServerDate()) & "'"
 
@@ -726,7 +727,7 @@ Public Class NHibernateResolutionDao
             '-- Aggiornamento ResolutionWorkflow x Pubblicazione
             Dim inc As Short
             Dim incFather As Short
-
+            Dim nextstep As Short
             Dim keylist As String() = IdResolutionList.Split(","c)
 
             For Each key As String In keylist
@@ -735,7 +736,7 @@ Public Class NHibernateResolutionDao
                 Dim daoWork As New NHibernateResolutionWorkflowDao("ReslDB")
                 incFather = daoWork.GetActiveIncremental(idResolution, 1S)
                 inc = daoWork.GetMaxIncremental(idResolution) + 1S
-
+                nextstep = daoWork.GetActiveStep(idResolution) + 1S
                 If incFather <> 0 Then
                     command = New SqlClient.SqlCommand()
                     command.Connection = NHibernateSession.Connection
@@ -758,7 +759,8 @@ Public Class NHibernateResolutionDao
                 sql = idResolution & ","
                 sql &= inc & ","
                 sql &= If(incFather <> 0, incFather, "NULL") & ","
-                sql &= "3,1,"
+                sql &= nextstep & ","
+                sql &= "1,"
                 sql &= "'" & UserConnected & "',"
                 sql &= "'" & String.Format("{0:yyyyMMdd}", GetServerDate()) & "'"
 
@@ -963,9 +965,7 @@ Public Class NHibernateResolutionDao
             .JoinAlias(Function(x) reslContainer.ReslLocation, Function() reslLocation) _
             .SelectList(Function(slist) slist.[Select](Function(s) reslLocation.Id).WithAlias(Function() locationResult.Id) _
                             .[Select](Function(s) reslLocation.ConsBiblosDSDB).WithAlias(Function() locationResult.ConsBiblosDSDB) _
-                            .[Select](Function(s) reslLocation.ConservationServer).WithAlias(Function() locationResult.ConservationServer) _
                             .[Select](Function(s) reslLocation.DocmBiblosDSDB).WithAlias(Function() locationResult.DocmBiblosDSDB) _
-                            .[Select](Function(s) reslLocation.DocumentServer).WithAlias(Function() locationResult.DocumentServer) _
                             .[Select](Function(s) reslLocation.Name).WithAlias(Function() locationResult.Name) _
                             .[Select](Function(s) reslLocation.ProtBiblosDSDB).WithAlias(Function() locationResult.ProtBiblosDSDB) _
                             .[Select](Function(s) reslLocation.ReslBiblosDSDB).WithAlias(Function() locationResult.ReslBiblosDSDB)) _

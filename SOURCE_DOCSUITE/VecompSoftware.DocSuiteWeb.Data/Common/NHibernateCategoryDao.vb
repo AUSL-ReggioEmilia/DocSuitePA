@@ -103,6 +103,18 @@ Public Class NHibernateCategoryDao
         Return _reslDao.GetCountBySubCategory(Category) > 0
     End Function
 
+    Public Function GetRootAOOCategory(idtenantAOO As Guid) As Category
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
+
+        criteria.Add(Restrictions.IsNull("Parent"))
+        criteria.Add(Restrictions.Eq("Code", 0))
+        criteria.AddOrder(Order.Asc("Code"))
+        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IdTenantAOO", idtenantAOO))
+
+        Return criteria.UniqueResult(Of Category)()
+    End Function
+
     Public Function GetRootCategory(Optional ByVal IsActive As Boolean = False) As IList(Of Category)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 

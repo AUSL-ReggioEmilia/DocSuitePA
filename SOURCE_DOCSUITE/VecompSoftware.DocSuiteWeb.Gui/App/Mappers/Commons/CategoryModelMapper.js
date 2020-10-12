@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/BaseMapper", "App/Models/Commons/CategoryModel", "App/Mappers/MassimariScarto/MassimarioScartoModelMapper"], function (require, exports, BaseMapper, CategoryModel, MassimarioScartoModelMapper) {
+define(["require", "exports", "App/Mappers/BaseMapper", "App/Models/Commons/CategoryModel", "App/Mappers/MassimariScarto/MassimarioScartoModelMapper", "APP/Mappers/Tenants/TenantAOOModelMapper", "APP/Mappers/Commons/CategoryFascicleViewModelMapper"], function (require, exports, BaseMapper, CategoryModel, MassimarioScartoModelMapper, TenantAOOModelMapper, CategoryFascicleViewModelMapper) {
     var CategoryModelMapper = /** @class */ (function (_super) {
         __extends(CategoryModelMapper, _super);
         function CategoryModelMapper() {
@@ -31,6 +31,7 @@ define(["require", "exports", "App/Mappers/BaseMapper", "App/Models/Commons/Cate
             toMap.IsActive = source.IsActive;
             toMap.MassimarioScarto = source.MassimarioScarto ? new MassimarioScartoModelMapper().Map(source.MassimarioScarto) : null;
             toMap.Parent = source.Parent ? new CategoryModelMapper().Map(source.Parent) : null;
+            toMap.TenantAOO = source.TenantAOO ? new TenantAOOModelMapper().Map(source.TenantAOO) : null;
             toMap.Name = source.Name;
             toMap.UniqueId = source.UniqueId;
             toMap.StartDate = source.StartDate;
@@ -39,6 +40,7 @@ define(["require", "exports", "App/Mappers/BaseMapper", "App/Models/Commons/Cate
             toMap.RegistrationUser = source.RegistrationUser;
             toMap.LastChangedDate = source.LastChangedDate;
             toMap.LastChangedUser = source.LastChangedUser;
+            toMap.CategoryFascicles = source.CategoryFascicles ? new CategoryFascicleViewModelMapper().MapCollection(source.CategoryFascicles) : null;
             return toMap;
         };
         return CategoryModelMapper;

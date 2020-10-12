@@ -61,7 +61,7 @@ Public Class ProtNoteGes
             Dim roleIdsToRemove As IList(Of Integer) = New List(Of Integer)
 
             For Each roleChanged As ProtocolRoleNoteModel In RoleNoteChanged
-                Dim protRole As ProtocolRole = CurrentProtocol.Roles.SingleOrDefault(Function(s) s.Id.Id.Equals(roleChanged.IdRole))
+                Dim protRole As ProtocolRole = CurrentProtocol.Roles.SingleOrDefault(Function(s) s.Role.Id.Equals(roleChanged.IdRole))
                 If protRole Is Nothing Then Continue For
                 If ProtocolEnv.RefusedProtocolAuthorizationEnabled AndAlso Not roleChanged.Status.Equals(ProtocolRoleStatus.ToEvaluate) Then
                     If roleChanged.Status.Equals(Convert.ToInt16(ProtocolRoleStatus.Refused)) Then
@@ -88,7 +88,7 @@ Public Class ProtNoteGes
 
             'Modifico eventuali valori non settati in view state
             If uscAutorizza.SelectedRole IsNot Nothing AndAlso Not RoleNoteChanged.Any(Function(r) r.IdRole.Equals(uscAutorizza.SelectedRole.Id)) Then
-                Dim protRole As ProtocolRole = CurrentProtocol.Roles.SingleOrDefault(Function(s) s.Id.Id.Equals(uscAutorizza.SelectedRole.Id))
+                Dim protRole As ProtocolRole = CurrentProtocol.Roles.SingleOrDefault(Function(s) s.Role.Id.Equals(uscAutorizza.SelectedRole.Id))
                 If protRole IsNot Nothing Then
                     protRole.Note = txtNote.Text
                     protRole.LastChangedDate = DateTimeOffset.UtcNow
@@ -124,7 +124,7 @@ Public Class ProtNoteGes
             Exit Sub
         End Try
 
-        Response.Redirect(String.Concat("~/Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}", CurrentProtocolYear, CurrentProtocolNumber))))
+        Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
 
@@ -170,8 +170,8 @@ Public Class ProtNoteGes
 
         PreviousNodeSelected = protRole
 
-        If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(protRole.Id.Id)) Then
-            Dim roleChanged As ProtocolRoleNoteModel = RoleNoteChanged.First(Function(r) r.IdRole.Equals(protRole.Id.Id))
+        If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(protRole.Role.Id)) Then
+            Dim roleChanged As ProtocolRoleNoteModel = RoleNoteChanged.First(Function(r) r.IdRole.Equals(protRole.Role.Id))
             txtNote.Text = roleChanged.Note
             If roleChanged.Status.HasValue Then
                 rblAcceptance.SelectedValue = roleChanged.Status.Value.ToString()
@@ -238,10 +238,10 @@ Public Class ProtNoteGes
 
     Private Sub InitializeControls()
         If CurrentProtocol Is Nothing Then
-            Throw New DocSuiteException("Errore lettura Protocollo", String.Format("Impossibile trovare protocollo [{0}]", ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber)))
+            Throw New DocSuiteException("Errore lettura Protocollo", String.Format("Impossibile trovare protocollo [{0}]", CurrentProtocolId))
         End If
         If DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled AndAlso Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 2, True).Count = 0 Then
-            Throw New DocSuiteException("Errore diritti Protocollo", String.Format("Mancano diritti di Autorizzazione sul protocollo [{0}]", CurrentProtocol.Id.ToString()))
+            Throw New DocSuiteException("Errore diritti Protocollo", String.Format("Mancano diritti di Autorizzazione sul protocollo [{0}]", CurrentProtocol.FullNumber))
         End If
 
         ' Blocco la modifica a chi non è autorizzato
@@ -251,6 +251,7 @@ Public Class ProtNoteGes
             uscAnnexes.SignButtonEnabled = ProtocolEnv.IsFDQEnabled
             ' Copia da protocollo
             uscAnnexes.ButtonCopyProtocol.Visible = ProtocolEnv.CopyProtocolDocumentsEnabled
+            uscAnnexes.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
             ' Copia da atto
             If (DocSuiteContext.Current.IsResolutionEnabled) Then
                 uscAnnexes.ButtonCopyResl.Visible = ResolutionEnv.CopyReslDocumentsEnabled
@@ -276,7 +277,7 @@ Public Class ProtNoteGes
     End Sub
 
     Private Sub CreateFieldChangeLog(ByVal message As String, ByVal oldValue As String, ByVal newValue As String)
-        If Not DocSuiteContext.Current.ProtocolEnv.IsLogEnabled OrElse oldValue.Eq(newValue) Then
+        If oldValue.Eq(newValue) Then
             Exit Sub
         End If
 
@@ -285,10 +286,6 @@ Public Class ProtNoteGes
     End Sub
 
     Private Sub CreateRejectedChangeLog(protocolRole As ProtocolRole, status As ProtocolRoleStatus, note As String)
-        If Not DocSuiteContext.Current.ProtocolEnv.IsLogEnabled Then
-            Exit Sub
-        End If
-
         Dim message As String = String.Empty
         If status.Equals(ProtocolRoleStatus.Accepted) Then
             message = "accettato"
@@ -311,26 +308,26 @@ Public Class ProtNoteGes
                     ((Not cbVisibilityNoteRole.Checked AndAlso roleToUpdate.NoteType = ProtocolRoleNoteType.Accessible) OrElse
                     roleToUpdate.NoteType = Convert.ToInt16(cbVisibilityNoteRole.Checked)) Then
 
-                    If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(roleToUpdate.Id.Id)) Then
-                        Dim itemToRemove As ProtocolRoleNoteModel = RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Id.Id))
+                    If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(roleToUpdate.Role.Id)) Then
+                        Dim itemToRemove As ProtocolRoleNoteModel = RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Role.Id))
                         RoleNoteChanged.Remove(itemToRemove)
                     End If
                     Dim node As RadTreeNode = uscAutorizza.TreeViewControl.FindNodeByValue(roleToUpdate.Role.Id.ToString())
                     node.Text = roleToUpdate.Role.Name
                 Else
-                    If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(roleToUpdate.Id.Id)) Then
-                        RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Id.Id)).Note = txtNote.Text
+                    If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(roleToUpdate.Role.Id)) Then
+                        RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Role.Id)).Note = txtNote.Text
                         If Not String.IsNullOrEmpty(rblAcceptance.SelectedValue) Then
-                            RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Id.Id)).Status = Convert.ToInt16(rblAcceptance.SelectedValue)
+                            RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Role.Id)).Status = Convert.ToInt16(rblAcceptance.SelectedValue)
                         End If
 
                         If ProtocolEnv.ProtocolNoteReservedRoleEnabled Then
-                            RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Id.Id)).NoteType = Convert.ToInt16(cbVisibilityNoteRole.Checked)
+                            RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Role.Id)).NoteType = Convert.ToInt16(cbVisibilityNoteRole.Checked)
                         End If
 
                     Else
                         Dim itemToAdd As ProtocolRoleNoteModel = New ProtocolRoleNoteModel()
-                        itemToAdd.IdRole = roleToUpdate.Id.Id
+                        itemToAdd.IdRole = roleToUpdate.Role.Id
                         itemToAdd.Note = txtNote.Text
                         If Not String.IsNullOrEmpty(rblAcceptance.SelectedValue) Then
                             itemToAdd.Status = Convert.ToInt16(rblAcceptance.SelectedValue)

@@ -3,6 +3,7 @@
 <%@ Register Src="~/UserControl/uscSettori.ascx" TagName="settori" TagPrefix="usc" %>
 <%@ Register Src="../UserControl/uscFascicleLink.ascx" TagName="uscFascicleLink" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscFascicleProcessInsert.ascx" TagName="uscFascicleProcessInsert" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscFascicleInsert.ascx" TagName="uscFascicleInsert" TagPrefix="usc" %>
 
 
@@ -14,16 +15,17 @@
                 $(function () {
                     dossierFascicleFolderInserimento = new DossierFascicleFolderInserimento(tenantModelConfiguration.serviceConfiguration);
                     dossierFascicleFolderInserimento.currentDossierId = "<%= IdDossier%>";
-                    dossierFascicleFolderInserimento.currentPageId = "<%= pageContent.ClientID%>";                   
+                    dossierFascicleFolderInserimento.currentPageId = "<%= pageContent.ClientID%>";
                     dossierFascicleFolderInserimento.btnConfermaId = "<%= btnConferma.ClientID%>";
                     dossierFascicleFolderInserimento.ajaxManagerId = "<%= AjaxManager.ClientID%>";
                     dossierFascicleFolderInserimento.managerId = "<%= MasterDocSuite.DefaultWindowManager.ClientID %>";
                     dossierFascicleFolderInserimento.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                     dossierFascicleFolderInserimento.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                     dossierFascicleFolderInserimento.persistanceDisabled = <%= PersistanceDisabled.ToString().ToLower() %>;
-                    
+
                     dossierFascicleFolderInserimento.fascicleTypeRow = "<%=fascicleTypeRow.ClientID%>";
-                    dossierFascicleFolderInserimento.uscFascInsertId = "<%= uscFascicleInsert.PageContentDiv.ClientID %>";                                
+                    dossierFascicleFolderInserimento.fascicleInsertControlId = "<%= FascicleInsertControlClientId %>";
+                    dossierFascicleFolderInserimento.processEnabled = <%= ProtocolEnv.ProcessEnabled.ToString().ToLower() %>;
                     dossierFascicleFolderInserimento.initialize();
                 });
             });
@@ -36,15 +38,15 @@
 
 
 <asp:Content runat="server" ContentPlaceHolderID="cphContent">
-       <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
-        <telerik:RadFormDecorator RenderMode="Lightweight" ID="frmDecorator"  EnableRoundedCorners="false" runat="server" DecoratedControls="Fieldset"></telerik:RadFormDecorator>
+    <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
+    <telerik:RadFormDecorator RenderMode="Lightweight" ID="frmDecorator" EnableRoundedCorners="false" runat="server" DecoratedControls="Fieldset"></telerik:RadFormDecorator>
     <telerik:RadPageLayout runat="server" ID="pageContent" HtmlTag="Div" Width="100%" Height="95%">
         <Rows>
-            <telerik:LayoutRow runat="server" id="fascicleTypeRow" HtmlTag="Div" CssClass="ts-initialize">
+            <telerik:LayoutRow runat="server" ID="fascicleTypeRow" HtmlTag="Div" CssClass="ts-initialize">
                 <Content>
-                    <usc:uscFascicleInsert runat="server" ID="uscFascicleInsert" Required="false"/>
+                    <asp:PlaceHolder runat="server" ID="dynamicUscFascicleInsertControls" />
                 </Content>
-            </telerik:LayoutRow>            
+            </telerik:LayoutRow>
         </Rows>
     </telerik:RadPageLayout>
 </asp:Content>

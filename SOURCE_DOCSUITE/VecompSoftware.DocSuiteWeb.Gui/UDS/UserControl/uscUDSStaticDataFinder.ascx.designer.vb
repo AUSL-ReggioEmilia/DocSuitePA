@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscUDSStaticDataFinder
-    
+
     '''<summary>
     '''rowStaticData control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscUDSStaticDataFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowStaticData As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''rowYear control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscUDSStaticDataFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowYear As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtYear control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscUDSStaticDataFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtYear As Global.Telerik.Web.UI.RadDateInput
-    
+
     '''<summary>
     '''rowNumber control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscUDSStaticDataFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowNumber As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtNumber control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscUDSStaticDataFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNumber As Global.Telerik.Web.UI.RadNumericTextBox
-    
+
     '''<summary>
     '''txtRegistrationDateFrom control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscUDSStaticDataFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtRegistrationDateFrom As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtRegistrationDateTo control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscUDSStaticDataFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtRegistrationDateTo As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtSubject control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscUDSStaticDataFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtSubject As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''uscSelCategory control.
     '''</summary>
@@ -93,7 +93,25 @@ Partial Public Class uscUDSStaticDataFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSelCategory As Global.VecompSoftware.DocSuiteWeb.Gui.uscClassificatore
-    
+
+    '''<summary>
+    '''txtDocumentName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtDocumentName As Global.Telerik.Web.UI.RadTextBox
+
+    '''<summary>
+    '''chkGenericDocument control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkGenericDocument As Global.System.Web.UI.WebControls.CheckBox
+
     '''<summary>
     '''chkStatus control.
     '''</summary>

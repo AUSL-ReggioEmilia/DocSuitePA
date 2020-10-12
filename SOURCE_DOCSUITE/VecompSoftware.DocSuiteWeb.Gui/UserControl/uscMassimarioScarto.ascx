@@ -52,6 +52,14 @@
         <telerik:RadToolBarButton Text="Cerca" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
     </Items>
 </telerik:RadToolBar>
+<telerik:RadToolBar AutoPostBack="false" EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%" RenderMode="Lightweight">
+    <Items>
+        <telerik:RadToolBarButton runat="server" ToolTip="Aggiungi" Value="create" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+        <telerik:RadToolBarButton runat="server" ToolTip="Modifica" Value="modify" Text="Modifica" Enabled="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+        <telerik:RadToolBarButton runat="server" ToolTip="Elimina" Value="delete" Text="Elimina" Enabled="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
+        <telerik:RadToolBarButton runat="server" ToolTip="Recupera" Value="recover" Text="Recupera" Enabled="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/view_history.png" />
+    </Items>
+</telerik:RadToolBar>
 <telerik:RadTreeView ID="rtvMassimario" LoadingStatusPosition="BeforeNodeText" OnClientNodeClicked="treeView_ClientNodeClicked"
     OnClientNodeExpanding="treeView_ClientNodeExpanding" runat="server" Style="margin-top: 10px;" Width="100%">
     <Nodes>
@@ -59,4 +67,4 @@
     </Nodes>
 </telerik:RadTreeView>
 
-  <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
+<usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>

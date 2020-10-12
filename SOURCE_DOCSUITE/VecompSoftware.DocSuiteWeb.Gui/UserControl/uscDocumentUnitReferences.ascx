@@ -14,7 +14,7 @@
                 documentUnit.documentUnitId = "<%=IdDocumentUnit%>";
                 documentUnit.documentUnitYear = "<%=DocumentUnitYear%>";
                 documentUnit.documentUnitNumber = "<%=DocumentUnitNumber%>";
-                documentUnit.rpbDocumentsId = "<%= rpbDocuments.ClientID%>";
+
                 documentUnit.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                 documentUnit.managerWindowsId = "<%= manager.ClientID %>";
                 documentUnit.administrationTrasparenteProtocol = "<%=AdministrationTrasparenteProtocol%>";
@@ -29,24 +29,28 @@
                 documentUnit.showDocumentSeriesMessageLinks = "<%=ShowDocumentSeriesMessageLinks%>";
                 documentUnit.showDocumentSeriesResolutionsLinks = "<%=ShowDocumentSeriesResolutionsLinks AndAlso ResolutionEnable%>";
                 documentUnit.showDocumentSeriesProtocolsLinks = "<%=ShowDocumentSeriesProtocolsLinks%>";
-
                 documentUnit.showArchiveLinks = "<%=ShowArchiveLinks%>";
                 documentUnit.showProtocolLinks = "<%=ShowProtocolLinks%>";
-
                 documentUnit.showIncomingPECMailLinks = "<%=ShowPECIncoming%>";
                 documentUnit.showOutgoingPECMailLinks = "<%=ShowPECOutgoing%>";
-
                 documentUnit.showResolutionlMessageLinks = "<%=ShowResolutionlMessageLinks%>";
                 documentUnit.showResolutionDocumentSeriesLinks = "<%=ShowResolutionDocumentSeriesLinks%>";
-
                 documentUnit.showFasciclesLinks = "<%=ShowFasciclesLinks%>";
                 documentUnit.showDossierLinks = "<%=ShowDossierLinks%>";
-
+                documentUnit.showRemoveUDSLinksButton = "<%=ShowRemoveUDSLinksButton%>";
                 documentUnit.showActiveWorkflowActivities = "<%=ShowActiveWorkflowActivities%>";
+                documentUnit.showDoneWorkflowActivities = "<%=ShowDoneWorkflowActivities%>";
+                documentUnit.showTNotice = "<%=ShowTNotice%>";
 
+                documentUnit.btnExpandDocumentUnitReferenceId = "<%=btnExpandDocumentUnitReference.ClientID%>";
+                documentUnit.documentUnitReferenceInfoId = "<%=documentUnitReferenceInfo.ClientID%>";
                 documentUnit.initialize();
             });
         });
+
+        function removeLink(uniqueId, udsId, relationId) {
+            documentUnit.removeLink(uniqueId, udsId, relationId);
+        }
     </script>
 </telerik:RadScriptBlock>
 
@@ -62,15 +66,26 @@
     </Windows>
 </telerik:RadWindowManager>
 
-<telerik:RadPanelBar runat="server" AllowCollapseAllItems="true" ExpandMode="MultipleExpandedItems" Width="100%" ID="rpbDocuments" Visible="true">
+<telerik:RadPanelBar runat="server" AllowCollapseAllItems="true" ExpandMode="MultipleExpandedItems" Width="100%" ID="rpbDocuments" Visible="true" CssClass="dsw-panel RadPanelBar_uscDocumentUnitReferences_Office2007">
     <Items>
-        <telerik:RadPanelItem Text="Collegamenti" Expanded="true" runat="server">
+        <telerik:RadPanelItem Text="Collegamenti" Expanded="true" runat="server" PreventCollapse="true">
+            <HeaderTemplate>
+                <div class="dsw-panel-title">
+                    Collegamenti
+            <telerik:RadButton ID="btnExpandDocumentUnitReference" CssClass="dsw-vertical-middle" runat="server" AutoPostBack="false" Width="16px" Height="16px" Visible="true">
+                <Image EnableImageButton="true" />
+            </telerik:RadButton>
+                </div>
+            </HeaderTemplate>
             <ContentTemplate>
-                <telerik:RadTreeView ID="RadTreeDocuments" runat="server" Width="100%">
-                </telerik:RadTreeView>
+                <div class="dsw-panel-content" id="documentUnitReferenceInfo" runat="server">
+                    <telerik:RadTreeView ID="RadTreeDocuments" runat="server" Width="100%">
+                    </telerik:RadTreeView>
+                </div>
             </ContentTemplate>
         </telerik:RadPanelItem>
     </Items>
 </telerik:RadPanelBar>
+
 
 <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>

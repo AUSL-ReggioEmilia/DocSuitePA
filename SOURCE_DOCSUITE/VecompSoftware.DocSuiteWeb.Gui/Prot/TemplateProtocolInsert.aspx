@@ -16,12 +16,20 @@
                 else if (window.frameElement.radWindow) oWindow = window.frameElement.radWindow;
                 return oWindow;
             }
-
             function CloseWindow() {
                 var oWindow = GetRadWindow();
                 oWindow.close();
             }
+            function CloseWindow(args) {
+                var oWindow = GetRadWindow();
+                oWindow.argument = "DOCUMENTUNITDRAFT";
+                oWindow.close(args);
+            }
+            function ReturnValuesJSon(action, serializedContact) {
 
+                CloseWindow(serializedContact);
+                return;
+            }
             function OnRequestStart(sender, args) {
                 ShowLoadingPanel();
             }
@@ -53,6 +61,7 @@
                 var currentUpdatedControl = "<%= protocolContainer.ClientID%>";
                 currentLoadingPanel.hide(currentUpdatedControl);
             }
+
         </script>
     </telerik:RadScriptBlock>
 </asp:Content>
@@ -192,6 +201,7 @@
             <usc:Settori Caption="Autorizzazioni" ID="uscAutorizzazioni" MultipleRoles="True" MultiSelect="True" Required="False" RoleRestictions="None" runat="server" Type="Prot" />
         </asp:Panel>
         <%-- Sezione Oggetto --%>
+         <asp:Panel ID="pnlUscOggetto" runat="server" Visible="False">
         <table class="datatable">
             <tr>
                 <th>Oggetto</th>
@@ -202,6 +212,7 @@
                 </td>
             </tr>
         </table>
+              </asp:Panel>
         <%-- Sezione Classificatore --%>
         <usc:SelCategory runat="server" ID="uscClassificatori" Required="False" Type="Prot" Caption="Classificazione" Multiple="false" />
         <table class="datatable">
@@ -244,5 +255,6 @@
     <div class="footer-buttons-wrapper">
         <asp:Button runat="server" ID="btnConfirm" Width="150" Text="Conferma" OnClientClick="return TemplateProtocolAjaxRequest('save');" />
         <asp:Button runat="server" ID="btnAnnulla" Text="Annulla" Width="150" OnClientClick="return TemplateProtocolAjaxRequest('close');" />
+        <asp:Button runat="server" ID="btnSave" Text="Salva" Width="150" OnClientClick="return TemplateProtocolAjaxRequest('saveprecopiler');" />
     </div>
 </asp:Content>

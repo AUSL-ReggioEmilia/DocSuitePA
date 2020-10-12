@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class TbltContenitoriGes
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''txtName control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtName As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''txtNote control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''pnlLocation control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlLocation As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''uscDocmLocation control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDocmLocation As Global.VecompSoftware.DocSuiteWeb.Gui.uscSelLocation
-    
+
     '''<summary>
     '''uscProtLocation control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscProtLocation As Global.VecompSoftware.DocSuiteWeb.Gui.uscSelLocation
-    
+
     '''<summary>
     '''uscProtAttachLocation control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscProtAttachLocation As Global.VecompSoftware.DocSuiteWeb.Gui.uscSelLocation
-    
+
     '''<summary>
     '''uscReslLocation control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscReslLocation As Global.VecompSoftware.DocSuiteWeb.Gui.uscSelLocation
-    
+
     '''<summary>
     '''uscDeskLocation control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDeskLocation As Global.VecompSoftware.DocSuiteWeb.Gui.uscSelLocation
-    
+
     '''<summary>
     '''uscUDSLocation control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUDSLocation As Global.VecompSoftware.DocSuiteWeb.Gui.uscSelLocation
-    
+
     '''<summary>
     '''uscSeriesLocation control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSeriesLocation As Global.VecompSoftware.DocSuiteWeb.Gui.uscSelLocation
-    
+
     '''<summary>
     '''uscSeriesAnnexedLocation control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSeriesAnnexedLocation As Global.VecompSoftware.DocSuiteWeb.Gui.uscSelLocation
-    
+
     '''<summary>
     '''uscSeriesUnpublishedAnnexedLocation control.
     '''</summary>
@@ -129,25 +129,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSeriesUnpublishedAnnexedLocation As Global.VecompSoftware.DocSuiteWeb.Gui.uscSelLocation
-    
-    '''<summary>
-    '''pnlSecureDocument control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlSecureDocument As Global.System.Web.UI.HtmlControls.HtmlTable
-    
-    '''<summary>
-    '''chkSecureDocument control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents chkSecureDocument As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlConservation control.
     '''</summary>
@@ -156,7 +138,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlConservation As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''chkConservation control.
     '''</summary>
@@ -165,7 +147,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkConservation As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlPrivacy control.
     '''</summary>
@@ -174,7 +156,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlPrivacy As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''chkIsPrivacy control.
     '''</summary>
@@ -183,7 +165,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkIsPrivacy As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''lblPrivacyLevel control.
     '''</summary>
@@ -192,7 +174,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblPrivacyLevel As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''ddlPrivacyLevel control.
     '''</summary>
@@ -201,7 +183,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlPrivacyLevel As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''pnlDocumentSeries control.
     '''</summary>
@@ -210,7 +192,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDocumentSeries As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblDocumentSeries control.
     '''</summary>
@@ -219,7 +201,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDocumentSeries As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''ddlArchive control.
     '''</summary>
@@ -228,7 +210,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlArchive As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''chkZeroDoc control.
     '''</summary>
@@ -237,7 +219,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkZeroDoc As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkAddDocs control.
     '''</summary>
@@ -246,7 +228,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkAddDocs As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkSeriesPub control.
     '''</summary>
@@ -255,7 +237,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkSeriesPub As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkRoles control.
     '''</summary>
@@ -264,7 +246,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkRoles As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkSubsection control.
     '''</summary>
@@ -273,7 +255,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkSubsection As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''ddlDocumentSeriesFamily control.
     '''</summary>
@@ -282,7 +264,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlDocumentSeriesFamily As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''uscClassificatori control.
     '''</summary>
@@ -291,7 +273,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscClassificatori As Global.VecompSoftware.DocSuiteWeb.Gui.uscClassificatore
-    
+
     '''<summary>
     '''FrontaliniPrivacy control.
     '''</summary>
@@ -300,7 +282,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents FrontaliniPrivacy As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblFrontaliniHeader control.
     '''</summary>
@@ -309,7 +291,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblFrontaliniHeader As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblHeadingFrontalino control.
     '''</summary>
@@ -318,7 +300,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblHeadingFrontalino As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtHeadingFrontalino control.
     '''</summary>
@@ -327,7 +309,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtHeadingFrontalino As Global.Telerik.Web.UI.RadEditor
-    
+
     '''<summary>
     '''lblHeadingLetter control.
     '''</summary>
@@ -336,7 +318,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblHeadingLetter As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtHeadingLetter control.
     '''</summary>
@@ -345,7 +327,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtHeadingLetter As Global.Telerik.Web.UI.RadEditor
-    
+
     '''<summary>
     '''lblPrivacy control.
     '''</summary>
@@ -354,7 +336,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblPrivacy As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''chkPrivacy control.
     '''</summary>
@@ -363,7 +345,7 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkPrivacy As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''btnConferma control.
     '''</summary>

@@ -5,15 +5,17 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             r[k] = a[j];
     return r;
 };
-define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/ProcessService", "App/Helpers/ServiceConfigurationHelper", "App/Models/Fascicles/FascicleType", "App/Services/Dossiers/DossierFolderService", "App/Services/Processes/ProcessFascicleWorkflowRepositoryService", "App/Services/Workflows/WorkflowRepositoryService", "App/Services/Commons/MetadataRepositoryService", "App/Models/Fascicles/FascicleModel", "App/Models/Fascicles/VisibilityType", "UserControl/uscFascicleFolders", "App/Models/Fascicles/FascicleFolderStatus", "App/Helpers/GuidHelper", "App/Models/Fascicles/FascicleFolderTypology", "App/DTOs/ExceptionDTO", "App/Models/Commons/MetadataRepositoryModel", "App/Models/Processes/ProcessNodeType", "App/Models/Fascicles/AuthorizationRoleType", "App/Models/Fascicles/FascicleRoleModel", "App/Services/Processes/ProcessFascicleTemplateService"], function (require, exports, EnumHelper, ProcessService, ServiceConfigurationHelper, FascicleType, DossierFolderService, ProcessFascicleWorkflowRepositoryService, WorkflowRepositoryService, MetadataRepositoryService, FascicleModel, VisibilityType, UscFascicleFolders, FascicleFolderStatus, Guid, FascicleFolderTypology, ExceptionDTO, MetadataRepositoryModel, ProcessNodeType, AuthorizationRoleType, FascicleRoleModel, ProcessFascicleTemplateService) {
+define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/ProcessService", "App/Helpers/ServiceConfigurationHelper", "App/Services/Dossiers/DossierFolderService", "App/Services/Processes/ProcessFascicleWorkflowRepositoryService", "App/Services/Workflows/WorkflowRepositoryService", "App/Services/Commons/MetadataRepositoryService", "App/Models/Fascicles/FascicleModel", "App/Models/Fascicles/VisibilityType", "UserControl/uscFascicleFolders", "App/Models/Fascicles/FascicleFolderStatus", "App/Helpers/GuidHelper", "App/Models/Fascicles/FascicleFolderTypology", "App/DTOs/ExceptionDTO", "App/Models/Commons/MetadataRepositoryModel", "./uscRoleRest", "App/Models/Processes/ProcessNodeType", "App/Models/Commons/AuthorizationRoleType", "App/Models/Fascicles/FascicleRoleModel", "App/Services/Processes/ProcessFascicleTemplateService", "App/Helpers/ExternalSourceActionEnum", "App/Models/Fascicles/FascicleType", "App/Services/Commons/CategoryService", "App/Helpers/PageClassHelper", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, EnumHelper, ProcessService, ServiceConfigurationHelper, DossierFolderService, ProcessFascicleWorkflowRepositoryService, WorkflowRepositoryService, MetadataRepositoryService, FascicleModel, VisibilityType, UscFascicleFolders, FascicleFolderStatus, Guid, FascicleFolderTypology, ExceptionDTO, MetadataRepositoryModel, uscRoleRest, ProcessNodeType, AuthorizationRoleType, FascicleRoleModel, ProcessFascicleTemplateService, ExternalSourceActionEnum, FascicleType, CategoryService, PageClassHelper, SessionStorageKeysHelper) {
     var uscProcessDetails = /** @class */ (function () {
         function uscProcessDetails(serviceConfigurations) {
             var _this = this;
+            this.TYPOLOGY_ATTRIBUTE = "Typology";
             this.deleteRolePromise = function (roleIdToDelete, senderId) {
                 var promise = $.Deferred();
                 if (!roleIdToDelete)
                     return promise.promise();
                 switch (uscProcessDetails.selectedEntityType) {
+                    case ProcessNodeType.Category:
                     case ProcessNodeType.Process: {
                         _this._processService.getById(uscProcessDetails.selectedProcessId, function (data) {
                             var process = data;
@@ -22,11 +24,11 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                             _this._processService.update(process, function (data) {
                                 promise.resolve(data);
                             }, function (error) {
-                                _this._ajaxLoadingPanel.hide("ItemDetailTable");
+                                _this._ajaxLoadingPanel.hide(_this._pnlInformations.get_element().id);
                                 _this.showNotificationException(error);
                             });
                         }, function (error) {
-                            _this._ajaxLoadingPanel.hide("ItemDetailTable");
+                            _this._ajaxLoadingPanel.hide(_this._pnlInformations.get_element().id);
                             _this.showNotificationException(error);
                         });
                         break;
@@ -39,11 +41,11 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                             _this._dossierFolderService.updateDossierFolder(dossierFolder, null, function (data) {
                                 promise.resolve(data);
                             }, function (error) {
-                                _this._ajaxLoadingPanel.hide("ItemDetailTable");
+                                _this._ajaxLoadingPanel.hide(_this._pnlInformations.get_element().id);
                                 _this.showNotificationException(error);
                             });
                         }, function (error) {
-                            _this._ajaxLoadingPanel.hide("workflowDetails");
+                            _this._ajaxLoadingPanel.hide(_this._pnlWorkflowDetails.get_element().id);
                             _this.showNotificationException(error);
                         });
                         break;
@@ -51,9 +53,8 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                     case ProcessNodeType.ProcessFascicleTemplate: {
                         switch (senderId) {
                             case _this.uscResponsibleRolesId: {
-                                uscProcessDetails.responsibleRoles = uscProcessDetails.responsibleRoles
-                                    .filter(function (role) { return role.IdRole !== roleIdToDelete || role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) === -1; });
-                                promise.resolve(uscProcessDetails.responsibleRoles);
+                                promise.resolve(uscProcessDetails.responsibleRole ? [uscProcessDetails.responsibleRole] : []);
+                                uscProcessDetails.responsibleRole = null;
                                 break;
                             }
                             case _this.uscAuthorizedRolesId: {
@@ -73,6 +74,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                 if (!newAddedRoles.length)
                     return promise.promise();
                 switch (uscProcessDetails.selectedEntityType) {
+                    case ProcessNodeType.Category:
                     case ProcessNodeType.Process: {
                         _this._processService.getById(uscProcessDetails.selectedProcessId, function (data) {
                             var process = data;
@@ -80,11 +82,11 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                             _this._processService.update(process, function (data) {
                                 promise.resolve(data);
                             }, function (error) {
-                                _this._ajaxLoadingPanel.hide("ItemDetailTable");
+                                _this._ajaxLoadingPanel.hide(_this._pnlInformations.get_element().id);
                                 _this.showNotificationException(error);
                             });
                         }, function (error) {
-                            _this._ajaxLoadingPanel.hide("ItemDetailTable");
+                            _this._ajaxLoadingPanel.hide(_this._pnlInformations.get_element().id);
                             _this.showNotificationException(error);
                         });
                         break;
@@ -105,11 +107,11 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                             _this._dossierFolderService.updateDossierFolder(dossierFolder, null, function (data) {
                                 promise.resolve(data);
                             }, function (error) {
-                                _this._ajaxLoadingPanel.hide("ItemDetailTable");
+                                _this._ajaxLoadingPanel.hide(_this._pnlInformations.get_element().id);
                                 _this.showNotificationException(error);
                             });
                         }, function (error) {
-                            _this._ajaxLoadingPanel.hide("workflowDetails");
+                            _this._ajaxLoadingPanel.hide(_this._pnlWorkflowDetails.get_element().id);
                             _this.showNotificationException(error);
                         });
                         break;
@@ -117,11 +119,34 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                     case ProcessNodeType.ProcessFascicleTemplate: {
                         switch (senderId) {
                             case _this.uscResponsibleRolesId: {
-                                uscProcessDetails.responsibleRoles = __spreadArrays(uscProcessDetails.responsibleRoles, newAddedRoles);
-                                promise.resolve(uscProcessDetails.responsibleRoles);
+                                var _loop_1 = function (authorizedRole) {
+                                    if (newAddedRoles.filter(function (x) { return x.IdRole === authorizedRole.IdRole; }).length > 0) {
+                                        var existedRole = newAddedRoles.filter(function (x) { return x.IdRole === authorizedRole.IdRole; })[0];
+                                        alert("Non \u00E8 possibile selezionare il settore " + existedRole.Name + " in quanto gi\u00E0 presente come settore autorizzato del modello di fascicolo");
+                                        newAddedRoles = newAddedRoles.filter(function (x) { return x.IdRole !== authorizedRole.IdRole; });
+                                        promise.resolve(existedRole, true);
+                                    }
+                                };
+                                for (var _i = 0, _a = uscProcessDetails.authorizedRoles; _i < _a.length; _i++) {
+                                    var authorizedRole = _a[_i];
+                                    _loop_1(authorizedRole);
+                                }
+                                if (newAddedRoles.length > 0) {
+                                    uscProcessDetails.responsibleRole = newAddedRoles[0];
+                                    promise.resolve([uscProcessDetails.responsibleRole]);
+                                }
+                                else {
+                                    promise.resolve([]);
+                                }
                                 break;
                             }
                             case _this.uscAuthorizedRolesId: {
+                                if (uscProcessDetails.responsibleRole && (newAddedRoles.filter(function (x) { return x.IdRole === uscProcessDetails.responsibleRole.IdRole; }).length > 0)) {
+                                    var existedRole = newAddedRoles.filter(function (x) { return x.IdRole === uscProcessDetails.responsibleRole.IdRole; })[0];
+                                    alert("Non \u00E8 possibile selezionare il settore " + existedRole.Name + " in quanto gi\u00E0 presente come settore responsabile del modello di fascicolo");
+                                    newAddedRoles = newAddedRoles.filter(function (x) { return x.IdRole !== uscProcessDetails.responsibleRole.IdRole; });
+                                    promise.resolve(existedRole);
+                                }
                                 uscProcessDetails.authorizedRoles = __spreadArrays(uscProcessDetails.authorizedRoles, newAddedRoles);
                                 promise.resolve(uscProcessDetails.authorizedRoles);
                                 break;
@@ -157,7 +182,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                             alert("Selezionare flusso di lavoro");
                             return;
                         }
-                        _this._ajaxLoadingPanel.show("workflowDetails");
+                        _this._ajaxLoadingPanel.show(_this._pnlWorkflowDetails.get_element().id);
                         var processFascicleWorkflowRepository = {};
                         processFascicleWorkflowRepository.Process = {};
                         processFascicleWorkflowRepository.Process.UniqueId = uscProcessDetails.selectedProcessId;
@@ -173,17 +198,28 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                                 break;
                             }
                         }
-                        _this._processFascicleWorkflowRepositoryService.insert(processFascicleWorkflowRepository, function (data) {
-                            var node = new Telerik.Web.UI.RadTreeNode();
-                            node.set_text(selectedWorkflowRepository_1.Name);
-                            node.set_value(data.UniqueId);
-                            _this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().add(node);
-                            _this._rtvWorkflowRepository.get_nodes().getNode(0).expand();
-                            _this._ajaxLoadingPanel.hide("workflowDetails");
-                        }, function (error) {
-                            _this._ajaxLoadingPanel.hide("workflowDetails");
-                            _this.showNotificationException(error);
-                        });
+                        var exist = false;
+                        for (var i = 0; i < _this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().get_count(); i++) {
+                            if (_this._rcbWorkflowRepository.get_selectedItem().get_text() === _this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().getItem(i).get_text())
+                                exist = true;
+                        }
+                        if (!exist) {
+                            _this._processFascicleWorkflowRepositoryService.insert(processFascicleWorkflowRepository, function (data) {
+                                var node = new Telerik.Web.UI.RadTreeNode();
+                                node.set_text(selectedWorkflowRepository_1.Name);
+                                node.set_value(data.UniqueId);
+                                _this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().add(node);
+                                _this._rtvWorkflowRepository.get_nodes().getNode(0).expand();
+                                _this._ajaxLoadingPanel.hide(_this._pnlWorkflowDetails.get_element().id);
+                            }, function (error) {
+                                _this._ajaxLoadingPanel.hide(_this._pnlWorkflowDetails.get_element().id);
+                                _this.showNotificationException(error);
+                            });
+                        }
+                        else {
+                            _this._ajaxLoadingPanel.hide(_this._pnlWorkflowDetails.get_element().id);
+                            alert("Un flusso del lavoro con il nome scelto è già esistente.");
+                        }
                         break;
                     }
                     case "delete": {
@@ -191,14 +227,14 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                             alert("Selezionare flusso di lavoro");
                             return;
                         }
-                        _this._ajaxLoadingPanel.show("workflowDetails");
+                        _this._ajaxLoadingPanel.show(_this._pnlWorkflowDetails.get_element().id);
                         var processFascicleWorkflowRepository = {};
                         processFascicleWorkflowRepository.UniqueId = _this._rtvWorkflowRepository.get_selectedNode().get_value();
                         _this._processFascicleWorkflowRepositoryService.delete(processFascicleWorkflowRepository, function (data) {
                             _this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().remove(_this._rtvWorkflowRepository.get_selectedNode());
-                            _this._ajaxLoadingPanel.hide("workflowDetails");
+                            _this._ajaxLoadingPanel.hide(_this._pnlWorkflowDetails.get_element().id);
                         }, function (error) {
-                            _this._ajaxLoadingPanel.hide("workflowDetails");
+                            _this._ajaxLoadingPanel.hide(_this._pnlWorkflowDetails.get_element().id);
                             _this.showNotificationException(error);
                         });
                         break;
@@ -206,50 +242,29 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                 }
             };
             this.rbAddFascicle_onClick = function (sender, args) {
-                _this._ajaxLoadingPanel.show("fascicleDetails");
-                var fascicleModel = new FascicleModel();
-                fascicleModel.FascicleObject = _this._rtbFascicleSubject.get_textBoxValue();
-                fascicleModel.VisibilityType = _this._rbFascicleVisibilityType.get_checked() ? VisibilityType.Accessible : VisibilityType.Confidential;
-                fascicleModel.FascicleRoles = [];
-                for (var _i = 0, _a = uscProcessDetails.responsibleRoles; _i < _a.length; _i++) {
-                    var responsibleRole = _a[_i];
-                    var fascicleRole = new FascicleRoleModel();
-                    fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Responsible;
-                    fascicleRole.IsMaster = true;
-                    fascicleRole.Role = responsibleRole;
-                    fascicleModel.FascicleRoles.push(fascicleRole);
-                }
-                for (var _b = 0, _c = uscProcessDetails.authorizedRoles; _b < _c.length; _b++) {
-                    var authorizedRole = _c[_b];
-                    var fascicleRole = new FascicleRoleModel();
-                    fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Accounted;
-                    fascicleRole.IsMaster = false;
-                    fascicleRole.Role = authorizedRole;
-                    fascicleModel.FascicleRoles.push(fascicleRole);
-                }
-                _this.fascicleFolders = [];
-                _this.getFascicleFolderListFromTree(_this._uscFascicleFolders.getFascicleFolderTree().get_nodes().getNode(0));
-                fascicleModel.FascicleFolders = _this.fascicleFolders;
-                fascicleModel.Contacts = uscProcessDetails.contacts;
-                fascicleModel.MetadataRepository = new MetadataRepositoryModel();
-                if (_this._rcbMetadataRepository.get_selectedItem()) {
-                    fascicleModel.MetadataRepository.Name = _this._rcbMetadataRepository.get_selectedItem().get_text();
-                    fascicleModel.MetadataRepository.UniqueId = _this._rcbMetadataRepository.get_selectedItem().get_value();
-                }
                 var processFascicleTemplate = {};
                 processFascicleTemplate.DossierFolder = {};
                 processFascicleTemplate.Process = {};
                 processFascicleTemplate.UniqueId = uscProcessDetails.selectedProcessFascicleTemplateId;
                 processFascicleTemplate.Process.UniqueId = uscProcessDetails.selectedProcessId;
-                processFascicleTemplate.JsonModel = JSON.stringify(fascicleModel);
-                sessionStorage.setItem("ProcessFascicleTemplate", JSON.stringify(processFascicleTemplate));
-                _this._processFascicleTemplateService.update(processFascicleTemplate, function (data) {
-                    alert("Modificato con successo");
-                    _this._ajaxLoadingPanel.hide("fascicleDetails");
-                }, function (error) {
-                    _this._ajaxLoadingPanel.hide("fascicleDetails");
-                    _this.showNotificationException(error);
+                _this.populateFascicleTemplateInfo().then(function (jsonModel) {
+                    processFascicleTemplate.JsonModel = jsonModel;
+                    processFascicleTemplate.Name = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_PROCESS_FASCICLE_TEMPLATE_NAME);
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_PROCESS_FASCICLE_TEMPLATE_NAME, JSON.stringify(processFascicleTemplate));
+                    _this._processFascicleTemplateService.update(processFascicleTemplate, function (data) {
+                        alert("Modificato con successo");
+                        _this._ajaxLoadingPanel.hide(_this._pnlFascicleDetails.get_element().id);
+                    }, function (error) {
+                        _this._ajaxLoadingPanel.hide(_this._pnlFascicleDetails.get_element().id);
+                        _this.showNotificationException(error);
+                    });
                 });
+            };
+            this.rcbFascicleType_selectedIndexChanged = function (sender, args) {
+                var fascicleIsProcedureOrDefault = ["", FascicleType[FascicleType.Procedure]].indexOf(args.get_item().get_value()) > -1;
+                $("#uscContactRestFieldset").toggle(fascicleIsProcedureOrDefault);
+                $("#responsibleRoleFieldset").toggle(fascicleIsProcedureOrDefault);
+                _this._rbFascicleVisibilityType.set_visible(fascicleIsProcedureOrDefault);
             };
             this._serviceConfigurations = serviceConfigurations;
             this._enumHelper = new EnumHelper();
@@ -263,9 +278,16 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
             this._ajaxLoadingPanel.show(this.rcbMetadataRepositoryId);
             this.loadWorkflowRepositories();
             this.loadMetadataRepositories();
+            this.loadCustomActions({
+                AutoClose: false,
+                AutoCloseAndClone: false
+            });
             this.bindLoaded();
+            this.loadFascicleTypes();
         };
         uscProcessDetails.prototype.initializeServices = function () {
+            var categoryConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Category");
+            this._categoryService = new CategoryService(categoryConfiguration);
             var processConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Process");
             this._processService = new ProcessService(processConfiguration);
             var dossierFolderConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DossierFolder");
@@ -281,8 +303,11 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
         };
         uscProcessDetails.prototype.initializeControls = function () {
             this._lblProcessName = document.getElementById(this.lblNameId);
+            this._lblFolderName = document.getElementById(this.lblFolderNameId);
+            this._divFolderName = document.getElementById(this.divFolderNameId);
+            this._lblActivationDate = document.getElementById(this.lblActivationDateId);
+            this._lblNote = document.getElementById(this.lblNoteId);
             this._lblClasificationName = document.getElementById(this.lblClasificationNameId);
-            this._lblFascicleType = document.getElementById(this.lblFascicleTypeId);
             this._ajaxLoadingPanel = $find(this.ajaxLoadingPanelId);
             this._rcbWorkflowRepository = $find(this.rcbWorkflowRepositoryId);
             this._toolbarWorkflowRepository = $find(this.toolbarWorkflowRepositoryId);
@@ -293,6 +318,21 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
             this._rbAddFascicle.add_clicked(this.rbAddFascicle_onClick);
             this._rtbFascicleSubject = $find(this.rtbFascicleSubjectId);
             this._rbFascicleVisibilityType = $find(this.rbFascicleVisibilityTypeId);
+            this._rcbFascicleType = $find(this.rcbFascicleTypeId);
+            this._rcbFascicleType.add_selectedIndexChanged(this.rcbFascicleType_selectedIndexChanged);
+            this._rpbDetails = $find(this.rpbDetailsId);
+            this._pnlInformations = this._rpbDetails.findItemByValue("pnlInformations");
+            this._pnlCategoryInformations = this._rpbDetails.findItemByValue("pnlCategoryInformations");
+            this._pnlRoleDetails = this._rpbDetails.findItemByValue("pnlRoleDetails");
+            this._pnlWorkflowDetails = this._rpbDetails.findItemByValue("pnlWorkflowDetails");
+            this._pnlFascicleDetails = this._rpbDetails.findItemByValue("pnlFascicleDetails");
+            this._lblCategoryCode = document.getElementById(this.lblCategoryCodeId);
+            this._lblCategoryName = document.getElementById(this.lblCategoryNameId);
+            this._lblStartDate = document.getElementById(this.lblStartDateId);
+            this._lblEndDate = document.getElementById(this.lblEndDateId);
+            this._lblMetadata = document.getElementById(this.lblMetadataId);
+            this._lblMassimarioName = document.getElementById(this.lblMassimarioNameId);
+            this._lblRegistrationDate = document.getElementById(this.lblRegistrationDateId);
         };
         uscProcessDetails.prototype.initializeUserControls = function () {
             $("#".concat(this.uscFascicleFoldersId)).bind(UscFascicleFolders.LOADED_EVENT, function (args) {
@@ -369,7 +409,6 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                 _this._rcbMetadataRepository.get_items().clear();
                 var item = new Telerik.Web.UI.RadComboBoxItem();
                 item.set_text("");
-                item.set_value("");
                 _this._rcbMetadataRepository.get_items().add(item);
                 for (var _i = 0, _a = _this.metadataRepositories; _i < _a.length; _i++) {
                     var metadataRepository = _a[_i];
@@ -384,37 +423,96 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                 _this.showNotificationException(error);
             });
         };
-        uscProcessDetails.prototype.setProcessDetails = function () {
+        uscProcessDetails.prototype.setCategoryDetails = function () {
             var _this = this;
-            this._rcbWorkflowRepository.get_items().getItem(0).select();
-            this._rcbMetadataRepository.get_items().getItem(0).select();
+            this._uscRoleRest.disableButtons();
+            this._categoryService.getRolesByCategoryId(uscProcessDetails.selectedCategoryId, function (data) {
+                var category = data;
+                _this._lblCategoryCode.innerText = category.getFullCodeDotted();
+                _this._lblCategoryName.innerText = category.Name + " (" + category.EntityShortId + ")";
+                _this._lblStartDate.innerText = category.StartDate ? moment(new Date(category.StartDate)).format("DD/MM/YYYY") : "";
+                _this._lblEndDate.innerText = category.EndDate ? moment(new Date(category.EndDate)).format("DD/MM/YYYY") : "";
+                if (_this._lblMetadata) {
+                    _this._lblMetadata.innerText = category.MetadataRepository ? category.MetadataRepository.Name : "";
+                }
+                _this._lblMassimarioName.innerText = category.MassimarioScarto
+                    ? category.MassimarioScarto.FullCode.replace("|", ".") + "." + category.MassimarioScarto.Name + "(" + category.MassimarioScarto.ConservationPeriod + " Anni)"
+                    : "";
+                _this._lblRegistrationDate.innerText = moment(new Date(category.RegistrationDate)).format("DD/MM/YYYY");
+                if (category.CategoryFascicles.length > 0) {
+                    var categoryFascicleRightsModel = category.CategoryFascicles.map(function (x) { return x.CategoryFascicleRights; });
+                    var roleArray = [];
+                    for (var _i = 0, categoryFascicleRightsModel_1 = categoryFascicleRightsModel; _i < categoryFascicleRightsModel_1.length; _i++) {
+                        var cfrm = categoryFascicleRightsModel_1[_i];
+                        roleArray = cfrm.map(function (x) { return x.Role; });
+                    }
+                    _this._uscRoleRest.renderRolesTree(roleArray);
+                }
+                else {
+                    _this._uscRoleRest.renderRolesTree([]);
+                }
+            }, function (error) {
+                _this._ajaxLoadingPanel.hide(_this._pnlInformations.get_element().id);
+                _this.showNotificationException(error);
+            });
+        };
+        uscProcessDetails.prototype.setProcessDetails = function (dossierFolderName, populateRoles) {
+            var _this = this;
+            this._uscRoleRest.enableButtons();
+            var workflowRepositories = this._rcbWorkflowRepository.get_items();
+            var metadataRepositories = this._rcbMetadataRepository.get_items();
+            if (workflowRepositories.get_count() > 0) {
+                workflowRepositories.getItem(0).select();
+            }
+            if (metadataRepositories.get_count() > 0) {
+                metadataRepositories.getItem(0).select();
+            }
             this._uscResponsibleRoles.renderRolesTree([]);
             this._uscAuthorizedRoles.renderRolesTree([]);
+            this._uscAuthorizedRoles.disableRaciRoleButton();
+            this._uscFascicleFolders.fileManagementButtonsVisibility(false);
+            if (uscProcessDetails.selectedEntityType === ProcessNodeType.ProcessFascicleTemplate) {
+                uscProcessDetails.responsibleRole = null;
+                uscProcessDetails.authorizedRoles = [];
+                uscProcessDetails.raciRoles = [];
+            }
             this._processService.getById(uscProcessDetails.selectedProcessId, function (data) {
                 var process = data;
+                _this._divFolderName.style.display = "none";
                 _this._lblProcessName.innerText = process.Name;
-                _this._lblClasificationName.innerText = process.Category.Name;
-                _this._lblFascicleType.innerText = FascicleType[FascicleType[process.FascicleType]];
-                if (uscProcessDetails.selectedEntityType === ProcessNodeType.Process) {
+                if (process.StartDate) {
+                    _this._lblActivationDate.innerText = moment(process.StartDate).format("DD/MM/YYYY");
+                }
+                if (dossierFolderName && dossierFolderName !== '') {
+                    _this._divFolderName.style.display = "";
+                    _this._lblFolderName.innerText = dossierFolderName;
+                }
+                _this._lblClasificationName.innerText = process.Category.getFullCodeDotted() + " - " + process.Category.Name;
+                _this._lblNote.innerText = process.Note;
+                if (populateRoles) {
+                    //set popup roles source
+                    if (uscProcessDetails.selectedEntityType === ProcessNodeType.Process) {
+                        _this.needRolesFromExternalSource_eventArgs = [ExternalSourceActionEnum.Process.toString(), uscProcessDetails.selectedProcessId];
+                    }
+                    else if (uscProcessDetails.selectedEntityType === ProcessNodeType.Category) {
+                        _this.needRolesFromExternalSource_eventArgs = [ExternalSourceActionEnum.Category.toString(), uscProcessDetails.selectedCategoryId.toString()];
+                    }
+                    $("#" + _this.uscRoleRestId).triggerHandler(uscRoleRest.NEED_ROLES_FROM_EXTERNAL_SOURCE, _this.needRolesFromExternalSource_eventArgs);
                     _this._uscRoleRest.renderRolesTree(process.Roles);
                 }
-                else if (uscProcessDetails.selectedEntityType === ProcessNodeType.ProcessFascicleTemplate) {
-                    uscProcessDetails.responsibleRoles = [];
-                    uscProcessDetails.authorizedRoles = [];
-                }
-                _this._ajaxLoadingPanel.hide("ItemDetailTable");
+                _this._ajaxLoadingPanel.hide(_this._pnlInformations.get_element().id);
             }, function (error) {
-                _this._ajaxLoadingPanel.hide("ItemDetailTable");
+                _this._ajaxLoadingPanel.hide(_this._pnlInformations.get_element().id);
                 _this.showNotificationException(error);
             });
         };
         uscProcessDetails.prototype.clearProcessDetails = function () {
             this._lblProcessName.innerText = "";
             this._lblClasificationName.innerText = "";
-            this._lblFascicleType.innerText = "";
         };
         uscProcessDetails.prototype.setDossierFolderWorkflowRepositories = function () {
             var _this = this;
+            this._uscRoleRest.enableButtons();
             this._processFascicleWorkflowRepositoryService.getByDossierFolderId(uscProcessDetails.selectedDossierFolderId, function (data) {
                 uscProcessDetails.processFascicleWorkflowRepositories = data;
                 _this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().clear();
@@ -426,21 +524,28 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                     _this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().add(node);
                 }
                 _this._rtvWorkflowRepository.get_nodes().getNode(0).expand();
-                _this._ajaxLoadingPanel.hide("workflowDetails");
+                _this._ajaxLoadingPanel.hide(_this._pnlWorkflowDetails.get_element().id);
             }, function (error) {
-                _this._ajaxLoadingPanel.hide("workflowDetails");
+                _this._ajaxLoadingPanel.hide(_this._pnlWorkflowDetails.get_element().id);
                 _this.showNotificationException(error);
             });
         };
         uscProcessDetails.prototype.setDossierFolderRoles = function () {
             var _this = this;
+            this._uscRoleRest.enableButtons();
             this._dossierFolderService.getDossierFolderById(uscProcessDetails.selectedDossierFolderId, function (data) {
                 var dossierFolder = data[0];
+                //set popup roles source
+                _this.needRolesFromExternalSource_eventArgs = [ExternalSourceActionEnum.Process.toString(), uscProcessDetails.selectedProcessId];
+                $("#" + _this.uscRoleRestId).triggerHandler(uscRoleRest.NEED_ROLES_FROM_EXTERNAL_SOURCE, _this.needRolesFromExternalSource_eventArgs);
                 if (dossierFolder.DossierFolderRoles && dossierFolder.DossierFolderRoles.length > 0) {
                     _this._uscRoleRest.renderRolesTree(dossierFolder.DossierFolderRoles.map(function (x) { return x.Role; }));
                 }
+                else {
+                    _this._uscRoleRest.clearRoleTreeView();
+                }
             }, function (error) {
-                _this._ajaxLoadingPanel.hide("workflowDetails");
+                _this._ajaxLoadingPanel.hide(_this._pnlWorkflowDetails.get_element().id);
                 _this.showNotificationException(error);
             });
         };
@@ -452,33 +557,98 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                 _this.showNotificationException(error);
             });
         };
+        uscProcessDetails.prototype.populateFascicleTemplateInfo = function () {
+            var promise = $.Deferred();
+            var fascicleModel = new FascicleModel();
+            fascicleModel.FascicleObject = this._rtbFascicleSubject.get_value();
+            if (this._rcbFascicleType.get_selectedItem()) {
+                fascicleModel.FascicleType = FascicleType[this._rcbFascicleType.get_selectedItem().get_value()];
+            }
+            var rbFascicleVisibilityType_isVisible = this._rbFascicleVisibilityType.get_visible();
+            fascicleModel.VisibilityType = (rbFascicleVisibilityType_isVisible && this._rbFascicleVisibilityType.get_checked())
+                ? VisibilityType.Accessible
+                : VisibilityType.Confidential;
+            uscProcessDetails.raciRoles = this._uscAuthorizedRoles.getRaciRoles();
+            fascicleModel.FascicleRoles = [];
+            if (uscProcessDetails.responsibleRole) {
+                var fascicleRole = new FascicleRoleModel();
+                fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Responsible;
+                fascicleRole.IsMaster = true;
+                fascicleRole.Role = uscProcessDetails.responsibleRole;
+                fascicleModel.FascicleRoles.push(fascicleRole);
+            }
+            var _loop_2 = function (authorizedRole) {
+                var fascicleRole = new FascicleRoleModel();
+                fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Accounted;
+                fascicleRole.IsMaster = false;
+                fascicleRole.Role = authorizedRole;
+                fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Accounted;
+                if (uscProcessDetails.raciRoles && uscProcessDetails.raciRoles.some(function (x) { return x.IdRole === authorizedRole.IdRole; })) {
+                    fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Responsible;
+                }
+                fascicleModel.FascicleRoles.push(fascicleRole);
+            };
+            for (var _i = 0, _a = uscProcessDetails.authorizedRoles; _i < _a.length; _i++) {
+                var authorizedRole = _a[_i];
+                _loop_2(authorizedRole);
+            }
+            this.fascicleFolders = [];
+            this.getFascicleFolderListFromTree(this._uscFascicleFolders.getFascicleFolderTree().get_nodes().getNode(0));
+            fascicleModel.FascicleFolders = this.fascicleFolders;
+            fascicleModel.Contacts = uscProcessDetails.contacts;
+            fascicleModel.MetadataRepository = new MetadataRepositoryModel();
+            if (this._rcbMetadataRepository.get_selectedItem() && this._rcbMetadataRepository.get_selectedItem().get_value()) {
+                fascicleModel.MetadataRepository.Name = this._rcbMetadataRepository.get_selectedItem().get_text();
+                fascicleModel.MetadataRepository.UniqueId = this._rcbMetadataRepository.get_selectedItem().get_value();
+            }
+            PageClassHelper.callUserControlFunctionSafe(this.uscCustomActionsRestId)
+                .done(function (instance) {
+                var customActions = instance.getCustomActions();
+                fascicleModel.CustomActions = JSON.stringify(customActions);
+                promise.resolve(JSON.stringify(fascicleModel));
+            });
+            return promise.promise();
+        };
         uscProcessDetails.prototype.populateDetails = function (data) {
             var processFascicleTemplate = data;
+            if (processFascicleTemplate.JsonModel === "") {
+                return;
+            }
             var fascicle = JSON.parse(processFascicleTemplate.JsonModel);
             this._rtbFascicleSubject.set_value(fascicle.FascicleObject);
+            if (fascicle.FascicleType) {
+                var fascicleTypeItem = this._rcbFascicleType.findItemByValue(FascicleType[fascicle.FascicleType]);
+                fascicleTypeItem.select();
+            }
             this._rbFascicleVisibilityType.set_checked(fascicle.VisibilityType === VisibilityType.Accessible);
-            uscProcessDetails.responsibleRoles = fascicle.FascicleRoles.filter(function (x) { return x.IsMaster === true; }).map(function (x) { return x.Role; });
-            this._uscResponsibleRoles.renderRolesTree(uscProcessDetails.responsibleRoles);
+            if (fascicle.FascicleRoles.filter(function (x) { return x.IsMaster === true; }).map(function (x) { return x.Role; }).length > 0) {
+                uscProcessDetails.responsibleRole = fascicle.FascicleRoles.filter(function (x) { return x.IsMaster === true; }).map(function (x) { return x.Role; })[0];
+                this._uscResponsibleRoles.renderRolesTree([uscProcessDetails.responsibleRole]);
+            }
             uscProcessDetails.authorizedRoles = fascicle.FascicleRoles.filter(function (x) { return x.IsMaster === false; }).map(function (x) { return x.Role; });
+            uscProcessDetails.raciRoles = fascicle.FascicleRoles
+                .filter(function (x) { return x.IsMaster === false && x.AuthorizationRoleType === AuthorizationRoleType.Responsible; }).map(function (x) { return x.Role; });
+            //set popup roles source
+            this.needRolesFromExternalSource_eventArgs = [ExternalSourceActionEnum.Process.toString(), uscProcessDetails.selectedProcessId];
+            $("#" + this.uscResponsibleRolesId).triggerHandler(uscRoleRest.NEED_ROLES_FROM_EXTERNAL_SOURCE, this.needRolesFromExternalSource_eventArgs);
+            if (uscProcessDetails.raciRoles) {
+                this._uscAuthorizedRoles.setRaciRoles(uscProcessDetails.raciRoles);
+            }
             this._uscAuthorizedRoles.renderRolesTree(uscProcessDetails.authorizedRoles);
             this.populateFascicleFoldersTree(fascicle.FascicleFolders);
             uscProcessDetails.contacts = fascicle.Contacts;
             this._uscContactRest.renderContactsTree(uscProcessDetails.contacts);
-            var rcbItem = this._rcbMetadataRepository.findItemByValue(fascicle.MetadataRepository.UniqueId);
-            if (rcbItem) {
-                rcbItem.select();
+            if (fascicle.MetadataRepository) {
+                var rcbItem = this._rcbMetadataRepository.findItemByValue(fascicle.MetadataRepository.UniqueId);
+                if (rcbItem) {
+                    rcbItem.select();
+                }
+            }
+            if (fascicle.CustomActions) {
+                this.loadCustomActions(JSON.parse(fascicle.CustomActions));
             }
         };
         uscProcessDetails.prototype.getFascicleFolderListFromTree = function (fascicleFoldersNode) {
-            if (fascicleFoldersNode.get_level() === 0) {
-                var fascicleFolder = {};
-                fascicleFolder.Name = fascicleFoldersNode.get_text();
-                fascicleFolder.UniqueId = fascicleFoldersNode.get_value();
-                fascicleFolder.Typology = FascicleFolderTypology.Fascicle;
-                fascicleFolder.Status = FascicleFolderStatus.Active;
-                this.fascicleFolders.push(fascicleFolder);
-                fascicleFoldersNode = fascicleFoldersNode.get_nodes().getNode(0);
-            }
             for (var index = 0; index < fascicleFoldersNode.get_nodes().get_count(); index++) {
                 var child = fascicleFoldersNode.get_nodes().getNode(index);
                 var fascicleFolder = {};
@@ -490,9 +660,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                     ? fascicleFoldersNode.get_parent().get_value()
                     : fascicleFoldersNode.get_value();
                 this.fascicleFolders.push(fascicleFolder);
-                if (child.get_attributes().getAttribute("hasChildren")) {
-                    this.getFascicleFolderListFromTree(child);
-                }
+                this.getFascicleFolderListFromTree(child);
             }
         };
         uscProcessDetails.prototype.alreadySavedInTree = function (nodeValue, radTreeView) {
@@ -553,6 +721,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                 child.set_text(fasciclefolder.Name);
                 child.set_value(fasciclefolder.UniqueId);
                 child.set_imageUrl("../App_Themes/DocSuite2008/imgset16/folder_closed.png");
+                child.get_attributes().setAttribute(this.TYPOLOGY_ATTRIBUTE, fasciclefolder.Typology);
                 child.expand();
                 node.get_nodes().add(child);
                 return;
@@ -564,6 +733,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
         };
         uscProcessDetails.prototype.clearFascicleInputs = function () {
             this._rtbFascicleSubject.clear();
+            this._rcbFascicleType.clearSelection();
             this._rbFascicleVisibilityType.set_checked(false);
             this._uscResponsibleRoles.renderRolesTree([]);
             this._uscAuthorizedRoles.renderRolesTree([]);
@@ -571,6 +741,77 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
             this._uscFascicleFolders.getFascicleFolderTree().get_nodes().getNode(0).get_nodes().getNode(0).get_nodes().clear();
             this._uscContactRest.renderContactsTree([]);
             this._rcbMetadataRepository.set_selectedItem(this._rcbMetadataRepository.get_items().getItem(0));
+        };
+        uscProcessDetails.prototype.loadFascicleTypes = function () {
+            var emptyItem = new Telerik.Web.UI.RadComboBoxItem();
+            emptyItem.set_text("");
+            this._rcbFascicleType.get_items().add(emptyItem);
+            this.setFascicleTypeItem(this._rcbFascicleType, [FascicleType.Procedure, FascicleType.Activity]);
+        };
+        uscProcessDetails.prototype.setFascicleTypeItem = function (comboBox, fascicleTypes) {
+            for (var _i = 0, fascicleTypes_1 = fascicleTypes; _i < fascicleTypes_1.length; _i++) {
+                var itemType = fascicleTypes_1[_i];
+                var item = new Telerik.Web.UI.RadComboBoxItem();
+                item.set_text(this._enumHelper.getFascicleTypeDescription(itemType));
+                item.set_value(FascicleType[itemType]);
+                comboBox.get_items().add(item);
+            }
+        };
+        uscProcessDetails.prototype.setPanelVisibility = function (panelName, isVisible) {
+            switch (panelName) {
+                case uscProcessDetails.InformationDetails_PanelName: {
+                    this._pnlInformations.set_visible(isVisible);
+                    break;
+                }
+                case uscProcessDetails.CategoryInformationDetails_PanelName: {
+                    this._pnlCategoryInformations.set_visible(isVisible);
+                    break;
+                }
+                case uscProcessDetails.RoleDetails_PanelName: {
+                    this._pnlRoleDetails.set_visible(isVisible);
+                    break;
+                }
+                case uscProcessDetails.WorkflowDetails_PanelName: {
+                    this._pnlWorkflowDetails.set_visible(isVisible);
+                    break;
+                }
+                case uscProcessDetails.FascicleDetails_PanelName: {
+                    this._pnlFascicleDetails.set_visible(isVisible);
+                    break;
+                }
+            }
+        };
+        uscProcessDetails.prototype.setPanelLoading = function (panelName, isVisible) {
+            switch (panelName) {
+                case uscProcessDetails.InformationDetails_PanelName: {
+                    this.setLoading(this._pnlInformations.get_element().id, isVisible);
+                    break;
+                }
+                case uscProcessDetails.CategoryInformationDetails_PanelName: {
+                    this.setLoading(this._pnlCategoryInformations.get_element().id, isVisible);
+                    break;
+                }
+                case uscProcessDetails.RoleDetails_PanelName: {
+                    this.setLoading(this._pnlRoleDetails.get_element().id, isVisible);
+                    break;
+                }
+                case uscProcessDetails.WorkflowDetails_PanelName: {
+                    this.setLoading(this._pnlWorkflowDetails.get_element().id, isVisible);
+                    break;
+                }
+                case uscProcessDetails.FascicleDetails_PanelName: {
+                    this.setLoading(this._pnlFascicleDetails.get_element().id, isVisible);
+                    break;
+                }
+            }
+        };
+        uscProcessDetails.prototype.setLoading = function (elementId, isVisible) {
+            if (isVisible) {
+                this._ajaxLoadingPanel.show(elementId);
+            }
+            else {
+                this._ajaxLoadingPanel.hide(elementId);
+            }
         };
         uscProcessDetails.prototype.showNotificationException = function (exception, customMessage) {
             if (exception && exception instanceof ExceptionDTO) {
@@ -589,6 +830,18 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Services/Processes/
                 uscNotification.showNotificationMessage(customMessage);
             }
         };
+        uscProcessDetails.prototype.loadCustomActions = function (customActions) {
+            PageClassHelper.callUserControlFunctionSafe(this.uscCustomActionsRestId)
+                .done(function (instance) {
+                instance.loadItems(customActions);
+            });
+        };
+        uscProcessDetails.raciRoles = [];
+        uscProcessDetails.InformationDetails_PanelName = "informationDetails";
+        uscProcessDetails.CategoryInformationDetails_PanelName = "categoryInformationDetails";
+        uscProcessDetails.RoleDetails_PanelName = "roleDetails";
+        uscProcessDetails.WorkflowDetails_PanelName = "workflowDetails";
+        uscProcessDetails.FascicleDetails_PanelName = "fascicleDetails";
         return uscProcessDetails;
     }());
     return uscProcessDetails;

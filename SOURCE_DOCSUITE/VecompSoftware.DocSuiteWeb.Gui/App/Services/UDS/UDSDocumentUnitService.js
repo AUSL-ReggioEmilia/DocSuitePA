@@ -25,7 +25,7 @@ define(["require", "exports", "../BaseService", "App/Mappers/UDS/UDSDocumentUnit
         }
         UDSDocumentUnitService.prototype.getUDSByProtocolId = function (Id, callback, error) {
             var url = this._configuration.ODATAUrl;
-            var data = "$expand=Relation($expand=UDSRepository)&$filter=Relation/Uniqueid eq " + Id + " and Relation/Environment eq 1";
+            var data = "$expand=Relation($expand=UDSRepository),SourceUDS($expand=UDSRepository)&$filter=Relation/Uniqueid eq " + Id + " and Relation/Environment eq 1";
             this.getRequest(url, data, function (response) {
                 if (callback) {
                     callback(response.value);
@@ -49,6 +49,19 @@ define(["require", "exports", "../BaseService", "App/Mappers/UDS/UDSDocumentUnit
                     callback(response.value);
                 }
             }, error);
+        };
+        UDSDocumentUnitService.prototype.getUDSById = function (IdUDS, relationId, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var data = "$expand=Relation($expand=UDSRepository($select=UniqueId))&$filter=Relation/Environment ge 100 and IdUDS eq " + IdUDS + " and Relation/UniqueId eq " + relationId + " ";
+            this.getRequest(url, data, function (response) {
+                if (callback) {
+                    callback(response.value);
+                }
+            }, error);
+        };
+        UDSDocumentUnitService.prototype.deleteUDSByid = function (model, callback, error) {
+            var url = this._configuration.WebAPIUrl;
+            this.deleteRequest(url, JSON.stringify(model), callback, error);
         };
         UDSDocumentUnitService.prototype.countProtocolsById = function (IdUDS, callback, error) {
             var url = this._configuration.ODATAUrl;

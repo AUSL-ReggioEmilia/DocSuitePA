@@ -16,16 +16,16 @@ Public Class ProtocolJournalLogFacade
     ''' </summary>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function GetLastLogDate() As DateTime?
-        Return _dao.GetLastLogDate()
+    Public Function GetLastLogDate(currentTenantAOOId As Guid) As DateTime?
+        Return _dao.GetLastLogDate(currentTenantAOOId)
     End Function
 
     ''' <summary>
     ''' Elimina l'associazione protocolli/registro giornaliero per una specifica data di registrazione.
     ''' </summary>
     ''' <remarks></remarks>
-    Public Sub ClearProtocolJournalReferencesByDate(registrationDate As DateTimeOffset)
-        _dao.ClearProtocolJournalReferencesByDate(registrationDate)
+    Public Sub ClearProtocolJournalReferencesByDate(registrationDate As DateTimeOffset, currentTenantAOOId As Guid)
+        _dao.ClearProtocolJournalReferencesByDate(registrationDate, currentTenantAOOId)
     End Sub
 
     ''' <summary>
@@ -35,8 +35,8 @@ Public Class ProtocolJournalLogFacade
     ''' <param name="upperDateLimit">Data di limite superiore</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function GetUnfinishedLogDates(lowerDateLimit As Date?, upperDateLimit As Date?) As IList(Of DateTime)
-        Return _dao.GetUnfinishedLogDates(lowerDateLimit, upperDateLimit)
+    Public Function GetUnfinishedLogDates(lowerDateLimit As Date?, upperDateLimit As Date?, currentTenantAOOId As Guid) As IList(Of DateTime)
+        Return _dao.GetUnfinishedLogDates(lowerDateLimit, upperDateLimit, currentTenantAOOId)
     End Function
 
     ''' <summary>
@@ -46,8 +46,8 @@ Public Class ProtocolJournalLogFacade
     ''' <param name="upperLimit">Data di limite superiore</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function GetBrokenJournals(lowerLimit As Date?, upperLimit As Date?) As IList(Of ProtocolJournalLog)
-        Return _dao.GetBrokenJournals(lowerLimit, upperLimit)
+    Public Function GetBrokenJournals(lowerLimit As Date?, upperLimit As Date?, currentTenantAOOId As Guid) As IList(Of ProtocolJournalLog)
+        Return _dao.GetBrokenJournals(lowerLimit, upperLimit, currentTenantAOOId)
     End Function
 
 End Class

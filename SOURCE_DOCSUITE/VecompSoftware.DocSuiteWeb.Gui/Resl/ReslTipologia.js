@@ -14,18 +14,18 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                 _this.openWindow(_this.wndResolutionKindId, "Inserimento nuova tipologia di atto");
             };
             this.btnEdit_Click = function (sender, args) {
-                if (!_this.currentSelectedNode || !_this.currentSelectedNode.get_value()) {
+                if (!_this.currentSelectedNode() || !_this.currentSelectedNode().get_value()) {
                     alert("Selezionare una tipologia di atto per la modifica");
                     return;
                 }
-                _this._txtKindName.set_value(_this.currentSelectedNode.get_text());
-                var isActive = _this.currentSelectedNode.get_attributes().getAttribute(ReslTipologia.ISACTIVE_ATTRIBUTE_NODE);
+                _this._txtKindName.set_value(_this.currentSelectedNode().get_text());
+                var isActive = _this.currentSelectedNode().get_attributes().getAttribute(ReslTipologia.ISACTIVE_ATTRIBUTE_NODE);
                 $("#".concat(_this.rcbKindActiveId)).prop("checked", isActive);
                 _this._btnConfirm.set_commandArgument(ReslTipologia.EDIT_KIND_COMMAND);
                 _this.openWindow(_this.wndResolutionKindId, "Modifica tipologia di atto");
             };
             this.btnCancel_Click = function (sender, args) {
-                if (!_this.currentSelectedNode || !_this.currentSelectedNode.get_value()) {
+                if (!_this.currentSelectedNode() || !_this.currentSelectedNode().get_value()) {
                     alert("Selezionare una tipologia di atto per la cancellazione");
                     sender.enableAfterSingleClick();
                     return;
@@ -34,7 +34,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                     if (arg) {
                         try {
                             var model = {};
-                            model.UniqueId = _this.currentSelectedNode.get_value();
+                            model.UniqueId = _this.currentSelectedNode().get_value();
                             _this._loadingManager.show(_this.rtvResolutionKindsId);
                             _this.saveResolutionKind(model, ReslTipologia.DELETE_KIND_COMMAND)
                                 .done(function () {
@@ -56,7 +56,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                 }, 300, 160);
             };
             this.btnRestore_Click = function (sender, args) {
-                if (!_this.currentSelectedNode || !_this.currentSelectedNode.get_value()) {
+                if (!_this.currentSelectedNode() || !_this.currentSelectedNode().get_value()) {
                     alert("Selezionare una tipologia di atto per il recupero");
                     sender.enableAfterSingleClick();
                     return;
@@ -65,8 +65,8 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                     if (arg) {
                         try {
                             var model = {};
-                            model.Name = _this.currentSelectedNode.get_text();
-                            model.UniqueId = _this.currentSelectedNode.get_value();
+                            model.Name = _this.currentSelectedNode().get_text();
+                            model.UniqueId = _this.currentSelectedNode().get_value();
                             model.IsActive = true;
                             _this._loadingManager.show(_this.rtvResolutionKindsId);
                             _this.saveResolutionKind(model, ReslTipologia.EDIT_KIND_COMMAND)
@@ -113,7 +113,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                     switch (sender.get_commandArgument()) {
                         case ReslTipologia.EDIT_KIND_COMMAND:
                             {
-                                model.UniqueId = _this.currentSelectedNode.get_value();
+                                model.UniqueId = _this.currentSelectedNode().get_value();
                             }
                             break;
                     }
@@ -146,42 +146,26 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             };
             this._serviceConfigurations = serviceConfigurations;
         }
-        Object.defineProperty(ReslTipologia.prototype, "searchDisabled", {
-            get: function () {
-                var toolBarButton = this._tlbStatusSearch.findItemByValue("searchDisabled");
-                if (toolBarButton) {
-                    return toolBarButton.get_checked();
-                }
-                return false;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReslTipologia.prototype, "searchActive", {
-            get: function () {
-                var toolBarButton = this._tlbStatusSearch.findItemByValue("searchActive");
-                if (toolBarButton) {
-                    return toolBarButton.get_checked();
-                }
-                return false;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReslTipologia.prototype, "rootTreeNode", {
-            get: function () {
-                return this._rtvResolutionKinds.get_nodes().getNode(0);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ReslTipologia.prototype, "currentSelectedNode", {
-            get: function () {
-                return this._rtvResolutionKinds.get_selectedNode();
-            },
-            enumerable: true,
-            configurable: true
-        });
+        ReslTipologia.prototype.searchDisabled = function () {
+            var toolBarButton = this._tlbStatusSearch.findItemByValue("searchDisabled");
+            if (toolBarButton) {
+                return toolBarButton.get_checked();
+            }
+            return false;
+        };
+        ReslTipologia.prototype.searchActive = function () {
+            var toolBarButton = this._tlbStatusSearch.findItemByValue("searchActive");
+            if (toolBarButton) {
+                return toolBarButton.get_checked();
+            }
+            return false;
+        };
+        ReslTipologia.prototype.rootTreeNode = function () {
+            return this._rtvResolutionKinds.get_nodes().getNode(0);
+        };
+        ReslTipologia.prototype.currentSelectedNode = function () {
+            return this._rtvResolutionKinds.get_selectedNode();
+        };
         /**
          *------------------------- Methods -----------------------------
          */
@@ -207,7 +191,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             var resolutionKindConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "ResolutionKind");
             this._resolutionKindService = new ResolutionKindService(resolutionKindConfiguration);
             $("#".concat(this.pnlDetailsId)).hide();
-            this.setButtonsBehaviors(this.rootTreeNode);
+            this.setButtonsBehaviors(this.rootTreeNode());
             this._loadingManager.show(this.rtvResolutionKindsId);
             this.loadTipologies()
                 .fail(function (exception) { return _this.showNotificationException(exception); })
@@ -216,17 +200,17 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
         ReslTipologia.prototype.loadTipologies = function () {
             var _this = this;
             var promise = $.Deferred();
-            this.rootTreeNode.get_nodes().clear();
+            this.rootTreeNode().get_nodes().clear();
             var action;
             switch (true) {
-                case this.searchActive && !this.searchDisabled:
+                case this.searchActive() && !this.searchDisabled():
                     action = function (c, e) { return _this._resolutionKindService.findActiveTypologies(c, e); };
                     break;
-                case this.searchActive && this.searchDisabled:
-                case !this.searchActive && !this.searchDisabled:
+                case this.searchActive() && this.searchDisabled():
+                case !this.searchActive() && !this.searchDisabled():
                     action = function (c, e) { return _this._resolutionKindService.findAllTypologies(c, e); };
                     break;
-                case this.searchDisabled && !this.searchActive:
+                case this.searchDisabled() && !this.searchActive():
                     action = function (c, e) { return _this._resolutionKindService.findDisabledTypologies(c, e); };
                     break;
                 default:
@@ -250,11 +234,11 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                             node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/type_definition_private.png");
                             node.set_cssClass("node-disabled");
                         }
-                        _this.rootTreeNode.get_nodes().add(node);
+                        _this.rootTreeNode().get_nodes().add(node);
                     }
-                    _this.rootTreeNode.expand();
-                    _this.rootTreeNode.select();
-                    _this.setButtonsBehaviors(_this.rootTreeNode);
+                    _this.rootTreeNode().expand();
+                    _this.rootTreeNode().select();
+                    _this.setButtonsBehaviors(_this.rootTreeNode());
                     $("#".concat(_this.pnlDetailsId)).hide();
                     promise.resolve();
                 }

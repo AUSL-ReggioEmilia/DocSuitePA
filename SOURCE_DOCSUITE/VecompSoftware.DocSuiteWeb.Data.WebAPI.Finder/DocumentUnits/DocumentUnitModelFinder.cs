@@ -46,6 +46,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
 
         public bool ExcludeLinked { get; set; }
 
+        public Guid? IdTenantAOO { get; set; }
+
         #endregion
 
         #region [ Methods ]
@@ -59,13 +61,14 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
                     case DocumentUnitFinderActionType.FascicolableUD:
                         odataQuery = odataQuery.Function(string.Format(
                            CommonDefinition.OData.DocumentUnitService.FX_GetFascicolableDocuments,
-                            UserName, Domain, DateFrom.Value.ToString(ODataDateConversion), DateTo.Value.ToString(ODataDateConversion),
+                            DateFrom.Value.ToString(ODataDateConversion), DateTo.Value.ToString(ODataDateConversion),
                             IncludeThreshold.ToString().ToLower(), FascicolableThresholdDate.Value.ToString(ODataDateConversion),
+                            IdTenantAOO.Value,
                             ExcludeLinked.ToString().ToLower()));
                         break;
                     case DocumentUnitFinderActionType.AuthorizedUD:
                         odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.DocumentUnitService.FX_GetAutorizedDocuments,
-                            UserName, Domain, DateFrom.Value.ToString(ODataDateConversion), DateTo.Value.ToString(ODataDateConversion), IsSecurityUserEnabled.ToString().ToLower()));
+                            DateFrom.Value.ToString(ODataDateConversion), DateTo.Value.ToString(ODataDateConversion), IdTenantAOO.Value));
                         break;
                     case DocumentUnitFinderActionType.CategorizedUD:
                         odataQuery = odataQuery.Filter(string.Format("Category/UniqueId eq {0}", CategoryId));

@@ -1,7 +1,7 @@
-﻿import WorkflowStatus = require('App/Models/Workflows/WorkflowStatus');
-import WorkflowRoleMappingModel = require('App/Models/Workflows/WorkflowRoleMappingModel');
+﻿import WorkflowRoleMappingModel = require('App/Models/Workflows/WorkflowRoleMappingModel');
 import WorkflowEvaluationProperty = require('App/Models/Workflows/WorkflowEvaluationProperty');
 import RoleModel = require('../Commons/RoleModel');
+import WorkflowRepositoryStatus = require('./WorkflowRepositoryStatus');
 
 interface WorkflowRepositoryModel {
     UniqueId: string;
@@ -12,7 +12,7 @@ interface WorkflowRepositoryModel {
     Xaml: string;
     Json: string;
     CustomActivities: string;
-    Status: WorkflowStatus;
+    Status: WorkflowRepositoryStatus;
     DSWEnvironment: number;
 
     WorkflowRoleMappings: WorkflowRoleMappingModel[]; 

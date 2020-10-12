@@ -28,12 +28,22 @@ Public Class uscMetadataRepositorySel
 
     Public Property ComboBoxAutoWidthEnabled As Boolean
 
+    Public Property FascicleInsertCommonIdEvent As String
+    Public Property SetiContactVisibilityButton As Boolean = True
+    Public Property EnableAdvancedMetadataSearch As Boolean = False
+
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
             If ComboBoxAutoWidthEnabled Then
                 rcbMetadataRepository.Width = Unit.Percentage(100)
             End If
         End If
+        uscSetiContactSel.FascicleInsertCommonIdEvent = FascicleInsertCommonIdEvent
+        uscSetiContactSel.MetadataAddId = metadataPageContent.ClientID
+
+        enableAdvancedMetadataSearchBtn.Visible = EnableAdvancedMetadataSearch AndAlso ProtocolEnv.MetadataRepositoryEnabled
+        uscAdvancedSearchDynamicMetadataRest.Visible = EnableAdvancedMetadataSearch AndAlso ProtocolEnv.MetadataRepositoryEnabled
+        txtMetadataValue.Visible = EnableAdvancedMetadataSearch AndAlso ProtocolEnv.MetadataRepositoryEnabled
     End Sub
 
 End Class

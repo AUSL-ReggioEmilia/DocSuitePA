@@ -48,7 +48,7 @@ Partial Public Class ReslModifica
     Private ReadOnly Property CurrentFascicleDocumentUnitFacade As FascicleDocumentUnitFacade
         Get
             If _currentFascicleDocumentUnitFacade Is Nothing Then
-                _currentFascicleDocumentUnitFacade = New FascicleDocumentUnitFacade(DocSuiteContext.Current.Tenants)
+                _currentFascicleDocumentUnitFacade = New FascicleDocumentUnitFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
             End If
             Return _currentFascicleDocumentUnitFacade
         End Get

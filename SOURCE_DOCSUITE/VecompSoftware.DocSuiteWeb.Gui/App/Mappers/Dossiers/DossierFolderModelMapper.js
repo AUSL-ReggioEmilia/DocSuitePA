@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/Commons/CategoryModelMapper", "App/Mappers/Dossiers/DossierModelMapper", "App/Mappers/Fascicles/FascicleModelMapper", "App/Mappers/Dossiers/DossierFolderRoleModelMapper", "App/Mappers/BaseMapper"], function (require, exports, CategoryModelMapper, DossierModelMapper, FascicleModelMapper, DossierFolderRoleModelMapper, BaseMapper) {
+define(["require", "exports", "App/Mappers/Commons/CategoryModelMapper", "App/Mappers/Fascicles/FascicleModelMapper", "App/Mappers/Dossiers/DossierFolderRoleModelMapper", "App/Mappers/BaseMapper"], function (require, exports, CategoryModelMapper, FascicleModelMapper, DossierFolderRoleModelMapper, BaseMapper) {
     var DossierFolderModelMapper = /** @class */ (function (_super) {
         __extends(DossierFolderModelMapper, _super);
         function DossierFolderModelMapper() {
@@ -30,12 +30,14 @@ define(["require", "exports", "App/Mappers/Commons/CategoryModelMapper", "App/Ma
             toMap.RegistrationUser = source.RegistrationUser;
             toMap.LastChangedUser = source.LastChangedUser;
             toMap.LastChangedDate = source.LastChangedDate;
-            toMap.Category = source.CAtegory ? new CategoryModelMapper().Map(source.Category) : null;
-            toMap.Dossier = source.Dossier ? new DossierModelMapper().Map(source.Dossier) : null;
+            toMap.Category = source.Category ? new CategoryModelMapper().Map(source.Category) : null;
+            toMap.Dossier = source.Dossier;
             toMap.Fascicle = source.Fascicle ? new FascicleModelMapper().Map(source.Fascicle) : null;
             toMap.DossierFolderRoles = source.DossierFolderRoles ? new DossierFolderRoleModelMapper().MapCollection(source.DossierFolderRoles) : null;
             toMap.DossierFolders = source.DossierFolders ? new DossierFolderModelMapper().MapCollection(source.DossierFolders) : null;
             toMap.ParentInsertId = source.ParentInsertId;
+            toMap.DossierFolderPath = source.DossierFolderPath;
+            toMap.DossierFolderLevel = source.DossierFolderLevel;
             return toMap;
         };
         return DossierFolderModelMapper;

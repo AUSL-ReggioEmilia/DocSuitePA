@@ -25,6 +25,7 @@ import LocationTypeEnum = require('App/Models/Commons/LocationTypeEnum');
 import ValidationExceptionDTO = require('App/DTOs/ValidationExceptionDTO');
 import ValidationMessageDTO = require('App/DTOs/ValidationMessageDTO');
 import FascicleDocumentUnitModel = require('App/Models/Fascicles/FascicleDocumentUnitModel');
+import DocumentUnitSearchFilterDTO = require('App/DTOs/DocumentUnitSearchFilterDTO');
 
 
 declare var Page_IsValid: any;
@@ -55,6 +56,7 @@ class uscFascInsertUD extends FascicleBase {
     chbCategoryChildId: string;
     idFascicleFolder: string;
     miscellaneaLocationEnabled: boolean;
+    currentTenantAOOId: string;
 
     private _panelFilter: JQuery;
     private _lblUDObject: JQuery;
@@ -81,9 +83,9 @@ class uscFascInsertUD extends FascicleBase {
     private _documentUnitsFound: DocumentUnitModel[];
     private _fascicleDocumentUnitService: FascicleDocumentUnitService;
 
-    private get DocumentUnitRedirectUrls(): Array<[Environment, (documentUnit: DocumentUnitModel) => string]> {
+    private DocumentUnitRedirectUrls(): Array<[Environment, (documentUnit: DocumentUnitModel) => string]> {
         let items: Array<[Environment, (documentUnit: DocumentUnitModel) => string]> = [
-            [Environment.Protocol, (d) => `../Prot/ProtVisualizza.aspx?Year=${d.Year.toString()}&Number=${d.Number.toString()}&Type=Prot`],
+            [Environment.Protocol, (d) => `../Prot/ProtVisualizza.aspx?UniqueId=${d.UniqueId}&Type=Prot`],
             [Environment.Resolution, (d) => `../Resl/ReslVisualizza.aspx?IdResolution=${d.EntityId.toString()}&Type=Resl`],
             [Environment.DocumentSeries, (d) => `../Series/Item.aspx?IdDocumentSeriesItem=${d.EntityId.toString()}&Action=View&Type=Series`],
             [Environment.UDS, (d) => `../UDS/UDSView.aspx?Type=UDS&IdUDS=${d.UniqueId.toString()}&IdUDSRepository=${d.UDSRepository.UniqueId.toString()}`]
@@ -91,7 +93,7 @@ class uscFascInsertUD extends FascicleBase {
         return items;
     }
 
-    private get DocumentUnitInsertActions(): Array<[Environment, (documentUnit: DocumentUnitModel) => JQueryPromise<void>]> {
+    private DocumentUnitInsertActions(): Array<[Environment, (documentUnit: DocumentUnitModel) => JQueryPromise<void>]> {
         let items: Array<[Environment, (documentUnit: DocumentUnitModel) => JQueryPromise<void>]> = [
             [Environment.Protocol, (d) => this.insertFascicleDocumentUnit(d)],
             [Environment.Resolution, (d) => this.insertFascicleDocumentUnit(d)],
@@ -201,7 +203,7 @@ class uscFascInsertUD extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnReference_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnReference_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         if (!Page_IsValid) {
             return;
@@ -216,7 +218,7 @@ class uscFascInsertUD extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnSearch_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnSearch_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         if (!Page_IsValid) {
             return;
@@ -363,7 +365,7 @@ class uscFascInsertUD extends FascicleBase {
      */
     getDocumentUnitUrl(documentUnit: DocumentUnitModel): string {
         let env: Environment = this._documentUnitService.getDocumentUnitEnvironment(documentUnit);
-        let foundItems: string[] = this.DocumentUnitRedirectUrls.filter((item: [Environment, (documentUnit: DocumentUnitModel) => string]) => item[0] == env)
+        let foundItems: string[] = this.DocumentUnitRedirectUrls().filter((item: [Environment, (documentUnit: DocumentUnitModel) => string]) => item[0] == env)
             .map((item: [Environment, (documentUnit: DocumentUnitModel) => string]) => item[1](documentUnit));
 
         if (!foundItems || foundItems.length == 0) {
@@ -373,14 +375,17 @@ class uscFascInsertUD extends FascicleBase {
         return foundItems[0];
     }
 
-    private getFinderModel(): FascicleFinderViewModel {
-        let finderModel: FascicleFinderViewModel = <FascicleFinderViewModel>{};
-        finderModel.Year = Number(this._txtYear.get_value());
+    private getFinderModel(): DocumentUnitSearchFilterDTO {
+        let finderModel: DocumentUnitSearchFilterDTO = <DocumentUnitSearchFilterDTO>{};
+        finderModel.IdTenantAOO = this.currentTenantAOOId;
+        if (this._txtYear.get_value() != "")
+            finderModel.Year = Number(this._txtYear.get_value());
+
         if (this._txtNumber.get_value() != "")
             finderModel.Number = this._txtNumber.get_value().replace("/", "|");
 
         if (this._rcbUDDoc.get_selectedItem() != undefined && this._rcbUDDoc.get_selectedItem().get_value() != "") {
-            finderModel.UdType = this._rcbUDDoc.get_selectedItem().get_value();
+            finderModel.DocumentUnitName = this._rcbUDDoc.get_selectedItem().get_value();
         }
 
         if (this._txtSubject.get_value() != "") {
@@ -388,17 +393,13 @@ class uscFascInsertUD extends FascicleBase {
         }
 
         if (this._rcbContainers.get_selectedItem() && this._rcbContainers.get_selectedItem().get_value()) {
-            finderModel.ContainerId = Number(this._rcbContainers.get_selectedItem().get_value());
+            finderModel.IdContainer = Number(this._rcbContainers.get_selectedItem().get_value());
         }
 
         this._treeCategory = <Telerik.Web.UI.RadTreeView>$find(this.treeCategoryId);
         if (this._treeCategory.get_allNodes().length > 0) {
             let lastNodeIndex = this._treeCategory.get_allNodes().length - 1;
-            finderModel.CategoryId = this._treeCategory.get_allNodes()[lastNodeIndex].get_value();
-            finderModel.CategoryFullPath = [];
-            this._treeCategory.get_allNodes().forEach(function (item: Telerik.Web.UI.RadTreeNode) {
-                finderModel.CategoryFullPath.push(+item.get_value());
-            });
+            finderModel.IdCategory = this._treeCategory.get_allNodes()[lastNodeIndex].get_value();
         }
 
         finderModel.IncludeChildClassification = this._chbCategoryChild.checked;
@@ -415,12 +416,16 @@ class uscFascInsertUD extends FascicleBase {
     private findDocumentUnits(skip: number): void {
         this._loadingPanel.show(this.pageContentId);
 
-        let finderModel: FascicleFinderViewModel = this.getFinderModel();
+        let finderModel: DocumentUnitSearchFilterDTO = this.getFinderModel();
 
         let masterTableView: Telerik.Web.UI.GridTableView = this._grdUdDocSelected.get_masterTableView();
         let top: number = skip + masterTableView.get_pageSize();
 
-        this._documentUnitService.findDocumentUnits(skip, top, finderModel, this._fascicleModel,
+        finderModel.Skip = skip;
+        finderModel.Top = top;
+        finderModel.IdFascicle = this._fascicleModel.UniqueId;
+
+        this._documentUnitService.findDocumentUnits(finderModel,
             (data: DocumentUnitModel[]) => {
                 if (data == null) {
                     this._loadingPanel.hide(this.pageContentId);
@@ -429,7 +434,7 @@ class uscFascInsertUD extends FascicleBase {
                 }
 
                 this.bindDocumentUnitsGrid(data);
-                this._documentUnitService.countDocumentUnits(finderModel, this._fascicleModel,
+                this._documentUnitService.countDocumentUnits(finderModel,
                     (data) => {
                         if (data == null) {
                             this._loadingPanel.hide(this.pageContentId);

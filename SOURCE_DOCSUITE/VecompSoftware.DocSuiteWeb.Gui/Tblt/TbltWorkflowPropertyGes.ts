@@ -1,16 +1,13 @@
-﻿import WorkflowArgumentModel = require("../App/Models/Workflows/WorkflowArgumentModel");
-import WorkflowPropertyType = require("../App/Models/Workflows/WorkflowPropertyType");
-import WorkflowPropertyHelper = require("../App/Models/Workflows/WorkflowPropertyHelper");
-import WorkflowEvaluationPropertyType = require("../App/Models/Workflows/WorkflowEvaluationPropertyType");
-import WorkflowEvalutionPropertyHelper = require("../App/Models/Workflows/WorkflowEvalutionPropertyHelper");
+﻿import WorkflowArgumentModel = require("App/Models/Workflows/WorkflowArgumentModel");
+import WorkflowPropertyHelper = require("App/Models/Workflows/WorkflowPropertyHelper");
+import WorkflowEvalutionPropertyHelper = require("App/Models/Workflows/WorkflowEvalutionPropertyHelper");
 import ArgumentType = require("../App/Models/Workflows/ArgumentType");
-import WorkflowRepositoryModel = require("../App/Models/Workflows/WorkflowRepositoryModel");
-import ValidationCode = require("../App/Models/Validations/ValidationCode");
-import FascAddUDLink = require("../Fasc/FascAddUDLink");
+
 declare var ValidatorEnable: any;
 
 class TbltWorkflowPropertyGes {
     rcbNameId: string;
+    rtbPropertyNameId: string;
     rntbValueIntId: string;
     rtbValueStringId: string;
     rlbValueBoolId: string;
@@ -33,7 +30,7 @@ class TbltWorkflowPropertyGes {
     rfvNewValueIntId: string;
     validation: string;
 
-    private get isValidatorEnabled(): boolean {
+    private isValidatorEnabled(): boolean {
         return JSON.parse(this.validation.toLowerCase());
     }
 
@@ -43,6 +40,7 @@ class TbltWorkflowPropertyGes {
     private static ACTION_PAGE_EDIT = "Edit";
 
     private _rcbName: Telerik.Web.UI.RadComboBox;
+    private _rtbPropertyName: Telerik.Web.UI.RadTextBox;
     private _rntbValueInt: Telerik.Web.UI.RadNumericTextBox;
     private _rtbValueString: Telerik.Web.UI.RadTextBox;
     private _rlbValueBool: Telerik.Web.UI.RadListBox;
@@ -62,6 +60,7 @@ class TbltWorkflowPropertyGes {
         this._btnConfirm = <Telerik.Web.UI.RadButton>$find(this.btnConfirmId);
         this._btnConfirm.add_clicked(this.btnConfirm_onClick);
 
+        this._rtbPropertyName = <Telerik.Web.UI.RadTextBox>$find(this.rtbPropertyNameId);
         this._rcbName = <Telerik.Web.UI.RadComboBox>$find(this.rcbNameId);
         this._rcbName.add_selectedIndexChanged(this.rcbName_onSelectedIndexChanged);
         this._argumentsDataSource = <Telerik.Web.UI.RadClientDataSource>$find(this.argumentsDataSourceId);
@@ -86,20 +85,25 @@ class TbltWorkflowPropertyGes {
 
     rcbName_onSelectedIndexChanged = (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
         this.resetValueVisibility();
-        let value = args.get_item().get_value();
+        const value: string = args.get_item().get_value();
         this.dynamicallyAdjustInputFields(value);
+        this._rtbPropertyName.set_value(value);
     }
 
-    btnConfirm_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnConfirm_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let isValid: boolean;
-        let repositoryId: string = sessionStorage[TbltWorkflowPropertyGes.WORKFLOW_REPOSITORY];
-        let stepPosition: string = sessionStorage[TbltWorkflowPropertyGes.WORKFLOW_STEP];
+        const repositoryId: string = sessionStorage[TbltWorkflowPropertyGes.WORKFLOW_REPOSITORY];
+        const stepPosition: string = sessionStorage[TbltWorkflowPropertyGes.WORKFLOW_STEP];
 
-        let argumentName: string = this._rcbName.get_text();
-        let propertyType = WorkflowEvalutionPropertyHelper[argumentName] != undefined ? WorkflowEvalutionPropertyHelper[argumentName].Type : WorkflowEvaluationPropertyType.String;
+        let wfProp = this._rcbName.get_value();
+        if (wfProp === "") {
+            wfProp = this._rcbName.get_text();
+        }
 
-        let workflowArgument: WorkflowArgumentModel = {
-            Name: argumentName,
+        const propertyType: ArgumentType = WorkflowEvalutionPropertyHelper[wfProp] !== undefined ? WorkflowEvalutionPropertyHelper[wfProp].Type : ArgumentType.PropertyString;
+
+        const workflowArgument: WorkflowArgumentModel = {
+            Name: wfProp,
             PropertyType: propertyType,
             ValueInt: null,
             ValueDate: null,
@@ -109,97 +113,90 @@ class TbltWorkflowPropertyGes {
             ValueString: null,
             ValueJson: null
         }
-
-        switch (propertyType) {
-            case WorkflowEvaluationPropertyType.String: {
-                let valueString = this._rtbValueString.get_textBoxValue() ? this._rtbValueString.get_textBoxValue() : null;
-                if (valueString == null) {
-                    ValidatorEnable($get(this.rfvNewValueStringId), true);
-                    isValid = false;
+        isValid = true;
+        if (this.isValidatorEnabled()) {
+            switch (propertyType) {
+                case ArgumentType.PropertyString: {
+                    const valueString = this._rtbValueString.get_textBoxValue() ? this._rtbValueString.get_textBoxValue() : null;
+                    if (!valueString) {
+                        ValidatorEnable($get(this.rfvNewValueStringId), true);
+                        isValid = false;
+                    }
+                    else {
+                        workflowArgument.ValueString = valueString;
+                    }
+                    break;
                 }
-                else {
-                    isValid = true;
-                    workflowArgument.ValueString = valueString;
+                case ArgumentType.PropertyBoolean: {
+                    const valueBool = this._rlbValueBool.get_selectedItem();
+                    if (!valueBool) {
+                        ValidatorEnable($get(this.rfvNewValueBoolId), true);
+                        isValid = false;
+                    }
+                    else {
+                        workflowArgument.ValueBoolean = valueBool.get_value() === "1";
+                    }
+                    break;
                 }
-                break;
-            }
-            case WorkflowEvaluationPropertyType.Boolean: {
-                let valueBool = this._rlbValueBool.get_selectedItem();
-                if (valueBool == null) {
-                    ValidatorEnable($get(this.rfvNewValueBoolId), true);
-                    isValid = false;
+                case ArgumentType.PropertyInt: {
+                    const valueInt = this._rntbValueInt.get_value();
+                    if (!valueInt) {
+                        ValidatorEnable($get(this.rfvNewValueIntId), true);
+                        isValid = false;
+                    }
+                    else {
+                        workflowArgument.ValueInt = Number(valueInt);
+                    }
+                    break;
                 }
-                else {
-                    isValid = true;
-                    workflowArgument.ValueBoolean = valueBool.get_value() === "1";
+                case ArgumentType.PropertyDate: {
+                    const valueDate = this._rdpValueDate.get_selectedDate();
+                    if (!valueDate) {
+                        ValidatorEnable($get(this.rfvNewValueDateId), true);
+                        isValid = false;
+                    }
+                    else {
+                        workflowArgument.ValueDate = valueDate;
+                    }
+                    break;
                 }
-                break;
-            }
-            case WorkflowEvaluationPropertyType.Integer: {
-                let valueInt = this._rntbValueInt.get_value();
-                if (valueInt == "") {
-                    ValidatorEnable($get(this.rfvNewValueIntId), true);
-                    isValid = false;
+                case ArgumentType.PropertyDouble: {
+                    const valueDouble = this._rntbValueDouble.get_value();
+                    if (!valueDouble) {
+                        ValidatorEnable($get(this.rfvNewValueDoubleId), true);
+                        isValid = false;
+                    }
+                    else {
+                        workflowArgument.ValueDouble = Number(valueDouble);
+                    }
+                    break;
                 }
-                else {
-                    isValid = true;
-                    workflowArgument.ValueInt = Number(valueInt);
+                case ArgumentType.PropertyGuid: {
+                    const valueGuid = this._rdbGuid.get_textBoxValue();
+                    if (!valueGuid) {
+                        ValidatorEnable($get(this.rfvNewValueGuidId), true);
+                        isValid = false;
+                    }
+                    else {
+                        workflowArgument.ValueGuid = valueGuid;
+                    }
+                    break;
                 }
-                break;
-            }
-            case WorkflowEvaluationPropertyType.Date: {
-                let valueDate = this._rdpValueDate.get_selectedDate();
-                if (valueDate == null) {
-                    ValidatorEnable($get(this.rfvNewValueDateId), true);
-                    isValid = false;
+                case ArgumentType.Json: {
+                    const valueJson = this._rtbValueJson.get_textBoxValue();
+                    if (!valueJson) {
+                        ValidatorEnable($get(this.rfvNewValueBoolId), true);
+                        isValid = false;
+                    }
+                    else {
+                        workflowArgument.ValueJson = valueJson;
+                    }
+                    break;
                 }
-                else {
-                    isValid = true;
-                    workflowArgument.ValueDate = valueDate;
-                }
-                break;
-            }
-            case WorkflowEvaluationPropertyType.Double: {
-                let valueDouble = this._rntbValueDouble.get_value();
-                if (valueDouble == "") {
-                    ValidatorEnable($get(this.rfvNewValueDoubleId), true);
-                    isValid = false;
-                }
-                else {
-                    isValid = true;
-                    workflowArgument.ValueDouble = Number(valueDouble);
-                }
-                break;
-            }
-            case WorkflowEvaluationPropertyType.Guid: {
-                let valueGuid = this._rdbGuid.get_textBoxValue();
-                if (valueGuid == "") {
-                    ValidatorEnable($get(this.rfvNewValueGuidId), true);
-                    isValid = false;
-                }
-                else {
-                    isValid = true;
-                    workflowArgument.ValueGuid = valueGuid;
-                }
-                break;
-            }
-            case WorkflowEvaluationPropertyType.Json: {
-                let valueJson = this._rtbValueJson.get_textBoxValue();
-                if (valueJson == "") {
-                    ValidatorEnable($get(this.rfvNewValueBoolId), true);
-                    isValid = false;
-                }
-                else {
-                    isValid = true;
-                    workflowArgument.ValueJson = valueJson;
-                }
-                break;
             }
         }
-        if (this.isValidatorEnabled && isValid) {
-            this.closeWindow(workflowArgument, repositoryId, stepPosition);
-        }
-        else if (!this.isValidatorEnabled) {
+       
+        if (isValid) {
             this.closeWindow(workflowArgument, repositoryId, stepPosition);
         }
     }
@@ -222,42 +219,69 @@ class TbltWorkflowPropertyGes {
         else if ((<any>window.frameElement).radWindow) wnd = <Telerik.Web.UI.RadWindow>(<any>window.frameElement).radWindow;
         return wnd;
     }
+
+    
+    private resetValueVisibility() {
+        $("#idValue").css("display", "block");
+        this._rntbValueInt.set_visible(false);
+        this._rtbValueString.set_visible(false);
+        $("#valueBool").hide();
+        $("#valueDate").hide();
+        this._rntbValueDouble.set_visible(false);
+        this._rdbGuid.set_visible(false);
+        this._rtbValueJson.set_visible(false);
+    }
+
+    private populateComboNames() {
+        let obj = this;
+        obj._rcbName.get_items().clear();
+        $.each(WorkflowPropertyHelper, function (index: string, item: string) {
+            if (typeof item !== "function") {
+                const workflowPropertyItem = WorkflowEvalutionPropertyHelper[item];
+                if (workflowPropertyItem) {
+                    obj._argumentsDataSource.add({ Name: `${workflowPropertyItem.Name} (${item})`, Value: item });
+                } else {
+                    obj._argumentsDataSource.add({ Name: item, Value: item });
+                }
+            }
+        })
+    }
+
     private dynamicallyAdjustInputFields(value: string): void {
-
-        if (WorkflowEvalutionPropertyHelper[value] != undefined) {
-
-            switch (WorkflowEvalutionPropertyHelper[value].Type) {
-                case WorkflowEvaluationPropertyType.String: {
+        const prop = WorkflowEvalutionPropertyHelper[value];
+        if (prop) {
+            switch (prop.Type) {
+                case ArgumentType.PropertyString: {
                     this._rtbValueString.set_visible(true);
                     this._rtbValueString.clear();
                     break;
                 }
-                case WorkflowEvaluationPropertyType.Boolean: {
+                case ArgumentType.PropertyBoolean: {
                     $("#valueBool").show();
                     this._rlbValueBool.clearSelection();
                     break;
                 }
-                case WorkflowEvaluationPropertyType.Integer: {
+                case ArgumentType.PropertyInt: {
                     this._rntbValueInt.set_visible(true);
                     this._rntbValueInt.clear();
                     break;
                 }
-                case WorkflowEvaluationPropertyType.Date: {
+                case ArgumentType.PropertyDate: {
                     $("#valueDate").show();
                     this._rdpValueDate.clear();
                     break;
                 }
-                case WorkflowEvaluationPropertyType.Double: {
+                case ArgumentType.PropertyDouble: {
                     this._rntbValueDouble.set_visible(true);
                     this._rntbValueDouble.clear();
                     break;
                 }
-                case WorkflowEvaluationPropertyType.Guid: {
+                case ArgumentType.PropertyGuid: {
                     this._rdbGuid.set_visible(true);
                     this._rdbGuid.clear();
                     break;
                 }
-                case WorkflowEvaluationPropertyType.Json: {
+                case ArgumentType.Json: {
                     this._rtbValueJson.set_visible(true);
                     this._rtbValueJson.clear();
                     break;
@@ -277,71 +301,52 @@ class TbltWorkflowPropertyGes {
         this._rcbName.hideDropDown();
     }
 
-    private resetValueVisibility() {
-        $("#idValue").css("display", "block");
-        this._rntbValueInt.set_visible(false);
-        this._rtbValueString.set_visible(false);
-        $("#valueBool").hide();
-        $("#valueDate").hide();
-        this._rntbValueDouble.set_visible(false);
-        this._rdbGuid.set_visible(false);
-        this._rtbValueJson.set_visible(false);
-    }
-
-    private populateComboNames() {
-        let obj = this;
-        obj._rcbName.get_items().clear();
-        $.each(WorkflowPropertyHelper, function (index: string, item: string) {
-            if (typeof item != "function") {
-                obj._argumentsDataSource.add({ Name: item, Value: item });
-            }
-        })
-    }
-
     private populateFieldsForEdit() {
-        if (this.actionPage == TbltWorkflowPropertyGes.ACTION_PAGE_EDIT) {
-            let argument: any = JSON.parse(sessionStorage[TbltWorkflowPropertyGes.WORKFLOW_STEP_ARGUMENT]);
+        if (this.actionPage === TbltWorkflowPropertyGes.ACTION_PAGE_EDIT) {
+            const argument = JSON.parse(sessionStorage[TbltWorkflowPropertyGes.WORKFLOW_STEP_ARGUMENT]);
 
-            let name: string = argument.Name;
-            let value: any = argument.Value;
+            const name: string = argument.Name;
+            const value = argument.Value;
+
+            this._rtbPropertyName.set_value(name);
             this._rcbName.set_text(name);
             this._rcbName.disable();
-
-            if (WorkflowEvalutionPropertyHelper[name] != undefined) {
-
-                switch (WorkflowEvalutionPropertyHelper[name].Type) {
-                    case WorkflowEvaluationPropertyType.String: {
+            const prop = WorkflowEvalutionPropertyHelper[name];
+            if (prop) {
+                this._rcbName.set_text(prop.Name);
+                switch (prop.Type) {
+                    case ArgumentType.PropertyString: {
                         this._rtbValueString.set_visible(true);
                         this._rtbValueString.set_value(value);
                         break;
                     }
-                    case WorkflowEvaluationPropertyType.Boolean: {
+                    case ArgumentType.PropertyBoolean: {
                         $("#valueBool").show();
                         let item = this._rlbValueBool.getItem(Number(value));
                         item.select();
                         break;
                     }
-                    case WorkflowEvaluationPropertyType.Integer: {
+                    case ArgumentType.PropertyInt: {
                         this._rntbValueInt.set_visible(true);
                         this._rntbValueInt.set_value(value);
                         break;
                     }
-                    case WorkflowEvaluationPropertyType.Date: {
+                    case ArgumentType.PropertyDate: {
                         $("#valueDate").show();
                         this._rdpValueDate.set_selectedDate(moment(value).isValid() ? new Date(value) : null);
                         break;
                     }
-                    case WorkflowEvaluationPropertyType.Double: {
+                    case ArgumentType.PropertyDouble: {
                         this._rntbValueDouble.set_visible(true);
                         this._rntbValueDouble.set_value(value);
                         break;
                     }
-                    case WorkflowEvaluationPropertyType.Guid: {
+                    case ArgumentType.PropertyGuid: {
                         this._rdbGuid.set_visible(true);
                         this._rdbGuid.set_textBoxValue(value);
                         break;
                     }
-                    case WorkflowEvaluationPropertyType.Json: {
+                    case ArgumentType.Json: {
                         this._rtbValueJson.set_visible(true);
                         this._rtbValueJson.set_value(value);
                         break;

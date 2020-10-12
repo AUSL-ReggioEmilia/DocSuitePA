@@ -1,6 +1,12 @@
-﻿<Serializable()>
+﻿Imports VecompSoftware.DocSuiteWeb.Data
+
+<Serializable()>
 Public Class ProtocolRejectedRole
     Inherits AuditableDomainObject(Of Guid)
+
+#Region " Fields "
+    Private _protocol As Protocol
+#End Region
 
 #Region " Properties "
 
@@ -21,8 +27,15 @@ Public Class ProtocolRejectedRole
     Public Overridable Property NoteType As ProtocolRoleNoteType?
 
     Public Overridable Property Protocol As Protocol
-
-    Public Overridable Property UniqueIdProtocol As Guid
+        Get
+            Return _protocol
+        End Get
+        Set(ByVal value As Protocol)
+            _protocol = value
+            Year = value.Year
+            Number = value.Number
+        End Set
+    End Property
 
     Public Overridable Property Status As ProtocolRoleStatus
 
@@ -31,7 +44,7 @@ Public Class ProtocolRejectedRole
 #Region " Constructor "
 
     Public Sub New()
-        Id = Guid.NewGuid()
+
     End Sub
 
 #End Region

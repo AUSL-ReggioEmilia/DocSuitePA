@@ -5,6 +5,8 @@ import WorkflowAuthorization = require('App/Models/Workflows/WorkflowAuthorizati
 import WorkflowInstance = require('App/Models/Workflows/WorkflowInstanceModel');
 import ActivityAction = require('App/Models/Workflows/ActivityAction');
 import ActivityArea = require('App/Models/Workflows/ActivityArea');
+import WorkflowActivityLogModel = require('./WorkflowActivityLogModel');
+import TenantModel = require('App/Models/Tenants/TenantModel');
 
 interface WorkflowActivityModel {
     UniqueId: string;
@@ -24,10 +26,12 @@ interface WorkflowActivityModel {
     IdArchiveChain: string;
     ActivityAction: ActivityAction;
     ActivityArea: ActivityArea;
+    Tenant: TenantModel;
 
     WorkflowProperties: WorkflowProperty[];
     WorkflowAuthorizations: WorkflowAuthorization[];
     WorkflowInstance: WorkflowInstance;
+    WorkflowActivityLogs: WorkflowActivityLogModel[];
 }
 
 export = WorkflowActivityModel;

@@ -1,7 +1,7 @@
-﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/Base.Master" CodeBehind="TemplateDocumentViewer.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.TemplateDocumentViewer" %>
+﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="TemplateDocumentViewer.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.TemplateDocumentViewer" %>
 <%@ Register Src="ViewerLight.ascx" TagName="uscViewerLight" TagPrefix="uc1" %>
 
-<asp:Content ContentPlaceHolderID="cphMain" runat="server">
+<asp:Content ContentPlaceHolderID="cphContent" runat="server">
     <telerik:RadScriptBlock runat="server">
         <script type="text/javascript">
             function showLoadingPanel () {

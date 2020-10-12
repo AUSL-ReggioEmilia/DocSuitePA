@@ -41,6 +41,15 @@ Partial Public Class uscProcessDetails
     Protected WithEvents pnlDetails As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
+    '''rpbDetails control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rpbDetails As Global.Telerik.Web.UI.RadPanelBar
+
+    '''<summary>
     '''lblName control.
     '''</summary>
     '''<remarks>
@@ -48,6 +57,24 @@ Partial Public Class uscProcessDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''divFolderName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divFolderName As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblFolderName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFolderName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblClasificationName control.
@@ -59,13 +86,103 @@ Partial Public Class uscProcessDetails
     Protected WithEvents lblClasificationName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblFascicleType control.
+    '''lblActivationDate control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblFascicleType As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblActivationDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNote control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNote As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCategoryCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCategoryCode As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCategoryName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCategoryName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStartDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStartDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblEndDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEndDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''metadataDetails control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents metadataDetails As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblMetadata control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblMetadata As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblMassimarioName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblMassimarioName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''divProcedureType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divProcedureType As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblRegistrationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRegistrationDate As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''uscRoleRest control.
@@ -74,7 +191,7 @@ Partial Public Class uscProcessDetails
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscRoleRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleREST
+    Protected WithEvents uscRoleRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
 
     '''<summary>
     '''toolbarWorkflowRepository control.
@@ -113,6 +230,15 @@ Partial Public Class uscProcessDetails
     Protected WithEvents rtbFascicleSubject As Global.Telerik.Web.UI.RadTextBox
 
     '''<summary>
+    '''rcbFascicleType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rcbFascicleType As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
     '''rbFascicleVisibilityType control.
     '''</summary>
     '''<remarks>
@@ -120,33 +246,6 @@ Partial Public Class uscProcessDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rbFascicleVisibilityType As Global.Telerik.Web.UI.RadButton
-
-    '''<summary>
-    '''uscResponsibleRoles control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscResponsibleRoles As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleREST
-
-    '''<summary>
-    '''uscAuthorizedRoles control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscAuthorizedRoles As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleREST
-
-    '''<summary>
-    '''uscFascicleFolders control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscFascicleFolders As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascicleFolders
 
     '''<summary>
     '''uscContattiSelRest control.
@@ -158,6 +257,33 @@ Partial Public Class uscProcessDetails
     Protected WithEvents uscContattiSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelRest
 
     '''<summary>
+    '''uscResponsibleRoles control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscResponsibleRoles As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+
+    '''<summary>
+    '''uscAuthorizedRoles control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscAuthorizedRoles As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+
+    '''<summary>
+    '''uscFascicleFolders control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscFascicleFolders As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascicleFolders
+
+    '''<summary>
     '''rcbMetadataRepository control.
     '''</summary>
     '''<remarks>
@@ -165,6 +291,15 @@ Partial Public Class uscProcessDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rcbMetadataRepository As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
+    '''uscCustomActionsRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscCustomActionsRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscCustomActionsRest
 
     '''<summary>
     '''rbAddFascicle control.

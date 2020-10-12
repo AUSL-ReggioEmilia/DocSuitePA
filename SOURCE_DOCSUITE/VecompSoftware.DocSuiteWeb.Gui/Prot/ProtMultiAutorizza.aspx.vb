@@ -8,9 +8,7 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 Public Class ProtMultiAutorizza
     Inherits ProtBasePage
 
-    Private Function GetProtocolListSessionName() As String
-        Return "ProtMultiAutorizza_ProtocolList"
-    End Function
+    Private PROTOCOL_LIST_SESSION_NAME As String = "ProtMultiAutorizza_ProtocolList"
 
     Private _currentManageableRole As String
     Private ReadOnly Property CurrentManageableRole As String
@@ -39,24 +37,19 @@ Public Class ProtMultiAutorizza
     Private _currentProtocolList As IList(Of Protocol)
     Private Property CurrentProtocolList As IList(Of Protocol)
         Get
-            If _currentProtocolList Is Nothing AndAlso Not String.IsNullOrEmpty(Session(GetProtocolListSessionName)) Then
+            If _currentProtocolList Is Nothing AndAlso Session(PROTOCOL_LIST_SESSION_NAME) IsNot Nothing AndAlso Not String.IsNullOrEmpty(Session(PROTOCOL_LIST_SESSION_NAME).ToString()) Then
                 _currentProtocolList = New List(Of Protocol)
-
-                Dim yearNumberList As String() = Session(GetProtocolListSessionName).Split(";"c)
-                For Each yearNumber As String In yearNumberList
-                    Dim currentYearNumber As String() = yearNumber.Split("|"c)
-                    Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(currentYearNumber.GetValue(0), currentYearNumber.GetValue(1))
-
+                Dim protocolIds As ICollection(Of Guid) = Session(PROTOCOL_LIST_SESSION_NAME).ToString().Split("|"c).Select(Function(s) Guid.Parse(s)).ToList()
+                For Each protocolId As Guid In protocolIds
+                    Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(protocolId)
                     _currentProtocolList.Add(currentProtocol)
                 Next
             End If
-
             Return _currentProtocolList
         End Get
         Set(value As IList(Of Protocol))
             _currentProtocolList = value
         End Set
-
     End Property
 
     Private Sub VerifyProtocolListRights()
@@ -146,32 +139,29 @@ Public Class ProtMultiAutorizza
             ' Popolo una lista con gli id degli RoleUser da autorizzare.
             Dim selectedProtocolRoleUsers As IList(Of String) = uscProtocolRoleUser.GetRoleValues(True, uscSettori.NodeTypeAttributeValue.RoleUser)
 
+            Dim pru As ProtocolRoleUser
+            Dim idRole As Integer
+            Dim roleUserNodeValue As String()
             For Each selectedId As String In selectedProtocolRoleUsers
-                Dim pruk As New ProtocolRoleUserKey
-                Dim roleUserNodeValue As String() = selectedId.Split("|"c)
-                Dim idRole As Integer = Convert.ToInt32(roleUserNodeValue.GetValue(ProtocolRoleUserColumns.IdRole))
+                roleUserNodeValue = selectedId.Split("|"c)
+                idRole = Convert.ToInt32(roleUserNodeValue.GetValue(ProtocolRoleUserColumns.IdRole))
 
-                pruk.Year = p_protocol.Year
-                pruk.Number = p_protocol.Number
-                pruk.IdRole = idRole
-                pruk.GroupName = roleUserNodeValue.GetValue(ProtocolRoleUserColumns.GroupName)
-                pruk.UserName = roleUserNodeValue.GetValue(ProtocolRoleUserColumns.UserName)
-
-                Dim pru As New ProtocolRoleUser
-                pru.Id = pruk
-                pru.Account = roleUserNodeValue.GetValue(ProtocolRoleUserColumns.Account)
-                pru.IsActive = 1
-                pru.UniqueIdProtocol = p_protocol.UniqueId
-                pru.Role = Facade.RoleFacade.GetById(idRole)
-                pru.Protocol = p_protocol
+                pru = New ProtocolRoleUser With {
+                    .GroupName = roleUserNodeValue.GetValue(ProtocolRoleUserColumns.GroupName),
+                    .UserName = roleUserNodeValue.GetValue(ProtocolRoleUserColumns.UserName),
+                    .Account = roleUserNodeValue.GetValue(ProtocolRoleUserColumns.Account),
+                    .IsActive = 1,
+                    .Role = Facade.RoleFacade.GetById(idRole),
+                    .Protocol = p_protocol
+                }
 
                 ' Popolo una lista con gli id dei settori autorizzati.
                 Dim currentProtocolRoles As IList(Of Integer) = New List(Of Integer)
                 For Each pr As ProtocolRole In p_protocol.Roles
-                    currentProtocolRoles.Add(pr.Id.Id)
+                    currentProtocolRoles.Add(pr.Role.Id)
                 Next
 
-                If currentProtocolRoles.Contains(pruk.IdRole) Then
+                If currentProtocolRoles.Contains(idRole) Then
                     ' Autorizzo il RoleUser corrente.
                     p_protocol.RoleUsers.Add(pru)
                 End If
@@ -201,7 +191,7 @@ Public Class ProtMultiAutorizza
         For Each selectedId As String In ccProtocolRoles
             For Each pr As ProtocolRole In p_protocol.Roles
                 ' Se il settore corrente è - OPPURE - è figlio di un settore in Copia Conoscenza, propago l'impostazione in cascata.
-                If pr.Id.Id.ToString().Equals(selectedId) OrElse pr.Role.FullIncrementalPath.Contains(selectedId) Then
+                If pr.Role.Id.ToString().Equals(selectedId) OrElse pr.Role.FullIncrementalPath.Contains(selectedId) Then
                     pr.Type = ProtocolRoleTypes.CarbonCopy
                     ' Non esco immediatamente dal ciclo poichè oltre al settore corrente potrei avere n-figli di cui impostare la Copia Conoscenza.
                 End If
@@ -218,7 +208,7 @@ Public Class ProtMultiAutorizza
         ' Popolo una lista con gli id dei settori autorizzati esplicitamente.
         Dim currentProtocolRoles As IList(Of Integer) = New List(Of Integer)
         For Each pr As ProtocolRole In protocol.Roles
-            currentProtocolRoles.Add(pr.Id.Id)
+            currentProtocolRoles.Add(pr.Role.Id)
         Next
 
         Dim implicitProtocolRoles As String() = uscAutorizza.GetOldValues()
@@ -255,19 +245,17 @@ Public Class ProtMultiAutorizza
     Private Sub LogInsert()
         'Inserimento Logs
         Dim editedRoles As ICollection(Of Integer) = Nothing
-        If ProtocolEnv.IsLogEnabled Then
-            'Autorizzazioni Aggiunte
-            editedRoles = uscAutorizza.RoleListAdded()
-            For Each p As Protocol In CurrentProtocolList
-                Facade.ProtocolLogFacade.InsertFullRolesLogWithoutRead(p, editedRoles, "Add")
-            Next
+        'Autorizzazioni Aggiunte
+        editedRoles = uscAutorizza.RoleListAdded()
+        For Each p As Protocol In CurrentProtocolList
+            Facade.ProtocolLogFacade.InsertFullRolesLogWithoutRead(p, editedRoles, "Add")
+        Next
 
-            'Autorizzazioni Rimosse
-            editedRoles = uscAutorizza.RoleListRemoved()
-            For Each p As Protocol In CurrentProtocolList
-                Facade.ProtocolLogFacade.InsertRolesLogWithoutRead(p, editedRoles, "Del")
-            Next
-        End If
+        'Autorizzazioni Rimosse
+        editedRoles = uscAutorizza.RoleListRemoved()
+        For Each p As Protocol In CurrentProtocolList
+            Facade.ProtocolLogFacade.InsertRolesLogWithoutRead(p, editedRoles, "Del")
+        Next
     End Sub
 
     Private Sub InizializeSelRole()
@@ -332,8 +320,8 @@ Public Class ProtMultiAutorizza
         protocolDescription.Text = String.Format("{0} del {1} - {2}", item.FullNumber, currentRegistrationDate, item.ProtocolObject)
 
         ' Inserisco una colonna nascosta dalla quale reperire l'id del protocollo. Questo Id viene utilizzato per eliminare i protocolli autorizzati.
-        Dim ProtocolId As HiddenField = DirectCast(e.Item.FindControl("ProtocolId"), HiddenField)
-        ProtocolId.Value = item.Id.ToString()
+        Dim hdfProtocolId As HiddenField = DirectCast(e.Item.FindControl("ProtocolId"), HiddenField)
+        hdfProtocolId.Value = item.Id.ToString()
 
         If (TypeOf (e.Item) Is GridDataItem) Then
             'Get the instance of the right type
@@ -375,31 +363,16 @@ Public Class ProtMultiAutorizza
         ' Solo se vengono assegnate delle autorizzazioni posso rimuovere i protocolli.
         If Not uscAutorizza.GetRoles.IsNullOrEmpty() Then
 
-            Dim protocolChecked As List(Of String) = New List(Of String)
-            Dim yearNumberList As List(Of String) = New List(Of String)
-            ' Verifico i protocolli selezionati e li deposito in una lista per poi filtrarli
-            yearNumberList.AddRange(Session(GetProtocolListSessionName).Split(";"c))
+            Dim protocolChecked As IList(Of Guid) = New List(Of Guid)
 
             For Each item As GridDataItem In GridProtocols.MasterTableView.Items
                 Dim chk As CheckBox = TryCast(item("selectColumn").Controls(0), CheckBox)
                 If Not chk Is Nothing AndAlso chk.Checked Then
                     ' creo una lista con gli id da elaborare
-                    Dim protocolId As String = DirectCast(item.FindControl("ProtocolId"), HiddenField).Value
+                    Dim protocolId As Guid = Guid.Parse(DirectCast(item.FindControl("ProtocolId"), HiddenField).Value)
                     protocolChecked.Add(protocolId)
-
-                    ' Adeguo il formato della variabile di sessione YEAR|NUMBER con quello dell'Id del protocollo  YEAR/0000NUMBER
-                    Dim currentYearNumber As String() = protocolId.Split("/"c)
-                    Dim currentProtocol As String = String.Concat(currentYearNumber.GetValue(0), "|"c, CInt(currentYearNumber.GetValue(1)))
-                    yearNumberList.RemoveAll(Function(f) f = currentProtocol)
                 End If
             Next
-
-            ' Aggiornamento della variabile di sessione
-            Dim newProtocolListSession As String
-            For Each l As String In yearNumberList
-                newProtocolListSession = String.Concat(newProtocolListSession, String.Concat(l, ";"c))
-            Next
-            Session(GetProtocolListSessionName) = newProtocolListSession
 
             If CurrentProtocolList IsNot Nothing AndAlso Not CurrentProtocolList.IsNullOrEmpty() Then
                 ' Verifica che ci sia almeno un settore autorizzato
@@ -414,11 +387,11 @@ Public Class ProtMultiAutorizza
                 End If
 
                 ' Aggiornamento autorizzazioni per il protocollo.
-                Dim currentProtocolSelected As List(Of Protocol) = CurrentProtocolList.Where(Function(p) protocolChecked.Contains(p.Id.ToString())).ToList()
+                Dim currentProtocolSelected As List(Of Protocol) = CurrentProtocolList.Where(Function(p) protocolChecked.Contains(p.Id)).ToList()
 
                 For Each protocol As Protocol In currentProtocolSelected
                     'workaround per verificare se post attività devo eliminare il log di lettura
-                    Dim needReadLogRemove As Boolean = Facade.ProtocolLogFacade.SearchLog(protocol.Year, protocol.Number, DocSuiteContext.Current.User.FullUserName, ProtocolLogEvent.P1).Any()
+                    Dim needReadLogRemove As Boolean = Facade.ProtocolLogFacade.SearchLogByProtocolUniqueId(protocol.Id, DocSuiteContext.Current.User.FullUserName, ProtocolLogEvent.P1).Any()
                     Dim protRights As ProtocolRights = New ProtocolRights(protocol)
                     ' Solo per protocolli in entrata, rimuovo gli Users
                     If protRights.IsProtocolTypeDistributable Then
@@ -446,7 +419,7 @@ Public Class ProtMultiAutorizza
                     Facade.ProtocolFacade.UpdateOnly(protocol)
                     'Elimino eventuali log di lettura inseriti per l'utente
                     If needReadLogRemove Then
-                        Dim logsToRemove As IList(Of ProtocolLog) = Facade.ProtocolLogFacade.SearchLog(protocol.Year, protocol.Number, DocSuiteContext.Current.User.FullUserName, ProtocolLogEvent.P1)
+                        Dim logsToRemove As IList(Of ProtocolLog) = Facade.ProtocolLogFacade.SearchLogByProtocolUniqueId(protocol.Id, DocSuiteContext.Current.User.FullUserName, ProtocolLogEvent.P1)
                         If logsToRemove IsNot Nothing Then
                             For Each logToRemove As ProtocolLog In logsToRemove
                                 Try
@@ -463,7 +436,7 @@ Public Class ProtMultiAutorizza
                 Next
 
                 ' Aggiorna la lista di protocolli
-                CurrentProtocolList = CurrentProtocolList.Where(Function(p) Not protocolChecked.Contains(p.Id.ToString())).ToList()
+                CurrentProtocolList = CurrentProtocolList.Where(Function(p) Not protocolChecked.Contains(p.Id)).ToList()
                 LoadGrid()
                 InizializeSelRole()
             End If

@@ -74,9 +74,9 @@ Partial Public Class ProtZebraLabel
         Get
             If _selectedProtocols Is Nothing Then
                 ' Estraggo e pulisco i dati in sessione
-                Dim protocolKeys As IList(Of YearNumberCompositeKey) = CommonShared.ZebraPrintData
+                Dim protocolKeys As ICollection(Of Guid) = CommonShared.ZebraPrintData
                 If protocolKeys IsNot Nothing Then
-                    _selectedProtocols = Facade.ProtocolFacade.GetProtocols(protocolKeys.ToList())
+                    _selectedProtocols = Facade.ProtocolFacade.GetProtocols(protocolKeys).ToList()
                 End If
                 If _selectedProtocols.IsNullOrEmpty() Then
                     Throw New DocSuiteException("Stampa etichette Zebra", "Impossibile trovare protocolli per la stampa.")
@@ -222,7 +222,7 @@ Partial Public Class ProtZebraLabel
             Return 0
         End If
 
-        Dim attachments As New BiblosChainInfo(protocol.Location.DocumentServer, protocol.Location.ProtBiblosDSDB, protocol.IdAttachments.Value)
+        Dim attachments As New BiblosChainInfo(protocol.Location.ProtBiblosDSDB, protocol.IdAttachments.Value)
         If attachments IsNot Nothing AndAlso attachments.Documents IsNot Nothing Then
             Return attachments.Documents.Count
         End If

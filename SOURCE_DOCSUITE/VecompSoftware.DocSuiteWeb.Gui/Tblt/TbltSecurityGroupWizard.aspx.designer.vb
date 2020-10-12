@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class TbltSecurityGroupWizard
-    
+
     '''<summary>
     '''pnlMain control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class TbltSecurityGroupWizard
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlMain As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''Splitter1 control.
     '''</summary>
@@ -30,43 +30,25 @@ Partial Public Class TbltSecurityGroupWizard
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Splitter1 As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
-    '''Pane1 control.
+    '''TreeViewPane control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Pane1 As Global.Telerik.Web.UI.RadPane
-    
+    Protected WithEvents TreeViewPane As Global.Telerik.Web.UI.RadPane
+
     '''<summary>
-    '''ToolBarSearchConfig control.
+    '''SearchToolbar control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ToolBarSearchConfig As Global.Telerik.Web.UI.RadToolBar
-    
-    '''<summary>
-    '''ToolBarSearchContainer control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ToolBarSearchContainer As Global.Telerik.Web.UI.RadToolBar
-    
-    '''<summary>
-    '''ToolBarSearchRole control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ToolBarSearchRole As Global.Telerik.Web.UI.RadToolBar
-    
+    Protected WithEvents SearchToolbar As Global.Telerik.Web.UI.RadToolBar
+
     '''<summary>
     '''RadTreeGroups control.
     '''</summary>
@@ -75,7 +57,7 @@ Partial Public Class TbltSecurityGroupWizard
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadTreeGroups As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''Bar1 control.
     '''</summary>
@@ -84,7 +66,7 @@ Partial Public Class TbltSecurityGroupWizard
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Bar1 As Global.Telerik.Web.UI.RadSplitBar
-    
+
     '''<summary>
     '''pnlGroupDetails control.
     '''</summary>
@@ -93,7 +75,7 @@ Partial Public Class TbltSecurityGroupWizard
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlGroupDetails As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''groupDetails control.
     '''</summary>
@@ -102,7 +84,34 @@ Partial Public Class TbltSecurityGroupWizard
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents groupDetails As Global.VecompSoftware.DocSuiteWeb.Gui.uscGroupDetails
-    
+
+    '''<summary>
+    '''rpbGroups control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rpbGroups As Global.Telerik.Web.UI.RadPanelBar
+
+    '''<summary>
+    '''grpSplitter control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents grpSplitter As Global.Telerik.Web.UI.RadSplitter
+
+    '''<summary>
+    '''groupDetailsPane control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents groupDetailsPane As Global.Telerik.Web.UI.RadPane
+
     '''<summary>
     '''btnSave control.
     '''</summary>
@@ -111,7 +120,7 @@ Partial Public Class TbltSecurityGroupWizard
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSave As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnBack control.
     '''</summary>

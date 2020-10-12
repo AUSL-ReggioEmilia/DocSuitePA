@@ -23,7 +23,6 @@
                     <ItemStyle Font-Bold="True" />
                 </telerik:GridBoundColumn>
                 <telerik:GridBoundColumn DataField="Name"  HeaderText="Nome" UniqueName="Name" />
-                <telerik:GridBoundColumn DataField="DocumentServer" HeaderText="DS Server" UniqueName="DocumentServer" />
                 <telerik:GridTemplateColumn HeaderText="DS Archivio">
                     <ItemTemplate>
                         <%=DsArchive()%>'

@@ -60,7 +60,7 @@ class TbltPrivacyLevelGes {
     /**
     *------------------------- Events -----------------------------
     */
-    private btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
 
         if (!Page_IsValid) {
             return;

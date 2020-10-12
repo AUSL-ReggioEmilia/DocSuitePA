@@ -107,7 +107,7 @@ Public Class UserDiarioUnificato
         End If
         Session.Add("DSW_UnifiedDiaryFinderObject", finder)
 
-        gvDiarioUnificato.DataSource = FacadeFactory.Instance.UnifiedDiaryFacade.GetEntitiesLastLogs(finder.DateFrom.Value, finder.DateTo.Value, DocSuiteContext.Current.User.FullUserName, finder.TypeLog, finder.Subject)
+        gvDiarioUnificato.DataSource = FacadeFactory.Instance.UnifiedDiaryFacade.GetEntitiesLastLogs(finder.DateFrom.Value, finder.DateTo.Value, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId, finder.TypeLog, finder.Subject)
         gvDiarioUnificato.Finder = FacadeFactory.Instance.UnifiedDiaryFacade
         gvDiarioUnificato.AllowPaging = True
         gvDiarioUnificato.CurrentPageIndex = 0
@@ -119,13 +119,13 @@ Public Class UserDiarioUnificato
 
     Protected Function GetLogDetails(typeLog As Integer, dateFrom As DateTime, dateTo As DateTime, id As Integer, udsId As Guid?) As IList(Of UnifiedDiary)
         Dim lista As IList(Of UnifiedDiary)
-        lista = Facade.UnifiedDiaryFacade.GetEntityLogDetails(typeLog, dateFrom, dateTo, DocSuiteContext.Current.User.FullUserName, id, udsId)
+        lista = Facade.UnifiedDiaryFacade.GetEntityLogDetails(typeLog, dateFrom, dateTo, DocSuiteContext.Current.User.FullUserName, id, udsId, CurrentTenant.TenantAOO.UniqueId)
         Return lista
     End Function
 
     Protected Function GetLogDetailsYearNumber(typeLog As Integer, dateFrom As DateTime, dateTo As DateTime, year As String, number As String) As IList(Of UnifiedDiary)
         Dim lista As IList(Of UnifiedDiary)
-        lista = Facade.UnifiedDiaryFacade.GetEntityLogDetails(typeLog, dateFrom, dateTo, DocSuiteContext.Current.User.FullUserName, Convert.ToInt16(year), Convert.ToInt32(number), Nothing)
+        lista = Facade.UnifiedDiaryFacade.GetEntityLogDetails(typeLog, dateFrom, dateTo, DocSuiteContext.Current.User.FullUserName, Convert.ToInt16(year), Convert.ToInt32(number), Nothing, CurrentTenant.TenantAOO.UniqueId)
         Return lista
     End Function
 
@@ -281,7 +281,7 @@ Public Class UserDiarioUnificato
         End If
 
         If (dataSourceRow.Protocol IsNot Nothing) Then
-            navigateUrl = String.Concat("~/Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}&Type=Prot", dataSourceRow.Protocol.Year, dataSourceRow.Protocol.Number)))
+            navigateUrl = String.Concat("~/Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&Type=Prot", dataSourceRow.Protocol.Id)))
         End If
 
         If (dataSourceRow.Resolution IsNot Nothing) Then
@@ -399,12 +399,7 @@ Public Class UserDiarioUnificato
                         btnLog.Enabled = New ProtocolRights(dataSourceRow.Protocol).EnableViewLog
                         btnLog.ToolTip = "Visualizza log protocollo"
                         lblLogType.Text = String.Format("{0}", dataSourceRow.Protocol.FullNumber)
-                        With DirectCast(e.Item.FindControl("hfYear"), HiddenField)
-                            .Value = dataSourceRow.Protocol.Year
-                        End With
-                        With DirectCast(e.Item.FindControl("hfNumber"), HiddenField)
-                            .Value = dataSourceRow.Protocol.Number
-                        End With
+                        hfId.Value = dataSourceRow.Protocol.Id.ToString()
                     End If
 
 
@@ -528,9 +523,8 @@ Public Class UserDiarioUnificato
             Select Case logType
 
                 Case LogKindEnum.Protocol.GetDescription()
-                    Dim year As String = DirectCast(dataItem.FindControl("hfYear"), HiddenField).Value
-                    Dim number As String = DirectCast(dataItem.FindControl("hfNumber"), HiddenField).Value
-                    Dim redirectUrl As String = String.Format("Type=Prot&Year={0}&Number={1}", year, number)
+                    Dim uniqueIdProtocol As Guid = Guid.Parse(DirectCast(dataItem.FindControl("hfId"), HiddenField).Value)
+                    Dim redirectUrl As String = String.Format("Type=Prot&UniqueId={0}", uniqueIdProtocol)
                     redirectUrl = String.Concat("~/Prot/ProtLog.aspx?", CommonShared.AppendSecurityCheck(redirectUrl))
                     Response.Redirect(redirectUrl)
 

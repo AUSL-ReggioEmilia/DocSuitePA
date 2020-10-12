@@ -1,18 +1,17 @@
 ﻿Imports System.Collections.Generic
+Imports System.Globalization
 Imports System.Linq
+Imports System.Web
+Imports Newtonsoft.Json
 Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.UDS
+Imports VecompSoftware.Helpers.Web
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.HtmlStructure
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.DTO.UDS
-Imports VecompSoftware.Helpers.Web
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Workflows
 Imports VecompSoftware.Services.Biblos.Models
-Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
-Imports Newtonsoft.Json
-Imports System.Globalization
-Imports System.Web
 
 Public Class uscUDSDynamics
     Inherits DocSuite2008BaseControl
@@ -21,6 +20,7 @@ Public Class uscUDSDynamics
     Public Const DYNAMIC_LABEL_NAME_FORMAT As String = "lbl_{0}"
     Public Const DYNAMIC_FIELD_NAME_FORMAT As String = "field_{0}"
     Public Const DYNAMIC_VALIDATOR_NAME_FORMAT As String = "validator_{0}"
+    Public Const RANGE_VALIDATOR_NAME_FORMAT As String = "range_validator_{0}"
     Public Const DYNAMIC_MANUAL_SEARCH_CONTACT_NAME_FORMAT As String = "manual_search_field_{0}"
     Public Const CTL_TITLE As String = "TitleField"
     Public Const CTL_HEADER As String = "HeaderField"
@@ -40,7 +40,6 @@ Public Class uscUDSDynamics
     Public Const ACTION_TYPE_SEARCH As String = "Search"
     Public Const ACTION_TYPE_INSERT As String = "Insert"
     Public Const CSS_DISPLAY_NONE As String = "dsw-display-none"
-    Private _currentWorkflowPropertyFacade As WorkflowPropertyFacade
     Private _workflowSignedDocRequired As IDictionary(Of String, Boolean)
 #End Region
 
@@ -50,6 +49,17 @@ Public Class uscUDSDynamics
 
 #Region "Properties"
     Public Event OnNeedDynamicsSource(ByVal sender As Object, ByVal e As EventArgs)
+
+    Private Class UDSTableControlModel
+        Public Property Target As TableRowCollection
+        Public Property RowIndex As Integer?
+        Public Property RowCss As String
+        Public Property Colspans As IList(Of Integer)
+        Public Property Widths As IList(Of Integer)
+        Public Property Controls As IList(Of Control)
+        Public Property CellsCss As IList(Of String)
+        Public Property LayoutPosition As LayoutPosition
+    End Class
 
     Private Property CurrentControls As ICollection(Of UDSDynamicControlDto)
         Get
@@ -123,6 +133,18 @@ Public Class uscUDSDynamics
         End Set
     End Property
 
+    Public Property DocumentsReadonly As Boolean
+        Get
+            If ViewState(String.Format("{0}_DocumentsReadonly", ID)) IsNot Nothing Then
+                Return DirectCast(ViewState(String.Format("{0}_DocumentsReadonly", ID)), Boolean)
+            End If
+            Return True
+        End Get
+        Set(ByVal value As Boolean)
+            ViewState(String.Format("{0}_DocumentsReadonly", ID)) = value
+        End Set
+    End Property
+
     Public Property ViewAuthorizations As Boolean
         Get
             If ViewState(String.Format("{0}_ViewAuthorizations", ID)) IsNot Nothing Then
@@ -172,6 +194,8 @@ Public Class uscUDSDynamics
     End Property
 
     Public Property SessionIsEmpty As Boolean
+
+    Private Property SearchableControls As List(Of UDSTableControlModel)
 #End Region
 
 #Region "Events"
@@ -325,6 +349,8 @@ Public Class uscUDSDynamics
             table3 = CreateDynamicTable(Nothing, Nothing, maxColumn)
         End If
 
+        SearchableControls = New List(Of UDSTableControlModel)()
+
         If ViewMetadata Then
             'Aggiungo i field dinamici
             Dim DocumentRowNumber As UInteger = 1
@@ -411,17 +437,17 @@ Public Class uscUDSDynamics
                 Dim correctTable As Table = If(udsModel.Documents.Document.Layout.ColNumber = 0, table1, If(udsModel.Documents.Document.Layout.ColNumber = 1, table2, table3))
                 'Documento principale
                 If udsModel.Documents.Document IsNot Nothing Then
-                    AddDocumentControl(correctTable, udsModel.Documents.Document)
+                    AddDocumentControl(correctTable, udsModel.Documents.Document, Not udsModel.StampaConformeEnabled)
                 End If
 
                 'Allegati
                 If udsModel.Documents.DocumentAttachment IsNot Nothing Then
-                    AddDocumentControl(correctTable, udsModel.Documents.DocumentAttachment)
+                    AddDocumentControl(correctTable, udsModel.Documents.DocumentAttachment, Not udsModel.StampaConformeEnabled)
                 End If
 
                 'Annessi
                 If udsModel.Documents.DocumentAnnexed IsNot Nothing Then
-                    AddDocumentControl(correctTable, udsModel.Documents.DocumentAnnexed)
+                    AddDocumentControl(correctTable, udsModel.Documents.DocumentAnnexed, Not udsModel.StampaConformeEnabled)
                 End If
             End If
         End If
@@ -434,6 +460,10 @@ Public Class uscUDSDynamics
                 End If
                 AddRoleControl(correctTable, udsModel.Authorizations)
             End If
+        End If
+
+        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+            RenderUDSSearchControls(table1, table2, table3)
         End If
 
         'Salvo il modello corrente nel viewState perchè possa essere interpretato ad ogni postback
@@ -541,14 +571,8 @@ Public Class uscUDSDynamics
                             allowFormatValue = True
                         End If
 
-                        If SessionIsEmpty Then
-                            If modelField.DefaultValue <> String.Empty AndAlso (ctrl.GetType().Name = GetType(RadComboBox).Name OrElse ctrl.GetType().Name = GetType(RadDropDownList).Name) Then
-                                realValue = modelField.DefaultValue
-                            End If
-                        End If
-
                         If IsReadOnly AndAlso TypeOf item Is StatusField Then
-                            statusValue = realValue
+                            statusValue = CType(realValue, String)
                             realValue = CType(item, StatusField).Options.FirstOrDefault(Function(f) f.Value = statusValue)
                             statusLblControl = dynamicControls.FindControl(WebHelper.SafeControlIdName(String.Format(DYNAMIC_LABEL_NAME_FORMAT, String.Concat(modelField.ColumnName, "_status"))))
                             Try
@@ -758,6 +782,13 @@ Public Class uscUDSDynamics
         table.Rows.AddRaw("Chiaro", Nothing, Nothing, {tdControl, validator}, {"col-dsw-2", "col-dsw-8"})
     End Sub
 
+    Public Sub AddNumericRangeValidatorControl(table As Table, parentId As String, parentName As String, minValue As Double, maxValue As Double)
+        Dim control As Control = dynamicControls.FindControl(WebHelper.SafeControlIdName(parentId))
+        Dim tdControl As Control = New Control()
+        Dim validator As Control = New ValidatorStructure().GetRangeStructure(String.Format(RANGE_VALIDATOR_NAME_FORMAT, parentId), $"Inserire un valore compreso tra {minValue} e {maxValue}", parentId, minValue, maxValue, ValidatorDisplay.Dynamic, ValidationDataType.Double, String.Empty)
+        table.Rows.AddRaw("Chiaro", Nothing, Nothing, {tdControl, validator}, {"col-dsw-2", "col-dsw-8"})
+    End Sub
+
     ''' <summary>
     ''' Aggiunge un nuovo controllo Enumeratore
     ''' </summary>
@@ -798,9 +829,19 @@ Public Class uscUDSDynamics
         If element.HiddenField Then
             cssRow = CSS_DISPLAY_NONE
         End If
-        table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, comboControl}, {"col-dsw-2 label", "col-dsw-8"})
 
-        If element.Required AndAlso Not IsReadOnly Then
+        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+            SearchableControls.Add(New UDSTableControlModel With {
+                .RowCss = cssRow,
+                .Controls = {label, comboControl},
+                .CellsCss = {"col-dsw-2 label", "col-dsw-8"},
+                .LayoutPosition = element.Layout
+            })
+        Else
+            table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, comboControl}, {"col-dsw-2 label", "col-dsw-8"})
+        End If
+
+        If element.Required AndAlso Not IsReadOnly AndAlso Not ActionType.Eq(ACTION_TYPE_VIEW) Then
             AddValidatorControl(table, comboControlId, element.Label)
         End If
     End Sub
@@ -835,9 +876,19 @@ Public Class uscUDSDynamics
         If element.HiddenField Then
             cssRow = CSS_DISPLAY_NONE
         End If
-        table.Rows.AddRaw(cssRow, Nothing, Nothing, controls, {"col-dsw-2 label", "col-dsw-8"})
 
-        If element.Required AndAlso Not IsReadOnly Then
+        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+            SearchableControls.Add(New UDSTableControlModel With {
+                .RowCss = cssRow,
+                .Controls = controls,
+                .CellsCss = {"col-dsw-2 label", "col-dsw-8"},
+                .LayoutPosition = element.Layout
+            })
+        Else
+            table.Rows.AddRaw(cssRow, Nothing, Nothing, controls, {"col-dsw-2 label", "col-dsw-8"})
+        End If
+
+        If element.Required AndAlso Not IsReadOnly AndAlso Not ActionType.Eq(ACTION_TYPE_VIEW) Then
             AddValidatorControl(table, statusControlId, element.Label)
         End If
     End Sub
@@ -884,9 +935,19 @@ Public Class uscUDSDynamics
         If element.HiddenField Then
             cssRow = CSS_DISPLAY_NONE
         End If
-        table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, textBoxControl}, {"col-dsw-2 label", "col-dsw-8"})
 
-        If element.Required AndAlso Not IsReadOnly Then
+        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+            SearchableControls.Add(New UDSTableControlModel With {
+                .RowCss = cssRow,
+                .Controls = {label, textBoxControl},
+                .CellsCss = {"col-dsw-2 label", "col-dsw-8"},
+                .LayoutPosition = element.Layout
+            })
+        Else
+            table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, textBoxControl}, {"col-dsw-2 label", "col-dsw-8"})
+        End If
+
+        If element.Required AndAlso Not IsReadOnly AndAlso Not ActionType.Eq(ACTION_TYPE_VIEW) Then
             AddValidatorControl(table, textBoxControlId, element.Label)
         End If
     End Sub
@@ -901,26 +962,85 @@ Public Class uscUDSDynamics
 
         Dim label As Control = New LabelStructure().GetStructure(String.Format(DYNAMIC_LABEL_NAME_FORMAT, element.ColumnName), GetLabelName(element.Label), String.Empty)
         Dim numberControlId As String = String.Format(DYNAMIC_FIELD_NAME_FORMAT, element.ColumnName).ToLower()
-        Dim numberControl As Control
-        If IsReadOnly Then
-            numberControl = New LabelStructure().GetStructure(numberControlId, CType(ViewState(numberControlId), String), String.Empty)
-            DirectCast(numberControl, Label).AddAttribute("IsNumeric", True.ToString())
-            DirectCast(numberControl, Label).AddAttribute("NumericFormat", element.Format)
+
+        Dim numberFromControl As Control = Nothing
+        Dim labelFromNumberControl As Control = Nothing
+        Dim numberToControl As Control = Nothing
+        Dim labelToNumberControl As Control = Nothing
+        Dim numberControl As Control = Nothing
+
+        Dim fromNumberControlId As String = $"{numberControlId}FromNumber"
+        Dim toNumberControlId As String = $"{numberControlId}ToNumber"
+        Dim fromNumberLabelControlId As String = $"{numberControlId}From"
+        Dim toNumberLabelControlId As String = $"{numberControlId}To"
+        Dim fromElementColumnName As String = $"{element.ColumnName}From"
+        Dim toElementColumnName As String = $"{element.ColumnName}To"
+
+        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+            If IsReadOnly Then
+                numberFromControl = New LabelStructure().GetStructure(fromNumberControlId, CType(ViewState(fromNumberControlId), String), String.Empty)
+                numberToControl = New LabelStructure().GetStructure(toNumberControlId, CType(ViewState(toNumberControlId), String), String.Empty)
+                labelFromNumberControl = New LabelStructure().GetStructure(fromNumberLabelControlId, CType(ViewState(fromNumberLabelControlId), String), String.Empty)
+                labelToNumberControl = New LabelStructure().GetStructure(toNumberLabelControlId, CType(ViewState(toNumberLabelControlId), String), String.Empty)
+            Else
+                labelFromNumberControl = New LabelStructure().GetStructure(String.Format(DYNAMIC_LABEL_NAME_FORMAT, fromElementColumnName), "Da ", String.Empty)
+                numberFromControl = New NumericStructure().GetRadStructure(fromNumberControlId, New KeyValuePair(Of Integer, UnitType)(100, UnitType.Pixel),
+                                                                      Nothing, Nothing, String.Empty, 0, ActionType.Eq(ACTION_TYPE_SEARCH) OrElse Not element.ReadOnly)
+
+                labelToNumberControl = New LabelStructure().GetStructure(String.Format(DYNAMIC_LABEL_NAME_FORMAT, toElementColumnName), "A ", String.Empty)
+                numberToControl = New NumericStructure().GetRadStructure(toNumberControlId, New KeyValuePair(Of Integer, UnitType)(100, UnitType.Pixel),
+                                                                      Nothing, Nothing, String.Empty, 0, ActionType.Eq(ACTION_TYPE_SEARCH) OrElse Not element.ReadOnly)
+            End If
         Else
-            numberControl = New NumericStructure().GetRadStructure(numberControlId, New KeyValuePair(Of Integer, UnitType)(100, UnitType.Pixel), Nothing,
-                                                                   Nothing, String.Empty, 0, ActionType.Eq(ACTION_TYPE_SEARCH) OrElse Not element.ReadOnly)
-            DirectCast(numberControl, RadNumericTextBox).NumberFormat.GroupSeparator = String.Empty
-            FormatNumberControl(element, numberControl)
+            If IsReadOnly Then
+                numberControl = New LabelStructure().GetStructure(numberControlId, CType(ViewState(numberControlId), String), String.Empty)
+                DirectCast(numberControl, Label).AddAttribute("IsNumeric", True.ToString())
+                DirectCast(numberControl, Label).AddAttribute("NumericFormat", element.Format)
+            Else
+                numberControl = New NumericStructure().GetRadStructure(numberControlId, New KeyValuePair(Of Integer, UnitType)(100, UnitType.Pixel), Nothing,
+                                                                       Nothing, String.Empty, 0, ActionType.Eq(ACTION_TYPE_SEARCH) OrElse Not element.ReadOnly)
+                DirectCast(numberControl, RadNumericTextBox).NumberFormat.GroupSeparator = String.Empty
+                FormatNumberControl(element, numberControl)
+            End If
         End If
 
-        Dim cssRow As String = "Chiaro"
-        If element.HiddenField Then
-            cssRow = CSS_DISPLAY_NONE
+        Dim lastNumberControlForm As Control = New Control()
+        If labelFromNumberControl IsNot Nothing AndAlso numberFromControl IsNot Nothing AndAlso labelToNumberControl IsNot Nothing AndAlso numberToControl IsNot Nothing Then
+            lastNumberControlForm.Controls.Add(labelFromNumberControl)
+            lastNumberControlForm.Controls.Add(numberFromControl)
+            lastNumberControlForm.Controls.Add(labelToNumberControl)
+            lastNumberControlForm.Controls.Add(numberToControl)
         End If
-        table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, numberControl}, {"col-dsw-2 label", "col-dsw-8"})
 
-        If element.Required AndAlso Not IsReadOnly Then
-            AddValidatorControl(table, numberControlId, element.Label)
+        Dim cssRow As String = If(element.HiddenField, CSS_DISPLAY_NONE, "Chiaro dsw-vertical-middle")
+        Dim rowNumberControl As Control = If(ActionType.Eq(ACTION_TYPE_SEARCH), lastNumberControlForm, numberControl)
+        Dim numberControlCssClass As String = If(ActionType.Eq(ACTION_TYPE_SEARCH), "boldLabel", "col-dsw-8")
+
+        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+            SearchableControls.Add(New UDSTableControlModel With {
+                .RowCss = cssRow,
+                .Controls = {label, rowNumberControl},
+                .CellsCss = {"col-dsw-2 label", numberControlCssClass},
+                .LayoutPosition = element.Layout
+            })
+        Else
+            table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, rowNumberControl}, {"col-dsw-2 label", numberControlCssClass})
+        End If
+
+        Dim minValue As Double = If(element.MinValueSpecified, element.MinValue, Integer.MinValue)
+        Dim maxValue As Double = If(element.MaxValueSpecified, element.MaxValue, Integer.MaxValue)
+        If element.Required AndAlso Not IsReadOnly AndAlso Not ActionType.Eq(ACTION_TYPE_VIEW) Then
+            If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+                AddValidatorControl(table, fromNumberControlId, element.Label)
+                AddValidatorControl(table, toNumberControlId, element.Label)
+            Else
+                AddValidatorControl(table, numberControlId, element.Label)
+            End If
+        End If
+
+        If (element.MinValueSpecified OrElse element.MaxValueSpecified) AndAlso Not IsReadOnly AndAlso
+            Not ActionType.Eq(ACTION_TYPE_VIEW) AndAlso Not ActionType.Eq(ACTION_TYPE_SEARCH) Then
+            AddNumericRangeValidatorControl(table, numberControlId, element.Label, minValue, maxValue)
         End If
     End Sub
 
@@ -955,11 +1075,11 @@ Public Class uscUDSDynamics
                 labelToDataControl = New LabelStructure().GetStructure(String.Concat(dateControlId, "To"), CType(ViewState(String.Concat(dateControlId, "To")), String), String.Empty)
             Else
                 labelFromDataControl = New LabelStructure().GetStructure(String.Format(DYNAMIC_LABEL_NAME_FORMAT, String.Concat(element.ColumnName, "From")), "Da ", String.Empty)
-                dateFromControl = New DateTimeStructure().GetRadStructure(String.Concat(dateControlId, "FromDate"), New KeyValuePair(Of Integer, UnitType)(35, UnitType.Percentage),
+                dateFromControl = New DateTimeStructure().GetRadStructure(String.Concat(dateControlId, "FromDate"), New KeyValuePair(Of Integer, UnitType)(150, UnitType.Pixel),
                                                                       CType(ViewState(String.Concat(dateControlId, "FromDate")), Date), String.Empty,
                                                                       ActionType.Eq(ACTION_TYPE_SEARCH) OrElse Not element.ReadOnly)
                 labelToDataControl = New LabelStructure().GetStructure(String.Format(DYNAMIC_LABEL_NAME_FORMAT, String.Concat(element.ColumnName, "To")), "A ", String.Empty)
-                dateToControl = New DateTimeStructure().GetRadStructure(String.Concat(dateControlId, "ToDate"), New KeyValuePair(Of Integer, UnitType)(35, UnitType.Percentage),
+                dateToControl = New DateTimeStructure().GetRadStructure(String.Concat(dateControlId, "ToDate"), New KeyValuePair(Of Integer, UnitType)(150, UnitType.Pixel),
                                                                       CType(ViewState(String.Concat(dateControlId, "ToDate")), Date), String.Empty,
                                                                       ActionType.Eq(ACTION_TYPE_SEARCH) OrElse Not element.ReadOnly)
             End If
@@ -987,14 +1107,23 @@ Public Class uscUDSDynamics
             cssRow = CSS_DISPLAY_NONE
         End If
 
-        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
-            table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, lastDataControlForm}, {"col-dsw-2 label", "boldLabel"})
-        Else
 
+        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+            SearchableControls.Add(New UDSTableControlModel With {
+                .RowCss = cssRow,
+                .Controls = {label, lastDataControlForm},
+                .CellsCss = {"col-dsw-2 label", "boldLabel"},
+                .LayoutPosition = element.Layout
+            })
+        Else
             table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, dateControl}, {"col-dsw-2 label", "col-dsw-8"})
         End If
 
-        If ActionType.Eq(ACTION_TYPE_SEARCH) Or ActionType.Eq(ACTION_TYPE_VIEW) Then
+        If ActionType.Eq(ACTION_TYPE_VIEW) Then
+            Return
+        End If
+
+        If ActionType.Eq(ACTION_TYPE_SEARCH) Then
             If element.Required AndAlso Not IsReadOnly Then
                 AddValidatorControl(table, String.Concat(dateControlId, "FromDate"), element.Label)
                 AddValidatorControl(table, String.Concat(dateControlId, "ToDate"), element.Label)
@@ -1006,7 +1135,7 @@ Public Class uscUDSDynamics
         End If
     End Sub
 
-    Public Function GetDatesBetween(fieldToGet As String) As Control
+    Public Function GetControlsBetween(fieldToGet As String) As Control
         Return dynamicControls.FindControl(WebHelper.SafeControlIdName(fieldToGet).ToLower())
     End Function
 
@@ -1024,7 +1153,6 @@ Public Class uscUDSDynamics
         If element.HiddenField Then
             cssRow = CSS_DISPLAY_NONE
         End If
-
         If ActionType.Eq(ACTION_TYPE_SEARCH) OrElse ActionType.Eq(ACTION_TYPE_INSERT) Then
             Dim comboValues As IDictionary(Of String, String) = New Dictionary(Of String, String)
             comboValues.Add("Vero", "True")
@@ -1032,7 +1160,18 @@ Public Class uscUDSDynamics
             Dim DropDownControlId As String = String.Format(DYNAMIC_FIELD_NAME_FORMAT, element.ColumnName).ToLower()
             Dim DropDownControl As Control = New ComboStructure().GetRadStructure(DropDownControlId, New KeyValuePair(Of Integer, UnitType)(200, UnitType.Pixel), comboValues,
                                                                                   String.Empty, True)
-            table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, DropDownControl}, {"col-dsw-2 label", "col-dsw-8"})
+
+            If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+                SearchableControls.Add(New UDSTableControlModel With {
+                    .RowCss = cssRow,
+                    .Controls = {label, DropDownControl},
+                    .CellsCss = {"col-dsw-2 label", "col-dsw-8"},
+                    .LayoutPosition = element.Layout
+                })
+            Else
+                table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, DropDownControl}, {"col-dsw-2 label", "col-dsw-8"})
+            End If
+
             If element.Required AndAlso Not IsReadOnly Then
                 AddValidatorControl(table, DropDownControlId, element.Label)
             End If
@@ -1064,7 +1203,17 @@ Public Class uscUDSDynamics
             Dim uscLookupControl As Control = New LabelStructure().GetStructure(uscUDSLookupId, CType(ViewState(uscUDSLookupId), String), String.Empty)
             Dim lookupLabel As Label = DirectCast(uscLookupControl, Label)
             lookupLabel.AddAttribute("IsJSONValue", "True")
-            table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, lookupLabel}, {"col-dsw-2 label", "col-dsw-8"})
+
+            If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+                SearchableControls.Add(New UDSTableControlModel With {
+                    .RowCss = cssRow,
+                    .Controls = {label, lookupLabel},
+                    .CellsCss = {"col-dsw-2 label", "col-dsw-8"},
+                    .LayoutPosition = element.Layout
+                })
+            Else
+                table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, lookupLabel}, {"col-dsw-2 label", "col-dsw-8"})
+            End If
         Else
             Dim uscUDSLookupControl As uscUDSLookup = DirectCast(LoadControl("~/UDS/UserControl/uscUDSLookup.ascx"), uscUDSLookup)
             'Carico i valori del precedente postback
@@ -1085,7 +1234,18 @@ Public Class uscUDSDynamics
                 uscUDSLookupControl.LookupLabel = element.Label
             End If
             uscUDSLookupControl.ErrorMessage = String.Concat("Campo ", element.Label, " obbligatorio")
-            table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, uscUDSLookupControl}, {"col-dsw-2 label", "col-dsw-8"})
+
+            If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+                SearchableControls.Add(New UDSTableControlModel With {
+                    .RowCss = cssRow,
+                    .Controls = {label, uscUDSLookupControl},
+                    .CellsCss = {"col-dsw-2 label", "col-dsw-8"},
+                    .LayoutPosition = element.Layout
+                })
+            Else
+                table.Rows.AddRaw(cssRow, Nothing, Nothing, {label, uscUDSLookupControl}, {"col-dsw-2 label", "col-dsw-8"})
+            End If
+
             CurrentControls.Add(New UDSDynamicControlDto() With {.IdControl = uscUDSLookupId, .DynamicControlName = "uscUDSLookup"})
 
         End If
@@ -1126,7 +1286,7 @@ Public Class uscUDSDynamics
         uscContact.ButtonManualVisible = Not IsReadOnly AndAlso element.ManualEnabled AndAlso Not ActionType.Eq(ACTION_TYPE_SEARCH) AndAlso Not element.ContactType = ContactType.AccountAuthorization
         uscContact.ButtonImportManualVisible = Not IsReadOnly AndAlso element.ExcelImportEnabled AndAlso Not ActionType.Eq(ACTION_TYPE_SEARCH) AndAlso Not element.ContactType = ContactType.AccountAuthorization
         uscContact.ButtonSelectVisible = (Not IsReadOnly AndAlso element.AddressBookEnabled) OrElse ActionType.Eq(ACTION_TYPE_SEARCH) AndAlso Not element.ContactType = ContactType.AccountAuthorization
-        uscContact.ButtonSelectDomainVisible = (Not IsReadOnly AndAlso element.ADEnabled) OrElse ActionType.Eq(ACTION_TYPE_SEARCH)
+        uscContact.ButtonSelectDomainVisible = ((Not IsReadOnly AndAlso element.ADEnabled) OrElse ActionType.Eq(ACTION_TYPE_SEARCH)) AndAlso ProtocolEnv.AbilitazioneRubricaDomain
         uscContact.ButtonSelectOChartVisible = Not IsReadOnly OrElse ActionType.Eq(ACTION_TYPE_SEARCH) AndAlso Not element.ContactType = ContactType.AccountAuthorization
         uscContact.ButtonImportVisible = Not IsReadOnly AndAlso Not ActionType.Eq(ACTION_TYPE_SEARCH) AndAlso Not element.ContactType = ContactType.AccountAuthorization
         uscContact.ReadOnlyProperties = IsReadOnly
@@ -1148,23 +1308,19 @@ Public Class uscUDSDynamics
             tmpPanel.Controls.Add(manualSearchContactlabel)
             tmpPanel.Controls.Add(manualSearchContact)
 
-            contactTable.Rows.AddRaw("", Nothing, Nothing, {uscContact}, {"col-dsw-10"})
-            contactTable.Rows.AddRaw("", Nothing, Nothing, {tmpPanel}, {"col-dsw-8"})
-            If Not Me.ActionType.Eq(ACTION_TYPE_VIEW) Then
-                table.Rows.AddRaw("Chiaro", Nothing, Nothing, {label, contactTable}, {"col-dsw-2 label", "col-dsw-8"})
-                If element.Layout IsNot Nothing Then
-                    table.Rows.AddRaw(CType((element.Layout.RowNumber - 1), Integer?), "Chiaro", Nothing, Nothing, {label, contactTable}, {"col-dsw-2 label", "col-dsw-8"})
-                End If
-            Else
-                table.Rows.AddRaw("Chiaro", Nothing, Nothing, {contactTable}, {"col-dsw-10"})
-                If element.Layout IsNot Nothing Then
-                    table.Rows.AddRaw(CType((element.Layout.RowNumber - 1), Integer?), "Chiaro", Nothing, Nothing, {contactTable}, {"col-dsw-10"})
-                End If
-            End If
+            contactTable.Rows.AddRaw(String.Empty, Nothing, Nothing, {uscContact}, {"col-dsw-10"})
+            contactTable.Rows.AddRaw(String.Empty, Nothing, Nothing, {tmpPanel}, {"col-dsw-8"})
+
+            SearchableControls.Add(New UDSTableControlModel With {
+                .RowCss = "Chiaro",
+                .Controls = {label, contactTable},
+                .CellsCss = {"col-dsw-2 label", "col-dsw-8"},
+                .LayoutPosition = element.Layout
+            })
 
         Else
 
-            If Not Me.ActionType.Eq(ACTION_TYPE_VIEW) Then
+            If Not ActionType.Eq(ACTION_TYPE_VIEW) Then
                 table.Rows.AddRaw("Chiaro", Nothing, Nothing, {label, uscContact}, {"col-dsw-2 label", "col-dsw-8"})
                 If element.Layout IsNot Nothing Then
                     Try
@@ -1177,7 +1333,7 @@ Public Class uscUDSDynamics
                 table.Rows.AddRaw("Chiaro", Nothing, Nothing, {uscContact}, {"col-dsw-8"})
                 If element.Layout IsNot Nothing Then
                     Try
-                        table.Rows.AddRaw(element.Layout.RowNumber - 1, "Chiaro", Nothing, Nothing, {uscContact}, {"col-dsw-8"})
+                        table.Rows.AddRaw(CType((element.Layout.RowNumber - 1), Integer?), "Chiaro", Nothing, Nothing, {uscContact}, {"col-dsw-8"})
                     Catch ex As Exception
                         table.Rows.AddRaw("Chiaro", Nothing, Nothing, {uscContact}, {"col-dsw-8"})
                     End Try
@@ -1186,7 +1342,7 @@ Public Class uscUDSDynamics
 
         End If
 
-        Me.CurrentControls.Add(New UDSDynamicControlDto() With {.IdControl = uscContactId, .DynamicControlName = "uscContattiSel"})
+        CurrentControls.Add(New UDSDynamicControlDto() With {.IdControl = uscContactId, .DynamicControlName = "uscContattiSel"})
     End Sub
 
     Private Function IsSignRequired(controlName As String) As Boolean
@@ -1235,7 +1391,7 @@ Public Class uscUDSDynamics
     ''' <summary>
     ''' Aggiunge un nuovo controllo di tipo uscDocumentUpload
     ''' </summary>
-    Public Sub AddDocumentControl(table As Table, element As Document)
+    Public Sub AddDocumentControl(table As Table, element As Document, allowUnlimitFileSize As Boolean)
         If IsReadOnly Then
             Exit Sub
         End If
@@ -1245,9 +1401,12 @@ Public Class uscUDSDynamics
 
         Dim uscDocument As uscDocumentUpload = DirectCast(LoadControl("~/UserControl/uscDocumentUpload.ascx"), uscDocumentUpload)
         uscDocument.ID = documentId
-        uscDocument.ReadOnly = element.ReadOnly
-        uscDocument.IsDocumentRequired = element.Required AndAlso Not IsReadOnly
-        uscDocument.DocumentDeletable = element.Deletable
+        uscDocument.ReadOnly = element.ReadOnly OrElse DocumentsReadonly
+        uscDocument.ButtonPreviewEnabled = Not element.ReadOnly AndAlso Not DocumentsReadonly
+        uscDocument.IsDocumentRequired = element.Required
+        uscDocument.DocumentDeletable = element.Deletable AndAlso Not DocumentsReadonly
+        uscDocument.ButtonRemoveEnabled = uscDocument.DocumentDeletable
+        uscDocument.AllowUnlimitFileSize = allowUnlimitFileSize
         uscDocument.Initialize()
 
         'Carico i valori del precedente postback
@@ -1273,12 +1432,13 @@ Public Class uscUDSDynamics
 
         uscDocument.HeaderVisible = False
         uscDocument.MultipleDocuments = element.AllowMultiFile
-        uscDocument.ButtonFileEnabled = element.UploadEnabled
-        uscDocument.ButtonScannerEnabled = element.ScannerEnabled
-        uscDocument.SignButtonEnabled = element.SignEnabled
-        uscDocument.ButtonCopyProtocol.Visible = element.CopyProtocol
-        uscDocument.ButtonCopyResl.Visible = element.CopyResolution
-        uscDocument.ButtonCopySeries.Visible = element.CopySeries
+        uscDocument.ButtonFileEnabled = element.UploadEnabled AndAlso Not uscDocument.ReadOnly
+        uscDocument.ButtonScannerEnabled = element.ScannerEnabled AndAlso Not uscDocument.ReadOnly
+        uscDocument.SignButtonEnabled = element.SignEnabled AndAlso Not uscDocument.ReadOnly
+        uscDocument.ButtonCopyProtocol.Visible = element.CopyProtocol AndAlso Not uscDocument.ReadOnly
+        uscDocument.ButtonCopyResl.Visible = element.CopyResolution AndAlso Not uscDocument.ReadOnly
+        uscDocument.ButtonCopySeries.Visible = element.CopySeries AndAlso Not uscDocument.ReadOnly
+        uscDocument.ButtonCopyUDS.Visible = element.CopyUDS AndAlso Not uscDocument.ReadOnly
 
         AddHandler uscDocument.DocumentUploaded, AddressOf DocumentUploadedCallback
         AddHandler uscDocument.DocumentSigned, AddressOf DocumentSignedCallback
@@ -1329,16 +1489,25 @@ Public Class uscUDSDynamics
             table.Rows.AddRaw("Chiaro", Nothing, Nothing, {uscAuth}, {"col-dsw-10"})
             If element.Layout IsNot Nothing Then
                 Try
-                    table.Rows.AddRaw(element.Layout.RowNumber - 1, "Chiaro", Nothing, Nothing, {uscAuth}, {"col-dsw-10"})
+                    table.Rows.AddRaw(CType((element.Layout.RowNumber - 1), Integer?), "Chiaro", Nothing, Nothing, {uscAuth}, {"col-dsw-10"})
                 Catch ex As Exception
                     table.Rows.AddRaw("Chiaro", Nothing, Nothing, {uscAuth}, {"col-dsw-10"})
                 End Try
 
             End If
         Else
-            table.Rows.AddRaw("Chiaro", Nothing, Nothing, {label, uscAuth}, {"col-dsw-2 label", "col-dsw-8"})
-            If element.Layout IsNot Nothing Then
-                table.Rows.AddRaw(element.Layout.RowNumber - 1, "Chiaro", Nothing, Nothing, {label, uscAuth}, {"col-dsw-2 label", "col-dsw-8"})
+            If ActionType.Eq(ACTION_TYPE_SEARCH) Then
+                SearchableControls.Add(New UDSTableControlModel With {
+                    .RowCss = "Chiaro",
+                    .Controls = {label, uscAuth},
+                    .CellsCss = {"col-dsw-2 label", "col-dsw-8"},
+                    .LayoutPosition = element.Layout
+                })
+            Else
+                table.Rows.AddRaw("Chiaro", Nothing, Nothing, {label, uscAuth}, {"col-dsw-2 label", "col-dsw-8"})
+                If element.Layout IsNot Nothing Then
+                    table.Rows.AddRaw(CType((element.Layout.RowNumber - 1), Integer?), "Chiaro", Nothing, Nothing, {label, uscAuth}, {"col-dsw-2 label", "col-dsw-8"})
+                End If
             End If
         End If
         AjaxManager.AjaxSettings.AddAjaxSetting(uscAuth, uscAuth)
@@ -1588,14 +1757,23 @@ Public Class uscUDSDynamics
     Private Function GetDocumentField(control As uscDocumentUpload) As DocumentInstance()
         Dim documents As IList(Of DocumentInstance) = New List(Of DocumentInstance)
         Dim selectedDocuments As IList(Of DocumentInfo) = control.DocumentInfos
+        Dim documentStored As BiblosDocumentInfo = Nothing
+        Dim documentInstance As DocumentInstance = Nothing
+
         If selectedDocuments.Any() Then
             For Each document As DocumentInfo In selectedDocuments
+                documentInstance = New DocumentInstance() With {.DocumentName = document.Name}
                 If TypeOf document Is BiblosDocumentInfo Then
-                    Dim stream As String = If(ActionType.Eq(ACTION_TYPE_EDIT), String.Empty, Convert.ToBase64String(document.Stream))
-                    documents.Add(New DocumentInstance() With {.IdDocument = DirectCast(document, BiblosDocumentInfo).ChainId.ToString(), .DocumentContent = stream, .DocumentName = document.Name})
+                    If Not ActionType.Eq(ACTION_TYPE_EDIT) Then
+                        documentStored = document.ArchiveInBiblos(CommonShared.CurrentWorkflowLocation.ProtBiblosDSDB, Guid.Empty)
+                        documentInstance.IdDocumentToStore = documentStored.DocumentId.ToString()
+                    End If
+                    documentInstance.StoredChainId = DirectCast(document, BiblosDocumentInfo).ChainId.ToString()
                 Else
-                    documents.Add(New DocumentInstance() With {.DocumentContent = Convert.ToBase64String(document.Stream), .DocumentName = document.Name})
+                    documentStored = document.ArchiveInBiblos(CommonShared.CurrentWorkflowLocation.ProtBiblosDSDB, Guid.Empty)
+                    documentInstance.IdDocumentToStore = documentStored.DocumentId.ToString()
                 End If
+                documents.Add(documentInstance)
             Next
         End If
         Return documents.ToArray()
@@ -1606,6 +1784,7 @@ Public Class uscUDSDynamics
         control.Enabled = enabled
         ViewState(control.ID) = value
     End Sub
+
     Private Sub SetEnumField(control As RadComboBox, value As String, Optional enabled As Boolean = False)
         If Not String.IsNullOrEmpty(value) Then
             Dim selectedItems As ICollection(Of String) = New List(Of String)()
@@ -1639,7 +1818,9 @@ Public Class uscUDSDynamics
 
     Private Sub SetEnumField(control As RadDropDownList, value As String, Optional enabled As Boolean = False)
         If Not String.IsNullOrEmpty(value) Then
-
+            If value = False.ToString() OrElse value = True.ToString() Then
+                value = String.Empty 'ensure that every boolean value is deselected
+            End If
             Dim selectedValue As ICollection(Of String) = New List(Of String)()
             Try
                 selectedValue = JsonConvert.DeserializeObject(Of ICollection(Of String))(value)
@@ -1655,7 +1836,6 @@ Public Class uscUDSDynamics
                     control.SelectedValue = selectedItem.Value
                 End If
             End If
-
             control.Enabled = enabled
             control.DataBind()
         End If
@@ -1740,15 +1920,13 @@ Public Class uscUDSDynamics
         Dim bibDocInfos As IList(Of BiblosDocumentInfo) = New List(Of BiblosDocumentInfo)
         Dim docInfos As IList(Of DocumentInfo) = New List(Of DocumentInfo)
         For Each instance As DocumentInstance In document.Instances
-            If String.IsNullOrEmpty(instance.IdDocument) Then
-                Dim docInfo As DocumentInfo = New MemoryDocumentInfo(Convert.FromBase64String(instance.DocumentContent), instance.DocumentName)
-                Dim tmpDocInfo As TempFileDocumentInfo = New TempFileDocumentInfo(instance.DocumentName, docInfo.SaveUniqueToTemp())
-                docInfos.Add(tmpDocInfo)
+            If String.IsNullOrEmpty(instance.StoredChainId) Then
+                docInfos.Add(New BiblosDocumentInfo(Guid.Parse(instance.IdDocumentToStore)))
             Else
-                Dim bibDocs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentsLatestVersion(document.BiblosArchive, Guid.Parse(instance.IdDocument))
+                Dim bibDocs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentsLatestVersion(Guid.Parse(instance.StoredChainId))
                 'Verifico se è stato passato l'ID document invece dell'ID chain
                 If bibDocs.Count = 0 Then
-                    bibDocs = BiblosDocumentInfo.GetDocumentInfo(document.BiblosArchive, Guid.Parse(instance.IdDocument), Nothing, True)
+                    bibDocs = BiblosDocumentInfo.GetDocumentInfo(Guid.Parse(instance.StoredChainId), Nothing, True)
                 End If
                 For Each doc As BiblosDocumentInfo In bibDocs
                     Try
@@ -1784,7 +1962,7 @@ Public Class uscUDSDynamics
         For Each instance As Object In values
             Dim dto As Data.ContactDTO = New Data.ContactDTO()
             If instance.[GetType]() = GetType(ContactInstance) Then
-                dto.Id = Int32.Parse(DirectCast(instance, ContactInstance).IdContact)
+                dto.Id = DirectCast(instance, ContactInstance).IdContact
                 dto.Contact = Facade.ContactFacade.GetById(dto.Id)
                 dto.Type = Data.ContactDTO.ContactType.Address
             Else
@@ -1889,7 +2067,7 @@ Public Class uscUDSDynamics
             Dim ctrl As Control
             For Each element As Section In Me.CurrentModelControls.Metadata
                 If element.Items IsNot Nothing Then
-                    For Each item As Object In element.Items
+                    For Each item As FieldBaseType In element.Items
                         modelField = New UDSModelField(item)
                         ctrl = dynamicControls.FindControl(WebHelper.SafeControlIdName(String.Format(DYNAMIC_FIELD_NAME_FORMAT, modelField.ColumnName)))
                         If ctrl IsNot Nothing Then
@@ -1900,6 +2078,17 @@ Public Class uscUDSDynamics
             Next
             AjaxManager.ResponseScripts.Add(String.Format("loadControlsValues({0},{1});", JsonConvert.SerializeObject(CurrentModelControls.Metadata), JsonConvert.SerializeObject(controlList)))
         End If
+    End Sub
+
+    Private Sub RenderUDSSearchControls(table1 As Table, table2 As Table, table3 As Table)
+        Dim columnGroups As IEnumerable(Of IGrouping(Of UInteger, UDSTableControlModel)) = SearchableControls.GroupBy(Function(x) x.LayoutPosition.ColNumber)
+        For Each columnGroup As IGrouping(Of UInteger, UDSTableControlModel) In columnGroups
+            Dim columnControls As List(Of UDSTableControlModel) = columnGroup.OrderBy(Function(x) x.LayoutPosition.RowNumber).ToList()
+            For Each columnControl As UDSTableControlModel In columnControls
+                Dim correctTable As Table = If(columnControl.LayoutPosition.ColNumber = 0, table1, If(columnControl.LayoutPosition.ColNumber = 1, table2, table3))
+                correctTable.Rows.AddRaw(columnControl.RowCss, columnControl.Colspans, columnControl.Widths, columnControl.Controls, columnControl.CellsCss)
+            Next
+        Next
     End Sub
 #End Region
 

@@ -15,6 +15,7 @@ Public Class FascicleLink
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
             rgvLinkedFascicles.DataSource = New List(Of String)()
+            rgvLinkedDossiers.DataSource = New List(Of String)()
         End If
     End Sub
 #End Region

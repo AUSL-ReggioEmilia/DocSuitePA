@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "Dossiers/DossierBase", "App/Helpers/ServiceConfigurationHelper", "UserControl/uscDossierGrid"], function (require, exports, DossierBase, ServiceConfigurationHelper, UscDossierGrid) {
+define(["require", "exports", "Dossiers/DossierBase", "App/Helpers/ServiceConfigurationHelper", "UserControl/uscDossierGrid", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, DossierBase, ServiceConfigurationHelper, UscDossierGrid, SessionStorageKeysHelper) {
     var DossierRisultati = /** @class */ (function (_super) {
         __extends(DossierRisultati, _super);
         /**
@@ -54,16 +54,18 @@ define(["require", "exports", "Dossiers/DossierBase", "App/Helpers/ServiceConfig
         DossierRisultati.prototype.loadResults = function (uscDossierGrid, skip) {
             var _this = this;
             var top = skip + uscDossierGrid.getGridPageSize();
-            var filter = sessionStorage.getItem("DossierSearch");
+            var filter = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIER_SEARCH);
             var dossierSearchFilter;
             if (filter) {
                 dossierSearchFilter = JSON.parse(filter);
             }
-            this.service.getDossiers(skip, top, dossierSearchFilter, function (data) {
+            dossierSearchFilter.Skip = skip;
+            dossierSearchFilter.Top = top;
+            this.service.getAuthorizedDossiers(dossierSearchFilter, function (data) {
                 if (!data)
                     return;
                 uscDossierGrid.setDataSource(data);
-                _this.service.countDossiers(dossierSearchFilter, function (data) {
+                _this.service.countAuthorizedDossiers(dossierSearchFilter, function (data) {
                     if (data == undefined)
                         return;
                     uscDossierGrid.setItemCount(data);

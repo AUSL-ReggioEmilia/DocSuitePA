@@ -151,7 +151,7 @@ define(["require", "exports", "App/ViewModels/Dossiers/DossierFolderInsertViewMo
          */
         UscContainerDossierOptions.prototype.loadFolders = function (idContainer) {
             var _this = this;
-            $("#".concat(this.uscMetadataSelId)).on(UscMetadataRepositorySel.SELECTED_INDEX_EVENT, this.uscMetadataSel_onSelectedIndexChanged);
+            $("#".concat(this.uscMetadataSelId)).on(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, this.uscMetadataSel_onSelectedIndexChanged);
             $("#".concat(this.chkMetadataReadonlyId)).on("click", this.chkMetadataReadonly_onCheckedChanged);
             this._tlbMetadata = $find(this.tlbMetadataId);
             this._tlbMetadata.add_buttonClicked(this.tlbMetadata_OnButtonClicked);
@@ -170,6 +170,7 @@ define(["require", "exports", "App/ViewModels/Dossiers/DossierFolderInsertViewMo
                 var tmpDossierId_1 = Guid.newGuid();
                 uscDossierFolders.setRootNode('', tmpDossierId_1);
                 uscDossierFolders.loadNodes([]);
+                uscDossierFolders.setToolbarButtonsVisibility(true);
                 uscDossierFolders.showLoadingPanel();
                 this._containerPropertyService.getByContainer(idContainer, "DossierFoldersModel", function (data) {
                     if (!data || data.length == 0) {

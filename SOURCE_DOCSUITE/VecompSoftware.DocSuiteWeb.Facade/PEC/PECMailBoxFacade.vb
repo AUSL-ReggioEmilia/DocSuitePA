@@ -167,6 +167,10 @@ Public Class PECMailBoxFacade
         Return _dao.CountPECMails(pecMailBoxId)
     End Function
 
+    Public Function CountLoginErrorPECBoxes() As Integer
+        Return _dao.CountLoginErrorPECBoxes()
+    End Function
+
     Public Function GetVisibleProtocolMailBoxes() As IList(Of PECMailBox)
         Return GetVisibleMailBoxes(False, False, True)
     End Function
@@ -210,7 +214,7 @@ Public Class PECMailBoxFacade
         finder.OnlyProtocolBox = protocolBoxOnly
         finder.UDSEnabled = DocSuiteContext.Current.ProtocolEnv.UDSEnabled
         finder.GroupIds = FacadeFactory.Instance.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName).Select(Function(s) s.Id).ToList()
-        Dim authorized As List(Of PECMailBox) = finder.DoSearch()
+        Dim authorized As List(Of PECMailBox) = finder.DoSearch().ToList()
         authorized.Sort(New PecMailBoxComparer())
         Return authorized
     End Function
@@ -220,7 +224,7 @@ Public Class PECMailBoxFacade
     ''' </summary>
     ''' <param name="mails">Se tutte le mail sono nella stessa casella di posta evito di mostrarla</param>
     Public Function GetMoveMailBoxes(ByRef mails As IList(Of PECMail)) As List(Of PECMailBox)
-        Dim mailboxList As List(Of PECMailBox) = GetAll()
+        Dim mailboxList As List(Of PECMailBox) = GetAll().ToList()
         mailboxList.RemoveAll(Function(mb) mb.Unmanaged = False)
 
         If mails IsNot Nothing AndAlso mails.Count > 0 Then
@@ -334,11 +338,6 @@ Public Class PECMailBoxFacade
         Dim dtos As ICollection(Of PECMailBoxDto)
         dtos = _mapperPECMailBox.MappingDTO(mailBoxes)
         Return dtos
-    End Function
-
-    Public Function GetHumanManageable() As PECMailBoxFacade
-        _dao.SetHumanManageableFilter()
-        Return Me
     End Function
 #End Region
 

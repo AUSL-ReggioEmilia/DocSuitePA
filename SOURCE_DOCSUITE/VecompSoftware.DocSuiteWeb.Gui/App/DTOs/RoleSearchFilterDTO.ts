@@ -1,5 +1,6 @@
 ﻿interface RoleSearchFilterDTO {
     Name: string,
+    UniqueId? : string,
     ParentId?: number,
     ServiceCode: string,
     TenantId: string,

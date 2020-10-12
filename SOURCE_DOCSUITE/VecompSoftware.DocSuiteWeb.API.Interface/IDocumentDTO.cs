@@ -4,8 +4,6 @@
     {
         #region [ Properties ]
 
-        string BiblosServer { get; set; }
-
         string BiblosGuid { get; set; }
 
         string BiblosArchive { get; set; }

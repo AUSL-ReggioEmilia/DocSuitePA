@@ -51,7 +51,7 @@ Namespace Prot
                     Session.Remove("ProtSelectedDocuments")
                 End If
 
-                lblNumber.Text = Facade.ProtocolFacade.GetProtocolNumber(CurrentProtocolYear, CurrentProtocolNumber)
+                lblNumber.Text = CurrentProtocol.FullNumber
                 uscToSeries.BindContainers(Nothing)
                 BindDocuments()
             End If
@@ -63,7 +63,7 @@ Namespace Prot
 
         Protected Sub btnConfirmClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnConfirm.Click
             Session("ProtSelectedDocuments") = uscToSeries.SelectedDocuments
-            Response.Redirect(String.Concat("~/Series/Item.aspx?", CommonShared.AppendSecurityCheck(String.Format("Type=Series&Action={0}&ProtYear={1}&ProtNumber={2}&DocumentSeriesId={3}", DocumentSeriesAction.FromProtocol.ToString(), CurrentProtocol.Year, CurrentProtocol.Number, uscToSeries.SelectedDocumentSeriesId))))
+            Response.Redirect(String.Concat("~/Series/Item.aspx?", CommonShared.AppendSecurityCheck(String.Format("Type=Series&Action={0}&UniqueIdProtocol={1}&DocumentSeriesId={2}", DocumentSeriesAction.FromProtocol.ToString(), CurrentProtocol.Id, uscToSeries.SelectedDocumentSeriesId))))
         End Sub
 #End Region
 

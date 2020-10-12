@@ -1,10 +1,12 @@
 ﻿<%@ Page Title="Dossier - Modifica" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="DossierModifica.aspx.vb"
     Inherits="VecompSoftware.DocSuiteWeb.Gui.DossierModifica" %>
 
-<%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="uscContattiSel" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscContattiSelRest.ascx" TagName="uscContattiSelRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscOggetto.ascx" TagName="uscOggetto" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
-<%@ Register Src="~/UserControl/uscDynamicMetadataClient.ascx" TagName="uscDynamicMetadataClient" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscDynamicMetadataRest.ascx" TagName="uscDynamicMetadataRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscSetiContactSel.ascx" TagName="uscSetiContactSel" TagPrefix="usc" %>
+
 
 <asp:Content ContentPlaceHolderID="cphHeader" runat="server">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1">
@@ -29,9 +31,13 @@
                     dossierModifica.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                     dossierModifica.radWindowManagerId = "<%= MasterDocSuite.DefaultWindowManager.ClientID %>";
                     dossierModifica.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
-                    dossierModifica.uscDynamicMetadataId = "<%= uscDynamicMetadataClient.PageContent.ClientID%>";
+                    dossierModifica.uscDynamicMetadataId = "<%= UscDynamicMetadataRest.PageContent.ClientID%>";
                     dossierModifica.metadataRepositoryEnabled = JSON.parse("<%=ProtocolEnv.MetadataRepositoryEnabled%>".toLowerCase());
                     dossierModifica.rowMetadataId = "<%= rowMetadata.ClientID%>";
+                    dossierModifica.setiContactEnabledId = <%=ProtocolEnv.SETIIntegrationEnabled.ToString().ToLower()%>;
+                    dossierModifica.uscSetiContactSelId = "<%= uscSetiContact.PageContentDiv.ClientID%>";
+                    dossierModifica.uscContattiSelRestId = "<%=uscContattiSelRest.PanelContent.ClientID%>";
+                    dossierModifica.rcbDossierStatusId = "<%= rcbDossierStatus.ClientID %>";
                     dossierModifica.initialize();
                 });
             });
@@ -150,9 +156,15 @@
             <%-- Sezione Riferimento --%>
             <telerik:LayoutRow ID="contattiRespRow" HtmlTag="Div">
                 <Content>
-                    <usc:uscContattiSel ButtonImportVisible="false" ButtonManualVisible="false" ButtonSelectDomainVisible="false" IsRequired="false"
-                        ButtonPropertiesVisible="false" Caption="Riferimento" EnableCC="false" ForceAddressBook="true" ButtonSelectOChartVisible="false" HeaderVisible="true"
-                        ID="uscContattiSel" IsFiscalCodeRequired="false" Multiple="true" MultiSelect="True" runat="server" ExcludeRoleRoot="true" Type="Dossier" />
+                    <div class="dsw-panel">
+                        <div class="dsw-panel-title">
+                            Riferimenti
+                        </div>
+
+                        <div class="dsw-panel-content">
+                            <usc:uscContattiSelRest ID="uscContattiSelRest" runat="server" Required="false" />
+                        </div>
+                    </div>
                 </Content>
             </telerik:LayoutRow>
             <%-- Sezione Start Date--%>
@@ -182,6 +194,31 @@
                     </div>
                 </Content>
             </telerik:LayoutRow>
+            <telerik:LayoutRow ID="rowDossierStatus">
+                <Content>
+                    <div class="dsw-panel">
+                        <div class="dsw-panel-title">
+                            Stato
+                        </div>
+                        <div class="dsw-panel-content">
+                            <telerik:RadPageLayout runat="server" HtmlTag="Div">
+                                <Rows>
+                                    <telerik:LayoutRow HtmlTag="Div">
+                                        <Columns>
+                                            <telerik:LayoutColumn Span="2" CssClass="dsw-text-right">
+                                                <b>Stato da dossier:</b>
+                                            </telerik:LayoutColumn>
+                                            <telerik:LayoutColumn Span="9" CssClass="t-col-left-padding">
+                                                <telerik:RadComboBox ID="rcbDossierStatus" runat="server" />
+                                            </telerik:LayoutColumn>
+                                        </Columns>
+                                    </telerik:LayoutRow>
+                                </Rows>
+                            </telerik:RadPageLayout>
+                        </div>
+                    </div>
+                </Content>
+            </telerik:LayoutRow>
             <telerik:LayoutRow ID="rowMetadata" runat="server">
                 <Content>
                     <div class="dsw-panel">
@@ -189,7 +226,10 @@
                             Metadati
                         </div>
                         <div class="dsw-panel-content">
-                            <usc:uscDynamicMetadataClient runat="server" ID="uscDynamicMetadataClient"></usc:uscDynamicMetadataClient>
+                            <div style="margin-left: 16%;">                              
+                                <usc:uscSetiContactSel runat="server" ID="uscSetiContact" />
+                            </div>
+                            <usc:uscDynamicMetadataRest runat="server" ID="UscDynamicMetadataRest"></usc:uscDynamicMetadataRest>
                         </div>
                     </div>
                 </Content>
@@ -200,5 +240,5 @@
     <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="cphFooter">
-    <telerik:RadButton ID="btnConferma" runat="server" CausesValidation="true" Width="150px" Text="Conferma" />
+    <telerik:RadButton ID="btnConferma" runat="server" CausesValidation="true" AutoPostBack="false" Width="150px" Text="Conferma" />
 </asp:Content>

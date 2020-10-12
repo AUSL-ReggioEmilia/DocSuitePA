@@ -52,7 +52,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Tblt/Tb
             this._ddlJeepServiceIn = document.getElementById(this.ddlJeepServiceInId);
             this._ddlJeepServiceOut = document.getElementById(this.ddlJeepServiceOutId);
             this._ddlInvoiceType = document.getElementById(this.ddlInvoiceTypeId);
-            this._chkHumanEnabled = document.getElementById(this.chkHumanEnabledId);
+            this._chkLoginError = document.getElementById(this.chkLoginErrorId);
             this._rwPECMailBoxSettings = $find(this.rwPECMailBoxSettingsId);
             this._rwPECMailBoxSettings.add_show(this.rwPECMailBoxSettings_Show);
             this.loadDropdowns();
@@ -116,7 +116,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Tblt/Tb
                 _this._chkManaged.checked = pecMailBox.Managed;
                 _this._chkUnmanaged.checked = pecMailBox.Unmanaged;
                 _this._chkIsHandleEnabled.checked = pecMailBox.IsHandleEnabled;
-                _this._chkHumanEnabled.checked = pecMailBox.HumanEnabled;
+                _this._chkLoginError.checked = pecMailBox.LoginError;
                 _this._ddlLocation.options.selectedIndex =
                     _this.locations.findIndex(function (x) { return x.EntityShortId === pecMailBox.Location.EntityShortId; }) + 1;
                 _this._ddlINServerType.options.selectedIndex = 1 + pecMailBox.IncomingServerProtocol;
@@ -147,7 +147,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Tblt/Tb
             this._chkManaged.checked = false;
             this._chkUnmanaged.checked = false;
             this._chkIsHandleEnabled.checked = false;
-            this._chkHumanEnabled.checked = true;
+            this._chkLoginError.checked = true;
             this._ddlLocation.options.selectedIndex = 0;
             this._ddlINServerType.options.selectedIndex = 0;
             this._ddlProfileAdd.options.selectedIndex = 0;
@@ -186,7 +186,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Tblt/Tb
                     pecMailBoxModel.IdJeepServiceOutgoingHost = _this.jeepServiceHosts.length !== 0
                         ? _this.jeepServiceHosts[_this._ddlJeepServiceOut.options.selectedIndex].UniqueId
                         : "";
-                    pecMailBoxModel.HumanEnabled = _this._chkHumanEnabled.checked;
+                    pecMailBoxModel.LoginError = _this._chkLoginError.checked;
                     pecMailBoxModel.Location = _this.locations[_this._ddlLocation.options.selectedIndex - 1];
                     pecMailBoxModel.InvoiceType = _this._ddlInvoiceType.options[_this._ddlInvoiceType.selectedIndex].value;
                     _this.pecMailBoxService.updatePECMailBox(pecMailBoxModel, function (data) {
@@ -226,7 +226,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Tblt/Tb
                     IdJeepServiceOutgoingHost: this.jeepServiceHosts.length !== 0
                         ? this.jeepServiceHosts[this._ddlJeepServiceOut.options.selectedIndex].UniqueId
                         : "",
-                    HumanEnabled: this._chkHumanEnabled.checked,
+                    LoginError: this._chkLoginError.checked,
                     Location: this.locations[this._ddlLocation.selectedIndex],
                     InvoiceType: this._ddlInvoiceType.options[this._ddlInvoiceType.selectedIndex].value,
                     RulesetDefinition: "",

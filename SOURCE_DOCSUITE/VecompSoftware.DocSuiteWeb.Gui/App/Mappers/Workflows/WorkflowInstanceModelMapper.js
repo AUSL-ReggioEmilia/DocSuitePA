@@ -12,8 +12,9 @@ define(["require", "exports"], function (require, exports) {
             toMap.RegistrationUser = source.RegistrationUser;
             toMap.Name = source.WorkflowRepository.Name;
             toMap.Status = source.Status;
+            toMap.Subject = source.Subject;
             toMap.WorkflowActivitiesDoneCount = source.WorkflowActivities.filter(function (x) { return x.Status === "Done"; }).length;
-            toMap.HasActivitiesInError = source.WorkflowActivities.filter(function (x) { return x.Status === "Error"; }).length >= 0;
+            toMap.HasActivitiesInError = source.WorkflowActivities.filter(function (x) { return x.Status === "Error"; }).length > 0;
             toMap.HasActivitiesInErrorLabel = "";
             if (toMap.HasActivitiesInError && toMap.HasActivitiesInError === true) {
                 toMap.HasActivitiesInErrorLabel = "Errori presenti";

@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "Tblt/MetadataRepositoryBase", "App/Helpers/ServiceConfigurationHelper"], function (require, exports, MetadataRepositoryBase, ServiceConfigurationHelper) {
+define(["require", "exports", "Tblt/MetadataRepositoryBase", "App/Helpers/ServiceConfigurationHelper", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, MetadataRepositoryBase, ServiceConfigurationHelper, SessionStorageKeysHelper) {
     var TbltMetadataRepositoryDesigner = /** @class */ (function (_super) {
         __extends(TbltMetadataRepositoryDesigner, _super);
         /**
@@ -156,7 +156,7 @@ define(["require", "exports", "Tblt/MetadataRepositoryBase", "App/Helpers/Servic
          */
         TbltMetadataRepositoryDesigner.prototype.saveMetadataRepository = function (item) {
             if (this.isEditPage == true) {
-                item.UniqueId = sessionStorage.getItem("UniqueIdMetadataRepository");
+                item.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_UNIQUEID_METADATA_REPOSITORY);
                 this.updateRepositoryModel(item);
             }
             else {

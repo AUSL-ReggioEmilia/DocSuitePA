@@ -264,20 +264,6 @@
       <ParameterType xsi:nil="true" />
     </XmlParameter>
     <XmlParameter>
-      <Key>ComputerLogEnabled</Key>
-      <Value>0</Value>
-      <Group>Deprecated</Group>
-      <Description>
-        Abilita la gestione del Computer Log,
-        Obbligatoria per gestione Viewers
-      </Description>
-      <Note>Obbligatoria per gestione Viewers. Andrà tolta in quanto la gestione ComputerLog è diventata praticamente obbligatoria.</Note>
-      <Signature>ProtocolEnv.IsComputerLogEnabled</Signature>
-      <Container>false</Container>
-      <Customer />
-      <ParameterType xsi:nil="true" />
-    </XmlParameter>
-    <XmlParameter>
       <Key>ConservationDateFormat</Key>
       <Value>{0:dd/MM/yyyy}</Value>
       <Group>Conservazione di Protocollo</Group>
@@ -913,17 +899,6 @@
       <ParameterType xsi:nil="true" />
     </XmlParameter>
     <XmlParameter>
-      <Key>LogEnabled</Key>
-      <Value>0</Value>
-      <Group>Log</Group>
-      <Description>scrive il Log</Description>
-      <Note>utilizzata anche in metodo IsComputerLogEnabled</Note>
-      <Signature>ProtocolEnv.IsLogEnabled</Signature>
-      <Container>false</Container>
-      <Customer />
-      <ParameterType xsi:nil="true" />
-    </XmlParameter>
-    <XmlParameter>
       <Key>LogSecurity</Key>
       <Value>3</Value>
       <Group>Log</Group>
@@ -990,14 +965,6 @@
       <Description>Indica il numero minimo di caratteri del campo Oggetto.</Description>
       <Note>Se uguale a 0 non esegue il controllo.</Note>
       <Signature>ProtocolEnv.ObjectMinLength</Signature>
-      <Container>false</Container>
-      <Customer />
-      <ParameterType xsi:nil="true" />
-    </XmlParameter>
-    <XmlParameter>
-      <Key>OfficeRedirect</Key>
-      <Group>NON CLASSIFICATO</Group>
-      <Signature>ProtocolEnv.OfficeRedirect</Signature>
       <Container>false</Container>
       <Customer />
       <ParameterType xsi:nil="true" />
@@ -1503,16 +1470,6 @@
       <ParameterType xsi:nil="true" />
     </XmlParameter>
     <XmlParameter>
-      <Key>ThinClientxDefaultButton</Key>
-      <Value>8</Value>
-      <Group>Visualizzatori</Group>
-      <Description>vecchio visualizzatore: id bottone</Description>
-      <Signature>ProtocolEnv.ThinClientxDefaultButton</Signature>
-      <Container>false</Container>
-      <Customer />
-      <ParameterType xsi:nil="true" />
-    </XmlParameter>
-    <XmlParameter>
       <Key>ThinClientXMail</Key>
       <Value>1</Value>
       <Group>Visualizzatori</Group>
@@ -1576,16 +1533,6 @@
       <Value>{nome}@vecompsoftware.it</Value>
       <Group>Gestione Errori</Group>
       <Description>Indirizzo mail per avviso se il server di reinderizzazione è in errore</Description>
-      <Container>false</Container>
-      <Customer />
-      <ParameterType xsi:nil="true" />
-    </XmlParameter>
-    <XmlParameter>
-      <Key>UserLogEnabled</Key>
-      <Value>0</Value>
-      <Group>NON CLASSIFICATO</Group>
-      <Description>abilita\disabilita user Log</Description>
-      <Signature>ProtocolEnv.UserLogEnabled</Signature>
       <Container>false</Container>
       <Customer />
       <ParameterType xsi:nil="true" />
@@ -2798,7 +2745,6 @@
         8 - ProtocolliDaAccettare,
         9 - ProtocolliRespinti,
         10 - UltimePagineDaFirmare,
-        11 - RichiestaDematerializzazione,
         12 - ProtocolliDifatturaDaLeggere
         Esempio "0,2,3".
       </Note>
@@ -2989,17 +2935,6 @@
       <Description>Se attivo blocca l'invio della PEC nel caso in cui ci siano destinatari con mail normale.</Description>
       <Signature>ProtocolEnv.PECAddressDestinationCheck</Signature>
       <Version>7.2.10.3</Version>
-      <Container>false</Container>
-      <Customer />
-      <ParameterType xsi:nil="true" />
-    </XmlParameter>
-    <XmlParameter>
-      <Key>ModificaOggettiDisable</Key>
-      <Value>1</Value>
-      <Group>Moduli</Group>
-      <Description>Disabilita la funzionalità "Modifica oggetti".</Description>
-      <Signature>ProtocolEnv.ModificaOggettiDisable</Signature>
-      <Version>8.2.0</Version>
       <Container>false</Container>
       <Customer />
       <ParameterType xsi:nil="true" />
@@ -6902,66 +6837,27 @@
       <ParameterType>PropertyBoolean</ParameterType>
     </XmlParameter>
     <XmlParameter>
-      <Key>IP4DEnabled</Key>
-      <Value>False</Value>
-      <Group>IP4D</Group>
-      <Description>Abilita le funzionalità di IP4D per ***REMOVED***.</Description>
-      <Note>
-        [***REMOVED*** = True]
-        Se = true : attiva le funzionalità di IP4D.
-        Se = false : disabilita le funzionalità di IP4D.
-      </Note>
-      <Signature>ProtocolEnv.IP4DEnabled</Signature>
-      <Version>8.56</Version>
-      <Container>false</Container>
-      <Customer>***REMOVED***</Customer>
-      <ParameterType>PropertyBoolean</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
       <Key>ExternalViewerProtocolLink</Key>
       <Value></Value>
-      <Group>IP4D</Group>
-      <Description>Imposta il link al sommario di protocollo dell'External Viewer nel comando da inviare tramite Invia IP4D.</Description>
+      <Group>Workflow</Group>
+      <Description>Imposta il link al sommario di protocollo dell'External Viewer nel comando da inviare mediate l'uso dei workflow.</Description>
       <Note>
         [***REMOVED*** = Specificare il parametro]
-        Es. di configurazione: <![CDATA[<xmp>http://localhost/ExternalViewer/#/Protocollo/anno/{0}/numero/{1}</xmp>]]>
-        Tale parametro deve necessariamente essere specificato se attivo il parametro IP4DSendEnabled.
+        Es. di configurazione: <![CDATA[<xmp>http://docsuite/ExternalViewer/#/Protocollo/anno/{0}/numero/{1}</xmp>]]>
+
         Il link verrà impostato nel corpo del messaggio spedito tramite SB.
         N.B. Modificare il valore del link http://localhost/ExternalViewer con l'indirizzo dell'External Viewer installato da cliente.
       </Note>
       <Signature>ProtocolEnv.ExternalViewerProtocolLink</Signature>
       <Version>8.56</Version>
       <Container>false</Container>
-      <Customer>***REMOVED***</Customer>
+      <Customer>TUTTI</Customer>
       <ParameterType>PropertyString</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
-      <Key>IP4DGroups</Key>
-      <Value></Value>
-      <Group>IP4D</Group>
-      <Description>Restringe la ricerca degli utenti in AD in Invia IP4D solo in specificati gruppi di dominio.</Description>
-      <Note>
-        [***REMOVED*** = Specificare il parametro]
-        Il parametro deve contenere tutti i gruppi nei quali è possibile ricercare l'utente e deve avere la struttura seguente (nel formato Distinguished Name di ldap):
-        "[
-        "CN=DSW_Lazzarotto,OU=DocSuiteWeb,OU=vecompsoftware,DC=vecompsoftware,DC=local",
-        "CN=DSW_DalCorso,OU=DocSuiteWeb,OU=vecompsoftware,DC=vecompsoftware,DC=local",
-        ... ecc
-        ]"
-        Tale parametro deve necessariamente essere specificato se attivo il parametro IP4DSendEnabled.
-        NB: Attenzione che il parametro dipende dalla configurazione del parametro BasicPersonSearcherKey.
-        Se la query LDAP non funziona verificare se la sintassi è compatibile con la query prodotta.
-      </Note>
-      <Signature>ProtocolEnv.IP4DGroups</Signature>
-      <Version>8.56</Version>
-      <Container>false</Container>
-      <Customer>***REMOVED***</Customer>
-      <ParameterType>Json</ParameterType>
     </XmlParameter>
     <XmlParameter>
       <Key>WorkflowManagerEnabled</Key>
       <Value>False</Value>
-      <Group>Gruppi</Group>
+      <Group>Workflow</Group>
       <Description>Permette,di rendere visibile il Modulo Workflow </Description>
       <Note>
         [***REMOVED*** = True]
@@ -7775,7 +7671,7 @@
       <Key>FascicleAuthorizedRoleCaption</Key>
       <Value></Value>
       <Group>Fascicle</Group>
-      <Description> Definisce il titolo del pannello dei Settori con Autorizzazioni nei Fascicoli.</Description>
+      <Description> Definisce il titolo del pannello dei Settori con autorizzazioni nei Fascicoli.</Description>
       <Note>
         [AUSL-RE]
         Da configurare con il titolo richiesto dal cliente.
@@ -7815,22 +7711,6 @@
       </Note>
       <Signature>ProtocolEnv.ForceDescendingOrderElements</Signature>
       <Version>8.66</Version>
-      <Container>false</Container>
-      <Customer>AUSL-RE</Customer>
-      <ParameterType>PropertyBoolean</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
-      <Key>DematerialisationEnabled</Key>
-      <Value>False</Value>
-      <Group>Protocol</Group>
-      <Description>Abilita la funzionalità della dematerializzazione dei documenti</Description>
-      <Note>
-        [AUSL-RE = true]
-        Se = true : Abilita la funzionalità della dematerializzazione dei documenti.
-        Se = false : Non abilita la funzionalità della dematerializzazione dei documenti.
-      </Note>
-      <Signature>ProtocolEnv.DematerialisationEnabled</Signature>
-      <Version>8.67</Version>
       <Container>false</Container>
       <Customer>AUSL-RE</Customer>
       <ParameterType>PropertyBoolean</ParameterType>
@@ -7973,22 +7853,6 @@
       <ParameterType>PropertyBoolean</ParameterType>
     </XmlParameter>
     <XmlParameter>
-      <Key>SecureDocumentEnabled</Key>
-      <Value>False</Value>
-      <Group>Business Logic</Group>
-      <Description>Abilita la securizzazione dei documenti tramite integrazione con servizi DOU/SecurePaper(Land)</Description>
-      <Note>
-        [Tutti i clienti che utilizzano l'integrazione con servizi DOU/SecurePaper(Land) = True]
-        Se SecureDocumentEnabled= True viene abilitata la possibilità di definire per ogni contenitore la gestione di securizzazione dei documenti.
-        Se SecureDocumentEnabled= False le funzionalità relative all'integrazione non vengono abilitate.
-      </Note>
-      <Signature>ProtocolEnv.SecureDocumentEnabled</Signature>
-      <Version>8.70</Version>
-      <Container>false</Container>
-      <Customer>AGENAS</Customer>
-      <ParameterType>PropertyBoolean</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
       <Key>PasswordEncryptionKey</Key>
       <Value></Value>
       <Group>Business Logic</Group>
@@ -8034,37 +7898,6 @@
       <ParameterType>PropertyBoolean</ParameterType>
     </XmlParameter>
     <XmlParameter>
-      <Key>SecureDocumentGroups</Key>
-      <Value></Value>
-      <Group>Gruppi</Group>
-      <Description>Definisce i gruppi di utenti responsabili della securizzazione dei documenti di protocollo.</Description>
-      <Note>
-        [Tutti i clienti che utilizzano l'integrazione con servizi DOU/SecurePaper(Land)] = Lista di gruppi utente (o ID SecurityGroup se abilitata) separati da |.
-        N.B. Il parametro è gestito solo se SecureDocumentEnabled = True
-      </Note>
-      <Signature>ProtocolEnv.SecureDocumentGroups</Signature>
-      <Version>8.70</Version>
-      <Container>false</Container>
-      <Customer>AGENAS</Customer>
-      <ParameterType>PropertyString</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
-      <Key>SecureDocumentSignatureEnabled</Key>
-      <Value>False</Value>
-      <Group>Business Logic</Group>
-      <Description>Definisce se i documenti PDF che devono essere inviati alla securizzazione devono presentare la signature del Protocollo.</Description>
-      <Note>
-        [Tutti i clienti che utilizzano l'integrazione con servizi DOU/SecurePaper(Land)]
-        Se SecureDocumentSignatureEnabled = True al documento PDF da spedire al servizio DOU/SecurePaper per la securizzazione deve essere aggiunta la signature del Protocollo.
-        Se SecureDocumentSignatureEnabled = False verrà spedito il documento PDF senza signature del Protocollo.
-      </Note>
-      <Signature>ProtocolEnv.SecureDocumentSignatureEnabled</Signature>
-      <Version>8.70</Version>
-      <Container>false</Container>
-      <Customer>AGENAS</Customer>
-      <ParameterType>PropertyBoolean</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
       <Key>MailUploadProtRecipientsEnabled</Key>
       <Value>False</Value>
       <Group>Protocollo</Group>
@@ -8079,30 +7912,6 @@
       <Container>false</Container>
       <Customer>AUSL-RE</Customer>
       <ParameterType>PropertyBoolean</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
-      <Key>SecureDocumentVisibilities</Key>
-      <Value></Value>
-      <Group>Business Logic</Group>
-      <Description>Definisce per quali pagine di inserimento abilitare la funzionalità di securizzazione documento (solo servizio DOU(Land)).</Description>
-      <Note>
-        Indicare i moduli e le catene documentali dove abilitare la securizzazione del documento secondo la struttura json:
-        [
-        {
-        "Name": "Collaboration",
-        "VisibilityChains": {
-        "MainChain": false,
-        "AttachmentsChain": false,
-        "AnnexedChain": false
-        }
-        }
-        ]
-      </Note>
-      <Signature>ProtocolEnv.SecureDocumentVisibilities</Signature>
-      <Version>8.70</Version>
-      <Container>false</Container>
-      <Customer>AGENAS</Customer>
-      <ParameterType>Json</ParameterType>
     </XmlParameter>
     <XmlParameter>
       <Key>PECInsertDocumentSizeEvaluationEnabled</Key>
@@ -8192,90 +8001,6 @@
       <Version>8.73</Version>
       <Container>false</Container>
       <Customer>AUSL-RE</Customer>
-      <ParameterType>PropertyString</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
-      <Key>DefaultDematerialisationSigner</Key>
-      <Value></Value>
-      <Group>Contenitori</Group>
-      <Description>Utente firmatario di default dell'attestazione di conformità</Description>
-      <Note>
-        [AUSL-PC = FullUserName del firmatario di default]
-
-        Questo comportamento si attiva solo con parametro DematerialisationEnabled = True.
-        Esempio: VECOMPSOFTWARE\Fabrizio.Lazzarotto
-      </Note>
-      <Signature>ContainerEnv.DefaultDematerialisationSigner</Signature>
-      <Version>8.73</Version>
-      <Container>true</Container>
-      <Customer>AUSL-PC</Customer>
-      <ParameterType>PropertyString</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
-      <Key>SecureDocumentWorkflowStatementVisibility</Key>
-      <Value></Value>
-      <Group>Business Logic</Group>
-      <Description>Indica quali flussi di lavoro relativi alla securizzazione dei documenti (DOU/SecurePaper) è possibile gestire.</Description>
-      <Note>
-        [Tutti i clienti che utilizzano l'integrazione con servizi DOU/SecurePaper(Land). Specificare quali flussi di lavoro abilitare per il cliente in base al modello seguente.]
-        {
-        "DOU": true,
-        "SecurePaper": true
-        }
-
-        DOU: Abilita il flusso di lavoro relativo alla securizzazione dei documenti.
-        SecurePaper: Abilita il flusso di lavoro relativo al contrassegno stampa sui documenti.
-      </Note>
-      <Signature>ProtocolEnv.SecureDocumentWorkflowStatementVisibility</Signature>
-      <Version>8.73</Version>
-      <Container>false</Container>
-      <Customer>AGENAS</Customer>
-      <ParameterType>Json</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
-      <Key>SecurePaperServiceId</Key>
-      <Value></Value>
-      <Group>Business Logic</Group>
-      <Description>Definisce l'ID da utilizzare per la comunicazione con il servizio SecurePaper di Land per l'apposizione del contrassegno a stampa.</Description>
-      <Note>
-        [Tutti i clienti che utilizzano l'integrazione con il servizio SecurePaper(Land)]
-
-        L'ID è specifico per singolo cliente e viene rilasciato da Land.
-      </Note>
-      <Signature>ProtocolEnv.SecurePaperServiceId</Signature>
-      <Version>8.73</Version>
-      <Customer>AGENAS</Customer>
-      <ParameterType>PropertyInt</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
-      <Key>SecurePaperCertificateThumbprint</Key>
-      <Value></Value>
-      <Group>Business Logic</Group>
-      <Description>Definisce il thumbprint del certificato da utilizzare nella comunicazione con il servizio SecurePaper di Land per l'apposizione del contrassegno a stampa.</Description>
-      <Note>
-        [Tutti i clienti che utilizzano l'integrazione con il servizio SecurePaper(Land)]
-
-        Dalla console di gestione certificati (MMC) copiare i caratteri esadecimali relativi al certificato specifico mantenendo gli spazi.
-        Rif. <![CDATA[<xmp>https://docs.microsoft.com/it-it/dotnet/framework/wcf/feature-details/how-to-retrieve-the-thumbprint-of-a-certificate</xmp>]]>
-      </Note>
-      <Signature>ProtocolEnv.SecurePaperCertificateThumbprint</Signature>
-      <Version>8.73</Version>
-      <Customer>AGENAS</Customer>
-      <ParameterType>PropertyString</ParameterType>
-    </XmlParameter>
-    <XmlParameter>
-      <Key>SecurePaperServiceUrl</Key>
-      <Value></Value>
-      <Group>Business Logic</Group>
-      <Description>Definisce l'indirizzo di comunicazione con il servizio SecurePaper di Land.</Description>
-      <Note>
-        [Tutti i clienti che utilizzano l'integrazione con il servizio SecurePaper(Land)]
-
-        Es. <![CDATA[<xmp>http://dgroove.coll.securepaper.it:8080/sp/services/SP</xmp>]]>
-      </Note>
-      <Signature>ProtocolEnv.SecurePaperServiceUrl</Signature>
-      <Version>8.73</Version>
-      <Customer>AGENAS</Customer>
       <ParameterType>PropertyString</ParameterType>
     </XmlParameter>
     <XmlParameter>
@@ -8754,14 +8479,13 @@
     </XmlParameter>
     <XmlParameter>
       <Key>MultiTenantEnabled</Key>
-      <Value>False</Value>
+      <Value>True</Value>
       <Group>MultiTenant</Group>
-      <Description>Abilita la gestione multi aziende/MultiTenant</Description>
+      <Description>Abilita la gestione multi AOO</Description>
       <Note>
-        [CTT = True]
-        Attivare solo se richiesto dal cliente.
-        Se MultiTenantEnabled = True abilita la gestione multi azienda / multitenant
-        Se MultiTenantEnabled = False rimane l'attuale gestione singola azienda
+        [TUTTI = True]
+        Se MultiTenantEnabled = True abilita la gestione multi AOO
+        Se MultiTenantEnabled = False rimane l'attuale gestione singola AOO
       </Note>
       <Signature>ProtocolEnv.MultiTenantEnabled</Signature>
       <Version>8.78</Version>
@@ -8981,19 +8705,16 @@
       <ParameterType>PropertyString</ParameterType>
     </XmlParameter>
     <XmlParameter>
-      <Key>CurrentUserEMailSenderEnabled</Key>
+      <Key>EmailSenderDescriptionEnabled</Key>
       <Value>true</Value>
       <Group>Protocollo</Group>
-      <Description>Determina se il mittente della Email è l'utente corrente o se viene anonimizzato prelevandono dal paramertro di ProtPecSendSender</Description>
+      <Description>Determina se riportare la "descrizione/denominazione" dell'indirizzo mittente</Description>
       <Note>
         [AGENAS = 0]
-        Se = true : la funzionalità rimane invariata, impostanto la email dell'utente corrente
-        Se = false : il mittente viene anonimizzato prelevando l'indirizzo dal paramertro di ProtPecSendSender
-
-        NB: Se si imposta a false il paramertro è necessario configurare il parametro ProtPecSendSender con l'indirizzo mittente che si desidera visualizzare.
-        Doversamente non consentirà una corretta gestione del comportamento bloccando tutte le e-mail di DocSuite.
+        Se = true : la funzionalità rimane invariata, impostanto la descrizione (denominazione) dell'indirizzo dell'utente corrente
+        Se = false : la descrizione dell'utente corrente non viene riporta prima dell'indirizzo email, anonimizzando l'invio email.
       </Note>
-      <Signature>ProtocolEnv.CurrentUserEMailSenderEnabled</Signature>
+      <Signature>ProtocolEnv.EmailSenderDescriptionEnabled</Signature>
       <Version>8.84</Version>
       <Container>false</Container>
       <Customer>TUTTI</Customer>
@@ -9236,6 +8957,7 @@
         Se = false : il comportamento sui fascicoli rimane invariato
 
         NB: il modulo funziona correttmente se FascicleEnabled = true, DossierEnabled = true, PraticheEnabled = false
+        NB: il modulo non può essere attivato se FascicleContainerEnabled = true
       </Note>
       <Signature>ProtocolEnv.ProcessEnabled</Signature>
       <Version>8.86</Version>
@@ -9433,6 +9155,543 @@
       <Container>false</Container>
       <Customer>AUSL-PC</Customer>
       <ParameterType>Json</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PECFisicalDeleteGroups</Key>
+      <Value></Value>
+      <Group>PEC</Group>
+      <Description>Definisce i gruppi (separati da pipe, gli id per SecurityGroups) abilitati all'eliminazione fisica delle PEC.</Description>
+      <Note>
+        [***REMOVED***] = I valori da inserire nel parametro sono da concordare con il SEC di ***REMOVED***
+      </Note>
+      <Signature>ProtocolEnv.PECFisicalDeleteGroups</Signature>
+      <Version>8.88</Version>
+      <Container>false</Container>
+      <Customer>***REMOVED***</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>RemovePECEnabledInPECMailBoxIds</Key>
+      <Value>""</Value>
+      <Group>PEC</Group>
+      <Description>Specificare id delle caselle PEC (PECMailBox) al quale abilitare l'eliminazione fisica delle PEC</Description>
+      <Note>
+        [***REMOVED***] = Lista degli id dei PECMailBox separati da |.
+      </Note>
+      <Signature>ProtocolEnv.RemovePECEnabledInPECMailBoxIds</Signature>
+      <Version>8.88</Version>
+      <Container>false</Container>
+      <Customer>***REMOVED***</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>RemoteSignDelegateEnabled</Key>
+      <Value>False</Value>
+      <Group>Collaborazione</Group>
+      <Description>Permettere la firma delle collaborazioni agli utenti delegati senza la necessità di effettuare il cambio responsabile</Description>
+      <Note>
+        [CTT = true]
+        Se RemoteSignDelegateEnabled = True Permettere la firma delle collaborazioni agli utenti delegati senza la necessità di effettuare il cambio responsabile
+        Se RemoteSignDelegateEnabled = False il comportamento rimane quello attuale
+      </Note>
+      <Signature>ProtocolEnv.RemoteSignDelegateEnabled</Signature>
+      <Version>8.88</Version>
+      <Container>false</Container>
+      <Customer>CTT</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ProtocolPrintEnabled</Key>
+      <Value>False</Value>
+      <Group>Stampe</Group>
+      <Description>Visualizza il sotto menu Stampe nel menu di protocollo</Description>
+      <Note>
+        [SM = false]
+        Se ProtocolPrintEnabled = True Il Visualizza il sotto menu Stampe nel menu di protocollo
+        Se ProtocolPrintEnabled = False Nasconde il sotto menu Stampe nel menu di protocollo
+      </Note>
+      <Signature>ProtocolEnv.ProtocolPrintEnabled</Signature>
+      <Version>9.00</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>TenantAOOJournalLocations</Key>
+      <Value></Value>
+      <Group>Protocollo</Group>
+      <Description>Definisce per ogni TenantAOO creata la relativa Location da utilizzare per il salvataggio dei registri di Protocollo.</Description>
+      <Note>
+        [TUTTI = impostare per ogni TenantAOO la relativa location]
+        Es. di configurazione
+        {
+        "ff2efa82-4ea3-471e-af22-f784bbf09c25": 40
+        }
+      </Note>
+      <Signature>ProtocolEnv.TenantAOOJournalLocations</Signature>
+      <Version>9.00</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>Json</ParameterType>
+      <ParameterType>PropertyJson</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ShibbolethEnabled</Key>
+      <Value>False</Value>
+      <Group>Autenticazione</Group>
+      <Description>Definisce se deve essere utilizzato Shibboleth come IDP per l'autenticazione dell'utente</Description>
+      <Note>
+        [SM = true]
+        Se ShibbolethEnabled = True L'autenticazione dell'utente passa tramite Shibboleth e non tramite la Windows autentication
+        Se ShibbolethEnabled = False L'autenticazione utilizza Windows authentication
+      </Note>
+      <Signature>ProtocolEnv.ShibbolethEnabled</Signature>
+      <Version>9.01</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ProcessesViewsReadableGroups</Key>
+      <Value></Value>
+      <Group>Gruppi</Group>
+      <Description>Definisce i gruppi di utenti che possono visualizzare i processi.</Description>
+      <Note>
+        [SM] = Lista di gruppi utente (o ID SecurityGroup se abilitata) separati da |.
+      </Note>
+      <Signature>ProtocolEnv.ProcessesViewsReadableGroups</Signature>
+      <Version>9.01</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ProcessesViewsManageableGroups</Key>
+      <Value></Value>
+      <Group>Gruppi</Group>
+      <Description>Definisce i gruppi di utenti che possono gestire i processi.</Description>
+      <Note>
+        [SM] = Lista di gruppi utente (o ID SecurityGroup se abilitata) separati da |.
+      </Note>
+      <Signature>ProtocolEnv.ProcessesViewsManageableGroups</Signature>
+      <Version>9.01</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>InvoiceDashboardFilterByTenantEnabled</Key>
+      <Value>False</Value>
+      <Group>Fatture</Group>
+      <Description>Definisce se il caricamento degli archivi nelle viste di fatturazione elettronica debba tener conto della AOO corrente dell'utente</Description>
+      <Note>
+        [CTT = true]
+        Se InvoiceDashboardFilterByTenantEnabled = True Il caricamento degli archivi nelle viste di fatturazione elettronica terrà conto della AOO corrente dell'utente
+        Se InvoiceDashboardFilterByTenantEnabled = False Verranno caricati tutti gli archivi di tipologia fatturazione elettronica
+      </Note>
+      <Signature>ProtocolEnv.InvoiceDashboardFilterByTenantEnabled</Signature>
+      <Version>9.01</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>InsertDefaultBodySignEmailEnabled</Key>
+      <Value>False</Value>
+      <Group>Protocollo</Group>
+      <Description>Abilita la visione del buttone per l'inserimento di una firma in un messaggio.</Description>
+      <Note>
+        [CNCDL] = True.
+        Se = true : Abilita la visione del buttone per l'inserimento di una firma in un messaggio.
+        Se = false : NON verra' la visione del buttone per l'inserimento di una firma in un messaggio.
+        Attenzione! dopo l'abilitazione del bottone occorre configurare la firma nel parametro DefaultPECBodyContent
+      </Note>
+      <Signature>ProtocolEnv.InsertDefaultBodySignEmailEnabled</Signature>
+      <Version>9.01</Version>
+      <Container>false</Container>
+      <Customer>CNCDL</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SendEmailProtocolHighlightRemovedEnabled</Key>
+      <Value>False</Value>
+      <Group>Protocollo</Group>
+      <Description>Abilita la trasmissione di una mail in seguito alla rimozione dell'evidenza di un protocollo.</Description>
+      <Note>
+        [CNCDL] = True.
+        Se true : Verra' mandata la mail in seguito alla rimozione dell'evidenza di un protocollo.
+        Se false : NON verra' mandata la mail in seguito alla rimozione dell'evidenza di un protocollo.
+        Attenzione! dopo l'abilitazione del bottone occorre configurare la firma nel parametro DefaultPECBodyContent
+      </Note>
+      <Signature>ProtocolEnv.SendEmailProtocolHighlightRemovedEnabled</Signature>
+      <Version>9.01</Version>
+      <Container>false</Container>
+      <Customer>CNCDL</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SendEmailProtocolHighlightEmailContent</Key>
+      <Value>""</Value>
+      <Group>Protocollo</Group>
+      <Description>Contenuto del messaggio della mail che viene mandata, se abilitato il parametro SendEmailProtocolHighlightRemovedEnabled.</Description>
+      <Note></Note>
+      <Signature>ProtocolEnv.SendEmailProtocolHighlightEmailContent</Signature>
+      <Version>9.01</Version>
+      <Container>false</Container>
+      <Customer>CNCDL</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ForceCollaborationSignDateEnabled</Key>
+      <Value>False</Value>
+      <Group>Collaborazione</Group>
+      <Description>
+        Forza il settaggio del campo 'signdate' anche per le firme semplici (visto a procedere)
+        e memorizza lo stato delle firme come attributo (json model) in tutti i documento della collaborazione
+      </Description>
+      <Note>
+        [AGENAS = true]
+        Se ForceCollaborationSignDateEnabled = True il campo 'signdate' viene valorizzato anche per le firme semplici (visto a procedere)
+        Se ForceCollaborationSignDateEnabled = False il comportamento rimane l'attuale
+      </Note>
+      <Signature>ProtocolEnv.ForceCollaborationSignDateEnabled</Signature>
+      <Version>9.01</Version>
+      <Container>false</Container>
+      <Customer>AGENAS</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AnagraficaAUSUrl</Key>
+      <Value>http://ds-aus.pa.cis:8080/aus/soggetti</Value>
+      <Group>Protocollo</Group>
+      <Description>URL da servizi di anagrafica AUS</Description>
+      <Note></Note>
+      <Signature>ProtocolEnv.AnagraficaAUSUrl</Signature>
+      <Version>9.02</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AUSIntegrationEnabled</Key>
+      <Value>False</Value>
+      <Group>Protocollo</Group>
+      <Description>Abilita l'integrazione di AUS</Description>
+      <Note>
+        [SM = true]
+        Se AUSIntegrationEnabled = True la rubrica IPA si disattiva in favore della integrazione AUS di San Marino
+        Se AUSIntegrationEnabled = False il comportamento rimane l'attuale
+      </Note>
+      <Signature>ProtocolEnv.AUSIntegrationEnabled</Signature>
+      <Version>9.02</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AUSUser</Key>
+      <Value>dgroove</Value>
+      <Group>Protocollo</Group>
+      <Description>Utente integrazione AUS</Description>
+      <Note>Utente dei servizi WS per integrazione AUS</Note>
+      <Signature>ProtocolEnv.AUSUser</Signature>
+      <Version>9.02</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AUSPassword</Key>
+      <Value>aster001</Value>
+      <Group>Protocollo</Group>
+      <Description>Password integrazione AUS</Description>
+      <Note>Password dei servizi WS per integrazione AUS</Note>
+      <Signature>ProtocolEnv.AUSPassword</Signature>
+      <Version>9.02</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>FulltextEnabled</Key>
+      <Value>False</Value>
+      <Group>Protocollo</Group>
+      <Description>Abilita la una nuova sezione di ricerca Fulltext.</Description>
+      <Note>
+        [SM = true]
+        Se FulltextEnabled = True mostra una nuova sezione "di ricerca".
+        Se FulltextEnabled = False la nuova sezione di ricerca è visibile
+      </Note>
+      <Signature>ProtocolEnv.FulltextEnabled</Signature>
+      <Version>9.02</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ContactAOOParentId</Key>
+      <Value>-1</Value>
+      <Group>Protocollo</Group>
+      <Description>Nodo speciale in sola lettura per la gestione dei contatti "MULTI-AOO"</Description>
+      <Note>
+        Nodo speciale in sola lettura per la gestione dei contatti "MULTI-AOO".
+        Il nodo ospiterà i contatti distribuiti dalla nuova APP Angular 'ManagementAOO'
+      </Note>
+      <Signature>ProtocolEnv.ContactAOOParentId</Signature>
+      <Version>9.02</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyInt</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SecurityGroupAutogenerateEnabled</Key>
+      <Value>False</Value>
+      <Group>Protocollo</Group>
+      <Description>Abilita la possibilità di creare automaticamente gruppi di sicurezza dei ruoli</Description>
+      <Note>
+        [SM = true]
+        Se SecurityGroupAutogenerateEnabled = True durante la creazione dei settori, crea automaticamente i SecurityGroups e RoleGroups
+        Se SecurityGroupAutogenerateEnabled = False la funzionalità rimane invariata
+      </Note>
+      <Signature>ProtocolEnv.SecurityGroupAutogenerateEnabled</Signature>
+      <Version>9.02</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SignatureTemplate</Key>
+      <Value>
+        &#x3C;Label&#x3E;
+        &#x3C;Text&#x3E;(SIGNATURE) Pagina (pagina) di (pagine)&#x3C;/Text&#x3E;
+        &#x3C;Font Face=&#x22;Arial&#x22; Size=&#x22;10&#x22; Style=&#x22;Bold&#x22; /&#x3E;
+        &#x3C;/Label&#x3E;
+      </Value>
+      <Group>Protocollo</Group>
+      <Description>Template XML della segnatura di protocollo (ex SignatureTemplate.xml)</Description>
+      <Note>
+        [TUTTI]
+        Questo parametro sostitusice e accentra la gestione del file SignatureTemplate.xml contenuto dentro la cartella config
+      </Note>
+      <Signature>ProtocolEnv.SignatureTemplate</Signature>
+      <Version>9.03</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SETIIntegrationEnabled</Key>
+      <Value>False</Value>
+      <Group>Protocollo</Group>
+      <Description>Abilita l'integrazione di AnAs</Description>
+      <Note>
+        Se SETIIntegrationEnabled = True mostra una nuova sezione "di ricerca".
+        Se SETIIntegrationEnabled = False la nuova sezione di ricerca è visibile
+      </Note>
+      <Signature>ProtocolEnv.SETIIntegrationEnabled</Signature>
+      <Version>9.03</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>AnagraficaAnAsUrl</Key>
+      <Value>http://api.ausl.pc.it/anas/v1/ascon</Value>
+      <Group>Protocollo</Group>
+      <Description>URL deu servizi web di anagrafica AnAs</Description>
+      <Note>
+        URL dei servizi web di anagrafica AnAs
+      </Note>
+      <Signature>ProtocolEnv.AnagraficaAnAsUrl</Signature>
+      <Version>9.03</Version>
+      <Container>false</Container>
+      <Customer>AUSL-PC</Customer>
+      <ParameterType>PropertyString</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ContactRoleGenerateEnabled</Key>
+      <Value>False</Value>
+      <Group>Protocollo</Group>
+      <Description>Abilita la generazione automatica del contatto di rubrica di settore.</Description>
+      <Note>
+        [SM = true] Funziona corretamente se InnerContactRoot è valorizzato
+        Se ContactRoleGenerateEnabled = True mostra una nuova sezione "di ricerca".
+        Se ContactRoleGenerateEnabled = False la nuova sezione di ricerca è visibile
+
+        NB: per una corretta gestione è necessario abilitare il parametro "SOLO SU CLIENTI NUOVI PRIMA DI CONFIGURARE I SETTORI".
+      </Note>
+      <Signature>ProtocolEnv.ContactRoleGenerateEnabled</Signature>
+      <Version>9.03</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CollaborationTemplateRequired</Key>
+      <Value>False</Value>
+      <Group>Collaborazione</Group>
+      <Description>Specifica l'obbligatorietà di selezione della tipologia di documento specifico in inserimento di collaborazione.</Description>
+      <Note>
+        [ENEA = true]
+        Se CollaborationTemplateRequired = True la tipologia di documento specifico sarà sempre essere visibile e obbligatoria.
+        Se CollaborationTemplateRequired = False  il comportamento rimane invariato.
+      </Note>
+      <Signature>ProtocolEnv.CollaborationTemplateRequired</Signature>
+      <Version>9.03</Version>
+      <Container>false</Container>
+      <Customer>ENEA</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CollaborationProposerAsSignerEnabled</Key>
+      <Value>False</Value>
+      <Group>Collaborazione</Group>
+      <Description>In fase di inserimento imposta come primo firmatario il proponente della collaborazione ed esegue automaticamente l'avanzamento al successivo firmatario.</Description>
+      <Note>
+        [ENEA = true]
+        Se CollaborationProposerAsSignerEnabled = True il proponente viene inserito come primo firmatario e viene eseguito automaticamente l'avanzamento al successivo firmatario.
+        Se CollaborationProposerAsSignerEnabled = False  il comportamento rimane invariato.
+      </Note>
+      <Signature>ProtocolEnv.CollaborationProposerAsSignerEnabled</Signature>
+      <Version>9.03</Version>
+      <Container>false</Container>
+      <Customer>ENEA</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MenuRightEnabled</Key>
+      <Value>False</Value>
+      <Group>Menu</Group>
+      <Description>Adatta le voci di menu in funzione dei diritti dell'utente corrente.</Description>
+      <Note>
+        [ENEA = true]
+        Se MenuRightEnabled = True adatta le voci di menu in funzione dei diritti dell'utente corrente.
+        Se MenuRightEnabled = False il comportamento rimane invariato.
+      </Note>
+      <Signature>ProtocolEnv.MenuRightEnabled</Signature>
+      <Version>9.03</Version>
+      <Container>false</Container>
+      <Customer>ENEA</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MassiveChangeProtocolContainerEnabled</Key>
+      <Value>False</Value>
+      <Group>Protocollo</Group>
+      <Description>Consente all'utente corrente di modificare il contenitore per più protocolli.</Description>
+      <Note>
+        Se MassiveChangeProtocolContainerEnabled = True Visualizza il pulsante Modifica contenitore nei risultati della ricerca del protocollo
+        Se MassiveChangeProtocolContainerEnabled = False il comportamento rimane invariato.
+      </Note>
+      <Signature>ProtocolEnv.MassiveChangeProtocolContainerEnabled</Signature>
+      <Version>9.05</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CollaborationMultiSignDocumentsDefaultFlagged</Key>
+      <Value>False</Value>
+      <Group>Collaborazione</Group>
+      <Description>Forza la selezione di default di tutti i documenti, allegati e annessi nella pagina di firma multipla.</Description>
+      <Note>
+        [ASL-TO = true]
+        Se CollaborationMultiSignDocumentsDefaultFlagged = True tutti i documenti, allegati e annessi delle collaborazioni da firmare saranno selezionati di default.
+        Se CollaborationMultiSignDocumentsDefaultFlagged = False il comportamento rimane invariato.
+      </Note>
+      <Signature>ProtocolEnv.CollaborationMultiSignDocumentsDefaultFlagged</Signature>
+      <Version>9.06</Version>
+      <Container>false</Container>
+      <Customer>ASL-TO</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>FascicleAutoCloseThresholdDays</Key>
+      <Value>60</Value>
+      <Group>Fascicolo</Group>
+      <Description></Description>
+      <Note></Note>
+      <Signature>ProtocolEnv.FascicleAutoCloseThresholdDays</Signature>
+      <Version>9.06</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>PropertyInt</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>FascicleAutoCloseWarningThresholdDays</Key>
+      <Value>30</Value>
+      <Group>Fascicolo</Group>
+      <Description></Description>
+      <Note></Note>
+      <Signature>ProtocolEnv.FascicleAutoCloseWarningThresholdDays</Signature>
+      <Version>9.06</Version>
+      <Container>false</Container>
+      <Customer>TUTTI</Customer>
+      <ParameterType>PropertyInt</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MultiAOOFascicleEnabled</Key>
+      <Value>False</Value>
+      <Group>Fascicolo</Group>
+      <Description>Visualizza tutti i documenti di diverse AOO presenti all'interno dello stesso fascicolo.</Description>
+      <Note>
+        [SM= true]
+        Se MultiAOOFascicleEnabled = True Visualizza tutti i documenti di diverse AOO presenti all'interno dello stesso fascicolo..
+        Se MultiAOOFascicleEnabled = False il comportamento rimane invariato.
+      </Note>
+      <Signature>ProtocolEnv.MultiAOOFascicleEnabled</Signature>
+      <Version>9.07</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WorkflowStateSummaryEnabled</Key>
+      <Value>false</Value>
+      <Group>Workflow</Group>
+      <Description>Visualizza nello pannello generico "collegamenti" l'elenco degli stati del workflow.</Description>
+      <Note>
+        [AGENAS = true, SM = true]
+        Se WorkflowStateSummaryEnabled = True Visualizza nello pannello generico "collegamenti" l'elenco degli stati del workflow.
+        Se WorkflowStateSummaryEnabled = False il comportamento rimane invariato.
+      </Note>
+      <Signature>ProtocolEnv.WorkflowStateInReferenceEnabled</Signature>
+      <Version>9.09</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DossierSendToSecretariesEnabled</Key>
+      <Value>false</Value>
+      <Group>Dossier</Group>
+      <Description>Visualizza nello sommario di dossier il pulsante "Invia alle segreterie".</Description>
+      <Note>
+        [SM = true]
+        Se DossierSendToSecretariesEnabled = True Visualizza nello sommario di dossier il pulsante "Invia alle segreterie".
+        Se DossierSendToSecretariesEnabled = False il comportamento rimane invariato.
+      </Note>
+      <Signature>ProtocolEnv.DossierSendToSecretariesEnabled</Signature>
+      <Version>9.09</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DossierTypologyEnabled</Key>
+      <Value>false</Value>
+      <Group>Dossier</Group>
+      <Description>Abilita la gestione della tipologia di Dossier</Description>
+      <Note>
+        [SM = true]
+        Se DossierTypologyEnabled = True Abilita la gestione della tipologia di Dossier.
+        Se DossierTypologyEnabled = False il comportamento rimane invariato.
+      </Note>
+      <Signature>ProtocolEnv.DossierTypologyEnabled</Signature>
+      <Version>9.09</Version>
+      <Container>false</Container>
+      <Customer>SM</Customer>
+      <ParameterType>PropertyBoolean</ParameterType>
     </XmlParameter>
   </Parameters>
 </XmlEnvironment>

@@ -41,7 +41,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
 
             if (ExpandProperties)
             {
-                odataQuery = odataQuery.Expand("DocumentUnit");
+                odataQuery = odataQuery.Expand("DocumentUnit($expand=UDSRepository)");
             }
             return odataQuery;
         }

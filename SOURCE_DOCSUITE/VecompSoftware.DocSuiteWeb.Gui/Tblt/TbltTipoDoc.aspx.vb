@@ -6,9 +6,22 @@ Imports Telerik.Web.UI
 Partial Public Class TbltTipoDoc
     Inherits CommonBasePage
 
+#Region "Fields"
+    Private Const CREATE_OPTION As String = "create"
+    Private Const MODIFY_OPTION As String = "modify"
+    Private Const DELETE_OPTION As String = "delete"
+    Private Const REFRESH_OPTION As String = "refresh"
+    Private Const RECOVER_OPTION As String = "recover"
+    Private Const LOG_OPTION As String = "log"
+#End Region
 #Region "Page Load"
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
+
         InitializeAjaxSettings()
         InitializeControls()
         If Not Me.IsPostBack Then
@@ -22,14 +35,14 @@ Partial Public Class TbltTipoDoc
 
 #Region "Initialize"
     Private Sub InitializeControls()
-        btnRefresh.Style.Add("display", "none")
+        FolderToolBar.FindItemByValue(REFRESH_OPTION).Style.Add("display", "none")
         WebUtils.ExpandOnClientNodeAttachEvent(RadTreeView1)
     End Sub
 
     Private Sub InitializeAjaxSettings()
         Me.AjaxManager.AjaxSettings.AddAjaxSetting(Me.AjaxManager, RadTreeView1)
-        Me.AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeView1, pnlButtons)
-        Me.AjaxManager.AjaxSettings.AddAjaxSetting(Me.AjaxManager, pnlButtons)
+        Me.AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeView1, FolderToolBar)
+        Me.AjaxManager.AjaxSettings.AddAjaxSetting(Me.AjaxManager, FolderToolBar)
         AddHandler Me.AjaxManager.AjaxRequest, AddressOf TbltTipoDoc_AjaxRequest
     End Sub
 
@@ -37,37 +50,37 @@ Partial Public Class TbltTipoDoc
         LoadTableDocType()
         'Abilitazione
         If CommonUtil.HasGroupTblCategoryRight Then
-            pnlButtons.Visible = True
+            FolderToolBar.Visible = True
             InitializeButtons()
             CreateContextMenu(RadTreeView1)
         Else
-            pnlButtons.Visible = False
+            FolderToolBar.Visible = False
         End If
     End Sub
 
     Private Sub InitializeButtons()
 
-        btnAggiungi.Enabled = True
-        btnElimina.Enabled = True
-        btnRinomina.Enabled = True
+        FolderToolBar.FindItemByValue(CREATE_OPTION).Enabled = True
+        FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = True
+        FolderToolBar.FindItemByValue(MODIFY_OPTION).Enabled = True
 
         If RadTreeView1.SelectedNode Is Nothing Then
             RadTreeView1.Nodes(0).Selected = True
         End If
 
         If RadTreeView1.SelectedNode.Equals(RadTreeView1.Nodes(0)) Then
-            btnRinomina.Enabled = False
-            btnElimina.Enabled = False
-            btnRecupera.Visible = False
-            btnLog.Enabled = False
+            FolderToolBar.FindItemByValue(MODIFY_OPTION).Enabled = False
+            FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = False
+            FolderToolBar.FindItemByValue(RECOVER_OPTION).Visible = False
+            FolderToolBar.FindItemByValue(LOG_OPTION).Enabled = False
         Else
-            btnLog.Enabled = True
+            FolderToolBar.FindItemByValue(LOG_OPTION).Enabled = True
             If RadTreeView1.SelectedNode.Style.Item("color") = "gray" Then
-                btnRecupera.Visible = True
-                btnElimina.Visible = False
+                FolderToolBar.FindItemByValue(RECOVER_OPTION).Visible = True
+                FolderToolBar.FindItemByValue(DELETE_OPTION).Visible = False
             Else
-                btnElimina.Visible = True
-                btnRecupera.Visible = False
+                FolderToolBar.FindItemByValue(DELETE_OPTION).Visible = True
+                FolderToolBar.FindItemByValue(RECOVER_OPTION).Visible = False
             End If
         End If
     End Sub
@@ -109,6 +122,21 @@ Partial Public Class TbltTipoDoc
 #Region "Events"
     Private Sub RadTreeView1_NodeClick(ByVal sender As Object, ByVal e As Telerik.Web.UI.RadTreeNodeEventArgs) Handles RadTreeView1.NodeClick
         InitializeButtons()
+    End Sub
+
+    Protected Sub FolderToolBar_ButtonClick(sender As Object, e As RadToolBarEventArgs) Handles FolderToolBar.ButtonClick
+        Select Case e.Item.Value
+            Case CREATE_OPTION
+                AjaxManager.ResponseScripts.Add("OpenEditWindow('windowEdit','Add');")
+            Case DELETE_OPTION
+                AjaxManager.ResponseScripts.Add("OpenEditWindow('windowEdit','Delete');")
+            Case MODIFY_OPTION
+                AjaxManager.ResponseScripts.Add("OpenEditWindow('windowEdit','Rename');")
+            Case RECOVER_OPTION
+                AjaxManager.ResponseScripts.Add("OpenEditWindow('windowEdit','Recovery');")
+            Case LOG_OPTION
+                AjaxManager.ResponseScripts.Add("OpenEditWindow('windowEdit','Log');")
+        End Select
     End Sub
 #End Region
 

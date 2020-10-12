@@ -38,7 +38,7 @@ Public Class RoleProtocolRights
         sb.Append(If(IsRoleManager, "1", "0"))
         sb.Append(If(IsRolePEC, "1", "0"))
         sb.Append(If(IsRoleProtocolMail, "1", "0"))
-        Return sb.ToString().PadRight(10, "0"c)
+        Return sb.ToString().PadRight(20, "0"c)
 
     End Function
 

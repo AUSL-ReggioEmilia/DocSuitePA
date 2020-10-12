@@ -25,6 +25,8 @@ Partial Public Class PECOutgoingMails
     Private _selectedMailBoxId As Nullable(Of Short)
     ''' <summary> Numero di giorni da sottrarre alla data odierna nella preimpostazione del filtro. </summary>
     Private Const DaysToAddInitialized As Double = -15
+    Private Const VALID_MAILBOX_IMGURL As String = "../App_Themes/DocSuite2008/images/green-dot-document.png"
+    Private Const INTEROP_IMGURL As String = "../App_Themes/DocSuite2008/imgset16/user.png"
 
 #End Region
 
@@ -68,7 +70,7 @@ Partial Public Class PECOutgoingMails
     Public ReadOnly Property MailBoxes As List(Of PECMailBox)
         Get
             If _mailBoxes Is Nothing Then
-                _mailBoxes = Facade.PECMailboxFacade.GetHumanManageable().GetVisibleMailBoxes(IntegratedMail)
+                _mailBoxes = Facade.PECMailboxFacade.GetVisibleMailBoxes(IntegratedMail)
             End If
             Return _mailBoxes
         End Get
@@ -166,14 +168,32 @@ Partial Public Class PECOutgoingMails
             DataBindMailBoxes(ddlMailBox)
             SetFinderInForm()
             InitializeCollapsedSection()
+            UpdatePECMailBoxInputColor()
         End If
 
         InitializeAjax()
 
     End Sub
 
+    Private Sub UpdatePECMailBoxInputColor()
+        Dim selectedItem As RadComboBoxItem = ddlMailbox.SelectedItem
+
+        If selectedItem.ForeColor = Drawing.Color.Red Then
+            ddlMailbox.InputCssClass = "text-red"
+        End If
+    End Sub
+
     Private Sub chkShowRecorded_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles chkShowRecorded.CheckedChanged
         ToggleShowRecorded(chkShowRecorded.Checked)
+    End Sub
+
+    Private Sub dgMail_Init(sender As Object, e As EventArgs) Handles dgMail.Init
+        For Each column As GridColumn In dgMail.Columns
+            Select Case column.UniqueName
+                Case "cProtocol"
+                    DirectCast(column, CompositeTemplateExportableColumn).CustomExportDelegate = New CompositeTemplateExportableColumn.ExportExpressionDelegate(AddressOf dgMail_LinkProtocolCustomExportDelegate)
+            End Select
+        Next
     End Sub
 
     Private Sub dgMail_ItemDataBound(sender As Object, e As GridItemEventArgs) Handles dgMail.ItemDataBound
@@ -195,7 +215,7 @@ Partial Public Class PECOutgoingMails
         With DirectCast(e.Item.FindControl("cmdViewDocs"), RadButton)
             .CommandArgument = item.Id.ToString()
             If ProtocolEnv.PECGridCheckActiveDocumentsEnabled Then
-                Dim chain As BiblosChainInfo = New BiblosChainInfo(entityItem.Location.DocumentServer, entityItem.IDAttachments)
+                Dim chain As BiblosChainInfo = New BiblosChainInfo(entityItem.IDAttachments)
                 .Enabled = chain.HasActiveDocuments()
             End If
             If item.HasAttachments Then
@@ -346,9 +366,15 @@ Partial Public Class PECOutgoingMails
 
     End Sub
 
-    Private Sub RefreshGrid_Events(ByVal sender As Object, ByVal e As EventArgs) Handles ddlMailBox.SelectedIndexChanged, cmdRefreshGrid.Click
+    Private Sub RefreshGrid_Events(ByVal sender As Object, ByVal e As EventArgs) Handles ddlMailbox.SelectedIndexChanged, cmdRefreshGrid.Click
+        If CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError Then
+            AjaxAlert("La casella PEC ha un problema di configurazione. Avvisare il responsabile per la corretta configurazione")
+        End If
+
+        ddlMailbox.InputCssClass = If(CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError, "text-red", "text-black")
+
         Dim selectedId As Short
-        If Short.TryParse(ddlMailBox.SelectedValue, selectedId) Then
+        If Short.TryParse(ddlMailbox.SelectedValue, selectedId) Then
             CommonShared.SelectedPecMailBoxId = selectedId
         Else
             CommonShared.SelectedPecMailBoxId = Nothing
@@ -363,10 +389,10 @@ Partial Public Class PECOutgoingMails
             Select Case e.CommandName
                 Case SHOW_PROT_COMMAND_NAME
                     Dim arguments As String() = e.CommandArgument.ToString.Split("|"c)
-                    Dim s As String = String.Format("Year={0}&Number={1}", arguments(0), arguments(1))
+                    Dim s As String = $"UniqueId={arguments(0)}&Type=Prot"
 
                     Response.RedirectLocation = "parent"
-                    Response.Redirect("../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(s))
+                    Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck(s)}")
                 Case SHOW_UDS_COMMAND_NAME
                     Dim arguments As String() = e.CommandArgument.ToString().Split({"|"c}, 2)
                     Response.RedirectLocation = "parent"
@@ -443,7 +469,7 @@ Partial Public Class PECOutgoingMails
             Return
         End If
 
-        Dim listID As IList(Of YearNumberCompositeKey) = selectedPecMails.Select(Function(f) New YearNumberCompositeKey(f.Year, f.Number)).ToList()
+        Dim listID As IList(Of Guid) = selectedPecMails.Select(Function(f) f.DocumentUnit.Id).ToList()
 
         Session("ExportStartDate") = DateTime.Now
         Dim resultsErrorString As String = CommExport.InitializeExportTask(listID)
@@ -456,6 +482,14 @@ Partial Public Class PECOutgoingMails
         SetupPageWithTaskRunning()
 
     End Sub
+
+    Public Function dgMail_LinkProtocolCustomExportDelegate(dataItem As GridDataItem) As String
+        Dim btn As RadButton = DirectCast(dataItem.FindControl("cmdProtocol"), RadButton)
+        If btn IsNot Nothing Then
+            Return btn.ToolTip
+        End If
+        Return String.Empty
+    End Function
 #End Region
 
 #Region " Methods "
@@ -620,6 +654,10 @@ Partial Public Class PECOutgoingMails
             ddlMailBox.SelectedValue = "ALL"
         End If
 
+        If CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError Then
+            AjaxAlert("La casella PEC ha un problema di configurazione. Avvisare il responsabile per la corretta configurazione")
+        End If
+
         ' Filtri per data spedizione (da - a e nulla)
         ' Imposto solo se nel finder sono già presenti i valori (su richiesta di alejandro)
         If finder.MailDateFrom.HasValue Then
@@ -666,13 +704,20 @@ Partial Public Class PECOutgoingMails
 
     End Sub
 
-    Private Sub DataBindMailBoxes(ByVal ddlMBoxes As DropDownList)
+    Private Sub DataBindMailBoxes(ByVal ddlMBoxes As RadComboBox)
         ddlMBoxes.Items.Clear()
         Dim realMailBoxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.FillRealPecMailBoxes(MailBoxes)
         For Each mailbox As PECMailBox In realMailBoxes
-            ddlMailBox.Items.Add(New ListItem(Facade.PECMailboxFacade.MailBoxRecipientLabel(mailbox), mailbox.Id.ToString()))
+            Dim comboboxItem As RadComboBoxItem = New RadComboBoxItem()
+            comboboxItem.Text = mailbox.MailBoxName
+            comboboxItem.Value = mailbox.Id.ToString()
+            comboboxItem.ImageUrl = If(mailbox.IsForInterop, INTEROP_IMGURL, VALID_MAILBOX_IMGURL)
+            If mailbox.LoginError Then
+                comboboxItem.ForeColor = Drawing.Color.Red
+            End If
+            ddlMailbox.Items.Add(comboboxItem)
         Next
-        ddlMBoxes.Items.Add(New ListItem("Tutte", "ALL"))
+        ddlMBoxes.Items.Add(New RadComboBoxItem("Tutte", "ALL"))
 
         If CommonShared.HasGroupAdministratorRight Then
             ddlMBoxes.SelectedIndex = ddlMBoxes.Items.Count - 1
@@ -693,7 +738,7 @@ Partial Public Class PECOutgoingMails
         If Not ddlMailBox.SelectedValue.Eq("ALL") Then
             mailBoxeIds.Add(Short.Parse(ddlMailBox.SelectedValue))
         Else
-            For Each item As ListItem In ddlMailBox.Items
+            For Each item As RadComboBoxItem In ddlMailbox.Items
                 If Not item.Value.Eq("ALL") Then
                     mailBoxeIds.Add(Short.Parse(item.Value))
                 End If
@@ -724,7 +769,7 @@ Partial Public Class PECOutgoingMails
             finder.RegistrationUser = DocSuiteContext.Current.User.FullUserName
         ElseIf rdbSenderFilter.SelectedValue = "1" Then
             finder.RegistrationUserCriteria = PECRegistrationUserCriteria.MySectors
-            Dim myRoles As ICollection(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, DocumentRoleRightPositions.Enabled, True)
+            Dim myRoles As ICollection(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, DossierRoleRightPositions.Enabled, True)
             Dim pecs As ICollection(Of PECMailBox) = MailBoxes _
                                                      .Where(Function(mb) Not String.IsNullOrEmpty(mb.IncomingServerName) AndAlso Not String.IsNullOrEmpty(mb.OutgoingServerName)) _
                                                      .ToList()
@@ -781,7 +826,6 @@ Partial Public Class PECOutgoingMails
             Session.Add("DSW_PECOUTFinderType", DateTime.Now)
         End If
 
-        Facade.PECMailboxFacade.GetHumanManageable()
         ' DataBind del finder.
         dgMail.DataBindFinder()
     End Sub
@@ -863,7 +907,7 @@ Partial Public Class PECOutgoingMails
     End Function
 
     Private Function UserCanSend() As Boolean
-        Dim visibleMSendingailBoxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.GetHumanManageable().GetVisibleSendingMailBoxes()
+        Dim visibleMSendingailBoxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.GetVisibleSendingMailBoxes()
         Dim realMailBoxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.FillRealPecMailBoxes(visibleMSendingailBoxes)
         Return realMailBoxes.Any(Function(x) Not x.IsForInterop)
     End Function

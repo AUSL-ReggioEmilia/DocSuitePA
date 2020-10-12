@@ -1,4 +1,5 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" Inherits="VecompSoftware.DocSuiteWeb.Gui.TbltWorkflowRepository" CodeBehind="TbltWorkflowRepository.aspx.vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="Gestione Workflow" %>
+﻿<%@ Page Language="vb" AutoEventWireup="false" Inherits="VecompSoftware.DocSuiteWeb.Gui.TbltWorkflowRepository" CodeBehind="TbltWorkflowRepository.aspx.vb" MasterPageFile="~/MasterPages/DocSuite2008.Master"
+    Title="Gestione attività di workflow" %>
 
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscRoleRest.ascx" TagName="uscRoleRest" TagPrefix="usc" %>
@@ -79,10 +80,15 @@
 
         </script>
         <style>
-            .remove .rwTable{
-                height: 170px !important;
-            }
-        </style>
+    .remove .rwTable {
+        height: 170px !important;
+    }
+
+    #RadWindowWrapper_ctl00_cphContent_windowAddWorkflowRoleMapping,
+    .RadWindow .rwTable {
+        height: 500px !important;
+    }
+    </style>
     </telerik:RadScriptBlock>
     <telerik:RadWindowManager EnableViewState="False" ID="RadWindowManagerWorkflowRepository" runat="server">
         <Windows>
@@ -98,13 +104,13 @@
 
     <telerik:RadWindowManager EnableViewState="false" ID="RadWindowManagerWorkflowStep" runat="server">
         <Windows>
-            <telerik:RadWindow runat="server" ID="rwAddWorkflowStep" Width="650" Height="400"  />
+            <telerik:RadWindow runat="server" ID="rwAddWorkflowStep" Width="650" Height="400" />
         </Windows>
-</telerik:RadWindowManager>
+    </telerik:RadWindowManager>
 
     <telerik:RadWindowManager EnableViewState="false" ID="RadWindowManagerWorkflowProperty" runat="server">
         <Windows>
-            <telerik:RadWindow runat="server" ID="rwWorkflowProperty" Width="650" Height="250" ></telerik:RadWindow>
+            <telerik:RadWindow runat="server" ID="rwWorkflowProperty" Width="650" Height="250"></telerik:RadWindow>
         </Windows>
     </telerik:RadWindowManager>
     <div class="splitterWrapper">
@@ -125,19 +131,18 @@
                         </telerik:RadToolBar>
 
                         <telerik:RadToolBar runat="server" ID="ToolBarStep" CssClass="ToolBarContainer"
-                                            RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" Width="100%">
+                            RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" Width="100%">
                             <Items>
-                                <telerik:RadToolBarButton runat="server" CommandName="ADD" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" ToolTip="Aggiungi workflow step" Enabled="false"/>
-                                <telerik:RadToolBarButton runat="server" CommandName="EDIT" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" ToolTip="Modifica workflow step" Enabled="false"/>
-                                <telerik:RadToolBarButton runat="server" CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" ToolTip="Elimina workflow step" Enabled="false"/>
+                                <telerik:RadToolBarButton runat="server" CommandName="ADD" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" Enabled="false" />
+                                <telerik:RadToolBarButton runat="server" CommandName="EDIT" Text="Modifica" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" Enabled="false" />
+                                <telerik:RadToolBarButton runat="server" CommandName="REMOVE" Text="Elimina" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" Enabled="false" />
                             </Items>
                         </telerik:RadToolBar>
                     </telerik:RadPane>
 
                     <telerik:RadPane runat="server" Height="100%">
-                        <div style="height: 99%;" class="elementBordered">
+                        <div style="        height: 99%;" class="elementBordered">
                             <telerik:RadTreeView ID="rtvWorkflowRepository" runat="server" Height="100%">
-                                
                             </telerik:RadTreeView>
                         </div>
                     </telerik:RadPane>
@@ -145,7 +150,8 @@
             </telerik:RadPane>
             <telerik:RadSplitBar runat="server" CollapseMode="None"></telerik:RadSplitBar>
             <telerik:RadPane runat="server" Width="50%">
-                <asp:Panel runat="server" ID="pnlDetails" CssClass="dsw-panel" Style="margin-top: 5px; visibility:hidden;">
+                <asp:Panel runat="server" ID="pnlDetails" CssClass="dsw-panel" Style="        margin-top: 5px;
+        visibility: hidden;">
                     <div class="dsw-panel-content">
                         <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
                         <telerik:RadPanelBar runat="server" ID="pnlBarDetails" AllowCollapseAllItems="true" ExpandMode="MultipleExpandedItems" Width="100%">
@@ -226,7 +232,7 @@
                                                                 <HeaderStyle HorizontalAlign="Left" />
                                                                 <ClientItemTemplate>
                                                                 <div class="dsw-text-left">                                                
-                                                                    <img class="dsw-vertical-middle" src="..\App_Themes\DocSuite2008\imgset16\bricks.png" style="display:#=Role != undefined ? 'inline-block' : 'none' #"></img>
+                                                                    <img class="dsw-vertical-middle" src="..\App_Themes\DocSuite2008\imgset16\bricks.png" style="        display: #=Role != undefined ? 'inline-block' : 'none' #"></img>
                                                                     <span>#=Role != undefined ? Role.Name : ''#</span>
                                                                 </div>                                            
                                                                 </ClientItemTemplate>
@@ -420,11 +426,11 @@
                             <Items>
                                 <telerik:RadPanelItem Text="Gestisci Tag" Expanded="true">
                                     <ContentTemplate>
-                                        <div class="dsw-display-inline-block" style="padding: 2px;">
+                                        <div class="dsw-display-inline-block" style="        padding: 2px;">
                                             <telerik:RadClientDataSource runat="server" ID="mappingDataSource" />
                                             <telerik:RadComboBox Filter="Contains" AllowCustomText="true" ID="rcbSelectMappingTag" runat="server" Width="250"
                                                 ClientDataSourceID="mappingDataSource" DataTextField="MappingTag" AutoPostBack="false" EnableLoadOnDemand="true" EmptyMessage="Seleziona o inserisci un Tag" />
-                                            <telerik:RadButton runat="server" ID="btnSelectMappingTag" Style="vertical-align: middle !important;" AutoPostBack="false" Text="Seleziona"></telerik:RadButton>
+                                            <telerik:RadButton runat="server" ID="btnSelectMappingTag" Style="        vertical-align: middle !important;" AutoPostBack="false" Text="Seleziona"></telerik:RadButton>
                                         </div>
                                     </ContentTemplate>
                                 </telerik:RadPanelItem>
@@ -433,12 +439,13 @@
 
                     </div>
                     <asp:Panel runat="server" ID="pnlRoleRest">
-                        <div class="dsw-display-inline-block" style="padding: 2px; width:100%;">
-                                            <usc:uscRoleRest Caption="Settori collegati" 
-                                                 MultipleRoles="true" 
-                                                 ID="uscRole" 
-                                                 ReadOnlyMode="false" 
-                                                 runat="server"></usc:uscRoleRest>
+                        <div class="dsw-display-inline-block" style="        padding: 2px;
+        width: 100%;">
+                            <usc:uscRoleRest Caption="Settori autorizzati all'avvio del workflow"
+                                MultipleRoles="true"
+                                ID="uscRole"
+                                ReadOnlyMode="false"
+                                runat="server"></usc:uscRoleRest>
                         </div>
                     </asp:Panel>
                     <div class="radGridWrapper" id="xamlWorkflowRoleMappings">
@@ -472,7 +479,7 @@
                                         <ItemStyle HorizontalAlign="Left" />
                                         <ClientItemTemplate>
                                             <div class="dsw-text-left">                                                
-                                                <img class="dsw-vertical-middle" src="../App_Themes/DocSuite2008/imgset16/bricks.png" style="display:#=WorkflowRoleMapping != undefined &&  WorkflowRoleMapping.Role != undefined ? 'inline-block' : 'none' #"></img>
+                                                <img class="dsw-vertical-middle" src="../App_Themes/DocSuite2008/imgset16/bricks.png" style="        display: #=WorkflowRoleMapping != undefined && WorkflowRoleMapping.Role != undefined ? 'inline-block' : 'none' #"></img>
                                                 <span>#=WorkflowRoleMapping != undefined &&  WorkflowRoleMapping.Role != undefined ? WorkflowRoleMapping.Role.Name : ''#</span>
                                             </div>                                            
                                         </ClientItemTemplate>

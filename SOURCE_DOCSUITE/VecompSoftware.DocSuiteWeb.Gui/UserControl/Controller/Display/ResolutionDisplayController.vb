@@ -1,10 +1,9 @@
 ﻿Imports System.Collections.Generic
 Imports System.Collections.Specialized
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Biblos.Models
 
 Public Class ResolutionDisplayController
@@ -106,7 +105,6 @@ Public Class ResolutionDisplayController
         _uscReslBar.ButtonDuplicate.Attributes.Add("onclientclick", "return OpenWindowDuplica();")
         _uscReslBar.ButtonDelete.Attributes.Add("onclientclick", "return OpenWindowElimina();")
         _uscReslBar.ButtonDocument.OnClientClick = "return OpenWindowSelDocument();"
-        _uscReslBar.ButtonRequestStatement.Attributes.Add("onclientclick", "return OpenWindowRequestStatement();")
     End Sub
 
     Public Overridable Sub Show() Implements IDisplayController.Show
@@ -173,10 +171,7 @@ Public Class ResolutionDisplayController
         Dim biblosChainInfoViewerPage As String = String.Format("{0}/Viewers/BiblosChainInfoViewer.aspx?", DocSuiteContext.Current.CurrentTenant.DSWUrl)
 
         'Pulsante Duplicazione
-        _uscReslBar.ButtonDuplicate.Visible = ResolutionEnv.IsInsertDuplicateEnabled AndAlso DocSuiteContext.IsFullApplication
-
-        'Pulsante Richiedi Attestazione
-        '_uscReslBar.ButtonRequestStatement.Visible = DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso DocSuiteContext.IsFullApplication AndAlso CurrentResolutionRights.CanInsertInContainer AndAlso CurrentResolutionRights.IsExecutive
+        _uscReslBar.ButtonDuplicate.Visible = ResolutionEnv.IsInsertDuplicateEnabled
 
         'Pulsante Log
         _uscReslBar.ButtonLog.Visible = ResolutionEnv.IsLogEnabled AndAlso (CommonShared.HasGroupAdministratorRight() OrElse (If(String.IsNullOrEmpty(DocSuiteContext.Current.ProtocolEnv.EnvGroupLogView), False, CommonShared.HasGroupLogViewRight())))
@@ -184,11 +179,7 @@ Public Class ResolutionDisplayController
         'Pulsante Modifica
         Dim show As Boolean = CurrentResolutionRights.IsExecutive OrElse CurrentResolutionRights.IsAdoptable OrElse CurrentResolutionRights.IsAdministrable
 
-        If DocSuiteContext.IsFullApplication Then
-            _uscReslBar.ButtonChange.Visible = show
-        Else
-            _uscReslBar.ButtonChange.Visible = False
-        End If
+        _uscReslBar.ButtonChange.Visible = show
         If _uscReslBar.ButtonChange.Visible AndAlso currentResolution.EffectivenessDate.HasValue Then
             Dim workflowType As String = Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, 2)
             _uscReslBar.ButtonChange.Enabled = False
@@ -241,7 +232,7 @@ Public Class ResolutionDisplayController
         ' Verifico l'utente corrente abbia i permessi di visualizzazione per gli allegati riservati e
         ' l'atto corrente abbia almeno un allegato riservato.
         If CurrentResolutionRights.IsPrivacyAttachmentAllowed AndAlso currentFileResolution.IdPrivacyAttachments.HasValue Then
-            Dim privacyAttachmentsDocumentInfo As New BiblosDocumentInfo(currentResolution.Location.DocumentServer, currentResolution.Location.ReslBiblosDSDB, currentFileResolution.IdPrivacyAttachments.Value)
+            Dim privacyAttachmentsDocumentInfo As New BiblosDocumentInfo(currentResolution.Location.ReslBiblosDSDB, currentFileResolution.IdPrivacyAttachments.Value)
             Dim queryString As NameValueCollection = privacyAttachmentsDocumentInfo.ToQueryString()
             queryString.Add("Label", "Allegati riservati")
             Dim url As String = String.Concat(biblosChainInfoViewerPage, CommonShared.AppendSecurityCheck(queryString.AsEncodedQueryString()))
@@ -252,7 +243,7 @@ Public Class ResolutionDisplayController
         End If
 
         If currentFileResolution.IdFrontespizio.HasValue AndAlso Not ResolutionEnv.DisableButtonFrontPubblicazione Then
-            Dim frontespizioDocumentInfo As New BiblosDocumentInfo(currentResolution.Location.DocumentServer, currentResolution.Location.ReslBiblosDSDB, currentFileResolution.IdFrontespizio.Value)
+            Dim frontespizioDocumentInfo As New BiblosDocumentInfo(currentResolution.Location.ReslBiblosDSDB, currentFileResolution.IdFrontespizio.Value)
             Dim queryString As NameValueCollection = frontespizioDocumentInfo.ToQueryString()
             queryString.Add("Public", "true")
             Dim url As String = String.Concat(documentInfoViewerPage, CommonShared.AppendSecurityCheck(queryString.AsEncodedQueryString()))
@@ -262,7 +253,7 @@ Public Class ResolutionDisplayController
         End If
 
         If currentFileResolution.IdFrontalinoRitiro.HasValue Then
-            Dim frontespizioRitiroDocumentInfo As New BiblosDocumentInfo(currentResolution.Location.DocumentServer, currentResolution.Location.ReslBiblosDSDB, currentFileResolution.IdFrontalinoRitiro.Value)
+            Dim frontespizioRitiroDocumentInfo As New BiblosDocumentInfo(currentResolution.Location.ReslBiblosDSDB, currentFileResolution.IdFrontalinoRitiro.Value)
             Dim queryString As NameValueCollection = frontespizioRitiroDocumentInfo.ToQueryString()
             queryString.Add("Public", "true")
             Dim url As String = String.Concat(documentInfoViewerPage, CommonShared.AppendSecurityCheck(queryString.AsEncodedQueryString()))
@@ -278,7 +269,7 @@ Public Class ResolutionDisplayController
             Dim webPublication As WebPublication = webPublicationList(0)
             If webPublication.IDDocument > 0 Then
                 ''Se è stato memorizzato 1 id allora visualizzo e carico il bottone
-                Dim webPublicationDocumentInfo As BiblosDocumentInfo = New BiblosDocumentInfo(currentResolution.Location.DocumentServer, currentResolution.Location.ReslBiblosDSDB, webPublication.IDDocument)
+                Dim webPublicationDocumentInfo As BiblosDocumentInfo = New BiblosDocumentInfo(currentResolution.Location.ReslBiblosDSDB, webPublication.IDDocument)
                 Dim docQueryString As String = String.Format("{0}&ViewOriginal={1}&Public=true", webPublicationDocumentInfo.ToQueryString().AsEncodedQueryString(), True)
                 Dim url As String = String.Concat(documentInfoViewerPage, CommonShared.AppendSecurityCheck(docQueryString))
                 _uscReslBar.ButtonPublishedDocument.Attributes.Add("onclick", String.Format("window.location.href = '{0}'; return false;", url))

@@ -30,8 +30,8 @@ Public Class TbltMassimarioScartoGes
 #Region "Methods"
 
     Private Sub Initialize()
-        If Not (CommonShared.HasGroupTblCategoryRight AndAlso DocSuiteContext.IsFullApplication) Then
-            Throw New DocSuiteException("Utente non autorizzato alla visualizzazione del Massimario di scarto.")
+        If Not CommonShared.HasGroupTblCategoryRight Then
+            Throw New DocSuiteException("Utente non autorizzato alla visualizzazione del massimario di scarto.")
         End If
 
         MasterDocSuite.Title = PAGE_TITLE

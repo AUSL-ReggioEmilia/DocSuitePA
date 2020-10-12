@@ -363,17 +363,6 @@
                 </ItemTemplate>
             </telerik:RadToolBarButton>
             <telerik:RadToolBarButton ImageUrl="~/App_Themes/DocSuite2008/imgset16/scanner.png" Text="Acquisisci" ToolTip="Acquisizione delle pagine" Value="scan" />
-            <telerik:RadToolBarButton IsSeparator="true" />
-            <telerik:RadToolBarButton CommandName="CheckDematerialisationCompliance">
-                <ItemTemplate>
-                    <telerik:RadButton runat="server" ID="chkDematerialisationCompliance" ToggleType="CheckBox" ButtonType="StandardButton" Checked="False" AutoPostBack="false" Visible="False">
-                        <ToggleStates>
-                            <telerik:RadButtonToggleState Text="Attestazione di conformità" PrimaryIconCssClass="rbToggleCheckboxChecked"/>
-                            <telerik:RadButtonToggleState Text="Attestazione di conformità" PrimaryIconCssClass="rbToggleCheckbox" />
-                        </ToggleStates>
-                    </telerik:RadButton>
-                </ItemTemplate>
-            </telerik:RadToolBarButton>
         </Items>
     </telerik:RadToolBar>
 </asp:Content>

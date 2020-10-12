@@ -7,7 +7,7 @@ Public Class Collaboration
 
 #Region " Fields "
 
-
+    Private _sourceProtocol As Protocol
 #End Region
 
 #Region " Properties "
@@ -45,8 +45,6 @@ Public Class Collaboration
     Public Overridable Property Resolution As Resolution
 
     Public Overridable Property DocumentSeriesItem As DocumentSeriesItem
-
-    Public Overridable Property Protocol As Protocol
 
     Public Overridable Property PublicationUser As String
 
@@ -90,6 +88,17 @@ Public Class Collaboration
     Public Overridable Property SourceProtocolNumber As Integer?
 
     Public Overridable Property SourceProtocol As Protocol
+        Get
+            Return _sourceProtocol
+        End Get
+        Set(value As Protocol)
+            _sourceProtocol = value
+            If value IsNot Nothing Then
+                SourceProtocolYear = value.Year
+                SourceProtocolNumber = value.Number
+            End If
+        End Set
+    End Property
 
     Public Overridable Property AlertDate As Date?
 
@@ -107,6 +116,8 @@ Public Class Collaboration
 
     ''' Riferimento circolare a DLL VecompSoftware.DocSuiteWeb.Data.Entity
     ''' Public Property Desks() As ICollection(Of Desk)
+    ''' 
+    Public Overridable Property IdDocumentUnit As Guid?
 
 #End Region
 
@@ -177,24 +188,12 @@ Public Class Collaboration
         Return lst
     End Function
 
-    Public Overridable Sub SetSourceProtocol(sourceProtocolYear As Short?, sourceProtocolNumber As Integer?)
-        If Not sourceProtocolYear.HasValue AndAlso Not sourceProtocolNumber.HasValue Then
+    Public Overridable Sub SetSourceProtocol(protocol As Protocol)
+        If protocol Is Nothing Then
             Exit Sub
         End If
-        If {sourceProtocolYear.HasValue, sourceProtocolNumber.HasValue}.Distinct().Count() = 2 Then
-            Throw New InvalidOperationException("Anno e numero del protocollo di origine devono essere entrambi valorizzati.")
-        End If
 
-        Me.SourceProtocolYear = sourceProtocolYear
-        Me.SourceProtocolNumber = sourceProtocolNumber
-    End Sub
-
-    Public Overridable Sub SetSourceProtocol(ynck As YearNumberCompositeKey)
-        Me.SetSourceProtocol(ynck.Year, ynck.Number)
-    End Sub
-
-    Public Overridable Sub SetSourceProtocol(protocol As Protocol)
-        Me.SetSourceProtocol(protocol.Year, protocol.Number)
+        Me.SourceProtocol = protocol
     End Sub
 
 #End Region

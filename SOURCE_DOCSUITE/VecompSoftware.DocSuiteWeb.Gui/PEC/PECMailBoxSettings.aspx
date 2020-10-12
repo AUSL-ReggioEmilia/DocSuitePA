@@ -78,9 +78,18 @@
                             <asp:Label runat="server" ID="lblModuleJeepServiceOutgoing" Enabled="true" />
                         </ItemTemplate>
                     </telerik:GridTemplateColumn>
-                    <telerik:GridTemplateColumn UniqueName="HumanEnabled" HeaderText="HumanEnabled" AllowFiltering="False" HeaderStyle-Width="75px">
+                    <telerik:GridTemplateColumn UniqueName="LoginError" HeaderText="Ha errore di accesso" AllowFiltering="True" HeaderStyle-Width="75px">
+                        <FilterTemplate>
+                            <telerik:RadComboBox runat="server" ID="cmbLoginErrorsFilter" Width="100%" AutoPostBack="True" OnSelectedIndexChanged="cmbError_SelectedIndexChanged">
+                                <Items>
+                                    <telerik:RadComboBoxItem Text="" Value="" Selected="true" />
+                                    <telerik:RadComboBoxItem Text="Si" Value="True" />
+                                    <telerik:RadComboBoxItem Text="No" Value="False" />
+                                </Items>
+                            </telerik:RadComboBox>
+                        </FilterTemplate>
                         <ItemTemplate>
-                            <asp:CheckBox runat="server" ID="chkHumanEnabled" Enabled="False" />
+                            <asp:CheckBox runat="server" ID="chkLoginError" Enabled="False" />
                         </ItemTemplate>
                     </telerik:GridTemplateColumn>
                 </Columns>
@@ -91,8 +100,8 @@
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="cphFooter">
     <asp:Panel ID="pnlButtons" runat="server">
-        <asp:Button ID="cmdUpdatePEC" runat="server" Text="Modifica casella PEC" Width="150" />
-        <asp:Button ID="cmdAddPECMailBox" runat="server" Text="Aggiungi casella PEC" Width="150" />
+        <telerik:RadButton ID="cmdUpdatePEC" runat="server" Text="Modifica casella PEC" Width="150" />
+        <telerik:RadButton ID="cmdAddPECMailBox" runat="server" Text="Aggiungi casella PEC" Width="150" />
     </asp:Panel>
 
 </asp:Content>

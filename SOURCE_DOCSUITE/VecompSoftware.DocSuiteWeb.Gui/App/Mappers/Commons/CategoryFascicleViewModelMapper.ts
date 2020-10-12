@@ -1,5 +1,6 @@
 ﻿import CategoryFascicleViewModel = require('App/ViewModels/Commons/CategoryFascicleViewModel');
 import BaseMapper = require('App/Mappers/BaseMapper');
+import CategoryFascicleRightViewModelMapper = require('App/Mappers/Commons/CategoryFascicleRightViewModelMapper');
 
 class CategoryFascicleViewModelMapper extends BaseMapper<CategoryFascicleViewModel>{
     constructor() {
@@ -21,6 +22,8 @@ class CategoryFascicleViewModelMapper extends BaseMapper<CategoryFascicleViewMod
         toMap.CategoryId = source.Category ? source.Category.EntityShortId : null;
         toMap.ManagerId = source.Manager ? source.Manager.UniqueId : null;
         toMap.ManagerName = source.Manager ? source.Manager.Description : null;
+        toMap.CustomActions = source.CustomActions;
+        toMap.CategoryFascicleRights = source.CategoryFascicleRights ? new CategoryFascicleRightViewModelMapper().MapCollection(source.CategoryFascicleRights) : null;
 
         return toMap;
     }

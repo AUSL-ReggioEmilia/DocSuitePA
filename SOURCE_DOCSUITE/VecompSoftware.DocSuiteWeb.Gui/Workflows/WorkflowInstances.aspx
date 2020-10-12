@@ -11,7 +11,6 @@
                     workflowInstances.ajaxLoadingPanelId = "<%=MasterDocSuite.AjaxDefaultLoadingPanel.ClientId %>";
                     workflowInstances.btnSearchId = "<%=btnSearch.ClientID %>";
                     workflowInstances.btnCleanId = "<%=btnClean.ClientID %>";
-                    workflowInstances.txtWorkflowRepositoryNameId = "<%=txtWorkflowRepositoryName.ClientID %>";
                     workflowInstances.dtpWorkflowRepositoryActiveFromId = "<%=dtpWorkflowRepositoryActiveFrom.ClientID %>";
                     workflowInstances.dtpWorkflowRepositoryActiveToId = "<%=dtpWorkflowRepositoryActiveTo.ClientID %>";
                     workflowInstances.cmbWorkflowRepositoryStatusId = "<%=cmbWorkflowRepositoryStatus.ClientID %>";
@@ -19,10 +18,9 @@
                     workflowInstances.rwWorkflowInstanceLogsId = "<%=rwWorkflowInstanceLogs.ClientID %>";
                     workflowInstances.workflowActivityGridId = "<%=workflowActivityGrid.ClientID %>";
                     workflowInstances.workflowInstanceLogsGridId = "<%=workflowInstanceLogsGrid.ClientID %>";
-                    
-                    //workflowInstances.btnWorkflowActivitiesId = "<%=workflowInstanceGrid.Items(3).FindControl("btnWorkflowActivities").ClientID %>";
+                    workflowInstances.rcbWorkflowRepositoriesId = "<%= rcbWorkflowRepositories.ClientID %>";
+                    workflowInstances.maxNumberElements = "<%= ProtocolEnv.MaxNumberDropdownElements %>";
                     workflowInstances.workflowRepositoryName = "<%=WorkflowRepositoryName%>";
-                    workflowInstances.workflowRepositoryStatus = "<%=WorkflowRepositoryStatus%>";
 
                     workflowInstances.initialize();
                 });
@@ -46,22 +44,51 @@
             <td class="label labelPanel" style="width: 20%;">Nome flusso di lavoro:
             </td>
             <td style="width: 30%;">
-                <telerik:RadTextBox ID="txtWorkflowRepositoryName" runat="server" Width="50%" />
+                <telerik:RadComboBox runat="server" 
+                    CausesValidation="false"
+                    ID="rcbWorkflowRepositories" 
+                    AutoPostBack="false" 
+                    EnableLoadOnDemand="true" 
+                    ItemRequestTimeout="500" 
+                    Width="375px" 
+                    ShowMoreResultsBox="true">
+                </telerik:RadComboBox>
             </td>
         </tr>
         <tr>
             <td class="label labelPanel" style="width: 20%;">Periodo:
             </td>
             <td style="width: 80%;">
-                <telerik:RadDatePicker DateInput-LabelWidth="30%" DateInput-LabelCssClass="strongRiLabel" Style="height: auto !important;" Width="300" DateInput-Label="Da data" ID="dtpWorkflowRepositoryActiveFrom" runat="server" />
-                <telerik:RadDatePicker DateInput-LabelWidth="30%" DateInput-LabelCssClass="strongRiLabel" Style="height: auto !important;" Width="300" DateInput-Label="A data" ID="dtpWorkflowRepositoryActiveTo" runat="server" />
+                <telerik:RadDatePicker 
+                    DateInput-LabelWidth="20%" 
+                    DateInput-LabelCssClass="strongRiLabel" 
+                    Style="height: auto !important;" 
+                    Width="300" 
+                    DateInput-Label="Da data" 
+                    ID="dtpWorkflowRepositoryActiveFrom" 
+                    runat="server" />
+                <telerik:RadDatePicker 
+                    DateInput-LabelWidth="20%" 
+                    DateInput-LabelCssClass="strongRiLabel" 
+                    Style="height: auto !important;" 
+                    Width="300" 
+                    DateInput-Label="A data" 
+                    ID="dtpWorkflowRepositoryActiveTo" 
+                    runat="server" />
+                <asp:CompareValidator ID="rangeDateValidator" runat="server"
+                    ControlToValidate="dtpWorkflowRepositoryActiveTo"
+                    ControlToCompare="dtpWorkflowRepositoryActiveFrom"
+                    Operator="GreaterThan"
+                    Type="Date"
+                    ErrorMessage="La data di fine deve essere maggiore della data di inizio">
+                </asp:CompareValidator>
             </td>
         </tr>
         <tr>
             <td class="label labelPanel" style="width: 20%">Stato:
             </td>
             <td style="width: 30%">
-                <telerik:RadComboBox runat="server" ID="cmbWorkflowRepositoryStatus" DataTextField="Text" DataValueField="Value" Width="50%" AutoPostBack="false" EmptyMessage="" />
+                <telerik:RadComboBox runat="server" ID="cmbWorkflowRepositoryStatus" DataTextField="Text" DataValueField="Value" Width="10%" AutoPostBack="false" EmptyMessage="" />
             </td>
         </tr>
     </table>
@@ -75,33 +102,44 @@
 
 <asp:Content ContentPlaceHolderID="cphContent" runat="server">
     <asp:Panel runat="server" CssClass="radGridWrapper" ID="pageContent">
-        <telerik:RadGrid runat="server" CssClass="workflowInstanceGrid" ID="workflowInstanceGrid" Skin="Office2010Blue"
-            GridLines="None" Height="100%" AllowPaging="false" AllowMultiRowSelection="false" AllowFilteringByColumn="false">
+        <telerik:RadGrid runat="server" 
+            CssClass="workflowInstanceGrid" 
+            ID="workflowInstanceGrid" 
+            Skin="Office2010Blue"
+            GridLines="None" 
+            Height="100%" 
+            PageSize="30"
+            AllowPaging="true" 
+            AllowMultiRowSelection="false" 
+            AllowFilteringByColumn="false">
             <ClientSettings EnablePostBackOnRowClick="false">
                 <Scrolling AllowScroll="true" UseStaticHeaders="true" ScrollHeight="100%" />
-                <Resizing AllowColumnResize="true" AllowRowResize="true" />
+                <Resizing AllowColumnResize="false" AllowRowResize="false" AllowResizeToFit="true"/>
                 <ClientEvents OnCommand="OnGridCommand" OnDataBound="OnGridDataBound" />
             </ClientSettings>
-            <MasterTableView CommandItemDisplay="None" AutoGenerateColumns="false" TableLayout="Fixed" AllowMultiColumnSorting="true"
-                NoMasterRecordsText="Nessuno elemento trovato nel periodo indicato." PageStyle-PagerTextFormat="{4} Visualizzati {3} su {5}">
+            <MasterTableView CommandItemDisplay="None" 
+                AutoGenerateColumns="false" 
+                TableLayout="Fixed" 
+                AllowMultiColumnSorting="true"
+                NoMasterRecordsText="Nessuno elemento trovato nel periodo indicato." 
+                PagerStyle-PagerTextFormat="{4} Visualizzati {3} su {5}">
                 <Columns>
-                    <telerik:GridBoundColumn DataField="UniqueId" Visible="false" />
-                    <telerik:GridBoundColumn DataField="Name" HeaderText="Nome flusso di lavoro" />
-                    <telerik:GridBoundColumn DataField="RegistrationDate" HeaderText="Creato il" />
-                     <telerik:GridBoundColumn DataField="RegistrationUser" HeaderText="Creato da"/>
-                    <telerik:GridBoundColumn DataField="Status" HeaderText="Stato" />
-                     <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderText="In errore?" UniqueName="HasActivitiesInErrorLabel">
-                        <HeaderStyle HorizontalAlign="Center" Width="100px" />
+                    <telerik:GridBoundColumn DataField="Subject" HeaderText="Oggetto" HeaderStyle-Width="300px" />
+                    <telerik:GridBoundColumn DataField="RegistrationDate" HeaderText="Creato il" HeaderStyle-Width="200px" />
+                    <telerik:GridBoundColumn DataField="RegistrationUser" HeaderText="Creato da" HeaderStyle-Width="200px" />
+                    <telerik:GridBoundColumn DataField="Status" HeaderText="Stato" HeaderStyle-Width="120px" />
+                    <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderText="In errore?" UniqueName="HasActivitiesInErrorLabel">
+                        <HeaderStyle HorizontalAlign="Center" Width="120px" />
                         <ItemStyle HorizontalAlign="Center" Width="100px" />
                         <ItemTemplate>
                             <div style="position: relative">
-                                <telerik:RadButton ButtonType="LinkButton" ID="btnWorkflowInstanceLogs" runat="server" AutoPostBack="false" />
+                                <telerik:RadButton ButtonType="LinkButton" ID="btnWorkflowInstanceLogs" Style="display: none;" runat="server" AutoPostBack="false" />
                             </div>
                         </ItemTemplate>
                     </telerik:GridTemplateColumn>
                     <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderText="Numero attività completate" UniqueName="WorkflowActivitiesDoneCount">
-                        <HeaderStyle HorizontalAlign="Center" Width="70px" />
-                        <ItemStyle HorizontalAlign="Center" Width="70px" />
+                        <HeaderStyle HorizontalAlign="Center" Width="200px" />
+                        <ItemStyle HorizontalAlign="Center" />
                         <ItemTemplate>
                             <div style="position: relative">
                                 <telerik:RadButton ButtonType="LinkButton" ID="btnWorkflowActivities" runat="server" AutoPostBack="false" />
@@ -110,6 +148,7 @@
                     </telerik:GridTemplateColumn>
                 </Columns>
             </MasterTableView>
+            <PagerStyle PageSizeControlType="None"></PagerStyle>
         </telerik:RadGrid>
     </asp:Panel>
 
@@ -121,19 +160,18 @@
                         GridLines="None" Height="100%" AllowPaging="false" AllowMultiRowSelection="false" AllowFilteringByColumn="false">
                         <ClientSettings EnablePostBackOnRowClick="false">
                             <Scrolling AllowScroll="true" UseStaticHeaders="true" ScrollHeight="100%" />
-                            <Resizing AllowColumnResize="true" AllowRowResize="true" />
+                            <Resizing AllowColumnResize="true" AllowRowResize="false" />
                             <ClientEvents OnCommand="OnGridCommand" />
                         </ClientSettings>
                         <MasterTableView CommandItemDisplay="None" AutoGenerateColumns="false" TableLayout="Fixed" AllowMultiColumnSorting="true"
-                            NoMasterRecordsText="Nessuno elemento trovato." PageStyle-PagerTextFormat="{4} Visualizzati {3} su {5}">
+                            NoMasterRecordsText="Nessuno elemento trovato." PagerStyle-PagerTextFormat="{4} Visualizzati {3} su {5}">
                             <Columns>
-                                <telerik:GridBoundColumn DataField="UniqueId" Visible="false" />
                                 <telerik:GridBoundColumn DataField="Name" HeaderText="Nome" />
-                                <telerik:GridBoundColumn DataField="ActivityTypeDescription" HeaderText="Tipo di attività" />
+                                <telerik:GridBoundColumn DataField="ActivityTypeDescription" HeaderText="Tipo di attività" HeaderStyle-Width="" />
                                 <telerik:GridBoundColumn DataField="RegistrationDateFormatted" HeaderText="Creato il"/>
                                 <telerik:GridBoundColumn DataField="RegistrationUser" HeaderText="Creato da"/>
                                 <telerik:GridBoundColumn DataField="StatusDescription" HeaderText="Stato" />
-                                <telerik:GridBoundColumn DataField="Subject" HeaderText="Oggetto" />
+                                <telerik:GridBoundColumn DataField="Subject" HeaderText="Oggetto" HeaderStyle-Width="250px" />
                             </Columns>
                         </MasterTableView>
                     </telerik:RadGrid>

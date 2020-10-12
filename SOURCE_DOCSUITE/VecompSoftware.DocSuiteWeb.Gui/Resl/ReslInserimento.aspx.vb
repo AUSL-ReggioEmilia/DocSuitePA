@@ -805,10 +805,6 @@ Partial Public Class ReslInserimento
             res.OCManagement = chkOCConfSindaci.Checked
         End If
 
-        If (Action.Eq("FromCollaboration") OrElse (CurrentResolutionModel IsNot Nothing AndAlso CurrentResolutionModel.IdCollaboration.HasValue)) AndAlso ProtocolEnv.SecureDocumentEnabled Then
-            Facade.CollaborationFacade.FinalizeSecureDocument(CurrentCollaboration)
-        End If
-
         Try
             Facade.ResolutionFacade.Save(res)
         Catch ex As Exception
@@ -845,8 +841,6 @@ Partial Public Class ReslInserimento
         Dim idCatenaAnnessi As Guid = Guid.Empty
 
         Try
-            Dim dematerialisationRequestModel As DocumentManagementRequestModel = New DocumentManagementRequestModel()
-
             If uscUploadDocumenti.DocumentInfos.Count > 0 Then
                 ' Segnatura su adozione automatica
                 If ResolutionEnv.IsInsertAdoption Then
@@ -870,18 +864,6 @@ Partial Public Class ReslInserimento
                     ResolutionInsertedDocumentPrivacyLevel(res, documentBiblosInfo)
                 End If
 
-                If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso uscUploadDocumenti.DocumentInfosDematerialisationAdded IsNot Nothing AndAlso uscUploadDocumenti.DocumentInfosDematerialisationAdded.Count > 0 _
-                    AndAlso Not String.IsNullOrEmpty(uscUploadDocumenti.DocumentInfosAdded(0).Name) AndAlso documentBiblosInfo IsNot Nothing AndAlso documentBiblosInfo.FirstOrDefault() IsNot Nothing _
-                   AndAlso Not documentBiblosInfo.FirstOrDefault().DocumentId.IsEmpty() AndAlso Not documentBiblosInfo.FirstOrDefault().ChainId.IsEmpty() Then
-
-                    Dim workflowReferenceBiblosModel As WorkflowReferenceBiblosModel = New WorkflowReferenceBiblosModel()
-                    workflowReferenceBiblosModel.DocumentName = uscUploadDocumenti.DocumentInfosAdded(0).Name
-                    workflowReferenceBiblosModel.ChainType = Model.Entities.DocumentUnits.ChainType.MainChain
-                    workflowReferenceBiblosModel.ArchiveChainId = documentBiblosInfo.FirstOrDefault().ChainId
-                    workflowReferenceBiblosModel.ArchiveDocumentId = documentBiblosInfo.FirstOrDefault().DocumentId
-                    dematerialisationRequestModel.Documents.Add(workflowReferenceBiblosModel)
-                End If
-
                 Select Case True
                     Case Facade.ResolutionFacade.IsManagedProperty("idProposalFile", resolutionTypeId)
                         Facade.ResolutionFacade.SqlResolutionDocumentUpdate(IdResolution, idCatena, ResolutionFacade.DocType.Proposta)
@@ -898,7 +880,6 @@ Partial Public Class ReslInserimento
             If uscUploadDocumenti.DocumentInfos.Count = 1 Then
                 idCatenaNome = uscUploadDocumenti.DocumentInfos.Select(Function(o) o.DownloadFileName).FirstOrDefault()
             End If
-
 
             ' Documenti Omissis
             If uscUploadDocumentiOmissis.DocumentInfos.Count > 0 Then
@@ -919,43 +900,9 @@ Partial Public Class ReslInserimento
                     ResolutionInsertedDocumentPrivacyLevel(res, attachmentsBiblosInfo, ResolutionFacade.DocType.Allegati.ToString())
                 End If
 
-                If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso uscUploadAttach.DocumentInfosDematerialisationAdded IsNot Nothing AndAlso uscUploadAttach.DocumentInfosDematerialisationAdded.Count > 0 Then
-
-                    Dim attachmentWorkflowReferenceBiblosModel As WorkflowReferenceBiblosModel
-                    Dim attachmentId As Guid
-                    Dim attachmentChainId As Guid
-
-                    For Each attachment As DocumentInfo In uscUploadAttach.DocumentInfosDematerialisationAdded
-                        attachment = uscUploadAttach.DocumentInfosAdded.Where(Function(x) x.Serialized = attachment.Serialized).SingleOrDefault()
-
-                        attachmentWorkflowReferenceBiblosModel = New WorkflowReferenceBiblosModel()
-                        attachmentId = Nothing
-                        attachmentChainId = Nothing
-
-                        If attachment IsNot Nothing AndAlso Not String.IsNullOrEmpty(attachment.Name) AndAlso attachment.Attributes.Keys.Contains("documentId") AndAlso Guid.TryParse(attachment.Attributes("documentId"), attachmentId) AndAlso Not attachmentId = Guid.Empty _
-                            AndAlso attachment.Attributes.Keys.Contains("chainId") AndAlso Guid.TryParse(attachment.Attributes("chainId"), attachmentChainId) AndAlso attachment.Attributes.Keys.Contains("archiveName") AndAlso Not String.IsNullOrEmpty(attachment.Attributes("archiveName")) AndAlso Not attachmentChainId = Guid.Empty Then
-                            attachmentWorkflowReferenceBiblosModel.DocumentName = attachment.Name
-                            attachmentWorkflowReferenceBiblosModel.ChainType = Model.Entities.DocumentUnits.ChainType.AttachmentsChain
-                            attachmentWorkflowReferenceBiblosModel.ArchiveChainId = attachmentChainId
-                            attachmentWorkflowReferenceBiblosModel.ArchiveDocumentId = attachmentId
-                            attachmentWorkflowReferenceBiblosModel.ArchiveName = attachment.Attributes("archiveName")
-                            dematerialisationRequestModel.Documents.Add(attachmentWorkflowReferenceBiblosModel)
-                        End If
-                    Next
-                End If
                 If PnlAllegatiVisible Then
                     Facade.ResolutionFacade.SqlResolutionDocumentUpdate(IdResolution, idCatenaAllegati, ResolutionFacade.DocType.Allegati)
                 End If
-            End If
-
-            'Log di Serializzazione comando 'SB' per attestazione conformità
-            If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso dematerialisationRequestModel.Documents IsNot Nothing AndAlso dematerialisationRequestModel.Documents.Count > 0 Then
-                Dim documentUnit As New WorkflowReferenceModel()
-                documentUnit.ReferenceId = res.UniqueId
-                documentUnit.ReferenceType = DSWEnvironmentType.Resolution
-                dematerialisationRequestModel.DocumentUnit = documentUnit
-                dematerialisationRequestModel.RegistrationUser = DocSuiteContext.Current.User.FullUserName
-                Facade.ResolutionLogFacade.Log(res, ResolutionLogType.SB, JsonConvert.SerializeObject(dematerialisationRequestModel))
             End If
 
             ' Allegati Omissis
@@ -1210,7 +1157,7 @@ Partial Public Class ReslInserimento
         'Area Documentale: Documenti
         If (CurrentCollaboration.GetFirstDocumentVersioning() <> 0) Then
             Try
-                Dim doc As New BiblosDocumentInfo(CurrentCollaboration.Location.DocumentServer, CurrentCollaboration.Location.ProtBiblosDSDB, CurrentCollaboration.GetFirstDocumentVersioning(), 0)
+                Dim doc As New BiblosDocumentInfo(CurrentCollaboration.Location.ProtBiblosDSDB, CurrentCollaboration.GetFirstDocumentVersioning(), 0)
                 uscUploadDocumenti.LoadDocumentInfo(doc, True)
                 If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso doc IsNot Nothing Then
                     uscUploadDocumenti.FromCollaborationPrivacyLevelEnabled = True
@@ -1418,7 +1365,7 @@ Partial Public Class ReslInserimento
         pnlAsseInterop.Visible = Facade.ResolutionFacade.IsManagedProperty("Assignee", proposta, "CONTACT.AD")
         SelAssegnatario.Visible = Facade.ResolutionFacade.IsManagedProperty("Assignee", proposta, "CONTACT.AD")
         SelAssegnatario.ButtonSelectVisible = Not Facade.ResolutionFacade.IsManagedProperty("Assignee", proposta, "CONTACT.AD")
-        SelAssegnatario.ButtonSelectDomainVisible = Facade.ResolutionFacade.IsManagedProperty("Assignee", proposta, "CONTACT.AD")
+        SelAssegnatario.ButtonSelectDomainVisible = Facade.ResolutionFacade.IsManagedProperty("Assignee", proposta, "CONTACT.AD") AndAlso DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
         ' Se è contenuto CONTACT è visibile la ricerca per Testo 
         SelAssegnatarioAlt.Visible = Not pnlAsseInterop.Visible
 
@@ -1437,7 +1384,7 @@ Partial Public Class ReslInserimento
         pnlRespInterop.Visible = Facade.ResolutionFacade.IsManagedProperty("Manager", proposta, "CONTACT.AD")
         SelResponsabile.Visible = Facade.ResolutionFacade.IsManagedProperty("Manager", proposta, "CONTACT.AD")
         SelResponsabile.ButtonSelectVisible = Not Facade.ResolutionFacade.IsManagedProperty("Manager", proposta, "CONTACT.AD")
-        SelResponsabile.ButtonSelectDomainVisible = Facade.ResolutionFacade.IsManagedProperty("Manager", proposta, "CONTACT.AD")
+        SelResponsabile.ButtonSelectDomainVisible = Facade.ResolutionFacade.IsManagedProperty("Manager", proposta, "CONTACT.AD") AndAlso DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
         ' Se è contenuto CONTACT è visibile la ricerca per Testo 
         SelResponsabileAlt.Visible = Not pnlRespInterop.Visible
 
@@ -1455,7 +1402,9 @@ Partial Public Class ReslInserimento
         pnlProposer.SetDisplay(Facade.ResolutionFacade.IsManagedProperty("Proposer", proposta, "IN"))
         ' Se è contenuto CONTACT.AD è visibile la ricerca per rubrica aziendale
         SelProponente.ButtonSelectVisible = Not Facade.ResolutionFacade.IsManagedProperty("Proposer", proposta, "CONTACT.AD")
-        SelProponente.ButtonSelectDomainVisible = Facade.ResolutionFacade.IsManagedProperty("Proposer", proposta, "CONTACT.AD")
+        SelProponente.ButtonSelectDomainVisible = Facade.ResolutionFacade.IsManagedProperty("Proposer", proposta, "CONTACT.AD") AndAlso DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
+
+        SelProponente.MultiSelect = Facade.ResolutionFacade.IsManagedProperty("Proposer", proposta, "MULTISELECT")
         ' Se è contenuto CONTACT è visibile la ricerca per Testo
         pnlProponenteInterop.Visible = Facade.ResolutionFacade.IsManagedProperty("Proposer", proposta, "CONTACT")
         SelProponenteAlt.Visible = Not ResolutionEnv.HideAlternativeProposer
@@ -1480,7 +1429,7 @@ Partial Public Class ReslInserimento
         ' Se è contenuto IN è visibile il pannello contenitore 
         ' Se è contenuto CONTACT.AD è visibile la ricerca per rubrica aziendale
         uscDestinatari.ButtonSelectVisible = Not Facade.ResolutionFacade.IsManagedProperty("Recipient", proposta, "CONTACT.AD")
-        uscDestinatari.ButtonSelectDomainVisible = Facade.ResolutionFacade.IsManagedProperty("Recipient", proposta, "CONTACT.AD")
+        uscDestinatari.ButtonSelectDomainVisible = Facade.ResolutionFacade.IsManagedProperty("Recipient", proposta, "CONTACT.AD") AndAlso DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
         ' Se è attivo il parametro, non si vede il pannello di destinatario alternativo
         uscDestinatariAlt.Visible = Not ResolutionEnv.HideAlternativeRecipient
 
@@ -1714,13 +1663,10 @@ Partial Public Class ReslInserimento
 
         uscUploadAttach.ButtonCopyResl.Visible = ResolutionEnv.CopyReslDocumentsEnabled
         uscUploadAttach.ButtonCopyProtocol.Visible = ResolutionEnv.CopyProtocolDocumentsEnabled
+        uscUploadAttach.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
         uscUploadAnnexed.ButtonCopyResl.Visible = ResolutionEnv.CopyReslDocumentsEnabled
+        uscUploadAnnexed.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
         uscUploadAnnexed.ButtonCopyProtocol.Visible = ResolutionEnv.CopyProtocolDocumentsEnabled
-        If ProtocolEnv.DematerialisationEnabled Then
-            uscUploadDocumenti.CheckDematerialisationCompliance = True
-            uscUploadAttach.CheckDematerialisationCompliance = True
-            uscUploadAnnexed.CheckDematerialisationCompliance = False
-        End If
 
         Select Case ResolutionEnv.Configuration
             Case ConfTo

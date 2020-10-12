@@ -63,7 +63,6 @@ define(["require", "exports", "Tblt/MetadataRepositoryBase", "App/Helpers/Servic
          * funzione che aggiunge tutte le componenti corrispondenti al Json del menu
          */
         uscMetadataRepositorySummary.prototype.loadPageItems = function (metadataRepositoryModel) {
-            var _this = this;
             var metadataViewModel = JSON.parse(metadataRepositoryModel.JsonMetadata);
             var element;
             var content = document.getElementById("menuContent");
@@ -75,36 +74,67 @@ define(["require", "exports", "Tblt/MetadataRepositoryBase", "App/Helpers/Servic
             this.integerId++;
             labelElement = this.findLabelElement(idCloned, 0);
             labelElement.textContent = metadataRepositoryModel.Name;
-            $.each(metadataViewModel.TextFields, function (index, textFieldViewModel) {
-                idCloned = _this.fillHTMLElement(_this.componentTextId, _this.integerId, textFieldViewModel);
-                _this.integerId++;
-            });
-            $.each(metadataViewModel.NumberFields, function (index, numberFieldViewModel) {
-                idCloned = _this.fillHTMLElement(_this.componentNumberId, _this.integerId, numberFieldViewModel);
-                _this.integerId++;
-            });
-            $.each(metadataViewModel.DateFields, function (index, dateFieldViewModel) {
-                idCloned = _this.fillHTMLElement(_this.componentDateId, _this.integerId, dateFieldViewModel);
-                _this.integerId++;
-            });
-            $.each(metadataViewModel.BoolFields, function (index, boolFieldViewModel) {
-                idCloned = _this.fillHTMLElement(_this.componentCheckBoxId, _this.integerId, boolFieldViewModel);
-                _this.integerId++;
-            });
-            $.each(metadataViewModel.EnumFields, function (index, enumFieldViewModel) {
-                idCloned = _this.fillHTMLElement(_this.componentEnumId, _this.integerId, enumFieldViewModel);
-                _this.integerId++;
-                $.each(enumFieldViewModel.Options, function (index, option) {
-                    var node = document.createElement("LI");
-                    if (enumFieldViewModel.Options[index] != "") {
-                        _this.createNewNode((Number(index)).toString().concat(") ", enumFieldViewModel.Options[index]), node, idCloned);
+            var setiEnabled = document.getElementById("setiFieldId");
+            if (this.setiIntegrationEnabledId && metadataViewModel.SETIFieldEnabled !== undefined) { /*Ensure that the message is not visible if the SetiIntegrationEnabled is set to false*/
+                setiEnabled.innerText = metadataViewModel.SETIFieldEnabled ? "(Integrazione SETI abilitata)" : "(Integrazione SETI non abilitata)";
+            }
+            this.arrangeControlsInPosition(metadataViewModel, idCloned);
+        };
+        uscMetadataRepositorySummary.prototype.arrangeControlsInPosition = function (metadataViewModel, idCloned) {
+            var _this = this;
+            var aggregatedSum = 0;
+            for (var arr in metadataViewModel) {
+                if (typeof (metadataViewModel[arr]) !== "boolean") {
+                    aggregatedSum += metadataViewModel[arr].length;
+                }
+            }
+            var _loop_1 = function () {
+                var metadataField = null;
+                var currentType = void 0;
+                for (var arr in metadataViewModel) {
+                    currentType = arr;
+                    var obj = undefined;
+                    if (typeof (metadataViewModel[arr]) !== "boolean") {
+                        obj = metadataViewModel[arr].filter(function (x) { return x.Position == i; })[0];
                     }
-                });
-            });
-            $.each(metadataViewModel.DiscussionFields, function (index, discussionFieldViewModel) {
-                idCloned = _this.fillHTMLElement(_this.componentCommentId, _this.integerId, discussionFieldViewModel);
-                _this.integerId++;
-            });
+                    if (obj) {
+                        metadataField = obj;
+                        break;
+                    }
+                }
+                switch (currentType) {
+                    case MetadataRepositoryBase.CONTROL_TEXT_FIELD:
+                        idCloned = this_1.fillHTMLElement(this_1.componentTextId, metadataField.Position, metadataField);
+                        break;
+                    case MetadataRepositoryBase.CONTROL_DATE_FIELD:
+                        idCloned = this_1.fillHTMLElement(this_1.componentDateId, metadataField.Position, metadataField);
+                        break;
+                    case MetadataRepositoryBase.CONTROL_NUMBER_FIELD:
+                        idCloned = this_1.fillHTMLElement(this_1.componentNumberId, metadataField.Position, metadataField);
+                        break;
+                    case MetadataRepositoryBase.CONTROL_BOOL_FIELD:
+                        idCloned = this_1.fillHTMLElement(this_1.componentCheckBoxId, metadataField.Position, metadataField);
+                        break;
+                    case MetadataRepositoryBase.CONTROL_ENUM_FIELD:
+                        idCloned = this_1.fillHTMLElement(this_1.componentEnumId, metadataField.Position, metadataField);
+                        $.each(metadataField.Options, function (index, option) {
+                            var node = document.createElement("LI");
+                            if (metadataField.Options[index] != "") {
+                                _this.createNewNode(metadataField.Options[index], node, idCloned);
+                            }
+                        });
+                        break;
+                    case MetadataRepositoryBase.CONTROL_DISCUSION_FIELD:
+                        idCloned = this_1.fillHTMLElement(this_1.componentCommentId, metadataField.Position, metadataField);
+                        break;
+                    default:
+                        break;
+                }
+            };
+            var this_1 = this;
+            for (var i = 0; i <= aggregatedSum; i++) {
+                _loop_1();
+            }
         };
         /**
          * Scateno l'evento di "Load Completed" del controllo
@@ -116,7 +146,9 @@ define(["require", "exports", "Tblt/MetadataRepositoryBase", "App/Helpers/Servic
             var idCloned = this.cloneElement(idComponent, incrementalInteger);
             var labelElement = this.findLabelElement(idCloned, 1);
             var requiredElement = this.findInputCheckBoxElement(idCloned, 0);
+            var keynameElement = this.findLabelElement(idCloned, 3);
             labelElement.textContent = model.Label;
+            keynameElement.textContent = model.KeyName;
             requiredElement.checked = model.Required;
             return idCloned;
         };

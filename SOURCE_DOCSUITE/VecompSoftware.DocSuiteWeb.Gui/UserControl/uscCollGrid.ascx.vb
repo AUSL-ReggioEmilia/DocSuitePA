@@ -2,23 +2,22 @@
 Imports System.IO
 Imports System.Linq
 Imports System.Text
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.DocSuiteWeb.Facade
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Helpers.Web
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
-Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
-Imports VecompSoftware.DocSuiteWeb.Model.Parameters
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.DTO.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
+Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
+Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
+Imports VecompSoftware.DocSuiteWeb.Model.Parameters
+Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Services.Logging
 
 Partial Public Class uscCollGrid
     Inherits DocSuite2008BaseControl
@@ -56,7 +55,6 @@ Partial Public Class uscCollGrid
 
     Const ContentName As String = "~\UserControl\uscCollOffline.ascx"
     Private _currentUDSFacade As UDSFacade
-    Private _currentUDSRepositoryFacade As UDSRepositoryFacade
     Private _currentUDSCollaborationFinder As UDSCollaborationFinder
 
 #End Region
@@ -96,15 +94,6 @@ Partial Public Class uscCollGrid
         End Get
     End Property
 
-    Private ReadOnly Property CurrentUDSRepositoryFacade As UDSRepositoryFacade
-        Get
-            If _currentUDSRepositoryFacade Is Nothing Then
-                _currentUDSRepositoryFacade = New UDSRepositoryFacade(DocSuiteContext.Current.User.FullUserName)
-            End If
-            Return _currentUDSRepositoryFacade
-        End Get
-    End Property
-
     Private ReadOnly Property CurrentUDSCollaborationFinder As UDSCollaborationFinder
         Get
             If _currentUDSCollaborationFinder Is Nothing Then
@@ -119,7 +108,7 @@ Partial Public Class uscCollGrid
 #Region " Events "
 
     Private Sub gvProtocols_ItemCommand(ByVal source As Object, ByVal e As GridCommandEventArgs) Handles gvCollaboration.ItemCommand
-        Dim arguments As String() = Split(CType(e.CommandArgument, String), "|", 3)
+        Dim arguments As String() = Split(CType(e.CommandArgument, String), "|")
         Select Case e.CommandName
             Case "Down"
                 Dim ctrl As Control = Page.LoadControl(ContentName)
@@ -147,10 +136,10 @@ Partial Public Class uscCollGrid
             Case "Selz"
                 SetCollSelected(Integer.Parse(arguments(0)), arguments(1), arguments(2))
             Case "Prot"
-                Dim url As String = String.Concat("~/Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}&Type=Prot", arguments(0), arguments(1))))
-                If ProtocolEnv.MultiDomainEnabled AndAlso Not DocSuiteContext.Current.CurrentTenant.TenantName.Eq(arguments(2)) Then
-                    Dim tenant As TenantModel = DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) x.TenantName.Eq(arguments(2)))
-                    url = String.Format("{0}/?Tipo=Prot&Azione=Apri&Anno={1}&Numero={2}", tenant.DSWUrl, arguments(0), arguments(1))
+                Dim url As String = String.Concat("~/Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&Type=Prot", arguments(0))))
+                If ProtocolEnv.MultiDomainEnabled AndAlso Not DocSuiteContext.Current.CurrentTenant.TenantName.Eq(arguments(3)) Then
+                    Dim tenant As TenantModel = DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) x.TenantName.Eq(arguments(3)))
+                    url = String.Format("{0}/?Tipo=Prot&Azione=Apri&Anno={1}&Numero={2}", tenant.DSWUrl, arguments(1), arguments(2))
                     Response.RedirectToNewWindow(url)
                 End If
                 Response.Redirect(ResolveUrl(url))
@@ -274,7 +263,7 @@ Partial Public Class uscCollGrid
                 imgDeleteItem.AlternateText = String.Empty
                 If item.Entity.IdStatus.Eq(CollaborationStatusType.DL.ToString()) Then
                     imgDeleteItem.ImageUrl = "../Comm/images/Loop16.gif"
-                    imgDeleteItem.AlternateText = "Documento Restituito"
+                    imgDeleteItem.AlternateText = "Documento restituito"
                 End If
             End If
 
@@ -283,10 +272,10 @@ Partial Public Class uscCollGrid
                 Select Case item.Entity.IdPriority
                     Case "B"
                         imgPriorityItem.ImageUrl = "../Comm/images/PriorityLow16.gif"
-                        imgPriorityItem.AlternateText = "Priorità Bassa"
+                        imgPriorityItem.AlternateText = "Priorità bassa"
                     Case "A"
                         imgPriorityItem.ImageUrl = "../Comm/images/PriorityHigh16.gif"
-                        imgPriorityItem.AlternateText = "Priorità Alta"
+                        imgPriorityItem.AlternateText = "Priorità alta"
                     Case Else
                         imgPriorityItem.ImageUrl = ImagePath.SmallEmpty
                         imgPriorityItem.AlternateText = ""
@@ -298,7 +287,7 @@ Partial Public Class uscCollGrid
                 imgPersonItem.AlternateText = ""
                 imgPersonItem.ImageUrl = ImagePath.SmallEmpty
                 If item.Entity.DestinationFirst.GetValueOrDefault(False) Then
-                    imgPersonItem.AlternateText = "Utente Principale per la Protocollazione"
+                    imgPersonItem.AlternateText = "Utente principale per la protocollazione"
                     If item.Entity.Account.Eq(DocSuiteContext.Current.User.FullUserName) Then
                         imgPersonItem.ImageUrl = "../App_Themes/DocSuite2008/imgset16/user.png"
                     End If
@@ -382,7 +371,8 @@ Partial Public Class uscCollGrid
                             protocolId = String.Format("{0}/{1:0000000}", item.Entity.Year.Value, item.Entity.Number.Value)
                         End If
                         lnkNumberItem.Text = String.Format("{0}{1}{2}", protocolId, WebHelper.Br, item.Entity.PublicationDate.DefaultString())
-                        lnkNumberItem.CommandArgument = String.Format("{0}|{1:0000000}|{2}", item.Entity.Year, item.Entity.Number, item.TenantModel.TenantName)
+                        Dim currentCollaboration As Collaboration = Facade.CollaborationFacade.GetById(item.Entity.IdCollaboration.Value)
+                        lnkNumberItem.CommandArgument = String.Format("{0}|{1}|{2:0000000}|{3}", currentCollaboration.IdDocumentUnit, item.Entity.Year, item.Entity.Number, item.TenantModel.TenantName)
 
                     Case CollaborationDocumentType.D.ToString(), CollaborationDocumentType.A.ToString()
                         Dim reslType As ResolutionType
@@ -410,10 +400,14 @@ Partial Public Class uscCollGrid
                 End Select
 
                 If item.Entity.DocumentType.Eq(CollaborationDocumentType.UDS.ToString()) OrElse Integer.TryParse(item.Entity.DocumentType, 0) Then
-                    CurrentUDSCollaborationFinder.EnablePaging = False
-                    CurrentUDSCollaborationFinder.IdCollaboration = item.Entity.IdCollaboration
-                    CurrentUDSCollaborationFinder.ExpandRepository = True
-                    Dim results As ICollection(Of WebAPIDto(Of Entity.UDS.UDSCollaboration)) = CurrentUDSCollaborationFinder.DoSearch()
+                    Dim results As ICollection(Of WebAPIDto(Of Entity.UDS.UDSCollaboration)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentUDSCollaborationFinder,
+                        Function(impersonationType, finder)
+                            finder.ResetDecoration()
+                            finder.EnablePaging = False
+                            finder.IdCollaboration = item.Entity.IdCollaboration
+                            finder.ExpandRepository = True
+                            Return finder.DoSearch()
+                        End Function)
 
                     If results IsNot Nothing Then
                         Dim udsCollaboration As Entity.UDS.UDSCollaboration = results.Select(Function(s) s.Entity).SingleOrDefault()

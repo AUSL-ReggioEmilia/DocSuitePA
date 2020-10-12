@@ -62,16 +62,12 @@ Public Class TaskHeader
 
 
     Public Overridable Sub AddProtocol(domain As Protocol)
-        If Not (domain.Id.Year.HasValue AndAlso domain.Id.Number.HasValue) Then
-            Return
-        End If
-
         If Me.Protocols Is Nothing Then
             Me.Protocols = New List(Of TaskHeaderProtocol)
         End If
 
-        If Me.Protocols.Any(Function(i) i.Protocol.Id.Year.Equals(domain.Id.Year) _
-                                AndAlso i.Protocol.Id.Number.Equals(domain.Id.Number)) Then
+        If Me.Protocols.Any(Function(i) i.Protocol.Year.Equals(domain.Year) _
+                                AndAlso i.Protocol.Number.Equals(domain.Number)) Then
             Return
         End If
 
@@ -83,7 +79,9 @@ Public Class TaskHeader
 
     Public Overridable Sub AddProtocol(dto As IProtocolDTO)
         Dim temp As New Protocol()
-        temp.Id = New YearNumberCompositeKey(dto.Year, dto.Number)
+        temp.Id = dto.UniqueId.Value
+        temp.Year = dto.Year.Value
+        temp.Number = dto.Number.Value
         Me.AddProtocol(temp)
     End Sub
 

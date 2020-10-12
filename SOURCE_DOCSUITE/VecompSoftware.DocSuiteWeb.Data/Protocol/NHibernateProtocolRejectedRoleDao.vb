@@ -20,8 +20,8 @@ Public Class NHibernateProtocolRejectedRoleDao
     Public Function GetByRole(idRole As Integer, year As Short, number As Integer) As ProtocolRejectedRole
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolRejectedRole)()
         criteria.Add(Restrictions.Eq("Role.Id", idRole))
-        criteria.Add(Restrictions.Eq("Year", year))
-        criteria.Add(Restrictions.Eq("Number", number))
+        criteria.Add(Restrictions.Eq("Protocol.Year", year))
+        criteria.Add(Restrictions.Eq("Protocol.Number", number))
         Return criteria.UniqueResult(Of ProtocolRejectedRole)()
     End Function
 

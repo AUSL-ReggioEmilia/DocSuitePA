@@ -1,8 +1,7 @@
 ﻿Imports System.Collections.Generic
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.Helpers.ExtensionMethods
 Imports System.Linq
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Biblos.Models
 
 Namespace Viewers
@@ -21,13 +20,12 @@ Namespace Viewers
         End Sub
 
         Private Sub BindViewerLight()
-            Dim servername As String = Request.QueryString.GetValue(Of String)("servername")
             Dim guid As Guid = Request.QueryString.GetValue(Of Guid)("guid")
             Dim label As String = Request.QueryString.GetValue(Of String)("label")
             Dim document As Guid = Request.QueryString.GetValueOrDefault(Of Guid)("document", Guid.Empty)
             Dim ignoreState As Boolean = Request.QueryString.GetValueOrDefault(Of Boolean)("ignorestate", False)
 
-            Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentChildren(servername, guid, ignoreState)
+            Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentChildren(guid, ignoreState)
 
             For Each doc As BiblosDocumentInfo In docs
                 If doc.DocumentId = document Then

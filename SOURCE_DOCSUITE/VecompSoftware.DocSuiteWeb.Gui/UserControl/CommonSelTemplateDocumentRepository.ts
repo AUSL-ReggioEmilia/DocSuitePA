@@ -28,7 +28,7 @@ class CommonSelTemplateDocumentRepository {
      * @param sender
      * @param eventArgs
      */
-    btnConfirm_OnClicked = (sender: Telerik.Web.UI.RadButton, arg: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnConfirm_OnClicked = (sender: Telerik.Web.UI.RadButton, arg: Telerik.Web.UI.ButtonEventArgs) => {
         this.returnValuesJson();
     }
 

@@ -53,7 +53,7 @@ Partial Public Class CommFascicoloRicerca
             Exit Sub
         End If
 
-        Dim contactActive As Boolean = Not CommonShared.HasGroupAdministratorRight OrElse (DocSuiteContext.IsFullApplication AndAlso CommonShared.HasGroupTblContactRight)
+        Dim contactActive As Boolean = Not CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContactRight
         Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(txtSearchContact.Text, If(contactActive, 1S, 0S))
         If contacts.IsNullOrEmpty() Then
             AjaxAlert("Codice Inesistente.")

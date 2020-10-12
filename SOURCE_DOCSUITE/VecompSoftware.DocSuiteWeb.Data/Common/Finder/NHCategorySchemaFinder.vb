@@ -1,5 +1,4 @@
 ﻿Imports NHibernate
-Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.NHibernateManager
 
 Public Class NHCategorySchemaFinder

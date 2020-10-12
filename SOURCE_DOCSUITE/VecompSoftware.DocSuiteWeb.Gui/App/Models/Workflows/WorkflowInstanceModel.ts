@@ -7,6 +7,7 @@ interface WorkflowInstanceModel {
     RegistrationUser: string;
     Name: string;
     Status: string;
+    Subject: string;
     WorkflowActivitiesDoneCount: number;
     HasActivitiesInError: boolean;
     HasActivitiesInErrorLabel: string;

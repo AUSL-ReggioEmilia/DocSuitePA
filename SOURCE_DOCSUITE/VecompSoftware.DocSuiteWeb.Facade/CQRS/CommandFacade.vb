@@ -58,7 +58,7 @@ Public Class CommandFacade(Of T As ICommand)
     ''' Invio messaggio utilizzando un controller custom
     ''' </summary>
     Public Sub Push(ByVal command As T) Implements ICommandFacade(Of T).Push
-        If WebApi.SendRequest(Tenant.WebApiClientConfig, Tenant.OriginalConfiguration, command) Then
+        If WebAPIImpersonatorFacade.ImpersonateSendRequest(Of T)(WebApi, command, Tenant.WebApiClientConfig, Tenant.OriginalConfiguration) Then
             FileLogger.Info(LoggerName, String.Format("[CommandFacade - Send] Comando {0} correttamente spedito", command.ToString()))
         Else
             Dim errorMessage As String = String.Format("Errore in esecuzione del comando {0}", command.ToString())

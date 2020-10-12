@@ -215,15 +215,15 @@ abstract class PECInvoice extends PecInvoiceBase {
 
     }
 
-    btnSearch_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnSearch_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.loadResults();
     }
 
-    btnClean_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnClean_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.cleanSearchFilters();
     }
 
-    btnTenants_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnTenants_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._rwTenants.show();
     }
 
@@ -437,7 +437,7 @@ abstract class PECInvoice extends PecInvoiceBase {
         this.selectedPECMailId = viewModelMapper.Map(selectedRow[0]._dataItem).EntityId;
     }
 
-    btnContainerSelectorOkId_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnContainerSelectorOkId_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._pecMailService.getPECMailById(this.selectedPECMailId,
             (data: any) => {
                 let pecMail: PECMailViewModel = data;

@@ -1,0 +1,86 @@
+Epic 20945: [AGENAS] Riepilogo firmatari : Introdurre in stampa conforme il riepilogo dei firmatari qualificati e firma elettronica semplice
+Epic 20959: [ENEA] Archivi : Modifiche richieste agli archivi privacy 9.01
+
+
+Feature 18754: [SM] Integrazione autentica e profilazione con identity management
+Feature 20911: [SM] Fascicoli : Miglioramenti uso delle serie e volumi in creazione del fascicolo
+Feature 20920: [SM] Process : Miglioramenti nell'amministrazione delle serie e volumi
+Feature 20931: [SM] Vista archivistica : Miglioramento di gestione con gestione gruppi di sicurezza e sposta fascicolo
+Feature 20944: [AGENAS] Stampa conforme: Introdurre in stampa conforme il riepilogo dei firmatari qualificati e firma elettronica semplice
+Feature 20946: [AGENAS] Collaborazione: Adeguare le collaborazioni per la gestione di biblos dell'elenco die firmatari 
+Feature 20947: [AGENAS] Visualizzazione documenti: Adeguare le collaborazioni per la gestione di biblos dell'elenco dei firmatari 
+Feature 20960: [ENEA] Archivi : Modifica alla funzione "Esporta tutto in Excel
+Feature 20963: [ENEA] Archivi : Miglioramenti alla pagina di ricerca
+Feature 20969: [ENEA] Archivi : Abilitare l'opzione "mostra data ultima modifica", "mostra utente ultima modifica" nel designer
+Feature 20973: [ENEA] Archivi : Permettere, per chi ha il diritto di modifica di contenitore, la possibilità di rimuovere i collegamenti tra archivi/archivi.
+Feature 20982: [DSW] Telerik 2020: Aggiornamento librerie 2020 Q1
+Feature 21007: [CNOCDL] Protocollo : Richieste evolutive al modulo Protocollo
+Feature 21184: [DSW] Protocollo: Visualizzare nel "pannello delle autorizzazioni" gli utenti "messi in evidenza"
+Feature 21235: [SM] Tnotice : Miglioramento di gestione "invio tnotice"
+Feature 21353: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle amministrative
+
+
+User Story 20903: [SM] Shibboleth: Predisposizione del WebAPI Client nel framework per autenticazione mediante "cookie"
+User Story 20904: [SM] Shibboleth: Predisposizione nelle WebAPI del identity di Shibboleth
+User Story 20905: [SM] Shibboleth: Predisposizione nella DocSuite del identity di Shibboleth
+User Story 20906: [SM] Shibboleth: Creazione nel framework di un helper di integrazione con l'identity provider di Shibboleth
+User Story 20912: [SM] Fascicoli : Rimuovere vecchia gestione inserimento di fascicoli
+User Story 20913: [SM] Fascicoli : Rimuovere la gestione "serie e volumi e template di fascicolo" in FascProcessInserimento.aspx
+User Story 20914: [SM] Fascicoli : In selezione di classificatore mostrare anche serie/volumi/template di fascicolo (onlymy)
+User Story 20921: [SM] Process: Rimuovere dalla tabella Processes la colonna FascicleType
+User Story 20922: [SM] Process: Adeguare l'entità Process eliminando la proprietà FascicleType e i vari layer nelle WebAPI 
+User Story 20923: [SM] Process: Adeguare i modelli Process nella DocSuite eliminando la proprietà FascicleType 
+User Story 20924: [SM] Process: Allineare la UX amministrativa come da standard
+User Story 20925: [SM] Process: Modifica UX alla creazione di Serie (Process) 
+User Story 20926: [SM] Process: Modificare la treeview di amministrazione delle serie/volimi aggiugnendo i classificatori con un piano di procedimento attivo
+User Story 20927: [SM] Process: Vincolari i settori responsabili nella gestione dei volumi e tempalte di fascicoli, resrtingendoli dai settori autorizzati nella serie (process)
+User Story 20928: [SM] Process: Adeguare la pagina di creazione di fascicolo (guidato) agganciando correttamente il valore dell proprietà FascicleType
+User Story 20932: [SM] Vista archivistica : Creare i parametri ProcessesViewsReadableGroups e ProcessesViewsManageableGroups  di ProtocolEnv
+User Story 20933: [SM] Vista archivistica : Le voci di menu "vista archivistica" e "gestioen serie" è disponibile solo agli utenti autorizzati
+User Story 20934: [SM] Vista archivistica : Miglioramenti dettaglio della serie
+User Story 20935: [SM] Vista archivistica : Creare una toolbar di gestione delle attività sui fascicoli e serie
+User Story 20940: [SM] Amministrazione Serie (process): Nuova funzione "Clona volume"
+User Story 20943: [SM] Fascicoli : In modifica di fascicolo permettere il cambio di serie e volume
+User Story 20948: [AGENAS] Visualizzazione documenti: Adeguare le collaborazioni per la gestione di biblos dell'elenco die firmatari 
+User Story 20949: [AGENAS] Ottimizzazione biblos: Aggiungere un attributo a tutti gli archivi Biblos "SignModels"
+User Story 20950: [AGENAS] Collaborazione : Valorizzare l'attributo di Biblos "SignModels" e CollaborationSign.SignDate 
+User Story 20951: [AGENAS] Stampa conforme: Adeguare metodo di conversione PDF per il passaggio del SignModel
+User Story 20952: [AGENAS] Stampa conforme: Modificare algoritmo e RDLC per aggiungere i firmatri semplici
+User Story 20961: [ENEA] Archivi :Funzione "Esporta tutto in Excel con tutte le colonne
+User Story 20962: [ENEA] Archivi : Modificare il nome del file di esportazione excel
+User Story 20964: [ENEA] Archivi : Aggiugnere la ricerca per "nome documento (principale)" 
+User Story 20965: [ENEA] Archivi : Aggiugnere la ricerca per "privo di documenti" 
+User Story 20966: [ENEA] Archivi : Aggiugnere la ricerca per "privo di documenti" 
+User Story 20970: [ENEA] Archivi : Modificare XSD della definizione dell'uds
+User Story 20971: [ENEA] Archivi : Nel designer delle UDS, abilitare l'opzione "mostra data ultima modifica", "mostra utente ultima modifica"
+User Story 20972: [ENEA] Archivi : Nel designer delle UDS, abilitare l'opzione "mostra data ultima modifica", "mostra utente ultima modifica"
+User Story 20974: [ENEA] Archivi : Permettere, per chi ha il diritto di modifica di contenitore, la possibilità di rimuovere i collegamenti tra archivi/archivi.
+User Story 20983: [DSW] Telerik 2020: Creare i pacchetti nuget nel package standard di rilascio
+User Story 20984: [DSW] Telerik 2020: Aggiornare la DocSuite e TS
+User Story 21008: [CNOCDL] Protocollo : Creare nuovi parametri di ProtocolEnv 
+User Story 21009: [CNOCDL] Protocollo : Inserire firma nel testo delle email
+User Story 21010: [CNOCDL] Protocollo : Invio email al proponente in fase di rimozione del protocollo in evidenza
+User Story 21103: [SM] Amministrazione Serie (process): Custom validation per l'actiontype nuovo : CloneProcessDetails 
+User Story 21104: [ENEA] Archivi : Creare Custom Validation che verifica se l'utente corrente ha il diritto di modifica di contenitore per rimuovere i collegamenti tra archivi/archivi.
+User Story 21185: [DSW] Protocollo: Visualizzare nel "pannello delle autorizzazioni" gli utenti "messi in evidenza"
+User Story 21236: [SM] Tnotice : Nella pagina "PosteWebItem" nella sola modalità "invio tnotice" (PType=SE) impostare il contatto mittente in sola lettura. 
+User Story 21237: [SM] Tnotice : Leggere il contatto mittente dal json del POLAccount selezionato
+User Story 21385: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Elenco AOO
+User Story 21386: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Gruppi
+User Story 21387: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Utenti
+User Story 21388: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Contenitori
+User Story 21389: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Settori
+User Story 21390: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Gestione serie e volumi
+User Story 21391: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Classificatore
+User Story 21392: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Massimario di scarto (aggiungere toolbar)
+User Story 21393: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Lista di contatti
+User Story 21394: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Archivi -> Tipologie
+User Story 21395: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Metadati (aggiungere toolbar)
+User Story 21396: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Categorie di servizio (aggiungere toolbar)
+User Story 21397: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Tipologia di spedizione (aggiungere toolbar)
+User Story 21398: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Deposito documentale (aggiungere toolbar)
+User Story 21399: [SM] Amministrazione Tabelle : Miglioramenti usabilità Tabelle Attività (provare a mettere sempre il testo anche se numero)
+
+
+Bug	21006: [SM]Reset contatori
+Bug	21431: [SM]Errore duplicazione protocollo con archivi collegati

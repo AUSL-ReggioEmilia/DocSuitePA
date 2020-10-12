@@ -17,9 +17,6 @@
                     udsInvoice.radWindowManagerId = "<%= radWindowManager.ClientID %>";
 
                     udsInvoice.btnSearchId = "<%= btnSearch.ClientID%>";
-                    <%--udsInvoice.btnDocumentsId = "<%= btnDocuments.ClientID%>";
-                    udsInvoice.btnSelectAllId = "<%= btnSelectAll.ClientID%>";
-                    udsInvoice.btnDeselectAllId = "<%= btnDeselectAll.ClientID%>";--%>
                     udsInvoice.btnUploadId = "<%= btnUpload.ClientID%>";
                     udsInvoice.btnCleanId = "<%= btnClean.ClientID %>";
 
@@ -280,23 +277,13 @@
 
 
         </tr>
-        <%--                            <tr>
-                                <td class="label labelPanel" style="width: 20%;">PIVACF:
-                                </td>
-                                <td style="width: 30%;">
-                                    <telerik:RadTextBox ID="txtPIVACF" runat="server" Width="50%" />
-                                    <span>
-                                        <input type="checkbox" name="txtPIVACF" id="rbltxtPIVACFfilter" value="Contiene" checked="checked" />Contiene</span>
-
-                                </td>
-                            </tr>--%>
         <tr>
             <td class="label labelPanel">
                 <span id="ltlCustomer">Cliente</span>
                 <span id="ltlSupplier">Fornitore</span>
             </td>
             <td>
-                <usc:ContattiSel ButtonImportManualVisible="false" Visible="false" IsRequired="false" ButtonImportVisible="False" ButtonManualVisible="true" ButtonPropertiesVisible="True" ButtonSelectDomainVisible="true" ButtonSelectOChartVisible="true" ButtonSelectVisible="False" Caption="Denominazione" HeaderVisible="false" EnableCC="false" ID="uscDenominazione" Multiple="false" MultiSelect="false" ProtType="True" ReadOnly="False" runat="server" TreeViewCaption="Denominazione" Type="Prot" />
+                <usc:ContattiSel ButtonImportManualVisible="false" Visible="false" IsRequired="false" ButtonImportVisible="False" ButtonManualVisible="true" ButtonPropertiesVisible="True" ButtonSelectDomainVisible="false" ButtonSelectOChartVisible="true" ButtonSelectVisible="False" Caption="Denominazione" HeaderVisible="false" EnableCC="false" ID="uscDenominazione" Multiple="false" MultiSelect="false" ProtType="True" ReadOnly="False" runat="server" TreeViewCaption="Denominazione" Type="Prot" />
                 <telerik:RadTextBox ID="txtDenominazioneManual" runat="server" Width="50%" />
                 <span>
                     <input type="checkbox" name="chkDenominazioneManualfilter" id="chkDenominazioneManualfilter" value="Contiene" checked="checked" />Contiene</span>
@@ -322,34 +309,11 @@
                     Vuoto
                 </span>
             </td>
-
-            <%-- <tr>
-                                <td class="label labelPanel" style="width: 20%;">Indetificatiovo SDI:
-                                </td>
-                                <td style="width: 30%;">
-                                    <telerik:RadNumericTextBox ID="txtIDSDI" NumberFormat-DecimalDigits="0" NumberFormat-GroupSeparator="" IncrementSettings-InterceptArrowKeys="True" IncrementSettings-InterceptMouseWheel="True" MaxLength="4" Width="56px" runat="server" />
-                                    <span>
-                                        <input type="checkbox" name="txtIDSDI" id="rbltxtIDSDIfilter" value="Contiene" checked="checked" />Contiene</span>
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label labelPanel" style="width: 20%;">Progressivo invio SDI:
-                                </td>
-                                <td style="width: 30%;">
-                                    <telerik:RadNumericTextBox ID="txtProgressIDSDI" NumberFormat-DecimalDigits="0" NumberFormat-GroupSeparator="" IncrementSettings-InterceptArrowKeys="True" IncrementSettings-InterceptMouseWheel="True" MaxLength="4" Width="56px" runat="server" />
-                                    <span>
-                                        <input type="checkbox" name="txtProgressIDSDI" id="rbltxtProgressIDSDIfilter" value="Contiene" checked="checked" />Contiene</span>
-
-                                </td>
-                            </tr>--%>
     </table>
 
-    <div style="margin: 1px 1px 10px 1px;">
-        <div>
-            <telerik:RadButton ID="btnSearch" Text="Aggiorna visualizzazione" Width="150px" runat="server" TabIndex="1" AutoPostBack="False" />
-            <telerik:RadButton ID="btnClean" Text="Azzera filtri" Width="150px" runat="server" TabIndex="1" AutoPostBack="False" />
-        </div>
+    <div style="margin-left: 2px;">
+        <telerik:RadButton ID="btnSearch" Text="Aggiorna visualizzazione" Width="150px" runat="server" TabIndex="1" AutoPostBack="False" />
+        <telerik:RadButton ID="btnClean" Text="Azzera filtri" Width="150px" runat="server" TabIndex="1" AutoPostBack="False" />
     </div>
     <telerik:RadWindowManager EnableViewState="False" ID="radWindowManager" runat="server">
         <Windows>
@@ -387,7 +351,7 @@
                         <ItemStyle HorizontalAlign="Center" CssClass="headerImage" />
                         <ClientItemTemplate>
                         # if(hasDocuments(Documents)){#
-                        <a href="../Viewers/UDSViewer.aspx?IdUDS=#=UDSId#&IdUDSRepository=#=IdUDSRepository#" onclick="showLoadingPanel()">
+                        <a href="../Viewers/UDSViewer.aspx?IdUDS=#=UDSId#&IdUDSRepository=#=IdUDSRepository#">
                             <img class="dsw-text-center" src="#=getDocumentIcon(Documents)#" height="16px" width="16px" />
                         </a>
                         #}#
@@ -396,7 +360,7 @@
                     <telerik:GridTemplateColumn HeaderText="Numero Fattura" DataField="NumeroFattura" UniqueName="NumeroFattura" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center"
                         SortExpression="NumeroFattura" AllowFiltering="false" AllowSorting="True">
                         <ClientItemTemplate>
-                             <a href="UDSView.aspx?Type=UDS&IdUDS=#=UDSId#&IdUDSRepository=#=IdUDSRepository#" onclick="showLoadingPanel()">#=getNumber(NumeroFattura)#</a>
+                             <a href="UDSView.aspx?Type=UDS&IdUDS=#=UDSId#&IdUDSRepository=#=IdUDSRepository#">#=getNumber(NumeroFattura)#</a>
                         </ClientItemTemplate>
                     </telerik:GridTemplateColumn>
 
@@ -490,10 +454,9 @@
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="cphFooter" runat="server">
-    <%--    <telerik:RadButton ID="btnDocuments" runat="server" Text="Visualizza documenti" AutoPostBack="false" />
-    <telerik:RadButton ID="btnSelectAll" runat="server" AutoPostBack="false" Width="120px" Text="Seleziona tutti"  />
-    <telerik:RadButton ID="btnDeselectAll" runat="server" AutoPostBack="false" Width="120px" Text="Annulla selezione" />--%>
-    <telerik:RadButton ID="btnUpload" runat="server" AutoPostBack="false" Width="120px" Text="Cassetto fiscale" ToolTip="Importazione fatture da cassetto fiscale - Agenzia delle Entrate" />
-    <telerik:RadButton ID="btnInvoiceDelete" runat="server" AutoPostBack="false" Width="120px" Text="Annulla fattura" ToolTip="Annulla fattura" />
-    <telerik:RadButton ID="btnInvoiceMove" runat="server" AutoPostBack="false" Width="120px" Text="Sposta fattura" ToolTip="Sposta fattura (funzione abilitata per le sole fatture attive)" />
+    <asp:Panel runat="server" ID="pnlButtons">
+        <telerik:RadButton ID="btnUpload" runat="server" AutoPostBack="false" Width="120px" Text="Cassetto fiscale" ToolTip="Importazione fatture da cassetto fiscale - Agenzia delle Entrate" />
+        <telerik:RadButton ID="btnInvoiceDelete" runat="server" AutoPostBack="false" Width="120px" Text="Annulla fattura" ToolTip="Annulla fattura" />
+        <telerik:RadButton ID="btnInvoiceMove" runat="server" AutoPostBack="false" Width="120px" Text="Sposta fattura" ToolTip="Sposta fattura (funzione abilitata per le sole fatture attive)" />
+    </asp:Panel>
 </asp:Content>

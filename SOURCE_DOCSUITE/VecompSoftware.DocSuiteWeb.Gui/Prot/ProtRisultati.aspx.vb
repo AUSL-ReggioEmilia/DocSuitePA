@@ -45,6 +45,8 @@ Partial Public Class ProtRisultati
                 uscProtocolGridBar.Hide()
                 ReportButtons.Visible = False
                 uscProtocolGrid.ColumnClientSelectVisible = False
+                uscProtocolGrid.ColumnProtocolContactVisible = DocSuiteContext.Current.ProtocolEnv.ContactToProtocolGridVisible
+                uscProtocolGrid.ColumnProtocolRegistrationUserVisible = DocSuiteContext.Current.ProtocolEnv.RegistrationUserToProtocolGridVisible
             Case Else
                 uscProtocolGrid.ColumnProtocolContactVisible = DocSuiteContext.Current.ProtocolEnv.ContactToProtocolGridVisible
                 uscProtocolGrid.ColumnProtocolRegistrationUserVisible = DocSuiteContext.Current.ProtocolEnv.RegistrationUserToProtocolGridVisible
@@ -52,6 +54,9 @@ Partial Public Class ProtRisultati
                 uscProtocolGridBar.AjaxEnabled = True
                 uscProtocolGridBar.AjaxLoadingPanel = MasterDocSuite.AjaxDefaultLoadingPanel
                 uscProtocolGridBar.Show()
+                If ProtocolEnv.MassiveChangeProtocolContainerEnabled Then
+                    uscProtocolGridBar.InitializeChangeContainerFunctionality()
+                End If
         End Select
 
         If Action <> "Resl" Then

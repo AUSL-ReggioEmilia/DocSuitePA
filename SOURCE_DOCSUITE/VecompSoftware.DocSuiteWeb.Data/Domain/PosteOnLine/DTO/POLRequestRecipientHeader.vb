@@ -16,8 +16,9 @@
     Public Property IdRichiesta As String
     Public Property IdOrdine As String
     Public Property IdRicevuta As String
-    Public Property RegistrationDate As DateTime?
+    Public Property RegistrationDate As DateTimeOffset
     Public Property DataSpedizione As DateTime?
     Public Property ProtocolYear As Short?
     Public Property ProtocolNumber As Integer?
+    Public Property ProtocolId As Guid?
 End Class

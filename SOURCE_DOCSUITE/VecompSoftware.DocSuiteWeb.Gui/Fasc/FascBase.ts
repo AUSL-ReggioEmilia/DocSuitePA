@@ -19,7 +19,8 @@ abstract class FascBase {
     protected static FASCICLE_DOCUMENT_TYPE_NAME = "FascicleDocument";
     protected static DOMAIN_TYPE_NAME = "DomainUserModel";
     protected static FASCICLE_CATEGORY_FASCICLE = "CategoryFascicle";
-    protected static FASCICLEFOLDER_TYPE_NAME= "FascicleFolder";
+    protected static FASCICLEFOLDER_TYPE_NAME = "FascicleFolder";
+    protected static DOSSIERFOLDER_TYPE_NAME = "DossierFolder";
 
     private _serviceConfiguration: ServiceConfiguration;
     protected service: FascicleService;

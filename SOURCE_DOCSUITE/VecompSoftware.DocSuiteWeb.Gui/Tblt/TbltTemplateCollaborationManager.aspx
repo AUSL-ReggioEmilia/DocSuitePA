@@ -25,7 +25,7 @@
 <asp:Content ContentPlaceHolderID="cphContent" runat="server">
      <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
     <div class="radGridWrapper">
-        <DocSuite:BindGrid ID="grdTemplateCollaboration" runat="server" AutoGenerateColumns="false" AllowMultiRowSelection="false" GridLines="Both">
+        <DocSuite:BindGrid ID="grdTemplateCollaboration" runat="server" AutoGenerateColumns="false" AllowMultiRowSelection="false" GridLines="Both" ImpersonateCurrentUser="true">
             <MasterTableView TableLayout="Fixed" ClientDataKeyNames="Entity.UniqueId" AllowFilteringByColumn="true" GridLines="Both">
                 <Columns>
                     <telerik:GridClientSelectColumn UniqueName="ClientSelectColumn" HeaderStyle-Width="5%" HeaderStyle-CssClass="headerImage" />

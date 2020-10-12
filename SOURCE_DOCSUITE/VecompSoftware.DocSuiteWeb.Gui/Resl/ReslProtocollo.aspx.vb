@@ -91,7 +91,7 @@ Partial Public Class ReslProtocollo
         ' Filtro per numero
         CurrentFinder.NumberLike = e.Text
 
-        Dim protocolNumbers As List(Of Integer) = (From yearNumberCompositeKey In CurrentFinder.DoSearchKey() Select yearNumberCompositeKey.Number.Value).ToList()
+        Dim protocolNumbers As List(Of Integer) = (From protocol In CurrentFinder.DoSearch() Select protocol.Number).ToList()
         If protocolNumbers Is Nothing Then
             Exit Sub
         End If
@@ -188,8 +188,8 @@ Partial Public Class ReslProtocollo
         finder.PageSize = ResolutionEnv.ReslProtocolMaxResults
         finder.Year = Short.Parse(ddlYear.SelectedValue)
         finder.IdStatus = ProtocolStatusId.Attivo
-        finder.SortExpressions.Add("Id.Year", "Desc")
-        finder.SortExpressions.Add("Id.Number", "Desc")
+        finder.SortExpressions.Add("P.Year", "Desc")
+        finder.SortExpressions.Add("P.Number", "Desc")
 
         '' Aggiungo i check sulla sicurezza
         CommonInstance.ApplyProtocolFinderSecurity(finder, SecurityType.Read, True)

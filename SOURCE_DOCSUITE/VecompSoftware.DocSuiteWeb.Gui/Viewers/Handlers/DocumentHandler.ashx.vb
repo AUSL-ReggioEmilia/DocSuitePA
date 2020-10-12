@@ -1,15 +1,19 @@
-﻿Imports System.IO
+﻿Imports System.Collections.Generic
+Imports System.IO
 Imports System.Linq
 Imports System.Text
 Imports System.Web
 Imports System.Web.Hosting
+Imports Newtonsoft.Json
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.DTO.Collaborations
 Imports VecompSoftware.DocSuiteWeb.Entity.Commons
 Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Commons
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.OData
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Model.DocumentGenerator
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
@@ -30,7 +34,7 @@ Namespace Viewers.Handlers
         Private _facadeFactory As FacadeFactory
         Protected _currentHttpContext As HttpContext = Nothing
         Private _currentODataFacade As New ODataFacade()
-        Private _documentUnit As DocumentUnit
+        Private _documentUnit As Entity.DocumentUnits.DocumentUnit
         Private _checkPrivacy As Boolean?
         Private Const ERROR_TEMPLATE_NAME As String = "error.pdf"
         Private Const PRIVACY_ERROR_TEMPLATE_NAME As String = "privacy_error.pdf"
@@ -41,19 +45,21 @@ Namespace Viewers.Handlers
 #Region " Properties "
 
 
-        Protected ReadOnly Property CurrentDocumentUnit As DocumentUnit
+        Protected ReadOnly Property CurrentDocumentUnit As Entity.DocumentUnits.DocumentUnit
             Get
                 If _documentUnit Is Nothing AndAlso UniqueId.HasValue AndAlso UniqueId.Value <> Guid.Empty Then
-                    Dim finder As DocumentUnitFinder = New DocumentUnitFinder(DocSuiteContext.Current.Tenants)
-                    finder.ResetDecoration()
-                    finder.EnablePaging = False
-                    finder.IdDocumentUnit = UniqueId.Value
-                    finder.ExpandContainer = True
-                    finder.ExpandRoles = ExpandDocumentUnitRoles
-                    If Environment.HasValue AndAlso Environment >= 100 Then
-                        finder.ExpandUDSRepository = True
-                    End If
-                    _documentUnit = finder.DoSearch().Select(Function(f) f.Entity).SingleOrDefault()
+                    _documentUnit = WebAPIImpersonatorFacade.ImpersonateFinder(New DocumentUnitFinder(DocSuiteContext.Current.Tenants),
+                            Function(impersonationType, finder)
+                                finder.ResetDecoration()
+                                finder.EnablePaging = False
+                                finder.IdDocumentUnit = UniqueId.Value
+                                finder.ExpandContainer = True
+                                finder.ExpandRoles = ExpandDocumentUnitRoles
+                                If Environment.HasValue AndAlso Environment >= 100 Then
+                                    finder.ExpandUDSRepository = True
+                                End If
+                                Return finder.DoSearch().Select(Function(f) f.Entity).SingleOrDefault()
+                            End Function)
                 End If
                 Return _documentUnit
             End Get
@@ -299,7 +305,13 @@ Namespace Viewers.Handlers
         End Sub
 
         Private Sub GetPdfStream(doc As DocumentInfo, ByRef data() As Byte, ByRef name As String)
-            data = ToPdfStream(doc, name, Function(d As DocumentInfo) doc.GetPdfStream())
+            Dim signerModels As String = String.Empty
+            If doc.Attributes.ContainsKey(BiblosFacade.SING_MODELS_ATTRIBUTE) Then
+                signerModels = doc.Attributes(BiblosFacade.SING_MODELS_ATTRIBUTE).ToString()
+                Dim collaborationSigns As IEnumerable(Of CollaborationSignModel) = JsonConvert.DeserializeObject(Of List(Of CollaborationSignModel))(signerModels).Where(Function(cs) cs.SignDate.HasValue And cs.IsRequired.Value = False)
+                signerModels = JsonConvert.SerializeObject(collaborationSigns)
+            End If
+            data = ToPdfStream(doc, name, Function(d As DocumentInfo) SC.Service.ConvertToPdf(doc.Stream, doc.ExtensionOrName, doc.Signature, String.Empty, signerModels))
         End Sub
 
         Protected Sub ElaborateException(context As HttpContext, exception As Exception, download As Boolean, doc As DocumentInfo)

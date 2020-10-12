@@ -29,6 +29,8 @@
                 uscMetadataRepositoryDesigner.componentEnumId = "<%= componentEnum.ClientID%>"
                 uscMetadataRepositoryDesigner.pageContentId = "<%= pageContent.ClientID%>";
                 uscMetadataRepositoryDesigner.ajaxManagerId = "<%= BasePage.MasterDocSuite.DefaultWindowManager.ClientID %>";
+                uscMetadataRepositoryDesigner.setiEnabledId = <%=ProtocolEnv.SETIIntegrationEnabled.ToString().ToLower()%>;
+                uscMetadataRepositoryDesigner.setiFieldCheckId = "<%=seti_field_check.ClientID%>";
                 uscMetadataRepositoryDesigner.initialize();
             });
         });
@@ -105,15 +107,13 @@
                     <div id="Number" class="component" data-type="Number" draggable="true" ondragstart="drag(event)"><span aria-hidden="true"><big><b>1.</b></big></span>&nbsp; Numero</div>
                     <div id="Date" class="component" data-type="Date" draggable="true" ondragstart="drag(event)"><span class="fa fa-calendar fa-lg" aria-hidden="true"></span>&nbsp; Data</div>
                     <div id="CheckBox" class="component" data-type="Checkbox" draggable="true" ondragstart="drag(event)"><span class="fa fa-check-square-o fa-lg" aria-hidden="true"></span>&nbsp; Checkbox</div>
-                    <div id="Enumerator" class="component" data-type="Enum" draggable="true" ondragstart="drag(event)"><span class="fa fa-list fa-lg" aria-hidden="true"></span>&nbsp; Scelta Multipla</div>
+                    <div id="Enumerator" class="component" data-type="Enum" draggable="true" ondragstart="drag(event)"><span class="fa fa-list fa-lg" aria-hidden="true"></span>&nbsp; Scelta multipla</div>
                 </div>
             </td>
             <td>
                 <div class="menuContent" ondrop="drop(event)" ondragover="allowDrop(event)">
 
-                    <div class="menuContent" id="menuContent">
-                    </div>
-
+                    <div class="menuContent" id="menuContent"> </div>
                 </div>
             </td>
         </tr>
@@ -124,14 +124,20 @@
 
     <div id="componentTitle" data-type="Title" runat="server" style="padding: 6px;" class="element-Title">
         <label class="control-label">Titolo</label>
-        <div class="controls">
+        <div class="controls" style="display: flex;">
             <input type="text" name="" id="Name_input" class="form-control" style="width: 320px;" placeholder="Scegliere il titolo del deposito di metadati">
+             <span runat="server" id="seti_field_check" style="margin-left: 5px; display:none;">
+                <b>Abilita integrazione SETI </b>
+                <input type="checkbox" style="margin: 0;" id="seti_input_check" name="setiField" value="false" />
+            </span>
         </div>
     </div>
-
+    <div>
+       
+    </div>
     <div id="componentText" data-type="Text" style="padding: 6px;" runat="server" class="element">
         <div><span aria-hidden="true"><big><b>Ab</b></big></span></div>
-        <div class="close" onclick="remove(event)" id="closeText">&times;</div>
+        <div class="close" onclick="remove(event)" id="closeText">&times;</div> <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -140,6 +146,14 @@
                     </td>
                     <td>
                         <input type="text" name="" id="text_input" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Scegliere il nome del campo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelKeyNameText">Codice interno: </label>
+                    </td>
+                    <td>
+                        <input required type="text" id="keyname_text_input" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Proposto in automatico, premere per specificare uno specifico" />
                     </td>
                 </tr>
                 <tr>
@@ -154,7 +168,7 @@
 
     <div id="componentComment" data-type="Comment" style="padding: 6px;" runat="server" class="element">
         <div><span class="fa fa-comments fa-lg"></span></div>
-        <div class="close" onclick="remove(event)" id="closeComment">&times;</div>
+        <div class="close" onclick="remove(event)" id="closeComment">&times;</div> <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -163,6 +177,14 @@
                     </td>
                     <td>
                         <input type="text" name="" id="comment_input" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Scegliere il nome del campo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelKeyNameComment">Codice interno: </label>
+                    </td>
+                    <td>
+                        <input required type="text" id="keyname_comment_input" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Proposto in automatico, premere per specificare uno specifico" />
                     </td>
                 </tr>
                 <tr>
@@ -177,7 +199,7 @@
 
     <div id="componentDate" data-type="Date" style="padding: 5px;" runat="server" class="element">
         <div><span class="fa fa-calendar fa-lg" aria-hidden="true"></span></div>
-        <div class="close" onclick="remove(event)" id="closeDate">&times;</div>
+        <div class="close" onclick="remove(event)" id="closeDate">&times;</div> <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -186,6 +208,14 @@
                     </td>
                     <td>
                         <input type="text" name="" id="date_input" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Scegliere il nome del campo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelKeyNameDate">Codice interno: </label>
+                    </td>
+                    <td>
+                        <input required type="text" id="keyname_date_input" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Proposto in automatico, premere per specificare uno specifico" />
                     </td>
                 </tr>
                 <tr>
@@ -200,7 +230,7 @@
 
     <div id="componentNumber" data-type="Number" style="padding: 5px;" runat="server" class="element">
         <div><span aria-hidden="true"><big><b>1.</b></big></span></div>
-        <div class="close" onclick="remove(event)" id="closeNumber">&times;</div>
+        <div class="close" onclick="remove(event)" id="closeNumber">&times;</div> <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -209,6 +239,14 @@
                     </td>
                     <td>
                         <input type="text" name="" id="number_input" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Scegliere il nome del campo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelKeyNameNumber">Codice interno: </label>
+                    </td>
+                    <td>
+                        <input required type="text" id="keyname_number_input" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Proposto in automatico, premere per specificare uno specifico" />
                     </td>
                 </tr>
                 <tr>
@@ -223,7 +261,7 @@
 
     <div id="componentCheckbox" data-type="CheckBox" style="padding: 5px;" runat="server" class="element">
         <div><span class="fa fa-check-square-o fa-lg" aria-hidden="true"></span></div>
-        <div class="close" onclick="remove(event)" id="closeCheckBox">&times;</div>
+        <div class="close" onclick="remove(event)" id="closeCheckBox">&times;</div> <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -232,6 +270,14 @@
                     </td>
                     <td>
                         <input type="text" name="checkbox" id="checkbox" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Scegliere il nome del campo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelKeyNameCheckBox">Codice interno: </label>
+                    </td>
+                    <td>
+                        <input required type="text" id="keyname_checkbox_input" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Proposto in automatico, premere per specificare uno specifico" />
                     </td>
                 </tr>
                 <tr>
@@ -246,7 +292,7 @@
 
     <div id="componentEnum" data-type="Enum" style="padding: 5px;" runat="server" class="element">
         <div><span class="fa fa-list fa-lg" aria-hidden="true"></span></div>
-        <div class="close" onclick="remove(event)" id="closeEnum">&times;</div>
+        <div class="close" onclick="remove(event)" id="closeEnum">&times;</div> <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -255,6 +301,14 @@
                     </td>
                     <td>
                         <input type="text" name="enum" id="enum" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Scegliere il nome del campo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelKeyNameEnum">Codice interno: </label>
+                    </td>
+                    <td>
+                        <input required type="text" id="keyname_enum_input" class="form-control" style="width: 320px; margin-left: -15px;" placeholder="Proposto in automatico, premere per specificare uno specifico" />
                     </td>
                 </tr>
                 <tr>

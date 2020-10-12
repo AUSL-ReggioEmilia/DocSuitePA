@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class TemplateUserCollGestione
-    
+
     '''<summary>
     '''pnlHeader control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlHeader As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtName control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtName As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''rfvName control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvName As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''ddlDocumentType control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlDocumentType As Global.Telerik.Web.UI.RadDropDownList
-    
+
     '''<summary>
     '''rfvDocumentType control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvDocumentType As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''ddlSpecificDocumentType control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlSpecificDocumentType As Global.Telerik.Web.UI.RadDropDownList
-    
+
     '''<summary>
     '''rblPriority control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rblPriority As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''deletableSigner control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents deletableSigner As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''selectSignerOrder control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents selectSignerOrder As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
+
     '''<summary>
     '''pnlMainPanel control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlMainPanel As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''uscAuthorizedRoles control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscAuthorizedRoles As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''uscVisioneFirma control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscVisioneFirma As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''pnlRestituzioni control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlRestituzioni As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblDestinatari control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDestinatari As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscSettoriSegreterie control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSettoriSegreterie As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''lblOtherRecipients control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblOtherRecipients As Global.System.Web.UI.WebControls.Literal
-    
+
     '''<summary>
     '''uscRestituzioni control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscRestituzioni As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''txtObject control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtObject As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''txtNote control.
     '''</summary>
@@ -192,7 +192,61 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
-    
+
+    '''<summary>
+    '''pnlDocumentUnitDraft control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlDocumentUnitDraft As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''rowDocumentUnitDraft control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowDocumentUnitDraft As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''chkDocumentUnitDraftEnabled control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkDocumentUnitDraftEnabled As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''chkSecretaryViewRightEnabled control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkSecretaryViewRightEnabled As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''chkPopupDocumentNotSignedAlertEnabled control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkPopupDocumentNotSignedAlertEnabled As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''chkBtnCheckoutEnabled control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkBtnCheckoutEnabled As Global.System.Web.UI.WebControls.CheckBox
+
     '''<summary>
     '''pnlButtons control.
     '''</summary>
@@ -201,7 +255,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnConfirm control.
     '''</summary>
@@ -210,7 +264,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConfirm As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnPublish control.
     '''</summary>
@@ -219,7 +273,7 @@ Partial Public Class TemplateUserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnPublish As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnDelete control.
     '''</summary>

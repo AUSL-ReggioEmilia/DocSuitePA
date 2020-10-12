@@ -113,6 +113,14 @@ define(["require", "exports", "App/Services/BaseService", "App/Models/ODATARespo
                 ;
             }, error);
         };
+        RoleService.prototype.hasCategoryFascicleRole = function (idCategory, callback, error) {
+            var url = this._configuration.ODATAUrl + "/RoleService.HasCategoryFascicleRole(idCategory=" + idCategory + ")";
+            this.getRequest(url, null, function (response) {
+                if (callback && response) {
+                    callback(response.value);
+                }
+            }, error);
+        };
         return RoleService;
     }(BaseService));
     return RoleService;

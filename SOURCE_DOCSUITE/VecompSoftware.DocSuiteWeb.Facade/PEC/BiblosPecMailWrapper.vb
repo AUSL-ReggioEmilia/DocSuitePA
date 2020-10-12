@@ -44,7 +44,7 @@ Public Class BiblosPecMailWrapper
             If _attachments Is Nothing Then
                 _attachments = New List(Of BiblosPecMailAttachmentWrapper)
                 For Each pecMailAttachment As PECMailAttachment In _pec.Attachments
-                    Dim attachmentWrapper As BiblosPecMailAttachmentWrapper = New BiblosPecMailAttachmentWrapper(pecMailAttachment, _pec.Location.DocumentServer, _checkSignedEvaluateStream)
+                    Dim attachmentWrapper As BiblosPecMailAttachmentWrapper = New BiblosPecMailAttachmentWrapper(pecMailAttachment, _checkSignedEvaluateStream)
                     _attachments.Add(attachmentWrapper)
                 Next
             End If
@@ -68,7 +68,7 @@ Public Class BiblosPecMailWrapper
         Get
             If _postaCert Is Nothing Then
                 If Not _pec.IDPostacert.Equals(Guid.Empty) Then
-                    _postaCert = New BiblosDocumentInfo(_pec.Location.DocumentServer, _pec.IDPostacert)
+                    _postaCert = New BiblosDocumentInfo(_pec.IDPostacert)
                     If (_postaCert IsNot Nothing) Then
                         _postaCert.CheckSignedEvaluateStream = _checkSignedEvaluateStream
                     End If
@@ -108,7 +108,7 @@ Public Class BiblosPecMailWrapper
     Public ReadOnly Property Envelope As BiblosDocumentInfo
         Get
             If _envelope Is Nothing AndAlso _pec.IDEnvelope <> Guid.Empty Then
-                _envelope = New BiblosDocumentInfo(_pec.Location.DocumentServer, _pec.IDEnvelope)
+                _envelope = New BiblosDocumentInfo(_pec.IDEnvelope)
                 If (_envelope IsNot Nothing) Then
                     _envelope.CheckSignedEvaluateStream = _checkSignedEvaluateStream
                 End If
@@ -121,7 +121,7 @@ Public Class BiblosPecMailWrapper
     Public ReadOnly Property SegnaturaInteroperabilita As BiblosDocumentInfo
         Get
             If _segnaturaInteroperabilita Is Nothing AndAlso _pec.IDSegnatura <> Guid.Empty Then
-                _segnaturaInteroperabilita = New BiblosDocumentInfo(_pec.Location.DocumentServer, _pec.IDSegnatura)
+                _segnaturaInteroperabilita = New BiblosDocumentInfo(_pec.IDSegnatura)
                 If (_segnaturaInteroperabilita IsNot Nothing) Then
                     _segnaturaInteroperabilita.CheckSignedEvaluateStream = _checkSignedEvaluateStream
                 End If
@@ -134,7 +134,7 @@ Public Class BiblosPecMailWrapper
     Public ReadOnly Property DatiCert As BiblosDocumentInfo
         Get
             If _datiCert Is Nothing AndAlso _pec.IDDaticert <> Guid.Empty Then
-                _datiCert = New BiblosDocumentInfo(_pec.Location.DocumentServer, _pec.IDDaticert)
+                _datiCert = New BiblosDocumentInfo(_pec.IDDaticert)
                 If (_datiCert IsNot Nothing) Then
                     _datiCert.CheckSignedEvaluateStream = _checkSignedEvaluateStream
                 End If
@@ -154,7 +154,7 @@ Public Class BiblosPecMailWrapper
                     Return Nothing
                 End If
 
-                _oChartCommunicationData = New BiblosDocumentInfo(_pec.Location.DocumentServer, pecMailAttachment.IDDocument)
+                _oChartCommunicationData = New BiblosDocumentInfo(pecMailAttachment.IDDocument)
                 If (_oChartCommunicationData IsNot Nothing) Then
                     _oChartCommunicationData.CheckSignedEvaluateStream = _checkSignedEvaluateStream
                 End If

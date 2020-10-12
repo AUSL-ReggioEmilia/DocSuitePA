@@ -62,6 +62,19 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Commons/C
                 }
             }, error);
         };
+        ContactService.prototype.getByParentId = function (contactParentId, top, callback, error) {
+            var url = this._configuration.ODATAUrl + "/ContactService.GetContactsByParentId(idContact=" + contactParentId + ")";
+            if (top && top > 0) {
+                url = url + "?$top=" + top;
+            }
+            this.getRequest(url, undefined, function (response) {
+                if (callback) {
+                    if (callback) {
+                        callback(response.value);
+                    }
+                }
+            }, error);
+        };
         /**
          * metodo per l'inserimento di un nuovo contatto
          * @param categoryFascicle

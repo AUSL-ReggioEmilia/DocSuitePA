@@ -6,12 +6,17 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Templates;
 using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
 using VecompSoftware.DocSuiteWeb.Entity.Templates;
+using VecompSoftware.DocSuiteWeb.Facade;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
 
 public class CollaborationParameter
 {
     #region [ Fields ]
     private const string SIGNERS_EDIT_ENABLED = "SignersEditEnabled";
+    private const string DOCUMENT_UNIT_DRAFT_EDITOR_ENABLED = "DocumentUnitDraftEditorEnabled";
+    private const string BTNCHEKOUT_ENABLED = "BtnCheckoutEnabled";
+    private const string POPUP_DOCUMENT_NOT_SIGNED_ALERT_ENABLED = "PopUpDocumentNotSignedAlertEnabled";
+
     private static string _templateName;
     private static IDictionary<string, IList<JsonParameter>> _collaborationTemplateJsonParameters;
     #endregion
@@ -45,6 +50,28 @@ public class CollaborationParameter
         }
     }
 
+    public bool DocumentUnitDraftEditorEnabled
+    {
+        get
+        {
+            return GetBoolean(DOCUMENT_UNIT_DRAFT_EDITOR_ENABLED, false).Value;
+        }
+    }
+    public bool BtnCheckoutEnabled
+    {
+        get
+        {
+            return GetBoolean(BTNCHEKOUT_ENABLED, true).Value;
+        }
+    }
+
+    public bool PopUpDocumentNotSignedAlertEnabled
+    {
+        get
+        {
+            return GetBoolean(POPUP_DOCUMENT_NOT_SIGNED_ALERT_ENABLED, false).Value;
+        }
+    }
     #endregion
 
     #region [ Methods ]
@@ -57,14 +84,18 @@ public class CollaborationParameter
         if (CollaborationTemplateJsonParameters != null && CollaborationTemplateJsonParameters.ContainsKey(_templateName))
         {
             return CollaborationTemplateJsonParameters[_templateName];
-        }           
+        }
         else
         {
-            TemplateCollaborationFinder templateCollaborationFinder = new TemplateCollaborationFinder(DocSuiteContext.Current.Tenants);
-            templateCollaborationFinder.ResetDecoration();
-            templateCollaborationFinder.EnablePaging = false;
-            templateCollaborationFinder.Name = _templateName;
-            ICollection<WebAPIDto<TemplateCollaboration>> results = templateCollaborationFinder.DoSearch();
+            ICollection<WebAPIDto<TemplateCollaboration>> results = WebAPIImpersonatorFacade.ImpersonateFinder(new TemplateCollaborationFinder(DocSuiteContext.Current.Tenants),
+                    (impersonationType, finder) =>
+                    {
+                        finder.ResetDecoration();
+                        finder.EnablePaging = false;
+                        finder.Name = _templateName;
+                        return finder.DoSearch();
+                    });
+
             if (results != null && results.Count > 0 && !string.IsNullOrEmpty(results.First().Entity.JsonParameters))
             {
                 IList<JsonParameter> parameters = JsonConvert.DeserializeObject<IList<JsonParameter>>(results.First().Entity.JsonParameters);
@@ -84,7 +115,7 @@ public class CollaborationParameter
             if (value != null)
             {
                 ret = eval(value);
-            }                
+            }
         }
         return ret;
     }
@@ -121,6 +152,11 @@ public class CollaborationParameter
     private DateTime? GetDateTime(string keyName, DateTime? defaultValue)
     {
         return GetGeneric(keyName, defaultValue, x => x.ValueDate);
+    }
+
+    public static void ResetCollaborationTemplateJsonParameters()
+    {
+        _collaborationTemplateJsonParameters = null;
     }
     #endregion
 }

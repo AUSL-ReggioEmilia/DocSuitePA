@@ -1,7 +1,6 @@
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Services.Biblos
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Biblos.Models
 
 Partial Public Class ProtJournal
@@ -43,7 +42,7 @@ Partial Public Class ProtJournal
     Private Sub gvJournalLog_ItemCommand(ByVal source As Object, ByVal e As Telerik.Web.UI.GridCommandEventArgs) Handles gvJournalLog.ItemCommand
         If e.CommandName.Eq("ShowDoc") Then
             Dim docInfo As String() = e.CommandArgument.ToString().Split("|"c)
-            SetOpenDocument(docInfo(0), docInfo(1), docInfo(2))
+            SetOpenDocument(docInfo(0), Integer.Parse(docInfo(1)))
         End If
     End Sub
 
@@ -70,22 +69,18 @@ Partial Public Class ProtJournal
         rdpDateTo.SelectedDate = Date.Now
     End Sub
 
-    Private Sub SetOpenDocument(ByVal BiblosDsServer As String, ByVal BiblosDsArchive As String, ByVal BiblosDsChain As String)
-        Dim doc As New BiblosDocumentInfo(BiblosDsServer, BiblosDsArchive, BiblosDsChain)
+    Private Sub SetOpenDocument(ByVal BiblosDsArchive As String, ByVal BiblosDsChain As Integer)
+        Dim doc As New BiblosDocumentInfo(BiblosDsArchive, BiblosDsChain)
 
-        Dim parameters As String = "servername={0}&guid={1}&label={2}"
-        parameters = String.Format(parameters, doc.Server, doc.ChainId, "Registro")
-        Dim viewerUrl As String = "~/Viewers/BiblosViewer.aspx?" & CommonShared.AppendSecurityCheck(parameters)
-
-        Response.Redirect(viewerUrl)
+        Dim parameters As String = $"guid={doc.ChainId}&label=Registro"
+        Response.Redirect($"~/Viewers/BiblosViewer.aspx?{CommonShared.AppendSecurityCheck(parameters)}")
     End Sub
 
     Public Function SetDocumentInfo(ByRef Container As Object) As String
         Dim StrInfo As String
 
-        StrInfo = DataBinder.Eval(Container.dataitem, "Location.DocumentServer")
-        StrInfo &= "|" & DataBinder.Eval(Container.dataitem, "Location.ProtBiblosDSDB")
-        StrInfo &= "|" & DataBinder.Eval(Container.dataitem, "IdDocument")
+        StrInfo = DataBinder.Eval(Container.dataitem, "Location.ProtBiblosDSDB").ToString()
+        StrInfo &= "|" & DataBinder.Eval(Container.dataitem, "IdDocument").ToString()
 
         Return StrInfo
     End Function

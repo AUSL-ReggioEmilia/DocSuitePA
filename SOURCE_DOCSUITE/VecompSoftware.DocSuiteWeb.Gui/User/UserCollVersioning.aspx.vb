@@ -48,11 +48,9 @@ Partial Public Class UserCollVersioning
 
         Dim cv As CollaborationVersioning = collaboration.CollaborationVersioning.SingleOrDefault(Function(x) x.CollaborationIncremental.Equals(collaborationIncremental) AndAlso x.Incremental.Equals(incremental))
         Dim document As BiblosDocumentInfo = Facade.CollaborationVersioningFacade.GetBiblosDocument(cv, True)
-        Dim query As String = "servername={0}&guid={1}&label={2}&ignorestate=true"
-        query = String.Format(query, document.Server, document.ChainId, "CollaborationVersioning")
-        Dim viewerUrl As String = "~/Viewers/BiblosViewer.aspx?" & CommonShared.AppendSecurityCheck(query)
 
-        Response.Redirect(viewerUrl)
+        Dim parameters As String = $"guid={document.ChainId}&label=CollaborationVersioning&ignorestate=true"
+        Response.Redirect($"~/Viewers/BiblosViewer.aspx?{CommonShared.AppendSecurityCheck(parameters)}")
     End Sub
 
 #End Region

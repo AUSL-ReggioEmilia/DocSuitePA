@@ -32,121 +32,26 @@ Public Class ParameterFacade
     Public Function GetCurrentAndRefresh() As Parameter
         Return _dao.GetCurrentAndRefresh()
     End Function
-    
+
     ''' <summary> Incrementa il valore del cambo LastUsedNumber su database e restituisce la riga aggiornata </summary>
     ''' <returns>Oggetto Parameter aggiornato</returns>
-    Public Function GetYearNumber() As YearNumberCompositeKey
+    Public Function GetDocumentYearNumber() As YearNumberCompositeKey
         _dao.ConnectionName = "DocmDB"
 
         Dim _parameter As Parameter = GetCurrent()
         Dim yearNumberKey As New YearNumberCompositeKey(_parameter.LastUsedYear, _parameter.LastUsedNumber)
-
-        _parameter.LastUsedNumber = _parameter.LastUsedNumber + 1
-        _parameter.Locked = False
-        Try
-            Update(_parameter)
-        Catch ex As Exception
-            FileLogger.Warn(LoggerName, "Errore aggiornamento parametro", ex)
-            Return Nothing
-        End Try
-
+        _dao.UpdateDocumentLastUsedNumber(_parameter.LastUsedNumber + 1)
         Return yearNumberKey
     End Function
 
     ''' <summary> Incrementa il valore del cambo LastUsedidResolution su database e restituisce la riga aggiornata </summary>
     ''' <returns> Oggetto aggiornato, -1 in caso d'errore </returns>
     Public Function GetIdresolution() As Integer
-        Dim idResolution As Integer
         _dao.ConnectionName = "ReslDB"
         Dim _parameter As Parameter = GetCurrent()
-        If Not _parameter Is Nothing Then
-            idResolution = _parameter.LastUsedIdResolution
-            _parameter.LastUsedIdResolution = _parameter.LastUsedIdResolution + 1
-            _parameter.Locked = False
-        Else
-            _parameter = New Parameter()
-            idResolution = _parameter.LastUsedIdResolution
-            _parameter.LastUsedIdResolution = _parameter.LastUsedIdResolution + 1
-        End If
-        Try
-            Update(_parameter)
-        Catch ex As Exception
-            idResolution = -1
-        End Try
-
+        Dim idResolution As Integer = _parameter.LastUsedIdResolution
+        _dao.UpdateLastUsedIdResolution(_parameter.LastUsedIdResolution + 1)
         Return idResolution
-    End Function
-
-    ''' <summary> Incrementa il valore del cambo LastUsedResolutionYear su database e restituisce la riga aggiornata </summary>
-    ''' <returns>Oggetto Parameter aggiornato</returns>
-    Public Function GetLastUsedResolutionYear() As Parameter
-        _dao.ConnectionName = "ReslDB"
-        Dim _parameter As Parameter = GetCurrent()
-        If Not _parameter Is Nothing Then
-            _parameter.LastUsedResolutionYear = _parameter.LastUsedResolutionYear + 1S
-            _parameter.Locked = False
-        Else
-            _parameter = New Parameter()
-            _parameter.LastUsedResolutionYear = _parameter.LastUsedResolutionYear + 1S
-
-        End If
-        
-        Try
-            Update(_parameter)
-        Catch ex As Exception
-            FileLogger.Warn(LoggerName, "Errore aggiornamento parametro", ex)
-            Return Nothing
-        End Try
-
-        Return _parameter
-    End Function
-
-    ''' <summary> Incrementa il valore del cambo LastUsedResolutionNumber su database e restituisce la riga aggiornata </summary>
-    ''' <returns>Oggetto Parameter aggiornato</returns>
-    Public Function GetLastUsedResolutionNumber() As Parameter
-        _dao.ConnectionName = "ReslDB"
-        Dim _parameter As Parameter = GetCurrent()
-        If Not _parameter Is Nothing Then
-            _parameter.LastUsedResolutionNumber = _parameter.LastUsedResolutionNumber + 1S
-            _parameter.Locked = False
-        Else
-            _parameter = New Parameter()
-            _parameter.LastUsedResolutionNumber = _parameter.LastUsedResolutionNumber + 1S
-
-        End If
-
-        Try
-            Update(_parameter)
-        Catch ex As Exception
-            FileLogger.Warn(LoggerName, "Errore aggiornamento parametro", ex)
-            Return Nothing
-        End Try
-
-        Return _parameter
-    End Function
-
-    ''' <summary> Incrementa il valore del cambo LastUsedBillNumber su database e restituisce la riga aggiornata </summary>
-    ''' <returns>Oggetto Parameter aggiornato</returns>
-    Public Function GetLastUsedBillNumber() As Parameter
-        _dao.ConnectionName = "ReslDB"
-        Dim _parameter As Parameter = GetCurrent()
-        If Not _parameter Is Nothing Then
-            _parameter.LastUsedBillNumber = _parameter.LastUsedBillNumber + 1S
-            _parameter.Locked = False
-        Else
-            _parameter = New Parameter()
-            _parameter.LastUsedBillNumber = _parameter.LastUsedBillNumber + 1S
-
-        End If
-
-        Try
-            Update(_parameter)
-        Catch ex As Exception
-            FileLogger.Warn(LoggerName, ex.Message, ex)
-            Return Nothing
-        End Try
-
-        Return _parameter
     End Function
 
     Public Sub UpdateSingleInstance(ByRef parameter As Parameter, ByVal DBName As String)
@@ -154,27 +59,43 @@ Public Class ParameterFacade
         _dao.UpdateOnly(parameter)
     End Sub
     Public Function UpdateReplicateLastIdRoleUser(ByVal newId As Integer, ByVal oldId As Integer) As Boolean
-        Dim query As String = String.Format("UPDATE Parameter SET LastUsedIdRoleUser={0} WHERE LastUsedIdRoleUser= {1}", newId, oldId)
+        Dim query As String = $"UPDATE Parameter SET LastUsedIdRoleUser = {newId} WHERE LastUsedIdRoleUser= {oldId}"
         Return ReplicateQuery(query)
     End Function
 
     Public Function UpdateReplicateLastIdRole(ByVal newId As Integer, ByVal oldId As Integer) As Boolean
-        Dim query As String = String.Format("UPDATE Parameter SET LastUsedIdRole={0} WHERE LastUsedIdRole= {1}", newId, oldId)
+        Dim query As String = $"UPDATE Parameter SET LastUsedIdRole={newId} WHERE LastUsedIdRole= {oldId}"
         Return ReplicateQuery(query)
     End Function
 
     Public Function UpdateReplicateLastIdCategory(ByVal newId As Integer, ByVal oldId As Integer) As Boolean
-        Dim query As String = String.Format("UPDATE Parameter SET LastUsedIdCategory={0} WHERE LastUsedIdCategory= {1}", newId, oldId)
+        Dim query As String = $"UPDATE Parameter SET LastUsedIdCategory={newId} WHERE LastUsedIdCategory= {oldId}"
         Return ReplicateQuery(query)
     End Function
 
     Public Function UpdateReplicateLastIdContainer(ByVal newId As Integer, ByVal oldId As Integer) As Boolean
-        Dim query As String = String.Format("UPDATE Parameter SET LastUsedIdContainer={0} WHERE LastUsedIdContainer= {1}", newId, oldId)
+        Dim query As String = $"UPDATE Parameter SET LastUsedIdContainer={newId} WHERE LastUsedIdContainer= {oldId}"
         Return ReplicateQuery(query)
     End Function
 
-    Public Sub UpdateLastUsedNumber(ByVal year As Int32)
-        _dao.UpdateLastUsedNumber(year)
+    Public Sub UpdateProtocolLastUsedNumber(ByVal year As Integer)
+        _dao.UpdateProtocolLastUsedNumber(year)
+    End Sub
+
+    Public Sub UpdateResolutionLastUsedNumber(lastUsedNumber As Integer)
+        _dao.UpdateResolutionLastUsedNumber(lastUsedNumber)
+    End Sub
+
+    Public Sub UpdateResolutionLastUsedBillNumber(lastUsedBillNumber As Integer)
+        _dao.UpdateResolutionLastUsedBillNumber(lastUsedBillNumber)
+    End Sub
+
+    Public Sub ResetResolutionNumbers()
+        _dao.ResetResolutionNumbers()
+    End Sub
+
+    Public Sub ResetDocumentNumbers()
+        _dao.ResetDocumentNumbers()
     End Sub
 
     Public Function ReplicateQuery(ByVal query As String) As Boolean

@@ -15,7 +15,10 @@
     MessageSeries = 13,
     SeriesProtocol = 14,
     Series = 15,
-    Workflows = 16
+    ActiveWorkflows = 16,
+    Process = 17,
+    TNotice = 18,
+    DoneWorkflows = 19,
 }
 
 export = DocumentUnitReferenceTypeEnum

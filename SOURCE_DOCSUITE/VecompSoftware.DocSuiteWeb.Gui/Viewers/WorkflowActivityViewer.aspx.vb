@@ -32,7 +32,7 @@ Public Class WorkflowActivityViewer
             .Parent = mainFolder
         }
 
-        Dim docs As IEnumerable(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(Facade.LocationFacade.DefaultDocumentServer, CurrentIdArchiveChain).OrderBy(Function(f) f.DateCreated.Value)
+        Dim docs As IEnumerable(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentIdArchiveChain).OrderBy(Function(f) f.DateCreated.Value)
         Dim lastDate As Date = docs.First().DateCreated.Value
         Dim currentFolder As FolderInfo = requestFolder
         For Each docInfo As BiblosDocumentInfo In docs

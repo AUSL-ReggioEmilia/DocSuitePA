@@ -1,8 +1,11 @@
 ﻿class WorkflowInstanceSearchFilterDTO {
-  name: string;
-  activeFrom: string;
-  activeTo: string;
-  status: string;
+    name: string;
+    workflowRepositoryId: string;
+    activeFrom: string;
+    activeTo: string;
+    status: string;
+    skip?: number;
+    top?: number;
 }
 
 export = WorkflowInstanceSearchFilterDTO;

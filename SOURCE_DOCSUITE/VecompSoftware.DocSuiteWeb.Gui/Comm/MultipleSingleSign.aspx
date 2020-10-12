@@ -81,7 +81,7 @@
             </Columns>
         </MasterTableView>
         
-        <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente" SortToolTip="Ordina" />
+        <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente" SortToolTip="Ordina" />
         <GroupingSettings ShowUnGroupButton="true" UnGroupButtonTooltip="Rimuovi" />
     </telerik:RadGrid>
 </asp:Content>

@@ -54,10 +54,6 @@
                 CallAjaxRequest('DUPLICATE', args.get_argument());
             }
 
-            function CloseRequestStatement(sender, args) {
-                CallAjaxRequest('REQUESTSTATEMENT', args.get_argument());
-            }
-
             function CloseLastPage(sender, args) {
                 var manager = $find("<%= AjaxManager.ClientID %>");
                 manager.ajaxRequest('LASTPAGE');
@@ -87,7 +83,6 @@
         <Windows>
             <telerik:RadWindow Height="180" ID="windowDelete" OnClientClose="CloseElimina" runat="server" Width="500" />
             <telerik:RadWindow Height="300" ID="windowDuplica" OnClientClose="CloseDuplica" runat="server" Title="Duplicazione Atto" Width="500" />
-            <telerik:RadWindow Height="300" ID="windowRequestStatement" OnClientClose="CloseRequestStatement" runat="server" Title="Richiesta di Attestazione" Width="500" />
             <telerik:RadWindow Height="300" ID="windowDocmSceltaPratica" OnClientClose="CloseSelPratica" runat="server" Title="Pratiche - Seleziona" Width="500" />
             <telerik:RadWindow Height="380" ID="windowLastPage" OnClientClose="CloseLastPage" runat="server" Width="650" />
         </Windows>

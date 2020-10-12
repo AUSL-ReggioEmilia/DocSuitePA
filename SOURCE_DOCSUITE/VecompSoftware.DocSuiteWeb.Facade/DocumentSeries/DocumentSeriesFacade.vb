@@ -65,15 +65,14 @@ Public Class DocumentSeriesFacade
     End Function
 
     Public Shared Function GetArchiveInfo(series As DocumentSeries) As ArchiveInfo
-        Return New ArchiveInfo(series.Container.DocumentSeriesLocation.DocumentServer, series.Container.DocumentSeriesLocation.ProtBiblosDSDB)
+        Return New ArchiveInfo(series.Container.DocumentSeriesLocation.ProtBiblosDSDB)
     End Function
 
     Public Sub FillFinder(finder As DocumentSeriesItemFinder, conditions As List(Of SearchCondition))
         Dim firstId As Integer = finder.IdDocumentSeriesIn.First()
         Dim series As DocumentSeries = Factory.DocumentSeriesFacade.GetById(firstId)
 
-        Dim chains As List(Of BiblosChainInfo) = Service.SearchChains(series.Container.DocumentSeriesLocation.DocumentServer,
-                                                                          series.Container.DocumentSeriesLocation.ProtBiblosDSDB, conditions)
+        Dim chains As List(Of BiblosChainInfo) = Service.SearchChains(series.Container.DocumentSeriesLocation.ProtBiblosDSDB, conditions)
 
         finder.BiblosContentSearchResult = chains
     End Sub

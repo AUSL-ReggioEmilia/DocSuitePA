@@ -10,7 +10,7 @@ define(["require", "exports"], function (require, exports) {
                 ajaxModel.ActionName = "CurentFinderChanged";
                 ajaxModel.Value.push(_this.selectedUDSRepositoryId);
                 $find(_this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
-                window.location.href = _this.UDS_RESULTS_PAGE_URL + "&IdUDS=" + _this.currentIdUDS + "&IdUDSRepository=" + _this.selectedUDSRepositoryId;
+                window.location.href = _this.UDS_RESULTS_PAGE_URL + "&IdUDS=" + _this.currentIdUDS + "&IdUDSRepository=" + _this.selectedUDSRepositoryId + "&Action=" + _this.currentAction;
             };
         }
         UDSLink.prototype.initialize = function () {

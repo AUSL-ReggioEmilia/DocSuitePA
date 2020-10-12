@@ -30,17 +30,13 @@
     <property name="SourceProtocolNumber" />
     <property name="IdWorkflowInstance" />
     <property name="UniqueId" column="UniqueId" unique="true" />
+    <property name="IdDocumentUnit" column="IdDocumentUnit" />
     
     <many-to-one name="Location" column="IdLocation" class="Location" />
     <many-to-one name="Resolution" column="IdResolution" class="Resolution" />
     <many-to-one name="DocumentSeriesItem" column="idDocumentSeriesItem" class="DocumentSeriesItem" />
-    <many-to-one name="SourceProtocol" class="Protocol" insert="false" update="false">
-      <column name="SourceProtocolYear" />
-      <column name="SourceProtocolNumber" />
-    </many-to-one>
-    <many-to-one name="Protocol" class="Protocol" insert="false" update="false">
-      <column name="Year" />
-      <column name="Number" />
+    <many-to-one name="SourceProtocol" class="Protocol" update="false">
+      <column name="UniqueIdSourceProtocol" />
     </many-to-one>
     <bag name="CollaborationSigns" table="CollaborationSigns" cascade="all-delete-orphan" inverse="true">
       <key column="IdCollaboration" />

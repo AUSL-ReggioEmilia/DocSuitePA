@@ -124,7 +124,7 @@
                             <ClientMessages DragToResize="Ridimensiona" />
                             <Resizing AllowColumnResize="True" ClipCellContentOnResize="False" ResizeGridOnColumnResize="True" />
                         </ClientSettings>
-                        <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Decrescente"
+                        <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine Decrescente"
                             SortToolTip="Ordina" />
                         <ExportSettings FileName="Esportazione">
                             <Pdf PageHeight="297mm" PageWidth="210mm" PaperSize="A4" />

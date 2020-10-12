@@ -3,7 +3,8 @@ import DossierFolderModelMapper = require('./DossierFolderModelMapper');
 import BaseMapper = require('App/Mappers/BaseMapper');
 
 class DossierModelMapper extends BaseMapper<DossierModel>{
-    construnctor() {
+    constructor() {
+        super();
     }
     public Map(source: any): DossierModel {
         let toMap: DossierModel = <DossierModel>{};
@@ -17,7 +18,8 @@ class DossierModelMapper extends BaseMapper<DossierModel>{
         toMap.RegistrationDate = source.RegistrationDate;
         toMap.StartDate = source.StartDate;
         toMap.EndDate = source.EndDate;
-        toMap.JsonMetadata = source.JsonMetadata;
+        toMap.MetadataDesigner = source.MetadataDesigner;
+        toMap.MetadataValues = source.MetadataValues;
         toMap.LastChangedUser = source.LastChangedUser;
         toMap.LastChangedDate = source.LastChangedDate;
         toMap.Contacts = source.Contacts;

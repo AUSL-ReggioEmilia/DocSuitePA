@@ -34,7 +34,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                     return;
                 _this.pecMails = data[0];
                 if (_this.pecMails.MailDate) {
-                    var tmp = moment(_this.pecMails.MailDate).format("DD/MM/YYYY, h:mm:ss");
+                    var tmp = moment(_this.pecMails.MailDate).format("DD/MM/YYYY, HH:mm:ss");
                     _this._dateId.text(tmp);
                 }
                 var subjectName = _this.pecMails.MailSubject;
@@ -43,8 +43,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                 _this._nameId.attr("href", url);
                 var sender = _this.pecMails.MailSenders;
                 _this._senderId.text(sender);
-                var regex = /\S+[a-z0-9]@[a-z0-9\.]+/img;
-                var receiver = _this.pecMails.MailRecipients.replace(/[<>]/g, '').match(regex).join(';');
+                var receiver = _this.pecMails.MailRecipients;
                 _this._receiverId.text(receiver);
                 var numberOfItems = _this.pecMails.PECMailReceipts.length;
                 var pecMailsReceipts = _this.pecMails.PECMailReceipts;
@@ -55,31 +54,31 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                     if (status_1 == "accettazione") {
                         tr = tr + "<tr><td><img class=\"rtImg\" alt = \"\" src = \"../Comm/Images/pec-accettazione.gif\"><td>";
                         tr = tr + "accettazione";
-                        tr = tr + "<td>" + (moment(pecMailsReceipts[i].ReceiptDate).format("DD/MM/YYYY, h:mm:ss")) + "</td>";
+                        tr = tr + "<td>" + (moment(pecMailsReceipts[i].ReceiptDate).format("DD/MM/YYYY, HH:mm:ss")) + "</td>";
                         tr = tr + "</tr>";
                     }
                     if (status_1 == "avvenuta-consegna") {
                         tr = tr + "<tr><td><img class=\"rtImg\" alt = \"\" src = \"../Comm/Images/pec-avvenuta-consegna.gif\" ><td>";
                         tr = tr + "avvenuta - consegna";
-                        tr = tr + "<td>" + (moment(pecMailsReceipts[i].ReceiptDate).format("DD/MM/YYYY, h:mm:ss")) + "</td>";
+                        tr = tr + "<td>" + (moment(pecMailsReceipts[i].ReceiptDate).format("DD/MM/YYYY, HH:mm:ss")) + "</td>";
                         tr = tr + "</tr>";
                     }
                     if (status_1 == "non-accettazione") {
                         tr = tr + "<tr><td><img class=\"rtImg\" alt = \"\" src = \"../Comm/Images/pec-non-accettazione.gif\"><td>";
                         tr = tr + "non-accettazione";
-                        tr = tr + "<td>" + (moment(pecMailsReceipts[i].ReceiptDate).format("DD/MM/YYYY, h:mm:ss")) + "</td>";
+                        tr = tr + "<td>" + (moment(pecMailsReceipts[i].ReceiptDate).format("DD/MM/YYYY, HH:mm:ss")) + "</td>";
                         tr = tr + "</tr>";
                     }
                     if (status_1 == "preavviso-errore-consegna") {
                         tr = tr + "<tr><td><img class=\"rtImg\" alt = \"\" src = \"../Comm/Images/pec-preavviso-errore-consegna.gif\"><td>";
                         tr = tr + "preavviso-errore-consegna";
-                        tr = tr + "<td>" + (moment(pecMailsReceipts[i].ReceiptDate).format("DD/MM/YYYY, h:mm:ss")) + "</td>";
+                        tr = tr + "<td>" + (moment(pecMailsReceipts[i].ReceiptDate).format("DD/MM/YYYY, HH:mm:ss")) + "</td>";
                         tr = tr + "</tr>";
                     }
                     if (status_1 == "errore-consegna") {
                         tr = tr + "<tr><td><img class=\"rtImg\" alt = \"\" src = \"../Comm/Images/pec-errore-consegna.gif\"><td>";
                         tr = tr + "errore-consegna";
-                        tr = tr + "<td>" + (moment(pecMailsReceipts[i].ReceiptDate).format("DD/MM/YYYY, h:mm:ss")) + "</td>";
+                        tr = tr + "<td>" + (moment(pecMailsReceipts[i].ReceiptDate).format("DD/MM/YYYY, HH:mm:ss")) + "</td>";
                         tr = tr + "</tr>";
                     }
                 }
@@ -93,7 +92,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                     return;
                 _this.pecMails = data[0];
                 if (_this.pecMails.MailDate) {
-                    var tmp = moment(_this.pecMails.MailDate).format("DD/MM/YYYY, h:mm:ss");
+                    var tmp = moment(_this.pecMails.MailDate).format("DD/MM/YYYY, HH:mm:ss");
                     _this._dateId.text(tmp);
                 }
                 var subjectName = _this.pecMails.MailSubject;

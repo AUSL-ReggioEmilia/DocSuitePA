@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class TbltMetadataRepository
-    
+
     '''<summary>
     '''pageContent control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class TbltMetadataRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pageContent As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''splPage control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class TbltMetadataRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents splPage As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''pnlRtvMetadata control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class TbltMetadataRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlRtvMetadata As Global.Telerik.Web.UI.RadPane
-    
+
     '''<summary>
     '''uscMetadataRepository control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class TbltMetadataRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscMetadataRepository As Global.VecompSoftware.DocSuiteWeb.Gui.uscMetadataRepository
-    
+
     '''<summary>
     '''pnlDetaild control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class TbltMetadataRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDetaild As Global.Telerik.Web.UI.RadPane
-    
+
     '''<summary>
     '''uscMetadataRepositorySummary control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class TbltMetadataRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscMetadataRepositorySummary As Global.VecompSoftware.DocSuiteWeb.Gui.uscMetadataRepositorySummary
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -75,31 +75,4 @@ Partial Public Class TbltMetadataRepository
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
-    '''<summary>
-    '''btnAggiungi control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnAggiungi As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''btnModifica control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnModifica As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''btnElimina control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnElimina As Global.Telerik.Web.UI.RadButton
 End Class

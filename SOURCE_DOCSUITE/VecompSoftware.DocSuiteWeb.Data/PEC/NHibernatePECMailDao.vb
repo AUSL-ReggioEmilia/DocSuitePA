@@ -77,8 +77,7 @@ Public Class NHibernatePECMailDao
 
     Public Function GetProtocol(pec As PECMail) As Protocol
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of Protocol)
-        criteria.Add(Restrictions.Eq("Year", pec.Year.Value))
-        criteria.Add(Restrictions.Eq("Number", pec.Number.Value))
+        criteria.Add(Restrictions.Eq("Id", pec.DocumentUnit.Id))
         Return criteria.UniqueResult(Of Protocol)
     End Function
 
@@ -272,14 +271,22 @@ Public Class NHibernatePECMailDao
         Return criteria.UniqueResult(Of Integer) > 0
     End Function
 
-    Public Function ChecksumExists(ByVal checksum As String, ByVal originalRecipient As String) As Boolean
-        Dim criteria As ICriteria = GetChecksumCriteria(checksum, originalRecipient, New List(Of Integer) From {0, 1, 2})
+    Public Function ChecksumExists(ByVal checksum As String, ByVal originalRecipient As String, includeOnError As Boolean) As Boolean
+        Dim isActiveIn As List(Of Integer) = New List(Of Integer) From {0, 1, 2}
+        If includeOnError Then
+            isActiveIn.Add(255)
+        End If
+        Dim criteria As ICriteria = GetChecksumCriteria(checksum, originalRecipient, isActiveIn)
         criteria.SetProjection(Projections.RowCount())
         Return criteria.UniqueResult(Of Integer) > 0
     End Function
 
-    Public Function HeaderChecksumExists(ByVal headerChecksum As String, ByVal originalRecipient As String) As Boolean
-        Dim criteria As ICriteria = GetHeaderChecksumCriteria(headerChecksum, originalRecipient, New List(Of Integer) From {0, 1, 2})
+    Public Function HeaderChecksumExists(ByVal headerChecksum As String, ByVal originalRecipient As String, includeOnError As Boolean) As Boolean
+        Dim isActiveIn As List(Of Integer) = New List(Of Integer) From {0, 1, 2}
+        If includeOnError Then
+            isActiveIn.Add(255)
+        End If
+        Dim criteria As ICriteria = GetHeaderChecksumCriteria(headerChecksum, originalRecipient, isActiveIn)
         criteria.SetProjection(Projections.RowCount())
         Return criteria.UniqueResult(Of Integer) > 0
     End Function

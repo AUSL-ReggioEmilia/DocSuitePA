@@ -30,7 +30,7 @@ Public Class BusinessLogicResolution
         Dim facade As New ResolutionFacade()
         If HasFrontalino() Then
             Dim oldchain As Integer = _fileresolution.IdResolutionFile.GetValueOrDefault(-1)
-            Dim docs As IList(Of DocumentInfo) = CType(BiblosDocumentInfo.GetDocuments(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, _fileresolution.IdResolutionFile.GetValueOrDefault(-1)), IList(Of DocumentInfo))
+            Dim docs As IList(Of DocumentInfo) = CType(BiblosDocumentInfo.GetDocuments(_resolution.Location.ReslBiblosDSDB, _fileresolution.IdResolutionFile.GetValueOrDefault(-1)), IList(Of DocumentInfo))
             ' Rimuovo il frontalino
             docs.RemoveAt(0)
             Dim idCatena As Integer = 0
@@ -47,9 +47,9 @@ Public Class BusinessLogicResolution
         'Se questi allegati hanno il frontalino
         'rimuoverlo
         If IdAttachmentsHasFrontalino() Then
-            Dim oldchain As Integer = _fileresolution.IdAttachements
+            Dim oldchain As Integer = _fileresolution.IdAttachements.Value
 
-            Dim docs As IList(Of DocumentInfo) = CType(BiblosDocumentInfo.GetDocuments(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, _fileresolution.IdAttachements.GetValueOrDefault(-1)), IList(Of DocumentInfo))
+            Dim docs As IList(Of DocumentInfo) = CType(BiblosDocumentInfo.GetDocuments(_resolution.Location.ReslBiblosDSDB, _fileresolution.IdAttachements.GetValueOrDefault(-1)), IList(Of DocumentInfo))
             ' Rimuovo il frontalino
             docs.RemoveAt(0)
             Dim idCatena As Integer = 0
@@ -89,13 +89,13 @@ Public Class BusinessLogicResolution
                 Dim oldchain As Integer = _fileresolution.IdResolutionFile.Value
                 Dim frontspieceChain As Integer = 0
 
-                Dim mainDocs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, oldchain)
+                Dim mainDocs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(_resolution.Location.ReslBiblosDSDB, oldchain)
                 mainDocs = mainDocs.Where(Function(x) Not x.Name.Eq(ReslFrontalinoPrintPdfTO.FRONTALINO_NAME)).ToList()
                 For Each mainDoc As DocumentInfo In mainDocs
                     frontispieces.Add(mainDoc)
                 Next
                 ' Creo catena con frontalino
-                frontspieceChain = DocumentInfoFactory.ArchiveDocumentsInBiblos(frontispieces, _resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, frontspieceChain)
+                frontspieceChain = DocumentInfoFactory.ArchiveDocumentsInBiblos(frontispieces, _resolution.Location.ReslBiblosDSDB, frontspieceChain)
                 FacadeFactory.Instance.ResolutionFacade.SqlResolutionDocumentUpdate(_resolution.Id, frontspieceChain, ResolutionFacade.DocType.Disposizione)
                 FacadeFactory.Instance.ResolutionLogFacade.Log(_resolution, ResolutionLogType.RP, String.Format("Aggiunta Frontalino. Vecchia catena: {0} - Nuova catena: {1}.", oldchain, frontspieceChain))
             End If
@@ -104,13 +104,13 @@ Public Class BusinessLogicResolution
                 Dim oldchain As Guid = _fileresolution.IdMainDocumentsOmissis
                 Dim frontspieceChainPrivacyChain As Guid = Guid.Empty
 
-                Dim mainOmissisDocs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(_resolution.Location.DocumentServer, oldchain)
+                Dim mainOmissisDocs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(oldchain)
                 mainOmissisDocs = mainOmissisDocs.Where(Function(x) Not x.Name.Eq(ReslFrontalinoPrintPdfTO.FRONTALINO_PRIVACY_NAME)).ToList()
                 For Each mainOmissisDoc As DocumentInfo In mainOmissisDocs
                     privacyFrontispieces.Add(mainOmissisDoc)
                 Next
                 ' Creo catena con frontalino
-                frontspieceChainPrivacyChain = DocumentInfoFactory.ArchiveDocumentsInBiblos(privacyFrontispieces, _resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, frontspieceChainPrivacyChain)
+                frontspieceChainPrivacyChain = DocumentInfoFactory.ArchiveDocumentsInBiblos(privacyFrontispieces, _resolution.Location.ReslBiblosDSDB, frontspieceChainPrivacyChain)
                 FacadeFactory.Instance.ResolutionFacade.SqlResolutionDocumentUpdate(_resolution.Id, frontspieceChainPrivacyChain, ResolutionFacade.DocType.DocumentoPrincipaleOmissis)
                 FacadeFactory.Instance.ResolutionLogFacade.Log(_resolution, ResolutionLogType.RP, String.Format("Aggiunta Frontalino Omissis. Vecchia catena: {0} - Nuova catena: {1}.", oldchain, frontspieceChainPrivacyChain))
             End If
@@ -120,13 +120,13 @@ Public Class BusinessLogicResolution
                 Dim oldchain As Integer = _fileresolution.IdAttachements.Value
                 Dim attachmentChain As Integer = 0
 
-                Dim attachments As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, oldchain)
+                Dim attachments As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(_resolution.Location.ReslBiblosDSDB, oldchain)
                 attachments = attachments.Where(Function(x) Not x.Name.Eq(ReslFrontalinoPrintPdfTO.FRONTALINO_NAME)).ToList()
                 For Each attachment As DocumentInfo In attachments
                     frontispieces.Add(attachment)
                 Next
                 ' Creo catena con frontalino
-                attachmentChain = DocumentInfoFactory.ArchiveDocumentsInBiblos(frontispieces, _resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, attachmentChain)
+                attachmentChain = DocumentInfoFactory.ArchiveDocumentsInBiblos(frontispieces, _resolution.Location.ReslBiblosDSDB, attachmentChain)
                 FacadeFactory.Instance.ResolutionFacade.SqlResolutionDocumentUpdate(_resolution.Id, attachmentChain, ResolutionFacade.DocType.Allegati)
                 FacadeFactory.Instance.ResolutionLogFacade.Log(_resolution, ResolutionLogType.RP, String.Format("Aggiunta Frontalino. Vecchia catena: {0} - Nuova catena: {1}.", oldchain, attachmentChain))
             End If
@@ -152,7 +152,7 @@ Public Class BusinessLogicResolution
             Else
                 Dim doc As New FileDocumentInfo(info)
                 doc.Signature = signature
-                doc.ArchiveInBiblos(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, CType(_fileresolution.IdResolutionFile, Integer))
+                doc.ArchiveInBiblos(_resolution.Location.ReslBiblosDSDB, CType(_fileresolution.IdResolutionFile, Integer))
             End If
         Else
             ' Non c'è il documento, non posso inserire nulla... eccezione
@@ -165,7 +165,7 @@ Public Class BusinessLogicResolution
         If HasUltimaPagina() Then
             Dim oldchain As Integer = _fileresolution.IdResolutionFile.GetValueOrDefault(-1)
 
-            Dim docs As IList(Of DocumentInfo) = CType(BiblosDocumentInfo.GetDocuments(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, _fileresolution.IdResolutionFile.GetValueOrDefault(-1)), IList(Of DocumentInfo))
+            Dim docs As IList(Of DocumentInfo) = CType(BiblosDocumentInfo.GetDocuments(_resolution.Location.ReslBiblosDSDB, _fileresolution.IdResolutionFile.GetValueOrDefault(-1)), IList(Of DocumentInfo))
 
             ' Rimuovo l'ultima pagina
             Dim doc As DocumentInfo = New TempFileDocumentInfo(New FileInfo(path))
@@ -187,7 +187,7 @@ Public Class BusinessLogicResolution
         If HasUltimaPagina() Then
             Dim oldchain As Integer = _fileresolution.IdResolutionFile.GetValueOrDefault(-1)
 
-            Dim docs As IList(Of DocumentInfo) = BiblosDocumentInfo.GetDocuments(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, _fileresolution.IdResolutionFile)
+            Dim docs As IList(Of DocumentInfo) = CType(BiblosDocumentInfo.GetDocuments(_resolution.Location.ReslBiblosDSDB, _fileresolution.IdResolutionFile.Value), IList(Of DocumentInfo))
 
             ' Rimuovo l'ultima pagina
             docs.RemoveAt(docs.Count - 1)
@@ -231,20 +231,7 @@ Public Class BusinessLogicResolution
         logger.Log(_resolution, ResolutionLogType.RP, String.Format("Ultima Pagina Parcheggiata in catena {0}.", idCatena))
     End Sub
 
-    ''' <summary> Accoda i documenti presenti nella catena lIdCatenaFrom alla catena lIdCatenaTo. </summary>
-    ''' <param name="idCatenaFrom">Catena di lettura.</param>
-    ''' <param name="idCatenaTo">Catena di scrittura</param>
-    Private Sub AddToEndDocument(ByVal idCatenaFrom As Long, ByRef idCatenaTo As Long, ByVal first As Boolean)
-        Dim chainFrom As New UIDChain(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, idCatenaFrom)
-        Dim sources As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(chainFrom)
-        Dim start As Integer = If(first, 0, 1)
 
-        For i As Integer = start To sources.Count - 1
-            Dim doc As BiblosDocumentInfo = sources(i)
-            doc.ArchiveInBiblos(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, idCatenaTo)
-        Next
-
-    End Sub
 
     Public Function HasDocument() As Boolean
         Return _fileresolution.IdResolutionFile.HasValue
@@ -259,7 +246,7 @@ Public Class BusinessLogicResolution
             Return False
         End If
 
-        Dim documentName As String = Service.GetDocumentName(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, _fileresolution.IdResolutionFile.Value, 0)
+        Dim documentName As String = Service.GetDocumentName(_resolution.Location.ReslBiblosDSDB, _fileresolution.IdResolutionFile.Value, 0)
 
         Return documentName.ContainsIgnoreCase("frontalino.pdf")
     End Function
@@ -269,7 +256,7 @@ Public Class BusinessLogicResolution
             Return False
         End If
 
-        Dim documentName As String = Service.GetDocumentName(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, _fileresolution.IdAttachements.Value, 0)
+        Dim documentName As String = Service.GetDocumentName(_resolution.Location.ReslBiblosDSDB, _fileresolution.IdAttachements.Value, 0)
 
         Return documentName.ContainsIgnoreCase("frontalino.pdf")
     End Function
@@ -279,7 +266,7 @@ Public Class BusinessLogicResolution
             Return False
         End If
 
-        Dim documentName As String = Service.GetDocumentName(_resolution.Location.DocumentServer, _resolution.Location.ReslBiblosDSDB, _fileresolution.IdAttachements.Value, 0)
+        Dim documentName As String = Service.GetDocumentName(_resolution.Location.ReslBiblosDSDB, _fileresolution.IdAttachements.Value, 0)
 
         Return documentName.ContainsIgnoreCase("ultimapagina")
     End Function

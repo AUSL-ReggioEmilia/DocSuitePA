@@ -26,6 +26,9 @@ Imports VecompSoftware.Helpers.Compress
 Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
 Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
 
 Public Class PECToDocumentUnit
     Inherits PECBasePage
@@ -44,7 +47,7 @@ Public Class PECToDocumentUnit
     Private _currentFascicleFolderFinder As Data.WebAPI.Finder.Fascicles.FascicleFolderFinder
 
     Private Const LOG_WORKFLOW_ACTIVITY As String = "pecToDocumentUnit.insertWorkflowActivity({0},{1},{2});"
-    Private Const CONFIRM_CALLBACK As String = "pecToDocumentUnit.confirmCallback('{0}','{1}',{2},'{3}');"
+    Private Const CONFIRM_CALLBACK As String = "pecToDocumentUnit.confirmCallback('{0}','{1}',{2},'{3}','{4}');"
     Private Const INSERT_MISCELLANEA As String = "InsertMiscellanea"
     Private Const RADIO_ON_CHANGE As String = "radioButton_OnClick();"
 #End Region
@@ -78,7 +81,7 @@ Public Class PECToDocumentUnit
             End If
 
             If _mailboxes.Count = 0 Then
-                _mailboxes = Facade.PECMailboxFacade.GetHumanManageable().GetVisibleProtocolMailBoxes()
+                _mailboxes = Facade.PECMailboxFacade.GetVisibleProtocolMailBoxes()
             End If
 
             Return _mailboxes
@@ -237,6 +240,11 @@ Public Class PECToDocumentUnit
             Return _currentFascicleFolderFinder
         End Get
     End Property
+    Public ReadOnly Property FolderSelectionEnabled As Boolean
+        Get
+            Return GetKeyValueOrDefault("FolderSelectionEnabled", True)
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
@@ -248,6 +256,7 @@ Public Class PECToDocumentUnit
 
         InitializeAjax()
 
+        uscFascicleSearch.FolderSelectionEnabled = FolderSelectionEnabled
         If Not IsPostBack Then
             SessionPECMail = Nothing
             Title = String.Format("{0} - Gestisci", PecLabel)
@@ -461,7 +470,6 @@ Public Class PECToDocumentUnit
                 cmdInitAndClone.Style.Add("display", "none")
                 onClientClickAction = "return onFascicleMiscellaneaClick();"
                 AjaxManager.ResponseScripts.Add(String.Format(RADIO_ON_CHANGE))
-
         End Select
 
         cmdInit.CausesValidation = causesValidation
@@ -479,17 +487,8 @@ Public Class PECToDocumentUnit
 
     End Sub
 
-    Private Function SaveBiblosDocument(document As DocumentInfo, chainId As Guid) As BiblosDocumentInfo
-        Dim fascMiscellaneaLocation As Location = Facade.LocationFacade.GetById(ProtocolEnv.FascicleMiscellaneaLocation)
-        If fascMiscellaneaLocation.DocumentServer Is Nothing Then
-            AjaxAlert("Nessun location presente con questo ID. Errore di configurazione, contattatare Assistenza.")
-            Exit Function
-        End If
-        If String.IsNullOrEmpty(fascMiscellaneaLocation.ProtBiblosDSDB) Then
-            AjaxAlert("Nessun archivio defininito. Errore di configurazione, contattatare Assistenza.")
-            Exit Function
-        End If
-        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(fascMiscellaneaLocation.DocumentServer, fascMiscellaneaLocation.ProtBiblosDSDB, chainId)
+    Private Function SaveBiblosDocument(fascMiscellaneaLocation As Location, document As DocumentInfo, chainId As Guid) As BiblosDocumentInfo
+        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(fascMiscellaneaLocation.ProtBiblosDSDB, chainId)
         Return storedBiblosDocumentInfo
     End Function
     Protected Sub pecToDocumentUnit_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
@@ -506,7 +505,11 @@ Public Class PECToDocumentUnit
 
         If String.Equals(ajaxModel.ActionName, INSERT_MISCELLANEA) AndAlso ajaxModel.Value IsNot Nothing Then
             Dim idFascicle As Guid = Guid.Parse(ajaxModel.Value(0))
-            InsertFascicleMiscellanea(idFascicle)
+            Dim idFascicleFolder As Guid? = Nothing
+            If ajaxModel.Value.Count > 1 Then
+                idFascicleFolder = Guid.Parse(ajaxModel.Value(1))
+            End If
+            InsertFascicleMiscellanea(idFascicle, idFascicleFolder)
         End If
     End Sub
 
@@ -1102,11 +1105,13 @@ Public Class PECToDocumentUnit
     Private Function GetDocumentInstances(documents As IList(Of DocumentInfo)) As DocumentInstance()
         Dim documentInstances As IList(Of DocumentInstance) = New List(Of DocumentInstance)
         If documents.Any() Then
+            Dim documentStored As BiblosDocumentInfo = Nothing
             For Each document As DocumentInfo In documents
                 If TypeOf document Is BiblosPdfDocumentInfo Then
-                    documentInstances.Add(New DocumentInstance() With {.DocumentContent = Convert.ToBase64String(document.Stream), .DocumentName = document.Name})
+                    documentStored = document.ArchiveInBiblos(CommonShared.CurrentWorkflowLocation.ProtBiblosDSDB, Guid.Empty)
+                    documentInstances.Add(New DocumentInstance() With {.IdDocumentToStore = documentStored.DocumentId.ToString(), .DocumentName = document.Name})
                 Else
-                    documentInstances.Add(New DocumentInstance() With {.IdDocument = DirectCast(document, BiblosDocumentInfo).DocumentId.ToString()})
+                    documentInstances.Add(New DocumentInstance() With {.StoredChainId = DirectCast(document, BiblosDocumentInfo).DocumentId.ToString()})
                 End If
             Next
         End If
@@ -1129,23 +1134,33 @@ Public Class PECToDocumentUnit
         AjaxManager.ResponseScripts.Add(String.Format(RADIO_ON_CHANGE))
     End Sub
 
-    Private Sub InsertFascicleMiscellanea(idFascicle As Guid)
+    Private Sub InsertFascicleMiscellanea(idFascicle As Guid, idFascicleFolder As Guid?)
         If idFascicle.Equals(Guid.Empty) Then
             Throw New ArgumentNullException("Nessun fascicolo definito per l'inserimento")
+        End If
+        Dim fascMiscellaneaLocation As Location = Facade.LocationFacade.GetById(ProtocolEnv.FascicleMiscellaneaLocation)
+        If String.IsNullOrEmpty(fascMiscellaneaLocation.ProtBiblosDSDB) Then
+            AjaxAlert("Nessun archivio defininito. Errore di configurazione, contattatare Assistenza.")
+            Return
         End If
 
         Dim allSelectedDocument As List(Of DocumentInfo) = AllAttachmentDocuments
         If allSelectedDocument.Count = 0 Then
-            AjaxManager.ResponseScripts.Add(String.Format(CONFIRM_CALLBACK, Guid.Empty, idFascicle, False.ToString().ToLower(), "Nessun documento selezionato per la fascicolazione"))
+            AjaxManager.ResponseScripts.Add(String.Format(CONFIRM_CALLBACK, Guid.Empty, idFascicle, False.ToString().ToLower(), "Nessun documento selezionato per la fascicolazione", String.Empty))
             Exit Sub
         End If
 
-        CurrentFascicleFolderFinder.ResetDecoration()
-        CurrentFascicleFolderFinder.ExpandProperties = True
-        CurrentFascicleFolderFinder.IdFascicle = idFascicle
-        CurrentFascicleFolderFinder.ReadDefaultFolder = True
+        Dim folders As ICollection(Of WebAPIDto(Of FascicleFolder)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentFascicleFolderFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.ExpandProperties = True
+                        finder.IdFascicle = idFascicle
+                        finder.UniqueId = idFascicleFolder
+                        finder.ReadDefaultFolder = Not idFascicleFolder.HasValue OrElse idFascicle.Equals(Guid.Empty)
+                        Return finder.DoSearch()
+                    End Function)
 
-        Dim currentFascicleFolder As FascicleFolder = CurrentFascicleFolderFinder.DoSearch().SingleOrDefault().Entity
+        Dim currentFascicleFolder As FascicleFolder = folders.SingleOrDefault().Entity
         Dim chainId As Guid = Guid.Empty
         If currentFascicleFolder.FascicleDocuments.Count > 0 Then
             chainId = currentFascicleFolder.FascicleDocuments.Where(Function(x) x.ChainType = Entity.DocumentUnits.ChainType.Miscellanea).Select(Function(s) s.IdArchiveChain).SingleOrDefault()
@@ -1154,11 +1169,11 @@ Public Class PECToDocumentUnit
 
         For Each addedDocument As DocumentInfo In allSelectedDocument
             addedDocument.AddAttribute(BiblosFacade.REGISTRATION_USER_ATTRIBUTE, DocSuiteContext.Current.User.FullUserName)
-            Dim biblosFunc As Func(Of DocumentInfo, BiblosDocumentInfo) = Function(d As DocumentInfo) SaveBiblosDocument(d, chainId)
+            Dim biblosFunc As Func(Of DocumentInfo, BiblosDocumentInfo) = Function(d As DocumentInfo) SaveBiblosDocument(fascMiscellaneaLocation, d, chainId)
             Dim savedtemplate As BiblosDocumentInfo = biblosFunc(addedDocument)
             chainId = savedtemplate.ChainId
         Next
-        AjaxManager.ResponseScripts.Add(String.Format(CONFIRM_CALLBACK, chainId, idFascicle, isNewIdArchiveChain.ToString().ToLower(), String.Empty))
+        AjaxManager.ResponseScripts.Add(String.Format(CONFIRM_CALLBACK, chainId, idFascicle, isNewIdArchiveChain.ToString().ToLower(), String.Empty, currentFascicleFolder.UniqueId))
     End Sub
 #End Region
 

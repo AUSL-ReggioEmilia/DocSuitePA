@@ -16,7 +16,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
             : this()
         {
             this.WorkflowInstances = new HashSet<WorkflowInstance>();
-            this.WorkflowRoles = new HashSet<WorkflowRole>();
             RegistrationDate = DateTimeOffset.UtcNow;
             RegistrationUser = userName;
         }
@@ -31,12 +30,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
         public virtual DateTimeOffset ActiveFrom { get; set; }
 
         public virtual DateTimeOffset? ActiveTo { get; set; }
-
-        public virtual string Xaml { get; set; }
-
-        public virtual string Json { get; set; }
-
-        public virtual string CustomActivities { get; set; }
 
         public virtual WorkflowStatus Status { get; set; }
 
@@ -53,10 +46,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
         #region [ Navigation Properties ]
 
         public virtual ICollection<WorkflowInstance> WorkflowInstances { get; set; }
-
-        public virtual ICollection<WorkflowRole> WorkflowRoles { get; set; }
-
-        public virtual ICollection<WorkflowRoleMapping> WorkflowRoleMappings { get; set; }
 
 
         #endregion

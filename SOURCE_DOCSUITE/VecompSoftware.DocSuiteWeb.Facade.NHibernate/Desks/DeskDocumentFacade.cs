@@ -80,7 +80,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         {
             DeskDocument deskDocument = new DeskDocument(_userName);
             Guid chain = Guid.Empty;
-            chain = DocumentInfoFactory.ArchiveDocumentsInBiblos(new List<DocumentInfo> { document }, biblosLocation.DocumentServer, biblosLocation.ProtBiblosDSDB, chain);
+            chain = DocumentInfoFactory.ArchiveDocumentsInBiblos(new List<DocumentInfo> { document }, biblosLocation.ProtBiblosDSDB, chain);
 
             deskDocument.DocumentType = DeskDocumentType.MainDocument;
             deskDocument.IdDocument = chain;
@@ -141,7 +141,6 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
             dto.Size = biblosDocument.Size;
             dto.IsSavedToBiblos = true;
             dto.IsSigned = biblosDocument.IsSigned;
-            dto.DocumentServer = deskLocation.DocumentServer;
             dto.BiblosSerializeKey = biblosDocument.Serialized;
 
             //Mappo commenti e versioning
@@ -174,13 +173,12 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         {
             string docName = document.Name;
             DeskDocument deskDocument = GetById(document.IdDeskDocument.Value, false);
-            return CheckIn(desk, roleUser, document.DocumentServer, document.IdDeskDocument, document.IdDocumentBiblos.Value, docName, content, userId, contentFormat, version);
+            return CheckIn(desk, roleUser, document.IdDeskDocument, document.IdDocumentBiblos.Value, docName, content, userId, contentFormat, version);
         }
 
         /// <summary>
         /// CheckIn di una specifica versione del documento. 
         /// </summary>
-        /// <param name="documentServer"></param>
         /// <param name="idDocument"></param>
         /// <param name="docName"></param>
         /// <param name="content"></param>
@@ -188,10 +186,10 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         /// <param name="contentFormat"></param>
         /// <param name="version">Ritorna la versione corrente del documento appena inserito</param>
         /// <returns></returns>
-        public BiblosDocumentInfo CheckIn(Desk desk, DeskRoleUser roleUser, string documentServer, Guid? idDeskDocument, Guid idDocument, string docName, byte[] content, string userId, ContentFormat contentFormat, decimal? version)
+        public BiblosDocumentInfo CheckIn(Desk desk, DeskRoleUser roleUser, Guid? idDeskDocument, Guid idDocument, string docName, byte[] content, string userId, ContentFormat contentFormat, decimal? version)
         {
             DeskDocument deskDocument = GetById(idDeskDocument.Value, false);
-            BiblosDocumentInfo newDoc = BiblosDocumentInfo.CheckInDocument(documentServer, idDocument, docName, content, userId, contentFormat, version);
+            BiblosDocumentInfo newDoc = BiblosDocumentInfo.CheckInDocument(idDocument, docName, content, userId, contentFormat, version);
             UpdateDocumentCheckIn(idDeskDocument, newDoc.DocumentId);
             decimal newversion = version ?? newDoc.Version;
             DeskDocumentVersion docVersion = DeskDocumentVersionFacade.InsertDocumentVersion(newDoc.DocumentId, newversion, deskDocument);
@@ -211,7 +209,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         /// <param name="userId"></param>
         public void UndoCheckOut(Desk desk, DeskRoleUser roleUser, DeskDocumentVersion docVersion, DeskDocumentResult document, string userId)
         {
-            UndoCheckOut(desk, roleUser, docVersion, document.DocumentServer, document.IdDeskDocument, document.IdDocumentBiblos.Value, userId);
+            UndoCheckOut(desk, roleUser, docVersion, document.IdDeskDocument, document.IdDocumentBiblos.Value, userId);
         }
 
 
@@ -230,14 +228,13 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         /// <param name="desk"></param>
         /// <param name="roleUser"></param>
         /// <param name="docVersion"></param>
-        /// <param name="documentServer"></param>
         /// <param name="idDeskDocument"></param>
         /// <param name="idDocument"></param>
         /// <param name="userId"></param>
-        public void UndoCheckOut(Desk desk, DeskRoleUser roleUser, DeskDocumentVersion docVersion, string documentServer, Guid? idDeskDocument, Guid idDocument, string userId)
+        public void UndoCheckOut(Desk desk, DeskRoleUser roleUser, DeskDocumentVersion docVersion, Guid? idDeskDocument, Guid idDocument, string userId)
         {
-            BiblosDocumentInfo.UndoCheckOutDocument(documentServer, idDocument, userId);
-            BiblosDocumentInfo undoDoc = BiblosDocumentInfo.GetDocumentByVersion(documentServer, idDocument, null, null);
+            BiblosDocumentInfo.UndoCheckOutDocument(idDocument, userId);
+            BiblosDocumentInfo undoDoc = BiblosDocumentInfo.GetDocumentByVersion(idDocument, null, null);
             UpdateDocumentLastChages(idDeskDocument);
             AddCommentStoryBoard(undoDoc, desk, roleUser, docVersion, DeskStoryBoardType.UndoCheckout);
         }
@@ -255,20 +252,19 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         /// <returns></returns>
         public BiblosDocumentInfo CheckOut(Desk desk, DeskRoleUser roleUser, DeskDocumentVersion docVersion, DeskDocumentResult document, string userId, ContentFormat contentFormat, bool? returnContent)
         {
-            return CheckOut(desk, roleUser, docVersion, document.DocumentServer, document.IdDeskDocument, document.IdDocumentBiblos.Value, userId, contentFormat, returnContent);
+            return CheckOut(desk, roleUser, docVersion, document.IdDeskDocument, document.IdDocumentBiblos.Value, userId, contentFormat, returnContent);
         }
         /// <summary>
         /// Esegue l'estrazione del documento con lock esclusivo
         /// </summary>
-        /// <param name="documentServer"></param>
         /// <param name="idDocument"></param>
         /// <param name="userId"></param>
         /// <param name="contentFormat"></param>
         /// <param name="returnContent"></param>
         /// <returns></returns>
-        public BiblosDocumentInfo CheckOut(Desk desk, DeskRoleUser roleUser, DeskDocumentVersion docVersion, string documentServer, Guid? idDeskDocument, Guid idDocument, string userId, ContentFormat contentFormat, bool? returnContent)
+        public BiblosDocumentInfo CheckOut(Desk desk, DeskRoleUser roleUser, DeskDocumentVersion docVersion, Guid? idDeskDocument, Guid idDocument, string userId, ContentFormat contentFormat, bool? returnContent)
         {
-            BiblosDocumentInfo checkOutDoc = BiblosDocumentInfo.CheckOutDocument(documentServer, idDocument, userId, contentFormat, returnContent);
+            BiblosDocumentInfo checkOutDoc = BiblosDocumentInfo.CheckOutDocument(idDocument, userId, contentFormat, returnContent);
             UpdateDocumentLastChages(idDeskDocument);
             AddCommentStoryBoard(checkOutDoc, desk, roleUser, docVersion, DeskStoryBoardType.CheckOutComment);
             return checkOutDoc;
@@ -276,7 +272,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
 
         public BiblosDocumentInfo GetLastDocumentVersion(DeskDocumentResult document)
         {
-            return BiblosDocumentInfo.GetDocumentByVersion(document.DocumentServer, document.IdDocumentBiblos.Value, null, true);
+            return BiblosDocumentInfo.GetDocumentByVersion(document.IdDocumentBiblos.Value, null, true);
         }
 
         /// <summary>
@@ -308,19 +304,18 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         public bool IsCheckOut(DeskDocumentResult document)
         {
             bool result = true;
-            result = IsCheckOut(document.DocumentServer, document.IdDocumentBiblos.Value);
+            result = IsCheckOut(document.IdDocumentBiblos.Value);
             return result;
         }
 
         /// <summary>
         /// Verifica se un documento è in checkout
         /// </summary>
-        /// <param name="documentServer"></param>
         /// <param name="idDocument"></param>
         /// <returns></returns>
-        public bool IsCheckOut(string documentServer, Guid idDocument)
+        public bool IsCheckOut(Guid idDocument)
         {
-            return BiblosDocumentInfo.IsCheckOutDocument(documentServer, idDocument);
+            return BiblosDocumentInfo.IsCheckOutDocument(idDocument);
         }
 
         /// <summary>
@@ -331,19 +326,18 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         public string IdUserCheckOut(DeskDocumentResult document)
         {
             string result = string.Empty;
-            result = IdUserCheckOut(document.DocumentServer, document.IdDeskDocument, document.IdDocumentBiblos.Value);
+            result = IdUserCheckOut(document.IdDeskDocument, document.IdDocumentBiblos.Value);
             return result;
         }
 
         /// <summary>
         /// Verifica l'utente che ha eseguito il checkout
         /// </summary>
-        /// <param name="documentServer"></param>
         /// <param name="idDocument"></param>
         /// <returns></returns>
-        public string IdUserCheckOut(string documentServer, Guid? idDeskDocument, Guid idDocument)
+        public string IdUserCheckOut(Guid? idDeskDocument, Guid idDocument)
         {
-            return BiblosDocumentInfo.IdUserCheckOutDocument(documentServer, idDocument);
+            return BiblosDocumentInfo.IdUserCheckOutDocument(idDocument);
         }
 
         /// <summary>

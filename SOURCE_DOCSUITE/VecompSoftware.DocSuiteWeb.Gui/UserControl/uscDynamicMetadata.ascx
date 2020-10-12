@@ -12,6 +12,7 @@
                 uscDynamicMetadata.uscNotificationId = "<%= uscNotification.ClientID %>";
                 uscDynamicMetadata.ajaxManagerId = "<%= AjaxManager.ClientID%>";
                 uscDynamicMetadata.managerId = "<%= manager.ClientID%>";
+                uscDynamicMetadata.fascicleInsertCommonIdEvent = "<%= FascicleInsertCommonIdEvent %>";
                 uscDynamicMetadata.initialize();
             });
         });

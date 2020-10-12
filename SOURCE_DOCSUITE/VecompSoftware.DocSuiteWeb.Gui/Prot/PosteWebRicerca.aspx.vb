@@ -101,9 +101,9 @@ Namespace Prot.PosteWeb
                 .AlternateText = GetPolRequestTypeText(polRequest.RequestType)
             End With
 
-            If polRequest.ProtocolNumber.HasValue AndAlso polRequest.ProtocolYear.HasValue Then
+            If polRequest.ProtocolId.HasValue Then
                 With DirectCast(e.Item.FindControl("imgShowProt"), LinkButton)
-                    .PostBackUrl = "ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}", polRequest.ProtocolYear.Value, polRequest.ProtocolNumber.Value))
+                    .PostBackUrl = $"ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={polRequest.ProtocolId}&Type=Prot")}"
                     .Text = ProtocolFacade.ProtocolFullNumber(polRequest.ProtocolYear.Value, polRequest.ProtocolNumber.Value)
                 End With
 

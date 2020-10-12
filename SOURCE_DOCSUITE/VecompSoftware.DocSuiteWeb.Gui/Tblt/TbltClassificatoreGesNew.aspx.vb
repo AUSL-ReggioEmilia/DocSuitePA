@@ -1,5 +1,4 @@
 Imports System.Collections.Generic
-Imports System.Web
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Validators
 Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Validators.Categories
@@ -7,9 +6,9 @@ Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.Commons
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
-Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Logging
 
@@ -150,6 +149,7 @@ Partial Public Class TbltClassificatoreGesNew
     Private Sub InitializeAddAction()
         Title = TITLE_ACTION_ADD
         rdpStartDate.MinDate = CurrentCategory.StartDate.Date
+        rdpStartDate.SelectedDate = DateTime.UtcNow.Date
         pnlRinomina.Visible = False
         pnlInserimento.Visible = True
         pnlStartDate.Visible = True
@@ -182,6 +182,8 @@ Partial Public Class TbltClassificatoreGesNew
         rdpStartDate.MinDate = CurrentCategory.StartDate.Date
         If CurrentCategory.EndDate.HasValue Then
             rdpStartDate.SelectedDate = CurrentCategory.EndDate.Value.Date
+        Else
+            rdpStartDate.SelectedDate = DateTime.UtcNow.Date
         End If
         txtName.Text = CurrentCategory.Name
         txtName.ReadOnly = True
@@ -233,17 +235,22 @@ Partial Public Class TbltClassificatoreGesNew
 
     Private Function AddCategory() As Boolean
         Dim currentCategorySchema As CategorySchema = Facade.CategorySchemaFacade.GetActiveCategorySchema(New DateTimeOffset(rdpStartDate.SelectedDate.Value, DateTimeOffset.UtcNow.Offset))
-        Dim category As New Category()
-        With category
-            .Name = txtName.Text
-            .IsActive = 1
-            .Code = GetCategoryCode(txtCode.Text)
-            .StartDate = (New DateTimeOffset(rdpStartDate.SelectedDate.Value, DateTimeOffset.UtcNow.Offset))
-            .CategorySchema = currentCategorySchema
-            If CurrentCategory.Id <> 0 Then
-                .Parent = CurrentCategory
-            End If
-        End With
+        Dim category As Category = New Category With {
+            .Name = txtName.Text,
+            .IsActive = 1,
+            .Code = GetCategoryCode(txtCode.Text),
+            .StartDate = (New DateTimeOffset(rdpStartDate.SelectedDate.Value, DateTimeOffset.UtcNow.Offset)),
+            .CategorySchema = currentCategorySchema,
+            .IdTenantAOO = CurrentTenant.TenantAOO.UniqueId
+        }
+
+        If CurrentCategory.Id <> 0 Then
+            category.Parent = CurrentCategory
+            category.IdTenantAOO = CurrentCategory.IdTenantAOO
+        End If
+        If category.Parent Is Nothing Then
+            category.Parent = Facade.CategoryFacade.GetRootAOOCategory(CurrentTenant.TenantAOO.UniqueId)
+        End If
 
         Dim validator As CategoryValidator = New CategoryValidator(category, CategoryRuleset.Insert)
         Dim results As ValidatorResult = validator.Validate()
@@ -266,8 +273,10 @@ Partial Public Class TbltClassificatoreGesNew
             .Code = GetCategoryCode(txtNewCode.Text)
             .StartDate = (New DateTimeOffset(rdpNewStartDate.SelectedDate.Value, DateTimeOffset.UtcNow.Offset))
             .CategorySchema = currentCategorySchema
+            .IdTenantAOO = CurrentTenant.TenantAOO.UniqueId
             If CurrentCategory.Parent IsNot Nothing Then
                 .Parent = CurrentCategory.Parent
+                .IdTenantAOO = CurrentCategory.IdTenantAOO
             End If
         End With
 
@@ -281,6 +290,7 @@ Partial Public Class TbltClassificatoreGesNew
         With CurrentCategory
             .Name = category.Name
             .Code = category.Code
+            .IdTenantAOO = category.IdTenantAOO
             .StartDate = category.StartDate
         End With
 
@@ -301,12 +311,16 @@ Partial Public Class TbltClassificatoreGesNew
             Return False
         End If
 
-        Dim documentUnitFinder As DocumentUnitModelFinder = New DocumentUnitModelFinder(DocSuiteContext.Current.CurrentTenant)
-        documentUnitFinder.DocumentUnitFinderAction = DocumentUnitFinderActionType.CategorizedUD
-        documentUnitFinder.CategoryId = CurrentCategory.UniqueId
+        Dim documentUnits As ICollection(Of WebAPIDto(Of DocumentUnitModel)) = WebAPIImpersonatorFacade.ImpersonateFinder(New DocumentUnitModelFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.DocumentUnitFinderAction = DocumentUnitFinderActionType.CategorizedUD
+                        finder.CategoryId = CurrentCategory.UniqueId
+                        Return finder.DoSearch()
+                    End Function)
 
         If Not CurrentCategoryFascicleFacade.ExistFascicleDefinition(CurrentCategory.Id) _
-            AndAlso (Not Facade.CategoryFacade.IsUsed(CurrentCategory) AndAlso documentUnitFinder.DoSearch().Count = 0) Then
+            AndAlso (Not Facade.CategoryFacade.IsUsed(CurrentCategory) AndAlso documentUnits.Count = 0) Then
             Dim categoryFascicles As ICollection(Of CategoryFascicle) = CurrentCategoryFascicleFacade.GetByIdCategory(CurrentCategory.Id)
             For Each item As CategoryFascicle In categoryFascicles
                 CurrentCategoryFascicleFacade.Delete(item)

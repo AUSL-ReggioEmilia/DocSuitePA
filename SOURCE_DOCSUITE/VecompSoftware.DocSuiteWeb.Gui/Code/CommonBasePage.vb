@@ -6,7 +6,10 @@ Imports System.Web
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.OData
 Imports VecompSoftware.DocSuiteWeb.Facade.Interfaces
@@ -14,6 +17,7 @@ Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Web
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Helpers.Workflow
 Imports VecompSoftware.Services.Logging
 
 ''' <summary> Classe base delle pagine della DSW, va usata sulle master page di soluzione. </summary>
@@ -29,6 +33,15 @@ Public Class CommonBasePage
     Private _currentUDSRepositoryFacade As UDSRepositoryFacade = Nothing
     Private _currentODataFacade As ODataFacade = Nothing
     Public Const PRIVACY_LABEL As String = "Riservatezza/Privacy"
+    Private _currentWorkflowAuthorizationFinder As WorkflowAuthorizationFinder
+    Private _currentWorkflowActivityFinder As WorkflowActivityFinder
+    Private _currentWorkflowPropertyFinder As WorkflowPropertyFinder
+    Private _currentWorkflowInstanceFinder As WorkflowInstanceFinder
+    Private _workflowActivity As WorkflowActivity
+    Private _workflowOperation As Boolean?
+    Private _idWorkflowActivity As Guid?
+    Private _isCurrentWorkflowActivityManualComplete As Boolean?
+
 
 #End Region
 
@@ -96,7 +109,7 @@ Public Class CommonBasePage
         End Set
     End Property
 
-    Protected Property ChkVerificaEnabled() As Boolean
+    Protected Property ChkVerificaEnabled As Boolean
         Get
             If ViewState("ChkVerificaEnabled") Is Nothing Then
                 ViewState("ChkVerificaEnabled") = True
@@ -111,7 +124,7 @@ Public Class CommonBasePage
     ''' <summary>Sezione in cui si trova la pagina, influenza stili e BL</summary>
     ''' <value>Nome della sezione: "Prot": Protocollo, "Docm": Pratiche, "Resl": Atti, "Comm": Comune </value>
     ''' <returns>Nome della sezione in cui lavora il controllo</returns>
-    Public ReadOnly Property Type() As String
+    Public ReadOnly Property Type As String
         Get
             Dim val As String
             If ViewState("type") Is Nothing Then
@@ -124,7 +137,7 @@ Public Class CommonBasePage
         End Get
     End Property
 
-    Public ReadOnly Property Env() As DSWEnvironment
+    Public ReadOnly Property Env As DSWEnvironment
         Get
             Select Case Type.ToUpperInvariant()
                 Case "DOCM"
@@ -142,7 +155,7 @@ Public Class CommonBasePage
     End Property
 
     ''' <summary> Azione specifica della pagina. </summary>
-    Public ReadOnly Property Action() As String
+    Public ReadOnly Property Action As String
         Get
             Dim val As String
             If ViewState("Action") Is Nothing Then
@@ -156,27 +169,27 @@ Public Class CommonBasePage
     End Property
 
     ''' <summary>Istanza unica delle <see cref="CommonUtil"/></summary>
-    Public ReadOnly Property CommonInstance() As CommonUtil
+    Public ReadOnly Property CommonInstance As CommonUtil
         Get
             Return CommonUtil.GetInstance()
         End Get
     End Property
 
     ''' <summary> Master page standard della docsuite. </summary>
-    Public Shadows ReadOnly Property MasterDocSuite() As DocSuite2008
+    Public Shadows ReadOnly Property MasterDocSuite As DocSuite2008
         Get
             Return CType(Master, DocSuite2008)
         End Get
     End Property
 
     ''' <summary> Torna il manager delle chiamate AJAX per la pagina attuale. </summary>
-    Public ReadOnly Property AjaxManager() As RadAjaxManager
+    Public ReadOnly Property AjaxManager As RadAjaxManager
         Get
             Return RadAjaxManager.GetCurrent(Page)
         End Get
     End Property
 
-    Public Overridable ReadOnly Property Facade() As FacadeFactory
+    Public Overridable ReadOnly Property Facade As FacadeFactory
         Get
             Select Case Type
                 Case "Prot"
@@ -207,19 +220,19 @@ Public Class CommonBasePage
         End Get
     End Property
 
-    Protected ReadOnly Property ProtocolEnv() As ProtocolEnv
+    Protected ReadOnly Property ProtocolEnv As ProtocolEnv
         Get
             Return DocSuiteContext.Current.ProtocolEnv
         End Get
     End Property
 
-    Protected ReadOnly Property DocumentEnv() As DocumentEnv
+    Protected ReadOnly Property DocumentEnv As DocumentEnv
         Get
             Return DocSuiteContext.Current.DocumentEnv
         End Get
     End Property
 
-    Protected ReadOnly Property ResolutionEnv() As ResolutionEnv
+    Protected ReadOnly Property ResolutionEnv As ResolutionEnv
         Get
             Return DocSuiteContext.Current.ResolutionEnv
         End Get
@@ -267,6 +280,112 @@ Public Class CommonBasePage
             Session("CurrentTenant") = value
         End Set
     End Property
+    Public Property CurrentDomainUser As Model.Securities.DomainUserModel
+        Get
+            If Session("CurrentDomainUser") IsNot Nothing Then
+                Return DirectCast(Session("CurrentDomainUser"), Model.Securities.DomainUserModel)
+            End If
+            Return Nothing
+        End Get
+        Set(value As Model.Securities.DomainUserModel)
+            Session("CurrentDomainUser") = value
+        End Set
+    End Property
+    Protected ReadOnly Property IsWorkflowOperation As Boolean
+        Get
+            If Not _workflowOperation.HasValue Then
+                _workflowOperation = Request.QueryString.GetValueOrDefault("IsWorkflowOperation", False)
+            End If
+            Return _workflowOperation.Value
+        End Get
+    End Property
+
+    Protected ReadOnly Property CurrentIdWorkflowActivity As Guid?
+        Get
+            If _idWorkflowActivity Is Nothing Then
+                _idWorkflowActivity = GetKeyValue(Of Guid?)("IdWorkflowActivity")
+            End If
+            Return _idWorkflowActivity
+        End Get
+    End Property
+
+    Protected ReadOnly Property CurrentWorkflowAuthorizationFinder As WorkflowAuthorizationFinder
+        Get
+            If _currentWorkflowAuthorizationFinder Is Nothing Then
+                _currentWorkflowAuthorizationFinder = New WorkflowAuthorizationFinder(DocSuiteContext.Current.Tenants)
+                _currentWorkflowAuthorizationFinder.EnablePaging = False
+            End If
+            Return _currentWorkflowAuthorizationFinder
+        End Get
+    End Property
+
+    Protected ReadOnly Property CurrentWorkflowActivityFinder As WorkflowActivityFinder
+        Get
+            If _currentWorkflowActivityFinder Is Nothing Then
+                _currentWorkflowActivityFinder = New WorkflowActivityFinder(DocSuiteContext.Current.Tenants)
+                _currentWorkflowActivityFinder.EnablePaging = False
+            End If
+            Return _currentWorkflowActivityFinder
+        End Get
+    End Property
+
+    Protected ReadOnly Property CurrentWorkflowPropertyFinder As WorkflowPropertyFinder
+        Get
+            If _currentWorkflowPropertyFinder Is Nothing Then
+                _currentWorkflowPropertyFinder = New WorkflowPropertyFinder(DocSuiteContext.Current.Tenants) With {
+                    .EnablePaging = False
+                }
+            End If
+            Return _currentWorkflowPropertyFinder
+        End Get
+    End Property
+
+    Protected ReadOnly Property CurrentWorkflowInstanceFinder As WorkflowInstanceFinder
+        Get
+            If _currentWorkflowInstanceFinder Is Nothing Then
+                _currentWorkflowInstanceFinder = New WorkflowInstanceFinder(DocSuiteContext.Current.Tenants) With {
+                    .EnablePaging = False
+                }
+            End If
+            Return _currentWorkflowInstanceFinder
+        End Get
+    End Property
+
+    Protected ReadOnly Property CurrentWorkflowActivity As WorkflowActivity
+        Get
+            If _workflowActivity Is Nothing Then
+                Dim result As WebAPIDto(Of WorkflowActivity) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowActivityFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        If Not CurrentIdWorkflowActivity.HasValue Then
+                            Return Nothing
+                        End If
+                        finder.UniqueId = CurrentIdWorkflowActivity.Value
+                        finder.ExpandRepository = True
+                        Return finder.DoSearch().FirstOrDefault()
+                    End Function)
+
+                If result IsNot Nothing Then
+                    _workflowActivity = result.Entity
+                End If
+            End If
+            Return _workflowActivity
+        End Get
+    End Property
+
+    Protected ReadOnly Property IsCurrentWorkflowActivityManualComplete As Boolean
+        Get
+            If Not _isCurrentWorkflowActivityManualComplete.HasValue Then
+                _isCurrentWorkflowActivityManualComplete = True
+                Dim dsw_a_Activity_ManualComplete As WorkflowProperty = GetInstanceWorkflowProperty(WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE, CurrentWorkflowActivity.WorkflowInstance.UniqueId)
+                If dsw_a_Activity_ManualComplete IsNot Nothing AndAlso dsw_a_Activity_ManualComplete.ValueBoolean.HasValue Then
+                    _isCurrentWorkflowActivityManualComplete = dsw_a_Activity_ManualComplete.ValueBoolean.Value
+                End If
+            End If
+            Return _isCurrentWorkflowActivityManualComplete.Value
+        End Get
+    End Property
+
 #End Region
 
 #Region " Events "
@@ -362,8 +481,6 @@ Public Class CommonBasePage
     End Sub
 
 
-
-
     ''' <summary> Gestore delle eccezioni delle pagine della GUI </summary>
     ''' <param name="page"> Pagina nella quale è avvenuta l'eccezione </param>
     Public Shared Sub CommonPageErrorHandler(ByRef page As Page)
@@ -446,6 +563,54 @@ Public Class CommonBasePage
         Return String.Format("{0} - ({1})", user.Account, user.Description)
     End Function
 
+    Protected Function GetActivityWorkflowProperty(propertyName As String, idWorkflowActivity As Guid) As WorkflowProperty
+        Dim workflowProperty As WorkflowProperty = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowPropertyFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.WorkflowActivityId = idWorkflowActivity
+                        finder.Name = propertyName
+                        Return finder.DoSearch().Select(Function(s) s.Entity).FirstOrDefault()
+                    End Function)
+        Return workflowProperty
+    End Function
+
+    Protected Function GetInstanceWorkflowProperty(propertyName As String, idWorkflowInstance As Guid) As WorkflowProperty
+        Dim dtoProperty As WebAPIDto(Of WorkflowProperty) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowPropertyFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.WorkflowInstanceId = idWorkflowInstance
+                        finder.Name = propertyName
+                        Return finder.DoSearch().FirstOrDefault()
+                    End Function)
+
+        If dtoProperty IsNot Nothing AndAlso dtoProperty.Entity IsNot Nothing Then
+            Return dtoProperty.Entity
+        End If
+        Return Nothing
+    End Function
+
+    Protected Function GetWorkflowActivity(idWorkflowActivity As Guid) As WorkflowActivity
+        Dim result As WebAPIDto(Of WorkflowActivity) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowActivityFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.UniqueId = idWorkflowActivity
+                        finder.ExpandRepository = True
+                        finder.ExpandProperties = False
+                        Return finder.DoSearch().FirstOrDefault()
+                    End Function)
+        Return result?.Entity
+    End Function
+
+    Protected Function GetWorkflowAuthorizationHandler(idWorkflowActivity As Guid) As WorkflowAuthorization
+        Dim result As WebAPIDto(Of WorkflowAuthorization) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowAuthorizationFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.WorkflowActivityId = idWorkflowActivity
+                        finder.IsHandler = True
+                        Return finder.DoSearch().FirstOrDefault()
+                    End Function)
+        Return result?.Entity
+    End Function
 
 #End Region
 

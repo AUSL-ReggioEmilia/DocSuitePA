@@ -1,0 +1,54 @@
+Epic 21477: [SM] Nuovo modulo "Rubrica centrale dello Stato"
+
+
+Feature 21408: [SM] Contatti : Integrazione rubrica AUS
+Feature 21478: [SM] Management AOO: Creare modulo integration "VSW.SyncAOO.Contact" per la creazione dei contatti nelle singole AOO mediante WebAPI
+Feature 21479: [SM] Management AOO: Creare modulo integration "VSW.Management.Contact" per la creazione dei contatti nel database centrale
+Feature 21480: [SM] Management AOO: Creare modulo integration "VSW.Management.Audit" per la creazione dei contatti nel database centrale
+Feature 21481: [SM] Management AOO: Gestione nuova tipologia di contatto DocSuite
+Feature 21491: [SM] Management AOO: Nuovo database "DocSuiteAOOManagement"
+Feature 21509: [SM] Integration: Creare modulo integration "SM.ACATA" per la creazione dei protocolli in ACTA/DocQ
+Feature 21512: [SM] Integration: Creare modulo integration "SM.SyncAOO" per la creazione dei protocolli in DocSuite da ACTA
+Feature 21532: [SM] Fascicoli : Avvio workflow dal visualizzatore di documenti di fascicoli
+Feature 21590: [SM] Management AOO: Nuova APP Angular per il management di distribuzione delle rubriche in tutte le AOO.
+Feature 21594: [SM] Management AOO: Nuova WebAPI per la gestione delle lettura del database centrale e la spedizione dei comandi nel service bus (e relativi modelli)
+Feature 21598: [SM] Fascicoli : Rimozione vecchia pagina di inserimento di fascicoli in favore nella nuova pagina con le serie e i volumi
+Feature 21626: [SM] Tabella Location : Creazione pagina amministrativa dell'entità "Location" 
+Feature 21630: [SM] Fulltext : Introduzione della ricerca Fulltext in DocSuite
+
+
+User Story 21409: [SM] Integrazione rubrica AUS: Creare un nuovo layer VecompSoftware.Services.AnagraficaAUS
+User Story 21410: [SM] Integrazione rubrica AUS: Creare un parametro di ProtocolEnv "AUSIntegrationEnabled"
+User Story 21411: [SM] Integrazione rubrica AUS: Adeguamenti al uscContact 
+User Story 21482: [SM] Management AOO: Creare il parametro di ProtocolEnv "ContactAOOParentId"
+User Story 21483: [SM] Management AOO: Rendere immodificabile dalla DocSuite tutti i contatti figli (incluso il parentid) di ContactAOOParentId.
+User Story 21486: [SM] Management AOO: Rendere immodificabile dalla DocSuite tutti i contatti figli (incluso il parentid) di ContactAOOParentId.
+User Story 21487: [SM] Management AOO: Creare modulo integration "VSW.Management.Contact" per la creazione dei contatti nel database centrale
+User Story 21488: [SM] Management AOO: Business logic "VSW.Management.Contact" per la creazione dei contatti nel database centrale
+User Story 21489: [SM] Management AOO: Creare modulo integration "VSW.Management.Audit" per la creazione dei Audit nel database centrale
+User Story 21490: [SM] Management AOO: Business logic "VSW.Management.Audit" per la creazione dei Audit nel database centrale
+User Story 21492: [SM] Management AOO: Nuovo database "DocSuiteAOOManagement"
+User Story 21497: [SM] Management AOO: Creare modulo integration "VSW.SyncAOO.Contact" per la creazione dei contatti nelle singole AOO mediante WebAPI
+User Story 21498: [SM] Management AOO: Business logic "VSW.SyncAOO.Contact" per la creazione dei contatti nelle singole AOO mediante WebAPI
+User Story 21510: [SM] Integration: Creare modulo integration "SM.ACATA" per la creazione dei protocolli in ACTA/DocQ
+User Story 21511: [SM] Integration: Business logic "SM.ACATA" per la creazione dei protocolli in ACTA/DocQ
+User Story 21513: [SM] Integration: Creare modulo integration "SM.SyncAOO" per la creazione dei protocolli in DocSuite da ACTA
+User Story 21514: [SM] Integration: Business logic "SM.SyncAOO" per la creazione dei protocolli in DocSuite da ACTA
+User Story 21533: [SM] Fascicoli Workflow : Adeguamento attribute javascript in ViewerLight.ascx
+User Story 21534: [SM] Fascicoli Workflow : Creare pulsante "Avvia attività" nella pagina FascicleViewer.aspx
+User Story 21535: [SM] Fascicoli Workflow : Popolare le proprietà di session storage premendo il pulsante "Avvia attività" nella pagina FascicleViewer.aspx
+User Story 21593: [SM] Management AOO: Nuova APP Angular per il management di distribuzione delle rubriche in tutte le AOO.
+User Story 21597: [SM] Management AOO: Nuova WebAPI per la gestione delle lettura del database centrale e la spedizione dei comandi nel service bus (e relativi modelli)
+User Story 21599: [SM] Fascicoli : Bonifica pagina FascUDManager facendola puntare alla pagina FascProcessInserimento.aspx
+User Story 21600: [SM] Fascicoli : Bonifica pagina tbltContenitori adeguando la gestione di creazione dei fascicoli con serie
+User Story 21627: [SM] Tabella Location : Modificare il menu della DocSuite aggiungendo un gruppo "Gestione contenitori
+User Story 21628: [SM] Tabella Location : Creare la pagina TbltLocation.aspx 
+User Story 21629: [SM] Tabelle Location: Adeguare il mapping EF dell'entità Location agganciando le store procedure per la creazione, aggiornamento e cancellazione.
+User Story 21636: [SM] Fulltext : Adeguare del TenantModel aggiungendo delle WebAPI l'url delle WebAPI di BiblosDS
+User Story 21637: [SM] Fulltext : Creazione del parametro "FulltextEnabled" in docsuite di default a false.
+User Story 21638: [SM] Fulltext : Specificare nel readme 9.02 come attivare le funzionalità Fulltext in DocSuite e BiblosDS.
+User Story 21639: [SM] Fulltext : Adeguare le Private WebAPI aggiugendo una ODATA Function che effettui la ricerca in Biblos WebAPI
+User Story 21640: [SM] Fulltext : Gestione fulltext in DocSuite - Pagina di ricerca
+
+
+Issue 20341: [***REMOVED***]Email utente settore non compare in sommario di protocollo

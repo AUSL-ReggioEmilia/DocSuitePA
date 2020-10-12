@@ -16,10 +16,6 @@
                     tbltTemplateDocumentRepository.lblVersionId = "<%= lblVersion.ClientID %>";
                     tbltTemplateDocumentRepository.lblStatusId = "<%= lblStatus.ClientID %>";
                     tbltTemplateDocumentRepository.lblObjectId = "<%= lblObject.ClientID %>";
-                    tbltTemplateDocumentRepository.btnAggiungiId = "<%= btnAggiungi.ClientID %>";
-                    tbltTemplateDocumentRepository.btnEliminaId = "<%= btnElimina.ClientID %>";
-                    tbltTemplateDocumentRepository.btnModificaId = "<%= btnModifica.ClientID %>";
-                    tbltTemplateDocumentRepository.btnVisualizzaId = "<%= btnVisualizza.ClientID %>";
                     tbltTemplateDocumentRepository.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                     tbltTemplateDocumentRepository.splitterPageId = "<%= splContent.ClientID %>";
                     tbltTemplateDocumentRepository.lblTagsId = "<%= lblTags.ClientID %>";
@@ -29,10 +25,9 @@
                     tbltTemplateDocumentRepository.pnlInformationsId = "<%= pnlInformations.ClientID %>";
                     tbltTemplateDocumentRepository.managerId = "<%= MasterDocSuite.DefaultWindowManager.ClientID %>";
                     tbltTemplateDocumentRepository.ajaxManagerId = "<%= MasterDocSuite.AjaxManager.ClientID %>";
-                    tbltTemplateDocumentRepository.btnEliminaUniqueId = "<%= btnElimina.UniqueID %>";
                     tbltTemplateDocumentRepository.radWindowManagerId = "<%= RadWindowManager.ClientID %>";
                     tbltTemplateDocumentRepository.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
-                    tbltTemplateDocumentRepository.btnLogId = "<%= btnLog.ClientID %>";
+                    tbltTemplateDocumentRepository.actionToolbarId = "<%= uscTemplateDocumentRepository.FolderToolBar_Grid.ClientID %>";
                     tbltTemplateDocumentRepository.initialize();
                 });
             });
@@ -123,14 +118,4 @@
         </telerik:RadSplitter>
     </div>
     <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
-</asp:Content>
-
-<asp:Content runat="server" ContentPlaceHolderID="cphFooter">
-    <asp:Panel runat="server" ID="pnlButtons">
-        <telerik:RadButton ID="btnAggiungi" runat="server" Text="Aggiungi" CausesValidation="false" AutoPostBack="false" />
-        <telerik:RadButton ID="btnModifica" runat="server" Text="Modifica" Enabled="false" AutoPostBack="false" />
-        <telerik:RadButton ID="btnElimina" runat="server" Text="Elimina" Enabled="false" AutoPostBack="false" />
-        <telerik:RadButton ID="btnLog" runat="server" Text="Log" Enabled="false" AutoPostBack="false" />
-        <telerik:RadButton ID="btnVisualizza" runat="server" Text="Visualizza" Enabled="false" AutoPostBack="false" />
-    </asp:Panel>
 </asp:Content>

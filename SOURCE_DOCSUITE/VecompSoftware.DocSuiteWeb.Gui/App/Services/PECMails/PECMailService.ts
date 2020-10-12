@@ -115,9 +115,9 @@ class PECMailService extends BaseService {
         }, error);
     }
 
-    getOutgoingPECMail(pecMailYear: number, pecMailNumber: number, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getOutgoingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string =
-            `${this._configuration.ODATAUrl}?$filter=Year eq ${pecMailYear} and Number eq ${pecMailNumber} and Direction eq ${pecMailDirection} and IsActive ne 'Processed'&$expand=PECMailReceipts`;
+            `${this._configuration.ODATAUrl}?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection} and IsActive ne 'Processed'&$expand=PECMailReceipts`;
         this.getRequest(url, null, (response: any) => {
             if (callback && response) {
                 let modelMapper = new PECMailViewModelMapper();
@@ -128,9 +128,9 @@ class PECMailService extends BaseService {
         }, error);
     }
 
-    getIncomingPECMail(pecMailYear: number, pecMailNumber: number, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getIncomingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string =
-            `${this._configuration.ODATAUrl}?$filter=Year eq ${pecMailYear} and Number eq ${pecMailNumber} and Direction eq ${pecMailDirection}&$expand=PECMailReceipts`;
+            `${this._configuration.ODATAUrl}?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection}&$expand=PECMailReceipts`;
         this.getRequest(url, null, (response: any) => {
             if (callback && response) {
                 let modelMapper = new PECMailViewModelMapper();
@@ -141,9 +141,9 @@ class PECMailService extends BaseService {
         }, error);
     }
 
-    countIncomingPECMail(pecMailYear: number, pecMailNumber: number, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    countIncomingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        let data: string = `/$count?$filter=Year eq ${pecMailYear} and Number eq ${pecMailNumber} and Direction eq ${pecMailDirection}&$expand=PECMailReceipts`;
+        let data: string = `/$count?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection}&$expand=PECMailReceipts`;
         url = `${url}${data}`;
         this.getRequest(url, null,
             (response: any) => {
@@ -154,9 +154,9 @@ class PECMailService extends BaseService {
         
     }
 
-    countOutgoingPECMail(pecMailYear: number, pecMailNumber: number, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    countOutgoingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        let data: string = `/$count?$filter=Year eq ${pecMailYear} and Number eq ${pecMailNumber} and Direction eq ${pecMailDirection} and IsActive ne 'Processed'&$expand=PECMailReceipts`;
+        let data: string = `/$count?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection} and IsActive ne 'Processed'&$expand=PECMailReceipts`;
         url = `${url}${data}`;
         this.getRequest(url, null,
             (response: any) => {
@@ -192,9 +192,9 @@ class PECMailService extends BaseService {
         }, error);
     }
 
-    getProtocolledPecMail(pecMailYear: number, pecMailNumber: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getProtocolledPecMail(idDocumentUnit: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string =
-            `${this._configuration.ODATAUrl}?$filter=Year eq ${pecMailYear} and Number eq ${pecMailNumber} &$expand=pecmailreceipts`;
+            `${this._configuration.ODATAUrl}?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit}&$expand=pecmailreceipts`;
         this.getRequest(url, null, (response: any) => {
             if (callback && response) {
                 let modelMapper = new PECMailViewModelMapper();
@@ -205,9 +205,9 @@ class PECMailService extends BaseService {
         }, error);
     }
 
-    countProtocolledPecMail(pecMailYear: number, pecMailNumber: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    countProtocolledPecMail(idDocumentUnit: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        let data: string = `/$count?$filter=Year eq ${pecMailYear} and Number eq ${pecMailNumber}`;
+        let data: string = `/$count?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit}`;
         url = `${url}${data}`;
         this.getRequest(url, null,
             (response: any) => {

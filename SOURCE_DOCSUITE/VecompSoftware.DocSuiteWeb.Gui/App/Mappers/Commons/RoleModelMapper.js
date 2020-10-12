@@ -36,6 +36,7 @@ define(["require", "exports", "App/Mappers/BaseMapper"], function (require, expo
             toMap.ServiceCode = source.ServiceCode;
             toMap.ActiveFrom = source.ActiveFrom ? moment(source.ActiveFrom).format("DD/MM/YYYY") : "";
             toMap.Children = source.Children && source.Children.length ? source.Children.map(function (childRole) { return _this.Map(childRole); }) : [];
+            toMap.CategoryFascicleRights = source.CategoryFascicleRights;
             return toMap;
         };
         return RoleModelMapper;

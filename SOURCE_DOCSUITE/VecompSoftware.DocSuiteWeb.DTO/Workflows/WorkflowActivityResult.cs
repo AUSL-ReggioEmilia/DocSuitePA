@@ -1,21 +1,23 @@
 ﻿using System;
-using VecompSoftware.DocSuiteWeb.Data.Entity.Workflows;
+using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 
 namespace VecompSoftware.DocSuiteWeb.DTO.Workflows
 {
     public class WorkflowActivityResult
     {
         public WorkflowActivityResult() : base()
-        { }
+        { 
+        }
 
         public Guid WorkflowActivityId { get; set; }
 
         public string WorkflowActivityName { get; set; }
 
         public string WorkflowRepositoryName { get; set; }
+        
         public string WorkflowActivityRequestorUser { get; set; }
 
-        public ActivityType WorkflowActivityType { get; set; }
+        public WorkflowActivityType WorkflowActivityType { get; set; }
 
         public DateTimeOffset WorkflowActivityPublicationDate { get; set; }
 

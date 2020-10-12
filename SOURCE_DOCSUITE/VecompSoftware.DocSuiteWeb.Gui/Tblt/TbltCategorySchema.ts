@@ -23,7 +23,7 @@ class TbltCategorySchema {
     /**
      * Evento scatenato al click del pulsante di modifica
      */
-    private btnEdit_OnClicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    private btnEdit_OnClicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonCancelEventArgs) => {
         eventArgs.set_cancel(true);
         this.openWindow('Action=Edit');
     }
@@ -31,7 +31,7 @@ class TbltCategorySchema {
     /**
      * Evento scatenato al click del pulsante di elimina
      */
-    private btnDelete_OnClicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    private btnDelete_OnClicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonCancelEventArgs) => {
         eventArgs.set_cancel(true);
         this.openWindow('Action=Delete');
     }

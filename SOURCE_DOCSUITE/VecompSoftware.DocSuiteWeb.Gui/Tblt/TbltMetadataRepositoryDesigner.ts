@@ -6,6 +6,7 @@ import UscMetadataRepositoryDesigner = require('UserControl/uscMetadataRepositor
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import MetadataRepositoryService = require('App/Services/Commons/MetadataRepositoryService');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class TbltMetadataRepositoryDesigner extends MetadataRepositoryBase {
 
@@ -42,7 +43,7 @@ class TbltMetadataRepositoryDesigner extends MetadataRepositoryBase {
      * @param sender
      * @param args
      */
-    btnPublish_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnPublish_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         this._loadingPanel.show(this.pageContentId);
         this.setControls(false);
         let item: MetadataRepositoryModel = this.getMetadataRepository();
@@ -59,7 +60,7 @@ class TbltMetadataRepositoryDesigner extends MetadataRepositoryBase {
      * @param sender
      * @param args
      */
-    btnDraft_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnDraft_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         this._loadingPanel.show(this.pageContentId);
         this.setControls(false);
         let item: MetadataRepositoryModel = this.getMetadataRepository();
@@ -187,7 +188,7 @@ class TbltMetadataRepositoryDesigner extends MetadataRepositoryBase {
      */
     saveMetadataRepository(item: MetadataRepositoryModel) {
         if (this.isEditPage == true) {
-            item.UniqueId = sessionStorage.getItem("UniqueIdMetadataRepository");
+            item.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_UNIQUEID_METADATA_REPOSITORY);
             this.updateRepositoryModel(item);
         } else {
             this.insertRepositoryModel(item);

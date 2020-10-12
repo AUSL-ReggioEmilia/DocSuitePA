@@ -102,14 +102,7 @@ Partial Public Class uscUDFascicleGrid
         Dim boundHeader As WebAPIDto(Of DocumentUnitModel) = DirectCast(e.Item.DataItem, WebAPIDto(Of DocumentUnitModel))
         Dim number As String = String.Empty
 
-        If boundHeader.Entity.DocumentUnitName.Eq("Protocollo") Then
-            number = boundHeader.Entity.Number
-        End If
-        If DocSuiteContext.Current.IsResolutionEnabled AndAlso (boundHeader.Entity.DocumentUnitName.Eq(Facade.ResolutionTypeFacade.DeterminaCaption()) OrElse boundHeader.Entity.DocumentUnitName.Eq(Facade.ResolutionTypeFacade.DeliberaCaption())) Then
-            number = boundHeader.Entity.EntityId.ToString()
-        End If
-
-        Dim hiddenId As String = String.Format("{0}|{1}|{2}", boundHeader.Entity.Year, number, boundHeader.Entity.DocumentUnitName)
+        Dim hiddenId As String = String.Format("{0}|{1}|{2}", boundHeader.Entity.UniqueId, boundHeader.Entity.EntityId, boundHeader.Entity.DocumentUnitName)
 
         Dim warningIcon As Image = DirectCast(e.Item.FindControl("imgWarningIcon"), Image)
         warningIcon.Visible = False
@@ -123,14 +116,14 @@ Partial Public Class uscUDFascicleGrid
             warningIcon.ToolTip = "Attenzione: si sta avvicinando la soglia di 60 giorni prevista dalla normativa per la fascicolazione."
         End If
         With DirectCast(e.Item.FindControl("lbtViewUD"), LinkButton)
-            .Text = boundHeader.Entity.FullUDNumber
+            .Text = boundHeader.Entity.Title
             .CommandArgument = hiddenId
 
             If RedirectOnParentPage Then
                 Dim parentPageUrl As String = String.Empty
 
                 If boundHeader.Entity.DocumentUnitName.Eq("Protocollo") Then
-                    Dim parameters As String = String.Format("Year={0}&Number={1}&Type=Prot", boundHeader.Entity.Year, boundHeader.Entity.Number)
+                    Dim parameters As String = String.Format("UniqueId={0}&Type=Prot", boundHeader.Entity.UniqueId)
                     parameters = CommonShared.AppendSecurityCheck(parameters)
                     parentPageUrl = String.Concat("../Prot/ProtVisualizza.aspx?", parameters)
                 End If
@@ -157,20 +150,20 @@ Partial Public Class uscUDFascicleGrid
         Select Case e.CommandName
             Case "ViewUD"
                 Dim split As String() = e.CommandArgument.ToString().Split("|"c)
-                Dim year As Short = Short.Parse(split(0))
-                Dim number As Integer = Integer.Parse(split(1))
+                Dim uniqueId As Guid = Guid.Parse(split(0))
+                Dim entityId As Integer = Integer.Parse(split(1))
                 If split(2).Eq("Protocollo") Then
-                    Dim prot As Protocol = Facade.ProtocolFacade.GetById(year, number, False)
+                    Dim prot As Protocol = Facade.ProtocolFacade.GetById(uniqueId, False)
                     If prot IsNot Nothing Then
-                        RedirectOnPage(String.Concat("../Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}&Type=Prot", year, number))))
+                        RedirectOnPage(String.Concat("../Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&Type=Prot", uniqueId))))
                     Else
                         AjaxManager.Alert(String.Format("Il Protocollo {0}/{1} non è stato trovato", Short.Parse(split(0)), Integer.Parse(split(1))))
                     End If
                 End If
                 If DocSuiteContext.Current.IsResolutionEnabled AndAlso (split(2).Eq(Facade.ResolutionTypeFacade.DeterminaCaption()) OrElse split(2).Eq(Facade.ResolutionTypeFacade.DeliberaCaption())) Then
-                    Dim resl As Resolution = Facade.ResolutionFacade.GetById(number)
+                    Dim resl As Resolution = Facade.ResolutionFacade.GetById(entityId)
                     If resl IsNot Nothing Then
-                        RedirectOnPage(String.Concat("../Resl/ReslVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("IdResolution={0}&Type=Resl", number))))
+                        RedirectOnPage(String.Concat("../Resl/ReslVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("IdResolution={0}&Type=Resl", entityId))))
                     Else
                         AjaxManager.Alert(String.Format("L'Atto {0}/{1} non è stato trovato", Short.Parse(split(0)), Integer.Parse(split(1))))
                     End If

@@ -18,6 +18,10 @@ Public Class UserUDS
 #Region "Fields"
     Private _currentRepository As UDSRepository
     Private _currentConverter As UDSConverter
+    Private _UDSRoleUrl As String
+    Private Const UDSROLEKEY As String = "UDSRole"
+    Private _UDSContactUrl As String
+    Private Const UDSCONTACTKEY As String = "UDSContact"
 
     Private ctlTitle As String = "Title"
     Private ctlHeader As String = "Header"
@@ -30,13 +34,6 @@ Public Class UserUDS
     Private ctlLookup As String = "Lookup"
     Private ctlContact As String = "Contact"
     Private ctlAuthorization As String = "Authorization"
-
-#Region "Odata query"
-    Private Const ODATA_DOCUMENTUNIT_FILTER As String = "DocumentUnit/DocumentUnitRoles/any(r:r/{0} in ({1}))"
-    Private Const ODATA_CONTACT_FILTER As String = "Contacts/any(contacts:contacts/{0} eq {1} and contacts/ContactLabel eq '{2}')"
-    Private Const ODATA_CONTACT_MANUAL_FILTER As String = "(Contacts/any(c:contains(c/{0},'{1}') and c/ContactLabel eq '{2}') or Contacts/any(c1:contains(c1/Contact/Description,'{1}') and c1/ContactLabel eq '{2}'))"
-#End Region
-
 #End Region
 
 #Region " Properties "
@@ -107,6 +104,34 @@ Public Class UserUDS
         End Get
     End Property
 
+    Public ReadOnly Property UDSRoleUrl As String
+        Get
+            If _UDSRoleUrl Is Nothing Then
+                Dim webApiController As String = String.Empty
+                Dim webApiPath As String = DocSuiteContext.Current.CurrentTenant.ODATAUrl
+                If Not webApiPath.EndsWith("/") Then webApiPath = String.Concat(webApiPath, "/")
+                If DocSuiteContext.Current.CurrentTenant.Entities.ContainsKey(UDSROLEKEY) Then
+                    webApiController = DocSuiteContext.Current.CurrentTenant.Entities.Item(UDSROLEKEY).ODATAControllerName.ToString()
+                End If
+                _UDSRoleUrl = Path.Combine(webApiPath, webApiController)
+            End If
+            Return _UDSRoleUrl
+        End Get
+    End Property
+    Public ReadOnly Property UDSContactUrl As String
+        Get
+            If _UDSContactUrl Is Nothing Then
+                Dim webApiController As String = String.Empty
+                Dim webApiPath As String = DocSuiteContext.Current.CurrentTenant.ODATAUrl
+                If Not webApiPath.EndsWith("/") Then webApiPath = String.Concat(webApiPath, "/")
+                If DocSuiteContext.Current.CurrentTenant.Entities.ContainsKey(UDSCONTACTKEY) Then
+                    webApiController = DocSuiteContext.Current.CurrentTenant.Entities.Item(UDSCONTACTKEY).ODATAControllerName.ToString()
+                End If
+                _UDSContactUrl = Path.Combine(webApiPath, webApiController)
+            End If
+            Return _UDSContactUrl
+        End Get
+    End Property
 #End Region
 
 #Region "Events"

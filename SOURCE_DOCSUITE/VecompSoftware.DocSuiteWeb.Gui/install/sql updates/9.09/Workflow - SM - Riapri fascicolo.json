@@ -1,0 +1,121 @@
+﻿{
+  "0": {
+    "Position": 0,
+    "Name": "CREA FASCICOLO",
+    "AuthorizationType": "None",
+    "ActivityOperation": {
+      "Action": "ToFascicle",
+      "Area": "Build"
+    },
+    "ActivityType": "AutomaticActivity",
+    "InputArguments": [
+      {
+        "Name": "_dsw_p_ReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ReferenceId",
+        "PropertyType": "PropertyGuid",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ReferenceEnvironment",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": [
+      {
+        "Name": "_dsw_e_FascicleModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ReferenceId",
+        "PropertyType": "PropertyGuid",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ReferenceEnvironment",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ]
+  },
+  "1": {
+    "Position": 1,
+    "Name": "COPIA CONTENUTO DI FASCICOLO",
+    "AuthorizationType": "None",
+    "ActivityOperation": {
+      "Action": "CopyFascicleContents",
+      "Area": "Fascicle"
+    },
+    "ActivityType": "AutomaticActivity",
+    "InputArguments": [
+      {
+        "Name": "_dsw_e_FascicleModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ReferenceId",
+        "PropertyType": "PropertyGuid",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      },
+      {
+        "Name": "_dsw_e_ReferenceEnvironment",
+        "PropertyType": "PropertyInt",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": [
+
+    ]
+  }
+}

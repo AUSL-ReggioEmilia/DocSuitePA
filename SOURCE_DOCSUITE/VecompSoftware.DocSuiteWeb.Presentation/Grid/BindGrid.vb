@@ -1,5 +1,4 @@
-﻿Imports System.Collections.Generic
-Imports System.Web.UI
+﻿Imports System.Web.UI
 Imports System.Linq
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
@@ -9,8 +8,7 @@ Imports VecompSoftware.Services.Logging
 Imports System.Web
 Imports VecompSoftware.WebAPIManager.Exceptions
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
-Imports System.Security.Principal
-Imports System.Threading
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
 
 Public Class BindGrid
     Inherits BaseGrid
@@ -62,6 +60,10 @@ Public Class BindGrid
             Page.Session(ID + "_criteria") = value
         End Set
     End Property
+
+    Private Property ImpersonationAction As Func(Of IFinder, Func(Of Object), Object)
+
+    Private Property ImpersonationCounterAction As Func(Of IFinder, Func(Of Integer), Integer)
 
 #End Region
 
@@ -135,8 +137,15 @@ Public Class BindGrid
         Try
             Finder = finderToExecute
             If ImpersonateCurrentUser Then
+                RaiseEvent NeedImpersonation(Me, New EventArgs())
+                If TypeOf Finder Is FascicleFinder AndAlso finderToExecute.FromPostMethod Then
+                    Return ExecuteSearchWithImpersonation(Of Object)(AddressOf finderToExecute.GetFromPostMethod)
+                End If
                 Return ExecuteSearchWithImpersonation(Of Object)(AddressOf finderToExecute.DoSearchHeader)
             Else
+                If TypeOf Finder Is FascicleFinder AndAlso finderToExecute.FromPostMethod Then
+                    Return finderToExecute.GetFromPostMethod()
+                End If
                 Return finderToExecute.DoSearchHeader()
             End If
         Catch ex_ea As AggregateException
@@ -162,7 +171,8 @@ Public Class BindGrid
         Try
             Finder = finderToExecute
             If ImpersonateCurrentUser Then
-                Return ExecuteSearchWithImpersonation(Of Integer)(AddressOf finderToExecute.Count)
+                RaiseEvent NeedImpersonation(Me, New EventArgs())
+                Return ExecuteCounterWithImpersonation(AddressOf finderToExecute.Count)
             Else
                 Return finderToExecute.Count()
             End If
@@ -171,13 +181,28 @@ Public Class BindGrid
         End Try
     End Function
 
+    Public Sub SetImpersonationAction(func As Func(Of IFinder, Func(Of Object), Object))
+        ImpersonationAction = func
+    End Sub
+
+    Public Sub SetImpersonationCounterAction(func As Func(Of IFinder, Func(Of Integer), Integer))
+        ImpersonationCounterAction = func
+    End Sub
+
     Private Function ExecuteSearchWithImpersonation(Of T)(func As Func(Of T)) As T
-        Dim wi As WindowsIdentity = CType(HttpContext.Current.User.Identity, WindowsIdentity)
-        Using wic As WindowsImpersonationContext = wi.Impersonate()
-            Using ExecutionContext.SuppressFlow()
-                Return func()
-            End Using
-        End Using
+        If ImpersonationAction Is Nothing Then
+            Return func()
+        End If
+
+        Return ImpersonationAction(Finder, func)
+    End Function
+
+    Private Function ExecuteCounterWithImpersonation(func As Func(Of Integer)) As Integer
+        If ImpersonationCounterAction Is Nothing Then
+            Return func()
+        End If
+
+        Return ImpersonationCounterAction(Finder, func)
     End Function
 
     ''' <summary> Esegue il sort automatico della griglia in base alle espressioni di sort memorizzate </summary>
@@ -443,6 +468,12 @@ Public Class BindGrid
 
     Public Sub OnCustomPageIndexChanged(e As EventArgs)
         RaiseEvent CustomPageIndexChanged(Me, e)
+    End Sub
+
+    Public Event NeedImpersonation As EventHandler
+
+    Public Sub OnNeedImpersonation(e As EventArgs)
+        RaiseEvent NeedImpersonation(Me, e)
     End Sub
 
 End Class

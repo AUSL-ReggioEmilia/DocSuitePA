@@ -41,7 +41,7 @@
     <asp:Panel runat="server" ID="pnlMainContent" Style="height: 100%">
 
         <uc1:uscProtocollo ID="uscProtocollo" runat="server" />
-        <%-- <%-- settori con autorizzazioni rifiutate --%>
+        <%-- <%-- Settori con autorizzazioni rifiutate --%>
         <table class="datatable" id="tbltRefusedAuthorizations" runat="server" visible="false">
             <tr>
                 <th colspan="2">Settori con autorizzazione rifiutata</th>

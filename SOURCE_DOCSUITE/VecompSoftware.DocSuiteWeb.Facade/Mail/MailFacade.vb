@@ -103,6 +103,12 @@ Public Class MailFacade
         Return yearNumber.ToString()
     End Function
 
+    Private Shared Function AppendUniqueIdProtocolParam(uniqueId As Guid, ByVal seed As String) As String
+        Dim builder As New StringBuilder()
+        builder.Append(AppendParam(seed, "UniqueIdProtocol", uniqueId.ToString()))
+        Return builder.ToString()
+    End Function
+
     ''' <summary> Crea parametri compatibili con la gestione in sessione. </summary>
     Private Shared Function AppendResolutionParam(ByVal idResolution As Integer, ByVal seed As String) As String
         Return AppendParam(seed, "idResolution", idResolution.ToString())
@@ -155,7 +161,7 @@ Public Class MailFacade
                               prot.FullNumber, prot.RegistrationDate.ToLocalTime().DefaultString(), prot.Type.Description, prot.Container.Name, prot.ProtocolObject, WebHelper.Br)
 
         'scrivi l'elenco contatti solo se inferiore a 50
-        Dim countContacts As Long = New ProtocolContactFacade().GetCountByProtocol(prot.Year, prot.Number, "")
+        Dim countContacts As Long = New ProtocolContactFacade().GetCountByProtocol(prot, "")
         If countContacts < 50 Then
             'mittenti/destinatari
             Dim mittList As IList(Of Contact) = New List(Of Contact)
@@ -203,24 +209,24 @@ Public Class MailFacade
         Return mailBody.ToString()
     End Function
 
-    Private Shared Function CreateProtocolParameters(ByVal year As Short, ByVal number As Integer, ByVal action As String, ByVal seed As String) As StringBuilder
+    Private Shared Function CreateProtocolParameters(uniqueId As Guid, ByVal action As String, ByVal seed As String) As StringBuilder
         Dim strMail As StringBuilder = CreateMailParameters("Prot", action, seed)
-        strMail.Append(AppendYearNumberParam(year, number, seed))
+        strMail.Append(AppendUniqueIdProtocolParam(uniqueId, seed))
         Return strMail
     End Function
 
-    Public Shared Function CreateProtocolMailParameters(ByVal year As Short, ByVal number As Integer, ByVal seed As String) As String
-        Return CreateProtocolParameters(year, number, "Mail", seed).ToString()
+    Public Shared Function CreateProtocolMailParameters(uniqueId As Guid, ByVal seed As String) As String
+        Return CreateProtocolParameters(uniqueId, "Mail", seed).ToString()
     End Function
 
-    Public Shared Function CreateProtocolMailToParameters(ByVal year As Short, ByVal number As Integer, ByVal mailTo As String, ByVal seed As String) As String
-        Dim strMail As StringBuilder = CreateProtocolParameters(year, number, "Mail", seed)
+    Public Shared Function CreateProtocolMailToParameters(uniqueId As Guid, ByVal mailTo As String, ByVal seed As String) As String
+        Dim strMail As StringBuilder = CreateProtocolParameters(uniqueId, "Mail", seed)
         strMail.Append(AppendMailToParam(mailTo, seed))
         Return strMail.ToString()
     End Function
 
-    Public Shared Function CreateProtocolLinkMailParameters(ByVal year As Short, ByVal number As Integer, ByVal seed As String) As String
-        Return CreateProtocolParameters(year, number, "Link", seed).ToString()
+    Public Shared Function CreateProtocolLinkMailParameters(uniqueId As Guid, ByVal seed As String) As String
+        Return CreateProtocolParameters(uniqueId, "Link", seed).ToString()
     End Function
 
 #End Region

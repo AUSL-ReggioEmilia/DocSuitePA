@@ -1,11 +1,10 @@
 ﻿Imports System.Collections.Generic
 Imports System.Linq
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports Newtonsoft.Json
-Imports VecompSoftware.DocSuiteWeb.Data
 Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.ExtensionMethods
 
 Public Class ProtCorrection
     Inherits ProtBasePage
@@ -33,6 +32,15 @@ Public Class ProtCorrection
 #Region " Events "
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+
+        If CurrentProtocol Is Nothing Then
+            Throw New DocSuiteException("Impossibile correggere il protocollo.", $"Protocollo {CurrentProtocolId} inesistente")
+        End If
+
+        If CurrentProtocol.JournalLog IsNot Nothing AndAlso CurrentProtocol.JournalLog.LogDate.HasValue Then
+            Throw New DocSuiteException("Impossibile correggere il protocollo.", $"Protocollo {CurrentProtocol.FullNumber} è già stato inserito in un registro di protocollo {CurrentProtocol.JournalLog.LogDate.Value.ToShortDateString()}")
+        End If
+
         AddHandler uscMittenti.ItemsAdded, AddressOf uscContact_ContactAdded
         AddHandler uscDestinatari.ItemsAdded, AddressOf uscContact_ContactAdded
         AddHandler uscMittenti.ContactRemoved, AddressOf uscMittenti_ContactRemoved
@@ -43,12 +51,13 @@ Public Class ProtCorrection
 
         uscMittenti.ButtonContactSmartVisible = ProtocolEnv.ContactSmartEnabled
         uscDestinatari.ButtonContactSmartVisible = ProtocolEnv.ContactSmartEnabled
+
         If Not Page.IsPostBack Then
             InitializePage()
         End If
     End Sub
 
-    Private Sub RcbContainerItemsRequested(sender As RadComboBox, e As RadComboBoxItemsRequestedEventArgs) Handles rcbContainer.ItemsRequested
+    Private Sub RcbContainerItemsRequested(sender As Object, e As RadComboBoxItemsRequestedEventArgs) Handles rcbContainer.ItemsRequested
         BindContainers(e.Text)
     End Sub
 
@@ -62,14 +71,13 @@ Public Class ProtCorrection
             Exit Sub
         End If
 
-        CurrentProtocol.ProtocolObject = PartialObject
-
         ' Salvo prima di pulire i campi
         Dim mittenti As IList(Of ContactDTO) = uscMittenti.GetContacts(True)
         Dim destinatari As IList(Of ContactDTO) = uscDestinatari.GetContacts(True)
         Dim newContainer As Container = Facade.ContainerFacade.GetById(Integer.Parse(rcbContainer.SelectedValue), False, "ProtDB")
         AddCorrectionLog(newContainer, mittenti, destinatari)
 
+        CurrentProtocol.ProtocolObject = PartialObject
         ' Elimino i contatti già presenti
         CurrentProtocol.Contacts.Clear()
         CurrentProtocol.ManualContacts.Clear()
@@ -86,7 +94,7 @@ Public Class ProtCorrection
         Facade.ProtocolFacade.RegenerateSignatures(CurrentProtocol)
         Facade.ProtocolFacade.Update(CurrentProtocol)
         Facade.ProtocolFacade.SendUpdateProtocolCommand(CurrentProtocol)
-        Response.Redirect("../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck("Year=" & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber))
+        Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
 
     End Sub
 
@@ -167,10 +175,9 @@ Public Class ProtCorrection
         uscObject.Text = CurrentProtocol.ProtocolObject
 
         ' Contenitori
-        BindContainers("")
+        BindContainers(String.Empty)
         rcbContainer.Enabled = ProtocolEnv.ProtocolContainerEditable AndAlso Not (CurrentProtocol.Container.IsInvoiceEnable OrElse CurrentProtocolRights.IsRejected OrElse ProtocolEnv.ProtocolRejectionEnabled)
         rcbContainer.SelectedValue = CurrentProtocol.Container.Id.ToString()
-
 
         ' Contatti
         Select Case CurrentProtocol.Type.Id
@@ -208,13 +215,13 @@ Public Class ProtCorrection
         uscMittenti.EnableCompression = False
         uscMittenti.MultiSelect = True
         uscMittenti.ButtonSelectVisible = True
-        uscMittenti.ButtonSelectDomainVisible = True
+        uscMittenti.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
         uscMittenti.ButtonSelectOChartVisible = True
         uscMittenti.ButtonDeleteVisible = True
         uscMittenti.ButtonManualVisible = True
         uscMittenti.ButtonPropertiesVisible = True
         uscMittenti.ButtonImportVisible = ProtocolEnv.IsImportContactEnabled
-        uscMittenti.ButtonIPAVisible = (Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa))
+        uscMittenti.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
 
         uscMittenti.DataSource = Facade.ProtocolFacade.GetSenders(CurrentProtocol)
         uscMittenti.DataBind()
@@ -225,13 +232,13 @@ Public Class ProtCorrection
         uscDestinatari.EnableCompression = False
         uscDestinatari.MultiSelect = True
         uscDestinatari.ButtonSelectVisible = True
-        uscDestinatari.ButtonSelectDomainVisible = True
+        uscDestinatari.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
         uscDestinatari.ButtonSelectOChartVisible = True
         uscDestinatari.ButtonDeleteVisible = True
         uscDestinatari.ButtonManualVisible = True
         uscDestinatari.ButtonPropertiesVisible = True
         uscDestinatari.ButtonImportVisible = ProtocolEnv.IsImportContactEnabled
-        uscDestinatari.ButtonIPAVisible = Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa)
+        uscDestinatari.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
 
         uscDestinatari.DataSource = Facade.ProtocolFacade.GetRecipients(CurrentProtocol)
         uscDestinatari.DataBind()
@@ -324,27 +331,29 @@ Public Class ProtCorrection
     Private Sub AddCorrectionLog(container As Container, mittenti As IList(Of ContactDTO), destinatari As IList(Of ContactDTO))
         If Not CurrentProtocol.Container.Id.Equals(container.Id) Then
             Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PC,
-                                            String.Format("Protocollo corretto da {0} e spostato da [{1} in {2}]", DocSuiteContext.Current.User.FullUserName, CurrentProtocol.Container.Name, container.Name))
+                                            $"Protocollo corretto da {DocSuiteContext.Current.User.FullUserName} e spostato da [{CurrentProtocol.Container.Name} in {container.Name}]")
         End If
         If Not CurrentProtocol.ProtocolObject.Eq(uscObject.Text) Then
-            Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PC, String.Format("Protocollo corretto da {0} e modificato Campo Oggetto", DocSuiteContext.Current.User.FullUserName))
+            Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PC,
+                                            $"Protocollo corretto da {DocSuiteContext.Current.User.FullUserName} e modificato il campo oggetto [{CurrentProtocol.ProtocolObject}]")
         End If
 
         Dim currentMittenti As IList(Of ContactDTO) = CurrentProtocol.GetSenders()
-
-        If (currentMittenti.Count <> mittenti.Count) OrElse
+        If currentMittenti.Count <> mittenti.Count OrElse
             Not currentMittenti.All(Function(f) mittenti.Any(Function(x) x.Contact.Id = f.Contact.Id)) OrElse
             Not mittenti.All(Function(f) currentMittenti.Any(Function(x) x.Contact.Id = f.Contact.Id)) Then
 
-            Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PC, String.Format("Protocollo corretto da {0} e modificati i Mittenti", DocSuiteContext.Current.User.FullUserName))
+            Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PC,
+                                            $"Protocollo corretto da {DocSuiteContext.Current.User.FullUserName} e modificati i mittenti")
         End If
 
         Dim currentDestinatari As IList(Of ContactDTO) = CurrentProtocol.GetRecipients()
-        If (currentDestinatari.Count <> destinatari.Count) OrElse
+        If currentDestinatari.Count <> destinatari.Count OrElse
            Not currentDestinatari.All(Function(f) destinatari.Any(Function(x) x.Contact.Id = f.Contact.Id)) OrElse
            Not destinatari.All(Function(f) currentDestinatari.Any(Function(x) x.Contact.Id = f.Contact.Id)) Then
 
-            Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PC, String.Format("Protocollo corretto da {0} e modificati i Destinatari", DocSuiteContext.Current.User.FullUserName))
+            Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PC,
+                                            $"Protocollo corretto da {DocSuiteContext.Current.User.FullUserName} e modificati i destinatari")
         End If
     End Sub
 

@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="vb" AutoEventWireup="false" CodeBehind="uscUDFascicleGrid.ascx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.uscUDFascicleGrid" %>
 
 <div class="radGridWrapper">
-    <DocSuite:BindGrid AllowMultiRowSelection="False" AutoGenerateColumns="False" GridLines="Both" ID="grdUDFascicle" runat="server" ShowGroupPanel="True">
+    <DocSuite:BindGrid AllowMultiRowSelection="False" AutoGenerateColumns="False" GridLines="Both" ID="grdUDFascicle" runat="server" ShowGroupPanel="True" ImpersonateCurrentUser="true">
         <MasterTableView AllowFilteringByColumn="True" GridLines="Both" NoMasterRecordsText="Nessun risultato" TableLayout="Fixed">
             <Columns>
                 <telerik:GridTemplateColumn HeaderImageUrl="~/App_Themes/DocSuite2008/imgset16/StatusSecurityCritical_16x.png" HeaderTooltip="Documenti oltre la soglia prevista dalla normativa per la fascicolazione" UniqueName="colWarningIcon" AllowFiltering="false" Groupable="false">

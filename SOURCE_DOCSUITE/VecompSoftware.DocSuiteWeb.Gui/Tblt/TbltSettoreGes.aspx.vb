@@ -4,6 +4,8 @@ Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports Telerik.Web.UI
 Imports System.Collections.Generic
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 
 Partial Class TbltSettoreGes
     Inherits CommonBasePage
@@ -11,6 +13,22 @@ Partial Class TbltSettoreGes
 #Region "Fields"
     Private _parentRole As Role = Nothing
     Private _role As Role = Nothing
+    Private Enum SecurityGroupType
+        Dossier
+        Protocol
+        ProtocolMananger
+        Archives
+    End Enum
+
+    Private securityGroupTypes As IDictionary(Of SecurityGroupType, String) = New Dictionary(Of SecurityGroupType, String) From {
+        {SecurityGroupType.Dossier, "Ds-Set-{0}-Dossier"},
+        {SecurityGroupType.Protocol, "Ds-Set-{0}-Protocol"},
+        {SecurityGroupType.ProtocolMananger, "Ds-Set-{0}-Protocol-Mananger"},
+        {SecurityGroupType.Archives, "Ds-Set-{0}-Archives"}
+    }
+
+    Private _contactParent As Contact
+    Private _contactRoot As Contact = If(ProtocolEnv.InnerContactRoot.HasValue, Facade.ContactFacade.GetById(ProtocolEnv.InnerContactRoot.Value), Nothing)
 #End Region
 
 #Region "Properties"
@@ -110,7 +128,6 @@ Partial Class TbltSettoreGes
                 MainRole.ServiceCode = txtServiceCod.Text
                 MainRole.UriSharepoint = txtUriSharepoint.Text
 
-
                 'Se ha una role padre allora la imposto
                 MainRole.Father = ParentRole
                 MainRole.TenantId = DocSuiteContext.Current.CurrentTenant.TenantId
@@ -123,6 +140,12 @@ Partial Class TbltSettoreGes
                 End If
 
                 Facade.RoleFacade.Save(MainRole)
+
+                Dim currentTenant As Tenant = CType(Session("CurrentTenant"), Tenant)
+                currentTenant.Roles.Add(New Entity.Commons.Role With {.EntityShortId = CType(MainRole.Id, Short)})
+                Dim currentTenantFacade As WebAPI.Tenants.TenantFacade = New WebAPI.Tenants.TenantFacade(DocSuiteContext.Current.Tenants, currentTenant)
+                currentTenantFacade.Update(currentTenant, UpdateActionType.TenantRoleAdd.ToString())
+                currentTenant.Roles.Clear()
 
                 Dim pecMailBoxesToUpdate As New Dictionary(Of Short, Boolean)()
                 If PecEnabled Then
@@ -140,6 +163,14 @@ Partial Class TbltSettoreGes
                 End If
 
                 UpdatePecMailboxList(Facade.RoleFacade.GetById(MainRole.Id), pecMailBoxesToUpdate)
+
+                If ProtocolEnv.SecurityGroupAutogenerateEnabled Then
+                    CreateRoleSecurityGroups()
+                End If
+
+                If ProtocolEnv.InnerContactRoot.HasValue AndAlso ProtocolEnv.ContactRoleGenerateEnabled Then
+                    GenerateRoleContact()
+                End If
 
             Case "rename"
                 If String.IsNullOrEmpty(txtNewNome.Text) Then
@@ -225,6 +256,11 @@ Partial Class TbltSettoreGes
 
                 UpdatePecMailboxList(Facade.RoleFacade.GetById(MainRole.Id), pecMailBoxesToUpdate)
 
+                Dim associatedContact As Contact = Facade.ContactFacade.GetByIdRole(MainRole.Id)
+                If ProtocolEnv.ContactRoleGenerateEnabled AndAlso ProtocolEnv.InnerContactRoot.HasValue AndAlso associatedContact IsNot Nothing AndAlso Facade.ContactFacade.IsChildContact(ProtocolEnv.InnerContactRoot.Value, associatedContact.Id) Then
+                    associatedContact.Description = MainRole.Name
+                    Facade.ContactFacade.Update(associatedContact)
+                End If
 
             Case "delete"
                 If PecEnabled OrElse ProtocolBoxEnabled Then
@@ -249,12 +285,42 @@ Partial Class TbltSettoreGes
         End If
 
         AjaxManager.ResponseScripts.Add(String.Format("CloseWindow('{0}','{1}','{2}');", Action, MainRole.Id, nodeType))
-        
+
     End Sub
 
 #End Region
 
 #Region " Methods "
+    Private Sub CreateRoleSecurityGroups()
+        Dim roleNameFragmentsWithoutSpaces As IEnumerable(Of String) = MainRole.Name.Split(" "c).Select(Function(roleFragment) roleFragment.Trim())
+        Dim roleNameWithoutSpaces As String = String.Join("", roleNameFragmentsWithoutSpaces)
+
+        For Each securityGroupNameTemplate As KeyValuePair(Of SecurityGroupType, String) In securityGroupTypes
+            Dim securityGroupName As String = String.Format(securityGroupNameTemplate.Value, roleNameWithoutSpaces)
+            Dim roleGroupName As String = String.Format(securityGroupNameTemplate.Value, roleNameWithoutSpaces)
+
+            Dim securityGroup As SecurityGroups = FacadeFactory.Instance.SecurityGroupsFacade.GetGroupByName(securityGroupName)
+
+            If securityGroup Is Nothing Then
+                securityGroup = New SecurityGroups With {.GroupName = securityGroupName}
+                FacadeFactory.Instance.SecurityGroupsFacade.Save(securityGroup)
+            End If
+
+            Dim roleGroup As RoleGroup = FacadeFactory.Instance.RoleGroupFacade.GetByRole(MainRole).FirstOrDefault(Function(x) x.Name = roleGroupName)
+
+            If roleGroup Is Nothing Then
+                roleGroup = New RoleGroup()
+                roleGroup.Name = roleGroupName
+                roleGroup.Role = MainRole
+                roleGroup.SecurityGroup = securityGroup
+
+                SetRoleGroupDefaultRights(roleGroup)
+                SetRoleGroupRightsBasedOnSecurityGroupType(securityGroupNameTemplate.Key, roleGroup)
+
+                FacadeFactory.Instance.RoleGroupFacade.Save(roleGroup)
+            End If
+        Next
+    End Sub
 
     Private Sub InitializeAjax()
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma, MasterDocSuite.AjaxFlatLoadingPanel)
@@ -533,7 +599,7 @@ Partial Class TbltSettoreGes
     End Function
 
     Private Sub BindMailboxeControl(ByVal grid As RadGrid, ByVal mailboxIds As IDictionary(Of Short, Boolean), ByVal onlyProtocolBox As Boolean)
-        grid.DataSource = Facade.PECMailboxFacade.GetHumanManageable().GetMoveMailBoxes().Where(Function(pmb) (pmb.IsProtocolBox.HasValue AndAlso pmb.IsProtocolBox.Value) = onlyProtocolBox).ToList()
+        grid.DataSource = Facade.PECMailboxFacade.GetMoveMailBoxes().Where(Function(pmb) (pmb.IsProtocolBox.HasValue AndAlso pmb.IsProtocolBox.Value) = onlyProtocolBox).ToList()
         grid.DataBind()
 
         If mailboxIds IsNot Nothing Then
@@ -584,6 +650,55 @@ Partial Class TbltSettoreGes
         Next
     End Sub
 
+    Private Sub SetRoleGroupDefaultRights(roleGroup As RoleGroup)
+        roleGroup.ResolutionRights = GroupRights.EmptyRights
+        roleGroup.DocumentRights = GroupRights.EmptyRights
+        roleGroup.DocumentSeriesRights = GroupRights.EmptyRights
+        roleGroup.ProtocolRights = New RoleProtocolRights(GroupRights.EmptyRights)
+    End Sub
+
+    Private Sub SetRoleGroupRightsBasedOnSecurityGroupType(securityGroupType As SecurityGroupType, roleGroup As RoleGroup)
+        Select Case securityGroupType
+            Case SecurityGroupType.Dossier
+                CommonUtil.GetInstance().SetGroupRight(roleGroup.DocumentRights, RoleDocumentRightType.RoleEnabled, True)
+            Case SecurityGroupType.Protocol
+                roleGroup.ProtocolRights = New RoleProtocolRights(GroupRights.EmptyRights) With {.IsRoleEnabled = True}
+            Case SecurityGroupType.ProtocolMananger
+                Dim roleProtocolRights As RoleProtocolRights = New RoleProtocolRights(GroupRights.EmptyRights) With {.IsRoleEnabled = True, .IsRoleManager = True}
+                roleGroup.ProtocolRights = roleProtocolRights
+            Case SecurityGroupType.Archives
+                CommonUtil.GetInstance().SetGroupRight(roleGroup.DocumentSeriesRights, DocumentSeriesRoleRightPositions.Enabled, True)
+
+        End Select
+    End Sub
+
+    Private Sub GenerateRoleContact()
+        Dim associatedContact As Contact
+        Dim associatedContactParent As Contact = Nothing
+        If MainRole.Level > 0 Then
+            associatedContactParent = Facade.ContactFacade.GetByIdRole(MainRole.Father.Id)
+        End If
+        If MainRole.Level = 0 OrElse associatedContactParent Is Nothing Then
+            associatedContact = CreateNewContactByRole(_contactRoot, MainRole)
+            Facade.ContactFacade.Save(associatedContact)
+        Else
+            associatedContact = CreateNewContactByRole(associatedContactParent, MainRole)
+            Facade.ContactFacade.Save(associatedContact)
+        End If
+    End Sub
+
+    Private Function CreateNewContactByRole(ByVal contactParent As Contact, ByVal role As Role) As Contact
+        Return New Contact() With {
+                .Parent = contactParent,
+                .Role = role,
+                .Description = role.Name,
+                .ContactType = New ContactType() With {
+                    .Id = "S"c
+                },
+                .IsChanged = 0,
+                .IsActive = 1
+            }
+    End Function
 #End Region
 
 End Class

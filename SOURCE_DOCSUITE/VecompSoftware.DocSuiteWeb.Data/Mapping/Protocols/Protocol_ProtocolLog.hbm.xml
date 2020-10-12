@@ -3,10 +3,11 @@
 
   <class name="ProtocolLog" table="ProtocolLog">
 
-    <id name="Id" column="id">
-      <generator class="native" />
+    <id name="Id" column="UniqueId" >
+      <generator class="guid.comb" />
     </id>
-    
+
+    <property name="Incremental" column="Id" insert="false" update="false" />
     <property name="LogDate" column="LogDate" />
     <property name="SystemComputer" column="SystemComputer" type="AnsiString" />
     <property name="SystemUser" column="SystemUser" type="AnsiString" />
@@ -17,15 +18,9 @@
     <property name="LogDescription" column="LogDescription" type="AnsiString" />
     <property name="Severity" column="Severity" />
     <property name="Hash" column="Hash" />
-    <property name="UniqueId" column="UniqueId" unique="true" />
-
-    <property name="UniqueIdProtocol">
-      <column name="UniqueIdProtocol" not-null="true"/>
-    </property>
     
-    <many-to-one name="Protocol" class="Protocol" lazy="false" fetch="join" insert="false" update="false" not-found="ignore">
-      <column name="Year" />
-      <column name="Number" />
+    <many-to-one name="Protocol" class="Protocol" lazy="false" fetch="join" update="false" not-found="ignore">
+      <column name="UniqueIdProtocol" />
     </many-to-one>
     
   </class>

@@ -15,21 +15,6 @@ class ProtocolService extends BaseService {
     }
 
     /**
-     * Recupera un protocollo per Year/Number
-     * @param year
-     * @param number
-     * @param callback
-     * @param error
-     */
-    getProtocolByYearAndNumber(year: number, number: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl;
-        let data: string = "$filter=Year eq ".concat(year.toString(), " and Number eq ", number.toString(), "&$expand=Category,Container");
-        this.getRequest(url, data, (response: any) => {
-            if (callback) callback(response.value[0]);
-        }, error);
-    }
-
-    /**
      * Recupera un protocollo per UniqueId
      * @param uniqueId
      * @param callback

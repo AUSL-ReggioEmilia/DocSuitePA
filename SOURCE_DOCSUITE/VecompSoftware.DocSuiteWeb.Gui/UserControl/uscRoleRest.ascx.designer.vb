@@ -95,6 +95,15 @@ Partial Public Class uscRoleRest
     Protected WithEvents actionToolbar As Global.Telerik.Web.UI.RadToolBar
 
     '''<summary>
+    '''btnFascicleVisibilityType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnFascicleVisibilityType As Global.Telerik.Web.UI.RadToolBarButton
+
+    '''<summary>
     '''fldCurrentTenant control.
     '''</summary>
     '''<remarks>

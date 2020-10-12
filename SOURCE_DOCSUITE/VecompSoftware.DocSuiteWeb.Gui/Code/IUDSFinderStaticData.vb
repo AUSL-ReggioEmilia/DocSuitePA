@@ -3,6 +3,10 @@
 
     ReadOnly Property Year As Double?
 
+    ReadOnly Property DocumentName As String
+
+    ReadOnly Property GenericDocument As Boolean
+
     ReadOnly Property Number As Double?
 
     ReadOnly Property RegistrationDateFrom As DateTimeOffset?

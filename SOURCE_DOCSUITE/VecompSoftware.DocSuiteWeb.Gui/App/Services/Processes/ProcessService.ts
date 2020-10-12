@@ -12,8 +12,8 @@ class ProcessService extends BaseService {
         this._configuration = configuration;
     }
 
-    getAll(searchName: string, fascicleType?: number, isActive?: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = `${this._configuration.ODATAUrl}?$expand=Dossier,Category,Roles`;
+    getAll(searchName: string, isActive?: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}?$expand=Dossier,Category,Roles($expand=Father)`;
         if (isActive !== null) {
             let filter: string = "";
             if (isActive) {
@@ -23,15 +23,6 @@ class ProcessService extends BaseService {
                 filter = "&$filter=EndDate le now()";
             }
             url = url.concat(filter);
-            if (fascicleType !== undefined && fascicleType !== null) {
-                url = url.concat(` and cast(FascicleType,Edm.String) eq '${fascicleType}'`);
-            }
-            if (searchName !== "") {
-                url = url.concat(` and contains(Name,'${searchName}')`);
-            }
-        }
-        else if (fascicleType !== undefined && fascicleType !== null) {
-            url = url.concat(`&$filter=cast(FascicleType,Edm.String) eq '${fascicleType}'`);
             if (searchName !== "") {
                 url = url.concat(` and contains(Name,'${searchName}')`);
             }
@@ -53,7 +44,7 @@ class ProcessService extends BaseService {
     }
 
     getById(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = `${this._configuration.ODATAUrl}?$filter=UniqueId eq ${uniqueId}&$expand=Category,Dossier,Roles`;
+        let url: string = `${this._configuration.ODATAUrl}?$filter=UniqueId eq ${uniqueId}&$expand=Category,Dossier,Roles($expand=Father)`;
         this.getRequest(url, null, (response: any) => {
             if (callback && response) {
                 let modelMapper: ProcessModelMapper = new ProcessModelMapper();
@@ -67,12 +58,38 @@ class ProcessService extends BaseService {
         if (name) {
             name = `'${name}'`;
         }
-        let url: string = `${this._configuration.ODATAUrl}/ProcessService.AvailableProcesses(name=${name},categoryId=${!!categoryId ? categoryId.toString() : null},dossierId=${!!dossierId ? dossierId.toString() : null},loadOnlyMy=${loadOnlyMy})`;
+        let url: string = `${this._configuration.ODATAUrl}/ProcessService.AvailableProcesses(name=${name},categoryId=${!!categoryId ? categoryId.toString() : null},dossierId=${!!dossierId ? dossierId.toString() : null},loadOnlyMy=${loadOnlyMy})?$orderby=Name asc`;
         this.getRequest(url, null,
             (response: any) => {
                 if (callback && response) {
                     let mapper = new ProcessModelMapper();
                     callback(mapper.MapCollection(response.value));
+                }
+            }, error);
+    }
+
+    getProcessesByCategoryId(categoryId: number, callback?: (data: ProcessModel[]) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        let odataFilter: string = `$filter=Category/EntityShortId eq ${categoryId}&$expand=Dossier,Category,Roles&$orderby=Name`;
+
+        this.getRequest(url, odataFilter,
+            (response: any) => {
+                if (callback && response) {
+                    let mapper = new ProcessModelMapper();
+                    callback(mapper.MapCollection(response.value));
+                }
+            }, error);
+    }
+
+    getProcessByDossierFolderId(dossierFolderId: string, callback?: (data: ProcessModel) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        let odataFilter: string = `$filter=Dossier/DossierFolders/any(df: df/UniqueId eq ${dossierFolderId})`; 
+
+        this.getRequest(url, odataFilter,
+            (response: any) => {
+                if (callback && response) {
+                    let mapper = new ProcessModelMapper();
+                    callback(mapper.Map(response.value[0]));
                 }
             }, error);
     }

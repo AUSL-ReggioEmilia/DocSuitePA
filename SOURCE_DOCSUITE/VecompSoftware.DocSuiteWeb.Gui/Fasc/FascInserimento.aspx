@@ -18,7 +18,7 @@
                     fascInserimento.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                     fascInserimento.radWindowManagerId = "<%= MasterDocSuite.DefaultWindowManager.ClientID %>";
                     fascInserimento.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
-                    fascInserimento.currentUDId = "<%= CurrentUDId %>";
+                    fascInserimento.currentUDId = "<%= IdDocumentUnit %>";
                     fascInserimento.environment = "<%= Environment %>";
                     fascInserimento.activityFascicleEnabled= JSON.parse("<%=ProtocolEnv.ActivityFascicleEnabled%>".toLowerCase());
                     fascInserimento.fasciclesPanelVisibilities = <%=FasciclesPanelVisibilities%>;

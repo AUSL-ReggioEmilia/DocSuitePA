@@ -68,13 +68,13 @@ Partial Public Class uscContattiSelRest
     Protected WithEvents UpdatePanelContact As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
-    '''uscContactREST control.
+    '''uscContactRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscContactREST As Global.VecompSoftware.DocSuiteWeb.Gui.uscContactRest
+    Protected WithEvents uscContactRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscContactRest
 
     '''<summary>
     '''btnContactConfirm control.

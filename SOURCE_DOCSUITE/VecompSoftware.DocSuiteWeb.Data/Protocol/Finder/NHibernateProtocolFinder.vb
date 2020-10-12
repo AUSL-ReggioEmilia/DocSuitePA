@@ -773,6 +773,8 @@ Public Class NHibernateProtocolFinder
             _contactsAssignee = value
         End Set
     End Property
+
+    Public Property IdTenantAOO As Guid?
 #End Region
 
 #Region "NHibernate Properties"
@@ -858,6 +860,10 @@ Public Class NHibernateProtocolFinder
         ' Filtro per registrazione utente
         If Not (String.IsNullOrEmpty(RegistrationUser)) AndAlso (Not RestrictionOnlyRoles OrElse (RestrictionOnlyRoles AndAlso SecurityEnabled AndAlso String.IsNullOrEmpty(SecurityRoles))) Then
             criteria.Add(Restrictions.Like("RegistrationUser", RegistrationUser, MatchMode.Anywhere))
+        End If
+
+        If IdTenantAOO.HasValue Then
+            criteria.Add(Restrictions.Eq("IdTenantAOO", IdTenantAOO.Value))
         End If
 
         ' Protocolli non letti
@@ -984,9 +990,6 @@ Public Class NHibernateProtocolFinder
                 If Not String.IsNullOrEmpty(Recipient) Then
                     Dim dcDis As Disjunction = Restrictions.Disjunction()
 
-                    ' Elenco chiavi primarie di protocol da filtrare
-                    Dim protocols As New List(Of YearNumberCompositeKey)
-
                     ' Elenco di contatti che corrispondono alla ricerca fatta, eseguo una ricerca
                     Dim contactfinder As New NHibernateContactFinder(System.Enum.GetName(GetType(EnvironmentDataCode), EnvironmentDataCode.ProtDB))
                     contactfinder.Description = Recipient
@@ -1044,9 +1047,6 @@ Public Class NHibernateProtocolFinder
                     If Not String.IsNullOrEmpty(Recipient) Then
 
                         Dim dcDis As Disjunction = Restrictions.Disjunction()
-
-                        ' Elenco chiavi primarie di protocol da filtrare
-                        Dim protocols As ICollection(Of YearNumberCompositeKey) = New List(Of YearNumberCompositeKey)
 
                         ' Elenco di contatti che corrispondono alla ricerca fatta, eseguo una ricerca
                         Dim contactfinder As New NHibernateContactFinder(System.Enum.GetName(GetType(EnvironmentDataCode), EnvironmentDataCode.ProtDB))
@@ -1306,7 +1306,7 @@ Public Class NHibernateProtocolFinder
                     Dim conjNonManageableCc As New Conjunction
                     Dim dcNonManageableRoles As DetachedCriteria = DetachedCriteria.For(GetType(ProtocolRole), "PR")
                     dcNonManageableRoles.Add(Restrictions.EqProperty("PR.Protocol.Id", "P.Id"))
-                    dcNonManageableRoles.Add(Expression.In("PR.Id.Id", SecurityNonManageableRoles.Split(","c)))
+                    dcNonManageableRoles.Add(Expression.In("PR.Role.Id", SecurityNonManageableRoles.Split(","c)))
 
                     If RoleCC.HasValue Then
                         dcNonManageableRoles.Add(Restrictions.Eq("PR.Type", "CC"))
@@ -1323,7 +1323,7 @@ Public Class NHibernateProtocolFinder
 
                     Dim dcCurrentUserInRoleUser As DetachedCriteria = DetachedCriteria.For(GetType(ProtocolRoleUser), "PRU")
                     dcCurrentUserInRoleUser.Add(Restrictions.EqProperty("PRU.Protocol.Id", "P.Id"))
-                    dcCurrentUserInRoleUser.Add(Restrictions.In("PRU.Id.IdRole", SecurityNonManageableRoles.Split(","c)))
+                    dcCurrentUserInRoleUser.Add(Restrictions.In("PRU.Role.Id", SecurityNonManageableRoles.Split(","c)))
                     dcCurrentUserInRoleUser.Add(Restrictions.Eq("PRU.Account", RoleUser))
                     dcCurrentUserInRoleUser.SetProjection(Projections.Id)
                     conjNonManageableCc.Add(Subqueries.Exists(dcCurrentUserInRoleUser))
@@ -1339,7 +1339,7 @@ Public Class NHibernateProtocolFinder
                         dcDistributionRoles.CreateAlias("Role", "R", JoinType.InnerJoin)
                         dcDistributionRoles.Add(Restrictions.Like("R.FullIncrementalPath", DistributionRestrictionRoles.First().ToString(), MatchMode.Anywhere))
                     Else
-                        dcDistributionRoles.Add(Restrictions.InG("PR.Id.Id", DistributionRestrictionRoles))
+                        dcDistributionRoles.Add(Restrictions.InG("PR.Role.Id", DistributionRestrictionRoles))
                     End If
                     dcDistributionRoles.SetProjection(Projections.Id)
                     criteria.Add(Subqueries.Exists(dcDistributionRoles))
@@ -1350,7 +1350,7 @@ Public Class NHibernateProtocolFinder
 
                     Dim dcProtocolRole As DetachedCriteria = DetachedCriteria.For(GetType(ProtocolRole), "PR")
                     dcProtocolRole.Add(Restrictions.EqProperty("PR.Protocol.Id", "P.Id"))
-                    dcProtocolRole.Add(Restrictions.In("Id.Id", SecurityRoles.Split(","c)))
+                    dcProtocolRole.Add(Restrictions.In("Role.Id", SecurityRoles.Split(","c)))
                     If DocSuiteContext.Current.ProtocolEnv.RefusedProtocolAuthorizationEnabled AndAlso ProtocolRoleStatus.HasValue Then
                         dcProtocolRole.Add(Restrictions.Eq("PR.Status", ProtocolRoleStatus.Value))
                     End If
@@ -1385,7 +1385,7 @@ Public Class NHibernateProtocolFinder
                 dcRoleUser.Add(Restrictions.Eq("Account", RoleUser))
                 ' Se filtro per settori
                 If Not String.IsNullOrEmpty(SecurityRoles) Then
-                    dcRoleUser.Add(Restrictions.In("Id.IdRole", SecurityRoles.Split(","c)))
+                    dcRoleUser.Add(Restrictions.In("Role.Id", SecurityRoles.Split(","c)))
                 End If
                 dcRoleUser.SetProjection(Projections.Id())
 
@@ -1430,7 +1430,7 @@ Public Class NHibernateProtocolFinder
                             ''Nothing --> Ipotesi LEFTOUTERJOIN (Year/Number misti)
                             ''Devo escludere i record che esistono nella Tabella ProtocolParer (e che quindi hanno un valore Year/Number)
                             Dim case1 As New Conjunction
-                            case1.Add(Restrictions.IsNull("PP.Id.Year")).Add(Restrictions.IsNull("PP.Id.Number"))
+                            case1.Add(Restrictions.IsNull("PP.Year")).Add(Restrictions.IsNull("PP.Number"))
                             statusesDisj.Add(case1)
                         Case 0
                             ''Undefined --> Ipotesi INNERJOIN (Year/Number già valorizzati)
@@ -1597,16 +1597,14 @@ Public Class NHibernateProtocolFinder
     ' Creazione condizione di disjunction  (YEAR = 'YYYY' AND NUMBER = 'XX') OR (YEAR = 'YYYY' AND NUMBER = 'XX')
     Private Function DisjunctionProtContCompositeKey(item As ProtocolContact, dcDis As Disjunction) As Disjunction
         Dim dcCon As Conjunction = Restrictions.Conjunction()
-        dcCon.Add(Restrictions.Eq("P.Id.Year", item.Year))
-        dcCon.Add(Restrictions.Eq("P.Id.Number", item.Number))
+        dcCon.Add(Restrictions.Eq("P.Id", item.Protocol.Id))
         dcDis.Add(dcCon)
         Return dcDis
     End Function
-    ' Creazione condizione di disjunction  (YEAR = 'YYYY' AND NUMBER = 'XX') OR (YEAR = 'YYYY' AND NUMBER = 'XX')
+
     Private Function DisjunctionProtContManualCompositeKey(item As ProtocolContactManual, dcDis As Disjunction) As Disjunction
         Dim dcCon As Conjunction = Restrictions.Conjunction()
-        dcCon.Add(Restrictions.Eq("P.Id.Year", item.Id.Year))
-        dcCon.Add(Restrictions.Eq("P.Id.Number", item.Id.Number))
+        dcCon.Add(Restrictions.Eq("P.Id", item.Protocol.Id))
         dcDis.Add(dcCon)
         Return dcDis
     End Function
@@ -1635,7 +1633,7 @@ Public Class NHibernateProtocolFinder
         If onlyLegacy Then
             ' Solo quelle nel mio Sotto albero
             dcRole.CreateAlias("Role", "R", JoinType.InnerJoin)
-            dcRole.Add(Restrictions.EqProperty("PR.Id.Id", "R.Id"))
+            dcRole.Add(Restrictions.EqProperty("PR.Role.Id", "R.Id"))
             dcRole.Add(ManagableRole)
         End If
         If excludeMyOwn Then
@@ -1652,7 +1650,7 @@ Public Class NHibernateProtocolFinder
         dcRoleUser.Add(Restrictions.EqProperty("PRU.Protocol.Id", "P.Id"))
         If onlyLegacy Then
             dcRoleUser.CreateAlias("Role", "R", JoinType.InnerJoin)
-            dcRoleUser.Add(Restrictions.EqProperty("PRU.Id.IdRole", "R.Id"))
+            dcRoleUser.Add(Restrictions.EqProperty("PRU.Role.Id", "R.Id"))
             dcRoleUser.Add(ManagableRole)
 
         End If
@@ -1698,7 +1696,7 @@ Public Class NHibernateProtocolFinder
         dcRoleUser.Add(Restrictions.Eq("Status", Status))
         ' Se filtro per settori
         If Not String.IsNullOrEmpty(SecurityRoles) Then
-            dcRoleUser.Add(Restrictions.In("Id.IdRole", SecurityRoles.Split(","c)))
+            dcRoleUser.Add(Restrictions.In("Role.Id", SecurityRoles.Split(","c)))
         End If
         dcRoleUser.SetProjection(Projections.Id())
         conju.Add(Subqueries.Exists(dcRoleUser))
@@ -1712,7 +1710,7 @@ Public Class NHibernateProtocolFinder
         ' Aggiungo la verifica si tratti di un  abbinamento ProtocolRole per i quali ho permessi da manager di distribuzione.
         ' Ricreo la join fra ProtocolRole e Role perchè per qualche motivo a me sconosciuto l'entità ProtocolRole non aggancia il provider di Role.
         dcRole.CreateAlias("Role", "R", JoinType.InnerJoin)
-        dcRole.Add(Restrictions.EqProperty("PR.Id.Id", "R.Id"))
+        dcRole.Add(Restrictions.EqProperty("PR.Role.Id", "R.Id"))
 
         If OnlyExplicitRoles Then
             ' Verifico di essere manager del role corrente. (autorizzazione esplicita)
@@ -1828,6 +1826,12 @@ Public Class NHibernateProtocolFinder
                     SortExpressions.Add(keyValuePair)
                 Next
             End If
+        Else
+            If SortExpressions.ContainsKey("Id") Then
+                SortExpressions.Add("Year", SortExpressions("Id"))
+                SortExpressions.Add("Number", SortExpressions("Id"))
+                SortExpressions.Remove("Id")
+            End If
         End If
         MyBase.AttachSortExpressions(criteria)
     End Function
@@ -1840,11 +1844,11 @@ Public Class NHibernateProtocolFinder
         End If
 
         'Recupera i fascicoli con una sottoquery solo se abilitati
-        If (DocSuiteContext.Current.ProtocolEnv.FascicleEnabled AndAlso LoadFetchModeFascicleEnabled) Then
+        If DocSuiteContext.Current.ProtocolEnv.FascicleEnabled AndAlso LoadFetchModeFascicleEnabled Then
             LoadFetchMode(criteria, "FascicleDocumentUnits")
         End If
 
-        If (DocSuiteContext.Current.ProtocolEnv.IsLogEnabled AndAlso LoadFetchModeProtocolLogs) Then
+        If LoadFetchModeProtocolLogs Then
             LoadFetchMode(criteria, "ProtocolLogs")
         End If
 
@@ -1885,12 +1889,10 @@ Public Class NHibernateProtocolFinder
     Private Function detachedProtocolLinkRowCount() As DetachedCriteria
         Dim disj As New Disjunction()
         Dim conj1 As New Conjunction()
-        conj1.Add(Restrictions.EqProperty("P.Year", "pl_Links.Id.Year"))
-        conj1.Add(Restrictions.EqProperty("P.Number", "pl_Links.Id.Number"))
+        conj1.Add(Restrictions.EqProperty("P.Id", "pl_Links.Protocol.Id"))
         disj.Add(conj1)
         Dim conj2 As New Conjunction()
-        conj2.Add(Restrictions.EqProperty("P.Year", "pl_Links.Id.YearSon"))
-        conj2.Add(Restrictions.EqProperty("P.Number", "pl_Links.Id.NumberSon"))
+        conj2.Add(Restrictions.EqProperty("P.Id", "pl_Links.ProtocolLinked.Id"))
         disj.Add(conj2)
         Dim dc As DetachedCriteria = DetachedCriteria.For(Of ProtocolLink)("pl_Links")
         dc.Add(disj)
@@ -1921,15 +1923,6 @@ Public Class NHibernateProtocolFinder
             conversion.Add(a)
         Next
         Return conversion
-    End Function
-
-    ''' <summary> Torna una semplice lista delle chiavi di protocollo trovate </summary>
-    Public Function DoSearchKey() As IList(Of YearNumberCompositeKey)
-        Dim criteria As ICriteria = CreateCriteria()
-        SetPaging(criteria)
-        SetKeyProjection(criteria)
-        AttachSortExpressions(criteria)
-        Return criteria.List(Of YearNumberCompositeKey)()
     End Function
 
 #Region "Statistics"
@@ -2103,12 +2096,6 @@ Public Class NHibernateProtocolFinder
         criteria.SetMaxResults(PageSize)
     End Sub
 
-    Protected Overridable Sub SetKeyProjection(ByRef criteria As ICriteria)
-        Dim proj As ProjectionList = Projections.ProjectionList()
-        proj.Add(Projections.Property("P.Id"))
-        criteria.SetProjection(proj)
-    End Sub
-
     Protected Overridable Sub SetProjectionHeaders(ByRef criteria As ICriteria)
         Dim proj As ProjectionList = Projections.ProjectionList()
         proj.Add(Projections.Property("P.Year"), "Year")
@@ -2122,7 +2109,7 @@ Public Class NHibernateProtocolFinder
         proj.Add(Projections.Property("P.DocumentCode"), "DocumentCode")
         proj.Add(Projections.Property("P.Type"), "Type")
         proj.Add(Projections.Property("P.IdStatus"), "IdStatus")
-        proj.Add(Projections.Property("P.UniqueId"), "UniqueId")
+        proj.Add(Projections.Property("P.Id"), "UniqueId")
 
         proj.Add(Projections.Property("Container.Id"), "ContainerId")
         proj.Add(Projections.Property("Container.Name"), "ContainerName")
@@ -2133,7 +2120,6 @@ Public Class NHibernateProtocolFinder
         proj.Add(Projections.Property("Category.Name"), "CategoryName")
 
         proj.Add(Projections.Property("Location.Id"), "LocationId")
-        proj.Add(Projections.Property("Location.DocumentServer"), "LocationDocumentServer")
         proj.Add(Projections.Property("Location.ProtBiblosDSDB"), "LocationProtBiblosDSDB")
         proj.Add(Projections.Property("P.DocumentProtocol"), "DocumentProtocol")
 
@@ -2159,10 +2145,10 @@ Public Class NHibernateProtocolFinder
         End If
         If DocSuiteContext.Current.ProtocolEnv.IsPECEnabled Then
             Dim dcIngoingPecId As DetachedCriteria = DetachedCriteria.For(Of PECMail)("SPM")
+            dcIngoingPecId.CreateAlias("SPM.DocumentUnit", "SPMDU")
             With dcIngoingPecId
-                .Add(Restrictions.EqProperty("P.Year", "SPM.Year"))
-                .Add(Restrictions.EqProperty("P.Number", "SPM.Number"))
-                .Add(Restrictions.Eq("SPM.DocumentUnitType", DSWEnvironment.Protocol))
+                .Add(Restrictions.EqProperty("P.Id", "SPMDU.Id"))
+                .Add(Restrictions.Eq("SPMDU.Environment", DirectCast(DSWEnvironment.Protocol, Integer)))
                 .SetProjection(Projections.Max(Projections.Property("SPM.Id")))
             End With
             proj.Add(Projections.SubQuery(dcIngoingPecId), "IngoingPecId")
@@ -2196,11 +2182,11 @@ Public Class NHibernateProtocolFinder
         Dim enumName As String = [Enum].GetName(GetType(PECMailType), pecType)
         Dim enumValue As Integer = DirectCast(pecType, Integer)
         Dim dcHasPecType As DetachedCriteria = DetachedCriteria.For(Of PECMail)(tbAlias)
+        dcHasPecType.CreateAlias($"{tbAlias}.DocumentUnit", "SPMDU")
 
         With dcHasPecType
-            .Add(Restrictions.EqProperty("P.Year", String.Concat(tbAlias, ".Year")))
-            .Add(Restrictions.EqProperty("P.Number", String.Concat(tbAlias, ".Number")))
-            .Add(Restrictions.Eq(String.Concat(tbAlias, ".DocumentUnitType"), DSWEnvironment.Protocol))
+            .Add(Restrictions.EqProperty("P.Id", "SPMDU.Id"))
+            .Add(Restrictions.Eq("SPMDU.Environment", DirectCast(DSWEnvironment.Protocol, Integer)))
             .Add(Restrictions.Eq(String.Concat(tbAlias, ".Direction"), Convert.ToInt16(direction)))
             .Add(Restrictions.Eq(String.Concat(tbAlias, ".IsActive"), ActiveType.Cast(ActiveType.PECMailActiveType.Active)))
             .SetProjection(
@@ -2218,11 +2204,11 @@ Public Class NHibernateProtocolFinder
 
     Private Function HasPecsType(direction As PECMailDirection) As DetachedCriteria
         Dim dcHasPecType As DetachedCriteria = DetachedCriteria.For(Of PECMail)("SPM_I")
+        dcHasPecType.CreateAlias("SPM_I.DocumentUnit", "SPM_I_DU")
 
         With dcHasPecType
-            .Add(Restrictions.EqProperty("P.Year", "SPM_I.Year"))
-            .Add(Restrictions.EqProperty("P.Number", "SPM_I.Number"))
-            .Add(Restrictions.Eq("SPM_I.DocumentUnitType", DSWEnvironment.Protocol))
+            .Add(Restrictions.EqProperty("P.Id", "SPM_I_DU.Id"))
+            .Add(Restrictions.Eq("SPM_I_DU.Environment", DirectCast(DSWEnvironment.Protocol, Integer)))
             .Add(Restrictions.Eq("SPM_I.IsActive", ActiveType.Cast(ActiveType.PECMailActiveType.Active)))
             .Add(Restrictions.Eq("SPM_I.Direction", Convert.ToInt16(direction)))
             .SetProjection(Projections.CountDistinct("SPM_I.Id"))
@@ -2231,11 +2217,11 @@ Public Class NHibernateProtocolFinder
     End Function
     Private Function HasSignaturesType(proj As ProjectionList) As DetachedCriteria
         Dim dcHasPECSignature As DetachedCriteria = DetachedCriteria.For(Of PECMail)("SPM_Segnatura")
+        dcHasPECSignature.CreateAlias("SPM_Segnatura.DocumentUnit", "SPM_Segnatura_DU")
 
         With dcHasPECSignature
-            .Add(Restrictions.EqProperty("P.Year", "SPM_Segnatura.Year"))
-            .Add(Restrictions.EqProperty("P.Number", "SPM_Segnatura.Number"))
-            .Add(Restrictions.Eq("SPM_Segnatura.DocumentUnitType", DSWEnvironment.Protocol))
+            .Add(Restrictions.EqProperty("P.Id", "SPM_Segnatura_DU.Id"))
+            .Add(Restrictions.Eq("SPM_Segnatura_DU.Environment", DirectCast(DSWEnvironment.Protocol, Integer)))
             .SetProjection(
             Projections.Sum(
                 Projections.Conditional(
@@ -2253,22 +2239,12 @@ Public Class NHibernateProtocolFinder
         Dim toEvaluateRoles As DetachedCriteria = DetachedCriteria.For(Of ProtocolRole)("PR")
 
         With toEvaluateRoles
-            .Add(Restrictions.EqProperty("P.UniqueId", "PR.UniqueIdProtocol"))
+            .Add(Restrictions.EqProperty("P.Id", "PR.Protocol.Id"))
             .Add(Restrictions.Eq("PR.Status", Data.ProtocolRoleStatus.ToEvaluate))
-            .SetProjection(Projections.Count("PR.UniqueId"))
+            .SetProjection(Projections.Count("PR.Id"))
         End With
         proj.Add(Projections.SubQuery(toEvaluateRoles), "CountToEvaluateRoles")
     End Sub
-
-    Public Function SplitYearAndNumber(ByVal keyList As IList(Of YearNumberCompositeKey)) As Disjunction
-
-        Dim disju As Disjunction = Expression.Disjunction()
-        For Each key As YearNumberCompositeKey In keyList
-            disju.Add(Expression.And(Restrictions.Eq("Year", key.Year), Restrictions.Eq("Number", key.Number)))
-        Next
-
-        Return disju
-    End Function
 
 #End Region
 

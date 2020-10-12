@@ -20,10 +20,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
         function FascRisultati(serviceConfigurations) {
             var _this = _super.call(this, ServiceConfigurationHelper.getService(serviceConfigurations, FascicleBase.FASCICLE_TYPE_NAME)) || this;
             /**
-            *------------------------- Events -----------------------------
-            */
-            /**
-             * Evento scatenato al click del pulsante di visualizza documenti
+             * Evento scatenato al click del pulsante di Visualizza documenti
              * @param sender
              * @param args
              */
@@ -48,7 +45,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
                 }
             };
             /**
-            * Evento scatenato al click del pulsante di seleziona tutti
+            * Evento scatenato al click del pulsante di Seleziona tutti
             * @param sender
             * @param args
             */
@@ -68,7 +65,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
                 });
             };
             /**
-            * Evento scatenato al click del pulsante di seleziona tutti
+            * Evento scatenato al click del pulsante di Seleziona tutti
             * @param sender
             * @param args
             */
@@ -86,6 +83,10 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
          */
         FascRisultati.prototype.initialize = function () {
             _super.prototype.initialize.call(this);
+            this._backBtn = $find(this.backBtnId);
+            if (this._backBtn) {
+                this._backBtn.add_clicked(this.navigateBack);
+            }
             this._btnDocuments = $find(this.btnDocumentsId);
             this._btnSelectAll = $find(this.btnSelectAllId);
             this._btnDeselectAll = $find(this.btnDeselectAllId);
@@ -100,6 +101,12 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
             if (this._btnDeselectAll) {
                 this._btnDeselectAll.add_clicking(this.btnDeselectAll_OnClick);
             }
+        };
+        /**
+        *------------------------- Events -----------------------------
+        */
+        FascRisultati.prototype.navigateBack = function () {
+            window.history.back();
         };
         /**
          *------------------------- Methods -----------------------------
@@ -142,6 +149,10 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
             var radWindow = this.getRadWindow();
             if (radWindow != null)
                 radWindow.close(callback);
+        };
+        FascRisultati.prototype.loadFolders = function (selectedFascicleFolderId, currentFascicleId, destinationFascicleId) {
+            var url = "../Fasc/FascMoveItems.aspx?Type=Fasc&idFascicle=" + currentFascicleId + "&ItemsType=DocumentType&IdFascicleFolder=" + selectedFascicleFolderId + "&DestinationFascicleId=" + destinationFascicleId + "&MoveToFascicle=" + true;
+            location.href = url;
         };
         return FascRisultati;
     }(FascicleBase));

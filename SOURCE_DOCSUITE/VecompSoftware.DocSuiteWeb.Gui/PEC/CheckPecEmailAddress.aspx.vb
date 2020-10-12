@@ -130,10 +130,11 @@ Partial Public Class CheckPecEmailAddress
                     Return False
                 End Try
             Case ContactTypeEnum.Manual
-                Dim manualId As YearNumberIdCompositeKey = YearNumberIdCompositeKey.TryParse(contactId)
-                If manualId IsNot Nothing Then
+                Dim manualId As Guid
+                Guid.TryParse(contactId, manualId)
+                If Not manualId.Equals(Guid.Empty) Then
                     Try
-                        Dim manualCnt As ProtocolContactManual = Facade.ProtocolContactManualFacade.GetById(manualId, True)
+                        Dim manualCnt As ProtocolContactManual = Facade.ProtocolContactManualFacade.GetById(manualId)
                         manualCnt.Contact.CertifiedMail = emailAddress
                         Facade.ProtocolContactManualFacade.UpdateOnly(manualCnt)
                         Return True

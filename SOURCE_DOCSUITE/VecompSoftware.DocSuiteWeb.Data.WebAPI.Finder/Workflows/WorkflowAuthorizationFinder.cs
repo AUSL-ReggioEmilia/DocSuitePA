@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
-using VecompSoftware.WebAPIManager.Finder;
-using System;
-using System.Linq;
-using System.Linq.Expressions;
 using VecompSoftware.WebAPIManager;
-using System.Text;
+using VecompSoftware.WebAPIManager.Finder;
 
 namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
 {
@@ -16,8 +14,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
         #endregion
 
         #region [ Properties ]
-        public  string Account;
-
+        public string Account { get; set; }
+        public bool? IsHandler { get; set; }
         public Guid? WorkflowActivityId { get; set; }
         #endregion
 
@@ -36,22 +34,17 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
         #region [ Methods ]
         public override IODATAQueryManager DecorateFinder(IODATAQueryManager odataQuery)
         {
-            StringBuilder stringBuilder = new StringBuilder();
             if (WorkflowActivityId.HasValue)
             {
-                stringBuilder.Append($"WorkflowActivity/UniqueId eq {WorkflowActivityId.Value}");
+                odataQuery = odataQuery.Filter($"WorkflowActivity/UniqueId eq {WorkflowActivityId.Value}");
+            }
+            if (IsHandler.HasValue)
+            {
+                odataQuery = odataQuery.Filter($"IsHandler eq {IsHandler.ToString().ToLower()}");
             }
             if (!string.IsNullOrEmpty(Account))
             {
-                if (stringBuilder.Length > 0)
-                {
-                    stringBuilder.Append(" and ");
-                }
-                stringBuilder.Append($"Account eq '{Account}'");
-            }
-            if (stringBuilder.Length > 0)
-            {
-                odataQuery = odataQuery.Filter(stringBuilder.ToString());
+                odataQuery = odataQuery.Filter($"Account eq '{Account}'");
             }
             
             return base.DecorateFinder(odataQuery);

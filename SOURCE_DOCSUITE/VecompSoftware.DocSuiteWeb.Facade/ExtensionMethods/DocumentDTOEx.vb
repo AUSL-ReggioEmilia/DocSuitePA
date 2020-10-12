@@ -16,11 +16,11 @@ Public Module DocumentDTOEx
         End If
 
         If dto.HasBiblosGuid() Then
-            Return New BiblosChainInfo(dto.BiblosServer, dto.GetBiblosGuid().Value).Documents.ToList()
+            Return New BiblosChainInfo(dto.GetBiblosGuid().Value).Documents.ToList()
         End If
 
         If dto.HasBiblosId() Then
-            Return New BiblosChainInfo(dto.BiblosServer, dto.BiblosArchive, dto.BiblosId.Value).Documents.ToList()
+            Return New BiblosChainInfo(dto.BiblosArchive, dto.BiblosId.Value).Documents.ToList()
         End If
 
         Dim fi As New FileInfo(dto.FullName)

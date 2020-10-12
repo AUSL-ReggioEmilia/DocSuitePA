@@ -5,13 +5,9 @@ define(["require", "exports"], function (require, exports) {
         function UscResolutionKindDetails(serviceConfigurations) {
             this._serviceConfigurations = serviceConfigurations;
         }
-        Object.defineProperty(UscResolutionKindDetails.prototype, "labelStatusControl", {
-            get: function () {
-                return $("#".concat(this.lblStatusId));
-            },
-            enumerable: true,
-            configurable: true
-        });
+        UscResolutionKindDetails.prototype.labelStatusControl = function () {
+            return $("#".concat(this.lblStatusId));
+        };
         /**
          *------------------------- Methods -----------------------------
          */
@@ -25,7 +21,7 @@ define(["require", "exports"], function (require, exports) {
             if (!resolutionKind) {
                 return;
             }
-            this.labelStatusControl.html((resolutionKind.IsActive) ? "Attivo" : "Disattivo");
+            this.labelStatusControl().html((resolutionKind.IsActive) ? "Attivo" : "Disattivo");
         };
         return UscResolutionKindDetails;
     }());

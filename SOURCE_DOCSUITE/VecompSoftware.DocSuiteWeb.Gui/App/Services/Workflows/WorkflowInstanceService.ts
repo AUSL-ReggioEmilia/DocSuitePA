@@ -13,26 +13,47 @@ class WorkflowInstanceService extends BaseService {
         this._configuration = configuration;
     }
 
-    getWorkflowInstances(searchFilter: WorkflowInstanceSearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.concat("?$expand=WorkflowRepository($select=Name),WorkflowActivities($orderby=RegistrationDate)&$orderby=RegistrationDate desc");
-        let oDataFilters: string = "&$filter=1 eq 1";
-        if (searchFilter.name) {
-            oDataFilters = oDataFilters.concat(` and contains(WorkflowRepository/Name, '${searchFilter.name}')`);
+    private _buildOdataFilters(baseOdataOperator: string, searchFilter: WorkflowInstanceSearchFilterDTO): string {
+        let baseOdataUrl: string = `${this._configuration.ODATAUrl}/${baseOdataOperator}`;
+
+        let oDataFilters: string = "";
+        if (searchFilter.workflowRepositoryId) {
+            oDataFilters = `${oDataFilters} and WorkflowRepository/UniqueId eq ${searchFilter.workflowRepositoryId}`;
         }
         if (searchFilter.status) {
-            oDataFilters = oDataFilters.concat(` and Status eq '${searchFilter.status}'`);
-        }
-        if (searchFilter.name) {
-            oDataFilters = oDataFilters.concat(` and contains(WorkflowRepository/Name, '${searchFilter.name}')`);          
+            oDataFilters = `${oDataFilters} and Status eq '${searchFilter.status}'`;
         }
         if (searchFilter.activeFrom) {
-            oDataFilters = oDataFilters.concat(` and RegistrationDate gt ${searchFilter.activeFrom}`);
+            oDataFilters = `${oDataFilters} and RegistrationDate gt ${searchFilter.activeFrom}`;
         }
         if (searchFilter.activeTo) {
-            oDataFilters = oDataFilters.concat(` and RegistrationDate lt ${searchFilter.activeTo}`);
+            oDataFilters = `${oDataFilters} and RegistrationDate lt ${searchFilter.activeTo}`;
+        }
+        if (searchFilter.skip) {
+            oDataFilters = `${oDataFilters}&$skip=${searchFilter.skip}`;
+        }
+        if (searchFilter.top) {
+            oDataFilters = `${oDataFilters}&$top=${searchFilter.top}`;
+
         }
 
-        this.getRequest(url.concat(oDataFilters), null, (response: any) => {
+        return baseOdataUrl + oDataFilters;
+    }
+
+    countWorkflowInstances(searchFilter: WorkflowInstanceSearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        searchFilter.skip = null;
+        searchFilter.top = null;
+        let url: string = this._buildOdataFilters("$count?$filter= 1 eq 1", searchFilter);
+        this.getRequest(url, null, (response: any) => {
+            if (callback && response) {
+                callback(response);
+            };
+        }, error);
+    }
+
+    getWorkflowInstances(searchFilter: WorkflowInstanceSearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._buildOdataFilters("?$expand=WorkflowRepository($select=Name),WorkflowActivities($orderby=RegistrationDate)&$orderby=RegistrationDate desc&$filter= 1 eq 1", searchFilter);
+        this.getRequest(url, null, (response: any) => {
             if (callback && response) {
                 let modelMapper = new WorkflowInstanceModelMapper();
                 let workflowInstances: WorkflowInstanceModel[] = [];

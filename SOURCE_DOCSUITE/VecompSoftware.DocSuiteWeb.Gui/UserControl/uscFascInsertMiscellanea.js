@@ -52,11 +52,17 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
             this._notificationInfo = $find(this.radNotificationInfoId);
             this._manager = $find(this.radWindowManagerId);
             this._btnUploadDocument = $find(this.btnUploadDocumentId);
-            this._btnUploadDocument.add_clicked(this.btnUploadDocument_OnClicked);
+            if (this._btnUploadDocument) {
+                this._btnUploadDocument.add_clicked(this.btnUploadDocument_OnClicked);
+            }
             this._btnUploadZipDocument = $find(this.btnUploadZipDocumentId);
-            this._btnUploadZipDocument.add_clicked(this._btnUploadZipDocument_OnClicked);
+            if (this._btnUploadZipDocument) {
+                this._btnUploadZipDocument.add_clicked(this._btnUploadZipDocument_OnClicked);
+            }
             this._pnlButtons = $("#".concat(this.pnlButtonsId));
-            this._pnlButtons.hide();
+            if (this._pnlButtons) {
+                this._pnlButtons.hide();
+            }
             var fascicleDocumentConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "FascicleDocument");
             this._fascicleDocumentService = new FascicleDocumentService(fascicleDocumentConfiguration);
             this.service.getFascicle(this.currentFascicleId, function (data) {
@@ -66,6 +72,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
                 _this._fascicleDocumentService.getByFolder(_this._fascicleModel.UniqueId, _this.idFascicleFolder, function (data) {
                     _this._fascicleModel.FascicleDocuments = data;
                     $("#".concat(_this.uscMiscellaneaId)).bind(UscMiscellanea.LOADED_EVENT, function (args) {
+                        _this._loadingPanel.show(_this.currentPageId);
                         _this.loadMiscellanea();
                     });
                     $("#".concat(_this.uscMiscellaneaId)).on(UscMiscellanea.DELETE_DOCUMENT_EVENT, function (args, idDocument, idArchiveChain) {
@@ -74,6 +81,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
                     $("#".concat(_this.uscMiscellaneaId)).on(UscMiscellanea.UPDATE_DOCUMENTS_EVENT, function (args, idArchiveChain) {
                         _this.UpdateDocuments(idArchiveChain);
                     });
+                    _this._loadingPanel.show(_this.currentPageId);
                     _this.loadMiscellanea();
                 });
             });

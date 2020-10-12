@@ -299,12 +299,10 @@ Public Class DocumentSeriesItemFinder
         proj.Add(Projections.Property("DISCO.Name"), "ContainerName")
 
         criteria.CreateAliasIfNotExists("DSI.Location", "L", JoinType.InnerJoin)
-        proj.Add(Projections.Property("L.DocumentServer"), "LocationServer")
         proj.Add(Projections.Property("L.Id"), "IdLocation")
 
         criteria.CreateAliasIfNotExists("DSI.LocationAnnexed", "LA", JoinType.LeftOuterJoin)
         proj.Add(Projections.Property("LA.Id"), "IdLocationAnnexed")
-        proj.Add(Projections.Property("L.DocumentServer"), "LocationAnnexedServer")
 
         If LastModifiedSortingView.HasValue AndAlso LastModifiedSortingView.Value Then
             proj.Add(Projections.Conditional(

@@ -30,7 +30,7 @@
                 uscPECMailBoxSettings.ddlJeepServiceInId = "<%= ddlJeepServiceIn.ClientID %>";
                 uscPECMailBoxSettings.ddlJeepServiceOutId = "<%= ddlJeepServiceOut.ClientID %>";
                 uscPECMailBoxSettings.ddlInvoiceTypeId = "<%= ddlInvoiceType.ClientID %>";
-                uscPECMailBoxSettings.chkHumanEnabledId = "<%= chkHumanEnabled.ClientID %>";
+                uscPECMailBoxSettings.chkLoginErrorId = "<%= chkLoginError.ClientID %>";
                 uscPECMailBoxSettings.invoiceTypes = JSON.parse('<%= InvoiceTypes %>');
 
                 uscPECMailBoxSettings.initialize();
@@ -207,7 +207,7 @@
                 <tr>
                     <td class="label" style="width: 30%">Visualizza PEC nelle viste</td>
                     <td>
-                        <asp:CheckBox runat="server" ID="chkHumanEnabled" /></td>
+                        <asp:CheckBox runat="server" ID="chkLoginError" /></td>
                 </tr>
                 <tr>
                     <td>

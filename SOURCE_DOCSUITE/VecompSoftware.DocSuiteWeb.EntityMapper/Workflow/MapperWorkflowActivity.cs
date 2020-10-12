@@ -1,9 +1,7 @@
-﻿using System;
-using NHibernate;
+﻿using NHibernate;
+using System;
 using VecompSoftware.DocSuiteWeb.Data.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.DTO.Workflows;
-using NHibernate.Transform;
-using NHibernate.Criterion;
 
 namespace VecompSoftware.DocSuiteWeb.EntityMapper.Workflow
 {
@@ -19,17 +17,19 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Workflow
             {
                 throw new ArgumentException("Impossibile trasformare WorkflowResult se l'entità non è inizializzata");
             }
-            WorkflowActivityResult result = new WorkflowActivityResult();
-            result.WorkflowActivityId = entity.Id;
-            result.WorkflowActivityName = entity.Name;
-            result.WorkflowActivityPublicationDate = entity.RegistrationDate;
-            result.WorkflowActivityLastChangedDate = entity.LastChangedDate;
-            result.WorkflowActivityStatus = entity.Status;
-            result.WorkflowActivityType = entity.ActivityType;
-            result.WorkflowActivityRequestorUser = entity.RegistrationUser;
-            result.WorkflowRepositoryName = entity.WorkflowInstance.WorkflowRepository.Name;
-            result.WorkflowSubject = entity.Subject;
-            result.WorkflowInstanceId = entity.WorkflowInstance.Id;
+            WorkflowActivityResult result = new WorkflowActivityResult()
+            {
+                WorkflowActivityId = entity.Id,
+                WorkflowActivityName = entity.Name,
+                WorkflowActivityPublicationDate = entity.RegistrationDate,
+                WorkflowActivityLastChangedDate = entity.LastChangedDate,
+                WorkflowActivityStatus = (Entity.Workflows.WorkflowStatus)entity.Status,
+                WorkflowActivityType = (Entity.Workflows.WorkflowActivityType)entity.ActivityType,
+                WorkflowActivityRequestorUser = entity.RegistrationUser,
+                WorkflowRepositoryName = entity.WorkflowInstance.WorkflowRepository.Name,
+                WorkflowSubject = entity.Subject,
+                WorkflowInstanceId = entity.WorkflowInstance.Id
+            };
             return result;
         }
 

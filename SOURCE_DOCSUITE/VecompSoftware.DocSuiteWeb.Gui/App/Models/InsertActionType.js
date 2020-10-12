@@ -14,6 +14,8 @@ define(["require", "exports"], function (require, exports) {
         InsertActionType[InsertActionType["CreateProtocol"] = 512] = "CreateProtocol";
         InsertActionType[InsertActionType["DocumentUnitArchived"] = 1024] = "DocumentUnitArchived";
         InsertActionType[InsertActionType["ProtocolShared"] = 2048] = "ProtocolShared";
+        InsertActionType[InsertActionType["CloneProcessFolder"] = 4096] = "CloneProcessFolder";
+        InsertActionType[InsertActionType["InsertProcedureFascicle"] = 8192] = "InsertProcedureFascicle";
     })(InsertActionType || (InsertActionType = {}));
     return InsertActionType;
 });

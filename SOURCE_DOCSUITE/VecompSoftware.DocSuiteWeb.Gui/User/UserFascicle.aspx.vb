@@ -1,105 +1,133 @@
-﻿Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Data
+﻿Imports Newtonsoft.Json
 Imports Telerik.Web.UI
-Imports System.Collections.Generic
-Imports System.Linq
-Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
+Imports VecompSoftware.DocSuiteWeb.DTO.Commons
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class UserFascicle
     Inherits UserBasePage
 
 #Region " Fields "
-
-
-    Dim _titolo As String = String.Empty
-
+    Dim _actionType As String = String.Empty
+    Public Const ACTIONTYPE_FOR As String = "FOR"
+    Public Const ACTIONTYPE_FAU As String = "FAU"
 
 #End Region
 
 #Region " Properties "
 
+    Protected ReadOnly Property ActionType As String
+        Get
+            If String.IsNullOrEmpty(_actionType) Then
+                _actionType = Me.Request.QueryString.GetValueOrDefault("Action", String.Empty)
+            End If
+            Return _actionType
+        End Get
+    End Property
 
-
+    Public ReadOnly Property SelectableFaciclesThreshold As Integer
+        Get
+            Return ProtocolEnv.SelectableProtocolThreshold
+        End Get
+    End Property
 #End Region
 
-#Region " Events "
-
-    Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
-        _titolo = Request.QueryString("Title")
-        Title = String.Format("Fascicoli - {0}", _titolo)
-        AddHandler uscUDFascicleGrid.Grid.DataBound, AddressOf DataSourceChanged
-        InitializeAjaxSettings()
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If Not IsPostBack Then
-            Initialize()
+            Title = Request.QueryString("Title")
+            InitializeDateRanges()
+            InitializeResultsAjax()
+            uscFascicleGrid.Grid.DiscardFinder()
+            Search()
         End If
-    End Sub
-
-    Protected Sub btnUpdate_Click(sender As Object, e As EventArgs) Handles btnUpdate.Click
-        LoadDocumentUnits()
-    End Sub
-
-    Protected Sub UserFascicleAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
-        If e.Argument.Eq("loadDocumentUnits") Then
-            LoadDocumentUnits()
-        End If
-    End Sub
-#End Region
-
-#Region " Methods "
-    Public Sub Initialize()
-        MasterDocSuite.Title = Title
-
-        rdpDateFrom.SelectedDate = DateTime.Today.AddDays(-30)
-        rdpDateTo.SelectedDate = DateTime.Today
-
-        uscUDFascicleGrid.Grid.DiscardFinder()
 
     End Sub
 
-    Private Sub LoadDocumentUnits()
-        Dim finder As DocumentUnitModelFinder = New DocumentUnitModelFinder(DocSuiteContext.Current.CurrentTenant)
-        finder.PageSize = 50
-        finder.DocumentUnitFinderAction = DocumentUnitFinderActionType.FascicolableUD
-        finder.UserName = DocSuiteContext.Current.User.UserName
-        finder.Domain = DocSuiteContext.Current.User.Domain
-        finder.DateFrom = New DateTimeOffset(rdpDateFrom.SelectedDate.Value)
-        finder.DateTo = New DateTimeOffset(rdpDateTo.SelectedDate.Value).AddDays(1)
-        finder.IsSecurityUserEnabled = DocSuiteContext.Current.ProtocolEnv.IsSecurityGroupEnabled
-        finder.IncludeThreshold = chkRedThreshold.Checked
-        finder.ExcludeLinked = chkExcludeLinked.Checked
-        finder.FascicolableThresholdDate = Convert.ToDateTime(DocSuiteContext.Current.ProtocolEnv.FascicolableThresholdDate)
-        finder.SortExpressions.Add("Entity.RegistrationDate", "ASC")
-        finder.SortExpressions.Add("Entity.Number", "ASC")
-        uscUDFascicleGrid.Grid.Finder = finder
-        uscUDFascicleGrid.Grid.DataBindFinder()
+    Private Sub InitializeDateRanges()
+        rdpDateFrom.SelectedDate = Date.Today.AddDays(-1 * ProtocolEnv.DesktopDayDiff)
+        rdpDateTo.SelectedDate = Date.Today
+    End Sub
 
-        If uscUDFascicleGrid.Grid.DataSource IsNot Nothing Then
-            MasterDocSuite.Title = String.Format("Fascicoli - {0} ({1}/{2})", _titolo, uscUDFascicleGrid.Grid.DataSource.Count, uscUDFascicleGrid.Grid.VirtualItemCount)
-        Else
-            MasterDocSuite.Title = "Fascicoli - Nessun risultato"
-        End If
+    Private Sub InitializeResultsAjax()
+        AddHandler uscFascicleGrid.Grid.NeedImpersonation, AddressOf ImpersonationFinderDelegate
+        AddHandler uscFascicleGrid.Grid.DataBound, AddressOf DataSourceChanged
+
+        AjaxManager.AjaxSettings.AddAjaxSetting(uscFascicleGrid.Grid, uscFascicleGrid.Grid, MasterDocSuite.AjaxDefaultLoadingPanel)
     End Sub
 
     Protected Sub DataSourceChanged(ByVal sender As Object, ByVal e As EventArgs)
-        Dim FascicleGrid As BindGrid = uscUDFascicleGrid.Grid
-        If FascicleGrid.DataSource IsNot Nothing Then
-            Title = String.Format("Fascicoli - {0} ({1}/{2})", _titolo, FascicleGrid.DataSource.Count, FascicleGrid.VirtualItemCount)
+        Dim gvFascicles As BindGrid = uscFascicleGrid.Grid
+        If gvFascicles.DataSource IsNot Nothing Then
+            Title = String.Format("{0} - Risultati ({1}/{2})", Request.QueryString("Title"), gvFascicles.DataSource.Count, gvFascicles.VirtualItemCount)
         Else
-            Title = "Fascicoli - Nessun risultato"
+            Title = Request.QueryString("Title")
         End If
-        MasterDocSuite.Title = Title
+        MasterDocSuite.HistoryTitle = Title
     End Sub
 
-    Private Sub InitializeAjaxSettings()
-        AddHandler AjaxManager.AjaxRequest, AddressOf UserFascicleAjaxRequest
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscUDFascicleGrid.Grid, MasterDocSuite.AjaxDefaultLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, MasterDocSuite.TitleContainer)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnUpdate, MasterDocSuite.TitleContainer)
-        AjaxManager.AjaxSettings.AddAjaxSetting(uscUDFascicleGrid, MasterDocSuite.TitleContainer)
-        AjaxManager.AjaxSettings.AddAjaxSetting(uscUDFascicleGrid.Grid, MasterDocSuite.TitleContainer)
-        AjaxManager.AjaxSettings.AddAjaxSetting(uscUDFascicleGrid.Grid, uscUDFascicleGrid.Grid, MasterDocSuite.AjaxDefaultLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnUpdate, uscUDFascicleGrid.Grid, MasterDocSuite.AjaxDefaultLoadingPanel)
+    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        Search()
     End Sub
-#End Region
+
+    Private Sub Search()
+        Dim fascicleFinder As New FascicleFinder(DocSuiteContext.Current.CurrentTenant)
+
+        If ProtocolEnv.SearchMaxRecords <> 0 Then
+            fascicleFinder.PageSize = ProtocolEnv.SearchMaxRecords
+        Else
+            'TODO: Investigate where to have a default value for ProtocolEnv.SearchMaxRecords
+            fascicleFinder.PageSize = 100
+        End If
+        fascicleFinder.FascicleFinderModel = New Model.Entities.Fascicles.FascicleFinderModel()
+        If rdpDateFrom.SelectedDate.HasValue Then
+            fascicleFinder.FascicleFinderModel.StartDateFrom = rdpDateFrom.SelectedDate.Value
+        End If
+        If rdpDateTo.SelectedDate.HasValue Then
+            fascicleFinder.FascicleFinderModel.StartDateTo = rdpDateTo.SelectedDate.Value
+        End If
+        fascicleFinder.ExpandProperties = False
+        fascicleFinder.PageIndex = 0
+        fascicleFinder.FromPostMethod = True
+
+        If Me.ActionType = ACTIONTYPE_FOR Then
+            ' FOR - Aperti
+            fascicleFinder.FascicleFinderModel.ApplySecurity = True
+            fascicleFinder.FascicleFinderModel.ViewOnlyClosable = True
+        Else
+            'FAU - Authorized
+            fascicleFinder.FascicleFinderModel.ApplySecurity = True
+        End If
+
+        DoSearch(fascicleFinder)
+    End Sub
+
+    Private Sub DoSearch(finder As IFinder)
+        Dim setSortExpression As Boolean = False
+        If uscFascicleGrid.Grid.Finder Is Nothing Then
+            uscFascicleGrid.Grid.Finder = finder
+            setSortExpression = True
+        End If
+        If setSortExpression Then
+            Dim order As String = If(DocSuiteContext.Current.ProtocolEnv.ForceDescendingOrderElements, "desc", "asc")
+            uscFascicleGrid.Grid.Finder.SortExpressions("Entity.StartDate") = order
+        End If
+        uscFascicleGrid.Grid.DataBindFinder()
+        uscFascicleGrid.Grid.Visible = True
+    End Sub
+
+
+    Private Sub ImpersonationFinderDelegate(ByVal source As Object, ByVal e As EventArgs)
+        uscFascicleGrid.Grid.SetImpersonationAction(AddressOf ImpersonateGridCallback)
+        uscFascicleGrid.Grid.SetImpersonationCounterAction(AddressOf ImpersonateGridCallback)
+    End Sub
+
+    Private Function ImpersonateGridCallback(Of TResult)(finder As IFinder, callback As Func(Of TResult)) As TResult
+        Return WebAPIImpersonatorFacade.ImpersonateFinder(Of FascicleFinder, TResult)(finder,
+                        Function(impersonationType, wfinder)
+                            Return callback()
+                        End Function)
+    End Function
 
 End Class

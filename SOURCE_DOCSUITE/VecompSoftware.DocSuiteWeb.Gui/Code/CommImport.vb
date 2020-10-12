@@ -634,7 +634,7 @@ Public Class CommImport
             ' CREO IL PROTOCOLLO
             Dim protocol As Protocol
 
-            protocol = protFacade.CreateProtocol()
+            protocol = protFacade.CreateProtocol(CurrentTenant.TenantAOO.UniqueId)
             If protocol Is Nothing Then
                 Exit Sub
             End If
@@ -1033,7 +1033,7 @@ Public Class CommImport
                 End If
             Next
             'Inserimento in biblos
-            Dim loc As New UIDLocation() With {.Server = location.DocumentServer, .Archive = location.ProtBiblosDSDB}
+            Dim loc As New UIDLocation() With {.Archive = location.ProtBiblosDSDB}
 
             If Not bAllegato Then
                 idBiblos = Service.AddFile(loc, fi, BuildBiblosXml(_metadata)).Chain.Id

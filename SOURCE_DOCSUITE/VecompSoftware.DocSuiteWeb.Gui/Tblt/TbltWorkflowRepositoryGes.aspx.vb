@@ -70,7 +70,7 @@ Partial Public Class TbltWorkflowRepositoryGes
     Private ReadOnly Property CurrentWorkflowRoleMappingFacade As WorkflowRoleMappingFacade
         Get
             If _currentWorkflowRoleMappingFacade Is Nothing Then
-                _currentWorkflowRoleMappingFacade = New WorkflowRoleMappingFacade(DocSuiteContext.Current.Tenants)
+                _currentWorkflowRoleMappingFacade = New WorkflowRoleMappingFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
             End If
             Return _currentWorkflowRoleMappingFacade
         End Get
@@ -79,11 +79,14 @@ Partial Public Class TbltWorkflowRepositoryGes
     Private ReadOnly Property CurrentWorkflowRoleMapping As WorkflowRoleMapping
         Get
             If _currentWorkflowRoleMapping Is Nothing AndAlso IdWorkflowRoleMapping.HasValue Then
-                CurrentWorkflowRoleMappingFinder.ResetDecoration()
-                CurrentWorkflowRoleMappingFinder.EnablePaging = False
-                CurrentWorkflowRoleMappingFinder.UniqueId = IdWorkflowRoleMapping.Value
-                CurrentWorkflowRoleMappingFinder.ExpandRole = True
-                _currentWorkflowRoleMapping = CurrentWorkflowRoleMappingFinder.DoSearch().FirstOrDefault().Entity
+                _currentWorkflowRoleMapping = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowRoleMappingFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.EnablePaging = False
+                        finder.UniqueId = IdWorkflowRoleMapping.Value
+                        finder.ExpandRole = True
+                        Return finder.DoSearch().FirstOrDefault().Entity
+                    End Function)
             End If
             Return _currentWorkflowRoleMapping
         End Get
@@ -105,6 +108,12 @@ Partial Public Class TbltWorkflowRepositoryGes
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            AjaxManager.ResponseScripts.Add("CloseWindow();")
+            Exit Sub
+        End If
+
         InitializeAjax()
         If Not Page.IsPostBack Then
             InitializePage()
@@ -191,6 +200,7 @@ Partial Public Class TbltWorkflowRepositoryGes
 
     Private Sub InitializePage()
         MasterDocSuite.TitleVisible = False
+        uscContattiNew.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
         Dim authorizationTypes As ListItem() = [Enum].GetValues(GetType(WorkflowAuthorizationType)) _
                                                      .OfType(Of WorkflowAuthorizationType)() _
                                                      .Select(Function(s) New ListItem(EnumHelper.GetDescription(s), DirectCast(s, Short).ToString())) _

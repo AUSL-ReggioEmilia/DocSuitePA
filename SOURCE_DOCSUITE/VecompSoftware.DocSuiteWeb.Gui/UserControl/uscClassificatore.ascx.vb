@@ -307,7 +307,7 @@ Partial Public Class uscClassificatore
         Dim nodeToAdd As New RadTreeNode()
         SetNodo(nodeToAdd, category)
         If category IsNot Nothing Then
-            If category.Parent Is Nothing OrElse SubCategoryMode Then 'Primo Livello
+            If category.Parent Is Nothing OrElse SubCategoryMode OrElse (category.Parent IsNot Nothing AndAlso category.Parent.Code = 0) Then 'Primo Livello
                 RadTreeCategory.Nodes.Add(nodeToAdd)
             Else
                 Dim newNode As RadTreeNode = RadTreeCategory.FindNodeByValue(category.Parent.Id.ToString())

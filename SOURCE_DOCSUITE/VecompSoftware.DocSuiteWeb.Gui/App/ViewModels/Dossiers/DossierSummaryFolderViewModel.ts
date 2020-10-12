@@ -1,4 +1,4 @@
-﻿import CategoryModel = require('App/Models/Commons/CategoryModel');
+﻿import ProcessFascicleTemplateModel = require('App/Models/Processes/ProcessFascicleTemplateModel');
 
 interface DossierSummaryFolderViewModel {
     UniqueId: string;
@@ -12,6 +12,9 @@ interface DossierSummaryFolderViewModel {
     idCategory: number;
     idRole: number;
     idParent: string;
+    FascicleTemplates: ProcessFascicleTemplateModel[];
+    DossierFolders: DossierSummaryFolderViewModel[];
+    JsonMetadata: string;
 }
 
 export = DossierSummaryFolderViewModel

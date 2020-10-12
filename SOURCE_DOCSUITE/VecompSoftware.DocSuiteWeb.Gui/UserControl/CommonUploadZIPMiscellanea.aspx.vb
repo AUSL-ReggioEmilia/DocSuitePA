@@ -132,7 +132,7 @@ Public Class CommonUploadZIPMiscellanea
             Exit Function
         End If
 
-        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(MiscellaneaLocation.DocumentServer, ArchiveName, chainId)
+        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(ArchiveName, chainId)
         Return storedBiblosDocumentInfo
     End Function
 

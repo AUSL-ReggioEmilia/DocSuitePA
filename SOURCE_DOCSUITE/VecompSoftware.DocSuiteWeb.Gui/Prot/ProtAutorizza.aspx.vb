@@ -91,7 +91,7 @@ Public Class ProtAutorizza
         End If
 
         ' Aggiungo i settori
-        Facade.ProtocolFacade.AddRoleAuthorizations(CurrentProtocol, uscAutorizza.RoleListAdded(), "E")
+        Facade.ProtocolFacade.AddRoleAuthorizations(CurrentProtocol, uscAutorizza.RoleListAdded(), Explicit)
 
         If CanDeleteRole(CurrentProtocol.GetRoles()) Then
             ' Rimuovo i settori
@@ -103,7 +103,7 @@ Public Class ProtAutorizza
             Dim privacyRoles As IList(Of String) = uscAutorizza.GetPrivacyRoles()
             For Each item As ProtocolRole In CurrentProtocol.Roles
                 item.Type = Nothing
-                If privacyRoles.Contains(item.Id.Id.ToString()) Then
+                If privacyRoles.Contains(item.Role.Id.ToString()) Then
                     item.Type = ProtocolRoleTypes.Privacy
                 End If
             Next
@@ -183,7 +183,7 @@ Public Class ProtAutorizza
         End If
 
         Dim s As New StringBuilder
-        s.AppendFormat("Year={0}&Number={1}", CurrentProtocolYear, CurrentProtocolNumber)
+        s.AppendFormat("UniqueId={0}", CurrentProtocol.Id)
         If Dirty Then
             s.Append("&Action=MailSettori")
         Else
@@ -195,8 +195,8 @@ Public Class ProtAutorizza
             Dim roleIdsToRemove As IList(Of Integer) = New List(Of Integer)
             If Not RoleNoteChanged Is Nothing Then
                 Dim protocolRoleNote As ProtocolRoleNoteModel
-                For Each protRole As ProtocolRole In CurrentProtocol.Roles.Where(Function(dc) RoleNoteChanged.Any(Function(x) x.IdRole = dc.Id.Id))
-                    protocolRoleNote = RoleNoteChanged.Single(Function(rn) rn.IdRole = protRole.Id.Id)
+                For Each protRole As ProtocolRole In CurrentProtocol.Roles.Where(Function(dc) RoleNoteChanged.Any(Function(x) x.IdRole = dc.Role.Id))
+                    protocolRoleNote = RoleNoteChanged.Single(Function(rn) rn.IdRole = protRole.Role.Id)
                     protRole.Note = protocolRoleNote.Note
                     protRole.LastChangedDate = DateTimeOffset.UtcNow
                     protRole.LastChangedUser = DocSuiteContext.Current.User.FullUserName
@@ -208,7 +208,7 @@ Public Class ProtAutorizza
             End If
             'Modifico eventuali valori non settati in view state
             If uscProtocolRoleUser.SelectedRole IsNot Nothing AndAlso Not RoleNoteChanged.Any(Function(r) r.IdRole.Equals(uscProtocolRoleUser.SelectedRole.Id)) Then
-                Dim protRole As ProtocolRole = CurrentProtocol.Roles.SingleOrDefault(Function(g) g.Id.Id.Equals(uscProtocolRoleUser.SelectedRole.Id))
+                Dim protRole As ProtocolRole = CurrentProtocol.Roles.SingleOrDefault(Function(g) g.Role.Id.Equals(uscProtocolRoleUser.SelectedRole.Id))
                 If protRole IsNot Nothing Then
                     protRole.Note = txtNote.Text
                     protRole.LastChangedDate = DateTimeOffset.UtcNow
@@ -227,10 +227,11 @@ Public Class ProtAutorizza
             Exit Sub
         End Try
 
-        Response.Redirect("../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(s.ToString()))
+        Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck(s.ToString())}")
     End Sub
+
     Private Sub CreateFieldChangeLog(ByVal message As String, ByVal oldValue As String, ByVal newValue As String)
-        If Not DocSuiteContext.Current.ProtocolEnv.IsLogEnabled OrElse oldValue.Eq(newValue) Then
+        If oldValue.Eq(newValue) Then
             Exit Sub
         End If
 
@@ -250,6 +251,7 @@ Public Class ProtAutorizza
             End If
         End If
     End Sub
+
     Private Sub uscProtocolRoleUser_OnRoleUserViewModeChanged(ByVal sender As Object, ByVal e As EventArgs) Handles uscProtocolRoleUser.OnRoleUserViewModeChanged
         If uscProtocolRoleUser.CurrentRoleUserViewMode.Value = uscSettori.RoleUserViewMode.RoleUsers Then
             BindProtocolRoleUsers(uscSettori.RoleUserViewMode.Roles)
@@ -346,8 +348,8 @@ Public Class ProtAutorizza
         End If
 
         If DocSuiteContext.Current.SimplifiedPrivacyEnabled Then
-            uscAutorizza.SetPrivacyAuthorizationNodes(CurrentProtocol.Roles.Where(Function(r) Not String.IsNullOrEmpty(r.Type) AndAlso r.Type = ProtocolRoleTypes.Privacy AndAlso roles.Contains(r.Role)).Select(Function(x) x.Id.Id).ToArray())
-            uscAutorizzaFull.SetPrivacyAuthorizationNodes(CurrentProtocol.Roles.Where(Function(r) Not String.IsNullOrEmpty(r.Type) AndAlso r.Type = ProtocolRoleTypes.Privacy AndAlso rolesFull.Contains(r.Role)).Select(Function(x) x.Id.Id).ToArray())
+            uscAutorizza.SetPrivacyAuthorizationNodes(CurrentProtocol.Roles.Where(Function(r) Not String.IsNullOrEmpty(r.Type) AndAlso r.Type = ProtocolRoleTypes.Privacy AndAlso roles.Contains(r.Role)).Select(Function(x) x.Role.Id).ToArray())
+            uscAutorizzaFull.SetPrivacyAuthorizationNodes(CurrentProtocol.Roles.Where(Function(r) Not String.IsNullOrEmpty(r.Type) AndAlso r.Type = ProtocolRoleTypes.Privacy AndAlso rolesFull.Contains(r.Role)).Select(Function(x) x.Role.Id).ToArray())
         End If
 
         If CurrentProtocolRights.IsContainerDistributable OrElse CurrentProtocol.Type.Id = 1 Then
@@ -376,7 +378,7 @@ Public Class ProtAutorizza
         'verifica Protocollo
         If CurrentProtocol Is Nothing Then
             Throw New DocSuiteException(
-                "Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber),
+                $"Protocollo ID {CurrentProtocolId}",
                 "Protocollo Inesistente",
                 Request.Url.ToString(),
                 DocSuiteContext.Current.User.FullUserName)
@@ -455,97 +457,6 @@ Public Class ProtAutorizza
         End If
     End Sub
 
-    ''' <summary> Aggiorno le autorizzazioni degli RoleUser per il protocollo corrente. </summary>
-    Private Sub UpdateProtocolRoleUser()
-        If (CurrentProtocol.Roles Is Nothing) OrElse CurrentProtocol.Roles.Count <= 0 Then
-            Exit Sub
-        End If
-
-        ' Popolo una lista con gli id degli RoleUser da autorizzare.
-        Dim selectedProtocolRoleUsers As IList(Of String) = uscProtocolRoleUser.GetRoleValues(True, uscSettori.NodeTypeAttributeValue.RoleUser)
-
-        For Each selectedId As String In selectedProtocolRoleUsers
-            Dim roleUserNodeValue As String() = selectedId.Split("|"c)
-            Dim idRole As Integer = Convert.ToInt32(roleUserNodeValue.GetValue(ProtocolRoleUserColumns.IdRole))
-
-            Dim pruk As New ProtocolRoleUserKey
-            pruk.Year = CurrentProtocol.Year
-            pruk.Number = CurrentProtocol.Number
-            pruk.IdRole = idRole
-            pruk.GroupName = roleUserNodeValue.GetValue(ProtocolRoleUserColumns.GroupName)
-            pruk.UserName = roleUserNodeValue.GetValue(ProtocolRoleUserColumns.UserName)
-
-            Dim pru As New ProtocolRoleUser
-            pru.Id = pruk
-            pru.Account = roleUserNodeValue.GetValue(ProtocolRoleUserColumns.Account)
-            pru.IsActive = 1
-            pru.UniqueIdProtocol = CurrentProtocol.UniqueId
-            pru.Role = Facade.RoleFacade.GetById(idRole)
-            pru.Protocol = CurrentProtocol
-
-            ' Popolo una lista con gli id dei settori autorizzati.
-            Dim currentProtocolRoles As IList(Of Integer) = New List(Of Integer)
-            For Each pr As ProtocolRole In CurrentProtocol.Roles
-                currentProtocolRoles.Add(pr.Id.Id)
-            Next
-
-            If currentProtocolRoles.Contains(pruk.IdRole) Then
-                ' Autorizzo il RoleUser corrente.
-                CurrentProtocol.RoleUsers.Add(pru)
-            End If
-        Next
-    End Sub
-
-    ''' <summary> Aggiorna il flag di copia conoscenza per i Role autorizzati. </summary>
-    Private Sub UpdateProtocolRoleDistributionType()
-        If (CurrentProtocol.Roles Is Nothing) OrElse CurrentProtocol.Roles.Count <= 0 Then
-            Exit Sub
-        End If
-
-        ' Popolo una lista con gli id dei Role di cui impostare la Copia Conoscenza dalle checkbox dei nodi di settore per i quali sono abilitato.
-        Dim ccProtocolRoles As List(Of String) = uscProtocolRoleUser.GetRoleValues(True, uscSettori.NodeTypeAttributeValue.Role)
-
-        ' Se sono manager riporto le copie conoscenza dei nodi da me non modificabili e già impostati recuperandoli dall'attributo NodeCC.
-        If Not CurrentProtocolRights.IsContainerDistributable AndAlso CurrentProtocolRights.IsCurrentUserDistributionManager Then
-            Dim ccProtocolRolesByAttribute As New List(Of String)
-            For Each node As RadTreeNode In uscProtocolRoleUser.TreeViewControl.Nodes
-                uscSettori.GetCcRoleNodes(node, ccProtocolRolesByAttribute)
-            Next
-            ccProtocolRoles.AddRange(ccProtocolRolesByAttribute)
-        End If
-
-        For Each selectedId As String In ccProtocolRoles
-            For Each pr As ProtocolRole In CurrentProtocol.Roles
-                ' Se il settore corrente è - OPPURE - è figlio di un settore in Copia Conoscenza, propago l'impostazione in cascata.
-                If pr.Id.Id.ToString().Equals(selectedId) OrElse pr.Role.FullIncrementalPath.Contains(selectedId) Then
-                    pr.Type = ProtocolRoleTypes.CarbonCopy
-                    ' Non esco immediatamente dal ciclo poichè oltre al settore corrente potrei avere n-figli di cui impostare la Copia Conoscenza.
-                End If
-            Next
-        Next
-    End Sub
-
-    ''' <summary> Aggiorna le autorizzazioni implicite dei Role. </summary>
-    Private Sub UpdateImplicitProtocolRoles()
-        If (CurrentProtocol.Roles Is Nothing) OrElse CurrentProtocol.Roles.Count <= 0 Then
-            Exit Sub
-        End If
-
-        ' Popolo una lista con gli id dei settori autorizzati esplicitamente.
-        Dim currentProtocolRoles As New List(Of Integer)
-        For Each pr As ProtocolRole In CurrentProtocol.Roles
-            currentProtocolRoles.Add(pr.Id.Id)
-        Next
-
-        Dim implicitProtocolRoles As String() = uscAutorizza.GetOldValues()
-        For Each idRole As String In implicitProtocolRoles
-            Dim temp As Integer = Integer.Parse(idRole)
-            If Not currentProtocolRoles.Contains(temp) Then
-                CurrentProtocol.AddRole(Facade.RoleFacade.GetById(temp), DocSuiteContext.Current.User.FullUserName, DateTimeOffset.UtcNow, ProtocolDistributionType.Implicit)
-            End If
-        Next
-    End Sub
-
     Public Function ProtSendMail(ByVal protocol As Protocol, ByVal mittenti As ArrayList, ByVal destinatari As ArrayList) As Boolean
 
         If mittenti.Count = 0 Then
@@ -570,23 +481,6 @@ Public Class ProtAutorizza
         End Try
     End Function
 
-
-    Private Sub LogInsert()
-        If Not ProtocolEnv.IsLogEnabled Then
-            Exit Sub
-        End If
-
-        'Autorizzazioni Aggiunte
-        Dim added As ICollection(Of Integer) = uscAutorizza.RoleListAdded
-        Facade.ProtocolLogFacade.InsertRolesLog(CurrentProtocol, added, "Add")
-        If ProtocolEnv.IsAuthorizFullEnabled Then
-            Facade.ProtocolLogFacade.InsertFullRolesLog(CurrentProtocol, added, "Add")
-        End If
-        'Autorizzazioni Rimosse
-        Dim removed As ICollection(Of Integer) = uscAutorizza.RoleListRemoved()
-        Facade.ProtocolLogFacade.InsertRolesLog(CurrentProtocol, removed, "Del")
-    End Sub
-
     Private Function CanDeleteRole(role As Role) As Boolean
         Return CanDeleteRole(New List(Of Role) From {role})
     End Function
@@ -608,18 +502,18 @@ Public Class ProtAutorizza
             Dim roleToUpdate As ProtocolRole = CurrentProtocol.Roles.SingleOrDefault(Function(x) x.Id.Equals(PreviousNodeSelected.Id))
             If roleToUpdate IsNot Nothing Then
                 If roleToUpdate.Note.GetValueOrEmpty().Equals(txtNote.Text) Then
-                    If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(roleToUpdate.Id.Id)) Then
-                        Dim itemToRemove As ProtocolRoleNoteModel = RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Id.Id))
+                    If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(roleToUpdate.Role.Id)) Then
+                        Dim itemToRemove As ProtocolRoleNoteModel = RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Role.Id))
                         RoleNoteChanged.Remove(itemToRemove)
                     End If
                     Dim node As RadTreeNode = uscProtocolRoleUser.TreeViewControl.FindNodeByValue(roleToUpdate.Role.Id.ToString())
                     node.Text = roleToUpdate.Role.Name
                 Else
-                    If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(roleToUpdate.Id.Id)) Then
-                        RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Id.Id)).Note = txtNote.Text
+                    If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(roleToUpdate.Role.Id)) Then
+                        RoleNoteChanged.First(Function(r) r.IdRole.Equals(roleToUpdate.Role.Id)).Note = txtNote.Text
                     Else
                         Dim itemToAdd As ProtocolRoleNoteModel = New ProtocolRoleNoteModel()
-                        itemToAdd.IdRole = roleToUpdate.Id.Id
+                        itemToAdd.IdRole = roleToUpdate.Role.Id
                         itemToAdd.Note = txtNote.Text
                         RoleNoteChanged.Add(itemToAdd)
                         Dim node As RadTreeNode = uscProtocolRoleUser.TreeViewControl.FindNodeByValue(roleToUpdate.Role.Id.ToString())
@@ -641,8 +535,8 @@ Public Class ProtAutorizza
 
         txtNote.Text = protRole.Note
         PreviousNodeSelected = protRole
-        If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(protRole.Id.Id)) Then
-            Dim roleChanged As ProtocolRoleNoteModel = RoleNoteChanged.First(Function(r) r.IdRole.Equals(protRole.Id.Id))
+        If RoleNoteChanged.Any(Function(r) r.IdRole.Equals(protRole.Role.Id)) Then
+            Dim roleChanged As ProtocolRoleNoteModel = RoleNoteChanged.First(Function(r) r.IdRole.Equals(protRole.Role.Id))
             txtNote.Text = roleChanged.Note
         End If
     End Sub

@@ -10,8 +10,8 @@
     <script type="text/javascript">
         //<![CDATA[
 
-        function OpenParerDetail(year, number) {
-            var wnd = window.radopen("<%=ProtocolParerDetailUrl() %>?Type=Prot&year=" + year + "&number=" + number, "parerDetailWindow");
+        function OpenParerDetail(uniqueIdProtocol) {
+            var wnd = window.radopen("<%=ProtocolParerDetailUrl() %>?Type=Prot&UniqueId=" + uniqueIdProtocol, "parerDetailWindow");
             wnd.setSize(400, 300);
             wnd.set_behaviors(Telerik.Web.UI.WindowBehaviors.Close);
             wnd.set_visibleStatusbar(false);
@@ -230,7 +230,7 @@
             <td style="width: 20%;"></td>
         </tr>
     </table>
-    <%-- <%-- settori con autorizzazioni rifiutate --%>
+    <%-- <%-- Settori con autorizzazioni rifiutate --%>
     <table class="datatable" id="tbltRefusedAuthorizations" runat="server" visible="false">
         <tr>
             <th>Settori con autorizzazione rifiutata</th>
@@ -357,13 +357,13 @@
     <table class="datatable" id="tblUds" runat="server">
         <tr>
             <th>
-                <telerik:RadButton ID="btnViewUDS" runat="server" ButtonType="LinkButton" />
+                <telerik:RadButton ID="btnViewUDS" runat="server" ButtonType="LinkButton" AutoPostBack="false" />
             </th>
         </tr>
         <tr id="trSourceUDS" runat="server">
             <td>
                 <asp:Panel runat="server" ID="dynamicData">
-                    <usc:UDSDynamics runat="server" ID="udsDynamicControls" />
+                    <usc:UDSDynamics runat="server" ID="udsDynamicControls" ActionType="View" ViewAuthorizations="false" />
                 </asp:Panel>
             </td>
         </tr>
@@ -506,7 +506,9 @@
             <telerik:CompositeLayoutColumn>
                 <Content>
                     <asp:Panel runat="server">
-                        <usc:uscDocumentUnitReferences Visible="true" ID="uscDocumentUnitReferences" runat="server" ShowFascicleLinks="true" ShowProtocolRelationLinks="true" ShowProtocolDocumentSeriesLinks="true" ShowArchiveRelationLinks="true" ShowProtocolMessageLinks="true" ShowPECIncoming="true" ShowPECOutgoing="true"/>                        
+                        <usc:uscDocumentUnitReferences Visible="true" ID="uscDocumentUnitReferences" runat="server" ShowFascicleLinks="true" ShowProtocolRelationLinks="true" 
+                            ShowProtocolDocumentSeriesLinks="true" ShowArchiveRelationLinks="true" ShowProtocolMessageLinks="true" ShowPECIncoming="true" ShowPECOutgoing="true"
+                            ShowActiveWorkflowActivities="true"/>                        
                     </asp:Panel>
                 </Content>
             </telerik:CompositeLayoutColumn>

@@ -13,10 +13,6 @@ Public Class SecurityUsersFacade
         MyBase.New(DbName)
     End Sub
 
-    ''' <summary> Restituisce l'Id di valore massimo. </summary>
-    Public Function GetMaxId() As Short
-        Return _dao.GetMaxId()
-    End Function
 
     Public Overrides Sub Save(ByRef obj As SecurityUsers)
         obj.Id = _dao.GetMaxId() + 1
@@ -25,13 +21,15 @@ Public Class SecurityUsersFacade
 
     ''' <summary> Esegue l'inserimento di un Nuovo gruppo nella tabella SecurityUsers. </summary>
     Public Overridable Function Insert(ByVal domain As String, ByVal account As String, ByVal description As String, ByRef group As SecurityGroups) As SecurityUsers
-        Dim user As New SecurityUsers()
-        user.UserDomain = domain
-        user.Account = account
-        user.Description = description
-        user.Group = group
+        Dim user As New SecurityUsers With {
+            .UserDomain = domain,
+            .Account = account,
+            .Description = description,
+            .Group = group
+        }
         Save(user)
         FacadeFactory.Instance.TableLogFacade.Insert("SecurityGroups", LogEvent.INS, String.Format("Inserito Utente {0}\{1}", user.UserDomain, user.Account), group.UniqueId)
+        CacheSingleton.Instance.ClearSecurityCache()
         Return user
     End Function
 
@@ -85,13 +83,6 @@ Public Class SecurityUsersFacade
         Return GetGroupsByAccount(Nothing, DocSuiteContext.Current.CurrentDomainName, userName)
     End Function
 
-    Public Function GetCurrentUserGroups() As IList(Of SecurityGroups)
-        If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
-            Return GetGroupsByAccount(DocSuiteContext.Current.User.Domain, DocSuiteContext.Current.CurrentDomainName, DocSuiteContext.Current.User.UserName)
-        End If
-        Return GetGroupsByAccount(Nothing, DocSuiteContext.Current.CurrentDomainName, DocSuiteContext.Current.User.UserName)
-    End Function
-
     Private Function GetGroupsByAccount(userDomain As String, defaultDomain As String, account As String) As IList(Of SecurityGroups)
         Return _dao.GetGroupsByAccount(userDomain, defaultDomain, account)
     End Function
@@ -115,36 +106,18 @@ Public Class SecurityUsersFacade
         Return GetUsersByGroupAndAccount(idGroup, Nothing, DocSuiteContext.Current.CurrentDomainName, userName)
     End Function
 
-    Public Function GetUsersByGroupAndCurrentUser(idGroup As Integer) As IList(Of SecurityUsers)
-        If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
-            Return GetUsersByGroupAndAccount(idGroup, DocSuiteContext.Current.User.Domain, DocSuiteContext.Current.CurrentDomainName, DocSuiteContext.Current.User.UserName)
-        End If
-        Return GetUsersByGroupAndAccount(idGroup, Nothing, DocSuiteContext.Current.CurrentDomainName, DocSuiteContext.Current.User.UserName)
-    End Function
-
     Private Function GetUsersByGroupAndAccount(idGroup As Integer, userDomain As String, defaultDomain As String, account As String) As IList(Of SecurityUsers)
         Return _dao.GetUsersByGroupAndAccount(idGroup, userDomain, defaultDomain, account)
     End Function
+
     Public Overrides Function Delete(ByRef entity As SecurityUsers) As Boolean
         Dim retval As Boolean = False
         Dim name As String = entity.DisplayName
         Dim id As Guid = entity.Group.UniqueId
         retval = MyBase.Delete(entity)
         FacadeFactory.Instance.TableLogFacade.Insert("SecurityGroups", LogEvent.DL, String.Format("Eliminato Utente {0}", name), id)
+        CacheSingleton.Instance.ClearSecurityCache()
         Return retval
-    End Function
-
-    Public Function UserBelongsAtLeastOnRole(ByVal rolesId As IList(Of Integer), account As String) As Boolean
-        Dim userDomain As String = DocSuiteContext.Current.CurrentDomainName
-        Dim userName As String = account
-        Dim splitted As String() = account.Split("\"c)
-
-        If splitted.Length > 1 Then
-            userDomain = splitted(0)
-            userName = splitted(1)
-        End If
-
-        Return _dao.UserBelongsAtLeastOneRole(rolesId, userDomain, userName)
     End Function
 
 End Class

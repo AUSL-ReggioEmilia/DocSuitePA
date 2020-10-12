@@ -56,13 +56,18 @@ class uscDossierFolders {
     persistanceDisabled: boolean;
     hideFascicleAssociateButton: boolean;
     hideStatusToolbar: boolean;
+    managerModifyFascicle: string;
+    processEnabled: boolean;
+    isWindowPopupEnable: boolean;
+    btnSelectDossierFolderId: string;
+    fascicleModifyButtonEnable: boolean;
 
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
     private _serviceConfigurations: ServiceConfiguration[];
     private _service: DossierService;
     private _lblRegistrationUser: JQuery;
     private _treeDossierFolders: Telerik.Web.UI.RadTreeView;
-    private _dossierFolders: Array<DossierSummaryFolderViewModel>;
+    private _dossierFolders: Array<DossierSummaryFolderViewModel> = [];
     private _uscNotification: UscErrorNotification;
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _statusToolBar: Telerik.Web.UI.RadToolBar;
@@ -71,6 +76,7 @@ class uscDossierFolders {
     private _managerAddFascLink: Telerik.Web.UI.RadWindowManager;
     private _managerModifyFolder: Telerik.Web.UI.RadWindowManager;
     private _managerCreateFascicleFolder: Telerik.Web.UI.RadWindowManager;
+    private _managerModifyFascicle: Telerik.Web.UI.RadWindowManager;
     private _manager: Telerik.Web.UI.RadWindowManager;
     private _checkedToolBarButtons: number;
     private _dossierFolderService: IDossierFolderService;
@@ -78,20 +84,33 @@ class uscDossierFolders {
     private _btnCreateFolder: Telerik.Web.UI.RadToolBarItem;
     private _btnDeleteFolder: Telerik.Web.UI.RadToolBarItem;
     private _btnRemoveFascicle: Telerik.Web.UI.RadToolBarItem;
+    private _btnModifyFascicle: Telerik.Web.UI.RadToolBarItem;
     private _btnAddFascicle: Telerik.Web.UI.RadToolBarItem;
     private _btnModifyFolder: Telerik.Web.UI.RadToolBarItem;
     private _btnCreateFascicle: Telerik.Web.UI.RadToolBarItem;
+    private _btnCreateFascicleFromTemplate: Telerik.Web.UI.RadToolBarItem;
     private _roleService: IRoleService;
     private _dossierFolderRoles: DossierFolderRoleModel[];
     private _containerPropertyService: ContainerPropertyService;
     private _fascicleService: FascicleService;
     private _fascicleRoleService: FascicleRoleService;
+    private _templateDossierFolder: DossierSummaryFolderViewModel;
 
 
     public static ON_END_LOAD_EVENT = "onEndLoad";
     public static LOADED_EVENT: string = "onLoaded";
-    public static FASCICLE_TREE_NODE_CLICK: string = "onFascicleTreeNodeClick"
-    public static ROOT_NODE_CLICK: string = "onRootTreeNodeClick"
+    public static FASCICLE_TREE_NODE_CLICK: string = "onFascicleTreeNodeClick";
+    public static ROOT_NODE_CLICK: string = "onRootTreeNodeClick";
+    public static CREATE_FOLDER: string = "createFolder";
+    public static CREATE_FASCICLE: string = "createFascicle";
+    public static DELETE_FOLDER: string = "deleteFolder";
+    public static REMOVE_FASCICLE: string = "removeFascicle";
+    public static ADD_FASCICLE: string = "addFascicle";
+    public static MODIFY_FOLDER: string = "modifyFolder";
+    public static MODIFY_FASCICLE: string = "modifyFascicle";
+    public static REFRESH_DOSSIER_FOLDERS: string = "refreshDossierFolders";
+    public static CREATE_FASCICLE_FROM_TEMPLATE: string = "createFascicleFromTemplate";
+    public static defaultFilterStatus: number = 0;
 
     /**
     * Costruttore
@@ -119,7 +138,7 @@ class uscDossierFolders {
         if (item) {
             let rootNode: Telerik.Web.UI.RadTreeNode = this._treeDossierFolders.get_nodes().getNode(0);
             switch (item.get_value()) {
-                case "createFolder": {
+                case uscDossierFolders.CREATE_FOLDER: {
                     let selectedNodeId: string = this._currentSelectedNode.get_value();
                     if (selectedNodeId != "00000000-0000-0000-0000-000000000000") {
                         this.setDossierFolder(rootNode.get_value());
@@ -129,7 +148,7 @@ class uscDossierFolders {
                     this.openWindow(url, "managerCreateFolder", 750, 600);
                     break;
                 }
-                case "createFascicle": {
+                case uscDossierFolders.CREATE_FASCICLE: {
 
                     let selectedNodeId: string = this._currentSelectedNode.get_value();
                     if (selectedNodeId != "00000000-0000-0000-0000-000000000000") {
@@ -138,10 +157,10 @@ class uscDossierFolders {
 
                     let url: string = '../Dossiers/DossierFascicleFolderInserimento.aspx?Type=Dossier&idDossier='.concat(rootNode.get_value(), '&PersistanceDisabled=', this.persistanceDisabled.toString());
 
-                    this.openWindow(url, "managerCreateFascicleFolder", 750, 600);
+                    this.openWindow(url, "managerCreateFascicleFolder", 750, 650);
                     break;
                 }
-                case "deleteFolder": {
+                case uscDossierFolders.DELETE_FOLDER: {
                     if (this._currentSelectedNode.get_attributes() && !this._currentSelectedNode.get_attributes().getAttribute("idFascicle")) {
 
                         this.removeDossierFolder();
@@ -154,7 +173,7 @@ class uscDossierFolders {
                     }
                     break;
                 }
-                case "removeFascicle": {
+                case uscDossierFolders.REMOVE_FASCICLE: {
                     if (this._currentSelectedNode.get_attributes() && this._currentSelectedNode.get_attributes().getAttribute("idFascicle")) {
                         this.removeFascicleFromfolder();
                     }
@@ -166,7 +185,7 @@ class uscDossierFolders {
                     }
                     break;
                 }
-                case "addFascicle": {
+                case uscDossierFolders.ADD_FASCICLE: {
                     if (this._currentSelectedNode.get_attributes() && !this._currentSelectedNode.get_attributes().getAttribute("idFascicle")) {
                         this.setDossierFolder(rootNode.get_value());
                         let url: string = '../Dossiers/DossierFolderLinkFascicle.aspx?Type=Dossier&idDossier='.concat(rootNode.get_value());
@@ -181,7 +200,7 @@ class uscDossierFolders {
                     }
                     break;
                 }
-                case "modifyFolder": {
+                case uscDossierFolders.MODIFY_FOLDER: {
                     if (this._currentSelectedNode.get_attributes()) {
 
                         this.setDossierFolder(rootNode.get_value());
@@ -191,6 +210,25 @@ class uscDossierFolders {
 
                     }
                     break;
+                }
+                case uscDossierFolders.MODIFY_FASCICLE: {
+                    let selectedNodeId: string = this._currentSelectedNode.get_value();
+                    if (selectedNodeId != "00000000-0000-0000-0000-000000000000") {
+                        this.setDossierFolder(rootNode.get_value());
+                    }
+                    let selectedNodeIdFascicle: string = this._currentSelectedNode.get_attributes().getAttribute("idFascicle");
+                    let url: string = `../Dossiers/DossierFascicleFolderInserimento.aspx?Type=Dossier&ActionType=Update&idDossier=${rootNode.get_value()}&idFascicle=${selectedNodeIdFascicle}&PersistanceDisabled=${this.persistanceDisabled.toString()}`;
+
+                    this.openWindow(url, "managerModifyFascicle", 750, 650);
+                    break;
+                }
+                case uscDossierFolders.REFRESH_DOSSIER_FOLDERS: {
+                    this._treeDossierFolders.get_nodes().getNode(0).collapse();
+                    this._treeDossierFolders.get_nodes().getNode(0).select();
+                    $(`#${this.pageId}`).triggerHandler(uscDossierFolders.ROOT_NODE_CLICK);
+                }
+                case uscDossierFolders.CREATE_FASCICLE_FROM_TEMPLATE: {
+                    this.createAndLinkFascicle(this._templateDossierFolder.UniqueId, this._treeDossierFolders.get_selectedNode().get_parent().get_value());
                 }
             }
         }
@@ -209,14 +247,19 @@ class uscDossierFolders {
         sender.set_loadingStatusPosition(Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
         this._currentSelectedNode = node;
 
-        this._btnCreateFolder.set_enabled(true);
-        this._btnRemoveFascicle.set_enabled(false);
-        this._btnDeleteFolder.set_enabled(false);
-        this._btnAddFascicle.set_enabled(true);
-        this._btnModifyFolder.set_enabled(true);
-        this._btnCreateFascicle.set_enabled(true);
-
-        this._dossierFolderService.getChildren(node.get_value(), this._checkedToolBarButtons,
+        if (this.isWindowPopupEnable) {
+            this._setToolbarButtonsEnabled(false);
+        }
+        else {
+            this._btnCreateFolder.set_enabled(true);
+            this._btnRemoveFascicle.set_enabled(false);
+            this._btnModifyFascicle.set_enabled(false);
+            this._btnDeleteFolder.set_enabled(false);
+            this._btnAddFascicle.set_enabled(true);
+            this._btnModifyFolder.set_enabled(true);
+            this._btnCreateFascicle.set_enabled(true);
+        }
+        this._dossierFolderService.getChildren(node.get_value(), uscDossierFolders.defaultFilterStatus != 0 ? uscDossierFolders.defaultFilterStatus: this._checkedToolBarButtons,
             (data: any) => {
                 this.loadNodes(data, node);
             },
@@ -269,19 +312,23 @@ class uscDossierFolders {
         this._managerAddFascLink = <Telerik.Web.UI.RadWindowManager>$find(this.managerFascicleLinkId);
         this._managerModifyFolder = <Telerik.Web.UI.RadWindowManager>$find(this.managerModifyFolderId);
         this._managerCreateFascicleFolder = <Telerik.Web.UI.RadWindowManager>$find(this.managerCreateFascicleFolderId);
+        this._managerModifyFascicle = <Telerik.Web.UI.RadWindowManager>$find(this.managerModifyFascicle);
         this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.managerId);
         this._loadingPanel.show(this.pageId);
-        this._btnCreateFolder = this._folderToolBar.findItemByValue("createFolder");
-        this._btnDeleteFolder = this._folderToolBar.findItemByValue("deleteFolder");
-        this._btnRemoveFascicle = this._folderToolBar.findItemByValue("removeFascicle");
-        this._btnAddFascicle = this._folderToolBar.findItemByValue("addFascicle");
-        this._btnModifyFolder = this._folderToolBar.findItemByValue("modifyFolder");
-        this._btnCreateFascicle = this._folderToolBar.findItemByValue("createFascicle");
+        this._btnCreateFolder = this._folderToolBar.findItemByValue(uscDossierFolders.CREATE_FOLDER);
+        this._btnDeleteFolder = this._folderToolBar.findItemByValue(uscDossierFolders.DELETE_FOLDER);
+        this._btnRemoveFascicle = this._folderToolBar.findItemByValue(uscDossierFolders.REMOVE_FASCICLE);
+        this._btnModifyFascicle = this._folderToolBar.findItemByValue(uscDossierFolders.MODIFY_FASCICLE);
+        this._btnAddFascicle = this._folderToolBar.findItemByValue(uscDossierFolders.ADD_FASCICLE);
+        this._btnModifyFolder = this._folderToolBar.findItemByValue(uscDossierFolders.MODIFY_FOLDER);
+        this._btnCreateFascicle = this._folderToolBar.findItemByValue(uscDossierFolders.CREATE_FASCICLE);
+        this._btnCreateFascicleFromTemplate = this._folderToolBar.findItemByValue(uscDossierFolders.CREATE_FASCICLE_FROM_TEMPLATE);
         this._checkedToolBarButtons = 0;
         this._managerCreateFolder.add_close(this.closeFolderInsertWindow);
         this._managerCreateFascicleFolder.add_close(this.closeFolderInsertWindow);
         this._managerAddFascLink.add_close(this.closeFolderInsertWindow);
         this._managerModifyFolder.add_close(this.closeModifyWindow);
+        this._managerModifyFascicle.add_close(this.closeModifyWindow);
 
         if (this.hideFascicleAssociateButton) {
             this._btnAddFascicle.set_visible(false);
@@ -315,6 +362,13 @@ class uscDossierFolders {
         }
 
         this._currentSelectedNode = this._treeDossierFolders.get_nodes().getNode(0);
+
+        if (this.isWindowPopupEnable) {
+            let btnSelectDossierFolder: Telerik.Web.UI.RadButton = <Telerik.Web.UI.RadButton>$find(this.btnSelectDossierFolderId);
+            btnSelectDossierFolder.set_enabled(false);
+        }
+
+        this._btnCreateFascicleFromTemplate.set_enabled(false);
 
         this.bindLoaded();
     }
@@ -430,13 +484,19 @@ class uscDossierFolders {
 
         this._treeDossierFolders.commitChanges();
 
-        this._btnCreateFolder.set_enabled(true);
-        this._btnRemoveFascicle.set_enabled(false);
-        this._btnDeleteFolder.set_enabled(false);
-        this._btnCreateFascicle.set_enabled(true);
-        this._btnAddFascicle.set_enabled(true);
-        this._btnModifyFolder.set_enabled(false);
-        this.currentDossierId = dossierId;
+        if (this.isWindowPopupEnable) {
+            this._setToolbarButtonsEnabled(false);
+        }
+        else {
+            this._btnCreateFolder.set_enabled(true);
+            this._btnRemoveFascicle.set_enabled(false);
+            this._btnModifyFascicle.set_enabled(false);
+            this._btnDeleteFolder.set_enabled(false);
+            this._btnCreateFascicle.set_enabled(true);
+            this._btnAddFascicle.set_enabled(true);
+            this._btnModifyFolder.set_enabled(false);
+            this.currentDossierId = dossierId;
+        }
 
     }
 
@@ -446,10 +506,16 @@ class uscDossierFolders {
         }
     }
 
+    setStatusVisibility(isManager: boolean) {
+        if (!isManager) {
+            $("#".concat(this.statusToolBarId)).hide();
+        }
+    }
+
     /**
     * Carica i dati dello user control
     */
-    loadNodes(dossierFolders: DossierSummaryFolderViewModel[], node?: Telerik.Web.UI.RadTreeNode): void {
+    loadNodes(dossierFolders: DossierSummaryFolderViewModel[], node?: Telerik.Web.UI.RadTreeNode, appendToParentNode: boolean = false): void {
         if (dossierFolders == null) return;
 
         let parentSelectedNode: Telerik.Web.UI.RadTreeNode
@@ -460,21 +526,26 @@ class uscDossierFolders {
             parentSelectedNode = this._treeDossierFolders.get_nodes().getNode(0);
         }
 
-        parentSelectedNode.get_nodes().clear();
-        parentSelectedNode.select();
+        this._btnCreateFascicleFromTemplate.set_enabled(false);
+        if (!appendToParentNode) {
+            parentSelectedNode.get_nodes().clear();
+            parentSelectedNode.select();
+        }
 
         let newNode: Telerik.Web.UI.RadTreeNode;
         $.each(dossierFolders, (index: number, dossierFolder: DossierSummaryFolderViewModel) => {
+            this._dossierFolders.push(dossierFolder);
             if (this._treeDossierFolders.findNodeByValue(dossierFolder.UniqueId) != undefined) {
                 return;
             }
+            if (!this.isWindowPopupEnable || (this.isWindowPopupEnable && DossierFolderStatus[dossierFolder.Status] !== DossierFolderStatus.Fascicle)) {
 
-            newNode = new Telerik.Web.UI.RadTreeNode();
+                newNode = new Telerik.Web.UI.RadTreeNode();
 
-            parentSelectedNode.get_nodes().add(newNode);
+                parentSelectedNode.get_nodes().add(newNode);
 
-            this.setNodeAttribute(newNode, dossierFolder);
-
+                this.setNodeAttribute(newNode, dossierFolder);
+            }
         });
         this._treeDossierFolders.commitChanges();
         $("#".concat(this.treeDossierFoldersId)).triggerHandler(uscDossierFolders.ON_END_LOAD_EVENT);
@@ -507,6 +578,7 @@ class uscDossierFolders {
                 this._btnCreateFolder.set_enabled(true);
                 this._btnRemoveFascicle.set_enabled(false);
                 this._btnDeleteFolder.set_enabled(false);
+                this._btnModifyFascicle.set_enabled(false);
                 this._btnCreateFascicle.set_enabled(true);
                 this._btnAddFascicle.set_enabled(false);
                 this._btnModifyFolder.set_enabled(false);
@@ -581,7 +653,22 @@ class uscDossierFolders {
     treeView_ClientNodeClicked = (sender: Telerik.Web.UI.RadTreeView, eventArgs: Telerik.Web.UI.RadTreeNodeEventArgs) => {
         this._currentSelectedNode = eventArgs.get_node();
         sender.set_loadingStatusPosition(Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
-        this.setVisibilityButtonsByStatus();
+        if (this.isWindowPopupEnable) {
+            this._setToolbarButtonsEnabled(false);
+            let btnSelectDossierFolder: Telerik.Web.UI.RadButton = <Telerik.Web.UI.RadButton>$find(this.btnSelectDossierFolderId);
+            btnSelectDossierFolder.set_enabled(this._currentSelectedNode.get_level() !== 0);
+            btnSelectDossierFolder.remove_clicked(this.btnSelectDossierFolder_onClick);
+            btnSelectDossierFolder.add_clicked(this.btnSelectDossierFolder_onClick);
+        }
+        else {
+            this.setVisibilityButtonsByStatus();
+        }
+
+        let selectedDossierFolder: DossierSummaryFolderViewModel = this._dossierFolders.filter(x => x.UniqueId === this._currentSelectedNode.get_value())[0];
+        this._btnCreateFascicleFromTemplate.set_enabled(false);
+        if (this._currentSelectedNode.get_level() > 1) {
+            this._enableBtnCreateFascicleFromTemplate(selectedDossierFolder);
+        }
     }
     /**
      * Rimuovo un fascicolo dalla cartella
@@ -602,6 +689,7 @@ class uscDossierFolders {
                             this.setNodeAttribute(this._currentSelectedNode, mapper.Map(data));
                             this._btnCreateFolder.set_enabled(true);
                             this._btnRemoveFascicle.set_enabled(false);
+                            this._btnModifyFascicle.set_enabled(false);
                             this._btnDeleteFolder.set_enabled(true);
                             this._btnCreateFascicle.set_enabled(true);
                             this._btnAddFascicle.set_enabled(true);
@@ -649,6 +737,7 @@ class uscDossierFolders {
                         this.removeNode(dossierFolder.UniqueId);
                         this._btnCreateFolder.set_enabled(false);
                         this._btnRemoveFascicle.set_enabled(false);
+                        this._btnModifyFascicle.set_enabled(false);
                         this._btnDeleteFolder.set_enabled(false);
                         this._btnCreateFascicle.set_enabled(false);
                         this._btnAddFascicle.set_enabled(false);
@@ -724,6 +813,7 @@ class uscDossierFolders {
         if (this._currentSelectedNode == this._treeDossierFolders.get_nodes().getNode(0)) {
             this._btnCreateFolder.set_enabled(true);
             this._btnRemoveFascicle.set_enabled(false);
+            this._btnModifyFascicle.set_enabled(false);
             this._btnDeleteFolder.set_enabled(false);
             this._btnCreateFascicle.set_enabled(true);
             this._btnAddFascicle.set_enabled(true);
@@ -738,6 +828,7 @@ class uscDossierFolders {
             case DossierFolderStatus.InProgress: {
                 this._btnCreateFolder.set_enabled(true);
                 this._btnRemoveFascicle.set_enabled(false);
+                this._btnModifyFascicle.set_enabled(false);
                 this._btnDeleteFolder.set_enabled(true);
                 this._btnCreateFascicle.set_enabled(true);
                 this._btnAddFascicle.set_enabled(true);
@@ -748,6 +839,7 @@ class uscDossierFolders {
             case DossierFolderStatus.Folder: {
                 this._btnCreateFolder.set_enabled(true);
                 this._btnRemoveFascicle.set_enabled(false);
+                this._btnModifyFascicle.set_enabled(false);
                 this._btnDeleteFolder.set_enabled(false);
                 this._btnCreateFascicle.set_enabled(true);
                 this._btnAddFascicle.set_enabled(true);
@@ -760,10 +852,11 @@ class uscDossierFolders {
                 if (this.fascicleId) {
                     this._btnCreateFolder.set_enabled(false);
                     this._btnRemoveFascicle.set_enabled(true);
+                    this._btnModifyFascicle.set_enabled(!this.isWindowPopupEnable && this.fascicleModifyButtonEnable);
                     this._btnDeleteFolder.set_enabled(false);
                     this._btnCreateFascicle.set_enabled(false);
                     this._btnAddFascicle.set_enabled(false);
-                    this._btnModifyFolder.set_enabled(true);
+                    this._btnModifyFolder.set_enabled(false);
                     $("#".concat(this.pageId)).triggerHandler(uscDossierFolders.FASCICLE_TREE_NODE_CLICK, this.fascicleId);
                 }
                 break;
@@ -773,6 +866,7 @@ class uscDossierFolders {
                 if (this.fascicleId) {
                     this._btnCreateFolder.set_enabled(false);
                     this._btnRemoveFascicle.set_enabled(false);
+                    this._btnModifyFascicle.set_enabled(false);
                     this._btnDeleteFolder.set_enabled(false);
                     this._btnCreateFascicle.set_enabled(false);
                     this._btnAddFascicle.set_enabled(false);
@@ -784,6 +878,7 @@ class uscDossierFolders {
             case DossierFolderStatus.DoAction: {
                 this._btnCreateFolder.set_enabled(false);
                 this._btnRemoveFascicle.set_enabled(false);
+                this._btnModifyFascicle.set_enabled(false);
                 this._btnDeleteFolder.set_enabled(false);
                 this._btnCreateFascicle.set_enabled(false);
                 this._btnAddFascicle.set_enabled(false);
@@ -800,7 +895,7 @@ class uscDossierFolders {
         }
     }
 
-    private createAndLinkFascicle(dossierFolderId: string): void {
+    private createAndLinkFascicle(dossierFolderId: string, dossierFolderParentId: string = null): void {
         this._loadingPanel.show(this.pageId);
         this._dossierFolderService.getFullDossierFolder(dossierFolderId,
             (dossierFolder: any) => {
@@ -823,10 +918,11 @@ class uscDossierFolders {
                 let insertFascicleAction: BuildActionModel = filteredItems[0];
                 let fascicleToInsert: FascicleModel = JSON.parse(insertFascicleAction.Model) as FascicleModel;
                 if (fascicleToInsert.MetadataRepository && folder.Dossier.MetadataRepository && fascicleToInsert.MetadataRepository.UniqueId == folder.Dossier.MetadataRepository.UniqueId) {
-                    fascicleToInsert.MetadataValues = folder.Dossier.JsonMetadata;
+                    fascicleToInsert.MetadataDesigner = folder.Dossier.MetadataDesigner;
+                    fascicleToInsert.MetadataValues = folder.Dossier.MetadataValues;
                 }
 
-                this._fascicleService.insertFascicle(fascicleToInsert,
+                this._fascicleService.insertFascicle(fascicleToInsert, null,
                     (fascicle: any) => {
                         folder.Fascicle = fascicle;
                         folder.Status = DossierFolderStatus.Fascicle;
@@ -836,19 +932,41 @@ class uscDossierFolders {
                         fascicleToInsert.UniqueId = fascicle.UniqueId;
                         $.when(this.setFascicleRoles(fascicleToInsert, folder.DossierFolderRoles))
                             .done(() => {
-                                this._dossierFolderService.updateDossierFolder(folder, null,
-                                    (data: any) => {
-                                        let mapper: DossierFolderSummaryModelMapper = new DossierFolderSummaryModelMapper();
-                                        let node: Telerik.Web.UI.RadTreeNode = this._treeDossierFolders.findNodeByValue(dossierFolderId);
-                                        data.Fascicle = fascicle;
-                                        this.setNodeAttribute(node, mapper.Map(data));
-                                        $("#".concat(this.pageId)).triggerHandler(uscDossierFolders.FASCICLE_TREE_NODE_CLICK, fascicle.UniqueId);
-                                        this._loadingPanel.hide(this.pageId);
-                                    },
-                                    (exception: ExceptionDTO) => {
-                                        this._loadingPanel.hide(this.pageId);
-                                        this.showNotificationException(this.uscNotificationId, exception);
-                                    });
+                                if (dossierFolderParentId) {
+                                    folder.ParentInsertId = dossierFolderParentId;
+                                    folder.UniqueId = null;
+                                    this._dossierFolderService.insertDossierFolder(folder, null,
+                                        (data: any) => {
+                                            let mapper: DossierFolderSummaryModelMapper = new DossierFolderSummaryModelMapper();
+                                            let insertedDossierFolder: DossierSummaryFolderViewModel = mapper.Map(data);
+                                            insertedDossierFolder.idFascicle = fascicleToInsert.UniqueId;
+                                            let parentNode: Telerik.Web.UI.RadTreeNode = this._treeDossierFolders.findNodeByValue(dossierFolderParentId);
+                                            this.loadNodes([insertedDossierFolder], parentNode, true);
+                                        },
+                                        (exception: ExceptionDTO) => {
+                                            this._loadingPanel.hide(this.pageId);
+                                            this.showNotificationException(this.uscNotificationId, exception);
+                                        });
+                                }
+                                else {
+                                    this._dossierFolderService.updateDossierFolder(folder, null,
+                                        (data: any) => {
+                                            let node: Telerik.Web.UI.RadTreeNode = this._treeDossierFolders.findNodeByValue(dossierFolderId);
+                                            data.Fascicle = fascicle;
+                                            let mapper: DossierFolderSummaryModelMapper = new DossierFolderSummaryModelMapper();
+                                            let updatedDossierFolder: DossierSummaryFolderViewModel = mapper.Map(data);
+                                            this._dossierFolders = this._dossierFolders.filter(x => x.UniqueId !== updatedDossierFolder.UniqueId);
+                                            this._dossierFolders.push(updatedDossierFolder);
+                                            this._enableBtnCreateFascicleFromTemplate(updatedDossierFolder);
+                                            this.setNodeAttribute(node, updatedDossierFolder);
+                                            $("#".concat(this.pageId)).triggerHandler(uscDossierFolders.FASCICLE_TREE_NODE_CLICK, fascicle.UniqueId);
+                                            this._loadingPanel.hide(this.pageId);
+                                        },
+                                        (exception: ExceptionDTO) => {
+                                            this._loadingPanel.hide(this.pageId);
+                                            this.showNotificationException(this.uscNotificationId, exception);
+                                        });
+                                }
                             })
                             .fail(() => {
                                 this._loadingPanel.hide(this.pageId);
@@ -949,6 +1067,84 @@ class uscDossierFolders {
         return promise.promise();
     }
 
+    loadFascicleDossierFolders = (dossierId: string, fascicleId: string, dossierFoldersModel: DossierSummaryFolderViewModel[]): void => {
+        this._dossierFolderService.getAllParentsOfFascicle(dossierId, fascicleId, (data: any) => {
+            if (!data) return;
+
+            let dossierFolders: DossierSummaryFolderViewModel[] = data.reverse();
+            this.setRootNode(dossierFolders[0].Name, dossierFolders[0].UniqueId);
+            let parentNode: Telerik.Web.UI.RadTreeNode = this._treeDossierFolders.get_nodes().getNode(0);
+            for (let dossierFolder of dossierFolders.slice(1)) {
+                parentNode = this._createFascicleDossierFolderParent(parentNode, dossierFolder);
+            }
+            parentNode.select();
+            this._currentSelectedNode = parentNode;
+            this.setVisibilityButtonsByStatus();
+            this._loadingPanel.hide(this.pageId);
+        }, (exception: ExceptionDTO) => {
+            this._loadingPanel.hide(this.pageId);
+            this.showNotificationException(this.uscNotificationId, exception);
+        });
+    }
+
+    private _createFascicleDossierFolderParent(parentNode: Telerik.Web.UI.RadTreeNode, dossierFolder: DossierSummaryFolderViewModel): Telerik.Web.UI.RadTreeNode {
+        let childNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+        parentNode.get_nodes().clear();
+        parentNode.get_nodes().add(childNode);
+        this.setNodeAttribute(childNode, dossierFolder);
+        parentNode.expand();
+        return childNode;
+    }
+
+    private _setToolbarButtonsEnabled(isEnabled: boolean): void {
+        this._btnCreateFolder.set_enabled(isEnabled);
+        this._btnRemoveFascicle.set_enabled(isEnabled);
+        this._btnDeleteFolder.set_enabled(isEnabled);
+        this._btnCreateFascicle.set_enabled(isEnabled);
+        this._btnAddFascicle.set_enabled(isEnabled);
+        this._btnModifyFolder.set_enabled(isEnabled);
+        this._btnModifyFascicle.set_enabled(isEnabled);
+    }
+
+    setToolbarButtonsVisibility(isVisible: boolean): void {
+        this._btnCreateFolder.set_visible(isVisible);
+        this._btnRemoveFascicle.set_visible(isVisible);
+        this._btnDeleteFolder.set_visible(isVisible);
+        this._btnCreateFascicle.set_visible(isVisible);
+        this._btnAddFascicle.set_visible(isVisible);
+        this._btnModifyFolder.set_visible(isVisible);
+        this._btnModifyFascicle.set_visible(isVisible);
+        this._btnCreateFascicleFromTemplate.set_visible(isVisible);
+    }
+
+    btnSelectDossierFolder_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
+        let idDossier: string = this._treeDossierFolders.get_nodes().getNode(0).get_value();
+        let idDossierFolder: string = this._currentSelectedNode.get_value();
+        this.closeGridWindow(idDossier, idDossierFolder);
+    }
+
+    closeGridWindow(idDossier: string, idDossierFolder: string) {
+        let wnd: Telerik.Web.UI.RadWindow = this._getRadWindow();
+        wnd.close(`${idDossier}|${idDossierFolder}`);
+    }
+
+    private _getRadWindow(): Telerik.Web.UI.RadWindow {
+        let wnd: Telerik.Web.UI.RadWindow = null;
+        if ((<any>window).radWindow) wnd = <Telerik.Web.UI.RadWindow>(<any>window).radWindow;
+        else if ((<any>window.frameElement).radWindow) wnd = <Telerik.Web.UI.RadWindow>(<any>window.frameElement).radWindow;
+        return wnd;
+    }
+
+    private _enableBtnCreateFascicleFromTemplate(dossierFolder: DossierSummaryFolderViewModel) {
+        if (dossierFolder.Status === DossierFolderStatus[DossierFolderStatus.Fascicle] && dossierFolder.JsonMetadata) {
+            let actionModels: BuildActionModel[] = JSON.parse(dossierFolder.JsonMetadata) as BuildActionModel[];
+            if (actionModels.filter(x => x.BuildType === BuildActionType.Build).length > 0) {
+                this._btnCreateFascicleFromTemplate.set_enabled(true);
+                this._templateDossierFolder = dossierFolder;
+            }
+        }
+    }
+
     protected showNotificationException(uscNotificationId: string, exception: ExceptionDTO, customMessage?: string) {
         if (exception && exception instanceof ExceptionDTO) {
             let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(uscNotificationId)).data();
@@ -968,5 +1164,8 @@ class uscDossierFolders {
         }
     }
 
+    public getSelectedDossierFolderNode = (): Telerik.Web.UI.RadTreeNode =>  {
+        return this._currentSelectedNode;
+    }
 }
 export = uscDossierFolders;

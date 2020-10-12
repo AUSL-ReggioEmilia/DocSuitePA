@@ -1,4 +1,4 @@
-define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Services/Commons/MetadataRepositoryService", "App/Models/Commons/MetadataRepositoryModel", "App/DTOs/ExceptionDTO"], function (require, exports, ServiceConfigurationHelper, MetadataRepositoryService, MetadataRepositoryModel, ExceptionDTO) {
+define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Services/Commons/MetadataRepositoryService", "App/Models/Commons/MetadataRepositoryModel", "App/DTOs/ExceptionDTO", "./uscSetiContactSel"], function (require, exports, ServiceConfigurationHelper, MetadataRepositoryService, MetadataRepositoryModel, ExceptionDTO, uscSetiContactSel) {
     var uscMetadataRepositorySel = /** @class */ (function () {
         /**
     * Costruttore
@@ -39,7 +39,8 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                     if (metadataRestrictionsAttribute) {
                         metadataRestrictions = JSON.parse(metadataRestrictionsAttribute);
                     }
-                    _this._metadataRepositoryService.getAvailableMetadataRepositories(sender.get_text(), metadataRestrictions, _this.maxNumberElements, numberOfItems, function (data) {
+                    var safeEncoding = sender.get_text().replace(/'/g, '%27%27');
+                    _this._metadataRepositoryService.getAvailableMetadataRepositories(safeEncoding, metadataRestrictions, _this.maxNumberElements, numberOfItems, function (data) {
                         if (data) {
                             if (data.count > 0) {
                                 _this.setValues(data.value);
@@ -75,14 +76,41 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                     sender.clearItems();
                     _this.setMoreResultBoxText("Visualizzati 1 di 1");
                 }
-                if (selectedItem) {
-                    $("#".concat(_this.metadataPageContentId)).triggerHandler(uscMetadataRepositorySel.SELECTED_INDEX_EVENT, selectedItem.get_value());
+                var isMetadataRepositorySelected = selectedItem && selectedItem.get_text() !== "";
+                if (_this.advancedMetadataRepositoryEnabled) {
+                    _this._setMetadataValueElementsState(isMetadataRepositorySelected);
+                }
+                if (isMetadataRepositorySelected) {
+                    if (_this.advancedMetadataRepositoryEnabled && _this._enableAdvancedMetadataSearchBtn.checked) {
+                        _this._uscAdvancedSearchDynamicMetadataRest.loadMetadataRepository(selectedItem.get_value());
+                    }
+                    $("#".concat(_this.metadataPageContentId)).triggerHandler(uscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, selectedItem.get_value());
+                    _this.getSelectedMetadata().then(function (data) {
+                        if (data && data.JsonMetadata) {
+                            var metadataVM = JSON.parse(data.JsonMetadata);
+                            $("#".concat(_this.uscSetiContactSelId)).triggerHandler(uscSetiContactSel.SHOW_SETI_CONTACT_BUTTON, _this.setiContactEnabledId && metadataVM.SETIFieldEnabled && _this.setiVisibilityButtonId);
+                        }
+                    });
+                }
+                else {
+                    //notify that no repository is selected to clear the metadata values control contents
+                    $("#".concat(_this.metadataPageContentId)).triggerHandler(uscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, null);
                 }
             };
             this._serviceConfigurations = serviceConfigurations;
             $(document).ready(function () {
             });
         }
+        uscMetadataRepositorySel.prototype._setMetadataValueElementsState = function (isMetadaRepositorySelected) {
+            var currentAdvancedSearchBtnState = this._enableAdvancedMetadataSearchBtn.checked;
+            this._enableAdvancedMetadataSearchBtn.disabled = !isMetadaRepositorySelected;
+            this._enableAdvancedMetadataSearchBtn.checked = isMetadaRepositorySelected ? currentAdvancedSearchBtnState : false;
+            if (!$.isEmptyObject(this._uscAdvancedSearchDynamicMetadataRest) && !this._enableAdvancedMetadataSearchBtn.checked) {
+                this._uscAdvancedSearchDynamicMetadataRest.clearAdvancedSearchPanelContent();
+            }
+            this._txtMetadataValue.clear();
+            this._txtMetadataValue.set_visible(!this._enableAdvancedMetadataSearchBtn.checked);
+        };
         /**
       *------------------------- Methods -----------------------------
       */
@@ -93,9 +121,27 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             this._rcbMetadataRepository.add_itemsRequested(this.rcbMetadataRepository_OnItemsRequested);
             this._rcbMetadataRepository.add_dropDownOpened(this.rcbMetadataRepository_OnDropDownOpened);
             this._rcbMetadataRepository.add_selectedIndexChanged(this.rcbMetadataRepository_OnSelectedIndexChange);
+            this._uscAdvancedSearchDynamicMetadataRest = $("#".concat(this.uscAdvancedSearchDynamicMetadataRestId)).data();
+            if (this.advancedMetadataRepositoryEnabled) {
+                this.initializeMetadataPanel();
+            }
             var scrollContainer = $(this._rcbMetadataRepository.get_dropDownElement()).find('div.rcbScroll');
             $(scrollContainer).scroll(this.rcbLookup_onScroll);
             $("#".concat(this.metadataPageContentId)).data(this);
+            $("#".concat(this.uscSetiContactSelId)).data(this);
+        };
+        uscMetadataRepositorySel.prototype.initializeMetadataPanel = function () {
+            var _this = this;
+            var $advancedMetadataSearchBtn = $("#" + this.enableAdvancedMetadataSearchBtnId);
+            this._enableAdvancedMetadataSearchBtn = $advancedMetadataSearchBtn[0];
+            $advancedMetadataSearchBtn.on("change", function () {
+                var advancedMetadataSearchEnabled = _this._enableAdvancedMetadataSearchBtn.checked;
+                _this._txtMetadataValue.set_visible(!advancedMetadataSearchEnabled);
+                var selectedMetadataRepositoryId = _this.getSelectedMetadataRepositoryId();
+                _this._uscAdvancedSearchDynamicMetadataRest.setPanelSearchType(advancedMetadataSearchEnabled, selectedMetadataRepositoryId);
+            });
+            this._txtMetadataValue = $find(this.txtMetadataValueId);
+            this._setMetadataValueElementsState(false);
         };
         uscMetadataRepositorySel.prototype.setValues = function (repositories) {
             if (this._rcbMetadataRepository.get_items().get_count() == 0) {
@@ -122,13 +168,16 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
         uscMetadataRepositorySel.prototype.setMoreResultBoxText = function (message) {
             this._rcbMetadataRepository.get_moreResultsBoxMessageElement().innerText = message;
         };
-        uscMetadataRepositorySel.prototype.setComboboxText = function (id) {
+        uscMetadataRepositorySel.prototype.setComboboxText = function (id, generateMetadataInputs) {
             var _this = this;
+            if (generateMetadataInputs === void 0) { generateMetadataInputs = true; }
             this._metadataRepositoryService.getById(id, function (data) {
                 if (data) {
                     _this._rcbMetadataRepository.set_text(data.Name);
                     _this._rcbMetadataRepository.set_value(data.UniqueId);
-                    $("#".concat(_this.metadataPageContentId)).triggerHandler(uscMetadataRepositorySel.SELECTED_INDEX_EVENT, data.UniqueId);
+                    if (generateMetadataInputs) {
+                        $("#".concat(_this.metadataPageContentId)).triggerHandler(uscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, data.UniqueId);
+                    }
                 }
             }, function (exception) {
                 var uscNotification = $("#".concat(_this.uscNotificationId)).data();
@@ -174,7 +223,25 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
         uscMetadataRepositorySel.prototype.enableSelection = function () {
             this._rcbMetadataRepository.set_enabled(true);
         };
-        uscMetadataRepositorySel.SELECTED_INDEX_EVENT = "onSelectedIndexChangeEvent";
+        uscMetadataRepositorySel.prototype.getMetadataFinderModels = function () {
+            var metadataFinderModels = this._uscAdvancedSearchDynamicMetadataRest.getMetadataFinderModels();
+            return metadataFinderModels;
+        };
+        uscMetadataRepositorySel.prototype.getMetadataFilterValues = function () {
+            var metadataFilterValues = [null, [], true];
+            if (this._enableAdvancedMetadataSearchBtn.checked) {
+                var _a = this.getMetadataFinderModels(), metadataFinderModels = _a[0], metadataValuesAreValid = _a[1];
+                metadataFilterValues[1] = metadataFinderModels;
+                metadataFilterValues[2] = metadataValuesAreValid;
+            }
+            else {
+                var metadataValueFilter = this._txtMetadataValue.get_value();
+                metadataFilterValues[0] = metadataValueFilter;
+            }
+            return metadataFilterValues;
+        };
+        uscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT = "onSelectedRepositoryChangeEvent";
+        uscMetadataRepositorySel.SELECTED_SETI_CONTACT_EVENT = "onSelectedSetiContactEvent";
         return uscMetadataRepositorySel;
     }());
     return uscMetadataRepositorySel;

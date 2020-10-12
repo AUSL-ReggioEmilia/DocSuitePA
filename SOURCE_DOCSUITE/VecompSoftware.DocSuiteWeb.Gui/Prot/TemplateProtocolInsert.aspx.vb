@@ -6,6 +6,7 @@ Imports Telerik.Web.UI
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports Newtonsoft.Json
 
 Public Class TemplateProtocolInsert
     Inherits ProtBasePage
@@ -35,6 +36,11 @@ Public Class TemplateProtocolInsert
                         Throw New DocSuiteException("Nessun id template passato per la modifica.")
                     End If
                     _currentTemplate = Facade.TemplateProtocolFacade.GetById(IdTemplate.Value)
+                Case "precompiler"
+                    _currentTemplate = New TemplateProtocol()
+                    If Not Session("TemplateProtocolPrecopiler") Is Nothing Then
+                        _currentTemplate = DirectCast(Session("TemplateProtocolPrecopiler"), TemplateProtocol)
+                    End If
             End Select
             Return _currentTemplate
         End Get
@@ -100,13 +106,15 @@ Public Class TemplateProtocolInsert
     End Sub
 
     Private Sub btnSave_Click(ByVal sender As Object, ByVal e As EventArgs)
-        SaveTemplate()        
+        SaveTemplate()
     End Sub
 
     Protected Sub TemplateProtInserimento_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
         Dim arg As String = e.Argument
         Select Case arg
             Case "save"
+                btnSave_Click(sender, e)
+            Case "saveprecopiler"
                 btnSave_Click(sender, e)
             Case "close"
                 btnClose_Click(sender, e)
@@ -234,9 +242,8 @@ Public Class TemplateProtocolInsert
 
         cbClaim.Visible = ProtocolEnv.IsClaimEnabled
 
-        Dim bIPA As Boolean = Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa)
-        uscMittenti.ButtonIPAVisible = bIPA
-        uscDestinatari.ButtonIPAVisible = bIPA
+        uscMittenti.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
+        uscDestinatari.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
 
         'Sezione Classificatore
         uscClassificatori.Multiple = False
@@ -247,11 +254,20 @@ Public Class TemplateProtocolInsert
         uscDestinatari.ButtonManualMultiVisible = ProtocolEnv.EnableContactAndDistributionGroup
 
         'Impostazione Titolo Pagina
+        btnSave.Visible = False
         Select Case Action
             Case "add"
                 Title = "Inserimento nuovo Template di Protocollo"
             Case "modify"
                 Title = "Modifica Template di Protocollo"
+            Case "precompiler"
+                Title = "Bozza di Protocollo"
+                pnlTemplateName.Visible = False
+                templateName.Text = "precompiler"
+                pnlUscOggetto.Visible = False
+                btnConfirm.Visible = False
+                btnAnnulla.Visible = False
+                btnSave.Visible = True
             Case Else
                 Title = String.Empty
         End Select
@@ -331,7 +347,7 @@ Public Class TemplateProtocolInsert
 
         'Behaviour da scelta contenitore --> nel caso di implementazione più generica espandere questa modalità
         ajaxified.Add(uscClassificatori)
-
+        ajaxified.Add(pnlUscOggetto)
         CurrentContainerControl.AddAjaxSettings(AjaxManager, ajaxified)
 
         ' inizializzo altro
@@ -529,7 +545,7 @@ Public Class TemplateProtocolInsert
             Exit Sub
         End If
 
-        BindDataFromPage(CurrentTemplateProtocol)        
+        BindDataFromPage(CurrentTemplateProtocol)
 
 
         Select Case Action
@@ -557,6 +573,24 @@ Public Class TemplateProtocolInsert
                 BindContactFromPage(CurrentTemplateProtocol)
                 'Aggiorno il protocollo
                 Facade.TemplateProtocolFacade.UpdateOnly(CurrentTemplateProtocol)
+            Case "precompiler"
+                CurrentTemplateProtocol.IdTemplateStatus = TemplateStatus.Fault
+                'Aggiungo i settori
+                BindRolesFromPage(CurrentTemplateProtocol)
+                'Aggiorno Advanced
+                Dim advanced As New TemplateAdvancedProtocol()
+                CurrentTemplateProtocol.AddAdvancedProtocol(advanced)
+                BindAdvancedTemplate(CurrentTemplateProtocol)
+                'Aggiorno contatti
+                BindContactFromPage(CurrentTemplateProtocol, False)
+                Session("TemplateProtocolPrecopiler") = CurrentTemplateProtocol
+
+                Dim protocolXML As ProtocolXML = FromTemplateProtocolToProtocolXML()
+                Dim serialized As String = StringHelper.EncodeJS(JsonConvert.SerializeObject(protocolXML))
+                Dim jsScript As String = String.Format("ReturnValuesJSon('{0}','{1}');", "DOCUMENTUNITDRAFT", serialized)
+                AjaxManager.ResponseScripts.Add(jsScript)
+
+                Exit Sub
             Case Else
                 AjaxAlert("L'azione della pagina non risulta corretta. Il template non verrà pertanto salvato.")
                 Exit Sub
@@ -565,113 +599,238 @@ Public Class TemplateProtocolInsert
         Response.Redirect("../Tblt/TbltTemplateProtocolManager.aspx")
     End Sub
 
-    Private Sub BindPageFromTemplate()
-        If Not Action.Eq("modify") Then
-            Exit Sub
+    Private Function FromTemplateProtocolToProtocolXML() As ProtocolXML
+        Dim protocolDraft As New ProtocolXML
+        protocolDraft.Object = CurrentTemplateProtocol.ProtocolObject
+        protocolDraft.Notes = CurrentTemplateProtocol.TemplateAdvancedProtocol.Note
+        If Not CurrentTemplateProtocol.Container Is Nothing Then
+            protocolDraft.Container = CurrentTemplateProtocol.Container.Id
         End If
-
-        templateName.Text = CurrentTemplateProtocol.TemplateName
-
-        If Not String.IsNullOrEmpty(CurrentTemplateProtocol.ProtocolObject) Then
-            uscOggetto.Text = CurrentTemplateProtocol.ProtocolObject
+        protocolDraft.Assignee = CurrentTemplateProtocol.TemplateAdvancedProtocol.Subject
+        protocolDraft.ServiceCode = CurrentTemplateProtocol.TemplateAdvancedProtocol.ServiceCategory
+        If Not CurrentTemplateProtocol.Category Is Nothing Then
+            protocolDraft.Category = CurrentTemplateProtocol.Category.Id
         End If
+        protocolDraft.Type = CurrentTemplateProtocol.Type.Id
 
-        'Note
-        If Not String.IsNullOrEmpty(CurrentTemplateProtocol.TemplateAdvancedProtocol.Note) Then
-            txtNote.Text = CurrentTemplateProtocol.TemplateAdvancedProtocol.Note
-        End If
+        Dim listAuth As New List(Of Integer)
+        For Each role As TemplateProtocolRole In CurrentTemplateProtocol.Roles
+            listAuth.Add(role.Role.Id)
+        Next
+        protocolDraft.Authorizations = listAuth
 
-        'Assegnatari/Proponente
-        If Not String.IsNullOrEmpty(CurrentTemplateProtocol.TemplateAdvancedProtocol.Subject) Then
-            uscContactAssegnatario.DataSource = CurrentTemplateProtocol.TemplateAdvancedProtocol.Subject
-        End If
+        Dim listSender As New List(Of ContactBag)
+        Dim listRecipients As New List(Of ContactBag)
 
-        'Categoria di servizio
-        If Not String.IsNullOrEmpty(CurrentTemplateProtocol.TemplateAdvancedProtocol.ServiceCategory) Then
-            SelServiceCategory.CategoryText = CurrentTemplateProtocol.TemplateAdvancedProtocol.ServiceCategory
-        End If
+        Dim contactSendersXML As List(Of ContactXML)
+        Dim contactRecipientsXML As List(Of ContactXML)
 
-        'Contenitore
-        If CurrentTemplateProtocol.Container IsNot Nothing Then
-            Dim exist As Boolean = CurrentContainerControl.HasItemWithValue(CurrentTemplateProtocol.Container.Id.ToString())
-            If exist Then
-                CurrentContainerControl.SelectedValue = CurrentTemplateProtocol.Container.Id.ToString()
-                ContainerControlSelectionChanged()
+        contactSendersXML = New List(Of ContactXML)
+        contactRecipientsXML = New List(Of ContactXML)
+        For Each templateProtocolContact As TemplateProtocolContact In CurrentTemplateProtocol.Contacts
+            Dim contactXML As New ContactXML
+            contactXML.Id = templateProtocolContact.Contact.Id
+            contactXML.Type = templateProtocolContact.Contact.ContactType.Id.ToString()
+            contactXML.Cc = templateProtocolContact.Type.Eq("CC")
+            If templateProtocolContact.Id.ComunicationType.Eq(ProtocolContactCommunicationType.Sender) Then
+                contactSendersXML.Add(contactXML)
+            Else
+                contactRecipientsXML.Add(contactXML)
+            End If
+        Next
 
-                'Accounting sectional
-                If Not String.IsNullOrEmpty(CurrentTemplateProtocol.TemplateAdvancedProtocol.AccountingSectional) Then
-                    ddlAccountingSectional.SelectedValue = CurrentTemplateProtocol.TemplateAdvancedProtocol.AccountingSectional
+        Dim contactBagSenderRubrica As New ContactBag
+        contactBagSenderRubrica.Contacts = contactSendersXML
+        contactBagSenderRubrica.SourceType = ContactTypeEnum.AddressBook
+        listSender.Add(contactBagSenderRubrica)
+
+        Dim contactBagRecipientsRubrica As New ContactBag
+        contactBagRecipientsRubrica.Contacts = contactRecipientsXML
+        contactBagRecipientsRubrica.SourceType = ContactTypeEnum.AddressBook
+        listRecipients.Add(contactBagRecipientsRubrica)
+
+        contactSendersXML = New List(Of ContactXML)
+        contactRecipientsXML = New List(Of ContactXML)
+        For Each item As TemplateProtocolContactManual In CurrentTemplateProtocol.ContactsManual
+            Dim contactXML As New ContactXML
+            If item.Contact.Description.Contains("|") Then
+                Dim array As String() = item.Contact.Description.Split("|"c)
+                If array.Count > 1 Then
+                    contactXML.Surname = array(0)
+                    contactXML.Name = array(1)
+                Else
+                    contactXML.Surname = array(0)
                 End If
+            Else
+                contactXML.Description = item.Contact.Description
+            End If
+            contactXML.Type = item.Contact.ContactType.Id.ToString()
+            contactXML.Cc = item.Type.Eq("CC")
+            contactXML.StandardMail = item.Contact.EmailAddress
+            contactXML.CertifiedMail = item.Contact.CertifiedMail
+            contactXML.FiscalCode = item.Contact.FiscalCode
 
-                'ProtocolKind
-                If CurrentTemplateProtocol.IdProtocolKind.HasValue Then
-                    Dim match As ListItem = ddlProtKindList.Items.FindByValue(CurrentTemplateProtocol.IdProtocolKind.ToString())
-                    If match IsNot Nothing Then
-                        ddlProtKindList.SelectedValue = CurrentTemplateProtocol.IdProtocolKind.ToString()
-                        BindProtocolKind()
+            ' Address
+            If item.Contact.Address IsNot Nothing Then
+                contactXML.Address = New AddressXML()
+                contactXML.Address.Cap = item.Contact.Address.ZipCode
+                contactXML.Address.City = item.Contact.Address.City
+                contactXML.Address.Name = item.Contact.Address.Address
+                contactXML.Address.Prov = item.Contact.Address.CityCode
+                If item.Contact.Address.PlaceName IsNot Nothing Then
+                    contactXML.Address.Type = item.Contact.Address.PlaceName.Description
+                End If
+            End If
+
+            contactXML.Telephone = item.Contact.TelephoneNumber
+            contactXML.Fax = item.Contact.FaxNumber
+            contactXML.Notes = item.Contact.Note
+
+            If item.Contact.BirthDate.HasValue Then
+                contactXML.BirthDate = item.Contact.BirthDate.Value.ToString()
+            Else
+                contactXML.BirthDate = Nothing
+            End If
+            If item.ComunicationType.Eq(ProtocolContactCommunicationType.Sender) Then
+                contactSendersXML.Add(contactXML)
+            Else
+                contactRecipientsXML.Add(contactXML)
+            End If
+        Next
+
+        Dim contactBagManualeSenderRubrica As New ContactBag
+        contactBagManualeSenderRubrica.Contacts = contactSendersXML
+        contactBagManualeSenderRubrica.SourceType = ContactTypeEnum.Manual
+        listSender.Add(contactBagManualeSenderRubrica)
+
+        Dim contactBagManualeRecipientsRubrica As New ContactBag
+        contactBagManualeRecipientsRubrica.Contacts = contactRecipientsXML
+        contactBagManualeRecipientsRubrica.SourceType = ContactTypeEnum.Manual
+        listRecipients.Add(contactBagManualeRecipientsRubrica)
+
+        protocolDraft.Senders = listSender
+        protocolDraft.Recipients = listRecipients
+
+        Return protocolDraft
+    End Function
+
+
+    Private Sub BindPageFromTemplate()
+        If (Action.Eq("modify") OrElse (Action.Eq("precompiler") AndAlso Not Session("TemplateProtocolPrecopiler") Is Nothing)) Then
+
+            templateName.Text = CurrentTemplateProtocol.TemplateName
+
+            If Not String.IsNullOrEmpty(CurrentTemplateProtocol.ProtocolObject) Then
+                uscOggetto.Text = CurrentTemplateProtocol.ProtocolObject
+            End If
+
+            'Note
+            If Not String.IsNullOrEmpty(CurrentTemplateProtocol.TemplateAdvancedProtocol.Note) Then
+                txtNote.Text = CurrentTemplateProtocol.TemplateAdvancedProtocol.Note
+            End If
+
+            'Assegnatari/Proponente
+            If Not String.IsNullOrEmpty(CurrentTemplateProtocol.TemplateAdvancedProtocol.Subject) Then
+                uscContactAssegnatario.DataSource = CurrentTemplateProtocol.TemplateAdvancedProtocol.Subject
+            End If
+
+            'Categoria di servizio
+            If Not String.IsNullOrEmpty(CurrentTemplateProtocol.TemplateAdvancedProtocol.ServiceCategory) Then
+                SelServiceCategory.CategoryText = CurrentTemplateProtocol.TemplateAdvancedProtocol.ServiceCategory
+            End If
+
+            'Contenitore
+            If CurrentTemplateProtocol.Container IsNot Nothing Then
+                Dim exist As Boolean = CurrentContainerControl.HasItemWithValue(CurrentTemplateProtocol.Container.Id.ToString())
+                If exist Then
+                    CurrentContainerControl.SelectedValue = CurrentTemplateProtocol.Container.Id.ToString()
+                    ContainerControlSelectionChanged()
+
+                    'Accounting sectional
+                    If Not String.IsNullOrEmpty(CurrentTemplateProtocol.TemplateAdvancedProtocol.AccountingSectional) Then
+                        ddlAccountingSectional.SelectedValue = CurrentTemplateProtocol.TemplateAdvancedProtocol.AccountingSectional
+                    End If
+
+                    'ProtocolKind
+                    If CurrentTemplateProtocol.IdProtocolKind.HasValue Then
+                        Dim match As ListItem = ddlProtKindList.Items.FindByValue(CurrentTemplateProtocol.IdProtocolKind.ToString())
+                        If match IsNot Nothing Then
+                            ddlProtKindList.SelectedValue = CurrentTemplateProtocol.IdProtocolKind.ToString()
+                            BindProtocolKind()
+                        End If
                     End If
                 End If
             End If
-        End If
 
-        'Tipologia protocollo
-        If CurrentTemplateProtocol.Type IsNot Nothing Then
-            rblTipoProtocollo.SelectedValue = CurrentTemplateProtocol.Type.Id.ToString()
-            UpdateTipoProtocollo()
-        End If
-
-        'Settori
-        For Each templateProtocolRole As TemplateProtocolRole In CurrentTemplateProtocol.Roles
-            uscAutorizzazioni.SourceRoles.Add(templateProtocolRole.Role)
-        Next
-        uscAutorizzazioni.DataBind()
-
-        'Classificatore
-        If CurrentTemplateProtocol.TemplateAdvancedProtocol.SubCategory IsNot Nothing Then
-            uscClassificatori.DataSource.Add(CurrentTemplateProtocol.TemplateAdvancedProtocol.SubCategory)
-        Else
-            uscClassificatori.DataSource.Add(CurrentTemplateProtocol.Category)
-        End If
-        uscClassificatori.DataBind()
-
-        'Contatti
-        For Each templateProtocolContact As TemplateProtocolContact In CurrentTemplateProtocol.Contacts
-            Dim dto As New ContactDTO
-            dto.Contact = templateProtocolContact.Contact
-            dto.IsCopiaConoscenza = templateProtocolContact.Type.Eq("CC")
-            dto.Type = ContactDTO.ContactType.Address
-            If templateProtocolContact.Id.ComunicationType.Eq(ProtocolContactCommunicationType.Sender) Then
-                uscMittenti.DataSource.Add(dto)
-            Else
-                uscDestinatari.DataSource.Add(dto)
+            'Tipologia protocollo
+            If CurrentTemplateProtocol.Type IsNot Nothing Then
+                rblTipoProtocollo.SelectedValue = CurrentTemplateProtocol.Type.Id.ToString()
+                UpdateTipoProtocollo()
             End If
-        Next
 
-        'Contatti manuali
-        For Each templateProtocolContactManual As TemplateProtocolContactManual In CurrentTemplateProtocol.ContactsManual
-            Dim dto As New ContactDTO
-            dto.Contact = templateProtocolContactManual.Contact
-            dto.IsCopiaConoscenza = templateProtocolContactManual.Type.Eq("CC")
-            dto.Type = ContactDTO.ContactType.Manual
-            If templateProtocolContactManual.ComunicationType.Eq(ProtocolContactCommunicationType.Sender) Then
-                uscMittenti.DataSource.Add(dto)
+            'Settori
+            For Each templateProtocolRole As TemplateProtocolRole In CurrentTemplateProtocol.Roles
+                uscAutorizzazioni.SourceRoles.Add(templateProtocolRole.Role)
+            Next
+            uscAutorizzazioni.DataBind()
+            'Classificatore
+            If Not Session("TemplateProtocolPrecopiler") Is Nothing Then
+                Dim category As New Category
+                If CurrentTemplateProtocol.TemplateAdvancedProtocol.SubCategory IsNot Nothing Then
+                    category = Facade.CategoryFacade.GetById(CurrentTemplateProtocol.TemplateAdvancedProtocol.SubCategory.Id)
+                Else
+                    category = Facade.CategoryFacade.GetById(CurrentTemplateProtocol.Category.Id)
+                End If
+                If category IsNot Nothing Then
+                    uscClassificatori.DataSource.Add(category)
+                End If
             Else
-                uscDestinatari.DataSource.Add(dto)
+                If CurrentTemplateProtocol.TemplateAdvancedProtocol.SubCategory IsNot Nothing Then
+                    uscClassificatori.DataSource.Add(CurrentTemplateProtocol.TemplateAdvancedProtocol.SubCategory)
+                Else
+                    uscClassificatori.DataSource.Add(CurrentTemplateProtocol.Category)
+                End If
             End If
-        Next
+            uscClassificatori.DataBind()
 
-        uscMittenti.DataBind()
-        uscDestinatari.DataBind()
+            'Contatti
+            For Each templateProtocolContact As TemplateProtocolContact In CurrentTemplateProtocol.Contacts
+                Dim dto As New ContactDTO
+                dto.Contact = templateProtocolContact.Contact
+                dto.IsCopiaConoscenza = templateProtocolContact.Type.Eq("CC")
+                dto.Type = ContactDTO.ContactType.Address
+                If templateProtocolContact.Id.ComunicationType.Eq(ProtocolContactCommunicationType.Sender) Then
+                    uscMittenti.DataSource.Add(dto)
+                Else
+                    uscDestinatari.DataSource.Add(dto)
+                End If
+            Next
 
-        'Status
-        If CurrentTemplateProtocol.TemplateAdvancedProtocol.Status IsNot Nothing Then
-            cboProtocolStatus.SelectedValue = CurrentTemplateProtocol.TemplateAdvancedProtocol.Status.Id.ToString()
+            'Contatti manuali
+            For Each templateProtocolContactManual As TemplateProtocolContactManual In CurrentTemplateProtocol.ContactsManual
+                Dim dto As New ContactDTO
+                dto.Contact = templateProtocolContactManual.Contact
+                dto.IsCopiaConoscenza = templateProtocolContactManual.Type.Eq("CC")
+                dto.Type = ContactDTO.ContactType.Manual
+                If templateProtocolContactManual.ComunicationType.Eq(ProtocolContactCommunicationType.Sender) Then
+                    uscMittenti.DataSource.Add(dto)
+                Else
+                    uscDestinatari.DataSource.Add(dto)
+                End If
+            Next
+
+            uscMittenti.DataBind()
+            uscDestinatari.DataBind()
+
+            'Status
+            If CurrentTemplateProtocol.TemplateAdvancedProtocol.Status IsNot Nothing Then
+                cboProtocolStatus.SelectedValue = CurrentTemplateProtocol.TemplateAdvancedProtocol.Status.Id.ToString()
+            End If
+
+            If Not (CurrentTemplateProtocol.DocType Is Nothing) Then
+                cboIdDocType.SelectedValue = CurrentTemplateProtocol.DocType.Id.ToString()
+            End If
         End If
-
-        If Not (CurrentTemplateProtocol.DocType Is Nothing) Then
-            cboIdDocType.SelectedValue = CurrentTemplateProtocol.DocType.Id.ToString()
-        End If
-
     End Sub
 
     Private Sub BindDataFromPage(ByRef template As TemplateProtocol)
@@ -813,10 +972,13 @@ Public Class TemplateProtocolInsert
         End If
     End Sub
 
-    Private Sub BindContactFromPage(ByRef template As TemplateProtocol)
+    Private Sub BindContactFromPage(ByRef template As TemplateProtocol, Optional LastChange As Boolean = True)
         template.Contacts.Clear()
         template.ContactsManual.Clear()
-        Facade.TemplateProtocolFacade.UpdateNoLastChange(template)
+        If LastChange Then
+            Facade.TemplateProtocolFacade.UpdateNoLastChange(template)
+        End If
+
 
         ' Inserimento Mittenti
         Dim mittenti As IList(Of ContactDTO) = uscMittenti.GetContacts(True)

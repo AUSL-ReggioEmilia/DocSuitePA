@@ -82,15 +82,6 @@ Public Class ContainerEnv
         End Get
     End Property
 
-    Public ReadOnly Property DefaultDematerialisationSigner As String
-        Get
-            If _context.ProtocolEnv.DematerialisationEnabled Then
-                Return GetString("DefaultDematerialisationSigner", String.Empty)
-            End If
-            Return Nothing
-        End Get
-    End Property
-
     Public ReadOnly Property LinkedContainers As IList(Of Integer)
         Get
             Return GetJson(Of IList(Of Integer))("LinkedContainers", String.Empty)

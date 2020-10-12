@@ -1,16 +1,35 @@
-define(["require", "exports", "App/Models/UpdateActionType", "App/Helpers/ServiceConfigurationHelper", "App/Services/Workflows/WorkflowActivityService", "App/Services/Workflows/WorkflowPropertyService", "App/Models/Workflows/WorkflowPropertyHelper", "App/Services/Workflows/WorkflowAuthorizationService"], function (require, exports, UpdateActionType, ServiceConfigurationHelper, WorkflowActivityService, WorkflowPropertyService, WorkflowPropertyHelper, WorkflowAuthorizationService) {
+define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Services/Workflows/WorkflowActivityService", "App/Models/Workflows/WorkflowPropertyHelper", "App/Services/Workflows/WorkflowNotifyService", "App/Models/Workflows/ArgumentType"], function (require, exports, ServiceConfigurationHelper, WorkflowActivityService, WorkflowPropertyHelper, WorkflowNotifyService, ArgumentType) {
     var HandlerWorkflowManager = /** @class */ (function () {
         function HandlerWorkflowManager(serviceConfigurations) {
+            var _this = this;
+            this._updateWorkflowActivityAuthorization = function (workflowActivity) {
+                var _a, _b;
+                var deffered = $.Deferred();
+                var workflowNotifyModel = {};
+                workflowNotifyModel.WorkflowActivityId = workflowActivity.UniqueId;
+                workflowNotifyModel.WorkflowName = (_b = (_a = workflowActivity.WorkflowInstance) === null || _a === void 0 ? void 0 : _a.WorkflowRepository) === null || _b === void 0 ? void 0 : _b.Name;
+                workflowNotifyModel.ModuleName = HandlerWorkflowManager.DOCSUITE_MODULE_NAME;
+                var dsw_a_ToHandler = {};
+                dsw_a_ToHandler.Name = WorkflowPropertyHelper.DSW_ACTION_TO_HANDLER;
+                dsw_a_ToHandler.PropertyType = ArgumentType.PropertyBoolean;
+                dsw_a_ToHandler.ValueBoolean = true;
+                workflowNotifyModel.OutputArguments = {};
+                workflowNotifyModel.OutputArguments[WorkflowPropertyHelper.DSW_ACTION_TO_HANDLER] = dsw_a_ToHandler;
+                _this._workflowNotifyService.notifyWorkflow(workflowNotifyModel, function (response) {
+                    deffered.resolve(workflowActivity.UniqueId);
+                }, function (error) {
+                    deffered.reject(error);
+                });
+                return deffered.promise();
+            };
             this._serviceConfigurations = serviceConfigurations;
             this.initialize();
         }
         HandlerWorkflowManager.prototype.initialize = function () {
             var workflowActivityConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowActivity");
             this._workflowActivityService = new WorkflowActivityService(workflowActivityConfiguration);
-            var workflowPropertyConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowProperty");
-            this._workflowPropertyService = new WorkflowPropertyService(workflowPropertyConfiguration);
-            var workflowAuthorizationConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowAuthorizations");
-            this._workflowAuthorizationService = new WorkflowAuthorizationService(workflowPropertyConfiguration);
+            var workflowNotifyConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowNotify");
+            this._workflowNotifyService = new WorkflowNotifyService(workflowNotifyConfiguration);
         };
         /**
          *  ------------------------------- Methods ----------------------------
@@ -29,94 +48,60 @@ define(["require", "exports", "App/Models/UpdateActionType", "App/Helpers/Servic
             });
             return automaticHandling;
         };
-        /**
-         * Gestisco l'attivita' di workflow corrente se non ho gia' l'id
-         * @param currentEnvironmentId
-         * @param environment
-         */
-        HandlerWorkflowManager.prototype.manageHandlingWorkflow = function (currentEnvironmentId, environment) {
+        HandlerWorkflowManager.prototype.manageHandlingWorkflow = function (environmentOrActivityId, environment) {
             var _this = this;
             var promise = $.Deferred();
-            var workflowActivity;
-            this._workflowActivityService.getActiveActivitiesByReferenceIdAndEnvironment(currentEnvironmentId, environment, function (data) {
-                if (data) {
-                    workflowActivity = data;
-                    _this._workflowActivityService.hasHandler(workflowActivity.UniqueId, function (data) {
+            var wfAction = function () { return $.Deferred().resolve(environmentOrActivityId).promise(); };
+            if (environment) {
+                wfAction = function () {
+                    var promise = $.Deferred();
+                    _this._workflowActivityService.getActiveActivitiesByReferenceIdAndEnvironment(environmentOrActivityId, environment, function (data) {
                         if (!data) {
-                            _this._workflowPropertyService.getPropertiesFromActivity(workflowActivity.UniqueId, function (data) {
-                                if (data) {
-                                    if (!_this.handlingIsAutomatic(data)) {
-                                        promise.resolve(workflowActivity.UniqueId);
-                                        return;
-                                    }
-                                    _this._workflowActivityService.getWorkflowActivity(workflowActivity.UniqueId, function (data) {
-                                        if (data) {
-                                            workflowActivity = data;
-                                            _this._workflowActivityService.updateHandlingWorkflowActivity(workflowActivity, UpdateActionType.HandlingWorkflow, function (data) {
-                                                promise.resolve(workflowActivity.UniqueId);
-                                            }, function (exception) {
-                                                promise.reject(exception);
-                                            });
-                                        }
-                                        promise.resolve(workflowActivity.UniqueId);
-                                    }, function (exception) {
-                                        promise.reject(exception);
-                                    });
-                                }
-                            }, function (exception) {
-                                promise.reject(exception);
-                            });
+                            promise.resolve(null);
+                            return;
                         }
-                        else {
-                            promise.resolve(workflowActivity.UniqueId);
-                        }
-                    }, function (exception) {
-                        promise.reject(exception);
-                    });
-                }
-                else {
+                        promise.resolve(data.UniqueId);
+                    }, function (exception) { return promise.reject(exception); });
+                    return promise.promise();
+                };
+            }
+            wfAction()
+                .done(function (activityId) {
+                if (!activityId) {
                     promise.resolve(null);
+                    return;
                 }
-            }, function (exception) {
-                promise.reject(exception);
-            });
-            return promise.promise();
-        };
-        /**
-         * Gestisco l'attivita' di workflow corrente se ho gia' l'id
-         * @param idWorkflowActivityId
-         */
-        HandlerWorkflowManager.prototype.manageHandlingWorkflowWithActivity = function (idWorkflowActivityId) {
-            var _this = this;
-            var promise = $.Deferred();
-            var workflowActivity;
-            this._workflowActivityService.hasHandler(idWorkflowActivityId, function (data) {
-                if (!data) {
-                    _this._workflowActivityService.getWorkflowActivity(idWorkflowActivityId, function (data) {
-                        if (data) {
-                            workflowActivity = data;
-                            if (!_this.handlingIsAutomatic(workflowActivity.WorkflowProperties)) {
-                                promise.resolve(workflowActivity.UniqueId);
-                                return;
-                            }
-                            _this._workflowActivityService.updateHandlingWorkflowActivity(workflowActivity, UpdateActionType.HandlingWorkflow, function (data) {
-                                promise.resolve(workflowActivity.UniqueId);
-                            }, function (exception) {
-                                promise.reject(exception);
-                            });
+                _this._workflowActivityService.hasHandler(activityId, function (workflowActivityHasHandler) {
+                    if (workflowActivityHasHandler) {
+                        promise.resolve(activityId);
+                        return;
+                    }
+                    _this._workflowActivityService.getWorkflowActivityById(activityId, function (workflowActivityData) {
+                        if (!workflowActivityData) {
+                            var exception = {};
+                            exception.statusText = "Errore nel caricamento delle attività del fusso di lavoro associate al fascicolo.";
+                            promise.reject(exception);
+                            return;
                         }
-                    }, function (exception) {
-                        promise.reject(exception);
-                    });
-                }
-                else {
-                    promise.resolve(idWorkflowActivityId);
-                }
-            }, function (exception) {
-                promise.reject(exception);
-            });
+                        if (workflowActivityData.WorkflowProperties && !_this.handlingIsAutomatic(workflowActivityData.WorkflowProperties)) {
+                            promise.resolve(activityId);
+                            return;
+                        }
+                        _this._updateWorkflowActivityAuthorization(workflowActivityData)
+                            .done(function (data) { return promise.resolve(activityId); })
+                            .fail(function (exception) { return promise.reject(exception); });
+                    }, function (exception) { return promise.reject(exception); }, HandlerWorkflowManager.WORKFLOW_ACTIVITY_EXPAND_PROPERTIES);
+                }, function (exception) {
+                    promise.reject(exception);
+                });
+            })
+                .fail(function (exception) { return promise.reject(exception); });
             return promise.promise();
         };
+        HandlerWorkflowManager.DOCSUITE_MODULE_NAME = "DocSuite";
+        HandlerWorkflowManager.WORKFLOW_ACTIVITY_EXPAND_PROPERTIES = [
+            "WorkflowProperties", "WorkflowInstance($expand=WorkflowRepository)"
+        ];
         return HandlerWorkflowManager;
     }());
     return HandlerWorkflowManager;

@@ -13,9 +13,9 @@ Public Class POLRequestContact
     Private _city As String
     Private _province As String
     Private _zipCode As String
-    Private _registrationDate As DateTime?
+    Private _registrationDate As DateTimeOffset
     Private _registrationUser As String
-    Private _lastChangedDate As DateTime?
+    Private _lastChangedDate As DateTimeOffset?
     Private _lastChangedUser As String
     Private _extendedProperties As String
 
@@ -112,11 +112,11 @@ Public Class POLRequestContact
         End Set
     End Property
 
-    Public Overridable Property RegistrationDate() As DateTime?
+    Public Overridable Property RegistrationDate() As DateTimeOffset
         Get
             Return _registrationDate
         End Get
-        Set(ByVal value As DateTime?)
+        Set(ByVal value As DateTimeOffset)
             _registrationDate = value
         End Set
     End Property
@@ -130,11 +130,11 @@ Public Class POLRequestContact
         End Set
     End Property
 
-    Public Overridable Property LastChangedDate As DateTime?
+    Public Overridable Property LastChangedDate As DateTimeOffset?
         Get
             Return _lastChangedDate
         End Get
-        Set(ByVal value As DateTime?)
+        Set(ByVal value As DateTimeOffset?)
             _lastChangedDate = value
         End Set
     End Property

@@ -98,19 +98,18 @@ define(["require", "exports", "App/Helpers/WindowHelper", "Tblt/TbltSettoreOpera
                 var isNodeRecovery;
                 if (attributeRecovery != null) {
                     isNodeRecovery = !!JSON.parse(treeNode.get_attributes().getAttribute("Recovery"));
-                    isNodeRecovery ? menu.findItemByValue("Delete").set_text("Recupera") : menu.findItemByValue('Delete').set_text("Elimina");
+                    isNodeRecovery ? menu.findItemByValue(TbltSettore.DELETE_OPTION).set_text("Recupera") : menu.findItemByValue('Delete').set_text("Elimina");
                 }
                 if (isNodeRecovery) {
-                    menu.findItemByValue('Add').disable();
-                    menu.findItemByValue('Rename').disable();
-                    menu.findItemByValue('Print').disable();
-                    menu.findItemByValue('Delete').enable();
-                    menu.findItemByValue('Groups').disable();
-                    menu.findItemByValue('ChildrenRoles').disable();
-                    menu.findItemByValue('Log').disable();
-                    menu.findItemByValue('Function').disable();
-                    menu.findItemByValue('Move').enable();
-                    menu.findItemByValue("Clone").disable();
+                    menu.findItemByValue(TbltSettore.CREATE_OPTION).disable();
+                    menu.findItemByValue(TbltSettore.MODIFY_OPTION).disable();
+                    menu.findItemByValue(TbltSettore.PRINT_OPTION).disable();
+                    menu.findItemByValue(TbltSettore.DELETE_OPTION).enable();
+                    menu.findItemByValue(TbltSettore.GROUPS_OPTION).disable();
+                    menu.findItemByValue(TbltSettore.LOG_OPTION).disable();
+                    menu.findItemByValue(TbltSettore.FUNCTION_OPTION).disable();
+                    menu.findItemByValue(TbltSettore.MOVE_OPTION).enable();
+                    menu.findItemByValue(TbltSettore.CLONE_OPTION).disable();
                     _this.alignButtons(menu);
                     return;
                 }
@@ -119,63 +118,49 @@ define(["require", "exports", "App/Helpers/WindowHelper", "Tblt/TbltSettoreOpera
                 switch (nodeType) {
                     case "Role":
                     case "SubRole":
-                        menu.findItemByValue('Add').enable();
-                        menu.findItemByValue('Rename').enable();
-                        menu.findItemByValue('Print').enable();
-                        menu.findItemByValue('Delete').enable();
-                        menu.findItemByValue('Groups').enable();
-                        menu.findItemByValue('Clone').enable();
-                        menu.findItemByValue('ChildrenRoles').enable();
-                        for (var _i = 0, _a = treeNode.get_allNodes(); _i < _a.length; _i++) {
-                            var childNode = _a[_i];
-                            if (childNode.get_attributes().getAttribute("NodeType") == "SubRole") {
-                                menu.findItemByValue('ChildrenRoles').disable();
-                                break;
-                            }
-                        }
-                        if (treeNode.get_attributes().getAttribute("HasChildren") == "False") {
-                            menu.findItemByValue('ChildrenRoles').disable();
-                        }
-                        menu.findItemByValue('Log').enable();
-                        menu.findItemByValue('Function').enable();
-                        menu.findItemByValue('Move').enable();
+                        menu.findItemByValue(TbltSettore.CREATE_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.MODIFY_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.PRINT_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.DELETE_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.GROUPS_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.CLONE_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.LOG_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.FUNCTION_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.MOVE_OPTION).enable();
                         break;
                     case "Group":
-                        menu.findItemByValue('Add').disable();
-                        menu.findItemByValue('Rename').disable();
-                        menu.findItemByValue('Print').disable();
-                        menu.findItemByValue('Delete').disable();
-                        menu.findItemByValue('Groups').disable();
-                        menu.findItemByValue('ChildrenRoles').disable();
-                        menu.findItemByValue('Log').enable();
-                        menu.findItemByValue('Function').disable();
-                        menu.findItemByValue('Move').disable();
-                        menu.findItemByValue("Clone").disable();
+                        menu.findItemByValue(TbltSettore.CREATE_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.MODIFY_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.PRINT_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.DELETE_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.GROUPS_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.LOG_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.FUNCTION_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.MOVE_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.CLONE_OPTION).disable();
                         _this.disableButtons();
                         break;
                     case "Root":
-                        menu.findItemByValue('Add').enable();
-                        menu.findItemByValue('Rename').disable();
-                        menu.findItemByValue('Print').disable();
-                        menu.findItemByValue('Delete').disable();
-                        menu.findItemByValue('Groups').disable();
-                        menu.findItemByValue('ChildrenRoles').disable();
-                        menu.findItemByValue('Log').disable();
-                        menu.findItemByValue('Function').disable();
-                        menu.findItemByValue('Move').disable();
-                        menu.findItemByValue("Clone").disable();
+                        menu.findItemByValue(TbltSettore.CREATE_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.MODIFY_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.PRINT_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.DELETE_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.LOG_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.LOG_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.FUNCTION_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.MOVE_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.CLONE_OPTION).disable();
                         break;
                     default:
-                        menu.findItemByValue('Add').enable();
-                        menu.findItemByValue('Rename').disable();
-                        menu.findItemByValue('Print').disable();
-                        menu.findItemByValue('Delete').enable();
-                        menu.findItemByValue('Groups').disable();
-                        menu.findItemByValue('ChildrenRoles').disable();
-                        menu.findItemByValue('Log').enable();
-                        menu.findItemByValue('Function').disable();
-                        menu.findItemByValue('Move').disable();
-                        menu.findItemByValue("Clone").disable();
+                        menu.findItemByValue(TbltSettore.CREATE_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.MODIFY_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.PRINT_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.DELETE_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.GROUPS_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.LOG_OPTION).enable();
+                        menu.findItemByValue(TbltSettore.FUNCTION_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.MOVE_OPTION).disable();
+                        menu.findItemByValue(TbltSettore.CLONE_OPTION).disable();
                         break;
                 }
                 _this.alignButtons(menu);
@@ -187,6 +172,7 @@ define(["require", "exports", "App/Helpers/WindowHelper", "Tblt/TbltSettoreOpera
          * Initialize
          */
         TbltSettore.prototype.initialize = function () {
+            this._folderToolBar = $find(this.folderToolBarId);
             var wndManager = $find(this.radWindowManagerRolesId);
             wndManager.getWindowByName('windowEditRoles').add_close(this.onCloseWindowEdit);
             wndManager.getWindowByName('windowGroupRoles').add_close(this.onCloseWindowGroup);
@@ -194,36 +180,33 @@ define(["require", "exports", "App/Helpers/WindowHelper", "Tblt/TbltSettoreOpera
             wndManager.getWindowByName('windowAddUsers').add_close(this.onCloseWindowAddUserInGroup);
         };
         TbltSettore.prototype.disableButtons = function () {
-            var btnAdd = $get(this.btnAddId);
-            var btnModify = $get(this.btnModifyId);
-            var btnPrint = $get(this.btnPrintId);
-            var btnLog = $get(this.btnLogId);
-            var btnFunction = $get(this.btnFunctionId);
-            var btnDelete = $get(this.btnDeleteId);
-            var btnGroups = $get(this.btnGroupsId);
-            var btnChildrenRoles = $get(this.btnChildrenRolesId);
-            var btnMove = $get(this.btnMoveId);
-            var btnClone = $get(this.btnCloneId);
+            var btnAdd = this._folderToolBar.findItemByValue(TbltSettore.CREATE_OPTION);
+            var btnModify = this._folderToolBar.findItemByValue(TbltSettore.MODIFY_OPTION);
+            var btnPrint = this._folderToolBar.findItemByValue(TbltSettore.PRINT_OPTION);
+            var btnLog = this._folderToolBar.findItemByValue(TbltSettore.LOG_OPTION);
+            var btnFunction = this._folderToolBar.findItemByValue(TbltSettore.FUNCTION_OPTION);
+            var btnDelete = this._folderToolBar.findItemByValue(TbltSettore.DELETE_OPTION);
+            var btnGroups = this._folderToolBar.findItemByValue(TbltSettore.GROUPS_OPTION);
+            var btnMove = this._folderToolBar.findItemByValue(TbltSettore.MOVE_OPTION);
+            var btnClone = this._folderToolBar.findItemByValue(TbltSettore.CLONE_OPTION);
             if (btnAdd != null)
-                btnAdd.disabled = true;
+                btnAdd.set_enabled(false);
             if (btnModify != null)
-                btnModify.disabled = true;
+                btnModify.set_enabled(false);
             if (btnPrint != null)
-                btnPrint.disabled = true;
+                btnPrint.set_enabled(false);
             if (btnLog != null)
-                btnLog.disabled = false;
+                btnLog.set_enabled(false);
             if (btnFunction != null)
-                btnFunction.disabled = true;
+                btnFunction.set_enabled(false);
             if (btnDelete != null)
-                btnDelete.disabled = true;
+                btnDelete.set_enabled(false);
             if (btnGroups != null)
-                btnGroups.disabled = true;
-            if (btnChildrenRoles != null)
-                btnChildrenRoles.disabled = true;
+                btnGroups.set_enabled(false);
             if (btnMove != null)
-                btnMove.disabled = true;
+                btnMove.set_enabled(false);
             if (btnClone != null)
-                btnClone.disabled = true;
+                btnClone.set_enabled(false);
         };
         TbltSettore.prototype.selectNode = function (nodeValue) {
             var treeView = $find(this.radTreeViewRolesId);
@@ -360,18 +343,18 @@ define(["require", "exports", "App/Helpers/WindowHelper", "Tblt/TbltSettoreOpera
          * @param menu
          */
         TbltSettore.prototype.checkDeleteItem = function (node, menu) {
-            var btnDelete = $get(this.btnDeleteId);
+            var btnDelete = this._folderToolBar.findItemByValue(TbltSettore.DELETE_OPTION);
             node.get_nodes().forEach(function (item) {
                 var nodeType = item.get_attributes().getAttribute("NodeType").toUpperCase();
                 if (nodeType != "GROUP") {
                     var isNodeRecovery = !!JSON.parse(item.get_attributes().getAttribute("Recovery"));
                     if (nodeType == "SUBROLE" && !isNodeRecovery) {
-                        btnDelete.disabled = true;
+                        btnDelete.disable();
                         return false;
                     }
                 }
             });
-            btnDelete.disabled = false;
+            btnDelete.enable();
             return true;
         };
         /**
@@ -379,45 +362,41 @@ define(["require", "exports", "App/Helpers/WindowHelper", "Tblt/TbltSettoreOpera
          * @param menu
          */
         TbltSettore.prototype.alignButtons = function (menu) {
-            var btnAdd = $get(this.btnAddId);
-            var btnModify = $get(this.btnModifyId);
-            var btnMove = $get(this.btnMoveId);
-            var btnPrint = $get(this.btnPrintId);
-            var btnLog = $get(this.btnLogId);
-            var btnFunction = $get(this.btnFunctionId);
-            var btnDelete = $get(this.btnDeleteId);
-            var btnGroups = $get(this.btnGroupsId);
-            var btnChildrenRoles = $get(this.btnChildrenRolesId);
-            var btnClone = $get(this.btnCloneId);
+            var btnAdd = this._folderToolBar.findItemByValue(TbltSettore.CREATE_OPTION);
+            var btnModify = this._folderToolBar.findItemByValue(TbltSettore.MODIFY_OPTION);
+            var btnPrint = this._folderToolBar.findItemByValue(TbltSettore.PRINT_OPTION);
+            var btnLog = this._folderToolBar.findItemByValue(TbltSettore.LOG_OPTION);
+            var btnFunction = this._folderToolBar.findItemByValue(TbltSettore.FUNCTION_OPTION);
+            var btnDelete = this._folderToolBar.findItemByValue(TbltSettore.DELETE_OPTION);
+            var btnGroups = this._folderToolBar.findItemByValue(TbltSettore.GROUPS_OPTION);
+            var btnMove = this._folderToolBar.findItemByValue(TbltSettore.MOVE_OPTION);
+            var btnClone = this._folderToolBar.findItemByValue(TbltSettore.CLONE_OPTION);
             if (btnAdd != null) {
-                btnAdd.disabled = !menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Add]).get_enabled();
+                btnAdd.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Add]).get_enabled());
             }
             if (btnModify != null) {
-                btnModify.disabled = !menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Rename]).get_enabled();
+                btnModify.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Rename]).get_enabled());
             }
             if (btnMove != null) {
-                btnMove.disabled = !menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Move]).get_enabled();
+                btnMove.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Move]).get_enabled());
             }
             if (btnPrint != null) {
-                btnPrint.disabled = !menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Print]).get_enabled();
+                btnPrint.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Print]).get_enabled());
             }
             if (btnLog != null) {
-                btnLog.disabled = !menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Log]).get_enabled();
+                btnLog.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Log]).get_enabled());
             }
             if (btnFunction != null) {
-                btnFunction.disabled = !menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Function]).get_enabled();
+                btnFunction.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Function]).get_enabled());
             }
             if (btnDelete != null) {
-                btnDelete.disabled = !menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Delete]).get_enabled();
+                btnDelete.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Delete]).get_enabled());
             }
             if (btnGroups != null) {
-                btnGroups.disabled = !menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Groups]).get_enabled();
-            }
-            if (btnChildrenRoles != null) {
-                btnChildrenRoles.disabled = !menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.ChildrenRoles]).get_enabled();
+                btnGroups.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Groups]).get_enabled());
             }
             if (btnClone != null) {
-                btnClone.disabled = !menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Clone]).get_enabled();
+                btnClone.set_enabled(!menu.findItemByValue(TbltSettoreOperation[TbltSettoreOperation.Clone]).get_enabled());
             }
         };
         /**
@@ -445,6 +424,17 @@ define(["require", "exports", "App/Helpers/WindowHelper", "Tblt/TbltSettoreOpera
                 ajaxManager.ajaxRequest('Update');
             }
         };
+        TbltSettore.CREATE_OPTION = "create";
+        TbltSettore.MODIFY_OPTION = "modify";
+        TbltSettore.DELETE_OPTION = "delete";
+        TbltSettore.MOVE_OPTION = "move";
+        TbltSettore.CLONE_OPTION = "clone";
+        TbltSettore.PRINT_OPTION = "print";
+        TbltSettore.GROUPS_OPTION = "groups";
+        TbltSettore.HISTORY_OPTION = "history";
+        TbltSettore.LOG_OPTION = "log";
+        TbltSettore.FUNCTION_OPTION = "function";
+        TbltSettore.PROPAGATION_OPTION = "propagation";
         return TbltSettore;
     }());
     return TbltSettore;

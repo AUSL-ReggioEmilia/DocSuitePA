@@ -1,0 +1,25 @@
+{
+  "0": {
+    "Position": 0,
+    "Name": "AUSL-PC - SWAF - Notifica evento",
+    "AuthorizationType": "None",
+    "ActivityOperation": {
+      "Action": "ToIntegration",
+      "Area": "Build"
+    },
+    "ActivityType": "AutomaticActivity",
+    "InputArguments": [
+      {
+        "Name": "_dsw_p_ReferenceModel",
+        "PropertyType": "Json",
+        "ValueInt": null,
+        "ValueDate": null,
+        "ValueDouble": null,
+        "ValueBoolean": null,
+        "ValueGuid": null,
+        "ValueString": null
+      }
+    ],
+    "OutputArguments": []
+  }
+}

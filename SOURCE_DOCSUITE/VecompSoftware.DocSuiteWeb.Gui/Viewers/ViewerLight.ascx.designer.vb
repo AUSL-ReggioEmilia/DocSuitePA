@@ -11,9 +11,9 @@ Option Strict On
 Option Explicit On
 
 Namespace Viewers
-    
+
     Partial Public Class ViewerLight
-        
+
         '''<summary>
         '''RadCodeBlock1 control.
         '''</summary>
@@ -22,7 +22,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
-        
+
         '''<summary>
         '''RadWindowManager control.
         '''</summary>
@@ -31,7 +31,16 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents RadWindowManager As Global.Telerik.Web.UI.RadWindowManager
-        
+
+        '''<summary>
+        '''windowStartWorkflow control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents windowStartWorkflow As Global.Telerik.Web.UI.RadWindow
+
         '''<summary>
         '''windowModifyPrivacyLevel control.
         '''</summary>
@@ -40,7 +49,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents windowModifyPrivacyLevel As Global.Telerik.Web.UI.RadWindow
-        
+
         '''<summary>
         '''paneToolbar control.
         '''</summary>
@@ -49,7 +58,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents paneToolbar As Global.Telerik.Web.UI.RadPane
-        
+
         '''<summary>
         '''ToolBar control.
         '''</summary>
@@ -58,7 +67,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents ToolBar As Global.Telerik.Web.UI.RadToolBar
-        
+
         '''<summary>
         '''pnlMessageBox control.
         '''</summary>
@@ -67,7 +76,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents pnlMessageBox As Global.Telerik.Web.UI.RadPane
-        
+
         '''<summary>
         '''timerMessage control.
         '''</summary>
@@ -76,7 +85,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents timerMessage As Global.System.Web.UI.Timer
-        
+
         '''<summary>
         '''messageBox control.
         '''</summary>
@@ -85,7 +94,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents messageBox As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-        
+
         '''<summary>
         '''messageText control.
         '''</summary>
@@ -94,7 +103,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents messageText As Global.System.Web.UI.WebControls.Label
-        
+
         '''<summary>
         '''RadPageSplitter control.
         '''</summary>
@@ -103,7 +112,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents RadPageSplitter As Global.Telerik.Web.UI.RadSplitter
-        
+
         '''<summary>
         '''LeftPane control.
         '''</summary>
@@ -112,7 +121,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents LeftPane As Global.Telerik.Web.UI.RadPane
-        
+
         '''<summary>
         '''rtvListDocument control.
         '''</summary>
@@ -121,7 +130,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents rtvListDocument As Global.Telerik.Web.UI.RadTreeView
-        
+
         '''<summary>
         '''multiPages control.
         '''</summary>
@@ -130,7 +139,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents multiPages As Global.Telerik.Web.UI.RadSplitter
-        
+
         '''<summary>
         '''rtvListDocumentContainer control.
         '''</summary>
@@ -139,7 +148,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents rtvListDocumentContainer As Global.Telerik.Web.UI.RadMultiPage
-        
+
         '''<summary>
         '''tabStripViews control.
         '''</summary>
@@ -148,7 +157,16 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents tabStripViews As Global.Telerik.Web.UI.RadTabStrip
-        
+
+        '''<summary>
+        '''SplitBar control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents SplitBar As Global.Telerik.Web.UI.RadSplitBar
+
         '''<summary>
         '''PDFPane control.
         '''</summary>
@@ -157,7 +175,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents PDFPane As Global.Telerik.Web.UI.RadPane
-        
+
         '''<summary>
         '''PdfSRC control.
         '''</summary>
@@ -166,7 +184,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents PdfSRC As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-        
+
         '''<summary>
         '''fake control.
         '''</summary>

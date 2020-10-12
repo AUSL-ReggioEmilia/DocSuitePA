@@ -81,6 +81,10 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
         uscDossierGrid.prototype.getGridCurrentPageIndex = function () {
             return this._masterTableView.get_currentPageIndex();
         };
+        uscDossierGrid.prototype.closeResultWindow = function (dossierId) {
+            var wnd = this.getRadWindow();
+            wnd.close("" + dossierId);
+        };
         uscDossierGrid.LOADED_EVENT = "onLoaded";
         uscDossierGrid.PAGE_CHANGED_EVENT = "onPageChanged";
         return uscDossierGrid;

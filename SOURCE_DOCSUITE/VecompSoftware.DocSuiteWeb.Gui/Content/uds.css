@@ -217,3 +217,12 @@ background-color: #dcebdf;
 .uds div.RadPanelBar_Office2007 .font_node {
     font-weight: bold;
 }
+
+.RadPanelBar_uscDocumentUnitReferences_Office2007 .rpRootGroup {
+    border-style: none !important;
+}
+
+.RadPanelBar_uscDocumentUnitReferences_Office2007 .rpFirst div.rpHeaderTemplate {
+    background-position: 0 -1px;
+    border-style: none !important;
+}

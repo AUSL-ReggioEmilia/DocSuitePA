@@ -78,16 +78,6 @@ Public Class SecurityGroupsFacade
         Return MyBase.Delete(securityGroups)
     End Function
 
-    ''' <summary> Esegue l'inserimento di un Nuovo gruppo nella tabella SecurityGroups. </summary>
-    Public Overridable Function Insert(ByVal groupName As String, Optional ByVal logDescription As String = "") As SecurityGroups
-        Dim group As New SecurityGroups
-        group.GroupName = groupName
-        group.LogDescription = logDescription
-        Save(group)
-
-        Return group
-    End Function
-
     ''' <summary>
     ''' Aggiorna i security groups e gli oggetti collegati.
     ''' </summary>
@@ -132,24 +122,6 @@ Public Class SecurityGroupsFacade
 
     Public Function GetGroupByName(groupName As String) As SecurityGroups
         Return _dao.GetGroupByName(groupName)
-    End Function
-
-    ''' <summary> Collega i gruppi nella SecurityGroups con i gruppi nella tabella passata come parametro </summary>
-    ''' <param name="tableName"> Nome della tabella che gestisce gruppi di dominio </param>
-    ''' <remarks> Terribile cosa fatta per retrocompatibilità, togliere questa barbarica gestione delle eccezioni </remarks>
-    Public Function Merge(ByVal tableName As String) As Boolean
-        Try
-            _dao.Merge(tableName)
-            Return True
-        Catch ex As Exception
-            FileLogger.Error(LoggerName, String.Concat("Merge ", tableName, " Security Groups error"), ex)
-            Return False
-        End Try
-    End Function
-
-    ''' <summary> Restituisce tutti i gruppi ROOT (senza padre). </summary>
-    Public Function GetRootGroups() As IList(Of SecurityGroups)
-        Return _dao.GetRootGroups()
     End Function
 
     ''' <summary> Restituisce tutti i gruppi ROOT (senza padre). </summary>

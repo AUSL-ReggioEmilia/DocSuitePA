@@ -1,13 +1,13 @@
-Imports System.Linq
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports System.Collections.Generic
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Workflows
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
+Imports System.Linq
+Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Services.Logging
 
 Public Class ProtBasePage
     Inherits CommonBasePage
@@ -21,31 +21,14 @@ Public Class ProtBasePage
 
 #Region " Fields "
 
-    Private _currentProtocolYear As Short?
-
-    Private _currentProtocolNumber As Integer?
-
     Private _currentProtocol As Protocol
-
     Private _currentProtocolRights As ProtocolRights
-
     Private _currentProtocolRightsStatusCancel As ProtocolRights
-
     Private _facade As FacadeFactory
-
-    Private _workflowOperation As Boolean?
-
-    Private _idWorkflowActivity As Guid?
-
-    Private _currentDocumentUnitChain As IList(Of DocumentUnitChain) = Nothing
-
+    Private _currentDocumentUnitChain As IList(Of Entity.DocumentUnits.DocumentUnitChain) = Nothing
     Private _currentFascicleDocumentUnits As IList(Of FascicleDocumentUnit) = Nothing
-
-    Private _currentWorkflowActivityFacade As WorkflowActivityFacade = Nothing
-
-    Private _currentWorkflowInstanceFacade As WorkflowInstanceFacade = Nothing
-
     Private _currentHasContainerRight As Boolean?
+    Private _currentProtocolId As Guid?
 
 #End Region
 
@@ -60,60 +43,36 @@ Public Class ProtBasePage
         End Get
     End Property
 
-    Public ReadOnly Property CurrentWorkflowInstanceFacade As WorkflowInstanceFacade
+    Public ReadOnly Property CurrentProtocolId As Guid
         Get
-            If _currentWorkflowInstanceFacade Is Nothing Then
-                _currentWorkflowInstanceFacade = New WorkflowInstanceFacade(DocSuiteContext.Current.User.FullUserName)
+            If Not _currentProtocolId.HasValue Then
+                _currentProtocolId = GetKeyValue(Of Guid)("UniqueId")
             End If
-
-            Return _currentWorkflowInstanceFacade
-        End Get
-    End Property
-
-    Public ReadOnly Property CurrentWorkflowActivityFacade As WorkflowActivityFacade
-        Get
-            If _currentWorkflowActivityFacade Is Nothing Then
-                _currentWorkflowActivityFacade = New WorkflowActivityFacade(DocSuiteContext.Current.User.FullUserName)
-            End If
-
-            Return _currentWorkflowActivityFacade
-        End Get
-    End Property
-
-    Public ReadOnly Property CurrentProtocolYear As Short
-        Get
-            If Not _currentProtocolYear.HasValue Then
-                _currentProtocolYear = GetKeyValue(Of Short)("Year")
-            End If
-            Return _currentProtocolYear.Value
-        End Get
-    End Property
-
-    Public ReadOnly Property CurrentProtocolNumber As Integer
-        Get
-            If Not _currentProtocolNumber.HasValue Then
-                _currentProtocolNumber = GetKeyValue(Of Integer)("Number")
-            End If
-            Return _currentProtocolNumber.Value
+            Return _currentProtocolId.Value
         End Get
     End Property
 
     Public ReadOnly Property CurrentProtocol() As Protocol
         Get
             If _currentProtocol Is Nothing Then
-                _currentProtocol = Facade.ProtocolFacade.GetById(CurrentProtocolYear, CurrentProtocolNumber, False)
+                _currentProtocol = Facade.ProtocolFacade.GetById(CurrentProtocolId)
             End If
             Return _currentProtocol
         End Get
     End Property
-    Public ReadOnly Property CurrentDocumentUnitChains As IList(Of DocumentUnitChain)
+    Public ReadOnly Property CurrentDocumentUnitChains As IList(Of Entity.DocumentUnits.DocumentUnitChain)
         Get
             If _currentDocumentUnitChain Is Nothing AndAlso CurrentProtocol IsNot Nothing Then
-                Dim documentUnitChainFinder As DocumentUnitChainFinder = New DocumentUnitChainFinder(DocSuiteContext.Current.CurrentTenant)
-                documentUnitChainFinder.IdDocumentUnit = CurrentProtocol.UniqueId
-                documentUnitChainFinder.EnablePaging = False
-                documentUnitChainFinder.ExpandProperties = False
-                _currentDocumentUnitChain = documentUnitChainFinder.DoSearch().Select(Function(f) f.Entity).ToList()
+                Dim result As ICollection(Of WebAPIDto(Of DocumentUnitChain)) = WebAPIImpersonatorFacade.ImpersonateFinder(New DocumentUnitChainFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.IdDocumentUnit = CurrentProtocol.Id
+                        finder.EnablePaging = False
+                        finder.ExpandProperties = False
+                        Return finder.DoSearch()
+                    End Function)
+
+                _currentDocumentUnitChain = result.Select(Function(f) f.Entity).ToList()
             End If
 
             Return _currentDocumentUnitChain
@@ -151,25 +110,6 @@ Public Class ProtBasePage
         End Get
     End Property
 
-    Protected ReadOnly Property IsWorkflowOperation() As Boolean
-        Get
-            If Not _workflowOperation.HasValue Then
-                _workflowOperation = Request.QueryString.GetValueOrDefault("IsWorkflowOperation", False)
-            End If
-            Return _workflowOperation.Value
-        End Get
-    End Property
-
-    Protected ReadOnly Property CurrentIdWorkflowActivity As Guid?
-        Get
-            If _idWorkflowActivity Is Nothing Then
-                _idWorkflowActivity = GetKeyValue(Of Guid?)("IdWorkflowActivity")
-            End If
-            Return _idWorkflowActivity
-        End Get
-    End Property
-
-
     Protected ReadOnly Property CurrentHasContainerRight As Boolean
         Get
             If Not _currentHasContainerRight.HasValue Then
@@ -187,12 +127,12 @@ Public Class ProtBasePage
         If Not Type Is Nothing AndAlso Not Type.Eq("Prot") Then
             FileLogger.Error(LoggerName, String.Concat("ProtBasePage without Prot Type : ", Request.Url))
 
-            If Not GetValueOrDefault(Of Integer?)("Number", Nothing).HasValue OrElse Not GetValueOrDefault(Of Integer?)("Year", Nothing).HasValue Then
+            If Not GetValueOrDefault(Of Guid?)("UniqueId", Nothing).HasValue Then
                 Throw New DocSuiteException("Protocollo", String.Concat("Impossibile accedere alla funzionalità specifica del protocollo. ", ProtocolEnv.DefaultErrorMessage))
             End If
 
-            Dim s As String = String.Format("Year={0}&Number={1}&Type=Prot", CurrentProtocolYear, CurrentProtocolNumber)
-            Response.Redirect("~/Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(s))
+            Dim qs As String = $"UniqueId={CurrentProtocolId}&Type=Prot"
+            Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck(qs)}")
         End If
     End Sub
 
@@ -211,8 +151,6 @@ Public Class ProtBasePage
 
     Public Sub ReloadCurrentProtocolState()
         Me._currentProtocol = Nothing
-        Me._currentProtocolNumber = Nothing
-        Me._currentProtocolYear = Nothing
         Me._currentProtocolRights = Nothing
         Me._currentProtocolRightsStatusCancel = Nothing
     End Sub

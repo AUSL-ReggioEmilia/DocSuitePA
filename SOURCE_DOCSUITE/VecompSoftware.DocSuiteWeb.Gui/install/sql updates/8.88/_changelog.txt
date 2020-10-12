@@ -1,6 +1,14 @@
+Epic 15007: [AUSL-PC] Estrattore per invio archivi Libri Giornale e Libri Inventario al PaRER
 Epic 16933: [ASL-TO] Delibere digitali e modifiche minori al flusso atti
 Epic 16937: [ASL-TO] Modifiche al flusso delibere digitali
+Epic 22004: [***REMOVED***] PEC: Adeguamento Security Malware PEC 
+Epic 22134: [AUSL-RE] Fascicoli: Evolutive workflow sui fascicoli 
+Epic 22240: [CTT] Evolutive 8.88 digitalizzazione dei procedimenti di collaborazione
 
+
+Feature 15602: [AUSL-PC] Estrattore: Conservazione archivio DocSuite "Libro inventari"
+Feature 15603: [AUSL-PC] Estrattore: Conservazione archivio DocSuite "Libro giornale"
+Feature 16090: [DSW BIBLOSDS CTT] Gestione archivi in conservazione per utente 
 Feature 16934: [ASL-TO] In modifica nello step di adozione si vorrebbe poter firmare anche gli allegati
 Feature 16935: [ASL-TO] In modifica di un atto nello step di adozione si vuole modificare lo stato e la motivazione 
 Feature 16940: [ASL-TO] Migliorie gestione checkin checkout collaborazione 
@@ -11,7 +19,21 @@ Feature 17642: [ASL-TO]Frontalini atti: Modifiche semplificazione nel frontalino
 Feature 17643: [ASL-TO]Collaborazione: Nuova gestione del proponente di collaborazione con "Settore proponente"
 Feature 20510: [ASL-TO]Gestione flussi atti: Gestione step e nuovo tasto "Conferma visione"
 Feature 20513: [ASL-TO]Collaborazione: Nuova tipologia di collaborazione, modifica firmatari e aggiunta annessi in restituzione
+Feature 20680: [AUSL-RE] Fascicoli : Permettere la selezione multipla degli documenti/inserti in sommario di fascicolo
+Feature 20909: [DSW] Amministrazione Contenitori : Introduzione funzione "copia gruppi da altro contenitori"
+Feature 20955: [DSW] Amministrazione Utente: Configurazione guidata dell'utente
+Feature 20957: [DSW] Miglioramento Amministrazione: Ottimizzazione Toolbar delle funzioni di ricerca durante di scorrimento verticale
+Feature 21169: [AUSL-PC] Archivi: Predisporre il pannello standard dello stato di conservazione in sommario di archivio.
+Feature 22005: [***REMOVED***] PEC: Modifiche per la cancellazione definitiva delle PEC
+Feature 22008: [***REMOVED***] Integrations: Esposizione dati per controllo SOC Security
+Feature 22135: [AUSL-RE] Attività generica: Rendere configurabile il default dell'azione di gestione dell'attività generica
+Feature 22138: [AUSL-RE] Attività di workflow: Miglioramenti attività di workflow generaliste
+Feature 22142: [AUSL-RE] Fascicolo: Effettuando il back del browser la cartellina del fascicolo precedentemente selezionata deve ritornare selezionta
+Feature 22241: [CTT] Collaborazione : Permettere la firma delle collaborazioni agli utenti delegati senza la necessità di effettuare il cambio responsabile
+Feature 22242: [CTT] Collaborazione : Abilitare la precompilazione di protocollo in fase di creazione della collaborazione
 
+
+User Story 5821:  [AUSL-PC] Modificare la stampa elenco concorsi aggiungendo il campo "indirizzo PEC"
 User Story 15604: [AUSL-PC] Estrattore "Libro giornale" : Generare classe CS da XSD
 User Story 15605: [AUSL-PC] Estrattore "Libro inventari" : Generare classe CS da XSD
 User Story 15606: [AUSL-PC] Estrattore "Libro giornale" : Creare le store di lettura dei record da conservare
@@ -25,10 +47,52 @@ User Story 15614: [AUSL-PC] Estrattore "Libro giornale" : Creare script SQL per 
 User Story 15615: [AUSL-PC] Estrattore "Libro inventari" : Creare script SQL per il deploy
 User Story 15616: [AUSL-PC] Estrattore "Libro giornale" : Inserire parametri di attivazione/disattivazione del riversamento della unità archivistica
 User Story 15617: [AUSL-PC] Estrattore "Libro inventari" : Inserire parametri di attivazione/disattivazione del riversamento della unità archivistica
-User Story 20321: [ASLTO]Trasmissione PEC d'invio al Collegio Sindacale:aggiungere all'invio anche gli allegati
 User Story 20511: [ASL-TO] Gestione flussi Atti:abilitare retro step
 User Story 20512: [ASL-TO]Gestione flussi Atti: nuovo tasto "Conferma visione"
+User Story 20681: [AUSL-RE] Fascicoli : Permettere la selezione multipla degli documenti/inserti in sommario di fascicolo
+User Story 20682: [AUSL-RE] Fascicoli : Permettere la selezione multipla degli documenti/inserti in sommario di fascicolo - funzione "rimuovi"
+User Story 20683: [AUSL-RE] Fascicoli : Permettere la selezione multipla degli documenti/inserti in sommario di fascicolo
+User Story 20684: [AUSL-RE] Fascicoli : Permettere la selezione multipla degli documenti/inserti in sommario di fascicolo - funzione "Sposta"
+User Story 20685: [AUSL-RE] Fascicoli : Permettere la selezione multipla degli documenti/inserti in sommario di fascicolo - funzione "Avvia attività"
+User Story 20797: [AUSL-PC] Ricerca di protocollo,il tasto  ‘Svuota ricerca’ svuota tutti i filtri, comprese le impostazioni dei radio button di default
+User Story 20910: [DSW] Amministrazione Contenitori : Introduzione funzione "copia gruppi da altro contenitori"
+User Story 20956: [DSW] Amministrazione Utente: Configurazione guidata dell'utente
+User Story 20958: [DSW] Miglioramento Amministrazione: Ottimizzazione Toolbar delle funzioni di ricerca durante di scorrimento verticale
+User Story 21170: [AUSL-PC] Archivi: Creazione user control uscDocumentUnitConservationRest:
+User Story 21171: [AUSL-PC] Archivi: Visualizzazione del pannello "Parer" in sommario di UDS
+User Story 22006: [***REMOVED***] Cancellazione definitiva delle PEC : Nuovi parametri DocSuite PECFisicalDeleteGroups/RemovePECEnabledInPECMailBoxId
+User Story 22007: [***REMOVED***] PEC : Aggiungere pulsante "Elimina fisica PEC"
+User Story 22009: [***REMOVED***] Integrations: Creazione modulo VecompSoftware.BPM.Integrations.Modules.***REMOVED***.Malware
+User Story 22010: [***REMOVED***] Integrations: Business Logic  del modulo "***REMOVED***.Malware" per la creazione dei documenti nel database SOC
+User Story 22136: [AUSL-RE] Attività generica: Aggiungere la proprietà di worklow _dsw_p_WorkflowActivityManageDefaultType
+User Story 22137: [AUSL-RE] Attività generica: Gestire nella pagina WorkflowActivityManage.aspx il valore di default dell'azione di gestione dell'attività generica
+User Story 22139: [AUSL-RE] Attività di workflow: Se l’utente ha un solo workflow, la listbox deve automaticamente selezionare quel workflow
+User Story 22140: [AUSL-RE] Attività di workflow: Nella vista "scrivania di workflow" introdurre un nuovo filtro sul range di date "da a "
+User Story 22141: [AUSL-RE] Attività di workflow: in sommario di attività, mostrare una treeview con l'elenco delle azioni “gestisci” effettuate dall’utente.
+User Story 22143: [AUSL-RE] Fascicolo: Effettuando il back del browser la cartellina del fascicolo precedentemente selezionata deve ritornare selezionta
+User Story 22243: [CTT] Collaborazione : Modificare il template di collaborazione abilitando l'opzione "Abilita bozza unità documentale"
+User Story 22244: [CTT] Collaborazione : Adeguare la pagina di inserimento di collaborazione per la compilazione della protocoldraft di protocollo
+User Story 22245: [CTT] Collaborazione : Creazione del parametro "RemoteSignDelegateEnabled"
+User Story 22246: [CTT] Collaborazione : Adeguamenti alla pagina "gestione profilo utente"
+User Story 22247: [CTT] Collaborazione : Nuova vista di scrivania "Da firmare in delega"
+User Story 22248: [CTT] Collaborazione : Adeguare le pagine SingleSign e MultiSign per la gestione corretta lettura del profilo di firma Automatica
+User Story 22323: [CTT] Collaborazione : Menu nuova vista di scrivania "Da firmare in delega"
 
-Bug 15164: [AUSL-PC]Scrivania di Workflow: Le attività in corso/da completare non si vedono ai settori autorizzati
+
 Bug 19331: [UIRNET]Rimuovere la possibilità di stampare un documento se non si hanno i diritti di visualizzazione
 Bug 19534: [CTT] Funzione "sposta fattura" setta la data ricezione sdi e indirizzo PEC errati 
+Bug 20342: [***REMOVED***]Errore in modifica Profilo Utente e configurazione ricerca
+Bug 20490: [AUSL-RE]Errore ricerca di protocolli in inserimento da fascicolo
+Bug 20794: [ENPACL]Risultati di ricerca protocollo,il tasto “Seleziona tutti” non effettua alcuna azione
+Bug 20800: [AUSL-RE]Caricamento destinatari Mail da file Excel:non viene importato l’indirizzo mail
+Bug 20801: [AUSL-RE]Pec in cui non sono visibili tutti i destinatari
+Bug 21064: [AUSL-PC]Inserimento protocollo caricando gli allegati da atto, viene collegato il protocollo con il numero dell'atto
+Bug 21156: [CTT]Chiamata da modulo DSWMessages
+Bug 21157: [ENPACL]Malfunzionamento campo ricerca su collaborazione
+Bug 21292: [CTT]Ottimizzazione sui filtri Cruscotto fatture
+Bug 22268: [SM]Workflow : Avvia workflow con validazione errata "necessario specificare il tipo di documento per tutti i documenti"
+Bug 22407: [CTT]Fascicoli: Facendo "invia email" di documenti di fascicolo non viene riportata la corretta selezione dei documenti da inviare.
+Bug 22498: [CTT]FPS/FPI: Impedire la creazione di protocolli senza contatti (da api legacy)
+
+
+Issue 20802: [DSW]Errore validazione XML

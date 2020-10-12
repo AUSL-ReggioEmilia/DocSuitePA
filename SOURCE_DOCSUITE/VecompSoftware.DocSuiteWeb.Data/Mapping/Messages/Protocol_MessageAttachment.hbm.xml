@@ -7,7 +7,6 @@
       <generator class="native" />
     </id>
     
-    <property name="Server" column="Server" />
     <property name="Archive" column="Archive" />
     <property name="ChainId" column="ChainId" />
     <property name="DocumentEnum" column="DocumentEnum" />

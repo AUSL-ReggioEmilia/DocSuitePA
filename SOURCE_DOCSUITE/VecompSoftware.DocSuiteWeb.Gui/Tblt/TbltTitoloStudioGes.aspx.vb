@@ -1,5 +1,6 @@
 ﻿Imports VecompSoftware.DocSuiteWeb.Data
 Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Partial Public Class TbltTitoloStudioGes
     Inherits CommonBasePage
@@ -33,6 +34,11 @@ Partial Public Class TbltTitoloStudioGes
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         MasterDocSuite.TitleVisible = False
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
+
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma)
         If Not IsPostBack Then
             Initialize()

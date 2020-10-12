@@ -7,7 +7,7 @@ import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import RoleModel = require('App/Models/Commons/RoleModel');
 import VisibilityType = require('App/Models/Fascicles/VisibilityType');
-import AjaxModel = require('../App/Models/AjaxModel');
+import AjaxModel = require('App/Models/AjaxModel');
 
 declare var ValidatorEnable: any;
 class uscSettori {
@@ -59,7 +59,7 @@ class uscSettori {
     /**
 * Evento al click del pulsante per espandere o collassare il pannello dei metadati dinamici
 */
-    btnExpandRoles_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnExpandRoles_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         if (this._isContentExpanded) {
             this._rowContent.hide();

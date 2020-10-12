@@ -101,9 +101,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Observers.TopMedia
             if (protocol.IdAttachments.GetValueOrDefault(0) > 0)
                 try
                 {
-                    var chain = new UIDChain(protocol.Location.DocumentServer,
-                        protocol.Location.ProtBiblosDSDB,
-                        protocol.IdAttachments.Value);
+                    var chain = new UIDChain(protocol.Location.ProtBiblosDSDB, protocol.IdAttachments.Value);
                     var result = BiblosDocumentInfo.GetDocuments(chain);
 
                     if (!result.IsNullOrEmpty())
@@ -402,7 +400,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Observers.TopMedia
                 return null;
 
             // Recupero gli allegati da Biblos.
-            UIDLocation location = new UIDLocation(protocol.Location.DocumentServer, protocol.Location.ProtBiblosDSDB);
+            UIDLocation location = new UIDLocation(protocol.Location.ProtBiblosDSDB);
             IList<BiblosDocumentInfo> attachments = null;
             try
             {
@@ -542,7 +540,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Observers.TopMedia
             DocumentInfo document = null;
             try
             {
-                document = new BiblosDocumentInfo(protocol.Location.DocumentServer, protocol.Location.ProtBiblosDSDB, protocol.IdDocument.Value);
+                document = new BiblosDocumentInfo(protocol.Location.ProtBiblosDSDB, protocol.IdDocument.Value);
             }
             catch (Exception ex)
             {

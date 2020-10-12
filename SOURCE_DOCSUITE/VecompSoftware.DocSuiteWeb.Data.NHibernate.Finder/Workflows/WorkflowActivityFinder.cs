@@ -31,6 +31,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows
         public Guid? ExcludeWorkflowActivityId { get; set; }
 
         public Guid? WorkflowInstanceId { get; set; }
+        public DateTime? WorkflowDateFrom { get; set; }
+        public DateTime? WorkflowDateTo { get; set; }
 
         public ICollection<WorkflowStatus> WorkflowActivityStatus { get; set; }
 
@@ -38,6 +40,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows
         public ICollection<ActivityType> WorkflowActivityType { get; set; }
 
         public ICollection<ActivityType> ExcludeDefaultWorkflowActivityType { get; set; }
+
+        public Guid? IdTenant { get; set; }
         #endregion
 
         #region [ Constructor ]  
@@ -111,6 +115,16 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows
             if (WorkflowInstanceId.HasValue)
             {
                 queryOver.Where(q => q.WorkflowInstance.Id == WorkflowInstanceId.Value);
+            }
+
+            if (WorkflowDateFrom.HasValue && WorkflowDateTo.HasValue)
+            {
+                queryOver.Where(q => q.RegistrationDate >= WorkflowDateFrom.Value && q.RegistrationDate <= WorkflowDateTo);
+            }
+
+            if (IdTenant.HasValue)
+            {
+                queryOver.Where(q => q.IdTenant == null || q.IdTenant == IdTenant.Value);
             }
 
             queryOver = FilterBySearchField(queryOver);

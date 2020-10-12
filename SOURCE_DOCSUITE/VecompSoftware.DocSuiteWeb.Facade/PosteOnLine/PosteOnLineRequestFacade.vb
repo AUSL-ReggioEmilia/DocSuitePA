@@ -20,11 +20,16 @@ Public Class PosteOnLineRequestFacade
 
 #Region " Methods "
 
-    Sub SaveAll(ByVal request As POLRequest)
+    Sub SaveAll(ByVal request As POLRequest, Optional ByVal excludeSender As Boolean = False)
         Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction()
         Try
             Me.Save(request, ProtDB, needTransaction:=False)
-            FacadeFactory.Instance.PosteOnLineContactFacade.SaveWithoutTransaction(request.Sender)
+
+            If Not excludeSender Then
+                'Sending TNotice will not have any information in the sender
+                FacadeFactory.Instance.PosteOnLineContactFacade.SaveWithoutTransaction(request.Sender)
+            End If
+
             For Each recipient As POLRequestContact In request.Recipients
                 FacadeFactory.Instance.PosteOnLineContactFacade.SaveWithoutTransaction(recipient)
             Next
@@ -36,12 +41,12 @@ Public Class PosteOnLineRequestFacade
         End Try
     End Sub
 
-    Public Function GetByProtocol(ByVal year As Short, ByVal number As Integer) As IList(Of POLRequest)
-        Return _dao.GetByProtocol(year, number)
+    Public Function GetByProtocol(idProtocol As Guid) As IList(Of POLRequest)
+        Return _dao.GetByProtocol(idProtocol)
     End Function
 
-    Public Function GetRecipientByProtocol(ByVal year As Short, ByVal number As Integer) As IList(Of POLRequestRecipientHeader)
-        Return _dao.GetRecipientsByProtocol(year, number)
+    Public Function GetRecipientByProtocol(idProtocol As Guid) As IList(Of POLRequestRecipientHeader)
+        Return _dao.GetRecipientsByProtocol(idProtocol)
     End Function
 
     Public Function Costi(ByVal dateFrom As DateTime?, ByVal dateTo As DateTime?) As IList(Of PolDtoCosti)
@@ -73,8 +78,8 @@ Public Class PosteOnLineRequestFacade
 
     Public Function SendLettera(dto As API.MailDTO, protocolDTO As API.ProtocolDTO) As Guid
         Dim pol As POLRequest = dto.ToPOLRequest(protocolDTO)
-        pol.ProtocolYear = protocolDTO.Year
-        pol.ProtocolNumber = protocolDTO.Number
+        Dim protocol As Protocol = FacadeFactory.Instance.ProtocolFacade.GetById(protocolDTO.UniqueId.Value)
+        pol.DocumentUnit = FacadeFactory.Instance.DocumentUnitFacade.GetById(protocol.Id)
         pol.RegistrationDate = Me._dao.GetServerDate()
         pol.Sender.RegistrationDate = pol.RegistrationDate
         For Each item As POLRequestRecipient In pol.Recipients
@@ -85,15 +90,15 @@ Public Class PosteOnLineRequestFacade
         Return pol.Id
     End Function
 
-    Public Function PairToProtocol(mail As POLRequest, year As Short, number As Integer) As POLRequest
-        If mail.ProtocolYear.HasValue AndAlso mail.ProtocolNumber.HasValue Then
+    Public Function PairToProtocol(mail As POLRequest, uniqueIdProtocol As Guid) As POLRequest
+        If mail.DocumentUnit IsNot Nothing Then
             Dim message As String = "Questa mail ha già un protocollo associato ({0})."
-            message = String.Format(message, ProtocolFacade.ProtocolFullNumber(year, number))
+            message = String.Format(message, uniqueIdProtocol)
             Throw New InvalidOperationException(message)
         End If
 
-        mail.ProtocolYear = year
-        mail.ProtocolNumber = number
+        Dim protocol As Protocol = FacadeFactory.Instance.ProtocolFacade.GetById(uniqueIdProtocol)
+        mail.DocumentUnit = FacadeFactory.Instance.DocumentUnitFacade.GetById(protocol.Id)
 
         Me.Update(mail)
         Return mail
@@ -106,7 +111,7 @@ Public Class PosteOnLineRequestFacade
 
         Dim polId As New Guid(mailDTO.Id)
         Dim mail As POLRequest = FacadeFactory.Instance.PosteOnLineRequestFacade.GetById(polId)
-        Dim updated As POLRequest = Me.PairToProtocol(mail, protocolDTO.Year.Value, protocolDTO.Number.Value)
+        Dim updated As POLRequest = Me.PairToProtocol(mail, protocolDTO.UniqueId.Value)
         Return updated.Id
     End Function
 

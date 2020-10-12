@@ -11,6 +11,7 @@ interface TemplateCollaboration {
     IsLocked: boolean;
     RegistrationUser: string;
     RegistrationDate: Date;
+    JsonParameters: string;
 }
 
 export = TemplateCollaboration;

@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscDocumentUpload
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''RadWindowManagerUpload control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerUpload As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''signWindow control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents signWindow As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowScannerDocument control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowScannerDocument As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowUploadDocument control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowUploadDocument As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowPreviewDocument control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowPreviewDocument As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowSharedFolder control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSharedFolder As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''wndCopyProtocol control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents wndCopyProtocol As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''wndCopyResl control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents wndCopyResl As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''wndCopySeries control.
     '''</summary>
@@ -102,7 +102,16 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents wndCopySeries As Global.Telerik.Web.UI.RadWindow
-    
+
+    '''<summary>
+    '''wndCopyUDS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents wndCopyUDS As Global.Telerik.Web.UI.RadWindow
+
     '''<summary>
     '''wndSelectTemplate control.
     '''</summary>
@@ -111,7 +120,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents wndSelectTemplate As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''pnlControl control.
     '''</summary>
@@ -120,7 +129,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlControl As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''tblHeader control.
     '''</summary>
@@ -129,7 +138,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblHeader As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''lblCaption control.
     '''</summary>
@@ -138,7 +147,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCaption As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblSendSourceDocument control.
     '''</summary>
@@ -147,7 +156,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSendSourceDocument As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''RadTreeViewDocument control.
     '''</summary>
@@ -156,7 +165,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadTreeViewDocument As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''tblButtons control.
     '''</summary>
@@ -165,7 +174,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblButtons As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''pnlButtons control.
     '''</summary>
@@ -174,7 +183,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnEditName control.
     '''</summary>
@@ -183,16 +192,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnEditName As Global.System.Web.UI.WebControls.ImageButton
-    
-    '''<summary>
-    '''btnSecureDocument control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnSecureDocument As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnAddDocumentScanner control.
     '''</summary>
@@ -201,7 +201,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAddDocumentScanner As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnAddDocument control.
     '''</summary>
@@ -210,7 +210,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAddDocument As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnUploadSharepoint control.
     '''</summary>
@@ -219,7 +219,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnUploadSharepoint As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnPrivacyLevel control.
     '''</summary>
@@ -228,7 +228,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnPrivacyLevel As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnRemoveDocument control.
     '''</summary>
@@ -237,7 +237,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnRemoveDocument As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnPreviewDoc control.
     '''</summary>
@@ -246,7 +246,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnPreviewDoc As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnSignDocument control.
     '''</summary>
@@ -255,7 +255,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSignDocument As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnImportSharedFolder control.
     '''</summary>
@@ -264,7 +264,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnImportSharedFolder As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnCopyProtocol control.
     '''</summary>
@@ -273,7 +273,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnCopyProtocol As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnCopyResl control.
     '''</summary>
@@ -282,7 +282,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnCopyResl As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnCopySeries control.
     '''</summary>
@@ -291,7 +291,16 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnCopySeries As Global.System.Web.UI.WebControls.ImageButton
-    
+
+    '''<summary>
+    '''btnCopyUDS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnCopyUDS As Global.System.Web.UI.WebControls.ImageButton
+
     '''<summary>
     '''btnImportContactManual control.
     '''</summary>
@@ -300,7 +309,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnImportContactManual As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnSelectTemplate control.
     '''</summary>
@@ -309,7 +318,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSelectTemplate As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''tblFrontespizio control.
     '''</summary>
@@ -318,7 +327,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblFrontespizio As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''btnFrontespizio control.
     '''</summary>
@@ -327,7 +336,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnFrontespizio As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnAddDocumentFile control.
     '''</summary>
@@ -336,7 +345,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAddDocumentFile As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''btnAddDocumentFileFDQ control.
     '''</summary>
@@ -345,7 +354,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAddDocumentFileFDQ As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''txtDocumentOK control.
     '''</summary>
@@ -354,7 +363,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtDocumentOK As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtFileName control.
     '''</summary>
@@ -363,7 +372,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtFileName As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtFileDateTime control.
     '''</summary>
@@ -372,7 +381,7 @@ Partial Public Class uscDocumentUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtFileDateTime As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''rfvDocument control.
     '''</summary>

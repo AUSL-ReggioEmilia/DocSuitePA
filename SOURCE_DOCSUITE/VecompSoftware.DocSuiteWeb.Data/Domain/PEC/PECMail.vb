@@ -144,20 +144,9 @@ Public Class PECMail
     ''' <remarks> <see cref="Multiple" /> </remarks>
     Public Overridable Property MultipleType As PecMailMultipleTypeEnum
 
-    Public Overridable Property IdUDSRepository As Guid?
-
-    Public Overridable Property IdUDS As Guid?
-
-    Public Overridable Property DocumentUnitType As DSWEnvironment?
-
-    ''' TODO: Da rimuovere assolutamente quando trovata la soluzione per leggere la registrationdate
-    ''' di protocollo e delle uds presenti. Probabilmente da gestire in fase di inserimento come nuova colonna.
-    Public Overridable Property ProtocolRegistrationDate As DateTimeOffset?
-    Public Overridable Property UDSRegistrationDate As DateTimeOffset?
     Public Overridable Property InvoiceStatus As InvoiceStatus?
 
-
-
+    Public Overridable Property DocumentUnit As DocumentUnit
 
 #End Region
 

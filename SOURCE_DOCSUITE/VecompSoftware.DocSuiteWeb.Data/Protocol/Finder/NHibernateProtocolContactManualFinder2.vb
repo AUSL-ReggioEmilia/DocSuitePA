@@ -48,12 +48,15 @@ Public Class NHibernateProtocolContactManualFinder2
     Public Function GetProtocolKeys() As IList(Of YearNumberCompositeKey)
         Dim criteria As ICriteria = CreateCriteria()
         DecorateCriteria(criteria)
-        criteria.SetProjection(Projections.Distinct(Projections.Property("PCM.Protocol.Id")))
+        criteria.SetProjection(Projections.ProjectionList() _
+            .Add(Projections.Property("P.Year"), "Year") _
+            .Add(Projections.Property("P.Number"), "Number"))
         Return criteria.List(Of YearNumberCompositeKey)()
     End Function
 
     Protected Overrides Function CreateCriteria() As ICriteria
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolContactManual)("PCM")
+        criteria.CreateAliasIfNotExists("PCM.Protocol", "P")
         Return criteria
     End Function
     Protected Overridable Sub DecorateCriteria(ByRef criteria As ICriteria)
@@ -61,7 +64,7 @@ Public Class NHibernateProtocolContactManualFinder2
             criteria.Add(Restrictions.In("PCM.Id", IdContactIn))
         End If
         If Year.HasValue Then
-            criteria.Add(Restrictions.Eq("PCM.Protocol.Id.Year", Year))
+            criteria.Add(Restrictions.Eq("P.Year", Year))
         End If
         If Not IdProtocolIn.IsNullOrEmpty() Then
             Dim disj As New Disjunction()
@@ -77,7 +80,7 @@ Public Class NHibernateProtocolContactManualFinder2
     End Sub
 
     Private Function GetRestrictionFrom(grouping As IGrouping(Of Short, YearNumberCompositeKey)) As AbstractCriterion
-        Return Restrictions.And(Restrictions.Eq("PCM.Protocol.Id.Year", grouping.Key), Restrictions.In("PCM.Protocol.Id.Number", grouping.Select(Function(k) k.Number).ToArray()))
+        Return Restrictions.And(Restrictions.Eq("P.Year", grouping.Key), Restrictions.In("P.Number", grouping.Select(Function(k) k.Number).ToArray()))
     End Function
 
 #End Region

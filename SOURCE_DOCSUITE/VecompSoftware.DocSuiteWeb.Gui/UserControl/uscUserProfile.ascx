@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="vb" AutoEventWireup="false" CodeBehind="uscUserProfile.ascx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.uscUserProfile" %>
 
 <%@ Register Src="~/UserControl/uscProtRicercaPreview.ascx" TagName="uscProtRicerca" TagPrefix="usc" %>
-
+<%@ Register Src="~/UserControl/uscContattiSel.ascx" TagPrefix="usc" TagName="SelContatti" %>
 <asp:Panel runat="server" ID="WarningPanel" CssClass="hiddenField">
     <asp:Label ID="WarningLabel" runat="server" />
 </asp:Panel>
@@ -74,13 +74,11 @@
 </telerik:RadCodeBlock>
 
 <style>
-    
-.localSplitterWrapper {
-    width: 100% !important;
-    height: 95%;
-    overflow: hidden;
-}
-
+    .localSplitterWrapper {
+        width: 100% !important;
+        height: 95%;
+        overflow: hidden;
+    }
 </style>
 
 <div class="localSplitterWrapper">
@@ -88,8 +86,8 @@
         <telerik:RadPane runat="server" Width="100%" Height="40px" Scrolling="None">
             <telerik:RadTabStrip runat="server" RenderMode="Lightweight" ID="radTabStrip" MultiPageID="radMultiPage" SelectedIndex="0" Skin="Silk">
                 <Tabs>
-                    <telerik:RadTab Text="Configurazione Utente" Value="UserConfigurationTab" Width="200px"></telerik:RadTab>
-                    <telerik:RadTab Text="Configurazione ricerca Protocollo" Value="AdaptiveProtSearchConfigurationTab" Width="250px"></telerik:RadTab>
+                    <telerik:RadTab Text="Configurazione utente" Value="UserConfigurationTab" Width="200px"></telerik:RadTab>
+                    <telerik:RadTab Text="Configurazione ricerca protocollo" Value="AdaptiveProtSearchConfigurationTab" Width="250px"></telerik:RadTab>
                 </Tabs>
             </telerik:RadTabStrip>
         </telerik:RadPane>
@@ -99,7 +97,7 @@
                     <asp:Panel runat="server" ID="pnlConsoleUserContainer">
                         <table class="datatable">
                             <tr>
-                                <th colspan="2">Dati Generali</th>
+                                <th colspan="2">Dati generali</th>
                             </tr>
                             <tr>
                                 <td class="label" style="width: 30%;">Nome utente:
@@ -125,12 +123,12 @@
                                 <td class="label" style="width: 30%;">Seleziona AOO di lavoro:
                                 </td>
                                 <td>
-                                    <telerik:RadDropDownList runat="server" ID="rlbSelectCompany" Width="300px" AutoPostBack="true" selected="true" DropDownHeight="200px" OnItemSelected="ChangeCompany" Visible="false">
+                                    <telerik:RadDropDownList runat="server" ID="rlbSelectCompany" Width="300px" AutoPostBack="true" selected="true" DropDownHeight="200px" Visible="false">
                                     </telerik:RadDropDownList>
                                 </td>
-                            </tr>                         
+                            </tr>
                             <tr runat="server" id="trFiscalCode" visible="false">
-                                <td class="label" style="width:30%;">Codice fiscale:</td>
+                                <td class="label" style="width: 30%;">Codice fiscale:</td>
                                 <td>
                                     <telerik:RadTextBox runat="server" ID="txtFiscalCode" Width="300px" AutoPostBack="true" />
                                 </td>
@@ -168,7 +166,7 @@
                                 <td class="label" style="width: 30%;">Pin
                                 </td>
                                 <td>
-                                    <asp:TextBox runat="server" ID="txtSignPassword" Width="300px" TextMode="Password" />
+                                    <asp:TextBox runat="server" ID="txtSignPassword" Width="300px" TextMode="Password"  />
 
                                 </td>
                             </tr>
@@ -176,7 +174,7 @@
                                 <td class="label" style="width: 30%;">Pin
                                 </td>
                                 <td>
-                                    <asp:TextBox runat="server" ID="txtSignPin" Width="100px" TextMode="Password" />
+                                    <asp:TextBox runat="server" ID="txtSignPin" Width="100px"  />
                                 </td>
                             </tr>
                             <tr id="saveTypeContainer">
@@ -203,7 +201,7 @@
                                         </Items>
                                     </telerik:RadDropDownList>
                                 </td>
-                            </tr>   
+                            </tr>
                             <tr id="arubaAutoContainer">
                                 <td class="label" style="width: 30%;">Dati dinamici di aruba:
                                 </td>
@@ -269,6 +267,42 @@
                             </tr>
                         </table>
 
+                        <table class="datatable" id="trRemoteSignDelegate" runat="server" visible="false">
+                            <tr>
+                                <th>Firmatari delegati:</th>
+                                <th>Deleghe:</th>
+                            </tr>
+                            <tr id="defaultContainer2">
+                                <td>
+                                    <usc:SelContatti Caption="" IsRequired="false"
+                                        ButtonSelectDomainVisible="true"
+                                        ButtonSelectVisible="false"
+                                        ButtonImportManualVisible="False"
+                                        ButtonIPAVisible="False"
+                                        ButtonRoleVisible="False"
+                                        ButtonSdiContactVisible="False"
+                                        ButtonImportVisible="False"
+                                        ButtonPropertiesVisible="False"
+                                        ButtonManualVisible="False"
+                                        ButtonSelectOChartVisible="False"
+                                        HeaderVisible="false" EnableCC="false" ID="uscRemoteDelegations" Multiple="true" MultiSelect="true" ProtType="True" runat="server" TreeViewCaption="Delegati" Type="Prot" />
+                                </td>
+                                <td>
+                                    <usc:SelContatti Caption="" IsRequired="false" ReadOnly="true"
+                                        ButtonSelectDomainVisible="false"
+                                        ButtonSelectVisible="false"
+                                        ButtonImportManualVisible="False"
+                                        ButtonIPAVisible="False"
+                                        ButtonRoleVisible="False"
+                                        ButtonSdiContactVisible="False"
+                                        ButtonImportVisible="False"
+                                        ButtonPropertiesVisible="False"
+                                        ButtonManualVisible="False"
+                                        ButtonSelectOChartVisible="False"
+                                        HeaderVisible="false" EnableCC="false" ID="uscRemoteBeenDelegated" Multiple="true" MultiSelect="true" ProtType="True" runat="server" TreeViewCaption="Mie deleghe" Type="Prot" />
+                                </td>
+                            </tr>
+                        </table>
                         <telerik:RadAjaxPanel runat="server" ID="pnlMobilePhone" Visible="false">
                             <table class="datatable">
                                 <tr>

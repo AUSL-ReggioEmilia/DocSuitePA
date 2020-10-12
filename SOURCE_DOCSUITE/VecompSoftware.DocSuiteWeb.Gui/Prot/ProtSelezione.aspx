@@ -92,7 +92,7 @@
                         <ItemStyle HorizontalAlign="Center" Width="25px" />
                         <ItemTemplate>
                             <asp:CheckBox ID="cbSelect" AutoPostBack="False" runat="server"></asp:CheckBox>
-                            <asp:HiddenField ID="hdId" runat="server" Value='<%# Eval("Year") & "|" & Eval("Number") %>' />
+                            <asp:HiddenField ID="hdId" runat="server" Value='<%# Eval("UniqueId") %>' />
                         </ItemTemplate>
                     </telerik:GridTemplateColumn>
                     <telerik:GridTemplateColumn AllowFiltering="false" CurrentFilterFunction="EqualTo" Groupable="false" HeaderText="Protocollo" SortExpression="Id" UniqueName="Id">
@@ -107,7 +107,7 @@
                         <ItemStyle HorizontalAlign="center"  width="150px" Wrap="false"  />
                         <ItemTemplate>
                             <asp:LinkButton runat="server" ID="lnkProtocol" Text='<%# Eval("Protocol")%>' CommandName="ShowProt"
-                                CommandArgument='<%# Eval("Year") & "|" & Eval("Number") %>'></asp:LinkButton>
+                                CommandArgument='<%# Eval("UniqueId") %>'></asp:LinkButton>
                         </ItemTemplate>
                     </telerik:GridTemplateColumn>
                     <telerik:GridDateTimeColumn AllowFiltering="false" CurrentFilterFunction="EqualTo" DataField="RegistrationDate" DataFormatString="{0:dd/MM/yyyy}" HeaderText="Data registrazione" SortExpression="RegistrationDate" UniqueName="RegistrationDate">
@@ -118,8 +118,8 @@
                         <HeaderStyle HorizontalAlign="Left"  width="100%"  />
                         <ItemStyle HorizontalAlign="Left"  width="100%" Wrap="false"  />
                         <ItemTemplate>
-                            <asp:ImageButton ID="imgDocument" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_pdf.png" Visible='<%# HasDocument(Eval("Year"), Eval("Number")) %>' CommandName="View" />
-                            <asp:Image runat="server" id="imgNoDocument" ImageUrl="~/Comm/Images/File/Missing16.gif" Visible='<%# Not HasDocument(Eval("Year"), Eval("Number")) %>'/>
+                            <asp:ImageButton ID="imgDocument" runat="server" ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_pdf.png" Visible='<%# HasDocument(Eval("UniqueId")) %>' CommandName="View" />
+                            <asp:Image runat="server" id="imgNoDocument" ImageUrl="~/Comm/Images/File/Missing16.gif" Visible='<%# Not HasDocument(Eval("UniqueId")) %>'/>
                         </ItemTemplate>
                     </telerik:GridTemplateColumn>
                 </Columns>

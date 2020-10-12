@@ -28,8 +28,8 @@
     Public Property ReceivedAsCc As Boolean?
     Public Property PECType As PECMailType
     Public Property IdUDSRepository As Guid?
-    Public Property IdUDS As Guid?
-    Public Property DocumentUnitType As DSWEnvironment?
+    Public Property IdDocumentUnit As Guid?
+    Public Property DocumentUnitType As Integer?
     Public Property UDSAlias As String
 #End Region
 

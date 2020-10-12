@@ -17,6 +17,7 @@
                     fascRisultati.btnDeselectAllId = "<%= btnDeselectAll.ClientID %>";
                     fascRisultati.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                     fascRisultati.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
+                    fascRisultati.backBtnId = "<%= backBtn.ClientID %>";
                     fascRisultati.initialize();
                 });                
             });
@@ -26,7 +27,12 @@
             }
 
             function CloseWindow(value) {
-                fascRisultati.closeWindow(value);
+                if ("<%= ChoiseFolderEnabled %>" != "true") {
+                    fascRisultati.closeWindow(value);
+                }
+                else {
+                    fascRisultati.loadFolders("<%= SelectedFascicleFolderId %>", "<%= CurrentFascicleId %>", value);
+                }
             }
         </script>
     </telerik:RadScriptBlock>
@@ -47,5 +53,6 @@
     <telerik:RadButton id="btnDocuments" runat="server" width="130px" text="Visualizza documenti" />
 	<telerik:RadButton id="btnSelectAll" runat="server" width="120px" text="Seleziona tutti"></telerik:RadButton>
 	<telerik:RadButton id="btnDeselectAll" runat="server" width="120px" text="Annulla selezione"></telerik:RadButton>
+    <telerik:RadButton runat="server" AutoPostBack="false" Visible="false" ID="backBtn" Text="Torna alla ricerca" />
     </asp:Panel>
 </asp:Content>

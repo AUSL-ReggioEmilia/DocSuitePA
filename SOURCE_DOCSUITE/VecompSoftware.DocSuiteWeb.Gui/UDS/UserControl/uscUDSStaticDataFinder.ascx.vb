@@ -27,6 +27,17 @@ Public Class uscUDSStaticDataFinder
         End Get
     End Property
 
+    Public ReadOnly Property DocumentName As String Implements IUDSFinderStaticData.DocumentName
+        Get
+            Return txtDocumentName.Text
+        End Get
+    End Property
+    Public ReadOnly Property GenericDocument As Boolean Implements IUDSFinderStaticData.GenericDocument
+        Get
+            Return chkGenericDocument.Checked
+        End Get
+    End Property
+
     Public ReadOnly Property Year As Double? Implements IUDSFinderStaticData.Year
         Get
             If txtYear.SelectedDate.HasValue Then
@@ -139,6 +150,8 @@ Public Class uscUDSStaticDataFinder
             txtRegistrationDateTo.SelectedDate = DetailsSearchModel.DateTo.Value.Date
         End If
         txtSubject.Text = DetailsSearchModel.Subject
+        txtDocumentName.Text = DetailsSearchModel.DocumentName
+        chkGenericDocument.Checked = DetailsSearchModel.GenericDocument
         chkStatus.Checked = DetailsSearchModel.IsCancelledArchive
         uscSelCategory.CategoryID = DetailsSearchModel.CategoryId
         uscSelCategory.InitializeRadTreeCategory()

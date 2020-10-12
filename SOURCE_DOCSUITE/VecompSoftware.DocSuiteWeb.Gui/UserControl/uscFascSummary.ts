@@ -3,32 +3,20 @@
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
 
 import FascicleModel = require('App/Models/Fascicles/FascicleModel');
-import DocumentUnitModel = require('App/Models/DocumentUnits/DocumentUnitModel');
-import Environment = require('App/Models/Environment');
 import FascicleService = require('App/Services/Fascicles/FascicleService');
+import DossierFolderService = require('App/Services/Dossiers/DossierFolderService');
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import FascicleType = require('App/Models/Fascicles/FascicleType');
-import FascicleReferenceType = require('App/Models/Fascicles/FascicleReferenceType');
-import DocumentUnitFilterModel = require('App/Models/DocumentUnits/DocumentUnitFilterModel');
 import DomainUserService = require('App/Services/Securities/DomainUserService');
 import DomainUserModel = require('App/Models/Securities/DomainUserModel');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
-import LinkedFasciclesViewModel = require('App/ViewModels/Fascicles/LinkedFasciclesViewModel');
-import ChainType = require('App/Models/DocumentUnits/ChainType');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
 import WorkflowPropertyHelper = require('App/Models/Workflows/WorkflowPropertyHelper');
-import WorkflowPropertyModel = require('App/Models/Workflows/WorkflowProperty');
 import WorkflowActivityService = require('App/Services/Workflows/WorkflowActivityService');
 import WorkflowActivityModel = require('App/Models/Workflows/WorkflowActivityModel');
-import RoleModel = require('App/Models/Commons/RoleModel');
-import WorkflowRoleModel = require('App/Models/Workflows/WorkflowRoleModel');
-import WorkflowRoleModelMapper = require('App/Mappers/Workflows/WorkflowRoleModelMapper');
-import FascicleRoleModel = require('App/Models/Fascicles/FascicleRoleModel');
-import WorkflowAuthorization = require('App/Models/Workflows/WorkflowAuthorizationModel');
-import FiltersGridUDFasciclesViewModelMapper = require('App/Mappers/Fascicles/FiltersGridUDFasciclesViewModelMapper');
-import FiltersGridUDFasciclesGridViewModel = require('App/ViewModels/Fascicles/FiltersGridUDFasciclesViewModel');
-import AjaxModel = require('App/Models/AjaxModel');
+import DossierFolderModel = require('App/Models/Dossiers/DossierFolderModel');
+import DossierFolderStatus = require('App/Models/Dossiers/DossierFolderStatus');
 
 class uscFascSummary {
     lblTitleId: string;
@@ -57,7 +45,10 @@ class uscFascSummary {
     fascCaptionId: string;
     containerRowId: string;
     lblContainerId: string;
+    serieLabelId: string;
+    serieLabelRowId: string;
     fascicleContainerEnabled: boolean;
+    processEnabled: boolean;
 
     public static LOADED_EVENT: string = "onLoaded";
     public static DATA_LOADED_EVENT: string = "onDataLoaded";
@@ -77,7 +68,9 @@ class uscFascSummary {
     private _lblLastChangedDate: JQuery;
     private _lblLastChangedUser: JQuery;
     private _lblRegistrationDate: JQuery;
+    private _lblSerieName: JQuery;
     private _service: FascicleService;
+    private _dossierFolderService: DossierFolderService;
     private _domainUserService: DomainUserService;
     private _serviceConfigurations: ServiceConfiguration[];
     private _uscNotification: UscErrorNotification
@@ -88,12 +81,16 @@ class uscFascSummary {
     private _fascInfoContent: JQuery;
     private _lblViewFascicle: JQuery;
 
-    private get lblContainer(): JQuery {
+    private lblContainer(): JQuery {
         return $(`#${this.lblContainerId}`);
     }
 
-    private get containerRow(): JQuery {
+    private containerRow(): JQuery {
         return $(`#${this.containerRowId}`);
+    }
+
+    private lblSerieNameRow(): JQuery {
+        return $(`#${this.serieLabelRowId}`);
     }
 
     /**
@@ -121,6 +118,7 @@ class uscFascSummary {
         this._lblLastChangedDate = $("#".concat(this.lblLastChangedDateId));
         this._lblLastChangedUser = $("#".concat(this.lblLastChangedUserId));
         this._lblRegistrationDate = $("#".concat(this.lblRegistrationDateId));
+        this._lblSerieName = $("#".concat(this.serieLabelId));
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._ajaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
         this._btnExpandFascInfo = <Telerik.Web.UI.RadButton>$find(this.btnExpandFascInfoId);
@@ -131,14 +129,21 @@ class uscFascSummary {
         this._fascInfoContent.show();
         this._lblViewFascicle = $("#".concat(this.lblViewFascicleId));
 
-        let domainUserConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DomainUserModel");
+        const dossierFolderServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DossierFolder");
+        this._dossierFolderService = new DossierFolderService(dossierFolderServiceConfiguration);
+
+        const domainUserConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DomainUserModel");
         this._domainUserService = new DomainUserService(domainUserConfiguration);
 
-        let workflowActivityConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowActivity');
+        const workflowActivityConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowActivity');
         this._workflowActivityService = new WorkflowActivityService(workflowActivityConfiguration);
 
         if (this.isSummaryLink) {
             $("#".concat(this.fascCaptionId)).hide();
+        }
+
+        if (this.processEnabled) {
+            this.lblSerieNameRow().show();
         }
 
         this.bindLoaded();
@@ -151,7 +156,7 @@ class uscFascSummary {
     /**
     * Evento al click del pulsante per la espandere o comprimere il sommario
     */
-    btnExpandFascInfo_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnExpandFascInfo_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         if (this._isFascInfoOpen) {
             this._isFascInfoOpen = false;
@@ -189,11 +194,11 @@ class uscFascSummary {
             return promise.resolve();
         }
 
-        $.when(this.getFascicleUserDisplayName(fascicle.RegistrationUser), this.getFascicleUserDisplayName(fascicle.LastChangedUser))
-            .done((registrationUser, lastChangedUser) => {
+        $.when(this.getFascicleUserDisplayName(fascicle.RegistrationUser), this.getFascicleUserDisplayName(fascicle.LastChangedUser), this.getFascicleSerieName(fascicle.UniqueId))
+            .done((registrationUser, lastChangedUser, serieName) => {
                 fascicle.RegistrationUser = registrationUser;
                 fascicle.LastChangedUser = lastChangedUser;
-                this.setSummaryData(fascicle)
+                this.setSummaryData(fascicle, serieName)
                     .done(() => promise.resolve())
                     .fail((exception) => {
                         this._uscNotification = <UscErrorNotification>$("#".concat(this.uscNotificationId)).data();
@@ -231,17 +236,39 @@ class uscFascSummary {
         return promise.promise();
     }
 
+    private getFascicleSerieName(fascicleId: string): JQueryPromise<string> {
+        let promise: JQueryDeferred<string> = $.Deferred<string>();
+        
+        this._dossierFolderService.getProcessByFascicleId(fascicleId,
+            (odataResult) => {
+                if (!odataResult.length) {
+                    return promise.resolve("");
+                }
+
+                const dossierFolder = odataResult[0];
+                const serieName: string = `${dossierFolder.Dossier.Subject}/${this.buildDossierProcessFullNameRecursive(dossierFolder.Dossier.DossierFolders, dossierFolder)}`;
+                return promise.resolve(serieName);
+            },
+            (exception: ExceptionDTO) => {
+                console.warn(`E' avvenuto un errore durante la ricerca della serie per fascicolo con id ${fascicleId}.`);
+                return promise.resolve("");
+            }
+        );
+        return promise.promise();
+    }
+
     /**
      * Imposta i dati nel sommario
      * @param fascicle
      */
-    private setSummaryData(fascicle: FascicleModel): JQueryPromise<void> {
+    private setSummaryData(fascicle: FascicleModel, serieName: string): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
 
         try {
             this._lblViewFascicle.hide();
             let title: string = `${fascicle.Title} - ${fascicle.Category.Name}`;
             this._lblTitle.html(title);
+            this._lblSerieName.html(serieName);
 
             if (this.isSummaryLink) {
                 this._lblTitle.hide();
@@ -295,12 +322,12 @@ class uscFascSummary {
             this._lblRegistrationDate.html(moment(fascicle.RegistrationDate).format("DD/MM/YYYY"));
             this._lblRegistrationUser.html(fascicle.RegistrationUser);
 
-            this.containerRow.hide();
+            this.containerRow().hide();
             if (this.fascicleContainerEnabled && (fascicle.FascicleType == FascicleType.Period
                 || fascicle.FascicleType == FascicleType.Procedure)
                 && fascicle.Container) {
-                this.containerRow.show();
-                this.lblContainer.html(fascicle.Container.Name);
+                this.containerRow().show();
+                this.lblContainer().html(fascicle.Container.Name);
             }
 
             if (!this.workflowActivityId) {
@@ -327,6 +354,30 @@ class uscFascSummary {
         } catch (exception) {
             return promise.reject(exception);
         }        
+    }
+
+    private buildDossierProcessFullNameRecursive(source: DossierFolderModel[], dossierFolder: DossierFolderModel): string {
+        let fullName: string = "";
+        let paths: string[] = dossierFolder.DossierFolderPath.split('/').filter((item, index) => {
+            return !!item;
+        });
+
+        if (paths.length > 1) {
+            paths.pop();
+            let folderPathToCheck: string = `/${paths.join('/')}/`;
+            let parentFolder: DossierFolderModel = source.filter((dossierFolder, index) => {
+                return dossierFolder.DossierFolderPath == folderPathToCheck;
+            })[0];
+
+            if (parentFolder && DossierFolderStatus[parentFolder.Status.toString()] != DossierFolderStatus.InProgress) {
+                let parentName: string = this.buildDossierProcessFullNameRecursive(source, parentFolder);
+                fullName = parentFolder.Name;
+                if (parentName) {
+                    fullName = `${parentName}/${parentFolder.Name}`;
+                }
+            }
+        }
+        return fullName;
     }
 }
 

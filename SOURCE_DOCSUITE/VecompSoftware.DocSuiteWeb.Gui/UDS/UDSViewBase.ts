@@ -1,7 +1,7 @@
 ﻿import ServiceConfiguration = require('App/Services/ServiceConfiguration');
-import UDSConnectionService = require("../App/Services/UDS/UDSConnectionService");
-import UDSRepositoryService = require('../App/Services/UDS/UDSRepositoryService');
-import ServiceConfigurationHelper = require('../App/Helpers/ServiceConfigurationHelper');
+import UDSConnectionService = require('App/Services/UDS/UDSConnectionService');
+import UDSRepositoryService = require('App/Services/UDS/UDSRepositoryService');
+import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 
 class UDSViewBase {
     protected static UDS_DOCUMENT_UNIT_NAME: string = "UDSDocumentUnit";

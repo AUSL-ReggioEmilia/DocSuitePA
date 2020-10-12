@@ -42,6 +42,18 @@ define(["require", "exports", "App/Models/Commons/CategoryModel", "App/Mappers/C
                 }
             }, error);
         };
+        CategoryService.prototype.getRolesByCategoryId = function (categoryId, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var qs = "$filter=EntityShortId eq " + categoryId + "&$expand=CategoryFascicles($expand=CategoryFascicleRights($expand=Role($expand=Father))),MetadataRepository,MassimarioScarto";
+            this.getRequest(url, qs, function (response) {
+                if (callback) {
+                    var instance = new CategoryModel();
+                    var categoryMapper = new CategoryModelMapper();
+                    instance = categoryMapper.Map(response.value[0]);
+                    callback(instance);
+                }
+            }, error);
+        };
         /**
          * Modifica un Classificatore esistente
          * @param model
@@ -73,7 +85,7 @@ define(["require", "exports", "App/Models/Commons/CategoryModel", "App/Mappers/C
         };
         CategoryService.prototype.findTreeCategories = function (finder, callback, error) {
             var url = this._configuration.ODATAUrl;
-            url = url.concat("/CategoryService.FindCategories(finder=@p0)?@p0=" + JSON.stringify(finder) + "&$orderby=FullCode");
+            url = url.concat("/CategoryService.FindCategories(finder=@p0)?@p0=" + JSON.stringify(finder) + "&$orderby=FullCode,Name");
             this.getRequest(url, undefined, function (response) {
                 if (callback) {
                     var instances = [];
@@ -82,6 +94,46 @@ define(["require", "exports", "App/Models/Commons/CategoryModel", "App/Mappers/C
                         instances = categoryMapper.MapCollection(response.value);
                     }
                     callback(instances);
+                }
+            }, error);
+        };
+        CategoryService.prototype.findFascicolableCategory = function (idCategory, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            url = url.concat("/CategoryService.FindFascicolableCategory(idCategory=" + idCategory + ")");
+            this.getRequest(url, undefined, function (response) {
+                if (callback) {
+                    var instance = void 0;
+                    if (response && response.value) {
+                        var categoryMapper = new CategoryTreeViewModelMapper();
+                        instance = categoryMapper.Map(response.value[0]);
+                    }
+                    callback(instance);
+                }
+            }, error);
+        };
+        CategoryService.prototype.getOnlyFascicolableCategories = function (tenantAOOId, callback, error) {
+            var url = this._configuration.ODATAUrl + "?$expand=CategoryFascicles,Parent&$filter=TenantAOO/UniqueId eq " + tenantAOOId + " and(CategoryFascicles/any(cf:cf/FascicleType ne 'SubFascicle'))&$orderby=FullCode,Name";
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    var categories = [];
+                    if (response && response.value) {
+                        var categoryMaper = new CategoryModelMapper();
+                        categories = categoryMaper.MapCollection(response.value);
+                    }
+                    callback(categories);
+                }
+            }, error);
+        };
+        CategoryService.prototype.getCategoriesByIds = function (categoryIds, tenantAOOId, callback, error) {
+            var url = this._configuration.ODATAUrl + "?$filter=TenantAOO/UniqueId eq " + tenantAOOId + " and EntityShortId in [" + categoryIds.join(",") + "]&$expand=CategoryFascicles,Parent&$orderby=FullCode,Name";
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    var categories = [];
+                    if (response && response.value) {
+                        var categoryMaper = new CategoryModelMapper();
+                        categories = categoryMaper.MapCollection(response.value);
+                    }
+                    callback(categories);
                 }
             }, error);
         };

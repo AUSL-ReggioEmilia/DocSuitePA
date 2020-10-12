@@ -2,14 +2,13 @@
 import WorkflowActivityService = require('App/Services/Workflows/WorkflowActivityService');
 import EnumHelper = require("App/Helpers/EnumHelper");
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
-import ActivityType = require('App/Models/Workflows/ActivityType');
 import WorkflowActivityModel = require("App/Models/Workflows/WorkflowActivityModel");
-import WorkflowPriorityType = require('../App/Models/Workflows/WorkflowPriorityType');
+import WorkflowPriorityType = require('App/Models/Workflows/WorkflowPriorityType');
 import WorkflowPropertyHelper = require('App/Models/Workflows/WorkflowPropertyHelper');
-import WorkflowAccountModel = require('../App/Models/Workflows/WorkflowAccountModel');
-import WorkflowAccountAngularModel = require('../App/Models/Workflows/WorkflowAccountAngularModel');
-import WorkflowReferenceModel = require('../App/Models/Workflows/WorkflowReferenceModel');
-import WorkflowDocumentModel = require('../App/Models/Commons/WorkflowDocumentModel');
+import WorkflowAccountModel = require('App/Models/Workflows/WorkflowAccountModel');
+import WorkflowAccountAngularModel = require('App/Models/Workflows/WorkflowAccountAngularModel');
+import WorkflowReferenceModel = require('App/Models/Workflows/WorkflowReferenceModel');
+import WorkflowDocumentModel = require('App/Models/Commons/WorkflowDocumentModel');
 import ChainType = require('App/Models/DocumentUnits/ChainType');
 import DocumentModel = require('App/Models/Commons/DocumentModel');
 import WorkflowProperty = require('App/Models/Workflows/WorkflowProperty');
@@ -24,6 +23,10 @@ import WorkflowNotifyService = require('App/Services/Workflows/WorkflowNotifySer
 import WorkflowNotifyModel = require('App/Models/Workflows/WorkflowNotifyModel');
 import ArgumentType = require('App/Models/Workflows/ArgumentType');
 import Environment = require('App/Models/Environment');
+import UscErrorNotification = require('UserControl/uscErrorNotification');
+import ExceptionDTO = require('App/DTOs/ExceptionDTO');
+import WorkflowActivityLogService = require('App/Services/Workflows/WorkflowActivityLogService');
+import UscUploadDocumentRest = require('UserControl/uscUploadDocumentRest');
 
 class WorkflowActivitySummary {
     ddlNameWorkflowId: string;
@@ -41,6 +44,7 @@ class WorkflowActivitySummary {
     cmdApproveId: string;
     cmdSignId: string;
     cmdCompleteActivityId: string;
+    uscNotificationId: string;
 
     activityDateId: string;
     tlrDateId: string;
@@ -53,6 +57,7 @@ class WorkflowActivitySummary {
     treeDocumentsId: string;
     treeProponenteId: string;
     treeDestinatariId: string;
+    logTreeId: string;
 
     ajaxLoadingPanelId: string;
 
@@ -76,6 +81,7 @@ class WorkflowActivitySummary {
     private _btnSign: Telerik.Web.UI.RadButton;
     private _btnCompleteActivity: Telerik.Web.UI.RadButton;
     private _btnManageActivity: Telerik.Web.UI.RadButton;
+    private _logTree: Telerik.Web.UI.RadTreeView;
 
     private _activityDateId: JQuery;
     private _tlrDateId: JQuery;
@@ -84,8 +90,15 @@ class WorkflowActivitySummary {
     private _service: WorkflowActivityService;
     private _enumHelper: EnumHelper;
     private _workflowNotifyService: WorkflowNotifyService;
+    private _workflowActivityLog: WorkflowActivityLogService;
+
+    private static WORKFLOW_ACTIVITY_EXPAND_PROPERTIES: string[] =
+        [
+            "WorkflowProperties", "WorkflowAuthorizations", "WorkflowInstance($expand=WorkflowRepository)"
+        ];
 
     workflowActivity: WorkflowActivityModel;
+    workflowActivityDoneLog: WorkflowActivityModel;
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         this._serviceConfigurations = serviceConfigurations;
@@ -99,6 +112,10 @@ class WorkflowActivitySummary {
 
         let serviceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowActivity");
         this._service = new WorkflowActivityService(serviceConfiguration);
+
+        let workflowActivityLogserviceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowActivityLog");
+        this._workflowActivityLog = new WorkflowActivityLogService(workflowActivityLogserviceConfiguration);
+
 
         let workflowNotifyConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowNotify');
         this._workflowNotifyService = new WorkflowNotifyService(workflowNotifyConfiguration);
@@ -134,6 +151,7 @@ class WorkflowActivitySummary {
         this._lblActivityDate = <JQuery>$(`#${this.lblActivityDateId}`);
         this._uscProponenteId = <JQuery>$(`#${this.uscProponenteId}`);
         this._uscDestinatariId = <JQuery>$(`#${this.uscDestinatariId}`);
+        this._logTree = <Telerik.Web.UI.RadTreeView>$find(this.logTreeId);
 
         this._tdpDateId = <Telerik.Web.UI.RadDatePicker>$find(this.tdpDateId);
 
@@ -148,15 +166,12 @@ class WorkflowActivitySummary {
 
         this._activityDateId = <JQuery>$(`#${this.activityDateId}`);
         this._tlrDateId = <JQuery>$(`#${this.tlrDateId}`);
-   
+
         this.documentSection.hidden = true;
 
-        this._btnCompleteActivity.set_visible(false);
-        this._btnApprove.set_visible(false);
-        this._btnRefuse.set_visible(false);
-        this._btnSign.set_visible(false);
-
-        this.loadData(uniqueId);
+               
+        this.createNode("Attività gestita in", () => this.loadWorkflowActivitiesDoneLogCount(uniqueId, WorkflowStatus.Done));
+        this.loadData(uniqueId, WorkflowStatus.Done);
     }
 
     private getUrlParams(URL: string): string {
@@ -166,7 +181,14 @@ class WorkflowActivitySummary {
         return value;
     }
 
-    private loadData(uniqueId: string): void {
+    private loadWorkflowActivitiesDoneLogCount(uniqueId: string, workflowStatus: WorkflowStatus) {
+        this._workflowActivityLog.countWorkflowActivityByLogType(uniqueId, workflowStatus, (data) => {
+            let parentNode = this._logTree.get_nodes().getNode(0);
+            parentNode.set_text(`Attività gestita in (${data})`);
+        });
+    }
+
+    private loadData(uniqueId: string, workflowStatus: WorkflowStatus): void {
         this._loadingPanel.show(this.mainContainerId);
         this._service.getWorkflowActivityById(uniqueId, (data) => {
             if (!data) return;
@@ -249,7 +271,7 @@ class WorkflowActivitySummary {
             this._treeDestinatariId.get_nodes().getNode(0).expand();
             node.disable();
             node.set_imageUrl("../Comm/Images/Interop/AdAm.gif");
-            this._treeDestinatariId.commitChanges()
+            this._treeDestinatariId.commitChanges();
 
             let workflowRepositoryDate = this.workflowActivity.DueDate;
             let date;
@@ -263,7 +285,7 @@ class WorkflowActivitySummary {
                 this._rtbNoteId.set_textBoxValue(workflowNoteJson.ValueString);
                 this._rtbNoteId.disable();
             }
-            
+
             let workflowParere: WorkflowProperty = this.workflowActivity.WorkflowProperties.filter(x => x.Name === WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_MOTIVATION)[0];
             this._rtbParereId.set_textBoxValue("");
             if (workflowParere) {
@@ -282,13 +304,13 @@ class WorkflowActivitySummary {
             if (ActivityAction[this.workflowActivity.ActivityAction.toString()] == approveAction) {
                 this._activityDateId.hide();
                 if (!workflowAcceptanceJson) {
-                    this._btnApprove.set_visible(true);
-                    this._btnRefuse.set_visible(true);
+                    $(`#${this.cmdApproveId}`).show();
+                    $(`#${this.cmdRefuseId}`).show();
                 }
             }
 
             if (ActivityAction[this.workflowActivity.ActivityAction.toString()] == signAction) {
-                this._btnSign.set_visible(true);
+                $(`#${this.cmdSignId}`).show();
                 this._tlrDateId.hide();
                 if (this._btnDocuments.get_enabled()) {
                     this._btnSign.set_enabled(true);
@@ -300,7 +322,7 @@ class WorkflowActivitySummary {
 
             if (ActivityAction[this.workflowActivity.ActivityAction.toString()] == creatAction) {
                 this.documentSection.hidden = false;
-                this._btnCompleteActivity.set_visible(true);
+                $(`#${this.cmdCompleteActivityId}`).show();
 
                 let enableButtons: boolean = this.workflowActivity.WorkflowAuthorizations.filter(x => this.currentUser.toLocaleLowerCase() == x.Account.toLocaleLowerCase()).length == 1;
 
@@ -309,7 +331,38 @@ class WorkflowActivitySummary {
                     this._rtbParereId.disable();
                 }
             }
+        }, this._handleException, WorkflowActivitySummary.WORKFLOW_ACTIVITY_EXPAND_PROPERTIES);
+
+        this._service.getWorkflowActivityByLogType(uniqueId, workflowStatus, (data) => {
+            if (!data) return;
+            this.workflowActivityDoneLog = data;
+
+                for (let wfaDoneLog of this.workflowActivityDoneLog.WorkflowActivityLogs) {
+                    let wtfDoneLogName: string = `Attività gestita da ${wfaDoneLog.RegistrationUser} in ${moment(wfaDoneLog.RegistrationDate).format("DD/MM/YYYY")} in ${wfaDoneLog.LogDescription}`;
+                    let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+                    node.set_text(wtfDoneLogName);
+                    this._logTree.get_nodes().getNode(0).set_expanded(true);
+                    this._logTree.get_nodes().getNode(0).get_nodes().add(node);
+
+                    this._logTree.commitChanges();
+            }
+
         });
+    }
+
+    private _handleException = (exception: ExceptionDTO): void => {
+        let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(this.uscNotificationId)).data();
+        if (!jQuery.isEmptyObject(uscNotification)) {
+            uscNotification.showNotification(exception);
+        }
+    }
+
+    private createNode(nodeText: string, callback: any) {
+        let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+        node.set_text(nodeText);
+        node.set_cssClass("font_node");
+        this._logTree.get_nodes().add(node);
+        callback();
     }
 
     private populateAcceptanceModel(acceptanceStatus: AcceptanceStatus) {
@@ -363,7 +416,7 @@ class WorkflowActivitySummary {
 
         workflowNotifyModel.OutputArguments = {};
         workflowNotifyModel.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACCEPTANCE] = _dsw_e_Acceptance;
-        
+
         this._workflowNotifyService.notifyWorkflow(workflowNotifyModel, (data) => {
             if (acceptanceStatus == AcceptanceStatus.Accepted) {
                 alert("Attività approvata con successo");
@@ -375,19 +428,19 @@ class WorkflowActivitySummary {
         });
     }
 
-    btnDocuments_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnDocuments_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         window.location.href = `../Viewers/WorkflowActivityViewer.aspx?Title=${this.workflowActivity.WorkflowInstance.WorkflowRepository.Name}&IdWorkflowActivity=${this.workflowActivity.UniqueId}&IdArchiveChain=${this.workflowActivity.IdArchiveChain}`;
     }
 
-    btnRefuse_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnRefuse_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this.populateAcceptanceModel(AcceptanceStatus.Refused);
     }
 
-    btnApprove_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnApprove_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this.populateAcceptanceModel(AcceptanceStatus.Accepted);
     }
 
-    btnSign_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnSign_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         let url: string = `../Comm/SingleSignRest.aspx?IdChain=${this.workflowActivity.IdArchiveChain}`;
         this.openWindow(url, "singleSign", 750, 300);
     }
@@ -401,7 +454,7 @@ class WorkflowActivitySummary {
         return false;
     }
 
-    btnCompleteActivity_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnCompleteActivity_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         if (this._rtbParereId.get_textBoxValue() == "") {
             alert("Il campo rispondi e obbligatorio");
             return;
@@ -467,9 +520,13 @@ class WorkflowActivitySummary {
         documentReferenceModel.ReferenceModel = encodedDocuments;
 
         let dsw_e_ActivityEndReferenceModel: WorkflowPropertyModel = <WorkflowPropertyModel>{};
-        dsw_e_ActivityEndReferenceModel.Name = WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL;
-        dsw_e_ActivityEndReferenceModel.PropertyType = ArgumentType.Json;
-        dsw_e_ActivityEndReferenceModel.ValueString = JSON.stringify(documentReferenceModel);
+
+        let documents: any = JSON.parse(documentReferenceModel.ReferenceModel);
+        if (documents.Documents[0].Value.FileName.length != 0) {
+            dsw_e_ActivityEndReferenceModel.Name = WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL;
+            dsw_e_ActivityEndReferenceModel.PropertyType = ArgumentType.Json;
+            dsw_e_ActivityEndReferenceModel.ValueString = JSON.stringify(documentReferenceModel);
+        }
 
         let dsw_p_Accounts: WorkflowPropertyModel = <WorkflowPropertyModel>{};
         dsw_p_Accounts.Name = WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS;
@@ -480,10 +537,12 @@ class WorkflowActivitySummary {
         dsw_p_Subject.Name = WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT;
         dsw_p_Subject.PropertyType = ArgumentType.PropertyString;
         dsw_p_Subject.ValueString = dsw_e_ActivityEndMotivation.ValueString;
-
+        
         workflowNotify.OutputArguments = {};
         workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_MOTIVATION] = dsw_e_ActivityEndMotivation;
-        workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL] = dsw_e_ActivityEndReferenceModel;
+        if (documents.Documents[0].Value.FileName.length != 0) {
+            workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL] = dsw_e_ActivityEndReferenceModel;
+        }
         workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS] = dsw_p_Accounts;
         workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT] = dsw_p_Subject;
 
@@ -492,15 +551,10 @@ class WorkflowActivitySummary {
                 alert("Attività completata con successo");
                 this._loadingPanel.hide(this.mainContainerId);
                 window.location.href = "../User/UserWorkflow.aspx?Type=Comm";
-            },
-            (error) => {
-                this._loadingPanel.hide(this.mainContainerId);
-                console.log(error);
-            }
-        );
+            }, this._handleException);
     }
 
-    btnManageActivity_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnManageActivity_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         window.location.href = `../Workflows/WorkflowActivityManage.aspx?&IdWorkflowActivity=${this.workflowActivity.UniqueId}&IdChain=${this.workflowActivity.IdArchiveChain}`;
     }
 

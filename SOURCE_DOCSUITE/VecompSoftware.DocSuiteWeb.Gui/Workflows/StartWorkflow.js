@@ -48,10 +48,6 @@ define(["require", "exports", "App/Helpers/ErrorHelper", "UserControl/uscStartWo
                 uscStartWorkflow.loadData();
             }
         };
-        StartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL = "DocumentsReferenceModel";
-        StartWorkflow.SESSION_KEY_REFERENCE_MODEL = "ReferenceModel";
-        StartWorkflow.SESSION_KEY_REFERENCE_ID = "ReferenceId";
-        StartWorkflow.SESSION_KEY_REFERENCE_TITLE = "ReferenceTitle";
         return StartWorkflow;
     }());
     return StartWorkflow;

@@ -17,12 +17,28 @@
             for (var i = 0; i < controlList.length; i++) {
                 if (controlList[i].ControlName === "RadDropDownList") {
                     for (var j = 0; j < metadataModel[0].Items.length; j++) {
-                        if (controlList[i].ClientID.endsWith(metadataModel[0].Items[j].ColumnName.toLowerCase())) {
-                            let ctrl = $find(controlList[i].ClientID);
-                            ctrl.findItemByText(metadataModel[0].Items[j].Value).select();
+                        var metadataItem = metadataModel[0].Items[j];
+                        if (controlList[i].ClientID.endsWith(metadataItem.ColumnName.toLowerCase())) {
+                            var ctrl = $find(controlList[i].ClientID);
+                            for (var k = 0; k < ctrl.get_items().get_count(); k++) {
+                                var ctrlItem = ctrl.get_items().getItem(k);
+                                var value = getMetadataValue(metadataItem.Value);
+                                if (ctrlItem.get_text() === value) {
+                                    ctrlItem.select();
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
+            }
+        }
+
+        function getMetadataValue(str) {
+            try {
+                return JSON.parse(str)[0];
+            } catch (e) {
+                return str;
             }
         }
     </script>

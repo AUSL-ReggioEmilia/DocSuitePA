@@ -9,6 +9,7 @@ using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS;
 using VecompSoftware.DocSuiteWeb.DTO.UDS;
 using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
+using VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI;
 using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
 using VecompSoftware.DocSuiteWeb.Model.WebAPI.Client;
 using VecompSoftware.Helpers.ExtensionMethods;
@@ -38,6 +39,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
         private UDSMessageFinder _udsMessageFinder;
         private UDSPECMailFinder _udsPECMailFinder;
         private UDSDocumentUnitFinder _udsDocumentUnitFinder;
+        private UDSCollaborationFinder _udsCollaborationFinder;
         #endregion
 
         #region [ Properties ]
@@ -114,6 +116,18 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
                 return _udsDocumentUnitFinder;
             }
         }
+
+        protected UDSCollaborationFinder UDSCollaborationFinder
+        {
+            get
+            {
+                if (_udsCollaborationFinder == null)
+                {
+                    _udsCollaborationFinder = new UDSCollaborationFinder(DocSuiteContext.Current.Tenants);
+                }
+                return _udsCollaborationFinder;
+            }
+        }
         #endregion
 
         #region [ Construcor ]
@@ -156,6 +170,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
             FillMessages(entityDto, udsModel);
             FillPECMails(entityDto, udsModel);
             FillProtocols(entityDto, udsModel);
+            FillCollaborations(entityDto, udsModel);
 
             UDSDto dto = new UDSDto()
             {
@@ -176,7 +191,8 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
                 Documents = entityDto.Documents,
                 Messages = entityDto.Messages,
                 PecMails = entityDto.PecMails,
-                DocumentUnits = entityDto.DocumentUnits,
+                Collaborations = entityDto.Collaborations,
+                DocumentUnits = entityDto.DocumentUnits,                
                 UDSModel = udsModel
             };
 
@@ -251,10 +267,15 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
                 return;
             }
 
-            UDSContactFinder.IdUDS = entityDto.Id;
-            UDSContactFinder.EnablePaging = false;
-            UDSContactFinder.ExpandRelation = true;
-            ICollection<WebAPIDto<UDSContact>> result = UDSContactFinder.DoSearch();
+            ICollection<WebAPIDto<UDSContact>> result = WebAPIImpersonatorFacade.ImpersonateFinder(UDSContactFinder,
+                    (impersonationType, finder) =>
+                    {
+                        finder.ResetDecoration();
+                        finder.IdUDS = entityDto.Id;
+                        finder.EnablePaging = false;
+                        finder.ExpandRelation = true;
+                        return finder.DoSearch();
+                    });
 
             if (result == null || !result.Select(s => s.Entity).Any())
             {
@@ -299,10 +320,15 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
         {
             ICollection<UDSRole> roles = new List<UDSRole>();
 
-            UDSRoleFinder.IdUDS = entityDto.Id;
-            UDSRoleFinder.EnablePaging = false;
-            UDSRoleFinder.ExpandRelation = true;
-            ICollection<WebAPIDto<UDSRole>> result = UDSRoleFinder.DoSearch();
+            ICollection<WebAPIDto<UDSRole>> result = WebAPIImpersonatorFacade.ImpersonateFinder(UDSRoleFinder,
+                    (impersonationType, finder) =>
+                    {
+                        finder.ResetDecoration();
+                        finder.IdUDS = entityDto.Id;
+                        finder.EnablePaging = false;
+                        finder.ExpandRelation = true;
+                        return finder.DoSearch();
+                    });
 
             if (result == null)
             {
@@ -324,10 +350,15 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 
         private void FillMessages(UDSEntityDto entityDto, UDSModel model)
         {
-            UDSMessageFinder.IdUDS = entityDto.Id;
-            UDSMessageFinder.EnablePaging = false;
-            UDSMessageFinder.ExpandRelation = true;
-            ICollection<WebAPIDto<UDSMessage>> result = UDSMessageFinder.DoSearch();
+            ICollection<WebAPIDto<UDSMessage>> result = WebAPIImpersonatorFacade.ImpersonateFinder(UDSMessageFinder,
+                    (impersonationType, finder) =>
+                    {
+                        finder.ResetDecoration();
+                        finder.IdUDS = entityDto.Id;
+                        finder.EnablePaging = false;
+                        finder.ExpandRelation = true;
+                        return finder.DoSearch();
+                    });
 
             if (result == null || !result.Select(s => s.Entity).Any())
             {
@@ -342,10 +373,15 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 
         private void FillPECMails(UDSEntityDto entityDto, UDSModel model)
         {
-            UDSPECMailFinder.IdUDS = entityDto.Id;
-            UDSPECMailFinder.EnablePaging = false;
-            UDSPECMailFinder.ExpandRelation = true;
-            ICollection<WebAPIDto<UDSPECMail>> result = UDSPECMailFinder.DoSearch();
+            ICollection<WebAPIDto<UDSPECMail>> result = WebAPIImpersonatorFacade.ImpersonateFinder(UDSPECMailFinder,
+                    (impersonationType, finder) =>
+                    {
+                        finder.ResetDecoration();
+                        finder.IdUDS = entityDto.Id;
+                        finder.EnablePaging = false;
+                        finder.ExpandRelation = true;
+                        return finder.DoSearch();
+                    });
 
             if (result == null || !result.Select(s => s.Entity).Any())
             {
@@ -360,11 +396,16 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 
         private void FillProtocols(UDSEntityDto entityDto, UDSModel model)
         {
-            UDSDocumentUnitFinder.IdUDS = entityDto.Id;
-            UDSDocumentUnitFinder.EnablePaging = false;
-            UDSDocumentUnitFinder.ExpandRelation = true;
-            UDSDocumentUnitFinder.DocumentUnitTypes = new List<Entity.UDS.UDSRelationType>() { Entity.UDS.UDSRelationType.Protocol, Entity.UDS.UDSRelationType.ArchiveProtocol, Entity.UDS.UDSRelationType.ProtocolArchived };
-            ICollection<WebAPIDto<UDSDocumentUnit>> result = UDSDocumentUnitFinder.DoSearch();
+            ICollection<WebAPIDto<UDSDocumentUnit>> result = WebAPIImpersonatorFacade.ImpersonateFinder(UDSDocumentUnitFinder,
+                    (impersonationType, finder) =>
+                    {
+                        finder.ResetDecoration();
+                        finder.IdUDS = entityDto.Id;
+                        finder.EnablePaging = false;
+                        finder.ExpandRelation = true;
+                        finder.DocumentUnitTypes = new List<Entity.UDS.UDSRelationType>() { Entity.UDS.UDSRelationType.Protocol, Entity.UDS.UDSRelationType.ArchiveProtocol, Entity.UDS.UDSRelationType.ProtocolArchived };
+                        return finder.DoSearch();
+                    });
 
             if (result == null || !result.Select(s => s.Entity).Any())
             {
@@ -376,7 +417,28 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
             model.FillProtocols(referenceModels);
             entityDto.DocumentUnits = entityDto.DocumentUnits.Concat(documentUnits.Select(s => new UDSEntityDocumentUnitDto() { UniqueId = s.Relation.UniqueId, UDSDocumentUnitId = s.UniqueId, RelationType = Model.Entities.UDS.UDSRelationType.Protocol })).ToList();
         }
+        private void FillCollaborations(UDSEntityDto entityDto, UDSModel model)
+        {
+            ICollection<WebAPIDto<UDSCollaboration>> result = WebAPIImpersonatorFacade.ImpersonateFinder(UDSCollaborationFinder,
+                    (impersonationType, finder) =>
+                    {
+                        finder.ResetDecoration();
+                        finder.IdUDS = entityDto.Id;
+                        finder.EnablePaging = false;
+                        finder.ExpandRelation = true;
+                        return finder.DoSearch();
+                    });
 
+            if (result == null || !result.Select(s => s.Entity).Any())
+            {
+                return;
+            }
+
+            ICollection<UDSCollaboration> collaborations = result.Select(s => s.Entity).ToList();
+            IEnumerable<ReferenceModel> referenceModels = collaborations.Select(s => new ReferenceModel() { EntityId = s.Relation.EntityId, UniqueId = s.Relation.UniqueId });
+            model.FillCollaborations(referenceModels);
+            entityDto.Collaborations = result.Select(s => s.Entity).Select(s => new UDSEntityCollaborationDto() { IdCollaboration = s.Relation.EntityId, UniqueId = s.UniqueId }).ToArray();
+        }
 
         /// <summary>
         /// Deserializza una struttura JSON di tipo UDSWorkflowModel recuperata da Workflow (property).
@@ -412,7 +474,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
                 }
             }
 
-            if (udsModel.Model.Contacts != null)
+            if (udsModel.Model.Contacts != null && model.Contact != null)
             {
                 //todo: sarà sempre e solo un singolo contatto?
                 Contacts contact = udsModel.Model.Contacts.FirstOrDefault();
@@ -439,10 +501,6 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
         public UDSDto GetUDSSource(Data.Entity.UDS.UDSRepository udsRepository, string odataFilter)
         {
             string controllerName = Utils.GetWebAPIControllerName(udsRepository.Name);
-            if (char.IsDigit(controllerName.ElementAt(0)))
-            {
-                controllerName = $"_{controllerName}";
-            }
             IBaseAddress webApiAddress = DocSuiteContext.Current.CurrentTenant.WebApiClientConfig.Addresses.FirstOrDefault(x => x.AddressName.Eq(UDS_ADDRESS_NAME));
             WebApiControllerEndpoint udsEndpoint = new WebApiControllerEndpoint
             {
@@ -455,8 +513,8 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
             customHttpConfiguration.Addresses.Add(webApiAddress);
             customHttpConfiguration.EndPoints.Add(udsEndpoint);
 
-            odataFilter = string.Concat(odataFilter, "&applySecurity='0'");
-            string jsonSource = WebAPIHelper.GetRequest<UDSModel, string>(customHttpConfiguration, customHttpConfiguration, odataFilter);
+            odataFilter = string.Concat("?", odataFilter, "&applySecurity='0'");
+            string jsonSource = WebAPIImpersonatorFacade.ImpersonateRawRequest<UDSModel, string>(WebAPIHelper, odataFilter, customHttpConfiguration);
             if (string.IsNullOrEmpty(jsonSource))
             {
                 return null;
@@ -470,19 +528,21 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
             IList<DocumentInstance> documentInstances = new List<DocumentInstance>();
             if (documents.Any())
             {
+                BiblosDocumentInfo documentStored = null;
                 foreach (DocumentInfo document in documents)
                 {
                     if (document is BiblosPdfDocumentInfo)
                     {
+                        documentStored = document.ArchiveInBiblos(CommonShared.CurrentWorkflowLocation.ProtBiblosDSDB, Guid.Empty);
                         documentInstances.Add(new DocumentInstance
                         {
-                            DocumentContent = Convert.ToBase64String(document.Stream),
-                            DocumentName = document.Name
+                            IdDocumentToStore = documentStored.DocumentId.ToString(),
+                            DocumentName = document.Name,
                         });
                     }
                     else
                     {
-                        documentInstances.Add(new DocumentInstance { IdDocument = ((BiblosDocumentInfo)document).DocumentId.ToString() });
+                        documentInstances.Add(new DocumentInstance { StoredChainId = ((BiblosDocumentInfo)document).DocumentId.ToString() });
                     }
                 }
             }
@@ -531,7 +591,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
             IList<BiblosDocumentInfo> bibDocs;
             foreach (DocumentInstance instance in document.Instances)
             {
-                bibDocs = BiblosDocumentInfo.GetDocumentsLatestVersion(String.Empty, Guid.Parse(instance.IdDocument));
+                bibDocs = BiblosDocumentInfo.GetDocumentsLatestVersion(Guid.Parse(instance.StoredChainId));
                 foreach (BiblosDocumentInfo doc in bibDocs)
                 {
                     docInfos.Add(doc);

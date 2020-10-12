@@ -39,10 +39,10 @@ Public Class DocmVersioning
         Dim document As Document = Facade.DocumentFacade.GetById(year, number)
         Dim documentObject As DocumentObject = Facade.DocumentObjectFacade.GetById(New YearNumberIncrCompositeKey(year, number, incremental))
 
-        Dim documentInfo As New BiblosDocumentInfo(document.Location.DocumentServer, document.Location.DocmBiblosDSDB, documentObject.idBiblos)
+        Dim documentInfo As New BiblosDocumentInfo(document.Location.DocmBiblosDSDB, documentObject.idBiblos)
 
-        Dim parameters As String = String.Format("servername={0}&guid={1}&label={2}", documentInfo.Server, documentInfo.ChainId, "Documenti")
-        Response.Redirect("~/Viewers/BiblosViewer.aspx?" & CommonShared.AppendSecurityCheck(parameters))
+        Dim parameters As String = $"guid={documentInfo.ChainId}&label=Documenti"
+        Response.Redirect($"~/Viewers/BiblosViewer.aspx?{CommonShared.AppendSecurityCheck(parameters)}")
     End Sub
 
 #End Region

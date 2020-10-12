@@ -10,17 +10,12 @@ define(["require", "exports"], function (require, exports) {
            *------------------------- Events -----------------------------
            */
             this.initializeDetailsCallback = function (nodeType) {
+                _this.initializeSpecialToolbarAction();
                 if (nodeType && nodeType == 'Root') {
-                    _this._btnCopyFromUser.set_visible(false);
-                    _this._btnGroupsAdd.set_visible(false);
-                    _this._btnGuidedGroupsAdd.set_visible(false);
-                    _this._btnDelete.set_visible(false);
+                    _this._updateActionButtonsVisibility(false);
                     return;
                 }
-                _this._btnCopyFromUser.set_visible(true);
-                _this._btnGroupsAdd.set_visible(true);
-                _this._btnGuidedGroupsAdd.set_visible(true);
-                _this._btnDelete.set_visible(true);
+                _this._updateActionButtonsVisibility(true);
             };
             /**
              * Evento alla chiusura della finestra di copia da utente
@@ -57,8 +52,7 @@ define(["require", "exports"], function (require, exports) {
              * @param sender
              * @param args
              */
-            this.btnCopyFromUser_OnClick = function (sender, args) {
-                args.set_cancel(true);
+            this.btnCopyFromUser_OnClick = function () {
                 _this.openCopyFromUserWindow();
             };
             /**
@@ -66,8 +60,7 @@ define(["require", "exports"], function (require, exports) {
              * @param sender
              * @param args
              */
-            this.btnAddUser_OnClick = function (sender, args) {
-                args.set_cancel(true);
+            this.btnAddUser_OnClick = function () {
                 _this.openUserWindow();
             };
             /**
@@ -75,8 +68,7 @@ define(["require", "exports"], function (require, exports) {
              * @param sender
              * @param args
              */
-            this.btnDeleteUser_OnClick = function (sender, args) {
-                args.set_cancel(true);
+            this.btnDeleteUser_OnClick = function () {
                 _this._rtvUsers = $find(_this.rtvUsersId);
                 if (!_this._rtvUsers.get_selectedNode() || !_this._rtvUsers.get_selectedNode().get_value()) {
                     _this.showWarningMessage(_this.uscNotificationId, "Selezionare un utente.");
@@ -93,8 +85,7 @@ define(["require", "exports"], function (require, exports) {
             * @param sender
             * @param args
             */
-            this.btnGroupsAdd_OnClick = function (sender, args) {
-                args.set_cancel(true);
+            this.btnGroupsAdd_OnClick = function () {
                 _this.openGroupsWindow();
             };
             /**
@@ -102,8 +93,7 @@ define(["require", "exports"], function (require, exports) {
             * @param sender
             * @param args
             */
-            this.btnDelete_OnClick = function (sender, args) {
-                args.set_cancel(true);
+            this.btnDelete_OnClick = function () {
                 _this._rtvUsers = $find(_this.rtvUsersId);
                 if (!_this._rtvUsers.get_selectedNode() || !_this._rtvUsers.get_selectedNode().get_value()) {
                     _this.showWarningMessage(_this.uscNotificationId, "Selezionare un utente.");
@@ -125,8 +115,7 @@ define(["require", "exports"], function (require, exports) {
             * @param sender
             * @param args
             */
-            this.btnGuidedGroupsAdd_OnClick = function (sender, args) {
-                args.set_cancel(true);
+            this.btnGuidedGroupsAdd_OnClick = function () {
                 _this._rtvUsers = $find(_this.rtvUsersId);
                 if (!_this._rtvUsers.get_selectedNode() || !_this._rtvUsers.get_selectedNode().get_value()) {
                     _this.showWarningMessage(_this.uscNotificationId, "Selezionare un utente.");
@@ -162,15 +151,46 @@ define(["require", "exports"], function (require, exports) {
                 }
                 var url = "../UserControl/uscMultiSelGroups.aspx?Type=Comm";
                 _this.openWindow(url, 'windowGroupsAdd', 500, 600);
-                //args.set_cancel(true);
+            };
+            this.actionToolbar_ButtonClicked = function (sender, args) {
+                var currentActionButtonItem = args.get_item();
+                var currentAction = _this.toolbarActions().filter(function (item) { return item[0] == currentActionButtonItem.get_commandName(); })
+                    .map(function (item) { return item[1]; })[0];
+                currentAction();
+            };
+            this.specialToolbarActions_ButtonClicked = function (sender, args) {
+                var currentActionButtonItem = args.get_item();
+                var currentAction = _this.specialToolbarActions().filter(function (item) { return item[0] == currentActionButtonItem.get_commandName(); })
+                    .map(function (item) { return item[1]; })[0];
+                currentAction();
             };
             $(document).ready(function () {
             });
         }
+        TbltSecurityUsers.prototype.toolbarActions = function () {
+            var _this = this;
+            var items = [
+                [TbltSecurityUsers.ADD_COMMANDNAME, function () { return _this.btnAddUser_OnClick(); }],
+                [TbltSecurityUsers.DELETEUSER_COMMANDNAME, function () { return _this.btnDeleteUser_OnClick(); }]
+            ];
+            return items;
+        };
+        TbltSecurityUsers.prototype.specialToolbarActions = function () {
+            var _this = this;
+            var items = [
+                [TbltSecurityUsers.COPYFROMUSER_COMMANDNAME, function () { return _this.btnCopyFromUser_OnClick(); }],
+                [TbltSecurityUsers.GROUPSADD_COMMANDNAME, function () { return _this.btnGroupsAdd_OnClick(); }],
+                [TbltSecurityUsers.GUIDEDGROUPSADD_COMMANDNAME, function () { return _this.btnGuidedGroupsAdd_OnClick(); }],
+                [TbltSecurityUsers.DELETE_COMMANDNAME, function () { return _this.btnDelete_OnClick(); }]
+            ];
+            return items;
+        };
         /**
        * Inizializzazione classe
        */
         TbltSecurityUsers.prototype.initialize = function () {
+            this._actionToolbar = $find(this.actionsToolbarId);
+            this._actionToolbar.add_buttonClicked(this.actionToolbar_ButtonClicked);
             this._wndManager = $find(this.radWindowManagerGroupsId);
             this._wndManager.getWindowByName('windowGroupsAdd').add_close(this.onCloseWindowGroups);
             this._wndManager.getWindowByName('windowUserAdd').add_close(this.onCloseWindowUser);
@@ -178,22 +198,12 @@ define(["require", "exports"], function (require, exports) {
             this._rtvUsers = $find(this.rtvUsersId);
             this._rtvGroups = $find(this.rtvGroupsId);
             this._ajaxManager = $find(this.ajaxManagerId);
-            this._btnGuidedGroupsAdd = $find(this.btnGuidedGroupsAddId);
-            this._btnGuidedGroupsAdd.add_clicking(this.btnGuidedGroupsAdd_OnClick);
-            this._btnGroupsAdd = $find(this.btnGroupsAddId);
-            this._btnGroupsAdd.add_clicking(this.btnGroupsAdd_OnClick);
-            this._btnCopyFromUser = $find(this.btnCopyFromUserId);
-            this._btnCopyFromUser.add_clicking(this.btnCopyFromUser_OnClick);
-            this._btnDelete = $find(this.btnDeleteId);
-            this._btnDelete.add_clicking(this.btnDelete_OnClick);
-            this._btnAddUser = $find(this.btnAddUserId);
-            this._btnAddUser.add_clicking(this.btnAddUser_OnClick);
-            this._btnDeleteUser = $find(this.btnDeleteUserId);
-            this._btnDeleteUser.add_clicking(this.btnDeleteUser_OnClick);
-            this._btnGroupsAdd.set_visible(false);
-            this._btnCopyFromUser.set_visible(false);
-            this._btnGuidedGroupsAdd.set_visible(false);
-            this._btnDelete.set_visible(false);
+        };
+        TbltSecurityUsers.prototype.initializeSpecialToolbarAction = function () {
+            this._toolbarSpecialAction = $find(this.toolbarSpecialActionId);
+            if (this._toolbarSpecialAction) {
+                this._toolbarSpecialAction.add_buttonClicked(this.specialToolbarActions_ButtonClicked);
+            }
         };
         /*
          * ------------------------------- Methods ----------------------------------
@@ -211,12 +221,28 @@ define(["require", "exports"], function (require, exports) {
             wnd.center();
             return false;
         };
+        TbltSecurityUsers.prototype._updateActionButtonsVisibility = function (isVisible) {
+            var toolbarBtnDisplayMode = isVisible ? "inline-block" : "none";
+            this._toolbarSpecialAction.get_items().forEach(function (item) {
+                var btnCommandName = item.get_commandName();
+                if (btnCommandName === TbltSecurityUsers.ADD_COMMANDNAME || btnCommandName === TbltSecurityUsers.DELETEUSER_COMMANDNAME) {
+                    return;
+                }
+                item.get_element().style.display = toolbarBtnDisplayMode;
+            });
+        };
         TbltSecurityUsers.prototype.showWarningMessage = function (uscNotificationId, customMessage) {
             var uscNotification = $("#".concat(uscNotificationId)).data();
             if (!jQuery.isEmptyObject(uscNotification)) {
                 uscNotification.showWarningMessage(customMessage);
             }
         };
+        TbltSecurityUsers.ADD_COMMANDNAME = "AddUser";
+        TbltSecurityUsers.DELETEUSER_COMMANDNAME = "DeleteUser";
+        TbltSecurityUsers.COPYFROMUSER_COMMANDNAME = "CopyFromUser";
+        TbltSecurityUsers.GROUPSADD_COMMANDNAME = "AddGroups";
+        TbltSecurityUsers.GUIDEDGROUPSADD_COMMANDNAME = "GuidedGroupsAdd";
+        TbltSecurityUsers.DELETE_COMMANDNAME = "Delete";
         return TbltSecurityUsers;
     }());
     return TbltSecurityUsers;

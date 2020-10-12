@@ -4,7 +4,7 @@ Imports System.Web
 Imports Newtonsoft.Json
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.Extensions
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class DossierBasePage
@@ -16,6 +16,7 @@ Public Class DossierBasePage
     Private _currentDossierFinder As Data.WebAPI.Finder.Dossiers.DossierFinder = Nothing
     Private _currentdossier As Entity.Dossiers.Dossier = Nothing
     Private _dossierTitle As String
+    Private _roleUserFromDossierFinder As Data.WebAPI.Finder.Commons.RoleUserFromDossierFinder = Nothing
 
 #End Region
 
@@ -46,17 +47,20 @@ Public Class DossierBasePage
     Protected ReadOnly Property CurrentDossier As Entity.Dossiers.Dossier
         Get
             If _currentdossier Is Nothing AndAlso Not IdDossier = Guid.Empty Then
-                Dim dossierDto As WebAPIDto(Of Entity.Dossiers.Dossier) = New WebAPIDto(Of Entity.Dossiers.Dossier)
-                CurrentDossierFinder.ExpandProperties = True
-                CurrentDossierFinder.EnablePaging = False
-                CurrentDossierFinder.DossierId = IdDossier
-
-                dossierDto = CurrentDossierFinder.DoSearch().FirstOrDefault()
+                Dim result As ICollection(Of WebAPIDto(Of Entity.Dossiers.Dossier)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentDossierFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.EnablePaging = False
+                        finder.ExpandProperties = True
+                        finder.DossierId = IdDossier
+                        Return finder.DoSearch()
+                    End Function)
+                Dim dossierDto As WebAPIDto(Of Entity.Dossiers.Dossier) = result.FirstOrDefault()
                 If Not dossierDto Is Nothing Then
                     _currentdossier = dossierDto.Entity
                 End If
             End If
-                Return _currentdossier
+            Return _currentdossier
         End Get
     End Property
 
@@ -69,12 +73,26 @@ Public Class DossierBasePage
         End Get
     End Property
 
+    Public ReadOnly Property RoleUserFromDossierFinder() As Data.WebAPI.Finder.Commons.RoleUserFromDossierFinder
+        Get
+            If _roleUserFromDossierFinder Is Nothing Then
+                _roleUserFromDossierFinder = New Data.WebAPI.Finder.Commons.RoleUserFromDossierFinder(DocSuiteContext.Current.CurrentTenant)
+            End If
+            Return _roleUserFromDossierFinder
+        End Get
+    End Property
+
     Protected ReadOnly Property CurrentUser As String
         Get
             Return JsonConvert.SerializeObject(DocSuiteContext.Current.User.FullUserName)
         End Get
     End Property
 
+    Protected ReadOnly Property IdFascicle As Guid?
+        Get
+            Return HttpContext.Current.Request.QueryString.GetValueOrDefault(Of Guid?)("IdFascicle", Nothing)
+        End Get
+    End Property
 #End Region
 
 #Region "Methods"

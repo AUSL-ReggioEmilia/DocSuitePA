@@ -77,6 +77,15 @@ Partial Public Class FascVisualizza
     Protected WithEvents signWindow As Global.Telerik.Web.UI.RadWindow
 
     '''<summary>
+    '''windowFascicleSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents windowFascicleSearch As Global.Telerik.Web.UI.RadWindow
+
+    '''<summary>
     '''pageContent control.
     '''</summary>
     '''<remarks>
@@ -210,6 +219,15 @@ Partial Public Class FascVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnMove As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''btnCopyToFascicle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnCopyToFascicle As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''btnRemove control.

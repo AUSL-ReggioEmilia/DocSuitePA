@@ -113,33 +113,6 @@ Partial Public Class TbltGruppi
     Protected WithEvents btnLogGroup As Global.Telerik.Web.UI.RadToolBarButton
 
     '''<summary>
-    '''btnAddUser control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnAddUser As Global.Telerik.Web.UI.RadToolBarButton
-
-    '''<summary>
-    '''btnDeleteUser control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnDeleteUser As Global.Telerik.Web.UI.RadToolBarButton
-
-    '''<summary>
-    '''btnImportFrom control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnImportFrom As Global.Telerik.Web.UI.RadToolBarButton
-
-    '''<summary>
     '''RadTreeViewGroups control.
     '''</summary>
     '''<remarks>

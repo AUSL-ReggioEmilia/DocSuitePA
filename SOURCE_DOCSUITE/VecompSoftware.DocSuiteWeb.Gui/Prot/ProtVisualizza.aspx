@@ -62,9 +62,19 @@
             }
 
             function OpenHighlightWindow() {
-                var url = '../Prot/ProtHighlightUser.aspx?UniqueIdProtocol=' + '<% =CurrentProtocol.UniqueId %>'
+                var url = '../Prot/ProtHighlightUser.aspx?UniqueId=' + '<% =CurrentProtocol.Id %>'
                 wnd = window.DSWOpenGenericWindow(url, window.WindowTypeEnum.SMALL);
+
+                wnd.add_close(UpdateProtocolHighlight);
                 return false;
+            }
+
+            function UpdateProtocolHighlight(sender, args) {
+                var commandName = args.get_argument();
+
+                if (commandName) {
+                    ExecuteAjaxRequest(commandName);
+                }
             }
 
             function OpenWindowDuplica() {
@@ -83,25 +93,6 @@
                 if (args.get_argument() !== null) {
                     document.getElementById("<%=txtCheckSel.ClientID %>").value = args.get_argument();
                     document.getElementById("<%=btnCallbackDuplica.ClientID %>").click();
-                }
-            }
-
-            function OpenStatements() {
-                var manager = $find("<%=RadWindowManagerProt.ClientID %>");
-                var url = "../Workflows/RequestStatement.aspx?DocumentUnitIds=" + '<% =DocumentUnitIds %>' + "&ArchiveName=" + '<% =CurrentProtocol.Location.ProtBiblosDSDB %>' + "&IdChain=" + '<% =IdDocumentChain %>' + " &IdAttachmentsChain=" + '<% =IdAttachmentsChain %>' + "&Type=" + '<% =Type %>' + "&MultiWorkflowStatement=true";
-                var wnd = manager.open(url, "windowRequestStatement");
-                wnd.setSize(720, 560);
-                wnd.set_behaviors(Telerik.Web.UI.WindowBehaviors.Maximize + Telerik.Web.UI.WindowBehaviors.Resize + Telerik.Web.UI.WindowBehaviors.Close);
-                wnd.set_visibleStatusbar(false);
-                wnd.set_modal(true);
-                wnd.center();
-                return false;
-            }
-
-            function CloseStatementsFunction(sender, args) {
-                sender.remove_close(CloseStatementsFunction);
-                if (args.get_argument() !== null) {
-                    $find("<%= RadAjaxManager.GetCurrent(Page).ClientID %>").ajaxRequestWithTarget('<%= btnStatements.UniqueID %>', '');
                 }
             }
 
@@ -163,6 +154,16 @@
                     }, timeout);
                 }
             }
+
+            function HideLoadingPanel() {
+                var currentLoadingPanel = $find("<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>");
+                var currentUpdatedControl = "<%= pnlMainContent.ClientID%>";
+                currentLoadingPanel.hide(currentUpdatedControl);
+
+                var ajaxFlatLoadingPanel = $find("<%= MasterDocSuite.AjaxFlatLoadingPanel.ClientID%>");
+                var pnlButtons = "<%= pnlButtons.ClientID%>";
+                ajaxFlatLoadingPanel.hide(pnlButtons);
+            }
         </script>
     </telerik:RadScriptBlock>
     <telerik:RadScriptBlock runat="server" EnableViewState="false">
@@ -171,14 +172,22 @@
             require(["Prot/ProtVisualizza"], function (ProtVisualizza) {
                 $(function () {
                     protVisualizza = new ProtVisualizza(tenantModelConfiguration.serviceConfiguration);
-                    protVisualizza.radWindowManagerId = "<%= MasterDocSuite.DefaultWindowManager.ClientID %>";
+                    protVisualizza.ajaxLoadingPanelId = "<%=MasterDocSuite.AjaxDefaultLoadingPanel.ClientId %>";
+                    protVisualizza.radWindowManagerId = ("<%=RadWindowManagerProt.ClientID %>");
+                    protVisualizza.pnlMainContentId = "<%= pnlMainContent.ClientID %>";
                     protVisualizza.btnWorkflowId = "<%= btnWorkflow.ClientID %>";
-                    protVisualizza.currentId = "<%=CurrentProtocol.UniqueId%>";
+                    protVisualizza.radNotificationInfoId = "<%= radNotificationInfo.ClientID %>";
+                    protVisualizza.currentDocumentUnitId = "<%=CurrentProtocol.Id%>";
                     protVisualizza.initialize();
                 });
             });
         </script>
     </telerik:RadScriptBlock>
+
+    <telerik:RadNotification ID="radNotificationInfo" runat="server"
+        VisibleOnPageLoad="false" LoadContentOn="PageLoad" Width="300" Height="150" Animation="FlyIn"
+        EnableRoundedCorners="true" EnableShadow="true" ContentIcon="info" Title="Informazioni protocollo" TitleIcon="none" AutoCloseDelay="4000" Position="Center" />
+
 </asp:Content>
 
 <asp:Content ID="cn" runat="server" ContentPlaceHolderID="cphContent">
@@ -187,7 +196,6 @@
             <telerik:RadWindow Height="300" ID="windowDuplica" OnClientClose="CloseDuplica" runat="server" Title="Protocollo - Duplica" Width="500" />
             <telerik:RadWindow Height="300" ID="windowDocmSceltaPratica" OnClientClose="CloseRefreshFolderFunction" runat="server" Title="Pratiche - Seleziona" Width="500" />
             <telerik:RadWindow Height="100" ID="windowPrintLabel" runat="server" Title="Protocollo - Stampa Etichetta" Width="300" />
-            <telerik:RadWindow Height="300" ID="windowRequestStatement" runat="server" OnClientClose="CloseStatementsFunction" Width="500" />
         </Windows>
     </telerik:RadWindowManager>
 
@@ -253,7 +261,6 @@
                     <asp:Button ID="btnAutorizza" runat="server" OnClientClick="ShowLoadingPanel();" Width="150" Text="Autorizza" />
                     <asp:Button ID="btnAutoAssign" runat="server" OnClientClick="ShowLoadingPanel(700);" Width="150" Text="Auto assegna" Visible="false" />
                     <asp:Button ID="btnMail" runat="server" OnClientClick="ShowLoadingPanel();" Width="150" Text="Mail" />
-                    <asp:Button ID="btnSendIP4D" runat="server" OnClientClick="ShowLoadingPanel();" Width="150" Text="Invia IP4D" Visible="false" />
                     <asp:Button ID="btnMailSettori" runat="server" OnClientClick="ShowLoadingPanel();" Width="150" Text="Invia settori" />
                     <asp:Button ID="btnSendToUsers" runat="server" OnClientClick="ShowLoadingPanel();" Width="150" Text="Invia persona" />
                     <asp:Button ID="btnLink" runat="server" OnClientClick="ShowLoadingPanel();" Width="150" Text="Collegamenti" />
@@ -262,8 +269,8 @@
                     <asp:Button ID="btnCycle" runat="server" Width="150" OnClientClick="ShowLoadingPanel();" Text="Successivo" Visible="false" />
                     <asp:Button ID="btnPrintDocumentLabel" runat="server" OnClientClick="ShowLoadingPanel();" Width="150px" Text="Etichetta documento" />
                     <asp:Button ID="btnPrintAttachmentLabel" runat="server" OnClientClick="ShowLoadingPanel();" Width="150px" Text="Etichetta allegato" />
-                    <asp:Button ID="btnHighlight" runat="server" OnClientClick="return OpenHighlightWindow();" Text="Evidenzia" Width="150 " />
-                    <asp:Button ID="btnStatements" runat="server" Width="150" Text="Richiesta attestazione" CausesValidation="false" OnClientClick="return OpenStatements();" />
+                    <asp:Button ID="btnHighlight" runat="server" OnClientClick="return OpenHighlightWindow();" Text="Evidenzia" Width="150px" />
+                    <asp:Button ID="btnRemoveHighlight" runat="server" OnClientClick="ShowLoadingPanel();" Text="Rimuovi evidenza" Width="150px" />
                     <asp:Button ID="btnWorkflow" runat="server" Width="150" Text="Avvia attività" CausesValidation="false" />
                 </td>
             </tr>
@@ -290,18 +297,17 @@
                     <asp:Button ID="btnRolesLog" runat="server" OnClientClick="ShowLoadingPanel();" Text="Movimentazioni" Width="150" />
                     <asp:Button ID="btnProtocollo" runat="server" OnClientClick="ShowLoadingPanel();" Text="Protocollo" Visible="false" />
                     <asp:Button ID="btnHandle" runat="server" OnClientClick="ShowLoadingPanel(500);" Text="Prendi in carico" Visible="false" Width="150" />
-                    <%--Non viene utilizzato non lo rendo visibile--%>
                     <asp:Button ID="btnForzaBiblos" runat="server" Text="Forzatura Biblos" Visible="false" Width="150" />
                     <asp:Button ID="btnInsertCollaboration" runat="server" OnClientClick="ShowLoadingPanel();" Text="Prepara risposta" Width="150" Visible="false" />
                     <asp:Button ID="btnRispondiDaPEC" runat="server" OnClientClick="ShowLoadingPanel();" Text="Rispondi da PEC" Width="150" />
                     <asp:Button ID="btnReassignRejected" runat="server" OnClientClick="ShowLoadingPanel();" Text="Riassegna" Width="150" />
                     <asp:Button ID="btnCorrection" runat="server" OnClientClick="ShowLoadingPanel();" Text="Correggi" Width="150" />
+
                     <%--hidden fields--%>
                     <asp:TextBox CssClass="hiddenField" ID="SelPratica" runat="server" />
                     <asp:Button CssClass="hiddenField" ID="btnSelPratica" runat="server" />
                     <asp:TextBox CssClass="hiddenField" ID="txtCheckSel" runat="server" />
                     <asp:Button ID="btnCallbackDuplica" runat="server" Style="display: none;" Text="Nuovo" Width="150" />
-                    <asp:Button ID="btnCallbackRequestStatement" runat="server" Style="display: none;" Text="Nuovo" Width="150" />
                 </td>
             </tr>
             <tr>

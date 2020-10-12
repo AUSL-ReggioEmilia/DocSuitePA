@@ -2,7 +2,9 @@
 Imports System.Linq
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Dossiers
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.Services.Logging
@@ -99,12 +101,18 @@ Namespace Viewers
             If documentInfoSource IsNot Nothing Then
                 datasource.Add(documentInfoSource)
             End If
-            CurrentDossierFoldersFinder.ResetDecoration()
-            CurrentDossierFoldersFinder.EnablePaging = False
-            CurrentDossierFoldersFinder.DossierId = CurrentDossier.UniqueId
-            CurrentDossierFoldersFinder.ExpandProperties = True
-            CurrentDossierFoldersFinder.HasFascicles = True
-            For Each fascicle As Entity.Fascicles.Fascicle In CurrentDossierFoldersFinder.DoSearch().Select(Function(f) f.Entity.Fascicle)
+
+            Dim results As ICollection(Of WebAPIDto(Of Entity.Dossiers.DossierFolder)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentDossierFoldersFinder,
+                            Function(impersonationType, finder)
+                                finder.ResetDecoration()
+                                finder.EnablePaging = False
+                                finder.DossierId = CurrentDossier.UniqueId
+                                finder.ExpandProperties = True
+                                finder.HasFascicles = True
+                                Return finder.DoSearch()
+                            End Function)
+
+            For Each fascicle As Entity.Fascicles.Fascicle In results.Select(Function(f) f.Entity.Fascicle)
                 datasource.Add(fascicleViewer.GetFascicleUDDocuments(fascicle))
             Next
             ViewerLight.DataSource = datasource
@@ -121,7 +129,7 @@ Namespace Viewers
                 insertsFolder.Name = "Inserti"
                 insertsFolder.ID = dossier.UniqueId.ToString()
                 If insertsDocument IsNot Nothing Then
-                    Dim insertsDocs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(insertsLocation.DocumentServer, insertsDocument.IdArchiveChain).ToArray()
+                    Dim insertsDocs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(insertsDocument.IdArchiveChain).ToArray()
                     If (insertsDocs IsNot Nothing) Then
                         insertsFolder.AddChildren(insertsDocs.OfType(Of DocumentInfo).ToList())
                     End If

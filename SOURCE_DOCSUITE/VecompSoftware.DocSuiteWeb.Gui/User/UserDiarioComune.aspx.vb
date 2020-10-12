@@ -28,7 +28,7 @@ Public Class UserDiarioComune
             rdpDateTo.SelectedDate = CommonInstance.ProtDiaryLogDateTo
             Initialize()
         End If
-        gvDiario.DataSource = New JournalFacade().GetUserCommonDiary(rdpDateFrom.SelectedDate.Value, rdpDateTo.SelectedDate.Value)
+        gvDiario.DataSource = New JournalFacade().GetUserCommonDiary(rdpDateFrom.SelectedDate.Value, rdpDateTo.SelectedDate.Value, CurrentTenant.TenantAOO.UniqueId)
     End Sub
 
     Private Sub dg_ItemCommand(ByVal source As Object, ByVal e As GridCommandEventArgs) Handles gvDiario.ItemCommand
@@ -55,9 +55,8 @@ Public Class UserDiarioComune
                 selPage = "../Prot/ProtLog.aspx?"
                 sommPage = "../Prot/ProtVisualizza.aspx?"
 
-                Dim year As String = e.CommandArgument.Substring(0, 4).Trim()
-                Dim number As String = e.CommandArgument.Substring(5).Trim()
-                url = String.Format("Type={0}&Year={1}&Number={2}&User={3}", e.CommandName, year, number, DocSuiteContext.Current.User.UserName)
+                Dim uniqueIdProtocol As Guid = Guid.Parse(e.CommandArgument.ToString())
+                url = String.Format("Type={0}&UniqueId={1}&User={2}", e.CommandName, uniqueIdProtocol, DocSuiteContext.Current.User.UserName)
             Case "Resl"
                 selPage = "../Resl/ReslLog.aspx?"
                 sommPage = "../Resl/ReslVisualizza.aspx?"
@@ -122,6 +121,9 @@ Public Class UserDiarioComune
         With DirectCast(e.Item.FindControl("lnkLog"), RadButton)
             .CommandName = item.Type
             .CommandArgument = item.Codice
+            If item.Type.Eq("Prot") Then
+                .CommandArgument = item.UniqueIdProtocol.ToString()
+            End If
         End With
 
         With DirectCast(e.Item.FindControl("lnkReference"), LinkButton)
@@ -136,6 +138,9 @@ Public Class UserDiarioComune
             End Select
             .CommandName = item.Type
             .CommandArgument = item.Codice
+            If item.Type.Eq("Prot") Then
+                .CommandArgument = item.UniqueIdProtocol.ToString()
+            End If
         End With
 
         With DirectCast(e.Item.FindControl("lblObject"), Label)

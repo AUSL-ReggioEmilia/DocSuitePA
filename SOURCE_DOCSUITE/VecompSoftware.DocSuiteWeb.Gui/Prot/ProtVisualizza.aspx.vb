@@ -5,10 +5,10 @@ Imports System.Text
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Interfaces
 Imports VecompSoftware.DocSuiteWeb.Facade.Report
@@ -30,6 +30,10 @@ Public Class ProtVisualizza
 #Region " Fields "
 
     Private Const NoMailContactsSeed As String = "ProtVisualizza_NoMailContactsSeed"
+    Private Const REFRESH_COMMAND As String = "Refresh"
+    Private Const SENDNEWPEC_COMMAND As String = "SendNewPec"
+    Private Const HIGHLIGHTUSER_WINDOW_COMMAND As String = "WindowCommandEvent"
+
     Private _isCyclable As Lazy(Of Boolean)
     Private _currentManageableRoleId As Integer?
     Private _uniqueIdList As List(Of Guid)
@@ -53,7 +57,6 @@ Public Class ProtVisualizza
             btnDuplica.Visible = value
             btnPrintDocumentLabel.Visible = value
             btnPrintAttachmentLabel.Visible = value
-            btnStatements.Visible = value
             btnWorkflow.Visible = value
             btnToSeries.Visible = value
         End Set
@@ -82,7 +85,7 @@ Public Class ProtVisualizza
 
     Private ReadOnly Property GetPecMailUrl As String
         Get
-            Return String.Format("../PEC/PECInsert.aspx?Type=Pec&SimpleMode={0}&Year={1}&Number={2}", DocSuiteContext.Current.ProtocolEnv.PECSimpleMode.ToString(), CurrentProtocol.Year, CurrentProtocol.Number)
+            Return String.Format("../PEC/PECInsert.aspx?Type=Pec&SimpleMode={0}&UniqueIdProtocol={1}", DocSuiteContext.Current.ProtocolEnv.PECSimpleMode.ToString(), CurrentProtocol.Id)
         End Get
     End Property
 
@@ -157,7 +160,7 @@ Public Class ProtVisualizza
             If CurrentProtocol.IdDocument.GetValueOrDefault(0).Equals(0) OrElse CurrentDocumentUnitChains Is Nothing Then
                 Return Nothing
             End If
-            Dim documentUnitChain As DocumentUnitChain = CurrentDocumentUnitChains.SingleOrDefault(Function(f) f.ChainType = Entity.DocumentUnits.ChainType.MainChain)
+            Dim documentUnitChain As Entity.DocumentUnits.DocumentUnitChain = CurrentDocumentUnitChains.SingleOrDefault(Function(f) f.ChainType = Entity.DocumentUnits.ChainType.MainChain)
             If documentUnitChain IsNot Nothing Then
                 Return documentUnitChain.IdArchiveChain
             End If
@@ -171,7 +174,7 @@ Public Class ProtVisualizza
             If CurrentProtocol.IdAttachments.GetValueOrDefault(0).Equals(0) OrElse CurrentDocumentUnitChains Is Nothing Then
                 Return Nothing
             End If
-            Dim documentUnitChain As DocumentUnitChain = CurrentDocumentUnitChains.SingleOrDefault(Function(f) f.ChainType = Entity.DocumentUnits.ChainType.AttachmentsChain)
+            Dim documentUnitChain As Entity.DocumentUnits.DocumentUnitChain = CurrentDocumentUnitChains.SingleOrDefault(Function(f) f.ChainType = Entity.DocumentUnits.ChainType.AttachmentsChain)
             If documentUnitChain IsNot Nothing Then
                 Return documentUnitChain.IdArchiveChain
             End If
@@ -181,11 +184,11 @@ Public Class ProtVisualizza
 
     Public ReadOnly Property DocumentUnitIds() As String
         Get
-            If CurrentProtocol.UniqueId.Equals(Guid.Empty) Then
+            If CurrentProtocol.Id.Equals(Guid.Empty) Then
                 Return String.Empty
             End If
             _uniqueIdList = New List(Of Guid)
-            _uniqueIdList.Add(CurrentProtocol.UniqueId)
+            _uniqueIdList.Add(CurrentProtocol.Id)
             Return JsonConvert.SerializeObject(_uniqueIdList)
         End Get
     End Property
@@ -202,10 +205,14 @@ Public Class ProtVisualizza
     Public ReadOnly Property CurrentRelatedUDS As Entity.UDS.UDSDocumentUnit
         Get
             If _currentRelatedUDS Is Nothing Then
-                UDSDocumentUnitFinder.EnablePaging = False
-                UDSDocumentUnitFinder.ExpandRepository = True
-                UDSDocumentUnitFinder.IdDocumentUnit = CurrentProtocol.UniqueId
-                Dim result As ICollection(Of WebAPIDto(Of Entity.UDS.UDSDocumentUnit)) = UDSDocumentUnitFinder.DoSearch()
+                Dim result As ICollection(Of WebAPIDto(Of Entity.UDS.UDSDocumentUnit)) = WebAPIImpersonatorFacade.ImpersonateFinder(UDSDocumentUnitFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.EnablePaging = False
+                        finder.ExpandRepository = True
+                        finder.IdDocumentUnit = CurrentProtocol.Id
+                        Return finder.DoSearch()
+                    End Function)
 
                 If result Is Nothing Then
                     Return Nothing
@@ -223,21 +230,24 @@ Public Class ProtVisualizza
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         SetResponseNoCache()
         InitializeAjax()
-
         If Not IsPostBack Then
+            If CurrentProtocol Is Nothing Then
+                Throw New DocSuiteException($"Protocollo ID {CurrentProtocolId}", "Protocollo Inesistente")
+            End If
+
             Dim sb As New StringBuilder
             With sb
                 .Append("Titolo=Selezione Pratica")
                 .AppendFormat("&NomeCampoID={0}", SelPratica.ClientID)
                 .AppendFormat("&AddButton={0}", btnSelPratica.ClientID)
                 .Append("&Type=LP")
-                .AppendFormat("&Link={0}|", ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber, "|"))
+                .AppendFormat("&Link={0}|", ProtocolFacade.ProtocolFullNumber(CurrentProtocol.Year, CurrentProtocol.Number, "|"))
 
             End With
 
             btnPratica.OnClientClick = String.Format("return {0}_OpenWindow('../Docm/DocmSelezione.aspx', 'windowDocmSceltaPratica', 600 ,400, '{1}');", ID, sb.ToString())
 
-            If CurrentProtocolRights.IsPecAnswerable Then
+            If CurrentProtocolRights.IsPECAnswerable Then
                 btnDuplica.Enabled = False ' disabilito il pulsante "Duplica".
                 btnRispondiDaPEC.Enabled = True ' abilito il pulsante "Rispondi Da PEC".
                 btnRispondiDaPEC.Style.Remove("display")
@@ -267,10 +277,6 @@ Public Class ProtVisualizza
                 ClientScript.RegisterStartupScript(Me.GetType(), "MailSettori", String.Format("<script language='javascript'>document.getElementById('{0}').click();</script>", btnMailSettori.ClientID))
             End If
 
-            If CurrentProtocol Is Nothing Then
-                Throw New DocSuiteException("Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber), "Protocollo Inesistente")
-            End If
-
             InitializeProtocolControl()
             InitializeHandler()
             Initialize()
@@ -281,17 +287,23 @@ Public Class ProtVisualizza
         InitReportButtons()
 
         If Not String.IsNullOrEmpty(Request.QueryString("OpenDocument")) AndAlso Request.QueryString("OpenDocument").Eq("yes") Then
-            Dim parameters As String = String.Format("{0}/viewers/ProtocolViewer.aspx?year={1}&number={2}", DocSuiteContext.Current.CurrentTenant.DSWUrl, CurrentProtocol.Year, CurrentProtocol.Number)
+            Dim parameters As String = String.Format("{0}/viewers/ProtocolViewer.aspx?UniqueId={1}&Type=Prot", DocSuiteContext.Current.CurrentTenant.DSWUrl, CurrentProtocol.Id)
             Response.Redirect(parameters)
         End If
     End Sub
 
-    Protected Sub ManagerAjaxRequest(ByVal sender As Object, ByVal e As Telerik.Web.UI.AjaxRequestEventArgs)
-        If e.Argument.Eq("Refresh") Then
-            uscProtocollo.Show()
-        ElseIf e.Argument.Eq("SendNewPec") Then
-            Response.Redirect(GetPecMailUrl)
-        End If
+    Protected Sub ManagerAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
+        Dim commandName As String = e.Argument
+
+        Select Case commandName
+            Case REFRESH_COMMAND
+                uscProtocollo.Show()
+            Case SENDNEWPEC_COMMAND
+                Response.Redirect(GetPecMailUrl)
+            Case HIGHLIGHTUSER_WINDOW_COMMAND
+                RefreshProtocolRolesTree()
+                btnRemoveHighlight.Visible = CurrentProtocolRights.HasHighlightRights
+        End Select
     End Sub
 
     Private Sub UscProtocolloRefreshContact(ByVal sender As Object, ByVal e As EventArgs) Handles uscProtocollo.RefreshContact
@@ -300,38 +312,31 @@ Public Class ProtVisualizza
     End Sub
 
     Private Sub BtnLinkClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLink.Click
-        Dim s As String = "Year=" & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber
-        Response.Redirect("ProtCollegamenti.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"ProtCollegamenti.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
     Private Sub BtnLogClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLog.Click
-        Dim s As String = "Type=Prot&Action=&Year=" & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber
-        Response.Redirect("ProtLog.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtLog.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
     Private Sub BtnRolesLogClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnRolesLog.Click
-        Dim s As String = String.Format("Type=Prot&Year={0}&Number={1}", CurrentProtocolYear, CurrentProtocolNumber)
-        Response.Redirect(String.Concat("ProtRolesLog.aspx?", CommonShared.AppendSecurityCheck(s)))
+        Response.Redirect($"~/Prot/ProtRolesLog.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
     Private Sub BtnModificaClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnModifica.Click
-        Dim s As String = String.Format("Year={0}&Number={1}&Type=Prot", CurrentProtocolYear, CurrentProtocolNumber)
-        Response.Redirect("~/Prot/ProtModifica.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtModifica.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
     Private Sub BtnReassignRejectedClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnReassignRejected.Click
-        Dim s As String = String.Format("Year={0}&Number={1}&Type=Prot", CurrentProtocolYear, CurrentProtocolNumber)
-        Response.Redirect("~/Prot/ProtReassignment.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtReassignment.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
     Private Sub BtnCorrectionClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnCorrection.Click
-        Dim s As String = String.Format("Year={0}&Number={1}&Type=Prot", CurrentProtocolYear, CurrentProtocolNumber)
-        Response.Redirect("~/Prot/ProtCorrection.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtCorrection.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
     Private Sub BtnInteropClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnInterop.Click
-        Dim s As String = "Year=" & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber & "&im=1"
-        Response.Redirect("~/Prot/ProtInterop.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtInterop.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot&im=1")}")
     End Sub
 
     Private Sub BtnSelPraticaClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSelPratica.Click
@@ -346,13 +351,11 @@ Public Class ProtVisualizza
     End Sub
 
     Private Sub BtnNoteSettoreClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnNoteSettore.Click
-        Dim s As String = "Year=" & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber
-        Response.Redirect("~/Prot/ProtNoteGes.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtNoteGes.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
     Private Sub BtnAnnullaClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnAnnulla.Click
-        Dim s As String = "Year=" & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber
-        Response.Redirect("~/Prot/ProtAnnulla.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtAnnulla.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
     Private Sub BtnRejectOkClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles cmdRejectOk.Click
@@ -365,65 +368,55 @@ Public Class ProtVisualizza
     End Sub
 
     Private Sub BtnFascicleClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnFascicle.Click
-        Dim params As String = CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&CategoryId={1}&UDType={2}&Type=Fasc", CurrentProtocol.UniqueId, CurrentProtocol.Category.Id, Convert.ToInt32(DSWEnvironment.Protocol)))
+        Dim params As String = CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&CategoryId={1}&UDType={2}&FolderSelectionEnabled=True&Type=Fasc", CurrentProtocol.Id, CurrentProtocol.Category.Id, Convert.ToInt32(DSWEnvironment.Protocol)))
         Response.Redirect(String.Concat("~/Fasc/FascUDManager.aspx?", params))
     End Sub
 
     Private Sub BtnNuovoClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnCallbackDuplica.Click
-        Dim s As String = "Type=Prot&Action=Duplicate&Year= " & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber & "&Check=" & txtCheckSel.Text
-        Response.Redirect("~/Prot/ProtInserimento.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtInserimento.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot&Action=Duplicate&Check={txtCheckSel.Text}")}")
     End Sub
 
     Private Sub BtnRispondiDaPecClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnRispondiDaPEC.Click
-        Dim s As String = "Type=Prot&Action=RispondiDaPEC&Year= " & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber & "&Check=" & txtCheckSel.Text
-        Response.Redirect("~/Prot/ProtInserimento.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtInserimento.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot&Action=RispondiDaPEC&Check={txtCheckSel.Text}")}")
     End Sub
 
     Private Sub BtnRiferimentiClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnRiferimenti.Click
-        Dim s As String = "Year=" & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber
-        Response.Redirect("~/Prot/ProtRiferimento.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtRiferimento.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
     Private Sub BtnAutorizzaClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnAutorizza.Click
-        Dim s As String = String.Format("Year={0}&Number={1}&Action={2}", CurrentProtocolYear, CurrentProtocolNumber, Action)
-        Response.Redirect("~/Prot/ProtAutorizza.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/ProtAutorizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot&Action={Action}")}")
     End Sub
 
     Protected Sub BtnAddToPraticaClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnAddToPratica.Click
-        Dim s As String = String.Format("ProtYear={0}&ProtNumber={1}", CurrentProtocolYear, CurrentProtocolNumber)
-        Response.Redirect("../Docm/DocmRicerca.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Docm/DocmRicerca.aspx?{CommonShared.AppendSecurityCheck($"ProtYear={CurrentProtocol.Year}&ProtNumber={CurrentProtocol.Number}&Type=Prot")}")
     End Sub
 
     Protected Sub BtnLetteraClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLettera.Click
-        Dim s As String = String.Format("Year={0}&Number={1}&PType={2}", CurrentProtocolYear, CurrentProtocolNumber, Prot.PosteWeb.Item.TypeLettera)
-        Response.Redirect("~/Prot/PosteWebItem.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/PosteWebItem.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot&PType={Prot.PosteWeb.Item.TypeLettera}")}")
     End Sub
 
     Protected Sub BtnRaccomandataClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnRaccomandata.Click
-        Dim s As String = String.Format("Year={0}&Number={1}&PType={2}", CurrentProtocolYear, CurrentProtocolNumber, Prot.PosteWeb.Item.TypeRaccomandata)
-        Response.Redirect("~/Prot/PosteWebItem.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/PosteWebItem.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot&PType={Prot.PosteWeb.Item.TypeRaccomandata}")}")
     End Sub
 
     Protected Sub BtnSercClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnTNotice.Click
-        Dim s As String = String.Format("Year={0}&Number={1}&PType={2}", CurrentProtocolYear, CurrentProtocolNumber, Prot.PosteWeb.Item.TypeSerc)
-        Response.Redirect("~/Prot/PosteWebItem.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/PosteWebItem.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot&PType={Prot.PosteWeb.Item.TypeTNotice}")}")
     End Sub
 
     Protected Sub BtnTelegrammaClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnTelegramma.Click
-        Dim s As String = String.Format("Year={0}&Number={1}&PType={2}", CurrentProtocolYear, CurrentProtocolNumber, Prot.PosteWeb.Item.TypeTelegramma)
-        Response.Redirect("~/Prot/PosteWebItem.aspx?" & CommonShared.AppendSecurityCheck(s))
+        Response.Redirect($"~/Prot/PosteWebItem.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot&PType={Prot.PosteWeb.Item.TypeTelegramma}")}")
     End Sub
 
     Private Sub BtnForzaBiblosClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnForzaBiblos.Click
         Try
-            Service.DetachDocument(CurrentProtocol.Location.DocumentServer, CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdDocument.Value)
+            Service.DetachDocument(CurrentProtocol.Location.ProtBiblosDSDB, CurrentProtocol.IdDocument.Value)
             AjaxAlert("Forzatura Biblos eseguita con successo")
         Catch ex As Exception
             Throw New DocSuiteException("Errore in fase Detach del Documento, impossibile eseguire l'annullamento del protocollo: " & ex.Message, ex)
         End Try
     End Sub
     Private Sub BtnAutoAssegnaClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnAutoAssign.Click
-        Dim s As String = String.Format("Year={0}&Number={1}&Action={2}", CurrentProtocolYear, CurrentProtocolNumber, Action)
         If CurrentManageableRoleId.HasValue Then
             Dim protocolRoleGroup As ProtocolRole = Facade.ProtocolFacade.GetDistributionProtocolRole(CurrentProtocol)
             Dim groupName As String = Facade.ProtocolFacade.GetDistributionGroupName(CurrentProtocol)
@@ -502,21 +495,16 @@ Public Class ProtVisualizza
     End Sub
 
     Private Sub btnCycle_Click(sender As Object, e As EventArgs) Handles btnCycle.Click
-        If Me.Session("ProtMultiDistribuzione_ProtocolKeys") Is Nothing Then
+        If Me.Session(UserScrivaniaD.MultiDistribuzioneSessionName) Is Nothing Then
             Return
         End If
 
-        Dim cyclable As List(Of YearNumberCompositeKey) = CType(Me.Session("ProtMultiDistribuzione_ProtocolKeys"), List(Of YearNumberCompositeKey))
-        Dim currentIndex As Integer = cyclable.FindIndex(Function(k) k.Year.Equals(Me.CurrentProtocol.Year) AndAlso k.Number.Equals(Me.CurrentProtocol.Number))
-        If cyclable.Count().Equals(currentIndex) Then
-            Return
-        End If
+        Dim cyclable As List(Of Guid) = CType(Me.Session(UserScrivaniaD.MultiDistribuzioneSessionName), List(Of Guid))
+        cyclable.Remove(CurrentProtocol.Id)
+        Me.Session(UserScrivaniaD.MultiDistribuzioneSessionName) = cyclable
 
-        Dim nextKey As YearNumberCompositeKey = cyclable(currentIndex + 1)
-        Dim qs As String = "Year={0}&Number={1}&Type=Prot"
-        qs = String.Format(qs, nextKey.Year, nextKey.Number)
-        qs = CommonShared.AppendSecurityCheck(qs)
-        Me.Response.Redirect("~/Prot/ProtVisualizza.aspx?" & qs)
+        Dim nextKey As Guid = cyclable.First()
+        Me.Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={nextKey}&Type=Prot")}")
     End Sub
 
     Private Sub btnFlushAnnexed_Click(sender As Object, e As EventArgs) Handles btnFlushAnnexed.Click
@@ -526,8 +514,16 @@ Public Class ProtVisualizza
         AjaxAlert("Catena annessi svuotata correttamente")
     End Sub
 
-    Private Sub btnWorkflow_Click(sender As Object, e As EventArgs) Handles btnStatements.Click
-        btnStatements.Visible = CurrentProtocolRights.CanDematerialise OrElse CurrentProtocolRights.CanSecureDocument
+    Private Sub btnRemoveHighlight_Click(sender As Object, e As EventArgs) Handles btnRemoveHighlight.Click
+        Facade.ProtocolUserFacade.RemoveHighlightUser(CurrentProtocol, DocSuiteContext.Current.User.FullUserName)
+        btnRemoveHighlight.Visible = False
+        RefreshProtocolRolesTree()
+        AjaxManager.ResponseScripts.Add("HideLoadingPanel();")
+    End Sub
+
+    Private Sub RefreshProtocolRolesTree()
+        uscProtocollo.CurrentProtocol = CurrentProtocol
+        uscProtocollo.RefreshProtocolRolesTree()
     End Sub
 
 #End Region
@@ -536,7 +532,9 @@ Public Class ProtVisualizza
 
     Private Sub InitializeAjax()
         AddHandler AjaxManager.AjaxRequest, AddressOf ManagerAjaxRequest
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscProtocollo, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnRemoveHighlight, uscProtocollo, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnReject, RejectMotivation, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnHandle, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnHandle, pnlMainContent, MasterDocSuite.AjaxFlatLoadingPanel)
@@ -544,9 +542,6 @@ Public Class ProtVisualizza
         AjaxManager.AjaxSettings.AddAjaxSetting(btnNewPecMail, RejectMotivation, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnAutoAssign, pnlButtons, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnAutoAssign, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(windowRequestStatement, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(windowRequestStatement, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnStatements, btnStatements)
         If ProtocolEnv.EnableFlushAnnexed Then
             AjaxManager.AjaxSettings.AddAjaxSetting(btnFlushAnnexed, btnFlushAnnexed)
             AjaxManager.AjaxSettings.AddAjaxSetting(btnFlushAnnexed, pnlMainContent, MasterDocSuite.AjaxDefaultLoadingPanel)
@@ -576,9 +571,9 @@ Public Class ProtVisualizza
                                                CurrentProtocol.RejectedRoles.Any(Function(r) r.Status = ProtocolRoleStatus.Refused)
         uscProtocollo.VisibleParer = ProtocolEnv.ParerEnabled
         uscProtocollo.VisibleProtocolloMittente = True
-        uscProtocollo.VisibleInvoicePA = True
-        uscProtocollo.VisiblePosteWeb = True
-        uscProtocollo.VisibleScatolone = True
+        uscProtocollo.VisibleInvoicePA = ProtocolEnv.ProtocolKindEnabled AndAlso ProtocolEnv.IsInvoiceEnabled AndAlso ProtocolEnv.InvoicePAEnabled AndAlso CurrentProtocol.IdProtocolKind.Equals(ProtocolKind.FatturePA)
+        uscProtocollo.VisiblePosteWeb = ProtocolEnv.IsPosteWebEnabled
+        uscProtocollo.VisibleScatolone = ProtocolEnv.IsPackageEnabled
         uscProtocollo.VisibleUDReferences = True
         uscProtocollo.Show()
     End Sub
@@ -592,7 +587,7 @@ Public Class ProtVisualizza
 
     ''' <summary> Pulsanti poste on line </summary>
     Private Sub InitPolButtons()
-        If Not ProtocolEnv.IsLetteraEnabled AndAlso Not ProtocolEnv.IsRaccomandataEnabled AndAlso Not ProtocolEnv.IsTelgrammaEnabled AndAlso ProtocolEnv.TNoticeEnabled Then
+        If Not ProtocolEnv.IsLetteraEnabled AndAlso Not ProtocolEnv.IsRaccomandataEnabled AndAlso Not ProtocolEnv.IsTelgrammaEnabled AndAlso Not ProtocolEnv.TNoticeEnabled Then
             ' Se da ParameterEnv non ci sono pulsanti abilitabili evito tutte le verifiche
             Exit Sub
         End If
@@ -610,24 +605,24 @@ Public Class ProtVisualizza
         End If
 
         ' Se l'operatore ha diritti sul protocollo di PEC in Uscita
-        If New ProtocolRights(CurrentProtocol).IsPecSendable AndAlso Not CurrentProtocolRights.IsHighilightViewable Then
-            ' Verifico che i pulsanti siano attivi da ParameterEnv
+        If CurrentProtocolRights.IsPECSendable AndAlso Not CurrentProtocolRights.IsHighilightViewable Then
             btnLettera.Visible = ProtocolEnv.IsLetteraEnabled
             btnRaccomandata.Visible = ProtocolEnv.IsRaccomandataEnabled
             btnTelegramma.Visible = ProtocolEnv.IsTelgrammaEnabled
-            btnTNotice.Visible = ProtocolEnv.TNoticeEnabled
         End If
+
+        btnTNotice.Visible = CurrentProtocolRights.IsTNoticeSendable
     End Sub
     Private Sub InitSendToUsers()
         btnSendToUsers.Visible = DocSuiteContext.Current.SimplifiedPrivacyEnabled
         If DocSuiteContext.Current.SimplifiedPrivacyEnabled Then
             btnSendToUsers.Visible = CurrentProtocolRights.IsAuthorizable AndAlso CurrentProtocol.Users.Any(Function(r) r.Type = ProtocolUserType.Authorization)
-            Dim querystring As String = String.Format("Year={0}&Number={1}&SendToUsers=True", CurrentProtocolYear, CurrentProtocolNumber)
+            Dim querystring As String = String.Format("UniqueId={0}&SendToUsers=True", CurrentProtocol.Id)
             btnSendToUsers.PostBackUrl = String.Concat("~/MailSenders/ProtocolMailSender.aspx?", CommonShared.AppendSecurityCheck(querystring))
         End If
     End Sub
     Private Sub InitNoteSettore()
-        btnNoteSettore.Visible = DocSuiteContext.IsFullApplication
+        btnNoteSettore.Visible = True
         If Not btnNoteSettore.Visible Then
             Exit Sub
         End If
@@ -647,7 +642,7 @@ Public Class ProtVisualizza
     Private Sub InitPecButtons()
 
         'Attivo la nuova gestione della PEC
-        btnNewPecMail.Visible = CurrentProtocolRights.IsPecSendable AndAlso ProtocolEnv.ProtNewPecMailEnabled AndAlso (Not CurrentProtocol.IdStatus.HasValue OrElse CurrentProtocol.IdStatus.Value <> CType(ProtocolStatusId.Incompleto, Integer))
+        btnNewPecMail.Visible = CurrentProtocolRights.IsPECSendable AndAlso ProtocolEnv.ProtNewPECMailEnabled AndAlso (Not CurrentProtocol.IdStatus.HasValue OrElse CurrentProtocol.IdStatus.Value <> CType(ProtocolStatusId.Incompleto, Integer))
 
         If Not ProtocolEnv.ConsentiDuplicaProtDaPEC AndAlso CurrentProtocol.PecMails IsNot Nothing AndAlso CurrentProtocol.PecMails.Count > 0 Then
             btnDuplica.Enabled = False
@@ -665,7 +660,7 @@ Public Class ProtVisualizza
         End If
 
         CommonShared.ZebraPrintData = Nothing
-        CommonShared.ZebraPrintData = {CurrentProtocol.Id}
+        CommonShared.ZebraPrintData = New List(Of Guid) From {CurrentProtocol.Id}
 
         btnPrintDocumentLabel.Visible = CurrentProtocol.IdDocument.GetValueOrDefault(0) <> 0
         btnPrintDocumentLabel.OnClientClick =
@@ -689,7 +684,7 @@ Public Class ProtVisualizza
         btnLog.Visible = CurrentProtocolRights.EnableViewLog
         btnSendToUsers.Visible = False
         btnAddToPratica.Visible = False
-
+        btnRemoveHighlight.Visible = False
 
         If Not CommonUtil.HasGroupAdministratorRight() Then
             btnDocument.Visible = False
@@ -711,14 +706,9 @@ Public Class ProtVisualizza
     End Sub
 
     Private Sub InitAuthorizeButton()
-        If DocSuiteContext.IsFullApplication Then
-            If ProtocolEnv.IsDistributionEnabled Then
-                btnAutorizza.Visible = CurrentProtocolRights.IsDistributable
-            Else
-                btnAutorizza.Visible = CurrentProtocolRights.IsAuthorizable
-            End If
-        Else
-            btnAutorizza.Visible = False
+        btnAutorizza.Visible = CurrentProtocolRights.IsAuthorizable
+        If ProtocolEnv.IsDistributionEnabled Then
+            btnAutorizza.Visible = CurrentProtocolRights.IsDistributable
         End If
     End Sub
 
@@ -736,7 +726,7 @@ Public Class ProtVisualizza
             Exit Sub
         End If
 
-        Dim querystring As String = String.Format("DataSourceType=prot&year={0}&number={1}", CurrentProtocol.Year, CurrentProtocol.Number)
+        Dim querystring As String = String.Format("DataSourceType=prot&UniqueId={0}", CurrentProtocol.Id)
         btnDocument.PostBackUrl = String.Concat(ResolveUrl("~/viewers/ProtocolViewer.aspx?"), CommonShared.AppendSecurityCheck(querystring))
     End Sub
 
@@ -749,12 +739,12 @@ Public Class ProtVisualizza
                 CommonShared.UserDocumentSeriesCheckRight(DocumentSeriesContainerRightPositions.Insert) Then
                 btnToSeries.Visible = ProtocolEnv.ProtocolDocumentSeriesButtonEnable
                 btnToSeries.Text = ProtocolEnv.ButtonSeriesTitle
-                btnToSeries.PostBackUrl = ResolveUrl(String.Concat("~/Prot/ProtToSeries.aspx?Type=Prot&Year=", CurrentProtocol.Year, "&Number=", CurrentProtocol.Number))
+                btnToSeries.PostBackUrl = ResolveUrl($"~/Prot/ProtToSeries.aspx?Type=Prot&UniqueId={CurrentProtocol.Id}")
             End If
         End If
 
         btnUDS.Visible = ProtocolEnv.UDSEnabled AndAlso CurrentRelatedUDS Is Nothing AndAlso CurrentProtocolRights.IsArchivable AndAlso CurrentUDSRepositoryFacade.HasProtocollableRepositories()
-        btnUDS.PostBackUrl = ResolveUrl(String.Concat("~/UDS/ProtocolToUDS.aspx?Type=UDS&ProtocolUniqueId=", CurrentProtocol.UniqueId))
+        btnUDS.PostBackUrl = ResolveUrl(String.Concat("~/UDS/ProtocolToUDS.aspx?Type=UDS&ProtocolUniqueId=", CurrentProtocol.Id))
 
         btnFlushAnnexed.Visible = False
         If ProtocolEnv.EnableFlushAnnexed Then
@@ -777,10 +767,8 @@ Public Class ProtVisualizza
             Exit Sub
         End If
 
-        btnSendIP4D.Visible = ProtocolEnv.IP4DEnabled AndAlso CurrentProtocolRightsStatusCancel.IsReadable
-        btnSendIP4D.PostBackUrl = String.Format("~/MailSenders/ProtocolMailSender.aspx?recipients=false&Year={0}&Number={1}&Type=Prot&Action=IP4D", CurrentProtocolYear, CurrentProtocolNumber)
-        btnMail.PostBackUrl = String.Format("~/MailSenders/ProtocolMailSender.aspx?recipients=false&Year={0}&Number={1}&Type=Prot", CurrentProtocolYear, CurrentProtocolNumber)
-        btnMailSettori.PostBackUrl = String.Format("~/MailSenders/ProtocolMailSender.aspx?Year={0}&Number={1}&SendToRoles=True&Type=Prot", CurrentProtocolYear, CurrentProtocolNumber)
+        btnMail.PostBackUrl = String.Format("~/MailSenders/ProtocolMailSender.aspx?recipients=false&UniqueId={0}&Type=Prot", CurrentProtocol.Id)
+        btnMailSettori.PostBackUrl = String.Format("~/MailSenders/ProtocolMailSender.aspx?UniqueId={0}&SendToRoles=True&Type=Prot", CurrentProtocol.Id)
 
         ' Verifico se esiste almeno un Settore collegato al protocollo
         btnMailSettori.Visible = CurrentProtocol.Roles.Any(Function(prRole) Not prRole.Role Is Nothing) AndAlso Not CurrentProtocolRights.IsHighilightViewable
@@ -796,12 +784,11 @@ Public Class ProtVisualizza
         InitSendToUsers()
 
         ' Button Interoperabilità
-        btnInterop.Visible = CurrentProtocolRights.IsInteroperable AndAlso Not ProtocolEnv.ProtNewPecMailEnabled
-        btnDuplica.Visible = DocSuiteContext.IsFullApplication AndAlso CommonShared.UserProtocolCheckRight(ProtocolContainerRightPositions.Insert)
+        btnInterop.Visible = CurrentProtocolRights.IsInteroperable AndAlso Not ProtocolEnv.ProtNewPECMailEnabled
+        btnDuplica.Visible = CommonShared.UserProtocolCheckRight(ProtocolContainerRightPositions.Insert)
 
         btnWorkflow.Visible = ProtocolEnv.WorkflowManagerEnabled AndAlso CurrentProtocolRightsStatusCancel.IsDocumentReadable
-        btnStatements.Visible = CurrentProtocolRights.CanDematerialise OrElse CurrentProtocolRights.CanSecureDocument
-        btnAnnulla.Visible = DocSuiteContext.IsFullApplication AndAlso CurrentProtocolRights.IsCancelable
+        btnAnnulla.Visible = CurrentProtocolRights.IsCancelable
         btnReject.Visible = CurrentProtocolRights.IsEditable AndAlso CurrentProtocolRights.IsRejectable
         btnCorrection.Visible = CommonShared.HasGroupProtocolCorrectionRight
 
@@ -846,13 +833,11 @@ Public Class ProtVisualizza
         End If
 
         Me.InitializeCollaborationSourceProtocol()
-        If IsWorkflowOperation Then
-            Dim activity As WorkflowActivity = CurrentWorkflowActivityFacade.GetById(CurrentIdWorkflowActivity.Value)
-            If activity IsNot Nothing AndAlso activity.Status <> WorkflowStatus.Done Then
+        If IsWorkflowOperation AndAlso IsCurrentWorkflowActivityManualComplete Then
+            If CurrentWorkflowActivity IsNot Nothing AndAlso CurrentWorkflowActivity.Status <> WorkflowStatus.Done Then
                 btnAddToPratica.Enabled = False
                 btnAnnulla.Enabled = False
                 btnAutorizza.Enabled = False
-                btnSendIP4D.Enabled = False
                 btnCallbackDuplica.Enabled = False
                 btnCorrection.Enabled = False
                 btnCycle.Enabled = False
@@ -889,16 +874,24 @@ Public Class ProtVisualizza
                 uscProtocollo.ButtonViewUDS.Enabled = False
                 btnUDS.Enabled = False
                 btnToSeries.Enabled = False
+                btnHighlight.Enabled = False
+                btnRemoveHighlight.Enabled = False
+                btnWorkflow.Enabled = False
+                btnTNotice.Enabled = False
+                btnToSeries.Enabled = False
             End If
         End If
 
         btnHighlight.Visible = False
+        btnRemoveHighlight.Visible = False
         If ProtocolEnv.ProtocolHighlightEnabled AndAlso CurrentProtocol.IdStatus.HasValue AndAlso (CurrentProtocol.IdStatus.Value >= 0 OrElse CurrentProtocol.IdStatus.Value = -20) Then
             If ProtocolEnv.IsDistributionEnabled Then
                 btnHighlight.Visible = CurrentProtocolRights.IsPreviewable
             Else
                 btnHighlight.Visible = CurrentProtocolRights.IsAuthorizable
             End If
+
+            btnRemoveHighlight.Visible = CurrentProtocolRights.HasHighlightRights
         End If
 
         If CurrentProtocolRights.IsHighilightViewable Then
@@ -965,15 +958,14 @@ Public Class ProtVisualizza
         sendCompleteStep.Active = True
         MasterDocSuite.CompleteWorkflowActivityButton.Enabled = False
         MasterDocSuite.WorkflowWizardControl.WizardSteps.Add(sendCompleteStep)
-        Dim wfActivity As WorkflowActivity = CurrentWorkflowActivityFacade.GetById(CurrentIdWorkflowActivity.Value)
-        If wfActivity IsNot Nothing AndAlso (wfActivity.Status = WorkflowStatus.Active OrElse wfActivity.Status = WorkflowStatus.Progress) Then
+        If CurrentWorkflowActivity IsNot Nothing AndAlso (CurrentWorkflowActivity.Status = WorkflowStatus.Todo OrElse CurrentWorkflowActivity.Status = WorkflowStatus.Progress) Then
             MasterDocSuite.CompleteWorkflowActivityButton.Enabled = True
         End If
 
     End Sub
 
     Private Sub Initialize()
-        If IsWorkflowOperation Then
+        If IsWorkflowOperation AndAlso IsCurrentWorkflowActivityManualComplete Then
             MasterDocSuite.WorkflowWizardRow.Visible = True
             MasterDocSuite.WizardActionColumn.Visible = True
             InitializeWorkflowWizard()
@@ -999,7 +991,7 @@ Public Class ProtVisualizza
         Me._isCyclable = New Lazy(Of Boolean)(Function() Me.GetIsCyclable())
         Me.btnCycle.Visible = Me.IsCyclable
 
-        MasterDocSuite.HistoryTitle = "Protocollo - Visualizza " & CurrentProtocol.Id.ToString()
+        MasterDocSuite.HistoryTitle = $"Protocollo - Visualizza {CurrentProtocol.FullNumber}"
         uscProtocollo.CurrentRelatedUDS = CurrentRelatedUDS
         Try
             InitializeProtocolBar()
@@ -1059,8 +1051,8 @@ Public Class ProtVisualizza
             AddIcon(c, "../Comm/images/file/Allegati32.gif", "Protocollo con allegati")
         End If
         ' Icona collegamenti
-        If CurrentProtocol.ProtocolLinked.Count > 0 Then
-            AddIcon(c, "../Comm/Images/DocSuite/Collegamento32.gif", "Protocollo con collegamenti")
+        If CurrentProtocol.ProtocolLinks.Count > 0 Then
+            AddIcon(c, "../Comm/Images/DocSuite/Link32.png", "Protocollo con collegamenti")
         End If
         ' Icona fascicoli ProtocolEnv.IsFascicleEnabled
         If DocSuiteContext.Current.ProtocolEnv.FascicleEnabled Then
@@ -1154,16 +1146,16 @@ Public Class ProtVisualizza
             Return
         End If
 
-        Dim queryString As String = "Type=Prot&Titolo=Inserimento&Document=P&Title2={0}&Action={1}&Action2={2}&SPY={3}&SPN={4}"
+        Dim queryString As String = "Type=Prot&Titolo=Inserimento&Document=P&Title2={0}&Action={1}&Action2={2}&SourceUniqueIdProtocol={3}"
         Dim postBackUrl As String = "../User/UserCollGestione.aspx?"
         If CollaborationRights.GetInserimentoAllaVisioneFirmaEnabled() Then
-            Dim formatted As String = String.Format(queryString, "Alla Visione/Firma", "Add", "CI", Me.CurrentProtocolYear, Me.CurrentProtocolNumber)
+            Dim formatted As String = String.Format(queryString, "Alla Visione/Firma", "Add", "CI", Me.CurrentProtocol.Id)
             Dim allaVisioneFirmaUrl As String = postBackUrl & CommonShared.AppendSecurityCheck(formatted)
             Me.rblInsertCollaboration.Items.Add(New ListItem("Inserimento Alla Visione/Firma", allaVisioneFirmaUrl))
         End If
 
         If CollaborationRights.GetInserimentoAlProtocolloSegreteriaEnabled() Then
-            Dim formatted As String = String.Format(queryString, "Al Protocollo/Segreteria", "Apt", "CA", Me.CurrentProtocolYear, Me.CurrentProtocolNumber)
+            Dim formatted As String = String.Format(queryString, "Al Protocollo/Segreteria", "Apt", "CA", Me.CurrentProtocol.Id)
             Dim alProtocolloSegreteriaUrl As String = postBackUrl & CommonShared.AppendSecurityCheck(formatted)
             Me.rblInsertCollaboration.Items.Add(New ListItem("Inserimento Al Protocollo/Segreteria", alProtocolloSegreteriaUrl))
         End If
@@ -1190,19 +1182,18 @@ Public Class ProtVisualizza
     End Sub
 
     Private Function GetIsCyclable() As Boolean
-        Dim cyclable As List(Of YearNumberCompositeKey) = CType(Me.Session(UserScrivaniaD.MultiDistribuzioneSessionName), List(Of YearNumberCompositeKey))
+        Dim cyclable As List(Of Guid) = CType(Me.Session(UserScrivaniaD.MultiDistribuzioneSessionName), List(Of Guid))
         If cyclable.IsNullOrEmpty() Then
             ' Non sto ciclando nessun protocollo.
             Return False
         End If
 
-        If Not cyclable.Any(Function(k) Me.CurrentProtocol.Id.Year.Equals(k.Year) AndAlso Me.CurrentProtocol.Id.Number.Equals(k.Number)) Then
+        If Not cyclable.Any(Function(k) Me.CurrentProtocol.Id.Equals(k)) Then
             ' Il protocollo che sto visualizzando non è stato selezionato nell'elenco di quelli che intendo ciclare.
             Return False
         End If
 
-        Dim last As YearNumberCompositeKey = cyclable.Last()
-        If last.Year.Equals(Me.CurrentProtocol.Year) AndAlso last.Number.Equals(Me.CurrentProtocol.Number) Then
+        If cyclable.Count = 1 Then
             ' Non ho nessun protocollo successivo.
             Return False
         End If
@@ -1211,25 +1202,34 @@ Public Class ProtVisualizza
     End Function
 
     Protected Sub WorkflowConfirmed(sender As Object, e As EventArgs)
-        Dim wfActivity As WorkflowActivity = CurrentWorkflowActivityFacade.GetById(CurrentIdWorkflowActivity.Value)
-        If wfActivity IsNot Nothing AndAlso (wfActivity.Status = WorkflowStatus.Active OrElse wfActivity.Status = WorkflowStatus.Progress) Then
-            Dim model As WorkflowNotify = New WorkflowNotify(wfActivity.Id) With {
-            .WorkflowName = wfActivity.WorkflowInstance.WorkflowRepository.Name
+        If CurrentWorkflowActivity IsNot Nothing AndAlso (CurrentWorkflowActivity.Status = WorkflowStatus.Todo OrElse CurrentWorkflowActivity.Status = WorkflowStatus.Progress) Then
+            Dim workflowNotify As WorkflowNotify = New WorkflowNotify(CurrentWorkflowActivity.UniqueId) With {
+                .WorkflowName = CurrentWorkflowActivity?.WorkflowInstance?.WorkflowRepository?.Name
             }
-            model.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_NUMBER, New WorkflowArgument() With {
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_NUMBER, New WorkflowArgument() With {
                                       .Name = WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_NUMBER,
                                       .PropertyType = ArgumentType.PropertyInt,
-                                      .ValueInt = CurrentProtocolNumber})
-            model.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_YEAR, New WorkflowArgument() With {
+                                      .ValueInt = CurrentProtocol.Number})
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_YEAR, New WorkflowArgument() With {
                                       .Name = WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_YEAR,
                                       .PropertyType = ArgumentType.PropertyInt,
-                                      .ValueInt = CurrentProtocolYear})
-            model.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_CHAINID_MAIN, New WorkflowArgument() With {
+                                      .ValueInt = CurrentProtocol.Year})
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_UNIQUEID, New WorkflowArgument() With {
+                                      .Name = WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_UNIQUEID,
+                                      .PropertyType = ArgumentType.PropertyGuid,
+                                      .ValueGuid = CurrentProtocol.Id})
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE, New WorkflowArgument() With {
+                                      .Name = WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE,
+                                      .PropertyType = ArgumentType.PropertyBoolean,
+                                      .ValueBoolean = True})
+            If CurrentDocumentUnitChains IsNot Nothing AndAlso CurrentDocumentUnitChains.Any() Then
+                workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_CHAINID_MAIN, New WorkflowArgument() With {
                                       .Name = WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_CHAINID_MAIN,
                                       .PropertyType = ArgumentType.PropertyGuid,
-                                      .ValueGuid = CurrentDocumentUnitChains.Single(Function(f) f.ChainType = ChainType.MainChain).IdArchiveChain})
+                                      .ValueGuid = CurrentDocumentUnitChains.Single(Function(f) f.ChainType = Entity.DocumentUnits.ChainType.MainChain).IdArchiveChain})
+            End If
             Dim webApiHelper As WebAPIHelper = New WebAPIHelper()
-            If Not webApiHelper.SendRequest(DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration, model) Then
+            If Not WebAPIImpersonatorFacade.ImpersonateSendRequest(webApiHelper, workflowNotify, DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration) Then
                 FileLogger.Warn(LoggerName, "ProtocolWorkflowConfirmed is not correctly evaluated from WebAPI. See specific error in WebAPI logger")
             End If
         End If
@@ -1238,10 +1238,7 @@ Public Class ProtVisualizza
 
     Private Sub InitAutoAssegnoButton()
         btnAutoAssign.Visible = False
-        If DocSuiteContext.IsFullApplication Then
-            btnAutoAssign.Visible = ProtocolEnv.IsDistributionEnabled AndAlso CurrentProtocolRights.IsCurrentUserDistributionManager.Value AndAlso Not CurrentProtocolRights.IsCurrentUserDistributionCc.Value AndAlso Not CurrentProtocolRights.IsDistributionAssigned AndAlso Not CurrentProtocolRights.IsHighilightViewable
-        End If
-
+        btnAutoAssign.Visible = ProtocolEnv.IsDistributionEnabled AndAlso CurrentProtocolRights.IsCurrentUserDistributionManager.Value AndAlso Not CurrentProtocolRights.IsCurrentUserDistributionCc.Value AndAlso Not CurrentProtocolRights.IsDistributionAssigned AndAlso Not CurrentProtocolRights.IsHighilightViewable
     End Sub
 #End Region
 

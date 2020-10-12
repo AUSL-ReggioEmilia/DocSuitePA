@@ -4,9 +4,10 @@ import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import NotLinkedFasciclesModel = require('App/Models/Fascicles/NotLinkedFasciclesModel');
 import Guid = require('App/Helpers/GuidHelper');
 import UpdateActionType = require("App/Models/UpdateActionType");
+import InsertActionType = require('App/Models/InsertActionType');
 
 class FascicleLocalService implements IFascicleService {
-    insertFascicle(model: FascicleModel, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    insertFascicle(model: FascicleModel, actionType?: InsertActionType, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         model.UniqueId = Guid.newGuid();
         if (callback) {
             callback(model);
@@ -33,7 +34,7 @@ class FascicleLocalService implements IFascicleService {
     getLinkedFascicles(model: FascicleModel, qs: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         throw new Error("Method not implemented.");
     }
-    getFascicleByCategory(idCategory: number, name: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getFascicleByCategory(idCategory: number, name: string, hasProcess?: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         throw new Error("Method not implemented.");
     }
 }

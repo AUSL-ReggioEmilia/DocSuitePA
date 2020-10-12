@@ -11,7 +11,8 @@
       <column name="Timestamp" not-null="true" sql-type="timestamp" />
     </version>
 
-    <property name="UniqueIdProtocol" column="UniqueIdProtocol" not-null="true" />
+    <property name="Year" column="Year" not-null="true" />
+    <property name="Number" column="Number" not-null="true" />
     <property name="Account" column="Account" not-null="true" />
     <property name="Type" column="Type" not-null="true" />
     <property name="RegistrationDate" column="RegistrationDate" not-null="true" />
@@ -21,8 +22,7 @@
     <property name="Note" column="Note" />
 
     <many-to-one class="Protocol" name="Protocol" insert="true" update="true">
-      <column name="Year" />
-      <column name="Number" />
+      <column name="UniqueIdProtocol" />
     </many-to-one>
   
   </class>

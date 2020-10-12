@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscFascicleSearch
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscFascicleSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''manager control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscFascicleSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents manager As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''searchWindow control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscFascicleSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents searchWindow As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''pageContent control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscFascicleSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pageContent As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''finderContent control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscFascicleSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents finderContent As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnSearch control.
     '''</summary>
@@ -66,7 +66,79 @@ Partial Public Class uscFascicleSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSearch As Global.Telerik.Web.UI.RadButton
-    
+
+    '''<summary>
+    '''btnSearchByCategory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSearchByCategory As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''btnSearchBySubject control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSearchBySubject As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''btnSearchByMetadata control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSearchByMetadata As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''metadataContainer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents metadataContainer As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''rtbMetadata control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rtbMetadata As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rddlSelectMetadata control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rddlSelectMetadata As Global.Telerik.Web.UI.RadDropDownList
+
+    '''<summary>
+    '''fascDetailsPane control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fascDetailsPane As Global.Telerik.Web.UI.RadPageLayout
+
+    '''<summary>
+    '''fascSummaryColumn control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fascSummaryColumn As Global.Telerik.Web.UI.LayoutColumn
+
     '''<summary>
     '''summaryContent control.
     '''</summary>
@@ -75,7 +147,7 @@ Partial Public Class uscFascicleSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents summaryContent As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscFascSummary control.
     '''</summary>
@@ -84,4 +156,31 @@ Partial Public Class uscFascicleSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscFascSummary As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascSummary
+
+    '''<summary>
+    '''fascFoldersColumn control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fascFoldersColumn As Global.Telerik.Web.UI.LayoutColumn
+
+    '''<summary>
+    '''fascFoldersContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fascFoldersContent As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''uscFascicleFolders control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscFascicleFolders As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascicleFolders
 End Class

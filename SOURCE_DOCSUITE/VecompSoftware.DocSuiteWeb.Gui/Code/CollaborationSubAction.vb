@@ -16,4 +16,6 @@ Public Class CollaborationSubAction
     Public Const AttivitaInCorso As String = "AiC"
     ''' <summary> Protocollati/Gestiti. </summary>
     Public Const ProtocollatiGestiti As String = "Prt"
+    ''' <summary> Da firmare in delega. </summary>
+    Public Const DaFirmareInDelega As String = "FiD"
 End Class

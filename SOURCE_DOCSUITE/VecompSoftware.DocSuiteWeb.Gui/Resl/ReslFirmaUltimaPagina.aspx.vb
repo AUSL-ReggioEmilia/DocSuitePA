@@ -67,7 +67,7 @@ Partial Public Class ReslFirmaUltimaPagina
                 Dim fileresolution As FileResolution = Facade.FileResolutionFacade.GetByResolution(resolution).FirstOrDefault()
                 Dim reslLocation As Location = Facade.ResolutionFacade.GetResolutionLocation(resolution.Id)
                 ' Creazione oggetto per pagina di firma multipla
-                Dim docs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(reslLocation.DocumentServer, reslLocation.ReslBiblosDSDB, fileresolution.IdUltimaPagina.Value)
+                Dim docs As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(reslLocation.ReslBiblosDSDB, fileresolution.IdUltimaPagina.Value)
                 For Each documentInfo As BiblosDocumentInfo In docs
                     Dim msdi As New MultiSignDocumentInfo(documentInfo)
                     msdi.GroupCode = resolution.InclusiveNumber
@@ -90,6 +90,11 @@ Partial Public Class ReslFirmaUltimaPagina
     Public ReadOnly Property ReturnUrl() As String Implements ISignMultipleDocuments.ReturnUrl
         Get
             Return String.Format("~/Resl/ReslFirmaUltimaPagina.aspx?Type=Resl&DateFrom={0}&DateTo={1}", rdpDateFrom.SelectedDate, rdpDateTo.SelectedDate)
+        End Get
+    End Property
+    Public ReadOnly Property SignAction As String Implements ISignMultipleDocuments.SignAction
+        Get
+            Return String.Empty
         End Get
     End Property
 
@@ -347,7 +352,7 @@ Partial Public Class ReslFirmaUltimaPagina
                     file.Attributes.Add(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE, 0)
                 End If
 
-                Dim lastPage As BiblosDocumentInfo = file.ArchiveInBiblos(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, fileResolution.IdResolutionFile.Value)
+                Dim lastPage As BiblosDocumentInfo = file.ArchiveInBiblos(resolution.Location.ReslBiblosDSDB, fileResolution.IdResolutionFile.Value)
 
                 If DocSuiteContext.Current.PrivacyLevelsEnabled Then
                     FacadeFactory.Instance.ResolutionLogFacade.Insert(resolution, ResolutionLogType.LP, String.Format("Associato livello privacy {0} al {1} {2} [{3}]", file.Attributes.Item(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE), "documento", file.Name, lastPage.DocumentId))

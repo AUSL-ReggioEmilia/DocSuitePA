@@ -47,7 +47,8 @@
     background-color: #80397b;
     background-image: none;
     height: 15pt;
-    padding-top: 3px;
+    padding: 5px 0px;
+    line-height: 15pt;
 }
 
 .fasc tr.titolo {

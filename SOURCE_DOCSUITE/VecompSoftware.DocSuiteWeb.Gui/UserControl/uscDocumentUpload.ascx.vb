@@ -1,24 +1,23 @@
-﻿Imports System.ComponentModel
-Imports System.Linq
-Imports Newtonsoft.Json
-Imports System.Collections.Generic
+﻿Imports System.Collections.Generic
 Imports System.Collections.Specialized
+Imports System.ComponentModel
 Imports System.IO
+Imports System.Linq
 Imports System.Text
 Imports System.Web
+Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Helpers.Web
-Imports VecompSoftware.Services.Biblos.Models
-Imports VecompSoftware.Services
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
+Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Services.Biblos
+Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Services.Logging
 
 Partial Public Class uscDocumentUpload
     Inherits DocSuite2008BaseControl
@@ -29,7 +28,6 @@ Partial Public Class uscDocumentUpload
     Public Event DocumentRemoved(ByVal sender As Object, ByVal e As DocumentEventArgs)
     Public Event DocumentSelected(ByVal sender As Object, ByVal e As DocumentEventArgs)
     Public Event ButtonFrontespizioClick(ByVal sender As Object, ByVal e As EventArgs)
-    Public Event SecuredDocument(sender As Object, e As SecuredDocumentEventArgs)
 
 #Region " Fields "
 
@@ -65,9 +63,7 @@ Partial Public Class uscDocumentUpload
     Private _documentInfos As IList(Of DocumentInfo)
     Private _documentInfosAdded As IList(Of DocumentInfo)
     Private _allowZipDocument As Boolean = False
-    Private _checkDematerialisationCompliance As Boolean = False
     Private _checkedDocumentInfos As IList(Of DocumentInfo)
-    Private _documentInfoDematerialisationAdded As IList(Of DocumentInfo)
     Private _minPrivacyLevel As Integer?
     Private _maxPrivacyLevel As Integer?
     Private Shared _defaultPrivacyLevel As Integer?
@@ -108,6 +104,12 @@ Partial Public Class uscDocumentUpload
     Public ReadOnly Property JavascriptCloseSeriesFunction As String
         Get
             Return ID & "_CloseCopyDocumentSeries"
+        End Get
+    End Property
+
+    Public ReadOnly Property JavascriptCloseUDSFunction As String
+        Get
+            Return ID & "_CloseCopyDocumentUDS"
         End Get
     End Property
 
@@ -230,12 +232,6 @@ Partial Public Class uscDocumentUpload
         End Set
     End Property
 
-    Public ReadOnly Property ButtonPreview As ImageButton
-        Get
-            Return btnPreviewDoc
-        End Get
-    End Property
-
     Public Property ButtonPreviewEnabled As Boolean
         Get
             Return btnPreviewDoc.Visible
@@ -316,15 +312,6 @@ Partial Public Class uscDocumentUpload
         End Set
     End Property
 
-    Public Property ButtonSecureDocumentEnabled As Boolean
-        Get
-            Return btnSecureDocument.Visible
-        End Get
-        Set(ByVal value As Boolean)
-            btnSecureDocument.Visible = value
-        End Set
-    End Property
-
     Public Property ButtonPrivacyLevelVisible As Boolean
         Get
             Return btnPrivacyLevel.Visible
@@ -352,6 +339,12 @@ Partial Public Class uscDocumentUpload
         End Get
     End Property
 
+    Public ReadOnly Property ButtonCopyUDS As ImageButton
+        Get
+            Return btnCopyUDS
+        End Get
+    End Property
+
     Public ReadOnly Property ButtonAddDocument As ImageButton
         Get
             Return btnAddDocument
@@ -370,9 +363,7 @@ Partial Public Class uscDocumentUpload
         End Get
         Set(ByVal value As Boolean)
             tblButtons.Visible = Not value
-            If (value = True) Then
-                rfvDocument.Enabled = False
-            End If
+            rfvDocument.Enabled = Not value
         End Set
     End Property
 
@@ -442,7 +433,6 @@ Partial Public Class uscDocumentUpload
             If _documentInfosAdded Is Nothing Then
                 _documentInfosAdded = New List(Of DocumentInfo)
                 Dim tmpDocInfo As DocumentInfo
-                Dim secureDocumentAttribute As String
                 Dim privacyLvl As Integer = 0
                 For Each node As RadTreeNode In RadTreeViewDocument.Nodes(0).Nodes
                     If Not node.Attributes("key") Is Nothing AndAlso node.Attributes("Added") = "True" Then
@@ -464,10 +454,6 @@ Partial Public Class uscDocumentUpload
                             End If
                         End If
                         tmpDocInfo.AddAttribute(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE, privacyLvl.ToString())
-                        secureDocumentAttribute = node.Attributes("SecureDocumentId")
-                        If Not String.IsNullOrEmpty(secureDocumentAttribute) Then
-                            tmpDocInfo.AddAttribute(BiblosFacade.SECURE_DOCUMENT_ATTRIBUTE, secureDocumentAttribute)
-                        End If
                         _documentInfosAdded.Add(tmpDocInfo)
                     End If
                 Next
@@ -524,16 +510,7 @@ Partial Public Class uscDocumentUpload
             _allowZipDocument = value
         End Set
     End Property
-
-    Public Property CheckDematerialisationCompliance As Boolean
-        Get
-            Return _checkDematerialisationCompliance
-        End Get
-        Set(ByVal value As Boolean)
-            _checkDematerialisationCompliance = value
-        End Set
-    End Property
-
+    Public Property AllowUnlimitFileSize As Boolean
     Public ReadOnly Property MyBaseControl As DocSuite2008BaseControl
         Get
             Return DirectCast(Me, DocSuite2008BaseControl)
@@ -753,6 +730,16 @@ Partial Public Class uscDocumentUpload
         End Get
     End Property
 
+    Private ReadOnly Property SessionUDSNumber As String
+        Get
+            If Not Session.Item("UDSNumberAttach") Is Nothing Then
+                Return Session.Item("UDSNumberAttach").ToString()
+            Else
+                Return String.Empty
+            End If
+        End Get
+    End Property
+
     Public Property DocumentDeletable As Boolean
         Get
             Return CType(ViewState("DocumentDeletable"), Boolean)
@@ -789,25 +776,6 @@ Partial Public Class uscDocumentUpload
     Public Property DocumentsDragAndDropEnabled As Boolean
 
     Public Property DocumentsRenameEnabled As Boolean
-
-    Public ReadOnly Property DocumentInfosDematerialisationAdded As IList(Of DocumentInfo)
-        Get
-            If _documentInfoDematerialisationAdded Is Nothing Then
-                _documentInfoDematerialisationAdded = New List(Of DocumentInfo)
-                If RadTreeViewDocument.Nodes.Count > 0 Then
-                    For Each node As RadTreeNode In RadTreeViewDocument.Nodes(0).Nodes
-                        If Not node.Attributes("key") Is Nothing AndAlso node.Attributes("AddedToDematerialisation") = "True" Then
-                            Dim tmpDocInfo As DocumentInfo = DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(node.Attributes("key")))
-                            tmpDocInfo.AddAttribute(BiblosFacade.DOCUMENT_POSITION_ATTRIBUTE, node.Index.ToString())
-                            _documentInfoDematerialisationAdded.Add(tmpDocInfo)
-                        End If
-                    Next
-                End If
-            End If
-
-            Return _documentInfoDematerialisationAdded
-        End Get
-    End Property
 
     Public Property MinPrivacyLevel As Integer
         Get
@@ -849,6 +817,14 @@ Partial Public Class uscDocumentUpload
 
     Public Property FromCollaborationPrivacyLevelEnabled As Boolean
 
+    Public Property DelegatedUser As String
+        Get
+            Return ViewState("DelegatedUser")
+        End Get
+        Set(value As String)
+            ViewState("DelegatedUser") = value
+        End Set
+    End Property
 #End Region
 
 #Region " Events "
@@ -904,6 +880,8 @@ Partial Public Class uscDocumentUpload
                             initialCode = SessionResolutionNumber
                         Case "SERIES"
                             initialCode = SessionSeriesNumber
+                        Case "UDS"
+                            initialCode = SessionUDSNumber
                     End Select
                 End If
                 For Each item As String In deserialized
@@ -929,8 +907,8 @@ Partial Public Class uscDocumentUpload
                     File.WriteAllBytes(pathInfo, document.ContentStream)
                     tempDoc = New TempFileDocumentInfo(document.FileName, New FileInfo(pathInfo))
                     If tempDoc.Size > 0 OrElse ProtocolEnv.AllowZeroBytesUpload Then
-                        LoadDocumentInfo(tempDoc, False, True, MultipleDocuments, True, False, False)
-                        RaiseEvent DocumentUploaded(Me, New DocumentEventArgs() With {.Document = tempDoc})
+                        LoadDocumentInfo(tempDoc, False, True, MultipleDocuments, True, False)
+                        RaiseEvent DocumentUploaded(Me, New DocumentEventArgs() With {.document = tempDoc})
 
                         AddNextPrefix()
                     End If
@@ -939,11 +917,6 @@ Partial Public Class uscDocumentUpload
 
             Case "UPLOAD"
                 Dim deserialized As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(arguments(2))
-                Dim toDematerialisation As Boolean
-                If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso deserialized.ContainsKey("CheckDematerialisationCompliance") Then
-                    toDematerialisation = Boolean.Parse(deserialized("CheckDematerialisationCompliance"))
-                    deserialized.Remove("CheckDematerialisationCompliance")
-                End If
                 Dim type As String = If(arguments.Length > 3, arguments(3), String.Empty)
                 For Each item As KeyValuePair(Of String, String) In deserialized
                     Dim name As String = If(Not String.IsNullOrEmpty(Prefix), String.Format("{0}{1}-{2}", Prefix, GetNextPrefix, item.Value), item.Value).ToString()
@@ -956,7 +929,7 @@ Partial Public Class uscDocumentUpload
                     '' Procedo solo se la grandezza maggiore di 0 oppure se sono accettate da Biblos anche
                     '' grandezze nulle [con parametro apposito] --> per evitare errori in fase di memorizzazione
                     If doc.Size > 0 OrElse ProtocolEnv.AllowZeroBytesUpload Then
-                        LoadDocumentInfo(doc, False, True, MultipleDocuments, True, False, toDematerialisation)
+                        LoadDocumentInfo(doc, False, True, MultipleDocuments, True, False)
                         RaiseEvent DocumentUploaded(Me, New DocumentEventArgs() With {.Document = doc})
 
                         AddNextPrefix()
@@ -966,11 +939,6 @@ Partial Public Class uscDocumentUpload
 
             Case "SIGN"
                 Dim signed As TempFileDocumentInfo = CType(DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(arguments(2))), TempFileDocumentInfo)
-                If SelectedDocumentInfo.Attributes.ContainsKey(BiblosFacade.SECURE_DOCUMENT_ATTRIBUTE) Then
-                    Dim secureDocumentReference As String = SelectedDocumentInfo.Attributes(BiblosFacade.SECURE_DOCUMENT_ATTRIBUTE)
-                    signed.AddAttribute(BiblosFacade.SECURE_DOCUMENT_ATTRIBUTE, secureDocumentReference)
-                End If
-
                 Dim args As New DocumentSignedEventArgs()
                 args.DestinationDocument = signed
                 args.SourceDocument = SelectedDocumentInfo
@@ -1012,7 +980,7 @@ Partial Public Class uscDocumentUpload
             Case "TEMPLATEDOCUMENT"
                 Dim idArchiveChain As Guid = Nothing
                 If Guid.TryParse(arguments(2), idArchiveChain) Then
-                    Dim docs As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(String.Empty, idArchiveChain)
+                    Dim docs As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(idArchiveChain)
                     For Each doc As BiblosDocumentInfo In docs
                         Dim newName As String = doc.Name.Replace(Path.GetFileNameWithoutExtension(doc.Name), arguments(3))
                         Dim tmpFile As TempFileDocumentInfo = New TempFileDocumentInfo(newName, BiblosFacade.SaveUniqueToTemp(doc))
@@ -1029,29 +997,6 @@ Partial Public Class uscDocumentUpload
                     Next
                     UpdateTotalSize()
                 End If
-
-            Case "SECUREDOCUMENT"
-                Try
-                    If ProtocolEnv.SecureDocumentEnabled Then
-                        Dim tmpDocument As DocumentInfo = SelectedDocumentInfo
-                        Dim secureDocumentResult As Tuple(Of Byte(), String) = StampaConforme.Service.CreateSecureDocument(tmpDocument.Stream, Path.GetExtension(tmpDocument.Name), String.Empty)
-                        Dim tmpFileName As String = FileHelper.UniqueFileNameFormat(tmpDocument.PDFName, DocSuiteContext.Current.User.UserName)
-                        Dim tmpFile As FileInfo = FileHelper.SaveStreamToDisk(Path.Combine(CommonUtil.GetInstance().TempDirectory.FullName, tmpFileName), secureDocumentResult.Item1)
-                        Dim secureDocument As TempFileDocumentInfo = New TempFileDocumentInfo(String.Concat(tmpDocument.Name, FileHelper.PDF), tmpFile)
-                        secureDocument.AddAttribute(BiblosFacade.SECURE_DOCUMENT_ATTRIBUTE, secureDocumentResult.Item2)
-                        RemoveNode(SelectedNode, False)
-                        LoadDocumentInfo(secureDocument, True, True, MultipleDocuments, True)
-                        Dim addedNode As RadTreeNode = GetNodeByDocumentInfo(secureDocument)
-                        addedNode.AddAttribute("SecureDocumentId", secureDocumentResult.Item2)
-                        RaiseEvent SecuredDocument(Me, New SecuredDocumentEventArgs() With {.Document = tmpDocument, .SecureDocument = secureDocument})
-                        AjaxManager.ResponseScripts.Add(String.Format(TREENODE_EDITED_END_SCRIPT, ID))
-                        UpdateTotalSize()
-                    End If
-                Catch ex As Exception
-                    FileLogger.Error(LoggerName, "Errore nella fase di securizzazione documento", ex)
-                    BasePage.AjaxAlert("Errore nella fase di securizzazione del documento")
-                    AjaxManager.ResponseScripts.Add(String.Format(TREENODE_EDITED_END_SCRIPT, ID))
-                End Try
 
             Case "PRIVACYLEVELSET"
                 If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso PrivacyLevelVisible AndAlso arguments(2) IsNot Nothing AndAlso arguments(3) IsNot Nothing Then
@@ -1090,6 +1035,7 @@ Partial Public Class uscDocumentUpload
             params.AppendFormat("&allowedextensions={0}", String.Join(",", AllowedExtensions))
         End If
         params.AppendFormat("&allowzipdoc={0}", AllowZipDocument)
+        params.AppendFormat("&allowunlimitfilesize={0}", AllowUnlimitFileSize)
         AjaxManager.ResponseScripts.Add(String.Format(OpenWindowScript, ID, "../UserControl/CommonUploadDocument.aspx", windowUploadDocument.ClientID, params.ToString()))
     End Sub
 
@@ -1161,6 +1107,13 @@ Partial Public Class uscDocumentUpload
         AjaxManager.ResponseScripts.Add(String.Format(OpenWindowScript, ID, "../Series/AttachDocuments.aspx", wndCopySeries.ClientID, "Titolo=Selezione Protocollo&Action=CopyProtocolDocuments&Type=Series"))
     End Sub
 
+    Private Sub btnCopyUDS_Click(sender As Object, e As ImageClickEventArgs) Handles btnCopyUDS.Click
+        wndCopyUDS.Height = Unit.Pixel(ProtocolEnv.ModalHeight)
+        wndCopyUDS.Width = Unit.Pixel(ProtocolEnv.ModalWidth)
+        wndCopyUDS.OnClientClose = JavascriptCloseUDSFunction
+        AjaxManager.ResponseScripts.Add(String.Format(OpenWindowScript, ID, "../UDS/AttachDocuments.aspx", wndCopyUDS.ClientID, "Titolo=Selezione Protocollo&Action=CopyProtocolDocuments&Type=UDS"))
+    End Sub
+
     Private Sub btnSignDocument_Click(ByVal sender As Object, ByVal e As ImageClickEventArgs)
         If SelectedDocumentInfo Is Nothing Then
             BasePage.AjaxAlert("Selezionare un documento per procedere con la firma.")
@@ -1180,13 +1133,15 @@ Partial Public Class uscDocumentUpload
         If CloseAfterSignPdfConversion Then
             parameters = String.Concat(parameters, "&CloseAfterPdfConversion=True")
         End If
+        If Not String.IsNullOrEmpty(DelegatedUser) Then
+            parameters = $"{parameters}&DelegatedUser={HttpUtility.UrlEncode(DelegatedUser)}"
+        End If
         AjaxManager.ResponseScripts.Add(String.Format(If(ProtocolEnv.ResizeSignWindowEnabled, OpenWindowSignScript, OpenWindowScript), ID, "../Comm/SingleSign.aspx", signWindow.ClientID, parameters))
     End Sub
 
     ''' <summary> Apertura finestra Scanner. </summary>
     Private Sub btnAddDocumentScanner_Click(ByVal sender As Object, ByVal e As ImageClickEventArgs)
         Dim params As StringBuilder = New StringBuilder()
-        params.AppendFormat("&checkcompl={0}", CheckDematerialisationCompliance)
         windowScannerDocument.OnClientClose = JavascriptClosingFunction
         Dim scannerLightPath As String = SCANNER_LIGHT_PATH
         If ProtocolEnv.ScannerLightRestEnabled Then
@@ -1205,6 +1160,11 @@ Partial Public Class uscDocumentUpload
         Dim node As RadTreeNode = SelectedNode
         If node Is Nothing Then
             BasePage.AjaxAlert("Selezionare un documento per procedere con l'anteprima.")
+            Exit Sub
+        End If
+
+        If node.Attributes("Previewable") IsNot Nothing AndAlso node.Attributes("Previewable").Eq(False.ToString()) Then
+            BasePage.AjaxAlert("Non si possiedono diritti per visualizzare l'anteprima del documento selezionato.")
             Exit Sub
         End If
 
@@ -1329,7 +1289,7 @@ Partial Public Class uscDocumentUpload
                     node.AddAttribute("MinPrivacy", MinPrivacyLevel.ToString())
                 End If
                 If PrivacyLevelVisible AndAlso
-                (ModifiyPrivacyLevelEnabled OrElse ButtonFileEnabled OrElse ButtonScannerEnabled OrElse ButtonLibrarySharepointEnabled OrElse ButtonCopyProtocol.Visible OrElse ButtonCopyResl.Visible OrElse ButtonCopySeries.Visible OrElse btnImportContactManual.Visible OrElse ButtonSelectTemplateEnabled) AndAlso Not node.Value.Equals(FakeNodeValue) Then
+                (ModifiyPrivacyLevelEnabled OrElse ButtonFileEnabled OrElse ButtonScannerEnabled OrElse ButtonLibrarySharepointEnabled OrElse ButtonCopyProtocol.Visible OrElse ButtonCopyResl.Visible OrElse ButtonCopySeries.Visible OrElse ButtonCopyUDS.Visible OrElse btnImportContactManual.Visible OrElse ButtonSelectTemplateEnabled) AndAlso Not node.Value.Equals(FakeNodeValue) Then
                     ddlPrivacyLevels.SetDisplay(True)
                     lblPrivacy.SetDisplay(True)
                     lblPrivacy.Text = String.Concat(" - ", CommonBasePage.PRIVACY_LABEL)
@@ -1362,10 +1322,6 @@ Partial Public Class uscDocumentUpload
             btnRemoveDocument.OnClientClick = String.Concat(Me.ID, "_ConfirmRemoveDocument(); return false;")
         Else
             btnRemoveDocument.OnClientClick = String.Concat(Me.ID, "_ConfirmRemoveDocumentCallback(true); return false;")
-        End If
-
-        If ProtocolEnv.SecureDocumentEnabled Then
-            btnSecureDocument.OnClientClick = String.Concat(ID, "_sendSecureDocumentRequest(); return false;")
         End If
 
         If DocumentsRenameEnabled Then
@@ -1413,9 +1369,9 @@ Partial Public Class uscDocumentUpload
         LoadDocumentInfo(doc, signature, deletable, append, isNew, False)
     End Sub
 
-    Public Sub LoadDocumentInfo(doc As DocumentInfo, signature As Boolean, deletable As Boolean, append As Boolean, isNew As Boolean, updateSizeCount As Boolean, Optional toDematerialisation As Boolean = False)
+    Public Sub LoadDocumentInfo(doc As DocumentInfo, signature As Boolean, deletable As Boolean, append As Boolean, isNew As Boolean, updateSizeCount As Boolean)
         Dim documents As New List(Of DocumentInfo)({doc})
-        LoadDocumentInfo(documents, signature, deletable, append, isNew, updateSizeCount, toDematerialisation)
+        LoadDocumentInfo(documents, signature, deletable, append, isNew, updateSizeCount)
     End Sub
 
     Public Sub LoadDocumentInfo(docs As IList(Of DocumentInfo))
@@ -1426,7 +1382,7 @@ Partial Public Class uscDocumentUpload
         LoadDocumentInfo(docs, signature, deletable, append, isNew, False)
     End Sub
 
-    Public Sub LoadDocumentInfo(docs As IList(Of DocumentInfo), signature As Boolean, deletable As Boolean, append As Boolean, isNew As Boolean, updateSizeCount As Boolean, Optional toDematerialisation As Boolean = False)
+    Public Sub LoadDocumentInfo(docs As IList(Of DocumentInfo), signature As Boolean, deletable As Boolean, append As Boolean, isNew As Boolean, updateSizeCount As Boolean, Optional previewable As Boolean = True)
         If Not append Then
             ClearNodes()
         End If
@@ -1435,7 +1391,7 @@ Partial Public Class uscDocumentUpload
             '' metto da parte il doc originale per avere cache
             DocumentInfos.Add(doc)
 
-            Dim node As RadTreeNode = CreateNodeFromDocumentInfo(doc, signature, deletable, isNew, ShowDocumentsSize, toDematerialisation)
+            Dim node As RadTreeNode = CreateNodeFromDocumentInfo(doc, signature, deletable, isNew, ShowDocumentsSize, previewable)
             RadTreeViewDocument.Nodes(0).Nodes.Add(node)
         Next
         If HasDocuments Then
@@ -1451,7 +1407,7 @@ Partial Public Class uscDocumentUpload
 
     ''' <summary> Crea un nodo compatibile con i metodi del controllo </summary>
     ''' <remarks> Metodo per ora necessario per gestire gestioni custom dei nodi. Eliminarlo o renderlo private. </remarks>
-    Public Shared Function CreateNodeFromDocumentInfo(doc As DocumentInfo, signature As Boolean, deletable As Boolean, isNew As Boolean, showSize As Boolean, Optional toDematerialisation As Boolean = False) As RadTreeNode
+    Public Shared Function CreateNodeFromDocumentInfo(doc As DocumentInfo, signature As Boolean, deletable As Boolean, isNew As Boolean, showSize As Boolean, Optional previewable As Boolean = True) As RadTreeNode
         Dim node As New RadTreeNode()
         If signature AndAlso Not String.IsNullOrEmpty(doc.Signature) Then
             node.Text = doc.Signature
@@ -1474,21 +1430,12 @@ Partial Public Class uscDocumentUpload
         Else
             node.Attributes.Add("Added", "False")
         End If
-
-        If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled Then
-            node.Attributes.Add("AddedToDematerialisation", toDematerialisation.ToString())
-        End If
-
+        node.Attributes.Add("Previewable", previewable.ToString())
         Dim level As Integer = If(DocSuiteContext.Current.PrivacyLevelsEnabled, DefaultPrivacyLevel, 0)
         If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso doc.Attributes IsNot Nothing AndAlso doc.Attributes.Any(Function(s) s.Key.Equals(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE)) AndAlso Not String.IsNullOrEmpty(doc.Attributes.Item(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE)) Then
             level = CInt(doc.Attributes.Item(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE))
         End If
         node.Attributes.Add(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE, level.ToString())
-
-        If doc.Attributes.ContainsKey(BiblosFacade.SECURE_DOCUMENT_ATTRIBUTE) Then
-            node.Attributes.Add("SecureDocumentId", doc.Attributes(BiblosFacade.SECURE_DOCUMENT_ATTRIBUTE))
-        End If
-
         node.Expanded = True
         If Not deletable Then
             SetLocked(node, True)
@@ -1605,16 +1552,16 @@ Partial Public Class uscDocumentUpload
         End If
     End Sub
 
-    Public Sub LoadBiblosDocuments(servername As String, archive As String, idchain As Integer, signature As Boolean, blockDelete As Boolean)
+    Public Sub LoadBiblosDocuments(archive As String, idchain As Integer, signature As Boolean, blockDelete As Boolean)
         ClearNodes()
-        Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(servername, archive, idchain)
+        Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(archive, idchain)
 
         Dim index As Integer = 0
         For Each doc As BiblosDocumentInfo In docs
             Dim node As New RadTreeNode(doc.Name)
             node.ImageUrl = ImagePath.FromDocumentInfo(doc, True)
             If SendSourceDocument Then
-                node.Value = String.Format("{0}|{1}|{2}|{3}", doc.Server, doc.ArchiveName, doc.BiblosChainId, index)
+                node.Value = String.Format("{0}|{1}|{2}", doc.ArchiveName, doc.BiblosChainId, index)
                 node.Attributes.Add("Filename", doc.Name)
             End If
 
@@ -1750,12 +1697,12 @@ Partial Public Class uscDocumentUpload
         End If
     End Sub
 
-    Public Sub LoadDocumentInfoByIndex(doc As DocumentInfo, signature As Boolean, deletable As Boolean, append As Boolean, isNew As Boolean, updateSizeCount As Boolean, index As Integer, Optional toDematerialisation As Boolean = False)
+    Public Sub LoadDocumentInfoByIndex(doc As DocumentInfo, signature As Boolean, deletable As Boolean, append As Boolean, isNew As Boolean, updateSizeCount As Boolean, index As Integer)
 
         '' metto da parte il doc originale per avere cache
         DocumentInfos.Add(doc)
 
-        Dim node As RadTreeNode = CreateNodeFromDocumentInfo(doc, signature, deletable, isNew, ShowDocumentsSize, toDematerialisation)
+        Dim node As RadTreeNode = CreateNodeFromDocumentInfo(doc, signature, deletable, isNew, ShowDocumentsSize)
         If append Then
             RadTreeViewDocument.Nodes(0).Nodes.Add(node)
         Else
@@ -1774,7 +1721,7 @@ Partial Public Class uscDocumentUpload
     End Sub
 
     Public Sub RefreshDdlPrivacyLevel(visibility As Boolean)
-        PrivacyLevelVisible = visibility AndAlso (ModifiyPrivacyLevelEnabled OrElse ButtonFileEnabled OrElse ButtonScannerEnabled OrElse ButtonLibrarySharepointEnabled OrElse ButtonCopyProtocol.Visible OrElse ButtonCopyResl.Visible OrElse ButtonCopySeries.Visible OrElse btnImportContactManual.Visible OrElse ButtonSelectTemplateEnabled OrElse FromCollaborationPrivacyLevelEnabled)
+        PrivacyLevelVisible = visibility AndAlso (ModifiyPrivacyLevelEnabled OrElse ButtonFileEnabled OrElse ButtonScannerEnabled OrElse ButtonLibrarySharepointEnabled OrElse ButtonCopyProtocol.Visible OrElse ButtonCopyResl.Visible OrElse ButtonCopySeries.Visible OrElse ButtonCopyUDS.Visible OrElse btnImportContactManual.Visible OrElse ButtonSelectTemplateEnabled OrElse FromCollaborationPrivacyLevelEnabled)
         For Each node As RadTreeNode In RadTreeViewDocument.Nodes(0).Nodes
             Dim ddlPrivacyLevels As RadDropDownList = DirectCast(node.FindControl("ddlPrivacyLevels"), RadDropDownList)
             Dim lblPrivacy As Label = DirectCast(node.FindControl("lblPrivacy"), Label)

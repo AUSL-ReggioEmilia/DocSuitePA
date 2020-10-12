@@ -56,17 +56,12 @@
     <property name="RegistrationUser" />
     <property name="ProcessStatus" />
     <property name="Size" column="Size" />
-    <property name="IdUDSRepository" column="IdUDSRepository" />
-    <property name="IdUDS" column="IdUDS" />
-    <property name="DocumentUnitType" column="DocumentUnitType" />
     <property name="UniqueId" column="UniqueId" />
     <property name="InvoiceStatus" column="InvoiceStatus" />
-    <!-- TODO: Da rimuovere assolutamente quando trovata la soluzione per leggere la registrationdate di protocollo e delle uds presenti -->
-    <property name="ProtocolRegistrationDate" formula="(SELECT TOP 1 RegistrationDate FROM Protocol WHERE Protocol.Year = Year AND Protocol.Number = Number AND DocumentUnitType = 1)"></property>
-    <property name="UDSRegistrationDate" formula="(SELECT TOP 1 RegistrationDate FROM cqrs.DocumentUnits D WHERE D.Year = Year AND D.Number = Number AND D.IdUDSRepository = IdUDSRepository AND DocumentUnitType = 7)"></property>
 
     <many-to-one class="PECMailBox" name="MailBox" column="IDPECMailBox" not-null="true" />
     <many-to-one class="Location" name="Location" column="IDLocation" lazy="false" />
+    <many-to-one class="DocumentUnit" name="DocumentUnit" column="IdDocumentUnit" />
     
     <bag name="Receipts" table="PECMailReceipts" cascade="all-delete-orphan" inverse="true">
       <key>

@@ -6,6 +6,11 @@ Imports Telerik.Web.UI
 Partial Class TbltServiceCategory
     Inherits CommonBasePage
 
+#Region "Fields"
+    Private Const CREATE_OPTION As String = "create"
+    Private Const MODIFY_OPTION As String = "modify"
+    Private Const DELETE_OPTION As String = "delete"
+#End Region
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
@@ -28,37 +33,48 @@ Partial Class TbltServiceCategory
         InitializeButtons()
     End Sub
 
+    Protected Sub FolderToolBar_ButtonClick(sender As Object, e As RadToolBarEventArgs) Handles FolderToolBar.ButtonClick
+        Select Case e.Item.Value
+            Case CREATE_OPTION
+                AjaxManager.ResponseScripts.Add("OpenEditWindow('wdEditServiceCategory','Add');")
+            Case DELETE_OPTION
+                AjaxManager.ResponseScripts.Add("OpenEditWindow('wdEditServiceCategory','Delete');")
+            Case MODIFY_OPTION
+                AjaxManager.ResponseScripts.Add("OpenEditWindow('wdEditServiceCategory','Rename');")
+        End Select
+    End Sub
+
 #End Region
 
 #Region " Methods "
 
     Private Sub InitializeAjaxSettings()
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, RadTreeViewServiceCategories)
-        AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeViewServiceCategories, pnlButtons)
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlButtons)
+        AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeViewServiceCategories, FolderToolBar)
+        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, FolderToolBar)
         AddHandler AjaxManager.AjaxRequest, AddressOf TbltServiceCategoryAjaxRequest
     End Sub
 
 
     Private Sub InitializeButtons()
-        btnAggiungi.Enabled = True
-        btnElimina.Enabled = True
-        btnRinomina.Enabled = True
+        FolderToolBar.FindItemByValue(CREATE_OPTION).Enabled = True
+        FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = True
+        FolderToolBar.FindItemByValue(MODIFY_OPTION).Enabled = True
         If Not RadTreeViewServiceCategories.SelectedNode Is Nothing Then
             If RadTreeViewServiceCategories.SelectedNode.Equals(RadTreeViewServiceCategories.Nodes(0)) Then
-                btnAggiungi.Enabled = True
-                btnElimina.Enabled = False
-                btnRinomina.Enabled = False
+                FolderToolBar.FindItemByValue(CREATE_OPTION).Enabled = True
+                FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = False
+                FolderToolBar.FindItemByValue(MODIFY_OPTION).Enabled = False
             Else
-                btnAggiungi.Enabled = False
-                btnElimina.Enabled = True
-                btnRinomina.Enabled = True
+                FolderToolBar.FindItemByValue(CREATE_OPTION).Enabled = False
+                FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = True
+                FolderToolBar.FindItemByValue(MODIFY_OPTION).Enabled = True
             End If
             RadTreeViewServiceCategories.ContextMenus(0).Enabled = True
         Else
-            btnAggiungi.Enabled = False
-            btnElimina.Enabled = False
-            btnRinomina.Enabled = False
+            FolderToolBar.FindItemByValue(CREATE_OPTION).Enabled = False
+            FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = False
+            FolderToolBar.FindItemByValue(MODIFY_OPTION).Enabled = False
             RadTreeViewServiceCategories.ContextMenus(0).Enabled = False
         End If
     End Sub
@@ -113,7 +129,7 @@ Partial Class TbltServiceCategory
     End Sub
 
     Private Sub EnableModifyMode()
-        pnlButtons.Visible = True
+        FolderToolBar.Visible = True
         RadTreeViewServiceCategories.ContextMenus(0).Visible = True
         RadTreeViewServiceCategories.OnClientContextMenuItemClicked = "ContextMenuItemClicked"
         RadTreeViewServiceCategories.OnClientContextMenuShowing = "ContextMenuShowing"
@@ -121,7 +137,7 @@ Partial Class TbltServiceCategory
     End Sub
 
     Private Sub DisableModifyMode()
-        pnlButtons.Visible = False
+        FolderToolBar.Visible = False
         RadTreeViewServiceCategories.ContextMenus(0).Visible = False
         RadTreeViewServiceCategories.OnClientContextMenuItemClicked = ""
         RadTreeViewServiceCategories.OnClientContextMenuShowing = ""

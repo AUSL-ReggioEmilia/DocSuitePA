@@ -35,7 +35,7 @@ class CommonSelContactRest {
     *------------------------- Events -----------------------------
     */
 
-    confirm_onClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    confirm_onClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._ajaxFlatLoadingPanel.show(this.pnlButtonsId);
         this.createContact()
             .done((data: [string, ContactModel]) => {

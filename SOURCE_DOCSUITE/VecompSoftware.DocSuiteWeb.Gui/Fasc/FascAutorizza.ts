@@ -14,6 +14,8 @@ import FascicleBase = require('Fasc/FascBase');
 import UscFascicolo = require('UserControl/uscFascicolo');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import VisibilityType = require('App/Models/Fascicles/VisibilityType');
 declare var Page_IsValid: any;
 
 class FascAutorizza extends FascicleBase {
@@ -59,19 +61,35 @@ class FascAutorizza extends FascicleBase {
 * @param eventArgs
 * @returns
 */
-    btnConfirm_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnConfirm_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         if (!Page_IsValid) {
             args.set_cancel(true);
             return;
         }
         this._btnConfirm.set_enabled(false);
-        this._loadingPanel.show(this.fasciclePageContentId);
         if (Page_IsValid) {
-            (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest("Authorized");
+
+            PageClassHelper.callUserControlFunctionSafe<UscFascicolo>(this.uscFascicoloId)
+                .done((instance) => {
+                    instance.getRaciRoles().done((raciRoles: RoleModel[]) => {
+                        this._loadingPanel.show(this.pageContentId);
+                        $.when(this.insertFascicleRoles(instance.getAddedRolesIds(), raciRoles, instance.getRemovedRolesIds()),
+                            this.removeFascicleRoles(instance.getRemovedRolesIds()),
+                            this.setRaciRole(raciRoles, "", instance.getRemovedRolesIds()),
+                            this.updateFascicleVisibilityType(instance.getSelectedVisibilityType()))
+                            .done(() => {
+                                this._loadingPanel.hide(this.pageContentId);
+                                window.location.href = `../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=${this._fascicleModel.UniqueId}`;
+                            })
+                            .fail((exception: ExceptionDTO) => {
+                                this._loadingPanel.hide(this.pageContentId);
+                                this.showNotificationException(this.uscNotificationId, exception, "E' avvenuto un errore durante la fase di salvataggio delle autorizzazioni.");
+                            });
+                    });
+                });
             args.set_cancel(true);
             return;
         }
-        this._loadingPanel.hide(this.fasciclePageContentId);
         this._btnConfirm.set_enabled(true);
         args.set_cancel(true);
     }
@@ -106,6 +124,12 @@ class FascAutorizza extends FascicleBase {
                 }
 
                 this._fascicleModel = data;
+
+                PageClassHelper.callUserControlFunctionSafe<UscFascicolo>(this.uscFascicoloId)
+                    .done((instance) => {
+                        UscFascicolo.masterRole = this._fascicleModel.FascicleRoles.filter(x => x.IsMaster === true).map(x => x.Role)[0];
+                        instance.setFascicleVisibilityTypeButtonCheck(this._fascicleModel.VisibilityType);
+                    });
                 this.checkFascicleRight(data.UniqueId)
                     .done((result) => {
                         if (!result) {
@@ -116,11 +140,11 @@ class FascAutorizza extends FascicleBase {
                         this.setButtonEnable(true);
                         this.loadFascicoloSummary();
                     })
-                    .fail((exception: ExceptionDTO) => {                        
+                    .fail((exception: ExceptionDTO) => {
                         $("#".concat(this.pageContentId)).hide();
                         this.showNotificationException(this.uscNotificationId, exception);
                     })
-                    .always(() => this._loadingPanel.hide(this.pageContentId));                
+                    .always(() => this._loadingPanel.hide(this.pageContentId));
             },
             (exception: ExceptionDTO) => {
                 this._loadingPanel.hide(this.pageContentId);
@@ -142,64 +166,30 @@ class FascAutorizza extends FascicleBase {
      * Inizializza lo user control del sommario di fascicolo
      */
     loadFascicoloSummary(): void {
-        let uscFascicolo: UscFascicolo = <UscFascicolo>$("#".concat(this.uscFascicoloId)).data();
-        if (!jQuery.isEmptyObject(uscFascicolo)) {
-            $("#".concat(this.uscFascicoloId)).bind(UscFascicolo.DATA_LOADED_EVENT, (args) => {
-            });
-            uscFascicolo.loadData(this._fascicleModel);
-        }
-    }
-
-    insertCallback(rolesAdded: string, rolesRemoved: string): void {
-        if (this._fascicleModel.FascicleType != FascicleType.Procedure) {
-            this.manageRoles(rolesAdded, rolesRemoved);
-            return;
-        }
-
-        let uscFascicolo: UscFascicolo = <UscFascicolo>$("#".concat(this.uscFascicoloId)).data();
-        if (!jQuery.isEmptyObject(uscFascicolo)) {
-            this._fascicleModel.VisibilityType = uscFascicolo.getSelectedAccountedVisibilityType();
-            this.service.updateFascicle(this._fascicleModel,null,
-                (data: any) => {
-                    this.manageRoles(rolesAdded, rolesRemoved);
-                },
-                (exception: ExceptionDTO) => {
-                    this._loadingPanel.hide(this.pageContentId);
-                    this.showNotificationException(this.uscNotificationId, exception);
-                }
-            );
-        }
-    }
-
-    private manageRoles(rolesAdded: string, rolesRemoved: string): void {
-        if (!rolesAdded && !rolesRemoved) {
-            window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(this._fascicleModel.UniqueId);
-        }
-
-        $.when(this.insertFascicleRoles(rolesAdded), this.removeFascicleRoles(rolesRemoved))
-            .done(() => window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(this._fascicleModel.UniqueId))
-            .fail((exception) => {
-                this._loadingPanel.hide(this.pageContentId);
-                this.showNotificationException(this.uscNotificationId, exception, "E' avvenuto un errore durante la fase di salvataggio delle autorizzazioni.");
+        PageClassHelper.callUserControlFunctionSafe<UscFascicolo>(this.uscFascicoloId)
+            .done((instance) => {
+                instance.loadDataWithoutFolders(this._fascicleModel);
             });
     }
 
-    private insertFascicleRoles(roles: string): JQueryPromise<void> {
+    private insertFascicleRoles(roleAddedIds: number[], raciRole: RoleModel[], removedRoleIds: number[]): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred();
-        if (!roles) {
+        if (!roleAddedIds || !roleAddedIds.length) {
             return promise.resolve();
         }
 
         try {
             let role: RoleModel;
             let fascicleRole: FascicleRoleModel;
-            let roleAddedIds: number[] = JSON.parse(roles);
             let authorizationType: AuthorizationRoleType;
             if (this._fascicleModel.FascicleType == FascicleType.Procedure) {
                 authorizationType = AuthorizationRoleType.Accounted;
             }
 
             let ajaxPromises: JQueryPromise<void>[] = [];
+            if (removedRoleIds) {
+                roleAddedIds = roleAddedIds.filter(roleAddedId => !removedRoleIds.some(removedRoleId => roleAddedId === removedRoleId));
+            }
             for (let roleId of roleAddedIds) {
                 role = <RoleModel>{};
                 role.EntityShortId = roleId;
@@ -207,7 +197,7 @@ class FascAutorizza extends FascicleBase {
                 fascicleRole.AuthorizationRoleType = authorizationType;
                 fascicleRole.Role = role;
                 fascicleRole.Fascicle = this._fascicleModel;
-                ajaxPromises.push(this.insertFascicleRole(fascicleRole));
+                ajaxPromises.push(this.insertFascicleRole(fascicleRole, raciRole));
             }
 
             $.when.apply(null, ajaxPromises)
@@ -215,17 +205,26 @@ class FascAutorizza extends FascicleBase {
                 .fail((exception) => promise.reject(exception));
         } catch (error) {
             return promise.reject(error);
-        }        
+        }
 
         return promise.promise();
     }
 
-    private insertFascicleRole(fascicleRole: FascicleRoleModel): JQueryPromise<void> {
+    private insertFascicleRole(fascicleRole: FascicleRoleModel, raciRole: RoleModel[]): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred();
         try {
             this._fascicleRoleService.insertFascicleRole(fascicleRole,
                 (data: any) => {
-                    promise.resolve();
+                    if (raciRole && raciRole.some(x => x.EntityShortId === fascicleRole.Role.EntityShortId)) {
+                        this.setRaciRole(raciRole, data.UniqueId, null).then(() => {
+                            promise.resolve();
+                        }, (exception: ExceptionDTO) => {
+                            promise.reject(exception);
+                        });
+                    }
+                    else {
+                        promise.resolve();
+                    }
                 },
                 (exception: ExceptionDTO) => {
                     promise.reject(exception);
@@ -237,22 +236,23 @@ class FascAutorizza extends FascicleBase {
         return promise.promise();
     }
 
-    private removeFascicleRoles(roles: string): JQueryPromise<void> {
+    private removeFascicleRoles(roleRemovedIds: number[]): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred();
-        if (!roles) {
+        if (!roleRemovedIds || !roleRemovedIds.length) {
             return promise.resolve();
         }
 
         try {
             let role: RoleModel;
             let fascicleRole: FascicleRoleModel;
-            let roleRemovedIds: number[] = JSON.parse(roles);
 
             let ajaxPromises: JQueryPromise<void>[] = [];
             for (let roleId of roleRemovedIds) {
                 role = <RoleModel>{};
                 fascicleRole = this._fascicleModel.FascicleRoles.filter((x) => x.Role.EntityShortId == roleId)[0];
-                ajaxPromises.push(this.removeFascicleRole(fascicleRole));
+                if (fascicleRole) {
+                    ajaxPromises.push(this.removeFascicleRole(fascicleRole));
+                }
             }
 
             $.when.apply(null, ajaxPromises)
@@ -260,7 +260,7 @@ class FascAutorizza extends FascicleBase {
                 .fail((exception) => promise.reject(exception));
         } catch (error) {
             return promise.reject(error);
-        }        
+        }
 
         return promise.promise();
     }
@@ -278,7 +278,7 @@ class FascAutorizza extends FascicleBase {
             );
         } catch (error) {
             return promise.reject(error);
-        }        
+        }
         return promise.promise();
     }
 
@@ -290,6 +290,53 @@ class FascAutorizza extends FascicleBase {
         this._btnConfirm.set_enabled(value);
     }
 
+    private setRaciRole(raciRoles: RoleModel[], fascicleRoleId: string, removedRoleIds: number[]): JQueryPromise<void> {
+        let promise: JQueryDeferred<void> = $.Deferred<void>();
+        if (!raciRoles || !raciRoles.length) {
+            return promise.resolve();
+        }
+
+        if (removedRoleIds) {
+            raciRoles = raciRoles.filter(raciRole => !removedRoleIds.some(removedRoleId => raciRole.EntityShortId === removedRoleId));
+        }
+        for (let role of raciRoles) {
+            let fascicleRole: FascicleRoleModel = fascicleRoleId !== ""
+                ? <FascicleRoleModel>{
+                    UniqueId: fascicleRoleId,
+                    IsMaster: false,
+                    Role: role
+                }
+                : this._fascicleModel.FascicleRoles.filter((x) => x.Role.EntityShortId == role.EntityShortId)[0];
+
+            if (!fascicleRole) {
+                return promise.resolve();
+            }
+
+            fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Responsible;
+            this._fascicleRoleService.updateFascicleRole(fascicleRole,
+                (data: any) => {
+                    promise.resolve();
+                }, (exception: ExceptionDTO) => {
+                    promise.reject(exception);
+                });
+        }
+        return promise.promise();
+    }
+
+    private updateFascicleVisibilityType(fascicleVisibilityType: VisibilityType): JQueryPromise<void> {
+        let promise: JQueryDeferred<void> = $.Deferred<void>();
+        if (this._fascicleModel.FascicleType === FascicleType.Procedure) {
+            this._fascicleModel.VisibilityType = fascicleVisibilityType;
+            this.service.updateFascicle(this._fascicleModel, null,
+                (data: any) => {
+                    promise.resolve();
+                },
+                (exception: ExceptionDTO) => {
+                    promise.reject(exception);
+                });
+        }
+        return promise.promise();
+    }
 }
 export = FascAutorizza;
 

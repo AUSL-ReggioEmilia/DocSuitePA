@@ -11,5 +11,5 @@ Public Interface ISignMultipleDocuments
     ''' <summary> Url al quale andare </summary>
     ''' <remarks> Sostituire questo return url al Request.UrlReferrer, se non c'è bisogno di reindirizzamenti o pagine iniziali fuori dalla docsuite. </remarks>
     ReadOnly Property ReturnUrl As String
-
+    ReadOnly Property SignAction As String
 End Interface

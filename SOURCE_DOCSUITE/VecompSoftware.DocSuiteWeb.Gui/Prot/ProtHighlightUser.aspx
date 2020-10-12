@@ -6,18 +6,19 @@
     <telerik:RadScriptBlock runat="server" EnableViewState="false">
         <script type="text/javascript">
 
-            function CloseWindow() {
-                GetRadWindow().close();
+            function CloseWindow(commandName) {
+                GetRadWindow().close(commandName);
             }
 
-            function populateNote(text) {
+            function populateNote(text, disable) {
                 var textBox = $find("<%= rtbProtocolNotes.ClientID %>");
+                textBox.set_value("");
+                textBox.enable();
                 if (text) {
                     textBox.set_value(text);
-                    textBox.disable();
-                } else {
-                    textBox.set_value("");
-                    textBox.enable();
+                    if (disable && disable === true) {
+                        textBox.disable();
+                    }
                 }
             }
         </script>
@@ -42,6 +43,7 @@
 
 <asp:Content ContentPlaceHolderID="cphFooter" runat="server">
     <asp:Button ID="btnConfirm" runat="server" Text="Conferma" />
+    <asp:Button ID="btnConfirmAndRemoveHighlight" runat="server" Text="Conferma e Rimuovi evidenza" />
     <asp:Button ID="btnHighlightToMe" runat="server" Text="Evidenzia a me" />
     <asp:Button ID="btnRemoveHighlight" runat="server" Text="Rimuovi evidenza" />
 </asp:Content>

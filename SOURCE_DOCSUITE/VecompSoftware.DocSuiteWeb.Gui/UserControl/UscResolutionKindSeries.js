@@ -1,6 +1,6 @@
 /// <reference path="../scripts/typings/telerik/telerik.web.ui.d.ts" />
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
-define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO", "App/Services/Resolutions/ResolutionKindDocumentSeriesService", "App/Services/DocumentArchives/DocumentSeriesService", "App/Services/DocumentArchives/DocumentSeriesConstraintService"], function (require, exports, ServiceConfigurationHelper, ExceptionDTO, ResolutionKindDocumentSeriesService, DocumentSeriesService, DocumentSeriesConstraintService) {
+define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO", "App/Services/Resolutions/ResolutionKindDocumentSeriesService", "App/Services/DocumentArchives/DocumentSeriesService", "App/Services/DocumentArchives/DocumentSeriesConstraintService", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, ServiceConfigurationHelper, ExceptionDTO, ResolutionKindDocumentSeriesService, DocumentSeriesService, DocumentSeriesConstraintService, SessionStorageKeysHelper) {
     var UscResolutionKindSeries = /** @class */ (function () {
         function UscResolutionKindSeries(serviceConfigurations) {
             var _this = this;
@@ -170,7 +170,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/DTO
         });
         Object.defineProperty(UscResolutionKindSeries.prototype, "currentResolutionKind", {
             get: function () {
-                var sessionValue = sessionStorage.getItem(UscResolutionKindSeries.SESSION_KIND_KEY);
+                var sessionValue = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KIND_KEY);
                 if (!sessionValue) {
                     return null;
                 }
@@ -206,7 +206,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/DTO
             this._documentSeriesService = new DocumentSeriesService(documentSeriesConfiguration);
             var documentSeriesConstraintConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DocumentSeriesConstraint");
             this._documentSeriesConstraintService = new DocumentSeriesConstraintService(documentSeriesConstraintConfiguration);
-            sessionStorage.removeItem(UscResolutionKindSeries.SESSION_KIND_KEY);
+            sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KIND_KEY);
             this.bindLoaded();
         };
         UscResolutionKindSeries.prototype.bindLoaded = function () {
@@ -245,7 +245,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/DTO
             if (!resolutionKind) {
                 return promise.resolve();
             }
-            sessionStorage.setItem(UscResolutionKindSeries.SESSION_KIND_KEY, JSON.stringify(resolutionKind));
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KIND_KEY, JSON.stringify(resolutionKind));
             this._resolutionKindDocumentSeriesService.getByResolutionKind(resolutionKind.UniqueId, function (data) {
                 if (!data)
                     return;
@@ -334,7 +334,6 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/DTO
         UscResolutionKindSeries.ADD_SERIES_COMMAND = "addSeries";
         UscResolutionKindSeries.EDIT_SERIES_COMMAND = "editSeries";
         UscResolutionKindSeries.DELETE_SERIES_COMMAND = "deleteSeries";
-        UscResolutionKindSeries.SESSION_KIND_KEY = "ResolutionKindKey";
         UscResolutionKindSeries.CONSTRAINT_LOADED_EVENT_NAME = "ConstraintsLoaded";
         return UscResolutionKindSeries;
     }());

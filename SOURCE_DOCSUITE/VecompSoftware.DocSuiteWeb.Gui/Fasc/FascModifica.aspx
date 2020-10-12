@@ -1,11 +1,13 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" Inherits="VecompSoftware.DocSuiteWeb.Gui.FascModifica"
+<%@ Page Language="vb" AutoEventWireup="false" Inherits="VecompSoftware.DocSuiteWeb.Gui.FascModifica"
     CodeBehind="FascModifica.aspx.vb" MasterPageFile="~/MasterPages/DocSuite2008.Master"
     Title="Fascicolo - Modifica" %>
 
 <%@ Register Src="../UserControl/uscFascicolo.ascx" TagName="uscFascicolo" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="uscContattiSel" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
-<%@ Register Src="~/UserControl/uscDynamicMetadata.ascx" TagName="uscDynamicMetadata" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscDynamicMetadataRest.ascx" TagName="uscDynamicMetadataRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscSetiContactSel.ascx" TagName="uscSetiContactSel" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscContattiSelRest.ascx" TagName="uscContattiSelRest" TagPrefix="usc" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphContent">
     <telerik:RadScriptBlock runat="server">
@@ -33,8 +35,18 @@
                     fascModifica.rowLegacyManagerId = "<%= rowLegacyManager.ClientID %>";
                     fascModifica.fasciclesPanelVisibilities = <%=FasciclesPanelVisibilities%>;
                     fascModifica.rowDynamicMetadataId = "<%= rowDynamicMetadata.ClientID %>";
-                    fascModifica.uscDynamicMetadataId = "<%= uscDynamicMetadata.PageContentDiv.ClientID %>";
                     fascModifica.metadataRepositoryEnabled = JSON.parse("<%=ProtocolEnv.MetadataRepositoryEnabled%>".toLowerCase());
+                    fascModifica.processEnabled = JSON.parse("<%=ProtocolEnv.ProcessEnabled%>".toLowerCase());
+                    fascModifica.processPanelId = "<%= processPanel.ClientID %>";
+                    fascModifica.ddlProcessId = "<%= processesDDL.ClientID %>";
+                    fascModifica.rtvProcessFoldersId = "<%=rtvProcessFolders.ClientID%>";
+                    fascModifica.uscSetiContactId = "<%= uscSetiContact.PageContentDiv.ClientID %>";
+                    fascModifica.setiContactEnabledId = <%=ProtocolEnv.SETIIntegrationEnabled.ToString().ToLower()%>;
+                    fascModifica.rowTransformIntoProcessFascicleId = "<%= rowTransformIntoProcessFascicle.ClientID %>";
+                    fascModifica.chkTransformIntoProcessFascicleId = "<%= chkTransformIntoProcessFascicle.ClientID %>";
+                    fascModifica.uscContactId = "<%= uscContact.PanelContent.ClientID %>";
+                    fascModifica.uscContactDivId = "<%= uscContactDiv.ClientID %>";
+                    fascModifica.uscDynamicMetadataId = "<%= UscDynamicMetadataRest.PageContent.ClientID%>";
                     fascModifica.initialize();
                 });
             });
@@ -51,8 +63,8 @@
             <telerik:LayoutRow ID="rowManager" runat="server" HtmlTag="Div">
                 <Content>
                     <usc:uscContattiSel ID="uscContattiResp" ButtonImportVisible="false" ButtonManualVisible="false" ButtonSelectDomainVisible="false" FascicleContactEnabled="true"
-                        ButtonPropertiesVisible="false"  EnableCC="false" ForceAddressBook="true" ButtonSelectOChartVisible="false" HeaderVisible="true"
-                        IsFiscalCodeRequired="true" Multiple="false" MultiSelect="false" runat="server" 
+                        ButtonPropertiesVisible="false" EnableCC="false" ForceAddressBook="true" ButtonSelectOChartVisible="false" HeaderVisible="true"
+                        IsFiscalCodeRequired="true" Multiple="false" MultiSelect="false" runat="server"
                         ExcludeRoleRoot="true" Type="Prot" />
                 </Content>
             </telerik:LayoutRow>
@@ -119,6 +131,52 @@
                                             </telerik:LayoutColumn>
                                         </Columns>
                                     </telerik:LayoutRow>
+                                    <telerik:LayoutRow ID="processPanel" Style="margin-top: 2px;">
+                                        <Content>
+                                            <div class="dsw-panel">
+                                                <div class="dsw-panel-title">
+                                                    Serie e volume
+                                                </div>
+                                                <div class="dsw-panel-content" runat="server" id="processPanelContent">
+                                                    <telerik:RadPageLayout runat="server" HtmlTag="Div">
+                                                        <telerik:LayoutRow>
+                                                            <Rows>
+                                                                <telerik:LayoutRow HtmlTag="Div">
+                                                                    <Columns>
+                                                                        <telerik:LayoutColumn Span="2" CssClass="dsw-text-right">
+                                                                            <b>Serie:</b>
+                                                                        </telerik:LayoutColumn>
+                                                                        <telerik:LayoutColumn Span="10" CssClass="t-col-left-padding">
+                                                                            <telerik:RadComboBox runat="server"
+                                                                                ID="processesDDL"
+                                                                                AllowCustomText="false"
+                                                                                CausesValidation="false"
+                                                                                AutoPostBack="false">
+                                                                            </telerik:RadComboBox>
+                                                                        </telerik:LayoutColumn>
+                                                                    </Columns>
+                                                                </telerik:LayoutRow>
+                                                            </Rows>
+                                                        </telerik:LayoutRow>
+                                                        <telerik:LayoutRow HtmlTag="Div">
+                                                            <Rows>
+                                                                <telerik:LayoutRow>
+                                                                    <Columns>
+                                                                        <telerik:LayoutColumn Span="2" CssClass="dsw-text-right">
+                                                                            <b>Volume:</b>
+                                                                        </telerik:LayoutColumn>
+                                                                        <telerik:LayoutColumn Span="10" CssClass="t-col-left-padding">
+                                                                            <telerik:RadTreeView runat="server" ID="rtvProcessFolders"></telerik:RadTreeView>
+                                                                        </telerik:LayoutColumn>
+                                                                    </Columns>
+                                                                </telerik:LayoutRow>
+                                                            </Rows>
+                                                        </telerik:LayoutRow>
+                                                    </telerik:RadPageLayout>
+                                                </div>
+                                            </div>
+                                        </Content>
+                                    </telerik:LayoutRow>
                                 </Rows>
                             </telerik:RadPageLayout>
                         </div>
@@ -126,17 +184,33 @@
                 </Content>
             </telerik:LayoutRow>
             <telerik:LayoutRow runat="server" HtmlTag="Div" ID="rowDynamicMetadata">
-                    <Content>
-                         <div class="dsw-panel">
+                <Content>
+                    <div class="dsw-panel">
                         <div class="dsw-panel-title">
                             Metadati
                         </div>
                         <div class="dsw-panel-content">
-                            <usc:uscDynamicMetadata runat="server" ID="uscDynamicMetadata" Required="False" UseSessionStorage="true" />
-                             </div>
-                         </div>
-                    </Content>
-                </telerik:LayoutRow>
+                            <div style="margin-left: 16%;">
+                                <usc:uscSetiContactSel runat="server" ID="uscSetiContact" />
+                            </div>
+                            <usc:uscDynamicMetadataRest runat="server" ID="UscDynamicMetadataRest"></usc:uscDynamicMetadataRest>
+                        </div>
+                    </div>
+                </Content>
+            </telerik:LayoutRow>
+            <telerik:LayoutRow runat="server" HtmlTag="Div" ID="rowTransformIntoProcessFascicle">
+                <Content>
+                    <div class="dsw-panel">
+                        <div class="dsw-panel-title">
+                            Trasforma in fascicolo di procedimento
+                        <input type="checkbox" runat="server" id="chkTransformIntoProcessFascicle" />
+                        </div>
+                        <div class="dsw-panel-content" runat="server" id="uscContactDiv">
+                            <usc:uscContattiSelRest runat="server" ID="uscContact" Required="true" ConfirmAndNewEnabled="False" CreateManualContactEnabled="False" />
+                        </div>
+                    </div>
+                </Content>
+            </telerik:LayoutRow>
         </Rows>
     </telerik:RadPageLayout>
     <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>

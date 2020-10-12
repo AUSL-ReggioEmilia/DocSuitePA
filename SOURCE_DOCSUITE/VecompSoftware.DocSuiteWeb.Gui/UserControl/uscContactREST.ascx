@@ -65,6 +65,7 @@
                 <%= Me.ClientID %>_uscContactRest.callerId = "<%= Me.CallerId %>";
                 <%= Me.ClientID %>_uscContactRest.spidEnabled = <%= ProtocolEnv.SpidEnabled.ToString().ToLower() %>;
                 <%= Me.ClientID %>_uscContactRest.contactNationalityEnabled = <%= ProtocolEnv.ContactNationalityEnabled.ToString().ToLower() %>;
+                <%= Me.ClientID %>_uscContactRest.createManualContactEnabled = <%= CreateManualContactEnabled.ToString().ToLower() %>;
                 <%= Me.ClientID %>_uscContactRest.initialize();
             });
         });

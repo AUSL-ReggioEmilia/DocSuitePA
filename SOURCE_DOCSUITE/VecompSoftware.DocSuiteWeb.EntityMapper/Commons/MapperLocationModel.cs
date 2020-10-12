@@ -20,9 +20,7 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Commons
             LocationModel model = new LocationModel(Convert.ToInt16(entity.Id))
             {
                 Name = entity.Name,
-                DocumentServer = entity.DocumentServer,
                 UniqueId = entity.UniqueId,
-                ConservationServer = entity.ConservationServer,
                 ProtocolArchive = entity.ProtBiblosDSDB,
                 ResolutionArchive = entity.ReslBiblosDSDB,
                 DossierArchive = entity.DocmBiblosDSDB,

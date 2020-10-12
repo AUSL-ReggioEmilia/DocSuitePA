@@ -27,6 +27,8 @@ import DossierModel = require('App/Models/Dossiers/DossierModel');
 import AjaxModel = require('App/Models/AjaxModel');
 import HandlerWorkflowManager = require('App/Managers/HandlerWorkflowManager');
 import UscStartWorkflow = require('UserControl/uscStartWorkflow');
+import BaseEntityRoleViewModel = require('App/ViewModels/BaseEntityRoleViewModel');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class DossierVisualizza extends DossierBase {
 
@@ -38,10 +40,11 @@ class DossierVisualizza extends DossierBase {
     ajaxLoadingPanelId: string;
     btnDocumentiId: string;
     btnModificaId: string;
+    btnSendToSecretariesId: string;
+    btnSendToRolesId: string;
     btnInsertiId: string;
     btnCloseId: string;
     btnLogId: string;
-    logEnabled: boolean;
     miscellaneaLocationEnabled: boolean;
     btnAutorizzaId: string;
     btnAvviaWorkflowId: string;
@@ -58,6 +61,13 @@ class DossierVisualizza extends DossierBase {
     windowStartWorkflowId: string;
     windowCompleteWorkflowId: string;
     workflowEnabled: string;
+    sendToSecretariesEnabled: string;
+    currentFascicleId: string;
+    isWindowPopupEnable: boolean;
+
+    isViewable: boolean;
+    isManageable: boolean;
+    isEditable: boolean;
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _notificationInfo: Telerik.Web.UI.RadNotification;
@@ -66,7 +76,7 @@ class DossierVisualizza extends DossierBase {
     private _serviceConfigurations: ServiceConfiguration[];
     private _DossierModel: DossierSummaryViewModel;
     private _DossierContacts: Array<BaseEntityViewModel>;
-    private _DossierRoles: Array<BaseEntityViewModel>;
+    private _DossierRoles: Array<BaseEntityRoleViewModel>;
     private _DossierFolders: Array<DossierSummaryFolderViewModel>;
     private _DossierDocuments: Array<BaseEntityViewModel>;
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
@@ -76,6 +86,8 @@ class DossierVisualizza extends DossierBase {
     private _hasViewableDossier: boolean;
     private _btnDocumenti: Telerik.Web.UI.RadButton;
     private _btnModifica: Telerik.Web.UI.RadButton;
+    private _btnSendToSecretaries: Telerik.Web.UI.RadButton;
+    private _btnSendToRoles: Telerik.Web.UI.RadButton;
     private _btnClose: Telerik.Web.UI.RadButton;
     private _btnLog: Telerik.Web.UI.RadButton;
     private _btnAutorizza: Telerik.Web.UI.RadButton;
@@ -91,6 +103,7 @@ class DossierVisualizza extends DossierBase {
     private _workflowAuthorizationService: WorkflowAuthorizationService;
     private _workflowActivity: WorkflowActivityModel;
     private _isWorkflowEnabled: boolean;
+    private _isSendToSecretariesEnabled: boolean;
     private _handlerManager: HandlerWorkflowManager;
 
     /**
@@ -116,10 +129,16 @@ class DossierVisualizza extends DossierBase {
    * @param eventArgs
    * @returns
    */
-    btnModifica_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnModifica_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this._loadingPanel.show(this.splContentId);
         this.setButtonEnable(false);
         window.location.href = "DossierModifica.aspx?Type=Dossier&IdDossier=".concat(this.currentDossierId);
+    }
+
+    btnAutorizza_OnCLick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
+        this._loadingPanel.show(this.splContentId);
+        this.setButtonEnable(false);
+        window.location.href = "DossierAutorizza.aspx?Type=Dossier&IdDossier=".concat(this.currentDossierId);
     }
 
     /**
@@ -127,11 +146,11 @@ class DossierVisualizza extends DossierBase {
     * @param sender
     * @param args
     */
-    btnWorkflow_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnWorkflow_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
-        sessionStorage.setItem(UscStartWorkflow.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(this._DossierModel));
-        sessionStorage.setItem(UscStartWorkflow.SESSION_KEY_REFERENCE_ID, this.currentDossierId);
-        sessionStorage.setItem(UscStartWorkflow.SESSION_KEY_REFERENCE_TITLE, this._DossierModel.Year.toString().concat("/", this._DossierModel.Number.toString()));
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(this._DossierModel));
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID, this.currentDossierId);
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_TITLE, this._DossierModel.Year.toString().concat("/", this._DossierModel.Number.toString()));
 
         var url = "../Workflows/StartWorkflow.aspx?Type=Dossier".concat("&ManagerID=", this.radWindowManagerCollegamentiId, "&DSWEnvironment=Dossier&Callback=", window.location.href);
         return this.openWindow(url, "windowStartWorkflow", 730, 550);
@@ -143,7 +162,7 @@ class DossierVisualizza extends DossierBase {
     * @param eventArgs
     * @returns
     */
-    btnDocumenti_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnDocumenti_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this._loadingPanel.show(this.splContentId);
         this.setButtonEnable(false);
         window.location.href = "../Viewers/DossierViewer.aspx?Type=Dossier&IdDossier=".concat(this.currentDossierId);
@@ -154,7 +173,7 @@ class DossierVisualizza extends DossierBase {
     * @param sender
     * @param args
     */
-    btnLog_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnLog_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         this._loadingPanel.show(this.splContentId);
         this.setButtonEnable(false);
@@ -167,7 +186,7 @@ class DossierVisualizza extends DossierBase {
     * @param args
     */
 
-    btnCompleteWorkflow_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnCompleteWorkflow_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         var url = "../Workflows/CompleteWorkflow.aspx?=Dossier&IdDossier=".concat(this.currentDossierId, "&IdWorkflowActivity=", this.workflowActivityId);
         return this.openWindow(url, "windowCompleteWorkflow", 700, 500);
@@ -197,7 +216,7 @@ class DossierVisualizza extends DossierBase {
 * @param eventArgs
 * @returns
 */
-    btnInserti_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnInserti_OnClick = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this._loadingPanel.show(this.splContentId);
         this.setButtonEnable(false);
         window.location.href = "DossierMiscellanea.aspx?Type=Dossier&IdDossier=".concat(this.currentDossierId);
@@ -213,7 +232,8 @@ class DossierVisualizza extends DossierBase {
     */
     initialize() {
         super.initialize();
-        this._isWorkflowEnabled = this.workflowEnabled && this.workflowEnabled.toLowerCase() == 'true';
+        this._isWorkflowEnabled = this.workflowEnabled && this.workflowEnabled.toLowerCase() === 'true';
+        this._isSendToSecretariesEnabled = this.sendToSecretariesEnabled && this.sendToSecretariesEnabled.toLowerCase() === 'true';
         this._ajaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._notificationInfo = <Telerik.Web.UI.RadNotification>$find(this.radNotificationId);
@@ -226,28 +246,24 @@ class DossierVisualizza extends DossierBase {
         this._btnDocumenti.add_clicked(this.btnDocumenti_OnClicked);
         this._btnClose = <Telerik.Web.UI.RadButton>$find(this.btnCloseId);
         this._btnModifica = <Telerik.Web.UI.RadButton>$find(this.btnModificaId);
+        this._btnSendToSecretaries = <Telerik.Web.UI.RadButton>$find(this.btnSendToSecretariesId);
+        this._btnSendToRoles = <Telerik.Web.UI.RadButton>$find(this.btnSendToRolesId);
         this._btnWorkflow = <Telerik.Web.UI.RadButton>$find(this.btnAvviaWorkflowId);
         this._btnCompleteWorkflow = <Telerik.Web.UI.RadButton>$find(this.btnCompleteWorkflowId);
         this._btnAutorizza = <Telerik.Web.UI.RadButton>$find(this.btnAutorizzaId);
         this._btnLog = <Telerik.Web.UI.RadButton>$find(this.btnLogId);
         this._DossierModel = <DossierSummaryViewModel>{};
-        this._DossierRoles = new Array<BaseEntityViewModel>();
+        this._DossierRoles = new Array<BaseEntityRoleViewModel>();
         this._DossierContacts = new Array<BaseEntityViewModel>();
         this._DossierFolders = new Array<DossierSummaryFolderViewModel>();
         this.setButtonEnable(false);
         this._btnModifica.add_clicking(this.btnModifica_OnClick);
         this._btnInserti.add_clicking(this.btnInserti_OnClick);
-        //this._btnWorkflow.add_clicking(this.btnWorkflow_OnClick);
-        //this._btnCompleteWorkflow.add_clicking(this.btnCompleteWorkflow_OnClick);
+        this._btnAutorizza.add_clicking(this.btnAutorizza_OnCLick);
         this._btnLog.add_clicking(this.btnLog_OnClick);
-        //this._isFromWorkflow = !String.isNullOrEmpty(this.workflowActivityId);
-        //this._btnCompleteWorkflow.set_visible(this._isFromWorkflow && this._isWorkflowEnabled);
-        //this._btnCompleteWorkflow.set_enabled(false);
-        //this._btnWorkflow.set_visible(!this._isFromWorkflow && this._isWorkflowEnabled);
-
-        if (!this.logEnabled) {
-            this._btnLog.set_visible(false);
-        }
+        this._btnSendToSecretaries.set_visible(false);
+        this._btnSendToRoles.set_visible(false);
+        this._btnInserti.set_visible(false);
 
         this._fascPage = <Telerik.Web.UI.RadPane>$find(this.fascPaneId);
         this._dossierPage = <Telerik.Web.UI.RadPane>$find(this.dossierPageId);
@@ -278,62 +294,20 @@ class DossierVisualizza extends DossierBase {
             this._fascPage.expand(Telerik.Web.UI.SplitterDirection.Backward);
         });
 
+        this.resizeDetails();
+
         $("#".concat(this.uscDossierFoldersId)).on(UscDossierFolders.ROOT_NODE_CLICK, (args) => {
-            this._fascPage.collapse(Telerik.Web.UI.SplitterDirection.Backward);
-            this._dossierPage.expand(Telerik.Web.UI.SplitterDirection.Forward);
-            this._fascPage.collapse(Telerik.Web.UI.SplitterDirection.Backward);
-            this._dossierPage.expand(Telerik.Web.UI.SplitterDirection.Forward);
+            this.resizeDetails();
         });
+
+        if (!this.isWindowPopupEnable) {
+            this._dossierPage.expand(Telerik.Web.UI.SplitterDirection.Forward);
+        }
 
         this.service.hasRootNode(this.currentDossierId,
             (data: any) => {
                 if (data) {
-                    this.service.isManageableDossier(this.currentDossierId,
-                        (data: any) => {
-                            if (data) {
-                                this._isManager = true;
-                                if (this._isWorkflowEnabled) {
-
-                                    this.setWorkflowConfiguration();
-
-                                }
-                                else {
-                                    this.loadData();
-                                }
-                            }
-                            else {
-                                (<DossierService>this.service).isViewableDossier(this.currentDossierId,
-                                    (data: any) => {
-                                        if (data) {
-                                            this.loadData();
-                                            this._btnModifica.set_visible(false);
-                                            //this._btnClose.set_visible(false);
-                                            //this._btnWorkflow.set_visible(false);
-                                            //this._btnCompleteWorkflow.set_visible(false);
-                                            this._btnLog.set_visible(false);
-                                            this._btnInserti.set_visible(false);
-                                        }
-                                        else {
-                                            this.setButtonEnable(false);
-                                            $("#".concat(this.splContentId)).hide();
-                                            this._loadingPanel.hide(this.splContentId);
-                                            this.hideUscLoadingPanels();
-                                            this.showNotificationMessage(this.uscNotificationId, "Impossibile visualizzare il Dossier.<br/> Non si dispone dei diritti necessari.");
-                                        };
-                                    },
-                                    (exception: ExceptionDTO) => {
-                                        this._loadingPanel.hide(this.splContentId);
-                                        this.hideUscLoadingPanels();
-                                        this.showNotificationException(this.uscNotificationId, exception);
-                                    }
-                                );
-                            }
-                        },
-                        (exception: ExceptionDTO) => {
-                            this._loadingPanel.hide(this.splContentId);
-                            this.showNotificationException(this.uscNotificationId, exception);
-                        }
-                    );
+                    this.checkManageable();
                 }
                 else {
                     this.setButtonEnable(false);
@@ -349,6 +323,73 @@ class DossierVisualizza extends DossierBase {
                 this.showNotificationException(this.uscNotificationId, exception);
             }
         );
+    }
+
+    private checkViewable(): void {
+        (<DossierService>this.service).isViewableDossier(this.currentDossierId,
+            (data: any) => {
+                this.isViewable = data;
+
+                if (!this.isViewable) {
+                    $("#".concat(this.splContentId)).hide();
+                    this._loadingPanel.hide(this.splContentId);
+                    this.hideUscLoadingPanels();
+                    this.showNotificationMessage(this.uscNotificationId, "Impossibile visualizzare il Dossier.<br/> Non si dispone dei diritti necessari.");
+                    return;
+                }
+
+                this.loadData();
+                this.setButtonVisibility(false);
+                this._btnDocumenti.set_visible(true);
+            },
+            (exception: ExceptionDTO) => {
+                this._loadingPanel.hide(this.splContentId);
+                this.hideUscLoadingPanels();
+                this.showNotificationException(this.uscNotificationId, exception);
+            }
+        );
+    }
+
+    private checkManageable(): void {
+        this.service.isManageableDossier(this.currentDossierId,
+            (data: any) => {
+                this.isManageable = data;
+
+                if (this.isManageable) {
+                    this._isManager = true;
+                    if (this._isWorkflowEnabled) {
+                        this.setWorkflowConfiguration();
+                        return;
+                    } else {
+                        this.loadData();
+                        return;
+                    }
+                } else {
+                    this.checkViewable();
+                }
+            },
+            (exception: ExceptionDTO) => {
+                this._loadingPanel.hide(this.splContentId);
+                this.showNotificationException(this.uscNotificationId, exception);
+            }
+        );
+    }
+
+    private checkEditable(): void {
+        (<DossierService>this.service).hasModifyRight(this.currentDossierId,
+            (data: any) => {
+                this.isEditable = data;
+
+                this._btnModifica.set_visible(this.isEditable);
+                this._btnAutorizza.set_visible(this.isEditable);
+            });
+    }
+
+    private resizeDetails(): void {
+        this._fascPage.collapse(Telerik.Web.UI.SplitterDirection.Backward);
+        this._dossierPage.expand(Telerik.Web.UI.SplitterDirection.Forward);
+        this._fascPage.collapse(Telerik.Web.UI.SplitterDirection.Backward);
+        this._dossierPage.expand(Telerik.Web.UI.SplitterDirection.Forward);
     }
 
     /**
@@ -381,15 +422,18 @@ class DossierVisualizza extends DossierBase {
     */
 
     loadUscDossier(): JQueryPromise<void> {
+        this._loadingPanel.show(this.splContentId);
         let promise: JQueryDeferred<void> = $.Deferred<void>();
-        $.when(this.loadDossier(), this.loadRoles(), this.loadContacts(), this.loadInserts()).done(() => {
+        $.when(this.loadDossier(), this.loadRoles(), this.loadContacts(), this.loadMiscellaneous()).done(() => {
             this._DossierModel.Roles = this._DossierRoles;
             this._DossierModel.Contacts = this._DossierContacts;
             this._DossierModel.Documents = this._DossierDocuments;
-            this.loadDossierVisualize();
+            this.loadDossierSummary();
             promise.resolve();
         }).fail((exception) => {
             promise.reject(exception);
+        }).always(() => {
+            this._loadingPanel.hide(this.splContentId);
         });
         return promise.promise();
     }
@@ -399,7 +443,9 @@ class DossierVisualizza extends DossierBase {
     */
     loadData(): void {
         $.when(this.loadUscDossier(), this.loadFolders()).done(() => {
-            this.setButtonEnable(true)
+            this.setButtonEnable(true);
+            this.checkEditable();
+            this.updateSentEmailVisibility();
         }).fail((exception) => {
             this.showNotificationException(this.uscNotificationId, exception, "Errore nel caricamento del Dossier.");
         });
@@ -501,22 +547,19 @@ class DossierVisualizza extends DossierBase {
     * Imposto la visibilità dei bottoni per l'utilizzo del workflow
     */
     setWorkflowConfiguration() {
-
+        let wfCheckActivityAction: () => JQueryPromise<string>;
         if (this.workflowActivityId) {
-            $.when(this._handlerManager.manageHandlingWorkflowWithActivity(this.workflowActivityId)).done((idActivity) => {
-                this.workflowActivityId = idActivity;
-                this.setWorkflowButtons();
-            }).fail((exception) => {
-                this.showNotificationException(this.uscNotificationId, exception, "Errore nel caricamento delle attività del fusso di lavoro associate al fascicolo.");
-            });
+            wfCheckActivityAction = () => this._handlerManager.manageHandlingWorkflow(this.workflowActivityId);
         } else {
-            $.when(this._handlerManager.manageHandlingWorkflow(this.currentDossierId, Environment.Dossier)).done((idActivity) => {
+            wfCheckActivityAction = () => this._handlerManager.manageHandlingWorkflow(this.currentDossierId, Environment.Dossier);
+        }
+
+        wfCheckActivityAction()
+            .done((idActivity: any) => {
                 this.workflowActivityId = idActivity;
                 this.setWorkflowButtons();
-            }).fail((exception) => {
-                this.showNotificationException(this.uscNotificationId, exception, "Errore nel caricamento delle attività del fusso di lavoro associate al fascicolo.");
-            });
-        }
+            })
+            .fail((exception: ExceptionDTO) => this.showNotificationException(this.uscNotificationId, exception, "Errore nel caricamento delle attività del fusso di lavoro associate al fascicolo."));
     }
 
     /**
@@ -583,7 +626,7 @@ class DossierVisualizza extends DossierBase {
     /**
    * carico gli inserti del Dossier
    */
-    loadInserts(): JQueryPromise<void> {
+    loadMiscellaneous(): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
         try {
             (<DossierDocumentService>this._dossierDocumentService).getDossierDocuments(this.currentDossierId,
@@ -613,10 +656,10 @@ class DossierVisualizza extends DossierBase {
     /**
     * Inizializzo lo user control del sommario di Dossier
     */
-    private loadDossierVisualize(): void {
+    private loadDossierSummary(): void {
         let uscDossier: UscDossier = <UscDossier>$("#".concat(this.uscDossierId)).data();
         if (!jQuery.isEmptyObject(uscDossier)) {
-            uscDossier.workflowActivityId = this.workflowActivityId
+            uscDossier.workflowActivityId = this.workflowActivityId;
             uscDossier.loadData(this._DossierModel);
         }
     }
@@ -627,9 +670,14 @@ class DossierVisualizza extends DossierBase {
     private loadDossierFoldersPanel(): void {
         let uscDossierFolders: UscDossierFolders = <UscDossierFolders>$("#".concat(this.uscDossierFoldersId)).data();
         if (!jQuery.isEmptyObject(uscDossierFolders)) {
-            uscDossierFolders.setRootNode(this.currentDossierTitle, this.currentDossierId);
-            uscDossierFolders.loadNodes(this._DossierFolders);
-            uscDossierFolders.setButtonVisibility(this._isManager);
+            if (this.currentFascicleId) {
+                uscDossierFolders.loadFascicleDossierFolders(this.currentDossierId, this.currentFascicleId, this._DossierFolders);
+            }
+            else {
+                uscDossierFolders.setRootNode(this.currentDossierTitle, this.currentDossierId);
+                uscDossierFolders.loadNodes(this._DossierFolders);
+            }
+            uscDossierFolders.setToolbarButtonsVisibility(this._isManager);
         }
     }
 
@@ -637,14 +685,38 @@ class DossierVisualizza extends DossierBase {
         //this._btnWorkflow.set_enabled(value);
         this._btnDocumenti.set_enabled(value);
         this._btnModifica.set_enabled(value);
+        this._btnSendToSecretaries.set_enabled(value && this._isSendToSecretariesEnabled);
+        this._btnSendToRoles.set_enabled(value);
         //this._btnClose.set_enabled(value);
 
-        //this._btnAutorizza.set_enabled(value);
+        this._btnAutorizza.set_enabled(value);
         this._btnLog.set_enabled(value);
         //this._btnCompleteWorkflow.set_enabled(value);
-        this._btnInserti.set_enabled(value);
+        //this._btnInserti.set_enabled(value);
+        //if (!this.miscellaneaLocationEnabled) {
+            //this._btnInserti.set_enabled(false);
+            //this._btnInserti.set_toolTip("Nessuna configurazione definita per l'inserimento degli inserti.Contattare Assistenza.");
+        //}
+    }
+
+    private updateSentEmailVisibility() {
+        this._dossierFolderService.hasAssociatedFascicles(this.currentDossierId, (exists: boolean) => {
+            this._btnSendToSecretaries.set_visible(this._isSendToSecretariesEnabled && this._isManager && exists);
+            this._btnSendToRoles.set_visible(this._isManager && exists);
+        }, (exception: ExceptionDTO) => {
+            console.log(exception);
+        });
+
+    }
+
+    private setButtonVisibility(value: boolean): void {
+        this._btnDocumenti.set_visible(value);
+        this._btnModifica.set_visible(value);
+        this._btnAutorizza.set_visible(value);
+        this._btnLog.set_visible(value);
+        this._btnInserti.set_visible(value);
         if (!this.miscellaneaLocationEnabled) {
-            this._btnInserti.set_enabled(false);
+            this._btnInserti.set_visible(false);
             this._btnInserti.set_toolTip("Nessuna configurazione definita per l'inserimento degli inserti.Contattare Assistenza.");
         }
 

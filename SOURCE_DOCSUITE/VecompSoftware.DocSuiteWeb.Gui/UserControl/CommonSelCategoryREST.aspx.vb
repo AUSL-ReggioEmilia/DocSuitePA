@@ -92,6 +92,12 @@ Public Class CommonSelCategoryRest
             Return Request.QueryString.GetValueOrDefault(Of Boolean)("IncludeParentDescendants", False)
         End Get
     End Property
+
+    Public ReadOnly Property ShowProcesses As Boolean
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of Boolean)("ShowProcesses", False)
+        End Get
+    End Property
 #End Region
 
 #Region " Events "

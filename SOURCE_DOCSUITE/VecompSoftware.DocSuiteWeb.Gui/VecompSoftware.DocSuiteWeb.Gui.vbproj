@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0">
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -18,7 +17,7 @@
     <OldToolsVersion>4.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -37,7 +36,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <UseGlobalApplicationHostFile />
-    <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -153,24 +152,45 @@
     </WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.8.6.7\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=5.3.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.5.3.1\lib\net45\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="HibernatingRhinos.Profiler.Appender, Version=5.0.0.0, Culture=neutral, PublicKeyToken=0774796e73ebf640, processorArchitecture=MSIL">
+      <HintPath>..\packages\NHibernateProfiler.Appender.5.0.5048\lib\net46\HibernatingRhinos.Profiler.Appender.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.9.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.9\lib\net45\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Mail, Version=3.0.20174.2011, Culture=neutral, PublicKeyToken=6dc438ab78a525b3, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mail.dll.3.0.20174.2011\lib\net45\Mail.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=3.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.1.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Cors, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Cors.4.1.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.1.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.1.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
     <Reference Include="netstandard">
       <Private>True</Private>
     </Reference>
     <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper, Version=8.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.8.1.1\lib\net461\AutoMapper.dll</HintPath>
-    </Reference>
-    <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
-      <HintPath>..\packages\Portable.BouncyCastle.1.8.5\lib\net40\BouncyCastle.Crypto.dll</HintPath>
-    </Reference>
     <Reference Include="FileACL, Version=1.0.2586.21057, Culture=neutral">
       <HintPath>..\packages\FileACL.1.0.2586.21057\lib\net11\FileACL.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="HibernatingRhinos.Profiler.Appender, Version=5.0.0.0, Culture=neutral, PublicKeyToken=0774796e73ebf640, processorArchitecture=MSIL">
-      <HintPath>..\packages\NHibernateProfiler.Appender.5.0.5039\lib\net46\HibernatingRhinos.Profiler.Appender.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
@@ -187,34 +207,13 @@
     <Reference Include="itextsharp.xtra, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itextsharp.xtra.5.5.13.1\lib\itextsharp.xtra.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Mail, Version=3.0.18151.1319, Culture=neutral, PublicKeyToken=6dc438ab78a525b3, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mail.3.0.18151.1319\lib\net461\Mail.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Web.Optimization.WebForms">
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.WebForms.1.1.3\lib\net45\Microsoft.AspNet.Web.Optimization.WebForms.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Cors, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Cors.4.0.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.4.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.ScriptManager.WebForms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.ScriptManager.WebForms.5.0.0\lib\net45\Microsoft.ScriptManager.WebForms.dll</HintPath>
       <Private>True</Private>
@@ -231,24 +230,15 @@
       <HintPath>..\packages\Microsoft.SharePoint.Client.Runtime.16.0.3104.1200\lib\net40\Microsoft.SharePoint.Client.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Schema, Version=3.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.Schema.3.0.13\lib\net45\Newtonsoft.Json.Schema.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=5.1.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\NHibernate.5.1.3\lib\net461\NHibernate.dll</HintPath>
@@ -257,43 +247,36 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq.EagerFetching, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
     </Reference>
-    <Reference Include="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpCompress.0.24.0\lib\net45\SharpCompress.dll</HintPath>
+    <Reference Include="SharpCompress, Version=0.26.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.26.0\lib\net46\SharpCompress.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.6.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.7.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http.Primitives, Version=4.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Numerics" />
@@ -301,16 +284,14 @@
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Caching" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.6.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Cors, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -332,107 +313,122 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Telerik.Web.UI, Version=2018.3.910.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.Web.UI.2018.3.910.45\lib\net45\Telerik.Web.UI.dll</HintPath>
+    <Reference Include="Telerik.Web.UI, Version=2020.1.114.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Web.UI.2020.1.114.45\lib\net45\Telerik.Web.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Web.UI.Skins, Version=2018.3.910.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.Web.UI.Skins.2018.3.910.45\lib\net45\Telerik.Web.UI.Skins.dll</HintPath>
+    <Reference Include="Telerik.Web.UI.Skins, Version=2020.1.114.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Web.UI.Skins.2020.1.114.45\lib\net45\Telerik.Web.UI.Skins.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Windows.Zip, Version=2018.3.904.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.Windows.Zip.2018.3.904.40\lib\net45\Telerik.Windows.Zip.dll</HintPath>
+    <Reference Include="Telerik.Windows.Zip, Version=2020.1.109.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Windows.Zip.2020.1.109.40\lib\net45\Telerik.Windows.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Clients.WebAPI, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Clients.WebAPI.8.87.19296.2\lib\net461\VecompSoftware.Clients.WebAPI.dll</HintPath>
+    <Reference Include="VecompSoftware.Clients.WebAPI, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Clients.WebAPI.9.9.20267.1\lib\net48\VecompSoftware.Clients.WebAPI.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Commons.Interfaces, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.8.87.19295.1\lib\net461\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    <Reference Include="VecompSoftware.Commons, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=cd4cbb031a2ae285, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.9.9.20267.1\lib\net48\VecompSoftware.Commons.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Core.Command, Version=8.87.19296.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Core.Command.8.87.19296.3\lib\net461\VecompSoftware.Core.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.9.20254.2\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    <Reference Include="VecompSoftware.Core.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Core.Command.9.9.20267.1\lib\net48\VecompSoftware.Core.Command.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.9.20254.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.9.20254.5\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers, Version=8.87.0.0, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.8.87.19296.1\lib\net461\VecompSoftware.Helpers.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Analytics, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Analytics.8.87.19296.1\lib\net461\VecompSoftware.Helpers.Analytics.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.9.9.20267.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Compress, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Compress.8.87.19296.1\lib\net461\VecompSoftware.Helpers.Compress.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Analytics, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Analytics.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Analytics.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.EInvoice, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.EInvoice.8.87.19296.1\lib\net461\VecompSoftware.Helpers.EInvoice.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Compress, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Compress.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Compress.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Json, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Json.8.87.19296.1\lib\net461\VecompSoftware.Helpers.Json.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.EInvoice, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.EInvoice.9.9.20267.1\lib\net48\VecompSoftware.Helpers.EInvoice.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.LimilabsMail, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.LimilabsMail.8.87.19296.1\lib\net461\VecompSoftware.Helpers.LimilabsMail.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Json, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Json.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Json.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.NHibernate, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.NHibernate.8.87.19296.1\lib\net461\VecompSoftware.Helpers.NHibernate.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.LimilabsMail, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.LimilabsMail.9.9.20267.1\lib\net48\VecompSoftware.Helpers.LimilabsMail.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.PDF, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.PDF.8.87.19296.1\lib\net461\VecompSoftware.Helpers.PDF.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.NHibernate, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.NHibernate.9.9.20267.1\lib\net48\VecompSoftware.Helpers.NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.PEC.PA, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.PEC.PA.8.87.19296.1\lib\net461\VecompSoftware.Helpers.PEC.PA.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.PDF, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.PDF.9.9.20267.1\lib\net48\VecompSoftware.Helpers.PDF.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Sharepoint, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Sharepoint.8.87.19296.1\lib\net461\VecompSoftware.Helpers.Sharepoint.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.PEC.PA, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.PEC.PA.9.9.20267.1\lib\net48\VecompSoftware.Helpers.PEC.PA.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Signer, Version=8.87.0.0, Culture=neutral, PublicKeyToken=76f780eb4d2d0f1b, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Signer.8.87.19296.1\lib\net461\VecompSoftware.Helpers.Signer.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Sharepoint, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Sharepoint.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Sharepoint.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.UDS, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.UDS.8.87.19296.1\lib\net461\VecompSoftware.Helpers.UDS.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Shibboleth, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Shibboleth.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Shibboleth.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Web, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Web.8.87.19296.1\lib\net461\VecompSoftware.Helpers.Web.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Signer, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=76f780eb4d2d0f1b, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Signer.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Signer.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.WebAPI, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.WebAPI.8.87.19296.1\lib\net461\VecompSoftware.Helpers.WebAPI.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Signer.CAdES, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Signer.CAdES.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Signer.CAdES.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Workflow, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.8.87.19296.2\lib\net461\VecompSoftware.Helpers.Workflow.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.UDS, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.UDS.9.9.20267.1\lib\net48\VecompSoftware.Helpers.UDS.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.XML, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.XML.8.87.19296.1\lib\net461\VecompSoftware.Helpers.XML.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Web, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Web.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Web.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.XML.Converters, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.XML.Converters.8.87.19296.2\lib\net461\VecompSoftware.Helpers.XML.Converters.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.WebAPI, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.WebAPI.9.9.20267.1\lib\net48\VecompSoftware.Helpers.WebAPI.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Biblos, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Biblos.8.87.19296.1\lib\net461\VecompSoftware.Services.Biblos.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Command, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Command.8.87.19296.2\lib\net461\VecompSoftware.Services.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.XML, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.9.9.20267.1\lib\net48\VecompSoftware.Helpers.XML.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Logging, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Logging.8.87.19296.1\lib\net461\VecompSoftware.Services.Logging.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.XML.Converters, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.Converters.9.9.20267.1\lib\net48\VecompSoftware.Helpers.XML.Converters.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.OmniBus, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.OmniBus.8.87.19296.1\lib\net461\VecompSoftware.Services.OmniBus.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.AnagraficaAnAs, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.AnagraficaAnAs.9.9.20267.1\lib\net48\VecompSoftware.Services.AnagraficaAnAs.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Sharepoint, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Sharepoint.8.87.19296.1\lib\net461\VecompSoftware.Services.Sharepoint.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.AnagraficaAUS, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.AnagraficaAUS.9.9.20267.1\lib\net48\VecompSoftware.Services.AnagraficaAUS.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.SignService, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.SignService.8.87.19296.2\lib\net461\VecompSoftware.Services.SignService.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Biblos, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Biblos.9.9.20267.1\lib\net48\VecompSoftware.Services.Biblos.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.StampaConforme, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.StampaConforme.8.87.19296.2\lib\net461\VecompSoftware.Services.StampaConforme.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.ZenDesk, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.ZenDesk.8.87.19296.1\lib\net461\VecompSoftware.Services.ZenDesk.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Logging, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Logging.9.9.20267.1\lib\net48\VecompSoftware.Services.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.OmniBus, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.OmniBus.9.9.20267.1\lib\net48\VecompSoftware.Services.OmniBus.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Sharepoint, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Sharepoint.9.9.20267.1\lib\net48\VecompSoftware.Services.Sharepoint.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.SignService, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.SignService.9.9.20267.1\lib\net48\VecompSoftware.Services.SignService.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.StampaConforme, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.StampaConforme.9.9.20267.1\lib\net48\VecompSoftware.Services.StampaConforme.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.ZenDesk, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.ZenDesk.9.9.20267.1\lib\net48\VecompSoftware.Services.ZenDesk.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
@@ -456,6 +452,57 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="API\APIProviderTestPage.aspx" />
+    <Content Include="App_Themes\DocSuite2008\imgset16\validation_checkIcon.png" />
+    <Content Include="Dossiers\DossierAutorizza.aspx" />
+    <Content Include="install\sql updates\9.09\01. ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.09\02. PraticheDB_migrations.sql" />
+    <Content Include="install\sql updates\9.09\03. AttiDB_migrations.sql" />
+    <Content Include="install\sql updates\9.09\SB01.Docsuitenamespace_Entities.xml" />
+    <Content Include="install\sql updates\9.09\_changelog.txt" />
+    <Content Include="install\sql updates\9.09\_readme.txt" />
+    <Content Include="install\sql updates\9.08\01. ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.08\02. PraticheDB_migrations.sql" />
+    <Content Include="install\sql updates\9.08\03. AttiDB_migrations.sql" />
+    <Content Include="install\sql updates\9.08\_changelog.txt" />
+    <Content Include="install\sql updates\9.08\_readme.txt" />
+    <Content Include="UserControl\CommonDomainUserSelRest.aspx" />
+    <Content Include="UserControl\CommonWorkflowDesignerValidations.aspx" />
+    <Content Include="UserControl\uscDomainUserSelRest.ascx" />
+    <Content Include="install\sql updates\9.09\Workflow - SM - Spesa pubblica.json" />
+    <Content Include="install\sql updates\9.09\Workflow - AUSL-PC - SWAF - Notifica evento.json" />
+    <Content Include="install\sql updates\9.09\Workflow - AUSL-PC - SWAF - Crea archivio.json" />
+    <Content Include="install\sql updates\9.09\Workflow - AUSL-PC - SWAF - Crea protocollo.json" />
+    <Content Include="install\sql updates\9.09\Workflow - AUSL-PC - Portale - Notifica evento.json" />
+    <Content Include="install\sql updates\9.09\Workflow - SM - Riapri fascicolo.json" />
+    <Content Include="install\sql updates\9.09\Workflow - SM - Attestazione di fascicolo.json" />
+    <Content Include="install\sql updates\9.09\Workflow - AUSL-RE - PARERE MASL.json" />
+    <Content Include="install\sql updates\9.09\Workflow - AUSL-RE - INVIO DOCUMENTI A MYDOCSUITE.json" />
+    <Content Include="install\sql updates\9.09\Workflow - AUSL-RE - INVIO PROTOCOLLO MYDOCSUITE.json" />
+    <Content Include="install\sql updates\9.09\Workflow - AUSL-RE - INVIO DOCUMENTI MYDOCSUITE.json" />
+    <Content Include="install\sql updates\9.09\Workflow - AUSL-RE - PROPOSTA DELIBERA.json" />
+    <Content Include="install\sql updates\9.09\Workflow - AUSL-PC - Invia a SWAF.json" />
+    <None Include="Scripts\jquery-3.5.1-vsdoc.js" />
+    <Content Include="Scripts\jquery-3.5.1.js" />
+    <Content Include="Scripts\jquery-3.5.1.min.js" />
+    <Content Include="Scripts\jquery-3.5.1.slim.js" />
+    <Content Include="Scripts\jquery-3.5.1.slim.min.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
+    <TypeScriptCompile Include="App\Core\WorkflowStorage\ClientSessionStorage.ts" />
+    <TypeScriptCompile Include="App\Core\WorkflowStorage\MessageWorkflowResumeStatus.ts" />
+    <TypeScriptCompile Include="App\Core\WorkflowStorage\WorkflowStorage.ts" />
+    <TypeScriptCompile Include="App\DTOs\DocumentUnitSearchFilterDTO.ts" />
+    <TypeScriptCompile Include="App\DTOs\TNoticeStatusSummaryDTO.ts" />
+    <TypeScriptCompile Include="App\Helpers\ExternalSourceActionEnum.ts" />
+    <TypeScriptCompile Include="App\Helpers\NullSafe.ts" />
+    <TypeScriptCompile Include="App\Helpers\PageClassHelper.ts" />
+    <TypeScriptCompile Include="App\Helpers\SessionStorageKeysHelper.ts" />
+    <TypeScriptCompile Include="App\Mappers\Commons\CategoryFascicleRightViewModelMapper.ts" />
+    <TypeScriptCompile Include="App\Mappers\PosteWeb\ExtendedProperties\POLRequestExtendedProperties.ts" />
+    <TypeScriptCompile Include="App\Mappers\PosteWeb\POLRequestSummaryMapper.ts" />
+    <TypeScriptCompile Include="App\Mappers\PosteWeb\POLRequestModelMapper.ts" />
     <Content Include="App_Themes\DocSuite2008\images\desk\DeskDashBoard.png" />
     <Content Include="App_Themes\DocSuite2008\images\green-dot-document.png" />
     <Content Include="App_Themes\DocSuite2008\images\scanner\ChangeSize.png" />
@@ -481,8 +528,11 @@
     <Content Include="App_Themes\DocSuite2008\imgset16\assosoftware_favicon.ico" />
     <Content Include="App_Themes\DocSuite2008\imgset16\brickEnabled.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\browse-document.png" />
+    <Content Include="App_Themes\DocSuite2008\imgset16\clone.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\collaboration.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\conditions_editor.png" />
+    <Content Include="App_Themes\DocSuite2008\imgset16\database_add.png" />
+    <Content Include="App_Themes\DocSuite2008\imgset16\database_delete.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\DeleteFolder.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\add_fascicle.png" />
     <Content Include="App_Themes\DocSuite2008\images\desk\Desk.png" />
@@ -500,6 +550,7 @@
     <Content Include="App_Themes\DocSuite2008\imgset16\GroupEmpty.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\GroupMembers.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\invoice-icon.png" />
+    <Content Include="App_Themes\DocSuite2008\imgset16\location.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\lock.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\modify_folder.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\fascicle_miscellanea.png" />
@@ -511,21 +562,29 @@
     <Content Include="App_Themes\DocSuite2008\imgset16\remove_fascicle.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\scanner.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\search.png" />
+    <Content Include="App_Themes\DocSuite2008\imgset16\tenant.png" />
+    <Content Include="App_Themes\DocSuite2008\imgset16\tenantAOO.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\ToSign.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\type_definition.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\type_definition_private.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\user_comment.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\user_info.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\view_history.png" />
+    <Content Include="App_Themes\DocSuite2008\imgset16\watch.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\WF_Docsuite.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\WF_MyDocsuite.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\workflow_delete.png" />
     <Content Include="App_Themes\DocSuite2008\imgset16\workflow_edit.png" />
+    <Content Include="App_Themes\DocSuite2008\imgset32\auto-lock-copy.png" />
+    <Content Include="App_Themes\DocSuite2008\imgset32\auto-lock.png" />
     <Content Include="App_Themes\DocSuite2008\imgset32\browse-document.png" />
     <Content Include="App_Themes\DocSuite2008\imgset32\conditions_editor.png" />
     <Content Include="App_Themes\DocSuite2008\imgset32\extended_property.png" />
     <Content Include="App_Themes\DocSuite2008\imgset32\scanner.png" />
     <Content Include="Comm\Images\DocSuite\Dossier_16.png" />
+    <Content Include="Comm\Images\DocSuite\Link16.png" />
+    <Content Include="Comm\Images\DocSuite\Link32.png" />
+    <Content Include="Comm\Images\Home\docsuite-pa-blue.png" />
     <Content Include="Comm\Images\Interop\Persona.gif" />
     <Content Include="Comm\Images\Interop\Persona_locked.gif" />
     <Content Include="Comm\PrivacyLevels.aspx" />
@@ -542,12 +601,15 @@
     <Content Include="Dossiers\DossierFolderLinkFascicle.aspx" />
     <Content Include="Dossiers\DossierFolderModifica.aspx" />
     <Content Include="Dossiers\DossierMiscellanea.aspx" />
+    <Content Include="Fasc\FascicleClose.aspx" />
     <Content Include="Fasc\FascicleFolderInserimento.aspx" />
     <Content Include="Fasc\FascicleFolderModifica.aspx" />
     <Content Include="Fasc\FascAddUDLink.aspx" />
     <Content Include="Fasc\FascicleLog.aspx" />
+    <Content Include="Fasc\FascInserimento.aspx" />
     <Content Include="Fasc\FascInstanceLog.aspx" />
     <Content Include="Fasc\FascDocumentsInsert.aspx" />
+    <Content Include="Fasc\FascProcessMove.aspx" />
     <Content Include="Fasc\FascMoveItems.aspx" />
     <Content Include="Fasc\FascPeriodInserimento.aspx" />
     <Content Include="Fasc\FascProcessInserimento.aspx" />
@@ -705,21 +767,66 @@
     <Content Include="install\sql updates\8.88\03. AttiDB_migrations.sql" />
     <Content Include="install\sql updates\8.88\_changelog.txt" />
     <Content Include="install\sql updates\8.88\_readme.txt" />
+    <Content Include="install\sql updates\9.01\01. ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.01\02. PraticheDB_migrations.sql" />
+    <Content Include="install\sql updates\9.01\03. AttiDB_migrations.sql" />
+    <Content Include="install\sql updates\9.01\_changelog.txt" />
+    <Content Include="install\sql updates\9.01\_readme.txt" />
+    <Content Include="install\sql updates\9.00\01. ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.00\02. PraticheDB_migrations.sql" />
+    <Content Include="install\sql updates\9.00\03. AttiDB_migrations.sql" />
+    <Content Include="install\sql updates\9.00\04. ProtocolloDB_post_migrations.sql" />
+    <Content Include="install\sql updates\9.00\_changelog.txt" />
+    <Content Include="install\sql updates\9.00\_readme.txt" />
     <Content Include="install\sql updates\8.87\01. ProtocolloDB_migrations.sql" />
     <Content Include="install\sql updates\8.87\02. PraticheDB_migrations.sql" />
     <Content Include="install\sql updates\8.87\03. AttiDB_migrations.sql" />
     <Content Include="install\sql updates\8.87\SB01.Docsuitenamespace_Entities.xml" />
     <Content Include="install\sql updates\8.87\_changelog.txt" />
     <Content Include="install\sql updates\8.87\_readme.txt" />
+    <Content Include="install\sql updates\9.03\01. ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.03\02. PraticheDB_migrations.sql" />
+    <Content Include="install\sql updates\9.03\03. AttiDB_migrations.sql" />
+    <Content Include="install\sql updates\9.03\SB01.Docsuitenamespace_Entities.xml" />
+    <Content Include="install\sql updates\9.03\_changelog.txt" />
+    <Content Include="install\sql updates\9.03\_readme.txt" />
+    <Content Include="install\sql updates\9.02\01. ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.02\02. PraticheDB_migrations.sql" />
+    <Content Include="install\sql updates\9.02\03. AttiDB_migrations.sql" />
+    <Content Include="install\sql updates\9.02\_changelog.txt" />
+    <Content Include="install\sql updates\9.02\_readme.txt" />
+    <Content Include="install\sql updates\9.05\01. ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.05\02. PraticheDB_migrations.sql" />
+    <Content Include="install\sql updates\9.05\03. AttiDB_migrations.sql" />
+    <Content Include="install\sql updates\9.05\SB01.Docsuitenamespace_Entities.xml" />
+    <Content Include="install\sql updates\9.05\_changelog.txt" />
+    <Content Include="install\sql updates\9.05\_readme.txt" />
+    <Content Include="install\sql updates\9.04\01. ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.04\02. PraticheDB_migrations.sql" />
+    <Content Include="install\sql updates\9.04\03. AttiDB_migrations.sql" />
+    <Content Include="install\sql updates\9.04\_changelog.txt" />
+    <Content Include="install\sql updates\9.04\_readme.txt" />
+    <Content Include="install\sql updates\9.06\SB01.Docsuitenamespace_Entities.xml" />
+    <Content Include="install\sql updates\9.07\01. ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.07\02. PraticheDB_migrations.sql" />
+    <Content Include="install\sql updates\9.07\03. AttiDB_migrations.sql" />
+    <Content Include="install\sql updates\9.07\SB01.Docsuitenamespace_Entities.xml" />
+    <Content Include="install\sql updates\9.07\_changelog.txt" />
+    <Content Include="install\sql updates\9.07\_readme.txt" />
+    <Content Include="install\sql updates\9.06\01. ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.06\02. PraticheDB_migrations.sql" />
+    <Content Include="install\sql updates\9.06\03. AttiDB_migrations.sql" />
+    <Content Include="install\sql updates\9.06\_changelog.txt" />
+    <Content Include="install\sql updates\9.06\_readme.txt" />
     <Content Include="MailSenders\CollaborationMailSender.aspx" />
     <Content Include="Monitors\MonitoringQuality.aspx" />
     <Content Include="Monitors\MonitoringSeriesRole.aspx" />
     <Content Include="Monitors\MonitoringSeriesSection.aspx" />
     <Content Include="Monitors\TransparentAdministrationMonitorLog.aspx" />
-    <Content Include="PEC\EventPECStreamError.aspx" />
-    <Content Include="PEC\EventPECSummaryError.aspx" />
     <Content Include="PEC\PECInvoice.aspx" />
+    <Content Include="Processes\ProcessVisualizza.aspx" />
     <Content Include="Prot\MessageDetails.aspx" />
+    <Content Include="Prot\TNoticeDetails.aspx" />
     <Content Include="Prot\PECDetails.aspx" />
     <Content Include="Prot\ProtToSeries.aspx" />
     <Content Include="Reporting\ReportDesigner.aspx" />
@@ -735,16 +842,14 @@
     <Content Include="ExceptionTemplate\Modello ERRORE.docx" />
     <Content Include="Scripts\jquery.signalR-2.4.1.js" />
     <Content Include="Scripts\jquery.signalR-2.4.1.min.js" />
-    <Content Include="Scripts\moment-with-locales.js" />
-    <Content Include="Scripts\moment-with-locales.min.js" />
-    <Content Include="Scripts\moment.js" />
-    <Content Include="Scripts\moment.min.js" />
     <Content Include="Tblt\TbltContainerGes.aspx" />
+    <Content Include="Tblt\TbltLocation.aspx" />
     <Content Include="Tblt\TbltProcess.aspx" />
     <Content Include="Tblt\TbltRepositoryGes.aspx" />
     <Content Include="Tblt\TbltWorkflowPropertyGes.aspx" />
     <Content Include="Tblt\TbltWorkflowStepGes.aspx" />
     <Content Include="UDSDesigner\Controls\enumDetailsModal.html" />
+    <Content Include="UDS\AttachDocuments.aspx" />
     <Content Include="UDS\UDSInvoiceDelete.aspx" />
     <Content Include="UDS\UDSInvoiceMove.aspx" />
     <Content Include="UDS\UDSInvoicesUpload.aspx" />
@@ -752,9 +857,11 @@
     <Content Include="UDS\UDSLink.aspx" />
     <Content Include="UDS\UDSView.aspx" />
     <Content Include="UDS\UserUDS.aspx" />
+    <Content Include="UserControl\CommonSelAUSContact.aspx" />
     <Content Include="UserControl\CommonSelCategoryRest.aspx" />
     <Content Include="UserControl\CommonSelContactRest.aspx" />
     <Content Include="UserControl\CommonSelRoleRest.aspx" />
+    <Content Include="UserControl\CommonSetiContactSel.aspx" />
     <Content Include="UserControl\CommonUploadZIPMiscellanea.aspx" />
     <Content Include="Scripts\dynamsoft\v15\addon\dynamsoft.upload.js" />
     <Content Include="Scripts\dynamsoft\v15\addon\dynamsoft.webtwain.addon.pdf.js" />
@@ -763,21 +870,37 @@
     <Content Include="Scripts\dynamsoft\v15\dynamsoft.webtwain.initiate.js" />
     <Content Include="Scripts\dynamsoft\v15\dynamsoft.webtwain.install.js" />
     <Content Include="UserControl\ScannerRest.aspx" />
+    <Content Include="UserControl\uscAdvancedSearchDynamicMetadataRest.ascx" />
     <Content Include="UserControl\uscCategoryRest.ascx" />
     <Content Include="UserControl\uscContactRest.ascx" />
     <Content Include="UserControl\uscContactSearchRest.ascx" />
     <Content Include="UserControl\uscContattiSelRest.ascx" />
+    <Content Include="UserControl\uscCustomActionsRest.ascx" />
+    <Content Include="UserControl\uscDocumentUnitConservationRest.ascx" />
     <Content Include="UserControl\uscDocumentUnitReferences.ascx" />
+    <Content Include="UserControl\uscDossierSummary.ascx" />
+    <Content Include="UserControl\uscWorkflowFolderSelRest.ascx" />
+    <Content Include="UserControl\uscFascicleProcessInsert.ascx" />
     <Content Include="UserControl\uscFascicleSearch.ascx" />
+    <Content Include="UserControl\uscLocationDetails.ascx" />
     <Content Include="UserControl\uscMulticlassificationRest.ascx" />
     <Content Include="UserControl\uscProcessDetails.ascx" />
     <Content Include="UserControl\uscRoleRest.ascx" />
     <Content Include="UserControl\uscScannerRest.ascx" />
+    <Content Include="UserControl\uscSetiContactSel.ascx" />
+    <Content Include="UserControl\uscTenantsSelRest.ascx" />
     <Content Include="UserControl\uscUploadDocumentRest.ascx" />
     <Content Include="UserControl\uscUserProfile.ascx" />
+    <Content Include="UserControl\uscWorkflowDesignerValidations.ascx" />
     <Content Include="UserControl\uscZenDeskHelp.ascx" />
+    <Content Include="User\FullTextSearch.aspx" />
+    <Content Include="User\ProcessesTreeView.aspx" />
+    <Content Include="User\UserDossier.aspx" />
+    <Content Include="User\UserFascicle.aspx" />
+    <Content Include="User\UserUDFascicle.aspx" />
     <Content Include="User\ZenDeskHelp.aspx" />
     <Content Include="Utlt\UserRoleProfile.aspx" />
+    <Content Include="Viewers\PosteWebActivityViewer.aspx" />
     <Content Include="Workflows\WorkflowActivityManage.aspx" />
     <Content Include="Workflows\WorkflowActivitySummary.aspx" />
     <Content Include="Workflows\WorkflowActivityInsert.aspx" />
@@ -807,21 +930,111 @@
     <Content Include="install\sql updates\8.86\Workflow - AUSL-RE - Firma inserto di fascicolo.json" />
     <Content Include="install\sql updates\8.87\Workflow - AGENAS - Avvia collaborazione RDA.json" />
     <Content Include="install\sql updates\8.87\Workflow - AGENAS - Fascicolo automatico RDA.json" />
+    <Content Include="install\sql updates\9.00\Workflow - SM - Protocolla richiesta AOO esterna.json" />
+    <Content Include="install\sql updates\9.00\Workflow - SM - Invia protocollo AOO esterna.json" />
     <Content Include="install\sql updates\8.87\Workflow - AGENAS  - Richiesta parere RDA.json" />
+    <Content Include="install\sql updates\8.87\Workflow - AUSL-RE - SPID.json" />
     <Content Include="install\sql updates\8.87\Workflow - Fatturazione elettronica - Fattura pubblica amministrazione attiva.json" />
     <Content Include="install\sql updates\8.87\Workflow - Fatturazione elettronica - Fattura tra privati attiva.json" />
     <Content Include="install\sql updates\8.87\Workflow - Fatturazione elettronica - Fattura tra privati passiva.json" />
-    <Content Include="install\sql updates\8.87\Workflow - AUSL-RE - SPID.json" />
     <Content Include="install\sql updates\8.87\Workflow - DGROOVE - Invio cedolini.json" />
+    <Content Include="install\sql updates\9.00\default_configurations\TNotice minimal configurations.docx" />
+    <Content Include="install\sql updates\9.02\default_configurations\TNotice minimal configurations.docx" />
+    <Content Include="install\sql updates\9.02\default_configurations\docsuite.appsettings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="install\sql updates\9.02\default_configurations\docsuite.connectionstrings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="install\sql updates\9.02\default_configurations\docsuite.sessionstate.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="install\sql updates\9.02\default_configurations\docsuite.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.02\default_configurations\docsuite.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.02\default_configurations\docsuite.system.servicemodel.client.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="install\sql updates\9.02\Workflow - SM - Invia protocollo AOO esterna.json" />
+    <Content Include="install\sql updates\9.02\Workflow - SM - Protocolla richiesta AOO esterna.json" />
+    <Content Include="install\sql updates\9.03\default_configurations\docsuite.appsettings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="install\sql updates\9.03\default_configurations\docsuite.connectionstrings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="install\sql updates\9.03\default_configurations\docsuite.sessionstate.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="install\sql updates\9.03\default_configurations\docsuite.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.03\default_configurations\docsuite.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.03\default_configurations\docsuite.system.servicemodel.client.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="install\sql updates\9.03\default_configurations\TNotice minimal configurations.docx" />
+    <Content Include="install\sql updates\9.03\Workflow - ***REMOVED*** - Protocolla contratto.json" />
+    <Content Include="install\sql updates\9.03\Workflow - ***REMOVED*** - Invia IP4D.json" />
+    <Content Include="install\sql updates\9.03\Workflow - AUSL-RE – AVELCO – Firma digitale con protocollazione.json" />
+    <Content Include="install\sql updates\9.03\Workflow - AUSL-RE – AVELCO – Protocolla semplice.json" />
+    <Content Include="install\sql updates\9.03\Workflow - AUSL-RE – AVELCO – Protocolla con fascicolazione.json" />
+    <Content Include="install\sql updates\9.03\Workflow - AUSL-RE – AVELCO – Invia PEC.json" />
+    <Content Include="install\sql updates\9.03\Workflow - AUSL-RE – AVELCO – Firma digitale con protocollazione e fascicolazione.json" />
+    <Content Include="install\sql updates\9.04\default_configurations\docsuite.appsettings.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\docsuite.connectionstrings.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\docsuite.sessionstate.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\docsuite.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\docsuite.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\docsuite.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\TNotice minimal configurations.docx" />
+    <Content Include="install\sql updates\9.05\default_configurations\docsuite.appsettings.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\docsuite.connectionstrings.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\docsuite.sessionstate.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\docsuite.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\docsuite.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\docsuite.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\TNotice minimal configurations.docx" />
+    <Content Include="install\sql updates\9.05\Workflow - AFOL – RDA – Crea ODA.json" />
+    <Content Include="install\sql updates\9.05\Workflow - AFOL – RDA – Crea RDA con fascicolazione.json" />
+    <Content Include="install\sql updates\9.05\Workflow - AFOL – RDA – Crea Preventivo.json" />
+    <Content Include="install\sql updates\9.06\default_configurations\docsuite.appsettings.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\docsuite.connectionstrings.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\docsuite.sessionstate.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\docsuite.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\docsuite.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\docsuite.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\TNotice minimal configurations.docx" />
+    <Content Include="install\sql updates\8.87\Workflow - Fatturazione elettronica - Annulla Fattura.json" />
+    <Content Include="install\sql updates\9.07\default_configurations\docsuite.appsettings.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\docsuite.connectionstrings.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\docsuite.sessionstate.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\docsuite.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\docsuite.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\docsuite.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\TNotice minimal configurations.docx" />
+    <Content Include="install\sql updates\9.07\Workflow - AUSL-RE - AVELCO - Crea Fascicolo.json" />
+    <Content Include="install\sql updates\9.07\Workflow - AUSL-RE - AVELCO - Aggiungi inserto a Fascicolo.json" />
+    <Content Include="install\sql updates\9.06\Workflow - AUSL-RE – AVELCO – Protocolla con fascicolazione.json" />
+    <Content Include="install\sql updates\9.06\Workflow - AUSL-RE – AVELCO – Protocolla semplice.json" />
+    <Content Include="install\sql updates\9.07\Workflow - ***REMOVED*** - EHC - Dossier Fascicolo e protocollazione.json" />
+    <Content Include="install\sql updates\9.07\Workflow - ***REMOVED*** - EHC - Protocollazione automatica.json" />
+    <Content Include="install\sql updates\9.07\Workflow - ***REMOVED*** - EHC - Protocolla con fascicolazione - Copy.json" />
+    <Content Include="install\sql updates\9.08\default_configurations\docsuite.appsettings.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\docsuite.connectionstrings.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\docsuite.sessionstate.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\docsuite.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\docsuite.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\docsuite.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\TNotice minimal configurations.docx" />
+    <Content Include="install\sql updates\9.09\default_configurations\docsuite.appsettings.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\docsuite.connectionstrings.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\docsuite.sessionstate.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\docsuite.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\docsuite.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\docsuite.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\TNotice minimal configurations.docx" />
     <None Include="My Project\PublishProfiles\local.pubxml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Scripts\jquery-3.3.1-vsdoc.js" />
-    <Content Include="Scripts\jquery-3.3.1.js" />
-    <Content Include="Scripts\jquery-3.3.1.min.js" />
-    <Content Include="Scripts\jquery-3.3.1.slim.js" />
-    <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
     <Content Include="Scripts\r.js" />
     <Content Include="Scripts\require.js" />
@@ -865,8 +1078,8 @@
     <Content Include="UserControl\uscToSeries.ascx" />
     <Content Include="UserControl\uscMiscellanea.ascx" />
     <Content Include="UserControl\uscDynamicMetadata.ascx" />
-    <Content Include="UserControl\uscDynamicMetadataClient.ascx" />
-    <Content Include="UserControl\uscDynamicMetadataSummaryClient.ascx" />
+    <Content Include="UserControl\uscDynamicMetadataRest.ascx" />
+    <Content Include="UserControl\uscDynamicMetadataSummaryRest.ascx" />
     <Content Include="UserControl\uscFascicleLink.ascx" />
     <Content Include="Dossiers\DossierLog.aspx" />
     <Content Include="MailSenders\DossierMailSender.aspx" />
@@ -879,15 +1092,12 @@
     <Content Include="UserControl\uscReportDesigner.ascx" />
     <Content Include="UserControl\uscReportDesignerInformation.ascx" />
     <Content Include="UserControl\uscReportDesignerToolbox.ascx" />
-    <Content Include="UserControl\uscRequestStatement.ascx" />
     <Content Include="UserControl\uscStartWorkflow.ascx" />
     <Content Include="UserControl\uscFasciclePlan.ascx" />
     <Content Include="UserControl\uscWorkflowInstanceLog.ascx" />
-    <Content Include="User\UserDematerialisationRequest.aspx" />
     <Content Include="Viewers\DossierViewer.aspx" />
     <Content Include="Viewers\ModifyDocumentPrivacyLevel.aspx" />
     <Content Include="Workflows\CompleteWorkflow.aspx" />
-    <Content Include="Workflows\RequestStatement.aspx" />
     <Content Include="Workflows\StartWorkflow.aspx" />
     <TypeScriptCompile Include="App\Core\Extensions\Number.ts" />
     <TypeScriptCompile Include="App\DTOs\CategorySearchFilterDTO.ts" />
@@ -927,8 +1137,8 @@
     <TypeScriptCompile Include="App\Mappers\Commons\PrivacyLevelModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Commons\MetadataRepositoryViewModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Commons\MetadataRepositoryModelMapper.ts" />
-    <TypeScriptCompile Include="App\Mappers\DocumentUnits\DocumentUnitModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\DocumentUnits\DocumentUnitChainMapper.ts" />
+    <TypeScriptCompile Include="App\Mappers\DocumentUnits\DocumentUnitModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\DocumentUnits\DocumentUnitRoleMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Dossiers\DossierFolderModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Dossiers\DossierFolderRoleModelMapper.ts" />
@@ -940,7 +1150,6 @@
     <TypeScriptCompile Include="App\Mappers\Fascicles\FascicleDocumentUnitCategoryModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Fascicles\FascicleDocumentUnitModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Fascicles\FascicleLogViewModelMapper.ts" />
-    <TypeScriptCompile Include="App\Mappers\Fascicles\FascicleDocumentUnitModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Fascicles\FascicleSummaryFolderViewModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Fascicles\FiltersGridUDFasciclesViewModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Fascicles\FascicleLinkModelMapper.ts" />
@@ -958,6 +1167,42 @@
     <TypeScriptCompile Include="App\Mappers\PECMails\PECMailBoxConfigurationViewModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\PECMails\PECMailBoxViewModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\PECMails\PECMailViewModelMapper.ts" />
+    <TypeScriptCompile Include="App\Mappers\PosteWeb\ExtendedProperties\ExceptionInfoMapper.ts" />
+    <TypeScriptCompile Include="App\Mappers\PosteWeb\ExtendedProperties\POLRequestMetaDataMapper.ts" />
+    <TypeScriptCompile Include="App\Mappers\PosteWeb\ExtendedProperties\PRETNoticeGetStatusResponseMapper.ts" />
+    <TypeScriptCompile Include="App\Mappers\PosteWeb\ExtendedProperties\PRETNoticePushResponseMapper.ts" />
+    <TypeScriptCompile Include="App\DTOs\FascProcessMoveResponseModelDTO.ts" />
+    <TypeScriptCompile Include="App\Mappers\UDS\UDSDocumentModelMapper.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\CustomActionsIconModel.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\FascicleCustomActionModel.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\MetadataFinderType.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\WorkflowValidationRulesType.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\SetiContactModel.ts" />
+    <TypeScriptCompile Include="App\Models\ContentBase.ts" />
+    <TypeScriptCompile Include="App\Models\Dossiers\DossierStatus.ts" />
+    <TypeScriptCompile Include="App\Models\Dossiers\DossierType.ts" />
+    <TypeScriptCompile Include="App\Models\Fascicles\FascicleBuildModel.ts" />
+    <TypeScriptCompile Include="App\Models\Tenants\TenantModelSelection.ts" />
+    <TypeScriptCompile Include="App\Models\Tenants\TenantTypologyTypeEnum.ts" />
+    <TypeScriptCompile Include="App\Models\UDS\UDSDocumentModel.ts" />
+    <TypeScriptCompile Include="App\Models\Workflows\WorfklowFolderPropertiesModel.ts" />
+    <TypeScriptCompile Include="App\Models\Workflows\WorkflowRuleDefinitionModel.ts" />
+    <TypeScriptCompile Include="App\Models\Workflows\JsonModels\PropertyJsonValueContact.ts" />
+    <TypeScriptCompile Include="App\Models\Workflows\JsonModels\PropertyJsonValueSettori.ts" />
+    <TypeScriptCompile Include="App\Models\Workflows\QueryStringModels\QueryParametersWorkflowEvaluationProperty.ts" />
+    <TypeScriptCompile Include="App\Models\Workflows\WorkflowActionFascicleModel.ts" />
+    <TypeScriptCompile Include="App\Models\Workflows\WorkflowActionModel.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\AUSContactModel.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\AUSSubjectType.ts" />
+    <TypeScriptCompile Include="App\Models\Workflows\WorkflowReferenceDocumentUnitModel.ts" />
+    <TypeScriptCompile Include="App\Models\Workflows\WorkflowRule.ts" />
+    <TypeScriptCompile Include="App\Services\Dossiers\DossierRoleService.ts" />
+    <TypeScriptCompile Include="App\Services\Handlers\UIHandlerEvalPropertyTemplateCollaboration.ts" />
+    <TypeScriptCompile Include="App\Services\Handlers\UIHandlerEvalPropertyTemplateDeposito.ts" />
+    <TypeScriptCompile Include="App\ViewModels\BaseEntityRoleViewModel.ts" />
+    <TypeScriptCompile Include="App\ViewModels\Commons\TreeNodeModel.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\ExtendedProperties\POLRequestHelper.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\StatusColor.ts" />
     <TypeScriptCompile Include="App\Mappers\Processes\ProcessFascicleTemplateModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Processes\ProcessFascicleWorkflowRepositoryModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Processes\ProcessModelMapper.ts" />
@@ -969,6 +1214,7 @@
     <TypeScriptCompile Include="App\Mappers\Resolutions\ResolutionModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Series\DocumentSeriesItemLinksModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Series\DocumentSeriesItemModelMapper.ts" />
+    <TypeScriptCompile Include="App\Mappers\Tenants\TenantAOOModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Tenants\TenantConfigurationModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Tenants\TenantMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Tenants\TenantViewModelMapper.ts" />
@@ -988,6 +1234,8 @@
     <TypeScriptCompile Include="App\Mappers\Workflows\WorkflowActivityModelMapper.ts" />
     <TypeScriptCompile Include="App\Mappers\Workflows\WorkflowStartModelMapper.ts" />
     <TypeScriptCompile Include="App\Models\Commons\AuthorizationRoleType.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\ConservationStatusType.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\ConservationType.ts" />
     <TypeScriptCompile Include="App\Models\Commons\ContactAddressDSWModel.ts" />
     <TypeScriptCompile Include="App\Models\Commons\CategoryFascicleModel.ts" />
     <TypeScriptCompile Include="App\Models\Commons\CategoryFascicleRightModel.ts" />
@@ -1002,11 +1250,13 @@
     <TypeScriptCompile Include="App\Models\Commons\BuildActionType.ts" />
     <TypeScriptCompile Include="App\Models\Commons\DocumentModel.ts" />
     <TypeScriptCompile Include="App\Models\Commons\DocumentUnitReferenceTypeEnum.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\JsonParameter.ts" />
     <TypeScriptCompile Include="App\Models\Commons\PrivacyLevelModel.ts" />
     <TypeScriptCompile Include="App\Models\Commons\MetadataRepositoryModel.ts" />
     <TypeScriptCompile Include="App\Models\Commons\FasciclePeriod.ts" />
     <TypeScriptCompile Include="App\Models\Commons\MetadataRepositoryStatus.ts" />
     <TypeScriptCompile Include="App\Models\Commons\ConservationModel.ts" />
+    <TypeScriptCompile Include="App\Models\Commons\TreeNodeType.ts" />
     <TypeScriptCompile Include="App\Models\Commons\UscRoleRestConfiguration.ts" />
     <TypeScriptCompile Include="App\Models\Commons\UscRoleRestEventType.ts" />
     <TypeScriptCompile Include="App\Models\Commons\WorkflowDocumentModel.ts" />
@@ -1041,13 +1291,19 @@
     <TypeScriptCompile Include="App\Models\PECMails\PECMailBoxRulesetModel.ts" />
     <TypeScriptCompile Include="App\Models\PECMails\PECMailDirection.ts" />
     <TypeScriptCompile Include="App\Models\PECMails\PECMailSummaryErrorModel.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\ExtendedProperties\ExceptionInfo.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\ExtendedProperties\POLRequestExtendedProperties.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\ExtendedProperties\POLRequestMetaData.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\ExtendedProperties\PRETNoticeGetStatusResponse.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\ExtendedProperties\PRETNoticePushResponse.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\ExtendedProperties\TNoticeFatalErrorType.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\ExtendedProperties\TNoticeReturnCodeType.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\ExtendedProperties\TNoticeStatusCodeType.ts" />
+    <TypeScriptCompile Include="App\Models\PosteWeb\POLRequest.ts" />
     <TypeScriptCompile Include="App\Models\Processes\ProcessFascicleWorkflowRepositoryModel.ts" />
-    <TypeScriptCompile Include="App\Models\Processes\ProcessModel.ts" />
     <TypeScriptCompile Include="App\Models\Processes\ProcessFascicleTemplateModel.ts" />
     <TypeScriptCompile Include="App\Models\Processes\ProcessNodeType.ts" />
     <TypeScriptCompile Include="App\Models\Processes\ProcessType.ts" />
-    <TypeScriptCompile Include="App\Models\Processes\ProcessFascicleTemplateModel.ts" />
-    <TypeScriptCompile Include="App\Models\Processes\ProcessFascicleWorkflowRepositoryModel.ts" />
     <TypeScriptCompile Include="App\Models\Processes\ProcessModel.ts" />
     <TypeScriptCompile Include="App\Models\Processes\ProcessTypeEnum.ts" />
     <TypeScriptCompile Include="App\Models\Protocols\ProtocolLinkModel.ts" />
@@ -1075,6 +1331,8 @@
     <TypeScriptCompile Include="App\Models\SignDocuments\StorageInformationType.ts" />
     <TypeScriptCompile Include="App\Models\Templates\TemplateReportModel.ts" />
     <TypeScriptCompile Include="App\Models\Templates\TemplateReportStatus.ts" />
+    <TypeScriptCompile Include="App\Models\Tenants\TenantAOOAttributeEnum.ts" />
+    <TypeScriptCompile Include="App\Models\Tenants\TenantAOOModel.ts" />
     <TypeScriptCompile Include="App\Models\Tenants\TenantConfigurationModel.ts" />
     <TypeScriptCompile Include="App\Models\Tenants\TenantConfigurationTypeEnum.ts" />
     <TypeScriptCompile Include="App\Models\Tenants\TenantModel.ts" />
@@ -1111,11 +1369,11 @@
     <TypeScriptCompile Include="App\Models\Workflows\WorkflowPriorityType.ts" />
     <TypeScriptCompile Include="App\Models\Workflows\WorkflowDSWEnvironmentType.ts" />
     <TypeScriptCompile Include="App\Models\Workflows\WorkflowReferenceBiblosModel.ts" />
+    <TypeScriptCompile Include="App\Models\Workflows\WorkflowRepositoryStatus.ts" />
     <TypeScriptCompile Include="App\Models\Workflows\WorkflowSeverityLogType.ts" />
     <TypeScriptCompile Include="App\Models\Workflows\WorkflowSignModel.ts" />
     <TypeScriptCompile Include="App\Models\Workflows\WorkflowStep.ts" />
     <TypeScriptCompile Include="App\Models\Workflows\WorkflowEvaluationProperty.ts" />
-    <TypeScriptCompile Include="App\Models\Workflows\WorkflowEvaluationPropertyType.ts" />
     <TypeScriptCompile Include="App\Models\Workflows\WorkflowEvalutionPropertyHelper.ts" />
     <TypeScriptCompile Include="App\Models\Workflows\WorkflowInstanceLogType.ts" />
     <TypeScriptCompile Include="App\Models\Workflows\WorkflowInstanceModel.ts" />
@@ -2136,7 +2394,6 @@
     <Content Include="User\UserAbsentManagers.aspx" />
     <Content Include="User\TemplateUserCollGestione.aspx" />
     <Content Include="User\UserDiarioUnificato.aspx" />
-    <Content Include="User\UserFascicle.aspx" />
     <Content Include="User\UserAuthorizedDocuments.aspx" />
     <Content Include="User\UserWorkflow.aspx" />
     <Content Include="Utlt\UtltADProperties.aspx" />
@@ -2151,7 +2408,6 @@
     <Content Include="App_Browsers\ie.browser" />
     <Content Include="App_Browsers\firefox.browser" />
     <None Include="Config\BasciTools.xml" />
-    <None Include="Config\SignatureTemplate.xml" />
     <None Include="Resl\Stampe\AUSL-TO\cuore_old.jpg" />
     <None Include="Resl\Stampe\AUSL-TO\Frontalino_2.htm" />
     <None Include="Resl\Stampe\AUSL-TO\LetteraTrasmAvvenutaAdozione.htm" />
@@ -2216,8 +2472,6 @@
     <Content Include="Comm\Images\Delete.gif" />
     <Content Include="Comm\Images\DocSuite\Atti16.gif" />
     <Content Include="Comm\Images\DocSuite\Atto16.gif" />
-    <Content Include="Comm\Images\DocSuite\Collegamento16.gif" />
-    <Content Include="Comm\Images\DocSuite\Collegamento32.gif" />
     <Content Include="Comm\Images\DocSuite\Delibera16.gif" />
     <Content Include="Comm\Images\DocSuite\Fascicoli16.gif" />
     <Content Include="Comm\Images\DocSuite\Fascicoli32.gif" />
@@ -2266,7 +2520,6 @@
     <Content Include="Comm\Images\Home\SfondoMenu.jpg" />
     <Content Include="Comm\Images\Home\Tabelle.gif" />
     <Content Include="Comm\Images\Home\Utilita.gif" />
-    <Content Include="Comm\Images\Home\VecompLogo.gif" />
     <Content Include="Comm\Images\InCostruzione3.gif" />
     <Content Include="Comm\Images\Interop\AdAm.gif" />
     <Content Include="Comm\Images\Interop\Amministrazione.gif" />
@@ -2464,8 +2717,6 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Comm\Download\modello.xls" />
-    <None Include="Config\segnatura.20010507.dtd" />
-    <None Include="Config\segnatura.20010507.fixed.dtd" />
     <None Include="docsuite.system.servicemodel.client.config">
       <SubType>Designer</SubType>
     </None>
@@ -2489,9 +2740,11 @@
     <None Include="Resl\Stampe\AUSL-PC\FrontalinoPubblicazioneEsecutivitaDetermina.mht" />
     <None Include="Resl\Stampe\AUSL-RE\FronteSpizioDeliberaSoggetta.mht" />
     <None Include="Resl\Stampe\AUSL-RE\FronteSpizioDeliberaSoggettaRitiro.mht" />
-    <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="tsconfig.json" />
+    <Content Include="Scripts\moment.min.js.map" />
+    <Content Include="Scripts\moment-with-locales.min.js.map" />
+    <Content Include="Scripts\jquery-3.5.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.5.1.min.map" />
     <None Include="UserControl\DynamicWebTwain.lpk" />
     <None Include="Resl\Stampe\FronteSpizioAtto.mht" />
     <None Include="Resl\Stampe\FronteSpizioDelibera.mht" />
@@ -2507,10 +2760,7 @@
     <Content Include="Viewers\Handlers\UDSDocumentHandler.ashx" />
     <Content Include="Viewers\Handlers\DossierDocumentHandler.ashx" />
     <Content Include="Viewers\Handlers\GenericDocumentHandler.ashx" />
-    <Content Include="Scripts\dynamsoft\v15\dist\DynamsoftServiceSetup.deb" />
-    <Content Include="Scripts\dynamsoft\v15\dist\DynamsoftServiceSetup.msi" />
-    <Content Include="Scripts\dynamsoft\v15\dist\DynamsoftServiceSetup.pkg" />
-    <Content Include="Scripts\dynamsoft\v15\dist\DynamsoftServiceSetup.rpm" />
+    <None Include="Scripts\dynamsoft\v15\dist\DynamsoftServiceSetup.msi" />
     <Content Include="Scripts\dynamsoft\v15\dist\LICENSE" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -2520,7 +2770,6 @@
     </None>
     <TypeScriptCompile Include="App\Services\Dossiers\DossierService.ts" />
     <TypeScriptCompile Include="App\Services\Dossiers\IDossierFolderService.ts" />
-    <TypeScriptCompile Include="App\Services\Fascicles\FascicleDocumentUnitService.ts" />
     <TypeScriptCompile Include="App\Services\Fascicles\FascicleFolderService.ts" />
     <TypeScriptCompile Include="App\Services\Fascicles\FascicleDocumentService.ts" />
     <TypeScriptCompile Include="App\Services\Fascicles\FascicleLocalService.ts" />
@@ -2534,6 +2783,7 @@
     <TypeScriptCompile Include="App\Services\PECMails\PECMailBoxConfigurationService.ts" />
     <TypeScriptCompile Include="App\Services\PECMails\PECMailBoxService.ts" />
     <TypeScriptCompile Include="App\Services\PECMails\PECMailService.ts" />
+    <TypeScriptCompile Include="App\Services\PosteWeb\TNoticeService.ts" />
     <TypeScriptCompile Include="App\Services\Processes\ProcessFascicleTemplateService.ts" />
     <TypeScriptCompile Include="App\Services\Processes\ProcessFascicleWorkflowRepositoryService.ts" />
     <TypeScriptCompile Include="App\Services\Processes\ProcessService.ts" />
@@ -2546,6 +2796,7 @@
     <TypeScriptCompile Include="App\Services\Monitors\MonitoringSeriesSectionService.ts" />
     <TypeScriptCompile Include="App\Services\Monitors\TransparentAdministrationMonitorLogService.ts" />
     <TypeScriptCompile Include="App\Services\Templates\TemplateReportService.ts" />
+    <TypeScriptCompile Include="App\Services\Tenants\TenantAOOService.ts" />
     <TypeScriptCompile Include="App\Services\Tenants\TenantConfigurationService.ts" />
     <TypeScriptCompile Include="App\Services\Tenants\TenantService.ts" />
     <TypeScriptCompile Include="App\Services\Tenants\TenantWorkflowRepositoryService.ts" />
@@ -2563,17 +2814,22 @@
     <TypeScriptCompile Include="App\Services\Workflows\WorkflowNotifyService.ts" />
     <TypeScriptCompile Include="App\Services\Workflows\WorkflowPropertyService.ts" />
     <TypeScriptCompile Include="App\Services\Workflows\WorkflowStartService.ts" />
+    <TypeScriptCompile Include="App\ViewModels\Commons\CategoryFascicleRightViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Commons\CategoryTreeViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Commons\CategoryViewModelType.ts" />
+    <TypeScriptCompile Include="App\ViewModels\DocumentUnits\DocumentUnitViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Dossiers\DossierFolderInsertViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Dossiers\DossierInsertViewModel.ts" />
+    <TypeScriptCompile Include="App\ViewModels\Dossiers\LinkedDossierViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Fascicles\FascicleLogViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Fascicles\FascicleMoveItemViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Fascicles\FascicleSummaryFolderViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\JeepServiceHosts\JeepServiceHostViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Commons\LocationViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Metadata\CommentFieldViewModel.ts" />
-    <TypeScriptCompile Include="App\ViewModels\Metadata\MetadataViewModel.ts" />
+    <TypeScriptCompile Include="App\ViewModels\Metadata\MetadataDesignerViewModel.ts" />
+    <TypeScriptCompile Include="App\ViewModels\Metadata\MetadataFinderViewModel.ts" />
+    <TypeScriptCompile Include="App\ViewModels\Metadata\MetadataValueViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Metadata\EnumFieldViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Metadata\DiscussionFieldViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Metadata\TextFieldViewModel.ts" />
@@ -2598,19 +2854,25 @@
     <TypeScriptCompile Include="App\ViewModels\UDS\UDSLogViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\UDS\UDSLookupViewModel.ts" />
     <TypeScriptCompile Include="App\ViewModels\Workflows\WorkflowInstanceLogViewModel.ts" />
+    <TypeScriptCompile Include="App\Core\WorkflowStorage\ClientLocalStorage.ts" />
+    <TypeScriptCompile Include="App\Core\WorkflowStorage\IClientStorage.ts" />
     <TypeScriptCompile Include="Comm\SingleSignRest.ts" />
     <TypeScriptCompile Include="Comm\ViewMetadataComments.ts" />
+    <TypeScriptCompile Include="Dossiers\DossierAutorizza.ts" />
     <TypeScriptCompile Include="Dossiers\DossierFascicleFolderInserimento.ts" />
     <TypeScriptCompile Include="Dossiers\DossierFolderLinkFascicle.ts" />
     <TypeScriptCompile Include="Dossiers\DossierFolderModifica.ts" />
     <TypeScriptCompile Include="Dossiers\DossierLog.ts" />
     <TypeScriptCompile Include="Dossiers\DossierMiscellanea.ts" />
     <TypeScriptCompile Include="Fasc\FascDocumentsInsert.ts" />
+    <TypeScriptCompile Include="Fasc\FascicleClose.ts" />
     <TypeScriptCompile Include="Fasc\FascicleFolderInserimento.ts" />
     <TypeScriptCompile Include="Fasc\FascicleFolderModifica.ts" />
     <TypeScriptCompile Include="Fasc\FascAddUDLink.ts" />
     <TypeScriptCompile Include="Fasc\FascicleLog.ts" />
+    <TypeScriptCompile Include="Fasc\FascInserimento.ts" />
     <TypeScriptCompile Include="Fasc\FascInstanceLog.ts" />
+    <TypeScriptCompile Include="Fasc\FascProcessMove.ts" />
     <TypeScriptCompile Include="Fasc\FascMoveItems.ts" />
     <TypeScriptCompile Include="Fasc\FascPeriodInserimento.ts" />
     <TypeScriptCompile Include="Fasc\FascProcessInserimento.ts" />
@@ -2620,13 +2882,13 @@
     <TypeScriptCompile Include="Monitors\MonitoringSeriesSectionBase.ts" />
     <TypeScriptCompile Include="Monitors\TransparentAdministrationMonitorLogBase.ts" />
     <TypeScriptCompile Include="Monitors\TransparentAdministrationMonitorLog.ts" />
-    <TypeScriptCompile Include="PEC\EventPECSummaryError.ts" />
     <TypeScriptCompile Include="PEC\PECBase.ts" />
     <TypeScriptCompile Include="PEC\PECInvoiceBase.ts" />
     <TypeScriptCompile Include="PEC\PECInvoice.ts" />
-    <TypeScriptCompile Include="PEC\EventPECSummaryErrorBase.ts" />
     <TypeScriptCompile Include="PEC\PECToDocumentUnit.ts" />
+    <TypeScriptCompile Include="Processes\ProcessVisualizza.ts" />
     <TypeScriptCompile Include="Prot\MessageDetails.ts" />
+    <TypeScriptCompile Include="Prot\TNoticeDetails.ts" />
     <TypeScriptCompile Include="Prot\PECDetails.ts" />
     <TypeScriptCompile Include="Prot\ProtVisualizza.ts" />
     <TypeScriptCompile Include="Reporting\ReportDesigner.ts" />
@@ -2638,6 +2900,7 @@
     <TypeScriptCompile Include="Tblt\TbltCategoryMetadata.ts" />
     <TypeScriptCompile Include="Tblt\TbltContainerGes.ts" />
     <TypeScriptCompile Include="Tblt\TbltContenitori.ts" />
+    <TypeScriptCompile Include="Tblt\TbltLocation.ts" />
     <TypeScriptCompile Include="Tblt\TbltMetadataRepository.ts" />
     <TypeScriptCompile Include="Tblt\TbltMetadataRepositoryDesigner.ts" />
     <TypeScriptCompile Include="Tblt\TbltPECMailBox.ts" />
@@ -2655,8 +2918,10 @@
     <TypeScriptCompile Include="Tblt\TbltWorkflowEvaluationPropertyGes.ts" />
     <TypeScriptCompile Include="Tblt\TbltWorkflowPropertyGes.ts" />
     <TypeScriptCompile Include="Tblt\TbltWorkflowStepGes.ts" />
+    <TypeScriptCompile Include="UDS\AttachDocuments.ts" />
     <TypeScriptCompile Include="UDS\UDSInvoiceSearch.ts" />
     <TypeScriptCompile Include="UDS\UDSInvoiceBase.ts" />
+    <TypeScriptCompile Include="UDS\UDSInvoicesUpload.ts" />
     <TypeScriptCompile Include="UDS\UDSLink.ts" />
     <TypeScriptCompile Include="UDS\UDSViewBase.ts" />
     <TypeScriptCompile Include="UDS\UDSLog.ts" />
@@ -2664,6 +2929,11 @@
     <TypeScriptCompile Include="UDS\UserControl\uscUDSLookup.ts" />
     <TypeScriptCompile Include="UDS\UserUDS.ts" />
     <TypeScriptCompile Include="UDS\UserUDSBase.ts" />
+    <TypeScriptCompile Include="UserControl\CommonDomainUserSelRest.ts" />
+    <TypeScriptCompile Include="UserControl\CommonSelAUSContact.ts" />
+    <TypeScriptCompile Include="UserControl\CommonSetiContactSel.ts" />
+    <TypeScriptCompile Include="UserControl\CommonWorkflowDesignerValidations.ts" />
+    <TypeScriptCompile Include="UserControl\uscAdvancedSearchDynamicMetadataRest.ts" />
     <TypeScriptCompile Include="UserControl\uscContattiSelRest.ts" />
     <TypeScriptCompile Include="UserControl\CommonSelCategoryRest.ts" />
     <TypeScriptCompile Include="UserControl\CommonSelContactRest.ts" />
@@ -2673,7 +2943,13 @@
     <TypeScriptCompile Include="UserControl\uscCategoryRest.ts" />
     <TypeScriptCompile Include="UserControl\uscContactRest.ts" />
     <TypeScriptCompile Include="UserControl\uscContactSearchRest.ts" />
+    <TypeScriptCompile Include="UserControl\uscCustomActionsRest.ts" />
+    <TypeScriptCompile Include="UserControl\uscDocumentUnitConservationRest.ts" />
     <TypeScriptCompile Include="UserControl\uscDocumentUnitReferences.ts" />
+    <TypeScriptCompile Include="UserControl\uscDomainUserSelRest.ts" />
+    <TypeScriptCompile Include="UserControl\uscDossierSummary.ts" />
+    <TypeScriptCompile Include="UserControl\uscWorkflowFolderSelRest.ts" />
+    <TypeScriptCompile Include="UserControl\uscFascicleProcessInsert.ts" />
     <TypeScriptCompile Include="UserControl\uscFascicleSearch.ts" />
     <TypeScriptCompile Include="UserControl\uscFascInsertUD.ts" />
     <TypeScriptCompile Include="UserControl\uscFascInsertMiscellanea.ts" />
@@ -2686,12 +2962,13 @@
     <TypeScriptCompile Include="UserControl\uscCompleteWorkflow.ts" />
     <TypeScriptCompile Include="UserControl\uscFascicleFolders.ts" />
     <TypeScriptCompile Include="UserControl\uscDynamicMetadata.ts" />
-    <TypeScriptCompile Include="UserControl\uscDynamicMetadataClient.ts" />
-    <TypeScriptCompile Include="UserControl\uscDynamicMetadataSummaryClient.ts" />
+    <TypeScriptCompile Include="UserControl\uscDynamicMetadataRest.ts" />
+    <TypeScriptCompile Include="UserControl\uscDynamicMetadataSummaryRest.ts" />
     <TypeScriptCompile Include="UserControl\uscFascicleLink.ts" />
     <TypeScriptCompile Include="UserControl\uscFascicleInsert.ts" />
     <TypeScriptCompile Include="UserControl\uscFasciclePlan.ts" />
     <TypeScriptCompile Include="UserControl\uscFascSummary.ts" />
+    <TypeScriptCompile Include="UserControl\uscLocationDetails.ts" />
     <TypeScriptCompile Include="UserControl\uscMetadataRepository.ts" />
     <TypeScriptCompile Include="UserControl\uscMetadataRepositoryDesigner.ts" />
     <TypeScriptCompile Include="UserControl\uscMetadataRepositorySel.ts" />
@@ -2709,11 +2986,18 @@
     <TypeScriptCompile Include="UserControl\uscResolutionKindSeries.ts" />
     <TypeScriptCompile Include="UserControl\uscRoleRest.ts" />
     <TypeScriptCompile Include="UserControl\uscScannerRest.ts" />
+    <TypeScriptCompile Include="UserControl\uscSetiContactSel.ts" />
     <TypeScriptCompile Include="UserControl\uscSettori.ts" />
     <TypeScriptCompile Include="UserControl\uscTenantsSelector.ts" />
+    <TypeScriptCompile Include="UserControl\uscTenantsSelRest.ts" />
     <TypeScriptCompile Include="UserControl\uscUploadDocumentRest.ts" />
+    <TypeScriptCompile Include="UserControl\uscWorkflowDesignerValidations.ts" />
     <TypeScriptCompile Include="UserControl\uscWorkflowInstanceLog.ts" />
     <TypeScriptCompile Include="UserControl\uscZenDeskHelp.ts" />
+    <TypeScriptCompile Include="User\FullTextSearch.ts" />
+    <TypeScriptCompile Include="User\ProcessesTreeView.ts" />
+    <TypeScriptCompile Include="User\UserDossier.ts" />
+    <TypeScriptCompile Include="User\UserFascicle.ts" />
     <TypeScriptCompile Include="Workflows\CompleteWorkflow.ts" />
     <TypeScriptCompile Include="Workflows\StartWorkflow.ts" />
     <TypeScriptCompile Include="Workflows\WorkflowActivityInsert.ts" />
@@ -2758,7 +3042,6 @@
     <Compile Include="Code\MultipleSignBasePage.vb">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Code\SecuredDocumentEventArgs.vb" />
     <Compile Include="Code\TaskStateObject.vb" />
     <Compile Include="Code\UDSBasePage.vb">
       <SubType>ASPXCodeBehind</SubType>
@@ -2820,27 +3103,34 @@
     </Compile>
     <Compile Include="Desks\DeskSummary.aspx.vb">
       <DependentUpon>DeskSummary.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Desks\DeskToProtocol.aspx.designer.vb">
       <DependentUpon>DeskToProtocol.aspx</DependentUpon>
     </Compile>
     <Compile Include="Desks\DeskToProtocol.aspx.vb">
       <DependentUpon>DeskToProtocol.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Desks\DeskToCollaboration.aspx.designer.vb">
       <DependentUpon>DeskToCollaboration.aspx</DependentUpon>
     </Compile>
     <Compile Include="Desks\DeskToCollaboration.aspx.vb">
       <DependentUpon>DeskToCollaboration.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Desks\DeskViewStoryBoard.aspx.designer.vb">
       <DependentUpon>DeskViewStoryBoard.aspx</DependentUpon>
     </Compile>
     <Compile Include="Desks\DeskViewStoryBoard.aspx.vb">
       <DependentUpon>DeskViewStoryBoard.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Dossiers\DossierAutorizza.aspx.designer.vb">
+      <DependentUpon>DossierAutorizza.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Dossiers\DossierAutorizza.aspx.vb">
+      <DependentUpon>DossierAutorizza.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Dossiers\DossierFascicleFolderInserimento.aspx.designer.vb">
@@ -2878,6 +3168,13 @@
       <DependentUpon>DossierMiscellanea.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="Fasc\FascicleClose.aspx.designer.vb">
+      <DependentUpon>FascicleClose.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Fasc\FascicleClose.aspx.vb">
+      <DependentUpon>FascicleClose.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="Fasc\FascicleFolderInserimento.aspx.designer.vb">
       <DependentUpon>FascicleFolderInserimento.aspx</DependentUpon>
     </Compile>
@@ -2906,6 +3203,13 @@
       <DependentUpon>FascicleLog.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="Fasc\FascInserimento.aspx.designer.vb">
+      <DependentUpon>FascInserimento.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Fasc\FascInserimento.aspx.vb">
+      <DependentUpon>FascInserimento.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Fasc\FascInstanceLog.aspx.designer.vb">
       <DependentUpon>FascInstanceLog.aspx</DependentUpon>
     </Compile>
@@ -2919,6 +3223,13 @@
     <Compile Include="Fasc\FascDocumentsInsert.aspx.vb">
       <DependentUpon>FascDocumentsInsert.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Fasc\FascProcessMove.aspx.designer.vb">
+      <DependentUpon>FascProcessMove.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Fasc\FascProcessMove.aspx.vb">
+      <DependentUpon>FascProcessMove.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Fasc\FascMoveItems.aspx.designer.vb">
       <DependentUpon>FascMoveItems.aspx</DependentUpon>
@@ -2941,12 +3252,17 @@
       <DependentUpon>FascProcessInserimento.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="HttpModules\AuthenticationModule.vb" />
+    <Compile Include="Listeners\DocSuiteBaseListener.vb" />
+    <Compile Include="Listeners\DocSuiteNeedTenantListener.vb" />
+    <Compile Include="Listeners\DocSuiteTenantDefaultFilterListener.vb" />
+    <Compile Include="Listeners\DocSuiteTenantListener.vb" />
     <Compile Include="MailSenders\DossierMailSender.aspx.designer.vb">
       <DependentUpon>DossierMailSender.aspx</DependentUpon>
     </Compile>
     <Compile Include="MailSenders\DossierMailSender.aspx.vb">
       <DependentUpon>DossierMailSender.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="MailSenders\CollaborationMailSender.aspx.designer.vb">
       <DependentUpon>CollaborationMailSender.aspx</DependentUpon>
@@ -2967,7 +3283,7 @@
     </Compile>
     <Compile Include="Monitors\MonitoringSeriesRole.aspx.vb">
       <DependentUpon>MonitoringSeriesRole.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Monitors\MonitoringSeriesSection.aspx.designer.vb">
       <DependentUpon>MonitoringSeriesSection.aspx</DependentUpon>
@@ -2983,25 +3299,18 @@
       <DependentUpon>TransparentAdministrationMonitorLog.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
-    <Compile Include="PEC\EventPECStreamError.aspx.designer.vb">
-      <DependentUpon>EventPECStreamError.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PEC\EventPECStreamError.aspx.vb">
-      <DependentUpon>EventPECStreamError.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PEC\EventPECSummaryError.aspx.designer.vb">
-      <DependentUpon>EventPECSummaryError.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="PEC\EventPECSummaryError.aspx.vb">
-      <DependentUpon>EventPECSummaryError.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="PEC\PECInvoice.aspx.designer.vb">
       <DependentUpon>PECInvoice.aspx</DependentUpon>
     </Compile>
     <Compile Include="PEC\PECInvoice.aspx.vb">
       <DependentUpon>PECInvoice.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Processes\ProcessVisualizza.aspx.designer.vb">
+      <DependentUpon>ProcessVisualizza.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Processes\ProcessVisualizza.aspx.vb">
+      <DependentUpon>ProcessVisualizza.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Prot\MessageDetails.aspx.designer.vb">
@@ -3010,6 +3319,13 @@
     <Compile Include="Prot\MessageDetails.aspx.vb">
       <DependentUpon>MessageDetails.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Prot\TNoticeDetails.aspx.designer.vb">
+      <DependentUpon>TNoticeDetails.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Prot\TNoticeDetails.aspx.vb">
+      <DependentUpon>TNoticeDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Prot\PECDetails.aspx.designer.vb">
       <DependentUpon>PECDetails.aspx</DependentUpon>
@@ -3030,7 +3346,7 @@
     </Compile>
     <Compile Include="Reporting\ReportDesigner.aspx.vb">
       <DependentUpon>ReportDesigner.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Reporting\ReportDesignerList.aspx.designer.vb">
       <DependentUpon>ReportDesignerList.aspx</DependentUpon>
@@ -3065,6 +3381,13 @@
     </Compile>
     <Compile Include="Tblt\TbltContainerGes.aspx.vb">
       <DependentUpon>TbltContainerGes.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Tblt\TbltLocation.aspx.designer.vb">
+      <DependentUpon>TbltLocation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Tblt\TbltLocation.aspx.vb">
+      <DependentUpon>TbltLocation.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Tblt\TbltMetadataRepository.aspx.designer.vb">
@@ -3158,6 +3481,13 @@
       <DependentUpon>TbltWorkflowStepGes.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UDS\AttachDocuments.aspx.designer.vb">
+      <DependentUpon>AttachDocuments.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UDS\AttachDocuments.aspx.vb">
+      <DependentUpon>AttachDocuments.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="UDS\UDSInvoiceDelete.aspx.designer.vb">
       <DependentUpon>UDSInvoiceDelete.aspx</DependentUpon>
     </Compile>
@@ -3221,19 +3551,33 @@
       <DependentUpon>UserUDS.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="UserControl\CommonDomainUserSelRest.aspx.designer.vb">
+      <DependentUpon>CommonDomainUserSelRest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\CommonDomainUserSelRest.aspx.vb">
+      <DependentUpon>CommonDomainUserSelRest.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\CommonSelAUSContact.aspx.designer.vb">
+      <DependentUpon>CommonSelAUSContact.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\CommonSelAUSContact.aspx.vb">
+      <DependentUpon>CommonSelAUSContact.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UserControl\CommonSelCategoryRest.aspx.designer.vb">
       <DependentUpon>CommonSelCategoryRest.aspx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\CommonSelCategoryRest.aspx.vb">
       <DependentUpon>CommonSelCategoryRest.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UserControl\CommonSelContactRest.aspx.designer.vb">
       <DependentUpon>CommonSelContactRest.aspx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\CommonSelContactRest.aspx.vb">
       <DependentUpon>CommonSelContactRest.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UserControl\CommonSelMiscellanea.aspx.designer.vb">
       <DependentUpon>CommonSelMiscellanea.aspx</DependentUpon>
@@ -3256,12 +3600,26 @@
       <DependentUpon>CommonSelRoleRest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UserControl\CommonSetiContactSel.aspx.designer.vb">
+      <DependentUpon>CommonSetiContactSel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\CommonSetiContactSel.aspx.vb">
+      <DependentUpon>CommonSetiContactSel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UserControl\CommonUploadZIPMiscellanea.aspx.designer.vb">
       <DependentUpon>CommonUploadZIPMiscellanea.aspx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\CommonUploadZIPMiscellanea.aspx.vb">
       <DependentUpon>CommonUploadZIPMiscellanea.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\CommonWorkflowDesignerValidations.aspx.designer.vb">
+      <DependentUpon>CommonWorkflowDesignerValidations.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\CommonWorkflowDesignerValidations.aspx.vb">
+      <DependentUpon>CommonWorkflowDesignerValidations.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="UserControl\IBindingUserControl.vb" />
     <Compile Include="UserControl\ScannerRest.aspx.designer.vb">
@@ -3270,6 +3628,13 @@
     <Compile Include="UserControl\ScannerRest.aspx.vb">
       <DependentUpon>ScannerRest.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\uscAdvancedSearchDynamicMetadataRest.ascx.designer.vb">
+      <DependentUpon>uscAdvancedSearchDynamicMetadataRest.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscAdvancedSearchDynamicMetadataRest.ascx.vb">
+      <DependentUpon>uscAdvancedSearchDynamicMetadataRest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UserControl\uscAmmTraspMonitorLog.ascx.designer.vb">
       <DependentUpon>uscAmmTraspMonitorLog.ascx</DependentUpon>
@@ -3334,11 +3699,53 @@
       <DependentUpon>uscContattiSelRest.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UserControl\uscCustomActionsRest.ascx.designer.vb">
+      <DependentUpon>uscCustomActionsRest.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscCustomActionsRest.ascx.vb">
+      <DependentUpon>uscCustomActionsRest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\uscDocumentUnitConservationRest.ascx.designer.vb">
+      <DependentUpon>uscDocumentUnitConservationRest.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscDocumentUnitConservationRest.ascx.vb">
+      <DependentUpon>uscDocumentUnitConservationRest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UserControl\uscDocumentUnitReferences.ascx.designer.vb">
       <DependentUpon>uscDocumentUnitReferences.ascx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\uscDocumentUnitReferences.ascx.vb">
       <DependentUpon>uscDocumentUnitReferences.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\uscDomainUserSelRest.ascx.designer.vb">
+      <DependentUpon>uscDomainUserSelRest.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscDomainUserSelRest.ascx.vb">
+      <DependentUpon>uscDomainUserSelRest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\uscDossierSummary.ascx.designer.vb">
+      <DependentUpon>uscDossierSummary.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscDossierSummary.ascx.vb">
+      <DependentUpon>uscDossierSummary.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\uscWorkflowFolderSelRest.ascx.designer.vb">
+      <DependentUpon>uscWorkflowFolderSelRest.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscWorkflowFolderSelRest.ascx.vb">
+      <DependentUpon>uscWorkflowFolderSelRest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\uscFascicleProcessInsert.ascx.designer.vb">
+      <DependentUpon>uscFascicleProcessInsert.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscFascicleProcessInsert.ascx.vb">
+      <DependentUpon>uscFascicleProcessInsert.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UserControl\uscFascicleSearch.ascx.designer.vb">
@@ -3374,6 +3781,13 @@
     </Compile>
     <Compile Include="UserControl\uscFascSummary.ascx.vb">
       <DependentUpon>uscFascSummary.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\uscLocationDetails.ascx.designer.vb">
+      <DependentUpon>uscLocationDetails.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscLocationDetails.ascx.vb">
+      <DependentUpon>uscLocationDetails.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UserControl\uscMulticlassificationRest.ascx.designer.vb">
@@ -3432,11 +3846,25 @@
       <DependentUpon>uscScannerRest.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UserControl\uscSetiContactSel.ascx.designer.vb">
+      <DependentUpon>uscSetiContactSel.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscSetiContactSel.ascx.vb">
+      <DependentUpon>uscSetiContactSel.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UserControl\uscTenantsSelector.ascx.designer.vb">
       <DependentUpon>uscTenantsSelector.ascx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\uscTenantsSelector.ascx.vb">
       <DependentUpon>uscTenantsSelector.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\uscTenantsSelRest.ascx.designer.vb">
+      <DependentUpon>uscTenantsSelRest.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscTenantsSelRest.ascx.vb">
+      <DependentUpon>uscTenantsSelRest.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UserControl\uscToSeries.ascx.designer.vb">
@@ -3460,18 +3888,18 @@
       <DependentUpon>uscDynamicMetadata.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="UserControl\uscDynamicMetadataClient.ascx.designer.vb">
-      <DependentUpon>uscDynamicMetadataClient.ascx</DependentUpon>
+    <Compile Include="UserControl\uscDynamicMetadataRest.ascx.designer.vb">
+      <DependentUpon>uscDynamicMetadataRest.ascx</DependentUpon>
     </Compile>
-    <Compile Include="UserControl\uscDynamicMetadataClient.ascx.vb">
-      <DependentUpon>uscDynamicMetadataClient.ascx</DependentUpon>
+    <Compile Include="UserControl\uscDynamicMetadataRest.ascx.vb">
+      <DependentUpon>uscDynamicMetadataRest.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="UserControl\uscDynamicMetadataSummaryClient.ascx.designer.vb">
-      <DependentUpon>uscDynamicMetadataSummaryClient.ascx</DependentUpon>
+    <Compile Include="UserControl\uscDynamicMetadataSummaryRest.ascx.designer.vb">
+      <DependentUpon>uscDynamicMetadataSummaryRest.ascx</DependentUpon>
     </Compile>
-    <Compile Include="UserControl\uscDynamicMetadataSummaryClient.ascx.vb">
-      <DependentUpon>uscDynamicMetadataSummaryClient.ascx</DependentUpon>
+    <Compile Include="UserControl\uscDynamicMetadataSummaryRest.ascx.vb">
+      <DependentUpon>uscDynamicMetadataSummaryRest.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UserControl\uscFascicleLink.ascx.designer.vb">
@@ -3544,13 +3972,6 @@
       <DependentUpon>uscReportDesignerToolbox.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="UserControl\uscRequestStatement.ascx.designer.vb">
-      <DependentUpon>uscRequestStatement.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UserControl\uscRequestStatement.ascx.vb">
-      <DependentUpon>uscRequestStatement.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="UserControl\uscStartWorkflow.ascx.designer.vb">
       <DependentUpon>uscStartWorkflow.ascx</DependentUpon>
     </Compile>
@@ -3570,6 +3991,13 @@
     </Compile>
     <Compile Include="UserControl\uscUploadDocumentRest.ascx.vb">
       <DependentUpon>uscUploadDocumentRest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\uscWorkflowDesignerValidations.ascx.designer.vb">
+      <DependentUpon>uscWorkflowDesignerValidations.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\uscWorkflowDesignerValidations.ascx.vb">
+      <DependentUpon>uscWorkflowDesignerValidations.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UserControl\uscWorkflowInstanceLog.ascx.designer.vb">
@@ -3593,11 +4021,39 @@
       <DependentUpon>uscZenDeskHelp.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="User\UserDematerialisationRequest.aspx.designer.vb">
-      <DependentUpon>UserDematerialisationRequest.aspx</DependentUpon>
+    <Compile Include="User\FullTextSearch.aspx.designer.vb">
+      <DependentUpon>FullTextSearch.aspx</DependentUpon>
     </Compile>
-    <Compile Include="User\UserDematerialisationRequest.aspx.vb">
-      <DependentUpon>UserDematerialisationRequest.aspx</DependentUpon>
+    <Compile Include="User\FullTextSearch.aspx.vb">
+      <DependentUpon>FullTextSearch.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="User\ProcessesTreeView.aspx.designer.vb">
+      <DependentUpon>ProcessesTreeView.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="User\ProcessesTreeView.aspx.vb">
+      <DependentUpon>ProcessesTreeView.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="User\UserDossier.aspx.designer.vb">
+      <DependentUpon>UserDossier.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="User\UserDossier.aspx.vb">
+      <DependentUpon>UserDossier.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="User\UserFascicle.aspx.designer.vb">
+      <DependentUpon>UserFascicle.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="User\UserFascicle.aspx.vb">
+      <DependentUpon>UserFascicle.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="User\UserUDFascicle.aspx.designer.vb">
+      <DependentUpon>UserUDFascicle.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="User\UserUDFascicle.aspx.vb">
+      <DependentUpon>UserUDFascicle.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="User\ZenDeskHelp.aspx.designer.vb">
@@ -3605,21 +4061,21 @@
     </Compile>
     <Compile Include="User\ZenDeskHelp.aspx.vb">
       <DependentUpon>ZenDeskHelp.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Utlt\UserRoleProfile.aspx.designer.vb">
       <DependentUpon>UserRoleProfile.aspx</DependentUpon>
     </Compile>
     <Compile Include="Utlt\UserRoleProfile.aspx.vb">
       <DependentUpon>UserRoleProfile.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Viewers\DossierViewer.aspx.designer.vb">
       <DependentUpon>DossierViewer.aspx</DependentUpon>
     </Compile>
     <Compile Include="Viewers\DossierViewer.aspx.vb">
       <DependentUpon>DossierViewer.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Viewers\Handlers\DossierDocumentHandler.ashx.vb">
       <DependentUpon>DossierDocumentHandler.ashx</DependentUpon>
@@ -3634,18 +4090,18 @@
       <DependentUpon>ModifyDocumentPrivacyLevel.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="Viewers\PosteWebActivityViewer.aspx.designer.vb">
+      <DependentUpon>PosteWebActivityViewer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Viewers\PosteWebActivityViewer.aspx.vb">
+      <DependentUpon>PosteWebActivityViewer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Workflows\CompleteWorkflow.aspx.designer.vb">
       <DependentUpon>CompleteWorkflow.aspx</DependentUpon>
     </Compile>
     <Compile Include="Workflows\CompleteWorkflow.aspx.vb">
       <DependentUpon>CompleteWorkflow.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
-    </Compile>
-    <Compile Include="Workflows\RequestStatement.aspx.designer.vb">
-      <DependentUpon>RequestStatement.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Workflows\RequestStatement.aspx.vb">
-      <DependentUpon>RequestStatement.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Workflows\StartWorkflow.aspx.designer.vb">
@@ -3681,7 +4137,7 @@
     </Compile>
     <Compile Include="Workflows\WorkflowInstances.aspx.vb">
       <DependentUpon>WorkflowInstances.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Viewers\WorkflowActivityViewer.aspx.designer.vb">
       <DependentUpon>WorkflowActivityViewer.aspx</DependentUpon>
@@ -3712,7 +4168,7 @@
     </Compile>
     <Compile Include="Dossiers\DossierModifica.aspx.vb">
       <DependentUpon>DossierModifica.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Dossiers\DossierInserimento.aspx.designer.vb">
       <DependentUpon>DossierInserimento.aspx</DependentUpon>
@@ -3733,14 +4189,14 @@
     </Compile>
     <Compile Include="Dossiers\DossierVisualizza.aspx.vb">
       <DependentUpon>DossierVisualizza.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Fasc\FascicleLink.aspx.designer.vb">
       <DependentUpon>FascicleLink.aspx</DependentUpon>
     </Compile>
     <Compile Include="Fasc\FascicleLink.aspx.vb">
       <DependentUpon>FascicleLink.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Fasc\FascUDManager.aspx.designer.vb">
       <DependentUpon>FascUDManager.aspx</DependentUpon>
@@ -3763,7 +4219,6 @@
       <DependentUpon>DeskMailSender.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
-    <Compile Include="MailSenders\IP4DSentEventArgs.vb" />
     <Compile Include="MailSenders\MailErrorEventArgs.vb" />
     <Compile Include="MailSenders\MessageEmailList.aspx.designer.vb">
       <DependentUpon>MessageEmailList.aspx</DependentUpon>
@@ -3805,7 +4260,7 @@
     </Compile>
     <Compile Include="MailSenders\UDSMailSender.aspx.vb">
       <DependentUpon>UDSMailSender.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Prot\PosteWebCostiAccount.aspx.designer.vb">
       <DependentUpon>PosteWebCostiAccount.aspx</DependentUpon>
@@ -3870,7 +4325,7 @@
     </Compile>
     <Compile Include="Tblt\TbltContactLists.aspx.vb">
       <DependentUpon>TbltContactLists.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Tblt\TbltContactListsGes.aspx.designer.vb">
       <DependentUpon>TbltContactListsGes.aspx</DependentUpon>
@@ -3926,7 +4381,7 @@
     </Compile>
     <Compile Include="Tblt\TbltMassimariScarto.aspx.vb">
       <DependentUpon>TbltMassimariScarto.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Tblt\TbltMassimarioScartoGes.aspx.designer.vb">
       <DependentUpon>TbltMassimarioScartoGes.aspx</DependentUpon>
@@ -4530,7 +4985,7 @@
     </Compile>
     <Compile Include="PEC\PECViewFromFile.aspx.vb">
       <DependentUpon>PECViewFromFile.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="PEC\ProtocolBox.aspx.designer.vb">
       <DependentUpon>ProtocolBox.aspx</DependentUpon>
@@ -4579,14 +5034,14 @@
     </Compile>
     <Compile Include="Prot\ProtReassignment.aspx.vb">
       <DependentUpon>ProtReassignment.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Resl\AuslPc_ReslPubblicaRevoca.aspx.designer.vb">
       <DependentUpon>AuslPc_ReslPubblicaRevoca.aspx</DependentUpon>
     </Compile>
     <Compile Include="Resl\AuslPc_ReslPubblicaRevoca.aspx.vb">
       <DependentUpon>AuslPc_ReslPubblicaRevoca.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="PEC\PECView.aspx.designer.vb">
       <DependentUpon>PECView.aspx</DependentUpon>
@@ -4624,7 +5079,7 @@
     </Compile>
     <Compile Include="Series\AvcpEditor.aspx.vb">
       <DependentUpon>AvcpEditor.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Series\AvcpImport.aspx.designer.vb">
       <DependentUpon>AvcpImport.aspx</DependentUpon>
@@ -4652,7 +5107,7 @@
     </Compile>
     <Compile Include="Series\Item.aspx.vb">
       <DependentUpon>Item.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Series\ItemCancel.aspx.designer.vb">
       <DependentUpon>ItemCancel.aspx</DependentUpon>
@@ -4701,7 +5156,7 @@
     </Compile>
     <Compile Include="Tblt\TbltContenitoriGesProprieta.aspx.vb">
       <DependentUpon>TbltContenitoriGesProprieta.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Tblt\TbltCreaFascicolo.aspx.designer.vb">
       <DependentUpon>TbltCreaFascicolo.aspx</DependentUpon>
@@ -4841,7 +5296,7 @@
     </Compile>
     <Compile Include="UDSDesigner\Designer.aspx.vb">
       <DependentUpon>Designer.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UDSDesigner\DesignerResults.aspx.designer.vb">
       <DependentUpon>DesignerResults.aspx</DependentUpon>
@@ -4855,7 +5310,7 @@
     </Compile>
     <Compile Include="UDSDesigner\DesignerService.aspx.vb">
       <DependentUpon>DesignerService.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UDSDesigner\DownloadXml.aspx.designer.vb">
       <DependentUpon>DownloadXml.aspx</DependentUpon>
@@ -4925,7 +5380,7 @@
     </Compile>
     <Compile Include="UserControl\CommonExcelImportContact.aspx.vb">
       <DependentUpon>CommonExcelImportContact.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Prot\ProtHighlightUser.aspx.designer.vb">
       <DependentUpon>ProtHighlightUser.aspx</DependentUpon>
@@ -5061,7 +5516,7 @@
     </Compile>
     <Compile Include="UserControl\uscSearchADUser.ascx.vb">
       <DependentUpon>uscSearchADUser.ascx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Tblt\TbltSecurityGroupWizard.aspx.designer.vb">
       <DependentUpon>TbltSecurityGroupWizard.aspx</DependentUpon>
@@ -5130,13 +5585,6 @@
       <DependentUpon>UserDiarioUnificato.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
-    <Compile Include="User\UserFascicle.aspx.designer.vb">
-      <DependentUpon>UserFascicle.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="User\UserFascicle.aspx.vb">
-      <DependentUpon>UserFascicle.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="User\UserAuthorizedDocuments.aspx.designer.vb">
       <DependentUpon>UserAuthorizedDocuments.aspx</DependentUpon>
     </Compile>
@@ -5156,7 +5604,7 @@
     </Compile>
     <Compile Include="Utlt\UtltADProperties.aspx.vb">
       <DependentUpon>UtltADProperties.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Utlt\UtltDocumentSeries.aspx.designer.vb">
       <DependentUpon>UtltDocumentSeries.aspx</DependentUpon>
@@ -5227,7 +5675,7 @@
     </Compile>
     <Compile Include="Viewers\FileResolutionViewer.aspx.vb">
       <DependentUpon>FileResolutionViewer.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Viewers\Handlers\BiblosDocumentHandler.ashx.vb">
       <DependentUpon>BiblosDocumentHandler.ashx</DependentUpon>
@@ -5419,14 +5867,14 @@
     </Compile>
     <Compile Include="Prot\ProtMultiAutorizza.aspx.vb">
       <DependentUpon>ProtMultiAutorizza.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Prot\ProtParerDetail.aspx.designer.vb">
       <DependentUpon>ProtParerDetail.aspx</DependentUpon>
     </Compile>
     <Compile Include="Prot\ProtParerDetail.aspx.vb">
       <DependentUpon>ProtParerDetail.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Prot\ProtPecSend.aspx.designer.vb">
       <DependentUpon>ProtPecSend.aspx</DependentUpon>
@@ -5641,7 +6089,7 @@
     </Compile>
     <Compile Include="Resl\ReslPecOc.aspx.vb">
       <DependentUpon>ReslPecOc.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Resl\ReslPecOcAdd.aspx.designer.vb">
       <DependentUpon>ReslPecOcAdd.aspx</DependentUpon>
@@ -6028,12 +6476,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Fasc\FascInserimento.aspx.resx">
       <DependentUpon>FascInserimento.aspx.vb</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Fasc\FascRicerca.aspx.resx">
       <DependentUpon>FascRicerca.aspx.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Content Include="install\sql updates\9.06\UltimaPagina.rdlc" />
     <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>PublicVbMyResourcesResXFileCodeGenerator</Generator>
@@ -6047,10 +6495,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Prot\ProtModifica.aspx.resx">
       <DependentUpon>ProtModifica.aspx.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Prot\ProtModificaOggetti.aspx.resx">
-      <DependentUpon>ProtModificaOggetti.aspx.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Prot\ProtNoteGes.aspx.resx">
@@ -6193,7 +6637,6 @@
     <Content Include="Docm\Images\DocmAnnulla.gif" />
     <None Include="Comm\Report\ProtJournalPrint.rdlc" />
     <Content Include="Docm\Images\DocmArchivia.gif" />
-    <Content Include="Fasc\FascInserimento.aspx" />
     <Content Include="Fasc\FascModifica.aspx" />
     <Content Include="Fasc\FascRicerca.aspx" />
     <Content Include="Fasc\FascRisultati.aspx" />
@@ -6341,13 +6784,6 @@
     <Compile Include="Code\FascBasePage.vb">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Fasc\FascInserimento.aspx.designer.vb">
-      <DependentUpon>FascInserimento.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Fasc\FascInserimento.aspx.vb">
-      <DependentUpon>FascInserimento.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="Fasc\FascModifica.aspx.designer.vb">
       <DependentUpon>FascModifica.aspx</DependentUpon>
     </Compile>
@@ -6425,13 +6861,6 @@
     <Compile Include="Prot\ProtInterop.aspx.designer.vb">
       <DependentUpon>ProtInterop.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Prot\ProtModificaOggettiImport.aspx.designer.vb">
-      <DependentUpon>ProtModificaOggettiImport.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Prot\ProtModificaOggettiImport.aspx.vb">
-      <DependentUpon>ProtModificaOggettiImport.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="Prot\Print\ProtConcoursePrint.vb" />
     <Compile Include="Prot\Print\ProtJournalPrint.vb" />
     <Compile Include="Prot\ProtAnnulla.aspx.designer.vb">
@@ -6488,13 +6917,6 @@
     </Compile>
     <Compile Include="Prot\ProtLog.aspx.vb">
       <DependentUpon>ProtLog.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Prot\ProtModificaOggetti.aspx.designer.vb">
-      <DependentUpon>ProtModificaOggetti.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Prot\ProtModificaOggetti.aspx.vb">
-      <DependentUpon>ProtModificaOggetti.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Prot\ProtRegistroPrint.aspx.designer.vb">
@@ -6599,7 +7021,7 @@
     </Compile>
     <Compile Include="Resl\ReslFirmaUltimaPagina.aspx.vb">
       <DependentUpon>ReslFirmaUltimaPagina.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Resl\ReslFlussoElenco.aspx.designer.vb">
       <DependentUpon>ReslFlussoElenco.aspx</DependentUpon>
@@ -7048,13 +7470,6 @@
       <DependentUpon>uscContatti.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="UserControl\SelCategoryWindow.aspx.designer.vb">
-      <DependentUpon>SelCategoryWindow.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="UserControl\SelCategoryWindow.aspx.vb">
-      <DependentUpon>SelCategoryWindow.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="UserControl\uscClassificatore.ascx.designer.vb">
       <DependentUpon>uscClassificatore.ascx</DependentUpon>
     </Compile>
@@ -7451,7 +7866,6 @@
     <Content Include="PEC\PECAttachToDocumentUnit.aspx" />
     <Content Include="Prot\ProtPecEmailAddress.aspx" />
     <Content Include="Prot\ProtInterop.aspx" />
-    <Content Include="Prot\ProtModificaOggettiImport.aspx" />
     <Content Include="Prot\Images\Mail16_IU.gif" />
     <Content Include="Prot\Images\Mail32_IU.gif" />
     <Content Include="Prot\ProtAnnulla.aspx" />
@@ -7472,7 +7886,6 @@
     <Content Include="Prot\ProtJournal.aspx" />
     <Content Include="Prot\ProtLog.aspx" />
     <Content Include="Prot\ProtModifica.aspx" />
-    <Content Include="Prot\ProtModificaOggetti.aspx" />
     <Content Include="Prot\ProtNoteGes.aspx" />
     <Content Include="Prot\ProtPackage.aspx" />
     <Content Include="Prot\ProtPackageGes.aspx" />
@@ -7605,7 +8018,6 @@
     <Content Include="UserControl\SelContactWindow.aspx" />
     <Content Include="UserControl\uscContainerExtGes.ascx" />
     <Content Include="UserControl\uscContatti.ascx" />
-    <Content Include="UserControl\SelCategoryWindow.aspx" />
     <Content Include="UserControl\uscClassificatore.ascx" />
     <Content Include="UserControl\uscContattiGes.ascx" />
     <Content Include="UserControl\uscContattiSel.ascx" />
@@ -7924,7 +8336,6 @@
     <TypeScriptCompile Include="Dossiers\DossierBase.ts" />
     <TypeScriptCompile Include="Fasc\FascBase.ts" />
     <TypeScriptCompile Include="Fasc\FascicleLink.ts" />
-    <TypeScriptCompile Include="Fasc\FascInserimento.ts" />
     <TypeScriptCompile Include="App\Models\Fascicles\FascicleModel.ts" />
     <TypeScriptCompile Include="App\Services\Fascicles\FascicleService.ts" />
     <TypeScriptCompile Include="Fasc\FascModifica.ts" />
@@ -8049,7 +8460,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="TransformConfigFiles" AfterTargets="AfterBuild" Condition="'$(TransformConfigFiles)'=='true'">
     <ItemGroup>
       <DeleteAfterBuild Include="$(WebProjectOutputDir)\Web.*.config" />
@@ -8057,10 +8467,11 @@
     <TransformXml Source="Web.config" Transform="$(ProjectConfigTransformFileName)" Destination="$(WebProjectOutputDir)\Web.config" />
     <Delete Files="@(DeleteAfterBuild)" />
   </Target>
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
   </Target>
 </Project>

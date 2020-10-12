@@ -1,4 +1,4 @@
-define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConfigurationHelper", "App/Services/Fascicles/FascicleDocumentUnitService", "App/Services/UDS/UDSDocumentUnitService", "App/DTOs/ExceptionDTO", "App/Services/Protocols/ProtocolLinkService", "App/Services/Protocols/ProtocolService", "App/Services/Messages/MessageService", "App/Services/DocumentArchives/DocumentSeriesItemService", "App/Models/Messages/MessageContactPosition", "App/Services/PECMails/PECMailService", "App/Services/DocumentArchives/DocumentSeriesItemLinksService", "App/Services/Resolutions/ResolutionService", "App/Services/Resolutions/ResolutionDocumentSeriesItemService", "App/Services/Fascicles/FascicleLinkService", "App/Services/Fascicles/FascicleService", "App/Services/Dossiers/DossierService", "App/Models/Commons/DocumentUnitReferenceTypeEnum"], function (require, exports, EnumHelper, ServiceConfigurationHelper, FascicleDocumentUnitService, UDSDocumentUnitService, ExceptionDTO, ProtocolLinkService, ProtocolService, MessageService, DocumentSeriesItemService, MessageContactPosition, PECMailService, DocumentSeriesItemLinksService, ResolutionService, ResolutionDocumentSeriesItemService, FascicleLinkService, FascicleService, DossierService, DocumentUnitReferenceTypeEnum) {
+define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConfigurationHelper", "App/Services/Fascicles/FascicleDocumentUnitService", "App/Services/UDS/UDSDocumentUnitService", "App/DTOs/ExceptionDTO", "App/Services/Protocols/ProtocolLinkService", "App/Services/Protocols/ProtocolService", "App/Services/Messages/MessageService", "App/Services/DocumentArchives/DocumentSeriesItemService", "App/Models/Messages/MessageContactPosition", "App/Services/PECMails/PECMailService", "App/Services/DocumentArchives/DocumentSeriesItemLinksService", "App/Services/Resolutions/ResolutionService", "App/Services/Resolutions/ResolutionDocumentSeriesItemService", "App/Services/Fascicles/FascicleLinkService", "App/Services/Fascicles/FascicleService", "App/Services/Dossiers/DossierFolderService", "App/Services/Workflows/WorkflowActivityService", "App/Models/Commons/DocumentUnitReferenceTypeEnum", "App/Services/PosteWeb/TNoticeService", "App/Models/PosteWeb/StatusColor"], function (require, exports, EnumHelper, ServiceConfigurationHelper, FascicleDocumentUnitService, UDSDocumentUnitService, ExceptionDTO, ProtocolLinkService, ProtocolService, MessageService, DocumentSeriesItemService, MessageContactPosition, PECMailService, DocumentSeriesItemLinksService, ResolutionService, ResolutionDocumentSeriesItemService, FascicleLinkService, FascicleService, DossierFolderService, WorkflowActivityService, DocumentUnitReferenceTypeEnum, TNoticeService, StatusColor) {
     var uscDocumentUnitReferences = /** @class */ (function () {
         function uscDocumentUnitReferences(serviceConfigurations) {
             var _this = this;
@@ -8,23 +8,28 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                 node.toggle();
                 var parentNodeAttribute = args.get_node().get_attributes().getAttribute("ParentNodeType");
                 var loadIndex = args.get_node().get_index();
-                var node = args.get_node();
+                node = args.get_node();
                 if (node.get_level() != 0) {
                     var parentNode = node.get_parent();
                     if (parentNode.get_text().startsWith("Messaggi")) {
-                        var nodeValue = args.get_node().get_value();
-                        var url = "../Prot/MessageDetails.aspx?MessageId=" + nodeValue + "&DocumentUnitId=" + _this.documentUnitId;
+                        var nodeValue_1 = args.get_node().get_value();
+                        var url = "../Prot/MessageDetails.aspx?MessageId=" + nodeValue_1 + "&DocumentUnitId=" + _this.documentUnitId;
                         _this.openWindow(url, "searchMessages", 750, 300);
                     }
                     if (parentNode.get_text().startsWith("PEC ingresso")) {
-                        var nodeValue = args.get_node().get_value();
-                        var url = "../Prot/PECDetails.aspx?PECEntityId=" + nodeValue;
+                        var nodeValue_2 = args.get_node().get_value();
+                        var url = "../Prot/PECDetails.aspx?PECEntityId=" + nodeValue_2;
                         _this.openWindow(url, "searchPECDetails", 750, 300);
                     }
                     if (parentNode.get_text().startsWith("PEC uscita")) {
-                        var nodeValue = args.get_node().get_value();
-                        var url = "../Prot/PECDetails.aspx?PECEntityId=" + nodeValue + "&Direction='Outgoing'";
+                        var nodeValue_3 = args.get_node().get_value();
+                        var url = "../Prot/PECDetails.aspx?PECEntityId=" + nodeValue_3 + "&Direction='Outgoing'";
                         _this.openWindow(url, "searchPECDetails", 750, 300);
+                    }
+                    if (parentNode.get_text().startsWith("TNotice")) {
+                        var nodeValue = args.get_node().get_value();
+                        var url = "../Prot/TNoticeDetails.aspx?RequestId=" + nodeValue;
+                        _this.openWindow(url, "searchTNoticeDetails", 750, 300);
                     }
                 }
                 if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.FascicleProtocol.toString()) {
@@ -33,17 +38,23 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                 if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.Fascicle.toString()) {
                     _this.loadFascicleData(_this.documentUnitId, loadIndex);
                 }
-                if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.SerieRepertorio.toString()) {
+                if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.Dossier.toString()) {
                     _this.loadDossiersData(_this.documentUnitId, loadIndex);
+                }
+                if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.ActiveWorkflows.toString()) {
+                    _this.loadActiveWorkflowActivitiesData(_this.documentUnitId, loadIndex);
+                }
+                if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.DoneWorkflows.toString()) {
+                    _this.loadDoneWorkflowActivitiesData(_this.documentUnitId, loadIndex);
                 }
                 if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.Atti.toString()) {
                     _this.loadDocumentSeriesItemLinkData(_this.documentUnitId, loadIndex);
                 }
                 if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.PECIngresso.toString()) {
-                    _this.loadIncomingPECMailData(Number(_this.documentUnitYear), Number(_this.documentUnitNumber), "'Incoming'", loadIndex);
+                    _this.loadIncomingPECMailData(_this.documentUnitId, "'Incoming'", loadIndex);
                 }
                 if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.PECUscita.toString()) {
-                    _this.loadOutgoingPECMailData(Number(_this.documentUnitYear), Number(_this.documentUnitNumber), "'Outgoing'", loadIndex);
+                    _this.loadOutgoingPECMailData(_this.documentUnitId, "'Outgoing'", loadIndex);
                 }
                 if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.Archive.toString()) {
                     _this.loadUDSData(_this.documentUnitId, loadIndex);
@@ -75,6 +86,27 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                 if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.SeriesProtocol.toString() && _this.showResolutionDocumentSeriesLinks.toLowerCase() == "false") {
                     _this.loadDocumentSerieData(_this.documentUnitId, loadIndex);
                 }
+                if (parentNodeAttribute == DocumentUnitReferenceTypeEnum.TNotice.toString()) {
+                    _this.loadTNoticeData(_this.documentUnitId, loadIndex);
+                }
+            };
+            /**
+        * Evento al click del pulsante per la espandere o comprimere il sommario
+        */
+            this.btnExpandDocumentUnitReference_OnClick = function (sender, args) {
+                args.set_cancel(true);
+                if (_this._isDocumentUnitReferenceOpen) {
+                    _this._isDocumentUnitReferenceOpen = false;
+                    _this._documentUnitReferenceContent.hide();
+                    _this._btnExpandDocumentUnitReference.removeCssClass("dsw-arrow-down");
+                    _this._btnExpandDocumentUnitReference.addCssClass("dsw-arrow-up");
+                }
+                else {
+                    _this._isDocumentUnitReferenceOpen = true;
+                    _this._documentUnitReferenceContent.show();
+                    _this._btnExpandDocumentUnitReference.removeCssClass("dsw-arrow-up");
+                    _this._btnExpandDocumentUnitReference.addCssClass("dsw-arrow-down");
+                }
             };
             this._serviceConfigurations = serviceConfigurations;
             this._enumHelper = new EnumHelper();
@@ -83,6 +115,11 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         }
         uscDocumentUnitReferences.prototype.initialize = function () {
             var _this = this;
+            this._btnExpandDocumentUnitReference = $find(this.btnExpandDocumentUnitReferenceId);
+            this._btnExpandDocumentUnitReference.addCssClass("dsw-arrow-down");
+            this._btnExpandDocumentUnitReference.add_clicking(this.btnExpandDocumentUnitReference_OnClick);
+            this._documentUnitReferenceContent = $("#".concat(this.documentUnitReferenceInfoId));
+            this._documentUnitReferenceContent.show();
             var serviceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "FascicleDocumentUnit");
             this._fascService = new FascicleDocumentUnitService(serviceConfiguration);
             var udsServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "UDSDocumentUnit");
@@ -107,14 +144,27 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
             this._fascicleLinksService = new FascicleLinkService(fascicleLinksServiceConfiguration);
             var fascicleServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Fascicle");
             this._fascicleService = new FascicleService(fascicleServiceConfiguration);
-            var dossierServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Dossier");
-            this._dossierService = new DossierService(dossierServiceConfiguration);
+            var dossierFolderServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DossierFolder");
+            this._dossierFolderService = new DossierFolderService(dossierFolderServiceConfiguration);
+            var workflowActivityServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowActivity");
+            this._workflowActivityService = new WorkflowActivityService(workflowActivityServiceConfiguration);
+            var polRequestConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "POLRequest");
+            this._tnoticeService = new TNoticeService(polRequestConfiguration);
             this._DocumentRadTreeId = $find(this.radTreeDocumentsId);
             if (this.showIncomingPECMailLinks.toLowerCase() == "true") {
-                this.evaluateNodePropertyFactory("PEC ingresso", DocumentUnitReferenceTypeEnum.PECIngresso, function () { return _this.loadIncomingPECMailCount(Number(_this.documentUnitYear), Number(_this.documentUnitNumber), "'Incoming'", _this.index); });
+                this.evaluateNodePropertyFactory("PEC ingresso", DocumentUnitReferenceTypeEnum.PECIngresso, function () { return _this.loadIncomingPECMailCount(_this.documentUnitId, "'Incoming'", _this.index); });
             }
             if (this.showOutgoingPECMailLinks.toLowerCase() == "true") {
-                this.evaluateNodePropertyFactory("PEC uscita", DocumentUnitReferenceTypeEnum.PECUscita, function () { return _this.loadOutgoingPECMailCount(Number(_this.documentUnitYear), Number(_this.documentUnitNumber), "'Outgoing'", _this.index); });
+                this.evaluateNodePropertyFactory("PEC uscita", DocumentUnitReferenceTypeEnum.PECUscita, function () { return _this.loadOutgoingPECMailCount(_this.documentUnitId, "'Outgoing'", _this.index); });
+            }
+            if (this.showTNotice.toLocaleLowerCase() == "true") {
+                this.evaluateNodePropertyFactory("TNotice", DocumentUnitReferenceTypeEnum.TNotice, function () { return _this.loadTNoticeCount(_this.documentUnitId, _this.index); });
+            }
+            if (this.showFascicleLinks.toLowerCase() == "true") {
+                this.evaluateNodePropertyFactory("Fascicoli", DocumentUnitReferenceTypeEnum.Fascicle, function () { return _this.loadFascicleCount(_this.documentUnitId, _this.index); });
+            }
+            if (this.showFasciclesLinks.toLocaleLowerCase() == "true") {
+                this.evaluateNodePropertyFactory("Fascicoli", DocumentUnitReferenceTypeEnum.FascicleProtocol, function () { return _this.loadFasciclesCount(_this.documentUnitId, _this.index); });
             }
             if (this.showArchiveRelationLinks.toLowerCase() == "true") {
                 this.evaluateNodePropertyFactory("Archivi", DocumentUnitReferenceTypeEnum.ArchiveProtocol, function () { return _this.loadProtocolUDSCount(_this.documentUnitId, _this.index); });
@@ -149,23 +199,23 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
             if (this.showDocumentSeriesResolutionsLinks.toLocaleLowerCase() == "true") {
                 this.evaluateNodePropertyFactory("Atti", DocumentUnitReferenceTypeEnum.Atti, function () { return _this.loadDocumentSeriesItemLinksCount(_this.documentUnitId, _this.index); });
             }
-            if (this.showFascicleLinks.toLowerCase() == "true") {
-                this.evaluateNodePropertyFactory("Fascicoli", DocumentUnitReferenceTypeEnum.Fascicle, function () { return _this.loadFascicleCount(_this.documentUnitId, _this.index); });
-            }
-            if (this.showFasciclesLinks.toLocaleLowerCase() == "true") {
-                this.evaluateNodePropertyFactory("Fascicolo", DocumentUnitReferenceTypeEnum.FascicleProtocol, function () { return _this.loadFasciclesCount(_this.documentUnitId, _this.index); });
-            }
             if (this.showDossierLinks.toLocaleLowerCase() == "true") {
-                this.evaluateNodePropertyFactory("Repertorio/Volume", DocumentUnitReferenceTypeEnum.SerieRepertorio, function () { return _this.loadDossierCount(_this.documentUnitId, _this.index); });
+                this.evaluateNodePropertyFactory("Dossiers", DocumentUnitReferenceTypeEnum.Dossier, function () { return _this.loadDossierCount(_this.documentUnitId, _this.index); });
+            }
+            if (this.showActiveWorkflowActivities.toLocaleLowerCase() == "true") {
+                this.evaluateNodePropertyFactory("Flussi di lavoro attivi", DocumentUnitReferenceTypeEnum.ActiveWorkflows, function () { return _this.loadActiveWorkflowActivitiesCount(_this.documentUnitId, _this.index); });
+            }
+            if (this.showDoneWorkflowActivities.toLocaleLowerCase() == "true") {
+                this.evaluateNodePropertyFactory("Flussi di lavoro completati", DocumentUnitReferenceTypeEnum.DoneWorkflows, function () { return _this.loadDoneWorkflowActivitiesCount(_this.documentUnitId, _this.index); });
             }
             this._DocumentRadTreeId.add_nodeClicked(this.generalOnNodeExpanding);
         };
         uscDocumentUnitReferences.prototype.evaluateNodePropertyFactory = function (nodeText, value, callback) {
-            var serieNode = new Telerik.Web.UI.RadTreeNode();
-            serieNode.set_text(nodeText);
-            serieNode.set_cssClass("font_node");
-            serieNode.get_attributes().setAttribute("ParentNodeType", value);
-            this._DocumentRadTreeId.get_nodes().add(serieNode);
+            var node = new Telerik.Web.UI.RadTreeNode();
+            node.set_text(nodeText);
+            node.set_cssClass("font_node");
+            node.get_attributes().setAttribute("ParentNodeType", value);
+            this._DocumentRadTreeId.get_nodes().add(node);
             callback();
             this.index++;
         };
@@ -192,7 +242,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                 var node = new Telerik.Web.UI.RadTreeNode();
                 node.set_text(documentSeriesItemProtocolName);
                 node.set_value(protocolDocumentSeriesItems[i].UniqueId);
-                node.set_navigateUrl("../Prot/ProtVisualizza.aspx?Year=" + protocolDocumentSeriesItems[i].Year.toString() + "&Number=" + protocolDocumentSeriesItems[i].Number.toString() + "&Type=Prot");
+                node.set_navigateUrl("../Prot/ProtVisualizza.aspx?UniqueId=" + protocolDocumentSeriesItems[i].UniqueId + "&Type=Prot");
                 var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
                 parentNode.get_nodes().add(node);
                 this._DocumentRadTreeId.commitChanges();
@@ -243,10 +293,10 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
             parentNode.get_nodes().add(node);
             this._DocumentRadTreeId.commitChanges();
         };
-        uscDocumentUnitReferences.prototype.loadIncomingPECMailData = function (year, number, pecMailDirection, position) {
+        uscDocumentUnitReferences.prototype.loadIncomingPECMailData = function (uniqueId, pecMailDirection, position) {
             var _this = this;
             if (!this.pecMailIncomingAndOutgoing || this.pecMailIncomingAndOutgoing.length === 0) {
-                this._pecMailService.getIncomingPECMail(year, number, pecMailDirection, function (data) {
+                this._pecMailService.getIncomingPECMail(uniqueId, pecMailDirection, function (data) {
                     if (!data)
                         return;
                     _this.pecMailIncomingAndOutgoing = data;
@@ -257,10 +307,10 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                 this.renderIncomingPECMailNodes(this.pecMailIncomingAndOutgoing, position);
             }
         };
-        uscDocumentUnitReferences.prototype.loadOutgoingPECMailData = function (year, number, direction, position) {
+        uscDocumentUnitReferences.prototype.loadOutgoingPECMailData = function (uniqueId, direction, position) {
             var _this = this;
             if (!this.pecMailOutgoings) {
-                this._pecMailService.getOutgoingPECMail(year, number, direction, function (data) {
+                this._pecMailService.getOutgoingPECMail(uniqueId, direction, function (data) {
                     if (!data)
                         return;
                     _this.pecMailOutgoings = data;
@@ -273,16 +323,16 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.loadFascicleData = function (uniqueId, position) {
             var _this = this;
-            if (!this.fascicleDocumentList || this.fascicleDocumentList.length === 0) {
-                this._fascService.getFascicleListById(uniqueId, function (data) {
+            if (!this.fascicleDocumentUnitList || this.fascicleDocumentUnitList.length === 0) {
+                this._fascicleService.getAuthorizedFasciclesFromDocumentUnit(uniqueId, function (data) {
                     if (!data)
                         return;
-                    _this.fascicleDocumentList = data;
-                    _this.renderFascicleNodes(_this.fascicleDocumentList, position);
+                    _this.fascicleDocumentUnitList = data;
+                    _this.renderFascicleNodes(_this.fascicleDocumentUnitList, position);
                 });
             }
             else {
-                this.renderFascicleNodes(this.fascicleDocumentList, position);
+                this.renderFascicleNodes(this.fascicleDocumentUnitList, position);
             }
         };
         uscDocumentUnitReferences.prototype.loadFasciclesData = function (uniqueId, position) {
@@ -301,16 +351,44 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.loadDossiersData = function (uniqueId, position) {
             var _this = this;
-            if (!this.fascicleList || this.fascicleList.length === 0) {
-                this._fascicleService.getDossiersById(uniqueId, function (data) {
+            if (!this.dossierFolderList || this.dossierFolderList.length === 0) {
+                this._dossierFolderService.getByFascicleId(uniqueId, function (data) {
                     if (!data)
                         return;
-                    _this.fascicleList = data;
-                    _this.renderDossiersNodes(_this.fascicleList, position);
+                    _this.dossierFolderList = data;
+                    _this.renderDossiersNodes(_this.dossierFolderList, position);
                 });
             }
             else {
-                this.renderDossiersNodes(this.fascicleList, position);
+                this.renderDossiersNodes(this.dossierFolderList, position);
+            }
+        };
+        uscDocumentUnitReferences.prototype.loadActiveWorkflowActivitiesData = function (uniqueId, position) {
+            var _this = this;
+            if (!this.activeWorkflowActivityList || this.activeWorkflowActivityList.length === 0) {
+                this._workflowActivityService.getActiveByReferenceDocumentUnitId(uniqueId, function (data) {
+                    if (!data)
+                        return;
+                    _this.activeWorkflowActivityList = data;
+                    _this.renderWorkflowActivityNodes(true, true, _this.activeWorkflowActivityList, position);
+                });
+            }
+            else {
+                this.renderWorkflowActivityNodes(true, true, this.activeWorkflowActivityList, position);
+            }
+        };
+        uscDocumentUnitReferences.prototype.loadDoneWorkflowActivitiesData = function (uniqueId, position) {
+            var _this = this;
+            if (!this.doneWorkflowActivityList || this.doneWorkflowActivityList.length === 0) {
+                this._workflowActivityService.getByStatusReferenceDocumentUnitId('Done', uniqueId, function (data) {
+                    if (!data)
+                        return;
+                    _this.doneWorkflowActivityList = data;
+                    _this.renderWorkflowActivityNodes(true, false, _this.doneWorkflowActivityList, position);
+                });
+            }
+            else {
+                this.renderWorkflowActivityNodes(true, false, this.doneWorkflowActivityList, position);
             }
         };
         uscDocumentUnitReferences.prototype.loadDocumentSerieData = function (uniqueId, position) {
@@ -426,6 +504,21 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                 this.renderUDSNodes(this.udsDocumentList, position);
             }
         };
+        uscDocumentUnitReferences.prototype.loadTNoticeData = function (idDocumentUnit, position) {
+            var _this = this;
+            if (!this.tNoticeSummaryList || this.tNoticeSummaryList.length === 0) {
+                this._tnoticeService.getRequestsSummariesByDocumentId(idDocumentUnit, function (data) {
+                    if (!data) {
+                        return;
+                    }
+                    _this.tNoticeSummaryList = data;
+                    _this.renderTNoticeSummary(data, position);
+                });
+            }
+            else {
+                this.renderTNoticeSummary(this.tNoticeSummaryList, position);
+            }
+        };
         uscDocumentUnitReferences.prototype.loadDocumentSeriesMessageCount = function (uniqueId, position) {
             var _this = this;
             this._messageService.countDocumentSeriesItemById(uniqueId, function (data) {
@@ -449,7 +542,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.loadFascicleCount = function (uniqueId, position) {
             var _this = this;
-            this._fascService.countFascicleById(uniqueId, function (data) {
+            this._fascicleService.countAuthorizedFasciclesFromDocumentUnit(uniqueId, function (data) {
                 var parentNode = _this._DocumentRadTreeId.get_nodes().getNode(position);
                 parentNode.set_text("Fascicoli (" + data + ")");
             });
@@ -497,16 +590,16 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                 parentNode.set_text(nodeText + " (" + data + ")");
             });
         };
-        uscDocumentUnitReferences.prototype.loadIncomingPECMailCount = function (year, number, direction, position) {
+        uscDocumentUnitReferences.prototype.loadIncomingPECMailCount = function (uniqueId, direction, position) {
             var _this = this;
-            this._pecMailService.countIncomingPECMail(year, number, direction, function (data) {
+            this._pecMailService.countIncomingPECMail(uniqueId, direction, function (data) {
                 var parentNode = _this._DocumentRadTreeId.get_nodes().getNode(position);
                 parentNode.set_text("PEC ingresso (" + data + ")");
             });
         };
-        uscDocumentUnitReferences.prototype.loadOutgoingPECMailCount = function (year, number, direction, position) {
+        uscDocumentUnitReferences.prototype.loadOutgoingPECMailCount = function (uniqueId, direction, position) {
             var _this = this;
-            this._pecMailService.countOutgoingPECMail(year, number, direction, function (data) {
+            this._pecMailService.countOutgoingPECMail(uniqueId, direction, function (data) {
                 var parentNode = _this._DocumentRadTreeId.get_nodes().getNode(position);
                 parentNode.set_text("PEC uscita (" + data + ")");
             });
@@ -535,23 +628,72 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.loadDossierCount = function (uniqueId, position) {
             var _this = this;
-            this._dossierService.countDossiersById(uniqueId, function (data) {
+            this._dossierFolderService.countByFascicleId(uniqueId, function (data) {
                 var parentNode = _this._DocumentRadTreeId.get_nodes().getNode(position);
-                parentNode.set_text("Repertorio/Volume (" + data + ")");
+                parentNode.set_text("Dossiers (" + data + ")");
             });
+        };
+        uscDocumentUnitReferences.prototype.loadActiveWorkflowActivitiesCount = function (uniqueId, position) {
+            var _this = this;
+            this._workflowActivityService.countActiveByReferenceDocumentUnitId(uniqueId, function (data) {
+                var parentNode = _this._DocumentRadTreeId.get_nodes().getNode(position);
+                parentNode.set_text("Flussi di lavoro attivi (" + data + ")");
+            });
+        };
+        uscDocumentUnitReferences.prototype.loadDoneWorkflowActivitiesCount = function (uniqueId, position) {
+            var _this = this;
+            this._workflowActivityService.countByStatusReferenceDocumentUnitId('Done', uniqueId, function (data) {
+                var parentNode = _this._DocumentRadTreeId.get_nodes().getNode(position);
+                parentNode.set_text("Flussi di lavoro conclusi (" + data + ")");
+            });
+        };
+        uscDocumentUnitReferences.prototype.loadTNoticeCount = function (idDocumentUnit, position) {
+            var _this = this;
+            this._tnoticeService.countRequestsSummariesByDocumentId(idDocumentUnit, function (data) {
+                var parentNode = _this._DocumentRadTreeId.get_nodes().getNode(position);
+                parentNode.set_text("TNotice (" + data + ")");
+            });
+        };
+        uscDocumentUnitReferences.prototype.renderTNoticeSummary = function (currentItems, position) {
+            var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+            parentNode.get_nodes().clear();
+            for (var _i = 0, currentItems_1 = currentItems; _i < currentItems_1.length; _i++) {
+                var summary = currentItems_1[_i];
+                var node = new Telerik.Web.UI.RadTreeNode();
+                var displayText = summary.Status;
+                if (summary.RegistrationDate) {
+                    displayText = displayText + " - " + summary.RegistrationDate;
+                }
+                node.set_text(displayText);
+                node.set_value(summary.RequestUniqueId);
+                if (summary.DisplayColor == StatusColor.Blue) {
+                    node.set_imageUrl("../Comm/Images/pec-accettazione.gif");
+                }
+                if (summary.DisplayColor == StatusColor.Yellow) {
+                    node.set_imageUrl("../Comm/Images/pec-preavviso-errore-consegna.gif");
+                }
+                if (summary.DisplayColor == StatusColor.Green) {
+                    node.set_imageUrl("../Comm/Images/pec-avvenuta-consegna.gif");
+                }
+                if (summary.DisplayColor == StatusColor.Red) {
+                    node.set_imageUrl("../Comm/Images/pec-errore-consegna.gif");
+                }
+                parentNode.get_nodes().add(node);
+            }
+            this._DocumentRadTreeId.commitChanges();
         };
         uscDocumentUnitReferences.prototype.renderResolutionDocumentSeriesItemNode = function (currentItems, position) {
             this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-            for (var _i = 0, currentItems_1 = currentItems; _i < currentItems_1.length; _i++) {
-                var currentItem = currentItems_1[_i];
+            for (var _i = 0, currentItems_2 = currentItems; _i < currentItems_2.length; _i++) {
+                var currentItem = currentItems_2[_i];
                 var documentSeriesItemName = currentItem.DocumentSeriesItem.DocumentSeries.Name + " " + currentItem.DocumentSeriesItem.Year + " " +
                     (this.pad(currentItem.DocumentSeriesItem.Number, 7) + " del " + moment(currentItem.DocumentSeriesItem.RegistrationDate).format("DD/MM/YYYY") + " ") +
                     ((currentItem.DocumentSeriesItem.PublishingDate !== null ? "Pubblicata il: " + moment(currentItem.DocumentSeriesItem.PublishingDate).format("DD/MM/YYYY") : "") + " ") +
-                    ("" + (currentItem.DocumentSeriesItem.RetireDate !== null ? "Ritirato il: " + moment(currentItem.DocumentSeriesItem.PublishingDate).format("DD/MM/YYYY") : ""));
+                    ("" + (currentItem.DocumentSeriesItem.RetireDate !== null ? "Ritirato il: " + moment(currentItem.DocumentSeriesItem.RetireDate).format("DD/MM/YYYY") : ""));
                 var node = new Telerik.Web.UI.RadTreeNode();
                 node.set_text(documentSeriesItemName);
                 node.set_value(currentItems[0].EntityId);
-                node.set_navigateUrl("../Series/Item.aspx?Type=Series&Action=2&IdDocumentSeriesItem=" + currentItems[0].EntityId);
+                node.set_navigateUrl("../Series/Item.aspx?Type=Series&Action=2&IdDocumentSeriesItem=" + currentItem.DocumentSeriesItem.EntityId);
                 var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
                 parentNode.get_nodes().add(node);
                 this._DocumentRadTreeId.commitChanges();
@@ -559,14 +701,13 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.renderIncomingPECMailNodes = function (currentItems, position) {
             this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-            for (var _i = 0, currentItems_2 = currentItems; _i < currentItems_2.length; _i++) {
-                var pecMails = currentItems_2[_i];
-                var regex = /\S+[a-z0-9]@[a-z0-9\.]+/img;
-                var recipients = pecMails.MailRecipients.replace(/[<>]/g, '').match(regex).join(';');
+            for (var _i = 0, currentItems_3 = currentItems; _i < currentItems_3.length; _i++) {
+                var pecMails = currentItems_3[_i];
+                var recipients = pecMails.MailRecipients;
                 var senderAndRecipient = pecMails.MailSenders + " " + recipients;
                 var result = "";
                 if (pecMails.MailDate) {
-                    result = senderAndRecipient + " - " + moment(pecMails.MailDate).format("DD/MM/YYYY, hh:mm:ss");
+                    result = senderAndRecipient + " - " + moment(pecMails.MailDate).format("DD/MM/YYYY, HH:mm:ss");
                 }
                 else {
                     result = senderAndRecipient;
@@ -598,14 +739,13 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.renderOutgoingPECMailNodes = function (currentItems, position) {
             this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-            for (var _i = 0, currentItems_3 = currentItems; _i < currentItems_3.length; _i++) {
-                var outGoingPECMails = currentItems_3[_i];
-                var regex = /\S+[a-z0-9]@[a-z0-9\.]+/img;
-                var recipients = outGoingPECMails.MailRecipients.replace(/[<>]/g, '').match(regex).join(';');
+            for (var _i = 0, currentItems_4 = currentItems; _i < currentItems_4.length; _i++) {
+                var outGoingPECMails = currentItems_4[_i];
+                var recipients = outGoingPECMails.MailRecipients;
                 var senderAndRecipient = outGoingPECMails.MailSenders + " " + recipients;
                 var result = "";
                 if (outGoingPECMails.MailDate) {
-                    result = senderAndRecipient + " - " + moment(outGoingPECMails.MailDate).format("DD/MM/YYYY, hh:mm:ss");
+                    result = senderAndRecipient + " - " + moment(outGoingPECMails.MailDate).format("DD/MM/YYYY, HH:mm:ss");
                 }
                 else {
                     result = senderAndRecipient;
@@ -613,6 +753,7 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                 var node = new Telerik.Web.UI.RadTreeNode();
                 node.set_text(result);
                 node.set_value(outGoingPECMails.EntityId);
+                node.set_cssClass("text-label");
                 var numberOfItems = outGoingPECMails.PECMailReceipts.length;
                 var pecMailsReceipts = outGoingPECMails.PECMailReceipts;
                 var nodeImages = "";
@@ -664,14 +805,14 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.renderFascicleNodes = function (currentItems, position) {
             this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-            for (var _i = 0, currentItems_4 = currentItems; _i < currentItems_4.length; _i++) {
-                var fascDoc = currentItems_4[_i];
-                var fascicleDocumentsName = fascDoc.Fascicle.Title + " - " + fascDoc.Fascicle.FascicleObject;
+            for (var _i = 0, currentItems_5 = currentItems; _i < currentItems_5.length; _i++) {
+                var fascDoc = currentItems_5[_i];
+                var fascicleDocumentsName = fascDoc.Title + " - " + fascDoc.FascicleObject;
                 var node = new Telerik.Web.UI.RadTreeNode();
                 node.set_text(fascicleDocumentsName);
-                node.set_value(fascDoc.Fascicle.UniqueId);
+                node.set_value(fascDoc.UniqueId);
                 node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/fascicle_open.png");
-                node.set_navigateUrl("../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=" + fascDoc.Fascicle.UniqueId);
+                node.set_navigateUrl("../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=" + fascDoc.UniqueId);
                 var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
                 parentNode.get_nodes().add(node);
                 this._DocumentRadTreeId.commitChanges();
@@ -679,8 +820,8 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.renderFasciclesNodes = function (currentItems, position) {
             this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-            for (var _i = 0, currentItems_5 = currentItems; _i < currentItems_5.length; _i++) {
-                var fascicles = currentItems_5[_i];
+            for (var _i = 0, currentItems_6 = currentItems; _i < currentItems_6.length; _i++) {
+                var fascicles = currentItems_6[_i];
                 var fascicleName = fascicles.FascicleLinked.Title + " - " + fascicles.FascicleLinked.FascicleObject;
                 var node = new Telerik.Web.UI.RadTreeNode();
                 node.set_text(fascicleName);
@@ -693,20 +834,39 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.renderDossiersNodes = function (currentItems, position) {
             this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-            for (var _i = 0, currentItems_6 = currentItems; _i < currentItems_6.length; _i++) {
-                var fascicle = currentItems_6[_i];
-                for (var _a = 0, _b = fascicle.DossierFolders; _a < _b.length; _a++) {
-                    var dossierFolder = _b[_a];
-                    var dossierName = dossierFolder.Dossier.Year + "/" + this.pad(+dossierFolder.Dossier.Number, 7) + " - " + dossierFolder.Dossier.Subject + "/" + dossierFolder.Name;
-                    var node = new Telerik.Web.UI.RadTreeNode();
-                    node.set_text(dossierName);
-                    node.set_value(dossierFolder.Dossier.UniqueId);
-                    node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/process.png");
-                    node.set_navigateUrl("../Dossiers/DossierVisualizza.aspx?Type=Dossier&IdDossier=" + dossierFolder.Dossier.UniqueId);
-                    var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
-                    parentNode.get_nodes().add(node);
-                    this._DocumentRadTreeId.commitChanges();
+            for (var _i = 0, currentItems_7 = currentItems; _i < currentItems_7.length; _i++) {
+                var dossierFolder = currentItems_7[_i];
+                var dossierName = dossierFolder.Dossier.Year + "/" + this.pad(+dossierFolder.Dossier.Number, 7) + " - " + dossierFolder.Dossier.Subject;
+                var node = new Telerik.Web.UI.RadTreeNode();
+                node.set_text(dossierName);
+                node.set_value(dossierFolder.Dossier.UniqueId);
+                node.set_imageUrl("../Comm/Images/DocSuite/Dossier_16.png");
+                node.set_navigateUrl("../Dossiers/DossierVisualizza.aspx?Type=Dossier&IdDossier=" + dossierFolder.Dossier.UniqueId);
+                var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+                parentNode.get_nodes().add(node);
+                this._DocumentRadTreeId.commitChanges();
+            }
+        };
+        uscDocumentUnitReferences.prototype.renderWorkflowActivityNodes = function (includeName, includeRegistrationUser, currentItems, position) {
+            this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
+            for (var _i = 0, currentItems_8 = currentItems; _i < currentItems_8.length; _i++) {
+                var workflowActivity = currentItems_8[_i];
+                var name_1 = '';
+                if (includeName && includeName === true) {
+                    name_1 = workflowActivity.Name;
                 }
+                if (workflowActivity.Subject && workflowActivity.Subject !== '') {
+                    name_1 = name_1 + " - " + workflowActivity.Subject;
+                }
+                name_1 = name_1 + " del " + workflowActivity.RegistrationDateFormatted;
+                if (includeRegistrationUser && includeRegistrationUser === true) {
+                    name_1 = name_1 + " richiesta da " + workflowActivity.RegistrationUser;
+                }
+                var node = new Telerik.Web.UI.RadTreeNode();
+                node.set_text(name_1);
+                var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
+                parentNode.get_nodes().add(node);
+                this._DocumentRadTreeId.commitChanges();
             }
         };
         uscDocumentUnitReferences.prototype.renderMessageNodes = function (numberOfItems, messages, position) {
@@ -743,15 +903,15 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.renderUDSByProtocolNodes = function (currentItems, position) {
             this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-            for (var _i = 0, currentItems_7 = currentItems; _i < currentItems_7.length; _i++) {
-                var udsDoc = currentItems_7[_i];
-                var udsDocumentsName = udsDoc.Relation.Title + " - " + udsDoc.Relation.Subject;
+            for (var _i = 0, currentItems_9 = currentItems; _i < currentItems_9.length; _i++) {
+                var udsDoc = currentItems_9[_i];
+                var udsDocumentsName = udsDoc.SourceUDS.Title + " - " + udsDoc.SourceUDS.Subject;
                 var node = new Telerik.Web.UI.RadTreeNode();
                 node.set_text(udsDocumentsName);
-                node.set_value(udsDoc.Relation.UniqueId);
+                node.set_value(udsDoc.SourceUDS.UniqueId);
                 node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/document_copies.png");
-                if (udsDoc.Relation.UDSRepository) {
-                    node.set_navigateUrl("../UDS/UDSView.aspx?Type=UDS&IdUDS=" + udsDoc.IdUDS + "&IdUDSRepository=" + udsDoc.Relation.UDSRepository.UniqueId.toString());
+                if (udsDoc.SourceUDS.UDSRepository) {
+                    node.set_navigateUrl("../UDS/UDSView.aspx?Type=UDS&IdUDS=" + udsDoc.IdUDS + "&IdUDSRepository=" + udsDoc.SourceUDS.UDSRepository.UniqueId.toString());
                 }
                 var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
                 parentNode.get_nodes().add(node);
@@ -760,14 +920,14 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.renderProtocolLinkNodes = function (currentItems, position) {
             this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-            for (var _i = 0, currentItems_8 = currentItems; _i < currentItems_8.length; _i++) {
-                var protLink = currentItems_8[_i];
+            for (var _i = 0, currentItems_10 = currentItems; _i < currentItems_10.length; _i++) {
+                var protLink = currentItems_10[_i];
                 var protocolLinkName = protLink.ProtocolLinked.Year + "-" + protLink.ProtocolLinked.Number + " - " + protLink.ProtocolLinked.Object;
                 var node = new Telerik.Web.UI.RadTreeNode();
                 node.set_text(protocolLinkName);
                 node.set_value(protLink.ProtocolLinked.UniqueId);
                 node.set_imageUrl("../Comm/Images/DocSuite/Protocollo16.gif");
-                node.set_navigateUrl("../Prot/ProtVisualizza.aspx?Year=" + protLink.ProtocolLinked.Year.toString() + "&Number=" + protLink.ProtocolLinked.Number.toString() + "&Type=Prot");
+                node.set_navigateUrl("../Prot/ProtVisualizza.aspx?UniqueId=" + protLink.ProtocolLinked.UniqueId + "&Type=Prot");
                 var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
                 parentNode.get_nodes().add(node);
                 this._DocumentRadTreeId.commitChanges();
@@ -775,14 +935,14 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.renderProtocolNodes = function (currentItems, position) {
             this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-            for (var _i = 0, currentItems_9 = currentItems; _i < currentItems_9.length; _i++) {
-                var protDoc = currentItems_9[_i];
+            for (var _i = 0, currentItems_11 = currentItems; _i < currentItems_11.length; _i++) {
+                var protDoc = currentItems_11[_i];
                 var protocolDocumentsName = protDoc.Relation.Title + " - " + protDoc.Relation.Subject;
                 var node = new Telerik.Web.UI.RadTreeNode();
                 node.set_text(protocolDocumentsName);
                 node.set_value(protDoc.Relation.UniqueId);
                 node.set_imageUrl("../Comm/Images/DocSuite/Protocollo16.gif");
-                node.set_navigateUrl("../Prot/ProtVisualizza.aspx?Year=" + protDoc.Relation.Year.toString() + "&Number=" + protDoc.Relation.Number.toString() + "&Type=Prot");
+                node.set_navigateUrl("../Prot/ProtVisualizza.aspx?UniqueId=" + protDoc.Relation.UniqueId + "&Type=Prot");
                 var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
                 parentNode.get_nodes().add(node);
                 this._DocumentRadTreeId.commitChanges();
@@ -790,8 +950,8 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
         };
         uscDocumentUnitReferences.prototype.renderUDSNodes = function (currentItems, position) {
             this._DocumentRadTreeId.get_nodes().getNode(position).get_nodes().clear();
-            for (var _i = 0, currentItems_10 = currentItems; _i < currentItems_10.length; _i++) {
-                var udsDoc = currentItems_10[_i];
+            for (var _i = 0, currentItems_12 = currentItems; _i < currentItems_12.length; _i++) {
+                var udsDoc = currentItems_12[_i];
                 var udsDocumentsName = udsDoc.Relation.Title + " - " + udsDoc.Relation.Subject;
                 var node = new Telerik.Web.UI.RadTreeNode();
                 node.set_text(udsDocumentsName);
@@ -802,11 +962,35 @@ define(["require", "exports", "App/Helpers/EnumHelper", "App/Helpers/ServiceConf
                 }
                 var parentNode = this._DocumentRadTreeId.get_nodes().getNode(position);
                 parentNode.get_nodes().add(node);
+                var contentElement = node.get_contentElement();
+                if (this.showRemoveUDSLinksButton.toLowerCase() == "true") {
+                    contentElement.innerHTML = "<img src=\"" + node.get_imageUrl() + "\"/><a href=\"" + node.get_navigateUrl() + "\">" + node.get_text() + "</a>\n                <img src = \"../App_Themes/DocSuite2008/imgset16/remove.png\" style=\"margin-left: 5px;\" onclick='removeLink(\"" + udsDoc.UniqueId + "\", \"" + udsDoc.IdUDS + "\", \"" + udsDoc.Relation.UniqueId + "\");'>";
+                }
                 this._DocumentRadTreeId.commitChanges();
             }
         };
-        uscDocumentUnitReferences.prototype.showNotificationException = function (uscNotificationId, customMessage) {
-            var exception;
+        uscDocumentUnitReferences.prototype.removeLink = function (uniqueId, udsId, relationId) {
+            var _this = this;
+            if (window.confirm("Vuoi eliminare l'archivio selezionato?")) {
+                var from_1 = {};
+                from_1.UniqueId = uniqueId;
+                this._udsService.getUDSById(relationId, udsId, function (data) {
+                    _this._udsService.deleteUDSByid(from_1, function () {
+                        _this._udsService.deleteUDSByid(data[0], function () {
+                            window.location.reload();
+                            alert("Collegamento eliminato correttamente");
+                        }, function (exception) {
+                            _this.showNotificationException(_this.uscNotificationId, exception);
+                        });
+                    }, function (exception) {
+                        _this.showNotificationException(_this.uscNotificationId, exception);
+                    });
+                }, function (exception) {
+                    _this.showNotificationException(_this.uscNotificationId, exception);
+                });
+            }
+        };
+        uscDocumentUnitReferences.prototype.showNotificationException = function (uscNotificationId, exception, customMessage) {
             if (exception && exception instanceof ExceptionDTO) {
                 var uscNotification = $("#" + uscNotificationId).data();
                 if (!jQuery.isEmptyObject(uscNotification)) {

@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscFascicleFolders
-    
+
     '''<summary>
     '''manager control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents manager As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''managerCreateFolder control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents managerCreateFolder As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''managerModifyFolder control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents managerModifyFolder As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''managerMoveFolder control.
     '''</summary>
@@ -48,7 +48,25 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents managerMoveFolder As Global.Telerik.Web.UI.RadWindow
-    
+
+    '''<summary>
+    '''managerUploadFile control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents managerUploadFile As Global.Telerik.Web.UI.RadWindow
+
+    '''<summary>
+    '''managerScannerDocument control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents managerScannerDocument As Global.Telerik.Web.UI.RadWindow
+
     '''<summary>
     '''pnlTitle control.
     '''</summary>
@@ -57,7 +75,7 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlTitle As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''btnExpandFascicleFolders control.
     '''</summary>
@@ -66,7 +84,7 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnExpandFascicleFolders As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''pnlFolderToolbar control.
     '''</summary>
@@ -75,7 +93,7 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlFolderToolbar As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''FolderToolBar control.
     '''</summary>
@@ -84,7 +102,7 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents FolderToolBar As Global.Telerik.Web.UI.RadToolBar
-    
+
     '''<summary>
     '''pnlFascicleFolder control.
     '''</summary>
@@ -93,7 +111,7 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlFascicleFolder As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''pageContent control.
     '''</summary>
@@ -102,7 +120,7 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pageContent As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''rtvFascicleFolders control.
     '''</summary>
@@ -111,7 +129,7 @@ Partial Public Class uscFascicleFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtvFascicleFolders As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>

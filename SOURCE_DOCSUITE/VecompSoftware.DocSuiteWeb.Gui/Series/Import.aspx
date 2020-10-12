@@ -40,7 +40,7 @@
                 </td>
                 <td>
                     <asp:DropDownList AutoPostBack="True" CausesValidation="false" ID="ddlDocumentSeries" runat="server" Visible="True" Width="300px" />
-                    <asp:RequiredFieldValidator ControlToValidate="ddlDocumentSeries" Display="Dynamic" ErrorMessage="Campo Tipo Documento Obbligatorio" ID="rfvIdDocType" runat="server" />
+                    <asp:RequiredFieldValidator ControlToValidate="ddlDocumentSeries" Display="Dynamic" ErrorMessage="Campo Tipo Documento obbligatorio" ID="rfvIdDocType" runat="server" />
                 </td>
             </tr>
             <tr>

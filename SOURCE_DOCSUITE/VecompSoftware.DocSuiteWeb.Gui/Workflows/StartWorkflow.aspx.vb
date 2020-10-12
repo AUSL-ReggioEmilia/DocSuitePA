@@ -26,6 +26,11 @@ Public Class StartWorkflow
         End Get
     End Property
 
+    Public ReadOnly Property ShowOnlyHasIsFascicleClosedRequired As Boolean
+        Get
+            Return GetKeyValueOrDefault(Of Boolean)("ShowOnlyHasIsFascicleClosedRequired", False)
+        End Get
+    End Property
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
@@ -40,9 +45,10 @@ Public Class StartWorkflow
 
     Private Sub Initialize()
         uscWorkflowId.Environment = Environment
-        uscWorkflowId.TenantName = TenantName
-        uscWorkflowId.TenantId = TenantId.ToString()
+        uscWorkflowId.TenantName = CurrentTenant.TenantName
+        uscWorkflowId.TenantId = CurrentTenant.UniqueId.ToString()
         uscWorkflowId.ShowOnlyNoInstanceWorkflows = ShowOnlyNoInstanceWorkflows
+        uscWorkflowId.ShowOnlyHasIsFascicleClosedRequired = ShowOnlyHasIsFascicleClosedRequired
     End Sub
 #End Region
 End Class

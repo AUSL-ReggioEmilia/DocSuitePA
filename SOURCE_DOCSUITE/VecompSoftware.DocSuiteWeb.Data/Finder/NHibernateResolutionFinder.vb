@@ -668,38 +668,18 @@ Public Class NHibernateResolutionFinder
     Private Sub DecorateCategories(ByRef criteria As ICriteria)
         'Classificazione
         If Not String.IsNullOrEmpty(Categories) Then
-            criteria.SetFetchMode("R.SubCategory", FetchMode.Eager)
-            criteria.CreateAlias("R.SubCategory", "SubCategory", JoinType.LeftOuterJoin)
+            criteria.CreateAlias("R.CategoryAPI", "CategoryAPI")
 
-            Dim cl() As String = Categories.Split("|"c)
-            'Ho selezionato una categoria
-            If cl.Length > 1 Then
-                Dim dcCat As DetachedCriteria = DetachedCriteria.For(GetType(Category))
-                If IncludeChildCategories Then
-                    dcCat.Add(Expression.Like("FullIncrementalPath", Categories & "%"))
-                Else
-                    dcCat.Add(Restrictions.Eq("FullIncrementalPath", Categories))
-                End If
-                dcCat.Add(Restrictions.EqProperty("Id", "SubCategory.Id"))
-                dcCat.SetProjection(Projections.Id())
-                criteria.Add(Subqueries.Exists(dcCat))
+            Dim rootDisjunction As Disjunction = Restrictions.Disjunction()
+            If IncludeChildCategories Then
+                Dim dis As Disjunction = Restrictions.Disjunction()
+                dis.Add(Restrictions.Eq("CategoryAPI.FullIncrementalPath", Categories))
+                dis.Add(Restrictions.Like("CategoryAPI.FullIncrementalPath", $"{Categories}|%"))
+                rootDisjunction.Add(dis)
             Else
-                If IncludeChildCategories Then
-                    Dim conj As Conjunction = Expression.Conjunction()
-                    conj.Add(Restrictions.Eq("Category.FullIncrementalPath", Categories))
-                    conj.Add(Restrictions.IsNull("SubCategory"))
-                    Dim dis As Disjunction = Expression.Disjunction()
-                    dis.Add(conj)
-                    dis.Add(Expression.Like("SubCategory.FullIncrementalPath", Categories & "%"))
-                    criteria.Add(dis)
-                Else
-
-                    Dim con As Conjunction = Expression.Conjunction()
-                    con.Add(Restrictions.Eq("Category.FullIncrementalPath", Categories))
-                    con.Add(Restrictions.IsNull("SubCategory"))
-                    criteria.Add(con)
-                End If
+                rootDisjunction.Add(Restrictions.Eq("CategoryAPI.FullIncrementalPath", Categories))
             End If
+            criteria.Add(rootDisjunction)
         End If
     End Sub
     Private Sub DecorateRecipients(ByRef criteria As ICriteria)
@@ -1648,6 +1628,8 @@ Public Class NHibernateResolutionFinder
                 Case HasInclusiveNumber
                     AttachSortExpressions(criteria, "R.AdoptionDate", SortOrder.Ascending)
                     AttachSortExpressions(criteria, "R.InclusiveNumber", SortOrder.Ascending)
+                Case Else
+                    AttachSortExpressions(criteria, "R.Id", SortOrder.Ascending)
             End Select
         End If
     End Sub
@@ -1767,7 +1749,8 @@ Public Class NHibernateResolutionFinder
         Dim dc As DetachedCriteria = DetachedCriteria.For(Of ResolutionLog)("tw_ResolutionLog")
         dc.Add(Restrictions.EqProperty("tw_ResolutionLog.IdResolution", "R.Id"))
         dc.Add(Restrictions.Eq("tw_ResolutionLog.LogType", ResolutionLogType.CV.ToString()))
-        dc.SetProjection(Projections.Property("tw_ResolutionLog.SystemUser"))
+        dc.AddOrder(Order.Desc("tw_ResolutionLog.LogDate"))
+        dc.SetMaxResults(1).SetProjection(Projections.Property("tw_ResolutionLog.SystemUser"))
         Return dc
     End Function
     Private Function detachedReturnFromRetroStep() As DetachedCriteria
@@ -1815,7 +1798,6 @@ Public Class NHibernateResolutionFinder
         End If
 
         proj.Add(Projections.Property("Location.Id"), "LocationId")
-        proj.Add(Projections.Property("Location.DocumentServer"), "LocationDocumentServer")
         proj.Add(Projections.Property("Location.ReslBiblosDSDB"), "LocationReslBiblosDSDB")
 
         proj.Add(Projections.Property("AlternativeProposer"), "AlternativeProposer")
@@ -1843,14 +1825,10 @@ Public Class NHibernateResolutionFinder
             proj.Add(Projections.Property("OCManagement"), "OCManagement")
             proj.Add(Projections.Property("OCCorteConti"), "OCCorteConti")
             proj.Add(Projections.Property("OCOther"), "OCOther")
-            Const sqlProposerCode As String = "(SELECT TOP 1 Code FROM Contact WHERE Incremental IN (SELECT idContact FROM ResolutionContact WHERE idResolution = {alias}.idResolution AND ComunicationType='P')) as ProposerCode"
+            Const sqlProposerCode As String = "(SELECT STUFF((SELECT ', ' + Code FROM Contact WHERE Incremental IN (SELECT idContact FROM ResolutionContact WHERE idResolution = {alias}.idResolution AND ComunicationType='P') FOR XML PATH('')), 1, 2, '')) as ProposerCode"
             proj.Add(Projections.SqlProjection(sqlProposerCode, New String() {"ProposerCode"}, New Type.StringType() {NHibernateUtil.String}), "ProposerCode")
             Const sqlResolutionFile As String = "(SELECT idResolutionFile FROM FileResolution WHERE idResolution = {alias}.idResolution) as IdResolutionFile"
             proj.Add(Projections.SqlProjection(sqlResolutionFile, New String() {"IdResolutionFile"}, New Type.Int32Type() {NHibernateUtil.Int32}), "IdResolutionFile")
-        End If
-
-        If IsWebService OrElse Conservation Then
-            proj.Add(Projections.Property("SubCategory"), "SubCategory")
         End If
 
         proj.Add(Projections.SubQuery(detachedManagedData()), "ManagedData")

@@ -3,8 +3,11 @@ Imports System.Linq
 Imports System.Web
 Imports System.Web.Hosting
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.OData
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Tenants
+Imports VecompSoftware.DocSuiteWeb.Model.Securities
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.LongTimeTask
 Imports VecompSoftware.Services.Logging
@@ -46,11 +49,14 @@ Partial Public Class _default
     Private Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
         ' Attenzione! E' importante che la sessione sentinella sia inizializzata nell'init della pagina di avvio.
         Session("VecompSoftware.SessionActiveCheck") = True
-        If DocSuiteContext.Current.ProtocolEnv.MultiTenantEnabled Then
-            Dim tenantFacade As TenantFacade = New TenantFacade()
-            Session("CurrentTenant") = tenantFacade.GetCurrentTenant()
+        If Session("CurrentTenant") Is Nothing Then
+            Dim TenantFacade As TenantFacade = New TenantFacade()
+            Session("CurrentTenant") = TenantFacade.GetCurrentTenant()
+            Dim ODataFacade As ODataFacade = New ODataFacade()
+            Session("CurrentDomainUser") = ODataFacade.domainUserModel()
         End If
     End Sub
+
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles Me.Load
         myTitle.Text = "DocSuite"
         If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso DocSuiteContext.Current.Tenants.Count > 1 Then
@@ -147,14 +153,8 @@ Partial Public Class _default
         InitializeSections()
 
         'tabella utenti SqlLog/application
-        If DocSuiteContext.Current.ProtocolEnv.IsLogEnabled Then
-            If DocSuiteContext.Current.ProtocolEnv.IsComputerLogEnabled Then
-                ComputerLog()
-            End If
-            UserLog()
-        Else
-            UserApp()
-        End If
+        ComputerLog()
+        UserLog()
 
         ' Pulizia dizionari 
         CommonShared.ClearRightDictionaries()
@@ -170,41 +170,37 @@ Partial Public Class _default
         CommonUtil.GetInstance.AppAccessOk = True
     End Sub
 
-    Public Sub UserApp()
-        Dim chiave As String = String.Concat(DocSuiteContext.Current.User.UserName, "|", CommonUtil.GetInstance.UserComputer, "|", Now, "|", CommonShared.UserSessionId)
-        'lista utenti in Application
-        Application.Add(chiave, "")
-        Do While Application.Keys.Count > 50
-            Application.RemoveAt(0)
-        Loop
-    End Sub
-
     Public Sub UserLog()
         Try
-            Dim finder As New NHibernateUserLogFinder()
+            Dim finder As NHibernateUserLogFinder = New NHibernateUserLogFinder()
             finder.SystemUser = DocSuiteContext.Current.User.FullUserName
-            Dim logs As IList(Of UserLog) = finder.DoSearch()
-            If Not logs Is Nothing AndAlso logs.Count = 0 Then
-                Dim uLog As New UserLog()
-                uLog.Id = DocSuiteContext.Current.User.FullUserName
-                Facade.UserLogFacade.Save(uLog)
-                logs = finder.DoSearch()
-            End If
-            Dim accn As Integer = 1
-            Dim serverDate As DateTimeOffset = DateTimeOffset.UtcNow
-            If String.Format("{0:yyyyMMdd}", serverDate) = String.Format("{0:yyyyMMdd}", CType(logs(0), UserLog).LastOperationDate) Then
-                accn = CType(logs(0), UserLog).AccessNumber + 1
+            Dim userLog As UserLog = finder.DoSearch().FirstOrDefault()
+            If userLog Is Nothing Then
+                Dim authorizedTenant As Tenant = New TenantFacade().GetAuthorizedTenants().FirstOrDefault()
+                userLog = New UserLog With {
+                    .Id = DocSuiteContext.Current.User.FullUserName,
+                    .CurrentTenantId = Guid.Empty
+                }
+                If authorizedTenant IsNot Nothing Then
+                    userLog.CurrentTenantId = authorizedTenant.UniqueId
+                End If
+                Facade.UserLogFacade.Save(userLog)
             End If
 
-            With CType(logs(0), UserLog)
-                .AccessNumber = accn
-                .LastOperationDate = serverDate
-                .PrevOperationDate = CType(logs(0), UserLog).LastOperationDate
-                .SystemComputer = CommonUtil.GetInstance.UserComputer
-                .SystemServer = CommonShared.MachineName
-                .SessionId = CommonShared.UserSessionId
-            End With
-            Facade.UserLogFacade.Update(logs(0))
+            Dim dayAccessNumber As Integer = 1
+            Dim currentAccessDate As DateTimeOffset = DateTimeOffset.UtcNow
+            If userLog.LastOperationDate.HasValue AndAlso currentAccessDate.Date = userLog.LastOperationDate.Value.Date Then
+                dayAccessNumber = userLog.AccessNumber + 1
+            End If
+
+            userLog.AccessNumber = dayAccessNumber
+            userLog.LastOperationDate = currentAccessDate
+            userLog.PrevOperationDate = userLog.LastOperationDate
+            userLog.SystemComputer = CommonUtil.GetInstance.UserComputer
+            userLog.SystemServer = CommonShared.MachineName
+            userLog.SessionId = CommonShared.UserSessionId
+
+            Facade.UserLogFacade.Update(userLog)
         Catch ex As Exception
             FileLogger.Warn(LoggerName, "Errore salvataggio user log", ex)
         End Try

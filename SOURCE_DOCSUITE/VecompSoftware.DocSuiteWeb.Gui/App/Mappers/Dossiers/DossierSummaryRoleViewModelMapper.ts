@@ -1,20 +1,22 @@
 ﻿import BaseMapper = require('App/Mappers/BaseMapper');
-import BaseEntityViewModel = require('App/ViewModels/BaseEntityViewModel');
+import BaseEntityRoleViewModel = require('App/ViewModels/BaseEntityRoleViewModel');
 
-class DossierSummaryRoleViewModelMapper extends BaseMapper<BaseEntityViewModel>{
+class DossierSummaryRoleViewModelMapper extends BaseMapper<BaseEntityRoleViewModel>{
     constructor() {
         super();
     }
 
-    public Map(source: any): BaseEntityViewModel {
-        let toMap = new BaseEntityViewModel();
+    public Map(source: any): BaseEntityRoleViewModel {
+        let toMap = new BaseEntityRoleViewModel();
         if (!source) {
             return null;
         }
-        toMap.UniqueId = source.Role ? source.Role.UniqueId : null;
+        toMap.UniqueId = source.UniqueId;
         toMap.EntityShortId = source.Role.IdRole ? source.Role.IdRole:null;
         toMap.Name = source.Role.Name;
         toMap.Type = source.Type;
+        toMap.IsMaster = source.IsMaster;
+        toMap.IsActive = source.IsActive;
 
         return toMap;
     }

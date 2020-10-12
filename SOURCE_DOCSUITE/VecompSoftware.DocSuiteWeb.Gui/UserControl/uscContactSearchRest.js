@@ -4,6 +4,8 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
     var uscContactSearchRest = /** @class */ (function () {
         function uscContactSearchRest(serviceConfigurations) {
             var _this = this;
+            this.SEARCH_BY_PARENT_COMMAND = "searchByParent";
+            this.DOWN_ARROW_ICON = "../App_Themes/DocSuite2008/imgset16/down_arrow.png";
             /**
             *------------------------- Events -----------------------------
             */
@@ -14,7 +16,8 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                     ApplyAuthorizations: _this.applyAuthorizations,
                     ExcludeRoleContacts: _this.excludeRoleContacts,
                     ParentId: _this.filterByParentId,
-                    ParentToExclude: _this.parentToExclude
+                    ParentToExclude: _this.parentToExclude,
+                    IdTenant: _this.tenantId !== "" ? _this.tenantId : null
                 };
                 sender._onRequestStart();
                 _this._contactService.findContacts(finderModel, function (data) {
@@ -23,6 +26,8 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
                     _this._rcdsContactsFinder.fetch(function () {
                         var dataItemView = _this._rcdsContactsFinder.view();
                         sender._loadItemsFromData(dataItemView, true);
+                        var searchBoxButton = _this._rsbSearchBox.get_buttons().getButton(0);
+                        searchBoxButton.set_imageUrl(_this.DOWN_ARROW_ICON);
                     });
                 }, function (exception) {
                     console.error(exception.statusText);
@@ -31,6 +36,32 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             this.rsbSearchBox_search = function (sender, args) {
                 if (args.get_value()) {
                     $("#" + _this.pnlMainContentId).triggerHandler(uscContactSearchRest.SELECTED_CONTACT_EVENT, args.get_value());
+                }
+            };
+            this.rsbSearchBox_buttonCommand = function (sender, args) {
+                1;
+                switch (args.get_commandName()) {
+                    case _this.SEARCH_BY_PARENT_COMMAND: {
+                        if (!_this.filterByParentId) {
+                            break;
+                        }
+                        sender._onRequestStart();
+                        _this._contactService.getByParentId(_this.filterByParentId, 20, function (data) {
+                            for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+                                var contact = data_1[_i];
+                                contact.Description = contact.Description.replace("|", " ");
+                            }
+                            _this._rcdsContactsFinder.set_data(data);
+                            _this._rcdsContactsFinder.get_filterExpressions().clear();
+                            _this._rcdsContactsFinder.fetch(function () {
+                                var dataItemView = _this._rcdsContactsFinder.view();
+                                sender._loadItemsFromData(dataItemView, true);
+                            });
+                        }, function (exception) {
+                            console.error(exception.statusText);
+                        });
+                        break;
+                    }
                 }
             };
             var contactServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "Contact");
@@ -44,7 +75,13 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Ser
             this._rsbSearchBox = $find(this.rsbSearchBoxId);
             this._rsbSearchBox.add_dataRequesting(this.rsbSearchBox_dataRequesting);
             this._rsbSearchBox.add_search(this.rsbSearchBox_search);
+            this._rsbSearchBox.add_buttonCommand(this.rsbSearchBox_buttonCommand);
             this._toolTipManager = $find(this.toolTipManagerId);
+            var searchBoxButton = this._rsbSearchBox.get_buttons().getButton(0);
+            if (!this.filterByParentId) {
+                searchBoxButton.get_element().style.display = "none";
+            }
+            searchBoxButton.set_cssClass("searchBoxButton");
             this.bindLoaded();
         };
         uscContactSearchRest.prototype.bindLoaded = function () {

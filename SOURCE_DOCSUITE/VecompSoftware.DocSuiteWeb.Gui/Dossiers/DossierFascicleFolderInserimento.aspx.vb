@@ -1,4 +1,5 @@
-﻿Imports Newtonsoft.Json
+﻿Imports System.Collections.Generic
+Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Metadata
@@ -8,8 +9,8 @@ Public Class DossierFascicleFolderInserimento
     Inherits DossierBasePage
 
 #Region " Fields "
-    Private Const DOSSIERFOLDER_INSERT_CALLBACK As String = "dossierFascicleFolderInserimento.insertDossierFolder('{0}', '{1}');"
-    Private Const CATEGORY_CHANGE_HANDLER As String = "dossierFascicleFolderInserimento.onCategoryChanged({0});"
+    Private Const DOSSIERFOLDER_INSERT_CALLBACK As String = "dossierFascicleFolderInserimento.insertDossierFolder({0}, '{1}', '{2}');"
+    Private _fascicleInsertControlClientId As String
 #End Region
 
 #Region " Properties "
@@ -25,15 +26,53 @@ Public Class DossierFascicleFolderInserimento
         End Get
     End Property
 
+    Public ReadOnly Property FascicleInsertControlClientId As String
+        Get
+            If String.IsNullOrEmpty(_fascicleInsertControlClientId) Then
+                If ProtocolEnv.ProcessEnabled Then
+                    _fascicleInsertControlClientId = UscFascicleProcessInsert.PageContentDiv.ClientID
+                Else
+                    _fascicleInsertControlClientId = UscFascicleInsert.PageContentDiv.ClientID
+                End If
+            End If
+            Return _fascicleInsertControlClientId
+        End Get
+    End Property
+
+    Private ReadOnly Property UscFascicleInsert As uscFascicleInsert
+        Get
+            Return DirectCast(dynamicUscFascicleInsertControls.FindControl("uscFascicleInsert"), uscFascicleInsert)
+        End Get
+    End Property
+
+    Private ReadOnly Property UscFascicleProcessInsert As uscFascicleProcessInsert
+        Get
+            Return DirectCast(dynamicUscFascicleInsertControls.FindControl("uscFascicleProcessInsert"), uscFascicleProcessInsert)
+        End Get
+    End Property
+
 #End Region
 
 #Region " Events "
-
+    Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
+        If Not ProtocolEnv.ProcessEnabled Then
+            Dim uscFascicleInsert As uscFascicleInsert = DirectCast(Page.LoadControl("~/UserControl/uscFascicleInsert.ascx"), uscFascicleInsert)
+            uscFascicleInsert.ID = "uscFascicleInsert"
+            uscFascicleInsert.ValidationDisabled = PersistanceDisabled
+            dynamicUscFascicleInsertControls.Controls.Add(uscFascicleInsert)
+        Else
+            Dim uscFascicleProcessInsert As uscFascicleProcessInsert = DirectCast(Page.LoadControl("~/UserControl/uscFascicleProcessInsert.ascx"), uscFascicleProcessInsert)
+            uscFascicleProcessInsert.ID = "uscFascicleProcessInsert"
+            uscFascicleProcessInsert.ValidationDisabled = PersistanceDisabled
+            dynamicUscFascicleInsertControls.Controls.Add(uscFascicleProcessInsert)
+        End If
+    End Sub
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         InitializeAjax()
-        uscFascicleInsert.ValidationDisabled = PersistanceDisabled
         If Not IsPostBack Then
-            uscFascicleInsert.PageContentDiv = PageContentDiv
+            If Not ProtocolEnv.ProcessEnabled Then
+                UscFascicleInsert.PageContentDiv = PageContentDiv
+            End If
         End If
     End Sub
 
@@ -61,16 +100,17 @@ Public Class DossierFascicleFolderInserimento
 
         Select Case ajaxModel.ActionName
             Case "Insert"
-                Dim contactId As Integer
-                If uscFascicleInsert.RespContactDTO IsNot Nothing AndAlso uscFascicleInsert.RespContactDTO.Contact IsNot Nothing Then
-                    contactId = uscFascicleInsert.RespContactDTO.Contact.Id
+                Dim contactId As Integer = 0
+                If UscFascicleInsert.RespContactDTO IsNot Nothing AndAlso UscFascicleInsert.RespContactDTO.Contact IsNot Nothing Then
+                    contactId = UscFascicleInsert.RespContactDTO.Contact.Id
                 End If
-                Dim metadataModel As MetadataModel = Nothing
+                Dim metadataModel As Tuple(Of MetadataDesignerModel, ICollection(Of MetadataValueModel)) = Nothing
                 If ProtocolEnv.MetadataRepositoryEnabled Then
-                    metadataModel = uscFascicleInsert.GetDynamicValues()
+                    metadataModel = UscFascicleInsert.GetDynamicValues()
                 End If
-                AjaxManager.ResponseScripts.Add(String.Format(DOSSIERFOLDER_INSERT_CALLBACK, JsonConvert.SerializeObject(contactId),
-                                                               If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel), Nothing)))
+                AjaxManager.ResponseScripts.Add(String.Format(DOSSIERFOLDER_INSERT_CALLBACK, contactId,
+                                                              If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item1).Replace("'", "\'"), Nothing),
+                                                              If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item2).Replace("'", "\'"), Nothing)))
                 Exit Select
         End Select
     End Sub

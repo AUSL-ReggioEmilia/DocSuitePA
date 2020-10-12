@@ -1,6 +1,8 @@
 ﻿import IMapper = require('App/Mappers/IMapper');
 import DossierSummaryViewModel = require('App/ViewModels/Dossiers/DossierSummaryViewModel');
 import BaseEntityViewModel = require('App/ViewModels/BaseEntityViewModel');
+import BaseEntityRoleViewModel = require('App/ViewModels/BaseEntityRoleViewModel');
+import CategoryTreeViewModelMapper = require('App/Mappers/Commons/CategoryTreeViewModelMapper');
 declare var moment: any;
 class DossierSummaryViewModelMapper implements IMapper<DossierSummaryViewModel>{
     constructor() {
@@ -25,12 +27,16 @@ class DossierSummaryViewModelMapper implements IMapper<DossierSummaryViewModel>{
         }
         toMap.LastChangedUser = source.LastChangedUser;
         toMap.ContactId = source.ContactId;
-        toMap.JsonMetadata = source.JsonMetadata;
+        toMap.MetadataDesigner = source.MetadataDesigner;
+        toMap.MetadataValues = source.MetadataValues;
         toMap.FormattedStartDate = moment(source.StartDate).format("DD/MM/YYYY");
         toMap.StartDate = source.StartDate;
+        toMap.DossierType = source.DossierType;
+        toMap.Status = source.Status;
         toMap.Contacts = new Array<BaseEntityViewModel>();
-        toMap.Roles = new Array<BaseEntityViewModel>();
+        toMap.Roles = new Array<BaseEntityRoleViewModel>();
         toMap.Documents = new Array<BaseEntityViewModel>();
+        toMap.Category = new CategoryTreeViewModelMapper().Map(source.Category);
        
         return toMap;
     }

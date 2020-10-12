@@ -71,6 +71,7 @@ Public Class ResolutionChangeController
                 End If
                 If Not _uscReslChange.RoleProposerEnabled AndAlso _uscReslChange.VisibleContactProposer Then
                     _uscReslChange.VisibleContactProposerAddress = ManagedDataTest("Proposer", "CONTACT")
+                    _uscReslChange.ContactProposerMultiSelect = ManagedDataTest("Proposer", "MULTISELECT")
                     _uscReslChange.VisibleContactAlternativeProposer = Not (ResolutionEnv.HideAlternativeProposer)
                 End If
                 If _uscReslChange.VisibleContactAssignee Then

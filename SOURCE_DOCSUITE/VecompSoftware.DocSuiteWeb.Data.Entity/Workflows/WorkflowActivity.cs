@@ -15,9 +15,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
         public WorkflowActivity(string userName)
             : this()
         {
-            this.WorkflowProperties = new HashSet<WorkflowProperty>();
-            this.WorkflowActivityLogs = new HashSet<WorkflowActivityLog>();
-            this.WorkflowAuthorizations = new HashSet<WorkflowAuthorization>();
+            WorkflowAuthorizations = new HashSet<WorkflowAuthorization>();
             RegistrationDate = DateTimeOffset.UtcNow;
             RegistrationUser = userName;
         }
@@ -47,13 +45,11 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
 
         public virtual Guid? DocumentUnitReferencedId { get; set; }
 
+        public virtual Guid? IdTenant { get; set; }
+
         #endregion
 
         #region [ Navigation Properties ]
-
-        public virtual ICollection<WorkflowProperty> WorkflowProperties { get; set; }
-
-        public virtual ICollection<WorkflowActivityLog> WorkflowActivityLogs { get; set; }
 
         public virtual ICollection<WorkflowAuthorization> WorkflowAuthorizations { get; set; }
 

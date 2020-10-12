@@ -4,6 +4,7 @@ Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentSeries
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Monitors
 
 Public Class MonitoringSeriesRole
@@ -83,13 +84,16 @@ Public Class MonitoringSeriesRole
     End Sub
 
     Private Sub LoadMonitoringSeriesRole()
-        Dim finder As MonitoringSeriesRoleFinder = New MonitoringSeriesRoleFinder(DocSuiteContext.Current.Tenants) With {
-            .DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value),
-            .DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1),
-            .EnablePaging = False,
-            .EnableTopOdata = False
-        }
-        Dim elements As ICollection(Of WebAPIDto(Of MonitoringSeriesRoleModel)) = finder.DoSearchHeader()
+        Dim elements As ICollection(Of WebAPIDto(Of MonitoringSeriesRoleModel)) = WebAPIImpersonatorFacade.ImpersonateFinder(New MonitoringSeriesRoleFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value)
+                        finder.DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1)
+                        finder.EnablePaging = False
+                        finder.EnableTopOdata = False
+                        Return finder.DoSearchHeader()
+                    End Function)
+
         Dim gridElements As List(Of MonitoringSeriesRoleModel) = elements.Select(Function(x) x.Entity).ToList()
         Dim gridElementsGrouped As List(Of MonitoringSeriesRoleModel) = (From row In gridElements
                                                                          Group row By Role = row.Role Into MonitoringSeriesRoleGroup = Group
@@ -110,13 +114,16 @@ Public Class MonitoringSeriesRole
     End Sub
 
     Private Function LoadMonitoringSeriesRole(Role As String) As IList(Of MonitoringSeriesRoleModel)
-        Dim finder As MonitoringSeriesRoleFinder = New MonitoringSeriesRoleFinder(DocSuiteContext.Current.Tenants) With {
-            .DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value),
-            .DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1),
-            .EnablePaging = False,
-            .EnableTopOdata = False
-        }
-        Dim elements As ICollection(Of WebAPIDto(Of MonitoringSeriesRoleModel)) = finder.DoSearchHeader()
+        Dim elements As ICollection(Of WebAPIDto(Of MonitoringSeriesRoleModel)) = WebAPIImpersonatorFacade.ImpersonateFinder(New MonitoringSeriesRoleFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value)
+                        finder.DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1)
+                        finder.EnablePaging = False
+                        finder.EnableTopOdata = False
+                        Return finder.DoSearchHeader()
+                    End Function)
+
         Dim detailTableViewElements As List(Of MonitoringSeriesRoleModel) = elements.Select(Function(x) x.Entity).Where(Function(x) x.Role = Role).OrderBy(Function(f) f.DocumentSeries).ToList()
         Return detailTableViewElements
     End Function

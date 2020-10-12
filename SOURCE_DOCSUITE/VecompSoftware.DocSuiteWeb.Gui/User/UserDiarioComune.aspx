@@ -101,7 +101,7 @@
             <PagerStyle Position="Top" Visible="False" />
         </MasterTableView>
         <ClientSettings AllowDragToGroup="True" />
-        <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Decrescente" SortToolTip="Ordina" />
+        <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine Decrescente" SortToolTip="Ordina" />
     </DocSuite:BaseGrid>
 </asp:Content>
 

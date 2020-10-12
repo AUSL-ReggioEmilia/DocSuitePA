@@ -96,7 +96,7 @@ Partial Public Class CommonSelMiscellanea
                 For Each addedDocument As DocumentInfo In DocumentUpload.DocumentInfos
                     addedDocument.AddAttribute(BiblosFacade.NOTE_ATTRIBUTE, txtNote.Text)
                     addedDocument.AddAttribute(BiblosFacade.REGISTRATION_USER_ATTRIBUTE, DocSuiteContext.Current.User.FullUserName)
-                    Dim biblosFunc As Func(Of DocumentInfo, BiblosDocumentInfo) = If(Action.Eq(ADD_ACTION), (Function(d As DocumentInfo) SaveBiblosDocument(d, chainId)), (Function(d As DocumentInfo) UpdateBiblosDocument(d)))
+                    Dim biblosFunc As Func(Of DocumentInfo, BiblosDocumentInfo) = If(Action.Eq(ADD_ACTION), Function(d As DocumentInfo) SaveBiblosDocument(d, chainId), Function(d As DocumentInfo) UpdateBiblosDocument(d))
                     Dim savedTemplate As BiblosDocumentInfo = biblosFunc(addedDocument)
                     chainId = savedTemplate.ChainId
                 Next
@@ -126,7 +126,7 @@ Partial Public Class CommonSelMiscellanea
     End Sub
     Private Function UpdateBiblosDocument(document As DocumentInfo) As BiblosDocumentInfo
         Try
-            Dim toUpdate As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentInfo(MiscellaneaLocation.DocumentServer, IdDocument.Value, Nothing, True).First()
+            Dim toUpdate As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentInfo(IdDocument.Value, Nothing, True).First()
             toUpdate.Name = document.Name
             toUpdate.Stream = document.Stream
             toUpdate.Attributes(BiblosFacade.NOTE_ATTRIBUTE) = txtNote.Text
@@ -152,13 +152,13 @@ Partial Public Class CommonSelMiscellanea
             Exit Function
         End If
 
-        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(MiscellaneaLocation.DocumentServer, ArchiveName, chainId)
+        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(ArchiveName, chainId)
         Return storedBiblosDocumentInfo
     End Function
 
     Private Sub LoadDocuments(idDocument As Guid, idChain As Guid)
         Dim docsList As IList(Of BiblosDocumentInfo) = New List(Of BiblosDocumentInfo)
-        Dim docInfo As BiblosDocumentInfo = New BiblosDocumentInfo(MiscellaneaLocation.DocumentServer, idDocument, idChain)
+        Dim docInfo As BiblosDocumentInfo = New BiblosDocumentInfo(idDocument, idChain)
         DocumentUpload.LoadDocumentInfo(docInfo, False, True, False, False)
         If docInfo.GetAttributeValue(BiblosFacade.NOTE_ATTRIBUTE) IsNot Nothing AndAlso Not String.IsNullOrEmpty(docInfo.Attributes(BiblosFacade.NOTE_ATTRIBUTE)) Then
             txtNote.Text = docInfo.GetAttributeValue(BiblosFacade.NOTE_ATTRIBUTE).ToString()

@@ -1,6 +1,7 @@
 <Serializable()> _
 Public Class Parameter
     Inherits AuditableDomainObject(Of Integer)
+    Implements ISupportTenant
 
 
 #Region "private data"
@@ -29,6 +30,7 @@ Public Class Parameter
     Public Overridable Property LastUsedIdRoleUser As Short
     Public Overridable Property LastUsedYearReg As Short
     Public Overridable Property LastUsedNumberReg As Integer
+    Public Overridable Property IdTenantAOO As Guid? Implements ISupportTenant.IdTenantAOO
 
 #End Region
 

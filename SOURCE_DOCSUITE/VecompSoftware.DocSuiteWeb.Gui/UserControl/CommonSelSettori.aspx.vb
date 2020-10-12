@@ -300,7 +300,7 @@ Partial Public Class CommonSelSettori
             If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.TenantAuthorizationEnabled AndAlso lbMultiDomain.SelectedItem IsNot Nothing AndAlso TenantEnabled Then
                 results = Search(txtFiltraSettori.Text, tenantId:=Guid.Parse(lbMultiDomain.SelectedItem.Value))
             Else
-                results = Search(txtFiltraSettori.Text)
+                results = Search(txtFiltraSettori.Text, tenantId:=CurrentTenant.UniqueId)
             End If
             LoadRoles(results)
         End If
@@ -333,7 +333,7 @@ Partial Public Class CommonSelSettori
                 Dim roleIds As IList(Of Integer) = CurrentCategoryFascicleRightFacade.GetByIdCategory(idCategorySelected).Select(Function(f) f.Role.Id).ToList()
                 Return Facade.RoleFacade.GetUserRolesByCategory(Environment, roleIds, rightPosition, isActive, filter, False, tenantId:=tenantId, roleUserType:=RoleUserType.RP)
             End If
-            Return Facade.RoleFacade.GetUserRoles(Environment, rightPosition, isActive, filter, False, Nothing, tenantId:=tenantId)
+            Return Facade.RoleFacade.GetUserRoles(Environment, rightPosition, isActive, filter, False, Nothing, tenantId:=tenantId, multitenantEnabled:=ProtocolEnv.MultiTenantEnabled)
         Else
 
             If RightEnabled Then

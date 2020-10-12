@@ -9,6 +9,11 @@ Public Class uscMetadataRepository
             Return pageContentDiv
         End Get
     End Property
+    Public ReadOnly Property FolderToolBar_Grid As RadToolBar
+        Get
+            Return FolderToolBar
+        End Get
+    End Property
 
 #End Region
 

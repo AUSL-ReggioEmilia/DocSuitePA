@@ -60,11 +60,11 @@ class ReportDesignerList {
             .always(() => this.hideLoading());
     }
 
-    btnNew_OnClick = (source: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnNew_OnClick = (source: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         location.href = "ReportDesigner.aspx";
     }
 
-    btnEdit_OnClick = (source: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnEdit_OnClick = (source: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvReports.get_selectedNode();
         if (!selectedNode || !selectedNode.get_value()) {
             return;

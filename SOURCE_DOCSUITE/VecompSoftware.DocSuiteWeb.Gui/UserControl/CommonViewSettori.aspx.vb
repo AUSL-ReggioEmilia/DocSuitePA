@@ -17,7 +17,7 @@ Partial Public Class CommonViewSettori
     Private ReadOnly Property CurrentProtocol As Protocol
         Get
             If _currentProtocol Is Nothing AndAlso UniqueIdProtocol.HasValue Then
-                _currentProtocol = Facade.ProtocolFacade.GetByUniqueId(UniqueIdProtocol.Value)
+                _currentProtocol = Facade.ProtocolFacade.GetById(UniqueIdProtocol.Value)
             End If
             Return _currentProtocol
         End Get

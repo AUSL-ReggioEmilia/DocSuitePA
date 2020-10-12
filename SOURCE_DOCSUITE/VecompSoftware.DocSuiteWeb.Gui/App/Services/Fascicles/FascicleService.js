@@ -29,17 +29,22 @@ define(["require", "exports", "App/Models/ODATAResponseModel", "App/Services/Bas
          * @param callback
          * @param error
          */
-        FascicleService.prototype.insertFascicle = function (model, callback, error) {
+        FascicleService.prototype.insertFascicle = function (model, actionType, callback, error) {
             var url = this._configuration.WebAPIUrl;
-            switch (model.FascicleType) {
-                case FascicleType.Activity:
-                    url = url.concat("?actionType=", InsertActionType.InsertActivityFascicle.toString());
-                    break;
-                case FascicleType.Period:
-                    url = url.concat("?actionType=", InsertActionType.InsertPeriodicFascicle.toString());
-                    break;
-                case FascicleType.Procedure:
-                    break;
+            if (!actionType) {
+                switch (model.FascicleType) {
+                    case FascicleType.Activity:
+                        url = url.concat("?actionType=", InsertActionType.InsertActivityFascicle.toString());
+                        break;
+                    case FascicleType.Period:
+                        url = url.concat("?actionType=", InsertActionType.InsertPeriodicFascicle.toString());
+                        break;
+                    case FascicleType.Procedure:
+                        break;
+                }
+            }
+            else {
+                url = url.concat("?actionType=", actionType.toString());
             }
             this.postRequest(url, JSON.stringify(model), callback, error);
         };
@@ -51,7 +56,7 @@ define(["require", "exports", "App/Models/ODATAResponseModel", "App/Services/Bas
          */
         FascicleService.prototype.updateFascicle = function (model, actionType, callback, error) {
             var url = this._configuration.WebAPIUrl;
-            if (model.FascicleType == FascicleType.Activity) {
+            if (model.FascicleType == FascicleType.Activity && actionType !== UpdateActionType.ChangeFascicleType) {
                 actionType = UpdateActionType.ActivityFascicleUpdate;
             }
             if (actionType) {
@@ -93,7 +98,7 @@ define(["require", "exports", "App/Models/ODATAResponseModel", "App/Services/Bas
          */
         FascicleService.prototype.getFascicle = function (id, callback, error) {
             var url = this._configuration.ODATAUrl;
-            var data = "$filter=UniqueId eq ".concat(id, '&$expand=Category,Container,Contacts,FascicleDocumentUnits,FascicleDocuments,FascicleRoles($expand=Role)');
+            var data = "$filter=UniqueId eq " + id + "&$expand=Category($expand=CategoryFascicles($expand=CategoryFascicleRights)),Container,Contacts,FascicleDocumentUnits,FascicleDocuments,MetadataRepository,DossierFolders,FascicleRoles($expand=Role($expand=Father))";
             this.getRequest(url, data, function (response) {
                 if (callback) {
                     var mapper = new FascicleModelMapper();
@@ -201,8 +206,8 @@ define(["require", "exports", "App/Models/ODATAResponseModel", "App/Services/Bas
                 }
             }, error);
         };
-        FascicleService.prototype.getFascicleByCategory = function (idCategory, name, callback, error) {
-            var url = this._configuration.ODATAUrl.concat("/FascicleService.GetFasciclesByCategory(idCategory=", idCategory.toString(), ",name='", name, "')");
+        FascicleService.prototype.getFascicleByCategory = function (idCategory, name, hasProcess, callback, error) {
+            var url = this._configuration.ODATAUrl + "/FascicleService.GetFasciclesByCategory(idCategory=" + idCategory + ", name='" + name + "', hasProcess=" + hasProcess + ")";
             this.getRequest(url, null, function (response) {
                 if (callback) {
                     var responseModel = new ODATAResponseModel(response);
@@ -274,11 +279,25 @@ define(["require", "exports", "App/Models/ODATAResponseModel", "App/Services/Bas
                 }
             }, error);
         };
-        FascicleService.prototype.getDossiersById = function (uniqueId, callback, error) {
-            var url = this._configuration.ODATAUrl;
-            var data = "$expand=DossierFolders($expand=Dossier)&$filter=UniqueId eq " + uniqueId;
-            this.getRequest(url, data, function (response) {
+        FascicleService.prototype.getAuthorizedFasciclesFromDocumentUnit = function (uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl.concat("/FascicleService.AuthorizedFasciclesFromDocumentUnit(uniqueIdDocumentUnit=", uniqueId, ")");
+            this.getRequest(url, null, function (response) {
                 if (callback) {
+                    var instances = new Array();
+                    var mapper = new FascicleModelMapper();
+                    instances = mapper.MapCollection(response.value);
+                    callback(instances);
+                }
+            }, error);
+        };
+        FascicleService.prototype.countAuthorizedFasciclesFromDocumentUnit = function (uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl.concat("/FascicleService.CountAuthorizedFasciclesFromDocumentUnit(uniqueIdDocumentUnit=", uniqueId, ")");
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    if (!response) {
+                        callback(undefined);
+                        return;
+                    }
                     callback(response.value);
                 }
             }, error);

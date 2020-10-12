@@ -198,6 +198,12 @@ namespace VecompSoftware.WebAPIManager
             {
                 baseUrl += "&";
             }
+            else if (baseUrl.Contains("?"))
+            {
+                //if we are passing a query expression which already contains the ? symbol we want to add &
+                //e.g. SomeService.SomeServiceMethod(arg1=@p0)?@p0={0}
+                baseUrl += "&";
+            }
             else
             {
                 baseUrl += "?";

@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "PEC/PECBase", "App/Helpers/ServiceConfigurationHelper", "App/Models/Fascicles/FascicleModel", "App/Services/Workflows/WorkflowActivityLogService", "../App/Models/DocumentUnits/ChainType", "../App/Services/Fascicles/FascicleDocumentService", "App/Services/Fascicles/FascicleFolderService"], function (require, exports, PECBase, ServiceConfigurationHelper, FascicleModel, WorkflowActivityLogService, ChainType, FascicleDocumentService, FascicleFolderService) {
+define(["require", "exports", "PEC/PECBase", "App/Helpers/ServiceConfigurationHelper", "App/Models/Fascicles/FascicleModel", "App/Services/Workflows/WorkflowActivityLogService", "App/Models/DocumentUnits/ChainType", "App/Services/Fascicles/FascicleDocumentService", "App/Services/Fascicles/FascicleFolderService"], function (require, exports, PECBase, ServiceConfigurationHelper, FascicleModel, WorkflowActivityLogService, ChainType, FascicleDocumentService, FascicleFolderService) {
     var PECToDocumentUnit = /** @class */ (function (_super) {
         __extends(PECToDocumentUnit, _super);
         function PECToDocumentUnit(serviceConfigurations) {
@@ -21,34 +21,34 @@ define(["require", "exports", "PEC/PECBase", "App/Helpers/ServiceConfigurationHe
                 _this._documentListGrid.get_masterTableView().showColumn(1);
                 switch (selected) {
                     case "1": {
-                        _this.cmdInitAndClone.hide();
+                        _this.cmdInitAndClone().hide();
                         if (_this.isPecClone) {
-                            _this.cmdInitAndClone.show();
+                            _this.cmdInitAndClone().show();
                         }
-                        _this.pnlTemplateProtocol.hide();
+                        _this.pnlTemplateProtocol().hide();
                         if (_this.templateProtocolEnabled) {
-                            _this.pnlTemplateProtocol.show();
+                            _this.pnlTemplateProtocol().show();
                         }
-                        _this.pnlUDS.hide();
-                        _this.pnlFascicle.hide();
+                        _this.pnlUDS().hide();
+                        _this.pnlFascicle().hide();
                         break;
                     }
                     case "7": {
-                        _this.cmdInitAndClone.hide();
+                        _this.cmdInitAndClone().hide();
                         if (_this.isPecClone) {
-                            _this.cmdInitAndClone.show();
+                            _this.cmdInitAndClone().show();
                         }
-                        _this.pnlTemplateProtocol.hide();
-                        _this.pnlUDS.show();
-                        _this.pnlFascicle.hide();
+                        _this.pnlTemplateProtocol().hide();
+                        _this.pnlUDS().show();
+                        _this.pnlFascicle().hide();
                         break;
                     }
                     case "8": {
                         _this._documentListGrid.get_masterTableView().hideColumn(1);
-                        _this.cmdInitAndClone.hide();
-                        _this.pnlTemplateProtocol.hide();
-                        _this.pnlUDS.hide();
-                        _this.pnlFascicle.show();
+                        _this.cmdInitAndClone().hide();
+                        _this.pnlTemplateProtocol().hide();
+                        _this.pnlUDS().hide();
+                        _this.pnlFascicle().show();
                         break;
                     }
                 }
@@ -58,9 +58,13 @@ define(["require", "exports", "PEC/PECBase", "App/Helpers/ServiceConfigurationHe
                 if (!jQuery.isEmptyObject(uscFascicleSearch)) {
                     var selectedFascicle = uscFascicleSearch.getSelectedFascicle();
                     if (selectedFascicle) {
+                        var selectedFascicleFolder = uscFascicleSearch.getSelectedFascicleFolder();
                         var ajaxModel = {};
                         ajaxModel.Value = new Array();
                         ajaxModel.Value.push(selectedFascicle.UniqueId);
+                        if (selectedFascicleFolder) {
+                            ajaxModel.Value.push(selectedFascicleFolder.UniqueId);
+                        }
                         ajaxModel.ActionName = PECToDocumentUnit.INSERT_MISCELLANEA;
                         $find(_this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
                     }
@@ -74,48 +78,24 @@ define(["require", "exports", "PEC/PECBase", "App/Helpers/ServiceConfigurationHe
             });
             return _this;
         }
-        Object.defineProperty(PECToDocumentUnit.prototype, "cmdInit", {
-            get: function () {
-                return $("#" + this.cmdInitId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(PECToDocumentUnit.prototype, "cmdInitAndClone", {
-            get: function () {
-                return $("#" + this.cmdInitAndCloneId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(PECToDocumentUnit.prototype, "pnlTemplateProtocol", {
-            get: function () {
-                return $("#" + this.pnlTemplateProtocolId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(PECToDocumentUnit.prototype, "pnlUDS", {
-            get: function () {
-                return $("#" + this.pnlUDSSelectId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(PECToDocumentUnit.prototype, "pnlFascicle", {
-            get: function () {
-                return $("#" + this.pnlFascicleSelectId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(PECToDocumentUnit.prototype, "pnlButtons", {
-            get: function () {
-                return $("#" + this.pnlButtonsId);
-            },
-            enumerable: true,
-            configurable: true
-        });
+        PECToDocumentUnit.prototype.cmdInit = function () {
+            return $("#" + this.cmdInitId);
+        };
+        PECToDocumentUnit.prototype.cmdInitAndClone = function () {
+            return $("#" + this.cmdInitAndCloneId);
+        };
+        PECToDocumentUnit.prototype.pnlTemplateProtocol = function () {
+            return $("#" + this.pnlTemplateProtocolId);
+        };
+        PECToDocumentUnit.prototype.pnlUDS = function () {
+            return $("#" + this.pnlUDSSelectId);
+        };
+        PECToDocumentUnit.prototype.pnlFascicle = function () {
+            return $("#" + this.pnlFascicleSelectId);
+        };
+        PECToDocumentUnit.prototype.pnlButtons = function () {
+            return $("#" + this.pnlButtonsId);
+        };
         PECToDocumentUnit.prototype.initialize = function () {
             _super.prototype.initialize.call(this);
             var serviceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowActivityLog");
@@ -126,13 +106,13 @@ define(["require", "exports", "PEC/PECBase", "App/Helpers/ServiceConfigurationHe
             this._fascicleFolderService = new FascicleFolderService(fascicleFolderServiceConfiguration);
             this._loadingPanel = $find(this.ajaxLoadingPanelId);
             this._documentListGrid = $find(this.documentListGridId);
-            this.cmdInitAndClone.hide();
+            this.cmdInitAndClone().hide();
             if (this.isPecClone) {
-                this.cmdInitAndClone.show();
+                this.cmdInitAndClone().show();
             }
-            this.pnlTemplateProtocol.hide();
+            this.pnlTemplateProtocol().hide();
             if (this.templateProtocolEnabled) {
-                this.pnlTemplateProtocol.show();
+                this.pnlTemplateProtocol().show();
             }
             this._rblDocumentUnit = $("#".concat(this.rblDocumentUnitId));
         };
@@ -168,12 +148,12 @@ define(["require", "exports", "PEC/PECBase", "App/Helpers/ServiceConfigurationHe
                 return selectedFascicle != null;
             }
         };
-        PECToDocumentUnit.prototype.confirmCallback = function (idChain, idFascicle, isNewArchiveChain, errorMessage) {
+        PECToDocumentUnit.prototype.confirmCallback = function (idChain, idFascicle, isNewArchiveChain, errorMessage, idFascicleFolder) {
             var _this = this;
             if (errorMessage) {
                 alert(errorMessage);
                 this._loadingPanel.hide(this.documentListGridId);
-                this.pnlButtons.show();
+                this.pnlButtons().show();
                 return;
             }
             if (isNewArchiveChain) {
@@ -182,7 +162,7 @@ define(["require", "exports", "PEC/PECBase", "App/Helpers/ServiceConfigurationHe
                 fascicleDocumentModel_1.IdArchiveChain = idChain;
                 fascicleDocumentModel_1.Fascicle = new FascicleModel();
                 fascicleDocumentModel_1.Fascicle.UniqueId = idFascicle;
-                this._fascicleFolderService.getDefaultFascicleFolder(idFascicle, function (data) {
+                this._fascicleFolderService.getById(idFascicleFolder, function (data) {
                     if (!data) {
                         _this._loadingPanel.hide(_this.pageContentId);
                         _this.showNotificationException(_this.uscNotificationId, null, "E' avvenuto un errore durante il processo di fascicolazione");

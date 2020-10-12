@@ -58,7 +58,7 @@ Partial Public Class TbltTemplateDocumentRepositoryGes
     Protected ReadOnly Property CurrentTemplateDocument As BiblosDocumentInfo
         Get
             If _templateDocument Is Nothing AndAlso TemplateIdArchiveChain.HasValue Then
-                Dim document As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentsLatestVersion(CurrentTemplateDocumentRepositoryLocation.DocumentServer, TemplateIdArchiveChain.Value).FirstOrDefault()
+                Dim document As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentsLatestVersion(TemplateIdArchiveChain.Value).FirstOrDefault()
                 If document Is Nothing Then
                     Throw New DocSuiteException(String.Concat("Nessun documento trovato per idchain ", TemplateIdArchiveChain.Value))
                 End If
@@ -72,6 +72,11 @@ Partial Public Class TbltTemplateDocumentRepositoryGes
 
 #Region " Events "
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
+
         InitializeAjax()
 
         If Not IsPostBack Then
@@ -135,7 +140,7 @@ Partial Public Class TbltTemplateDocumentRepositoryGes
 
     Private Function UpdateBiblosDocument(document As DocumentInfo) As BiblosDocumentInfo
         Try
-            Dim toUpdate As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentsLatestVersion(CurrentTemplateDocumentRepositoryLocation.DocumentServer, TemplateIdArchiveChain.Value).FirstOrDefault()
+            Dim toUpdate As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentsLatestVersion(TemplateIdArchiveChain.Value).FirstOrDefault()
             toUpdate.Name = document.Name
             toUpdate.Stream = document.Stream
             toUpdate.ClearForCopy()
@@ -153,7 +158,7 @@ Partial Public Class TbltTemplateDocumentRepositoryGes
         End If
 
         document.Signature = String.Empty
-        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(CurrentTemplateDocumentRepositoryLocation.DocumentServer, CurrentTemplateDocumentRepositoryLocation.ProtBiblosDSDB)
+        Dim storedBiblosDocumentInfo As BiblosDocumentInfo = document.ArchiveInBiblos(CurrentTemplateDocumentRepositoryLocation.ProtBiblosDSDB)
         Return storedBiblosDocumentInfo
     End Function
 

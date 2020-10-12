@@ -20,7 +20,29 @@ enum UpdateActionType {
     CancelFascicle = OpenFascicleClosed * 2,
     PECMailManaged = CancelFascicle * 2,
     PECMailInvoiceTenantCorrection = PECMailManaged * 2,
-    FascicleMoveToFolder = PECMailInvoiceTenantCorrection * 2
+    FascicleMoveToFolder = PECMailInvoiceTenantCorrection * 2,
+    TenantContainerAdd = FascicleMoveToFolder * 2,
+    TenantRoleAdd = TenantContainerAdd * 2,
+    TenantContactAdd = TenantRoleAdd * 2,
+    TenantConfigurationAdd = TenantContactAdd * 2,
+    TenantPECMailBoxAdd = TenantConfigurationAdd * 2,
+    TenantWorkflowRepositoryAdd = TenantPECMailBoxAdd * 2,
+    TenantContainerRemove = TenantWorkflowRepositoryAdd * 2,
+    TenantRoleRemove = TenantContainerRemove * 2,
+    TenantConfigurationRemove = TenantRoleRemove * 2,
+    TenantPECMailBoxRemove = TenantConfigurationRemove * 2,
+    TenantWorkflowRepositoryRemove = TenantPECMailBoxRemove * 2,
+    TenantContactRemove = TenantWorkflowRepositoryRemove * 2,
+    CollaborationManaged = TenantContactRemove * 2,
+    TenantContainerAddAll = CollaborationManaged * 2,
+    TenantContainerRemoveAll = TenantContainerAddAll * 2,
+    TenantRoleAddAll = TenantContainerRemoveAll * 2,
+    TenantRoleRemoveAll = TenantRoleAddAll * 2,
+    TenantContactAddAll = TenantRoleRemoveAll * 2,
+    TenantContactRemoveAll = TenantContactAddAll * 2,
+    CloneProcessFolder = TenantContactRemoveAll * 2,
+    AssociatedProcessDossierFolderToFascicle = CloneProcessFolder * 2,
+    ChangeFascicleType = AssociatedProcessDossierFolderToFascicle * 2
 }
 
 export = UpdateActionType;

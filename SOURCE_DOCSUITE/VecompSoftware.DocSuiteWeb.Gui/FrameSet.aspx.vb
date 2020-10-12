@@ -5,12 +5,20 @@ Imports System.Reflection
 Imports System.Web
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Dossiers
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Entity.Dossiers
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Parameters
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Logging
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Dossiers
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Commons
 
 Partial Public Class FrameSet
     Inherits CommonBasePage
@@ -69,7 +77,6 @@ Partial Public Class FrameSet
 
     Private Const JavascriptToolBarClicking As String = "ToolBarClientClicking"
     Private _currentUserLog As UserLog
-    Private Shared _companyName As String
 
 #End Region
 
@@ -135,6 +142,24 @@ Partial Public Class FrameSet
         End Get
     End Property
 
+    Private ReadOnly Property Metadato As String
+        Get
+            Return Request.QueryString("Metadato")
+        End Get
+    End Property
+
+    Private ReadOnly Property Valore As String
+        Get
+            Return Request.QueryString("Valore")
+        End Get
+    End Property
+
+    Private ReadOnly Property Fascicolo As String
+        Get
+            Return Request.QueryString("Fascicolo")
+        End Get
+    End Property
+
     Private ReadOnly Property IsRejectionVisible As Boolean
         Get
             ' Verifico sia abilitato il rigetto di protocollo,
@@ -155,19 +180,10 @@ Partial Public Class FrameSet
     Private ReadOnly Property CurrentUserLog As UserLog
         Get
             If _currentUserLog Is Nothing Then
-                _currentUserLog = Facade.UserLogFacade.GetByUser(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
+                _currentUserLog = Facade.UserLogFacade.GetByUser(DocSuiteContext.Current.User.FullUserName)
             End If
             Return _currentUserLog
         End Get
-    End Property
-
-    Public Shared Property CompanyName As String
-        Get
-            Return _companyName
-        End Get
-        Set(value As String)
-            _companyName = value
-        End Set
     End Property
 
 #End Region
@@ -194,19 +210,13 @@ Partial Public Class FrameSet
             ' header 
             applicationTitle.Text = DocSuiteContext.Current.ProtocolEnv.ApplicationName
 
-
-            If ProtocolEnv.MultiTenantEnabled Then
-                btnCompanyName.Visible = True
-                CompanyName = SearchSelectedCompanyForTheCurrentUser()
-                btnCompanyName.Text = CompanyName
-                btnCompanyName.AutoPostBack = True
-                btnCompanyName.OnClientClicking = JavascriptToolBarClicking
-                btnCompanyName.NavigateUrl = "Utlt/UserProfile.aspx"
-                btnCompanyName.Target = main.ClientID
-
-                btnReloadSessionTenant.Visible = True
-            End If
-            ' Company Name
+            btnCompanyName.Visible = DocSuiteContext.Current.ProtocolEnv.MultiTenantEnabled
+            btnCompanyName.Text = SearchSelectedCompanyForTheCurrentUser()
+            btnCompanyName.AutoPostBack = True
+            btnCompanyName.OnClientClicking = JavascriptToolBarClicking
+            btnCompanyName.NavigateUrl = "Utlt/UserProfile.aspx"
+            btnCompanyName.Target = main.ClientID
+            btnReloadSessionTenant.Visible = DocSuiteContext.Current.ProtocolEnv.MultiTenantEnabled
 
             ' Se abilitato il parametro MoveScrivaniaMenu disabilito la scrivania, le voci di menu vengono spostate nel menu principale
             btnScrivania.Visible = False
@@ -262,13 +272,20 @@ Partial Public Class FrameSet
                 DocSuiteContext.Current.RefreshPrivacyLevel(privacyLevelFacade.GetCurrentPrivacyLevels())
             End If
 
-            If ProtocolEnv.MultiTenantEnabled AndAlso CurrentTenant Is Nothing Then
+            If CurrentTenant Is Nothing Then
                 AjaxManager.ResponseScripts.Add($"notifyAndRedirectToConfiguration('Utlt/UserProfile.aspx','{main.ClientID}');")
             End If
 
             btnHelp.OnClientClicking = JavascriptToolBarClicking
             btnHelp.Target = main.ClientID
+
+            If ProtocolEnv.FulltextEnabled Then
+                btnFullText.OnClientClicking = JavascriptToolBarClicking
+                btnFullText.Target = main.ClientID
+                btnFullText.Visible = True
+            End If
         End If
+
     End Sub
 
 
@@ -312,7 +329,6 @@ Partial Public Class FrameSet
         AjaxManager.AjaxSettings.AddAjaxSetting(btnReloadSessionTenant, btnReloadSessionTenant)
     End Sub
 
-
     Private Sub ButtonRenew_Click(sender As Object, e As EventArgs) Handles btnReloadSessionTenant.Click
         If DocSuiteContext.Current.ProtocolEnv.MultiTenantEnabled Then
             Dim tenantFacade As Facade.Common.Tenants.TenantFacade = New Facade.Common.Tenants.TenantFacade()
@@ -321,9 +337,8 @@ Partial Public Class FrameSet
         End If
     End Sub
 
-
     Private Function SearchSelectedCompanyForTheCurrentUser() As String
-        Dim companyname As String = CommonShared.UserDomain
+        Dim companyname As String = "AOO non configurata"
         Try
             If CurrentTenant IsNot Nothing Then
                 companyname = CurrentTenant.CompanyName
@@ -407,6 +422,9 @@ Partial Public Class FrameSet
         If Not String.IsNullOrEmpty(customTipo) Then
             StartWithCollapsedMenu()
         End If
+        If Not String.IsNullOrEmpty(customTipo) Then
+            customTipo = customTipo.ToLower()
+        End If
 
         Select Case customTipo
             Case ""
@@ -422,7 +440,7 @@ Partial Public Class FrameSet
                 End If
                 Return url
 
-            Case "Coll"
+            Case "coll"
                 Dim url As String
                 Select Case customAzione
                     Case "Apri", ""
@@ -446,13 +464,20 @@ Partial Public Class FrameSet
                 End Select
                 Return url
 
-            Case "Docm"
+            Case "docm"
                 Dim url As String
                 Select Case customAzione
                     Case "Inserimento"
                         url = "docm/DocmInserimento.aspx"
                     Case "Apri"
+                        url = $"docm/DocmVisualizza.aspx?{CommonShared.AppendSecurityCheck($"Year={Anno}&Number={Numero}&Type=Docm")}"
                         url = "docm/DocmVisualizza.aspx?" & CommonShared.AppendSecurityCheck("Year=" & Anno & "&Number=" & Numero & "&Type=Docm")
+                    Case "ApriConServiceNumber"
+                        Dim document As Document = Facade.DocumentFacade.GetByServiceNumber(Request.QueryString.Get("ServiceNumber")).FirstOrDefault()
+                        If document Is Nothing Then
+                            Throw New DocSuiteException("Pratica non trovata coi seguenti riferimenti")
+                        End If
+                        url = $"docm/DocmVisualizza.aspx?{CommonShared.AppendSecurityCheck($"Year={document.Year}&Number={document.Number}&Type=Docm")}"
                     Case "Cerca"
                         url = "docm/DocmRicerca.aspx"
                     Case Else
@@ -460,7 +485,7 @@ Partial Public Class FrameSet
                 End Select
                 Return url
 
-            Case "Prot"
+            Case "prot"
                 Select Case customAzione
                     Case "Inserimento"
                         Return "Prot/ProtInserimento.aspx?" & CommonShared.AppendSecurityCheck("Action=Insert")
@@ -539,22 +564,38 @@ Partial Public Class FrameSet
                         If Not String.IsNullOrEmpty(Anno) AndAlso String.IsNullOrEmpty(Numero) Then
                             Dim prot As Protocol = Facade.ProtocolFacade.FinderProtocolByMetadati(Short.Parse(Anno), accountingSectional, container, Integer.Parse(vatRegistrationNumber))
                             If prot Is Nothing Then
-                                Throw New DocSuiteException("Protocollo non trovato")
+                                Throw New DocSuiteException("Protocollo non trovato nella AOO corrente")
                             End If
                             If prot IsNot Nothing Then
-                                number = prot.Id.Number.ToString()
+                                number = prot.Number.ToString()
                             End If
                         End If
-                        Return String.Concat("Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Concat("Year=", year, "&Number=", number, extension, claim)))
+                        Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(Short.Parse(year), Integer.Parse(number))
+                        If currentProtocol Is Nothing Then
+                            Throw New DocSuiteException("Protocollo non trovato nella AOO corrente")
+                        End If
+                        Return $"Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={currentProtocol.Id}{extension}")}"
                     Case "ApriFattura"
                         ' TODO: questa cosa non funzionava, non esisteva e fa riferimento a cose che solo gli antichi conoscono
                         Throw New DocSuiteException("Errore apertura link", String.Format("Problema con [ApriFattura]. {0}", ProtocolEnv.DefaultErrorMessage))
                     Case "Modifica"
-                        Return "Prot/ProtModifica.aspx?" & CommonShared.AppendSecurityCheck("Year=" & Anno & "&Number=" & Numero)
+                        Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(Short.Parse(Anno), Integer.Parse(Numero))
+                        If currentProtocol Is Nothing Then
+                            Throw New DocSuiteException("Protocollo non trovato nella AOO corrente")
+                        End If
+                        Return $"Prot/ProtModifica.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={currentProtocol.Id}&Type=Prot")}"
                     Case "Interop"
-                        Return "Prot/ProtInterop.aspx?" & CommonShared.AppendSecurityCheck("Year=" & Anno & "&Number=" & Numero)
+                        Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(Short.Parse(Anno), Integer.Parse(Numero))
+                        If currentProtocol Is Nothing Then
+                            Throw New DocSuiteException("Protocollo non trovato nella AOO corrente")
+                        End If
+                        Return $"Prot/ProtInterop.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={currentProtocol.Id}&Type=Prot")}"
                     Case "Collegamenti"
-                        Return "Prot/ProtCollegamenti.aspx?" & CommonShared.AppendSecurityCheck("Year=" & Anno & "&Number=" & Numero)
+                        Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(Short.Parse(Anno), Integer.Parse(Numero))
+                        If currentProtocol Is Nothing Then
+                            Throw New DocSuiteException("Protocollo non trovato nella AOO corrente")
+                        End If
+                        Return $"Prot/ProtCollegamenti.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={currentProtocol.Id}&Type=Prot")}"
                     Case "Cerca"
                         Return "Prot/ProtRicerca.aspx"
                     Case "Ricerca"
@@ -574,20 +615,79 @@ Partial Public Class FrameSet
                                                         Request.QueryString("Oggetto"))
                         Return "Prot/ProtRisultati.aspx?" & CommonShared.AppendSecurityCheck(parameters)
                 End Select
-            Case "Fasc"
+            Case "fasc"
                 Select Case customAzione
                     Case "Inserimento"
-                        Return String.Concat("Fasc/FascInserimento.aspx?", CommonShared.AppendSecurityCheck("Type=Fasc&Action=Insert"))
+                        Return String.Concat($"Fasc/{If(ProtocolEnv.ProcessEnabled, "FascProcessInserimento.aspx", "FascInserimento.aspx")}?", CommonShared.AppendSecurityCheck("Type=Fasc&Action=Insert"))
                     Case "Apri"
+                        Dim fascicleId As Guid
+                        If Anno IsNot Nothing AndAlso Numero IsNot Nothing Then
+                            Dim fascicleFinder As FascicleFinder = New FascicleFinder(DocSuiteContext.Current.CurrentTenant) With {
+                                .Year = Integer.Parse(Anno),
+                                .FascicleTitle = Numero,
+                                .EnablePaging = False
+                            }
+                            Dim fascicleDto As WebAPIDto(Of Entity.Fascicles.Fascicle) = fascicleFinder.DoSearch().FirstOrDefault()
+                            If fascicleDto IsNot Nothing Then
+                                fascicleId = fascicleDto.Entity.UniqueId
+                            Else
+                                Throw New DocSuiteException($"Fascicolo con l'anno {Anno} e numero {Numero} non trovato")
+                            End If
+                        ElseIf Metadato IsNot Nothing AndAlso Valore IsNot Nothing Then
+                            Dim metadataRepositoryFinder As MetadataRepositoryFinder = New MetadataRepositoryFinder(DocSuiteContext.Current.CurrentTenant) With {
+                                .MetadataKeyName = Metadato,
+                                .EnablePaging = False
+                            }
+                            Dim metadataRepositories As List(Of Entity.Commons.MetadataRepository) = metadataRepositoryFinder.DoSearch().Select(Function(x) x.Entity).ToList()
+                            Dim fascicleFinder As FascicleFinder = New FascicleFinder(DocSuiteContext.Current.CurrentTenant) With {
+                                .EnablePaging = False
+                            }
+                            Dim metadataRepositoryId As Guid? = Nothing
+                            For Each metadataRepository As Entity.Commons.MetadataRepository In metadataRepositories
+                                fascicleFinder.IdMetadataRepository = metadataRepository.UniqueId
+                                Dim fascicle As WebAPIDto(Of Entity.Fascicles.Fascicle) = fascicleFinder.DoSearch().FirstOrDefault()
+                                If fascicle IsNot Nothing Then
+                                    metadataRepositoryId = metadataRepository.UniqueId
+                                    Exit For
+                                End If
+                            Next
+                            fascicleFinder.IdMetadataRepository = Nothing
+                            fascicleFinder.FascicleFinderModel = New FascicleFinderModel() With {
+                                .MetadataValues = New List(Of MetadataFinderModel) From {
+                                    New MetadataFinderModel With {
+                                        .KeyName = Metadato,
+                                        .Value = Valore
+                                    }
+                                },
+                                .IdMetadataRepository = metadataRepositoryId,
+                                .Top = 1,
+                                .ApplySecurity = True,
+                                .FascicleStatus = 1,
+                                .SubjectSearchStrategy = 1
+                            }
+                            fascicleFinder.CustomPageIndex = 0
+                            fascicleFinder.PageSize = 1
+                            If Not String.IsNullOrEmpty(Anno) Then
+                                fascicleFinder.FascicleFinderModel.Year = Short.Parse(Anno)
+                            End If
+                            Dim fascicleDto As WebAPIDto(Of FascicleModel) = fascicleFinder.GetFromPostMethod().FirstOrDefault()
+                            If fascicleDto IsNot Nothing Then
+                                fascicleId = fascicleDto.Entity.UniqueId
+                            Else
+                                Throw New DocSuiteException($"Fascicolo con metadato {Metadato} e valore {Valore} non trovato")
+                            End If
+                        Else
+                            fascicleId = IdFascicle
+                        End If
                         Dim extension As String = String.Empty
                         Dim claim As String = String.Empty
-                        Return String.Concat("Fasc/FascVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Concat("Type=Fasc&IdFascicle=", IdFascicle, Numero, claim)))
+                        Return String.Concat("Fasc/FascVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Concat("Type=Fasc&IdFascicle=", fascicleId, claim)))
                     Case "Modifica"
                         Return String.Concat("Fasc/FascModifica.aspx?", CommonShared.AppendSecurityCheck(String.Format("Type=Fasc&IdFascicle={0}", IdFascicle)))
                     Case "Cerca"
                         Return "Fasc/FascRicerca.aspx"
                 End Select
-            Case "Resl"
+            Case "resl"
                 Select Case customAzione.ToLower()
                     Case "apri"
                         Return String.Format("Resl/{0}?{1}", ReslBasePage.GetViewPageName(Integer.Parse(TargetId)), CommonShared.AppendSecurityCheck("Type=Resl&idResolution=" & TargetId))
@@ -596,26 +696,137 @@ Partial Public Class FrameSet
                     Case "firmaultimapagina"
                         Return String.Concat("Resl/ReslFirmaUltimaPagina.aspx?", CommonShared.AppendSecurityCheck("Type=Resl"))
                 End Select
-            Case "Comm"
+            Case "comm"
                 Select Case customAzione
                 End Select
-            Case "DocumentSeries"
+            Case "documentseries"
                 Select Case customAzione
                     Case "Apri"
                         Return "Series/Item.aspx?" & CommonShared.AppendSecurityCheck("IdDocumentSeriesItem=" & TargetDocumentSeriesId & "&Action=View&Type=Series")
                 End Select
-            Case "UDS"
+            Case "uds"
                 Select Case customAzione
                     Case "Apri"
                         Return String.Concat("UDS/UDSView.aspx?", CommonShared.AppendSecurityCheck(String.Format("IdUDSRepository={0}&IdUDS={1}&Action=View&Type=UDS", IdUDSRepository, IdUDS)))
                 End Select
-            Case "Dossier"
+            Case "dossier"
                 Dim url As String
+                Dim dossierVisualizzaUrl As String = "Dossiers/DossierVisualizza.aspx?Type=Dossier&IdDossier={0}&DossierTitle={1}"
                 Select Case customAzione
                     Case "Apri"
-                        url = String.Format("Dossier/DossierVisualizza.aspx?Type= Dossier&IdDossier={0}&DossierTitle={1}", Request.QueryString("IdDossier"), Request.QueryString("DossierTitle"))
+                        Dim idDossier, dossierTitle As String
+                        If Not String.IsNullOrEmpty(Anno) AndAlso Not String.IsNullOrEmpty(Numero) Then
+                            Dim dossierFinder As DossierFinder = New DossierFinder(DocSuiteContext.Current.CurrentTenant) With {
+                                .Year = Integer.Parse(Anno),
+                                .Number = Integer.Parse(Numero),
+                                .EnablePaging = False
+                            }
+                            Dim dossierDto As WebAPIDto(Of Dossier) = dossierFinder.DoSearch().FirstOrDefault()
+                            If dossierDto IsNot Nothing Then
+                                idDossier = dossierDto.Entity.UniqueId.ToString()
+                                dossierTitle = $"{dossierDto.Entity.Year}/{dossierDto.Entity.Number:0000000}"
+                            Else
+                                Throw New DocSuiteException($"Dossier con l'anno {Anno} e numero {Numero} non trovato")
+                            End If
+                        ElseIf Not String.IsNullOrEmpty(Metadato) AndAlso Not String.IsNullOrEmpty(Valore) Then
+                            Dim metadataRepositoryFinder As MetadataRepositoryFinder = New MetadataRepositoryFinder(DocSuiteContext.Current.CurrentTenant) With {
+                                .MetadataKeyName = Metadato,
+                                .EnablePaging = False
+                            }
+                            Dim metadataRepositories As List(Of Entity.Commons.MetadataRepository) = metadataRepositoryFinder.DoSearch().Select(Function(x) x.Entity).ToList()
+                            Dim dossierFinder As DossierFinder = New DossierFinder(DocSuiteContext.Current.CurrentTenant) With {
+                                .EnablePaging = False
+                            }
+                            Dim metadataRepositoryId As Guid? = Nothing
+                            For Each metadataRepository As Entity.Commons.MetadataRepository In metadataRepositories
+                                dossierFinder.IdMetadataRepository = metadataRepository.UniqueId
+                                Dim dossier As WebAPIDto(Of Entity.Dossiers.Dossier) = dossierFinder.DoSearch().FirstOrDefault()
+                                If dossier IsNot Nothing Then
+                                    metadataRepositoryId = metadataRepository.UniqueId
+                                    Exit For
+                                End If
+                            Next
+                            dossierFinder.IdMetadataRepository = Nothing
+                            dossierFinder.DossierFinderModel = New DossierFinderModel() With {
+                                .MetadataValues = New List(Of MetadataFinderModel) From {
+                                    New MetadataFinderModel With {
+                                        .KeyName = Metadato,
+                                        .Value = Valore
+                                    }
+                                },
+                                .IdMetadataRepository = metadataRepositoryId,
+                                .Top = 1
+                            }
+                            dossierFinder.CustomPageIndex = 0
+                            dossierFinder.PageSize = 1
+                            If Not String.IsNullOrEmpty(Anno) Then
+                                dossierFinder.DossierFinderModel.Year = Short.Parse(Anno)
+                            End If
+                            Dim dossierDto As WebAPIDto(Of DossierModel) = dossierFinder.GetFromPostMethod().FirstOrDefault()
+                            If dossierDto IsNot Nothing Then
+                                idDossier = dossierDto.Entity.UniqueId.ToString()
+                                dossierTitle = $"{dossierDto.Entity.Year}/{dossierDto.Entity.Number:0000000}"
+                            Else
+                                Throw New DocSuiteException($"Dossier con metadato {Metadato} e valore {Valore} non trovato")
+                            End If
+                        Else
+                            idDossier = Request.QueryString("IdDossier")
+                            dossierTitle = Request.QueryString("DossierTitle")
+                        End If
+                        url = String.Format(dossierVisualizzaUrl, idDossier, dossierTitle)
+                    Case "ApriConFascicolo"
+                        If Not String.IsNullOrEmpty(Metadato) AndAlso Not String.IsNullOrEmpty(Valore) AndAlso Not String.IsNullOrEmpty(Fascicolo) Then
+                            Dim metadataRepositoryFinder As MetadataRepositoryFinder = New MetadataRepositoryFinder(DocSuiteContext.Current.CurrentTenant) With {
+                                .MetadataKeyName = Metadato,
+                                .EnablePaging = False
+                            }
+                            Dim metadataRepositories As List(Of Entity.Commons.MetadataRepository) = metadataRepositoryFinder.DoSearch().Select(Function(x) x.Entity).ToList()
+                            Dim dossierFinder As DossierFinder = New DossierFinder(DocSuiteContext.Current.CurrentTenant) With {
+                                .EnablePaging = False
+                            }
+                            Dim metadataRepositoryId As Guid? = Nothing
+                            For Each metadataRepository As Entity.Commons.MetadataRepository In metadataRepositories
+                                dossierFinder.IdMetadataRepository = metadataRepository.UniqueId
+                                Dim dossier As WebAPIDto(Of Entity.Dossiers.Dossier) = dossierFinder.DoSearch().FirstOrDefault()
+                                If dossier IsNot Nothing Then
+                                    metadataRepositoryId = metadataRepository.UniqueId
+                                    Exit For
+                                End If
+                            Next
+                            dossierFinder.IdMetadataRepository = Nothing
+                            dossierFinder.DossierFinderModel = New DossierFinderModel() With {
+                                .MetadataValues = New List(Of MetadataFinderModel) From {
+                                    New MetadataFinderModel With {
+                                        .KeyName = Metadato,
+                                        .Value = Valore
+                                    }
+                                },
+                                .IdMetadataRepository = metadataRepositoryId,
+                                .Top = 1
+                            }
+                            dossierFinder.CustomPageIndex = 0
+                            dossierFinder.PageSize = 1
+                            If Not String.IsNullOrEmpty(Anno) Then
+                                dossierFinder.DossierFinderModel.Year = Short.Parse(Anno)
+                            End If
+                            Dim dossierDto As WebAPIDto(Of DossierModel) = dossierFinder.GetFromPostMethod().FirstOrDefault()
+                            If dossierDto Is Nothing Then
+                                Throw New DocSuiteException($"Dossier con metadato {Metadato}, valore {Valore} e fascicolo {Fascicolo} non trovato")
+                            End If
+                            Dim fascicleFinder As FascicleFinder = New FascicleFinder(DocSuiteContext.Current.CurrentTenant) With {
+                                .Dossier = dossierDto.Entity.UniqueId,
+                                .FascicleSubject = Fascicolo,
+                                .EnablePaging = False
+                            }
+                            Dim fascicleDto As WebAPIDto(Of Entity.Fascicles.Fascicle) = fascicleFinder.DoSearch().FirstOrDefault()
+                            If fascicleDto IsNot Nothing Then
+                                url = $"{String.Format(dossierVisualizzaUrl, dossierDto.Entity.UniqueId.ToString(), dossierDto.Entity.Title)}&IdFascicle={fascicleDto.Entity.UniqueId}"
+                            Else
+                                Throw New DocSuiteException($"Dossier con metadato {Metadato}, valore {Valore} e fascicolo {Fascicolo} non trovato")
+                            End If
+                        End If
                 End Select
-
+                Return url
         End Select
 
         Return String.Empty
@@ -626,12 +837,10 @@ Partial Public Class FrameSet
 
         Dim menuJson As IDictionary(Of String, MenuNodeModel) = DocSuiteContext.Current.DocSuiteMenuConfiguration
 
-        Dim hasAdministratorRight As Boolean = CommonShared.HasGroupAdministratorRight
-
         'Utenti - visualizzazione pannello - Usr
         CreateMenuPersonalUser(menuJson)
 
-        'Tavoli - visualizzazione pannello
+        'Tavoli - visualizzazione pannello 
         CreateMenuDesks(menuJson)
 
         'Collaborazione - visualizzazione pannello - Coll
@@ -656,18 +865,18 @@ Partial Public Class FrameSet
         CreateMenuResolutions(menuJson)
 
         ' PEC non integrata, solo per utenti abilitati e per amministratori
-        CreateMenuPec(menuJson, hasAdministratorRight)
+        CreateMenuPec(menuJson)
 
         'Tabelle - visualizzazione pannello - Tbl
-        CreateMenuTables(menuJson, hasAdministratorRight)
+        CreateMenuTables(menuJson)
 
         'Amministrazione - visualizzazione pannello - Admin
-        CreateMenuAdmins(menuJson, hasAdministratorRight)
+        CreateMenuAdmins(menuJson)
 
     End Sub
 
-    Private Sub CreateMenuAdmins(menuJson As IDictionary(Of String, MenuNodeModel), hasAdministratorRight As Boolean)
-        If hasAdministratorRight OrElse CommonUtil.HasGroupSuspendRight AndAlso menuJson.Keys.Contains("Menu12") Then
+    Private Sub CreateMenuAdmins(menuJson As IDictionary(Of String, MenuNodeModel))
+        If CommonShared.HasGroupAdministratorRight OrElse CommonUtil.HasGroupSuspendRight AndAlso menuJson.Keys.Contains("Menu12") Then
             Dim menu As MenuNodeModel = menuJson("Menu12")
             Dim alMenu As New List(Of NodeLink)
 
@@ -717,9 +926,8 @@ Partial Public Class FrameSet
             End If
 
 
-            If ProtocolEnv.UserLogEnabled = "1" AndAlso menu.Nodes.Keys.Contains("FirstNode2") Then
+            If menu.Nodes.Keys.Contains("FirstNode2") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode2").Name, "Utlt/UtltUserLog.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Users")))
-            ElseIf menu.Nodes.Keys.Contains("FirstNode2") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode2").Name, "Utlt/UtltUsers.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Users")))
             End If
             If menu.Nodes.Keys.Contains("FirstNode4") Then
@@ -779,7 +987,7 @@ Partial Public Class FrameSet
             End If
             If menu.Nodes.Keys.Contains("FirstNode12") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, menu.Nodes("FirstNode12").Name))
-                If DocSuiteContext.Current.IsProtocolEnabled AndAlso ProtocolEnv.IsLogEnabled AndAlso menu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode1") Then
+                If DocSuiteContext.Current.IsProtocolEnabled AndAlso menu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode1") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode12").Nodes("SecondNode1").Name, "Utlt/UtltLog.aspx", CommonShared.AppendSecurityCheck("Type=Comm&LogType=Prot")))
                 End If
                 If DocSuiteContext.Current.IsDocumentEnabled AndAlso DocumentEnv.IsEnvLogEnabled AndAlso menu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode2") Then
@@ -803,7 +1011,7 @@ Partial Public Class FrameSet
                 If DocSuiteContext.Current.IsDocumentEnabled AndAlso DocumentEnv.IsEnvLogEnabled AndAlso menu.Nodes("FirstNode13").Nodes.Keys.Contains("SecondNode1") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode13").Nodes("SecondNode1").Name, "Utlt/UtltUserStatistics.aspx", CommonShared.AppendSecurityCheck("Type=Comm&LogType=Docm")))
                 End If
-                If DocSuiteContext.Current.IsProtocolEnabled AndAlso ProtocolEnv.IsLogEnabled AndAlso menu.Nodes("FirstNode13").Nodes.Keys.Contains("SecondNode2") Then
+                If DocSuiteContext.Current.IsProtocolEnabled AndAlso menu.Nodes("FirstNode13").Nodes.Keys.Contains("SecondNode2") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode13").Nodes("SecondNode2").Name, "Utlt/UtltUserStatistics.aspx", CommonShared.AppendSecurityCheck("Type=Comm&LogType=Prot")))
                 End If
                 If DocSuiteContext.Current.IsResolutionEnabled AndAlso ResolutionEnv.IsLogEnabled Then
@@ -839,27 +1047,20 @@ Partial Public Class FrameSet
         End If
     End Sub
 
-    Private Sub CreateMenuTables(menuJson As IDictionary(Of String, MenuNodeModel), hasAdministratorRight As Boolean)
+    Private Sub CreateMenuTables(menuJson As IDictionary(Of String, MenuNodeModel))
         If menuJson.Keys.Contains("Menu11") Then
 
             Dim tableMenu As MenuNodeModel = menuJson("Menu11")
             Dim tbltMenu As New List(Of NodeLink)
 
-            If ProtocolEnv.MultiTenantEnabled AndAlso tableMenu.Nodes.Keys.Contains("FirstNode27") AndAlso hasAdministratorRight Then
+            If DocSuiteContext.Current.ProtocolEnv.MultiTenantEnabled AndAlso tableMenu.Nodes.Keys.Contains("FirstNode27") AndAlso CommonShared.HasGroupAdministratorRight Then
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode27").Name))
                 If tableMenu.Nodes("FirstNode27").Nodes.Keys.Contains("SecondNode1") Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode27").Nodes("SecondNode1").Name, "Tblt/TbltTenant.aspx", CommonUtil.AppendSecurityCheck("Type=Comm")))
                 End If
             End If
 
-            If ProtocolEnv.ProcessEnabled AndAlso tableMenu.Nodes.Keys.Contains("FirstNode28") AndAlso hasAdministratorRight Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode28").Name))
-                If tableMenu.Nodes("FirstNode28").Nodes.Keys.Contains("SecondNode1") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode28").Nodes("SecondNode1").Name, "Tblt/TbltProcess.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                End If
-            End If
-
-            If ProtocolEnv.IsSecurityGroupEnabled AndAlso (hasAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight) Then  'oppure responsabile privacy
+            If ProtocolEnv.IsSecurityGroupEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight) Then  'oppure responsabile privacy
                 If tableMenu.Nodes.Keys.Contains("FirstNode19") Then
                     tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode19").Name, "Tblt/TbltGruppi.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
                 End If
@@ -867,22 +1068,35 @@ Partial Public Class FrameSet
                     tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode24").Name, "Tblt/TbltSecurityUsers.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
                 End If
             End If
-            If hasAdministratorRight OrElse CommonShared.HasGroupTblContainerRight OrElse CommonShared.HasGroupTblContainerAdminRight AndAlso tableMenu.Nodes.Keys.Contains("FirstNode12") Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode12").Name, "Tblt/TbltContenitori.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Action=Container")))
-            End If
-            If hasAdministratorRight OrElse CommonShared.HasGroupTblRoleRight OrElse CommonShared.HasGroupTblRoleAdminRight AndAlso tableMenu.Nodes.Keys.Contains("FirstNode11") Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode11").Name, "Tblt/TbltSettore.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Action=Role")))
+
+            If tableMenu.Nodes.Keys.Contains("FirstNode12") Then
+                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode12").Name))
+                If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerRight OrElse CommonShared.HasGroupTblContainerAdminRight) AndAlso tableMenu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode1") Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode12").Nodes("SecondNode1").Name, "Tblt/TbltContenitori.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Action=Container")))
+                End If
+                If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerAdminRight) AndAlso tableMenu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode2") Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode12").Nodes("SecondNode2").Name, "Tblt/TbltLocation.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
+                End If
+
+                If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblRoleRight OrElse CommonShared.HasGroupTblRoleAdminRight) AndAlso tableMenu.Nodes.Keys.Contains("FirstNode11") Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode11").Name, "Tblt/TbltSettore.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Action=Role")))
+                End If
             End If
 
             If tableMenu.Nodes.Keys.Contains("FirstNode8") Then
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode8").Name))
+                If ProtocolEnv.ProcessEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupProcessesViewsManageableRight) Then
+                    If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode4") Then
+                        tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode4").Name, "Tblt/TbltProcess.aspx", "Type=Comm"))
+                    End If
+                End If
                 If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode1") Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode1").Name, "Tblt/TbltClassificatore.aspx", "Type=Comm"))
                 End If
                 If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode2") Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode2").Name, "Tblt/TbltMassimarioScartoGes.aspx", "Type=Comm"))
                 End If
-                If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode3") AndAlso CommonShared.HasGroupTblCategoryRight And DocSuiteContext.IsFullApplication Then
+                If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode3") AndAlso CommonShared.HasGroupTblCategoryRight Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode3").Name, "Tblt/TbltCategorySchema.aspx", "Type=Comm"))
                 End If
             End If
@@ -900,7 +1114,7 @@ Partial Public Class FrameSet
                 End If
             End If
 
-            If hasAdministratorRight AndAlso ProtocolEnv.UDSEnabled AndAlso tableMenu.Nodes.Keys.Contains("FirstNode7") Then
+            If CommonShared.HasGroupAdministratorRight AndAlso ProtocolEnv.UDSEnabled AndAlso tableMenu.Nodes.Keys.Contains("FirstNode7") Then
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode7").Name))
                 If tableMenu.Nodes("FirstNode7").Nodes.Keys.Contains("SecondNode1") Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode7").Nodes("SecondNode1").Name, "UdsDesigner/Designer.aspx", String.Empty))
@@ -917,11 +1131,11 @@ Partial Public Class FrameSet
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode23").Name, "Tblt/TbltMetadataRepository.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
             End If
 
-            If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso (hasAdministratorRight OrElse CommonShared.HasGroupTblPrivacyLevelManagerGroupRight AndAlso tableMenu.Nodes.Keys.Contains("FirstNode25")) Then
+            If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblPrivacyLevelManagerGroupRight AndAlso tableMenu.Nodes.Keys.Contains("FirstNode25")) Then
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode25").Name, "Tblt/TbltPrivacyLevel.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
             End If
 
-            If tableMenu.Nodes.Keys.Contains("FirstNode26") AndAlso hasAdministratorRight Then
+            If tableMenu.Nodes.Keys.Contains("FirstNode26") AndAlso CommonShared.HasGroupAdministratorRight Then
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode26").Name))
                 If tableMenu.Nodes("FirstNode26").Nodes.Keys.Contains("SecondNode1") Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode26").Nodes("SecondNode1").Name, "Tblt/TbltPECMailBox.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
@@ -945,7 +1159,7 @@ Partial Public Class FrameSet
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode4").Name, "Tblt/TbltTipoDoc.aspx", "Type=Comm"))
             End If
 
-            If tableMenu.Nodes.Keys.Contains("FirstNode21") AndAlso (ProtocolEnv.TemplateProtocolEnable OrElse hasAdministratorRight OrElse
+            If tableMenu.Nodes.Keys.Contains("FirstNode21") AndAlso (ProtocolEnv.TemplateProtocolEnable OrElse CommonShared.HasGroupAdministratorRight OrElse
                 CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateCollaborationGroups) OrElse CommonShared.HasGroupTblCategoryRight OrElse CommonShared.HasGroupTblRoleTypeResolutionRight OrElse
                 CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateDocumentGroups)) Then
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode21").Name))
@@ -955,7 +1169,7 @@ Partial Public Class FrameSet
                 If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode2") AndAlso (CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateCollaborationGroups) OrElse CommonShared.HasGroupTblCategoryRight) Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode2").Name, "Tblt/TbltTemplateCollaborationManager.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
                 End If
-                If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode3") AndAlso DocSuiteContext.Current.IsResolutionEnabled AndAlso (hasAdministratorRight OrElse CommonShared.HasGroupTblRoleTypeResolutionRight) Then
+                If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode3") AndAlso DocSuiteContext.Current.IsResolutionEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblRoleTypeResolutionRight) Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode3").Name, "Resl/ReslTipologia.aspx", CommonShared.AppendSecurityCheck("Type=Resl")))
                 End If
                 If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode4") AndAlso (CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateDocumentGroups) OrElse CommonShared.HasGroupTblCategoryRight) Then
@@ -973,7 +1187,7 @@ Partial Public Class FrameSet
                 End If
             End If
 
-            If ProtocolEnv.IsPackageEnabled AndAlso (hasAdministratorRight OrElse CommonShared.UserProtocolCheckRight(ProtocolContainerRightPositions.Insert)) AndAlso tableMenu.Nodes.Keys.Contains("FirstNode14") Then
+            If ProtocolEnv.IsPackageEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.UserProtocolCheckRight(ProtocolContainerRightPositions.Insert)) AndAlso tableMenu.Nodes.Keys.Contains("FirstNode14") Then
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode14").Name, "Prot/ProtPackage.aspx", CommonShared.AppendSecurityCheck("Type=Prot")))
             End If
             If tableMenu.Nodes.Keys.Contains("FirstNode15") Then
@@ -981,7 +1195,7 @@ Partial Public Class FrameSet
                 If tableMenu.Nodes("FirstNode15").Nodes.Keys.Contains("SecondNode1") Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode15").Nodes("SecondNode1").Name, "Tblt/TbltClassificatorePrint.aspx", "Type=Comm"))
                 End If
-                If hasAdministratorRight OrElse CommonShared.HasGroupTblStampeSecurityRight OrElse CommonShared.HasGroupTblStampeRight Then
+                If CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblStampeSecurityRight OrElse CommonShared.HasGroupTblStampeRight Then
                     If tableMenu.Nodes("FirstNode15").Nodes.Keys.Contains("SecondNode2") Then
                         tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode15").Nodes("SecondNode2").Name, "Tblt/TbltRolesPrint.aspx", "Type=Comm"))
                     End If
@@ -990,7 +1204,7 @@ Partial Public Class FrameSet
                     End If
                 End If
 
-                If hasAdministratorRight OrElse CommonShared.HasGroupTblStampeSecurityRight Then
+                If CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblStampeSecurityRight Then
                     If tableMenu.Nodes("FirstNode15").Nodes.Keys.Contains("SecondNode4") Then
                         tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode15").Nodes("SecondNode4").Name, "Tblt/TbltRolesPrint.aspx", "Type=Comm&IsSecurity=True"))
                     End If
@@ -1008,11 +1222,12 @@ Partial Public Class FrameSet
         End If
     End Sub
 
-    Private Sub CreateMenuPec(menuJson As IDictionary(Of String, MenuNodeModel), hasAdministratorRight As Boolean)
+    Private Sub CreateMenuPec(menuJson As IDictionary(Of String, MenuNodeModel))
         If ProtocolEnv.IsPECEnabled AndAlso menuJson.Keys.Contains("Menu10") Then
+            Dim hasInsertable As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.PECMail, DomainUserFacade.HasInsertable)
             Dim menu As MenuNodeModel = menuJson("Menu10")
             Dim alMenu As New List(Of NodeLink)
-            If menu.Nodes.Keys.Contains("FirstNode1") Then
+            If menu.Nodes.Keys.Contains("FirstNode1") AndAlso hasInsertable Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode1").Name, "PEC/PECInsert.aspx", String.Format("Type=Pec&SimpleMode={0}&RedirectTo={1}", ProtocolEnv.PECSimpleMode.ToString(), Server.UrlEncode("PECOutgoingMails.aspx?Type=Pec"))))
             End If
             If menu.Nodes.Keys.Contains("FirstNode2") Then
@@ -1028,15 +1243,12 @@ Partial Public Class FrameSet
             If ProtocolEnv.PECFromFile AndAlso menu.Nodes.Keys.Contains("FirstNode5") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode5").Name, "PEC/PECViewFromFile.aspx", CommonShared.AppendSecurityCheck("Type=Pec&Action=Insert")))
             End If
-            If hasAdministratorRight Then
+            If CommonShared.HasGroupAdministratorRight Then
                 If menu.Nodes.Keys.Contains("FirstNode6") Then
                     alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode6").Name, "Prot/Stampe/ReportisticaPEC.aspx", CommonShared.AppendSecurityCheck("Type=Pec")))
                 End If
                 If menu.Nodes.Keys.Contains("FirstNode7") Then
                     alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode7").Name, "PEC/PECMailBoxLog.aspx", "Type=Pec"))
-                End If
-                If menu.Nodes.Keys.Contains("FirstNode8") Then
-                    alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode8").Name, "PEC/EventPECSummaryError.aspx", "Type=Pec"))
                 End If
             End If
 
@@ -1050,9 +1262,10 @@ Partial Public Class FrameSet
 
     Private Sub CreateMenuResolutions(menuJson As IDictionary(Of String, MenuNodeModel))
         If DocSuiteContext.Current.IsResolutionEnabled AndAlso menuJson.Keys.Contains("Menu9") Then
+            Dim hasInsertable As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Resolution, DomainUserFacade.HasInsertable)
             Dim menu As MenuNodeModel = menuJson("Menu9")
             Dim alMenu As New List(Of NodeLink)
-            If DocSuiteContext.IsFullApplication AndAlso menu.Nodes.Keys.Contains("FirstNode1") Then
+            If menu.Nodes.Keys.Contains("FirstNode1") AndAlso hasInsertable Then
                 If ResolutionEnv.InsertDisclaimer = "1" Then
                     alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode1").Name, "Resl/ReslDisclaimer.aspx", CommonShared.AppendSecurityCheck("Type=Resl")))
                 Else
@@ -1275,17 +1488,27 @@ Partial Public Class FrameSet
             attiItem.Visible = True
         End If
     End Sub
+
     Private Sub CreateMenuDossiersAndFascicles(menuJson As IDictionary(Of String, MenuNodeModel))
         If DocSuiteContext.Current.IsProtocolEnabled AndAlso (ProtocolEnv.FascicleEnabled OrElse ProtocolEnv.IsIssueEnabled) AndAlso menuJson.Keys.Contains("Menu7") Then
             Dim menu As MenuNodeModel = menuJson("Menu7")
             Dim alMenu As New List(Of NodeLink)
+            Dim hasInsertableDossier As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Dossier, DomainUserFacade.HasInsertable)
+            Dim hasInsertable As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Fascicle, DomainUserFacade.HasInsertable)
+            Dim hasFascicleResponsibleRole As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Fascicle, DomainUserFacade.HasFascicleResponsibleRole)
+            Dim hasFascicleSecretaryRole As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Fascicle, DomainUserFacade.HasFascicleSecretaryRole)
+
+            If ProtocolEnv.ProcessEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupProcessesViewsManageableRight OrElse CommonShared.HasGroupProcessesViewsReadableRight) Then
+                If menu.Nodes.Keys.Contains("FirstNode3") Then
+                    alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode3").Name, "User/ProcessesTreeView.aspx", CommonUtil.AppendSecurityCheck("Type=Comm")))
+                End If
+            End If
 
             If ProtocolEnv.DossierEnabled Then
-
                 If menu.Nodes.Keys.Contains("FirstNode1") Then
                     alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, menu.Nodes("FirstNode1").Name))
                 End If
-                If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode1") Then
+                If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode1") AndAlso hasInsertableDossier Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode1").Name, "Dossiers/DossierInserimento.aspx", "Type=Dossier"))
                 End If
                 If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode2") Then
@@ -1300,19 +1523,15 @@ Partial Public Class FrameSet
                         alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, menu.Nodes("FirstNode2").Name))
                     End If
 
-                    If ProtocolEnv.ProcessEnabled Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode5").Name, "Fasc/FascProcessInserimento.aspx", CommonShared.AppendSecurityCheck("Type=Fasc&Action=Insert")))
-                    End If
-
-                    If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode1") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode1").Name, "Fasc/FascInserimento.aspx", CommonShared.AppendSecurityCheck("Type=Fasc&Action=Insert")))
+                    If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode1") AndAlso (hasInsertable OrElse hasFascicleSecretaryRole OrElse hasFascicleResponsibleRole) Then
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode1").Name, $"Fasc/{If(ProtocolEnv.ProcessEnabled, "FascProcessInserimento.aspx", "FascInserimento.aspx")}", CommonShared.AppendSecurityCheck("Type=Fasc&Action=Insert")))
                     End If
 
                     If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode2") Then
                         alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode2").Name, "Fasc/FascRicerca.aspx", "Type=Fasc"))
                     End If
 
-                    If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode4") Then
+                    If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode4") AndAlso (hasInsertable OrElse hasFascicleSecretaryRole OrElse hasFascicleResponsibleRole) Then
                         alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode4").Name, "Fasc/FascPeriodInserimento.aspx", CommonShared.AppendSecurityCheck("Type=Fasc&Action=Insert")))
                     End If
                 Case ProtocolEnv.IsIssueEnabled
@@ -1328,17 +1547,20 @@ Partial Public Class FrameSet
             If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode3") Then
                 If ProtocolEnv.MoveScrivaniaMenu Then
                     If DocSuiteContext.Current.ProtocolEnv.DiaryFullEnabled Then
-                        If ProtocolEnv.IsLogEnabled AndAlso menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode3") Then
-                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, String.Concat("User/", UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, "FDF", UserDesktop.PageFascicle, "Fasc"))), ""))
+                        If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode3") Then
+                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, String.Concat("User/", UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, "FDF", UserDesktop.PageUDFascicle, "Fasc"))), ""))
                         End If
                     Else
-                        alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, String.Concat("User/", UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, "FDF", UserDesktop.PageFascicle, "Fasc"))), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, String.Concat("User/", UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, "FDF", UserDesktop.PageUDFascicle, "Fasc"))), ""))
                     End If
                 Else
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, String.Concat("User/", UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, "FDF", UserDesktop.PageFascicle, "Fasc"))), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, String.Concat("User/", UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode2").Nodes("SecondNode3").Name, "FDF", UserDesktop.PageUDFascicle, "Fasc"))), ""))
                 End If
             End If
 
+            If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode5") AndAlso ProtocolEnv.FascicleEnabled Then
+                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode5").Name, "Fasc/FascicleClose.aspx", "Type=Fasc"))
+            End If
 
             Dim fascicoliItem As RadPanelItem = RadPanelBarMenu.FindItemByValue("FascicoliItem")
             fascicoliItem.Text = menu.Name
@@ -1350,12 +1572,13 @@ Partial Public Class FrameSet
 
     Private Sub CreateMenuDocumentSeriesArchives(menuJson As IDictionary(Of String, MenuNodeModel))
         If (ProtocolEnv.DocumentSeriesEnabled OrElse ProtocolEnv.UDSEnabled) AndAlso menuJson.Keys.Contains("Menu6") Then
+            Dim hasInsertable As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.DocumentSeries, DomainUserFacade.HasInsertable)
             Dim menu As MenuNodeModel = menuJson("Menu6")
             Dim alMenu As New List(Of NodeLink)
 
             If menu.Nodes.Keys.Contains("FirstNode1") AndAlso ProtocolEnv.DocumentSeriesEnabled Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, menu.Nodes("FirstNode1").Name))
-                If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode1") Then
+                If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode1") AndAlso hasInsertable Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode1").Name, "Series/Item.aspx", CommonShared.AppendSecurityCheck("Type=Series")))
                 End If
                 If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode2") Then
@@ -1404,9 +1627,10 @@ Partial Public Class FrameSet
                 End If
             End If
 
+            hasInsertable = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.UDS, DomainUserFacade.HasInsertable)
             If menu.Nodes.Keys.Contains("FirstNode2") AndAlso ProtocolEnv.UDSEnabled Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, menu.Nodes("FirstNode2").Name))
-                If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode1") Then
+                If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode1") AndAlso hasInsertable Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode1").Name, "UDS/UDSInsert.aspx", "Type=UDS&Action=Insert"))
                 End If
                 If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode2") Then
@@ -1425,16 +1649,19 @@ Partial Public Class FrameSet
 
     Private Sub CreateMenuProtocols(menuJson As IDictionary(Of String, MenuNodeModel))
         If ProtocolEnv.ShowProtocol AndAlso DocSuiteContext.Current.IsProtocolEnabled AndAlso menuJson.Keys.Contains("Menu5") Then
+            Dim hasInsertable As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Protocol, DomainUserFacade.HasInsertable)
             Dim menu As MenuNodeModel = menuJson("Menu5")
             Dim alMenu As New List(Of NodeLink)
 
-            If DocSuiteContext.IsFullApplication AndAlso menu.Nodes.Keys.Contains("FirstNode1") Then
-                alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode1").Name, "Prot/ProtInserimento.aspx", CommonShared.AppendSecurityCheck("Type=Prot&Action=Insert")))
+            If menu.Nodes.Keys.Contains("FirstNode1") Then
+                If hasInsertable Then
+                    alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode1").Name, "Prot/ProtInserimento.aspx", CommonShared.AppendSecurityCheck("Type=Prot&Action=Insert")))
+                End If
                 If ProtocolEnv.ProtocolBoxEnabled Then
                     If menu.Nodes.Keys.Contains("FirstNode2") Then
                         alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode2").Name, "PEC/PECIncomingMails.aspx", CommonShared.AppendSecurityCheck("Type=Pec&ProtocolBox=True")))
                     End If
-                    If menu.Nodes.Keys.Contains("FirstNode3") Then
+                    If menu.Nodes.Keys.Contains("FirstNode3") AndAlso ProtocolEnv.IsPECEnabled Then
                         alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode3").Name, "PEC/PECToDocumentUnit.aspx", CommonShared.AppendSecurityCheck("Type=Pec&PecFromFile=True")))
                     End If
                 End If
@@ -1442,7 +1669,7 @@ Partial Public Class FrameSet
             If menu.Nodes.Keys.Contains("FirstNode4") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode4").Name, "Prot/ProtRicercaFromMenu.aspx", "Type=Prot"))
             End If
-            If DocSuiteContext.IsFullApplication And Not String.IsNullOrEmpty(ProtocolEnv.EnvGroupSuspend) Then
+            If Not String.IsNullOrEmpty(ProtocolEnv.EnvGroupSuspend) Then
                 If Facade.ProtocolFacade.HasProtSuspended() Then
                     If menu.Nodes.Keys.Contains("FirstNode5") Then
                         alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode5").Name, "Prot/ProtInserimento.aspx", CommonShared.AppendSecurityCheck("Type=Prot&Action=Recovery")))
@@ -1474,14 +1701,6 @@ Partial Public Class FrameSet
             If CommonUtil.HasInvoiceGroupImportRight AndAlso menu.Nodes.Keys.Contains("FirstNode12") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode12").Name, "Prot/ProtImport.aspx", CommonShared.AppendSecurityCheck("Type=Prot&Action=Import")))
             End If
-            If Not ProtocolEnv.ModificaOggettiDisable AndAlso menu.Nodes.Keys.Contains("FirstNode13") Then
-                Dim changeObjectParam As ChangeObjectParameter = ProtocolEnv.EnvChangeObject
-                If changeObjectParam IsNot Nothing Then
-                    If InStr(CommonUtil.UserConnectedGroups, "'" & changeObjectParam.Group & "'") <> 0 Then
-                        alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode13").Name, "Prot/ProtModificaOggetti.aspx", CommonShared.AppendSecurityCheck("Type=Prot")))
-                    End If
-                End If
-            End If
             If CommonUtil.HasGroupJournalRight AndAlso menu.Nodes.Keys.Contains("FirstNode14") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode14").Name, "Prot/ProtJournal.aspx", CommonShared.AppendSecurityCheck("Type=Prot&Action=Print")))
             End If
@@ -1496,7 +1715,7 @@ Partial Public Class FrameSet
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode15").Nodes("SecondNode2").Name, "Prot/PosteWebCostiAccount.aspx", CommonShared.AppendSecurityCheck("Type=Prot")))
                 End If
             End If
-            If menu.Nodes.Keys.Contains("FirstNode16") Then
+            If menu.Nodes.Keys.Contains("FirstNode16") AndAlso ProtocolEnv.ProtocolPrintEnabled Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, menu.Nodes("FirstNode16").Name))
                 If menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNode1") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode1").Name, "Prot/ProtRegistroPrint.aspx", CommonShared.AppendSecurityCheck("Type=Prot&Action=Print")))
@@ -1518,7 +1737,7 @@ Partial Public Class FrameSet
             ' Scrivania in menu protocollo
             If ProtocolEnv.MoveScrivaniaMenu AndAlso DocSuiteContext.Current.ProtocolEnv.DiaryFullEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode18") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Desktop, menu.Nodes("FirstNode18").Name))
-                If ProtocolEnv.IsLogEnabled AndAlso menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode1") Then
+                If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode1") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode1").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode1").Name, "PY", UserDesktop.PageDiario, "Prot")), ""))
                 End If
                 If ProtocolEnv.IsDistributionEnabled Then
@@ -1605,9 +1824,10 @@ Partial Public Class FrameSet
 
     Private Sub CreateMenuPratiche(menuJson As IDictionary(Of String, MenuNodeModel))
         If DocSuiteContext.Current.ProtocolEnv.PraticheEnabled AndAlso menuJson.Keys.Contains("Menu4") Then
+            Dim hasInsertable As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Document, DomainUserFacade.HasInsertable)
             Dim menu As MenuNodeModel = menuJson("Menu4")
             Dim alMenu As New List(Of NodeLink)
-            If menu.Nodes.Keys.Contains("FirstNode1") Then
+            If menu.Nodes.Keys.Contains("FirstNode1") AndAlso hasInsertable Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode1").Name, "Docm/DocmInserimento.aspx", CommonShared.AppendSecurityCheck("Type=Docm&Action=Insert")))
             End If
             If menu.Nodes.Keys.Contains("FirstNode2") Then
@@ -1657,6 +1877,9 @@ Partial Public Class FrameSet
 
     Private Sub CreateMenuCollaborations(menuJson As IDictionary(Of String, MenuNodeModel))
         If ProtocolEnv.MoveCollaborationMenu AndAlso CollaborationRights.GetIsCollaborationEnabled() AndAlso menuJson.Keys.Contains("Menu3") Then
+            Dim hasSecretaryRole As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Collaboration, DomainUserFacade.HasSecretaryRole)
+            Dim hasSignerRole As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Collaboration, DomainUserFacade.HasSignerRole)
+            Dim hasInsertable As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Protocol, DomainUserFacade.HasInsertable) OrElse GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Resolution, DomainUserFacade.HasInsertable) OrElse GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.DocumentSeries, DomainUserFacade.HasInsertable) OrElse GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.UDS, DomainUserFacade.HasInsertable)
             Dim menu As MenuNodeModel = menuJson("Menu3")
             Dim alMenu As New List(Of NodeLink)
             If CollaborationRights.GetInserimentoAllaVisioneFirmaEnabled() AndAlso menu.Nodes.Keys.Contains("FirstNode1") Then
@@ -1670,14 +1893,19 @@ Partial Public Class FrameSet
             If menu.Nodes.Keys.Contains("FirstNode3") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode3").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Name, CollaborationMainAction.AllaVisioneFirma, UserDesktop.PageCollRisultati, "Prot")), ""))
             End If
-            If menu.Nodes.Keys.Contains("FirstNode4") Then
+            If menu.Nodes.Keys.Contains("FirstNode4") AndAlso hasSignerRole Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode4").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode4").Name, CollaborationMainAction.DaVisionareFirmare, UserDesktop.PageCollRisultati, "Prot")), ""))
             End If
+
+            If menu.Nodes.Keys.Contains("FirstNode14") AndAlso ProtocolEnv.RemoteSignDelegateEnabled AndAlso hasSignerRole Then
+                alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode14").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode14").Name, CollaborationMainAction.DaFirmareInDelega, UserDesktop.PageCollRisultati, "Prot")), ""))
+            End If
+
             If menu.Nodes.Keys.Contains("FirstNode5") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode5").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode5").Name, CollaborationMainAction.AlProtocolloSegreteria, UserDesktop.PageCollRisultati, "Prot")), ""))
             End If
 
-            If Facade.ContainerFacade.HasInsertOrProposalRights() AndAlso menu.Nodes.Keys.Contains("FirstNode6") Then
+            If Facade.ContainerFacade.HasInsertOrProposalRights() AndAlso menu.Nodes.Keys.Contains("FirstNode6") AndAlso hasSecretaryRole Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode6").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode6").Name, CollaborationMainAction.DaProtocollareGestire, UserDesktop.PageCollRisultati, "Prot")), ""))
             End If
             If menu.Nodes.Keys.Contains("FirstNode7") Then
@@ -1715,13 +1943,7 @@ Partial Public Class FrameSet
             If ProtocolEnv.MoveWorkflowDeskToCollaboration AndAlso DocSuiteContext.Current.ProtocolEnv.WorkflowManagerEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode13") Then
                 Dim firstNode13 As NodeLink = New NodeLink(NodeLevel.First, NodeImage.Line, menu.Nodes("FirstNode13").Name, String.Empty, String.Empty)
                 If menu.Nodes("FirstNode13").Nodes.Keys.Contains("SecondNode1") Then
-                    If ProtocolEnv.DematerialisationEnabled AndAlso menu.Nodes("FirstNode13").Nodes.Keys.Contains("SecondNode2") Then
-                        alMenu.Add(firstNode13)
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode13").Nodes("SecondNode2").Name, "User/UserDematerialisationRequest.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode13").Nodes("SecondNode1").Name, "User/UserWorkflow.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                    Else
-                        alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode13").Name, "User/UserWorkflow.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                    End If
+                    alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode13").Name, "User/UserWorkflow.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
                 End If
             End If
 
@@ -1771,9 +1993,9 @@ Partial Public Class FrameSet
                 If ProtocolEnv.InvoiceSDIB2BKind > 0 AndAlso menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode8") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode8").Name, "UDS/UDSInvoiceSearch.aspx", CommonShared.AppendSecurityCheck("Direction=1&InvoiceKind=B2B&InvoiceStatus=Consegnata&Type=UDS")))
                 End If
-                'If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode10") Then
-                '    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode10").Name, "Workflows/WorkflowInstances.aspx", CommonShared.AppendSecurityCheck("WorkflowRepositoryName=First&WorkflowRepositoryStatus=Todo")))
-                'End If
+                If menu.Nodes("FirstNode2").Nodes.Keys.Contains("SecondNode10") Then
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode2").Nodes("SecondNode10").Name, "Workflows/WorkflowInstances.aspx", CommonShared.AppendSecurityCheck("WorkflowRepositoryName=Fatturazione elettronica - Fattura tra privati attiva")))
+                End If
             End If
 
             'Fatture attive PA
@@ -1812,6 +2034,9 @@ Partial Public Class FrameSet
                 If ProtocolEnv.InvoiceSDIPAKind > 0 AndAlso menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode11") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode11").Name, "UDS/UDSInvoiceSearch.aspx", CommonShared.AppendSecurityCheck("Direction=1&InvoiceKind=PA&InvoiceStatus=Rifiutata&Type=UDS")))
                 End If
+                If menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode12") Then
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode12").Name, "Workflows/WorkflowInstances.aspx", CommonShared.AppendSecurityCheck("WorkflowRepositoryName=Fatturazione elettronica - Fattura pubblica amministrazione attiva")))
+                End If
             End If
 
             'Fatture passive
@@ -1832,6 +2057,9 @@ Partial Public Class FrameSet
                 If ProtocolEnv.InvoiceSDIB2BKind > 1 AndAlso menu.Nodes("FirstNode4").Nodes.Keys.Contains("SecondNode5") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode4").Nodes("SecondNode5").Name, "PEC/PECInvoice.aspx", CommonShared.AppendSecurityCheck("Direction=0&InvoiceType=B2BInLavorazionePassive&Type=Pec")))
                 End If
+                If menu.Nodes("FirstNode4").Nodes.Keys.Contains("SecondNode6") Then
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode4").Nodes("SecondNode6").Name, "Workflows/WorkflowInstances.aspx", CommonShared.AppendSecurityCheck("WorkflowRepositoryName=Fatturazione elettronica - Fattura tra privati passiva")))
+                End If
             End If
 
             Dim invoiceItem As RadPanelItem = RadPanelBarMenu.FindItemByValue("InvoiceItem")
@@ -1846,7 +2074,8 @@ Partial Public Class FrameSet
         If ProtocolEnv.DeskEnable AndAlso menuJson.Keys.Contains("Menu2") Then
             Dim menu As MenuNodeModel = menuJson("Menu2")
             Dim alMenu As New List(Of NodeLink)
-            If menu.Nodes.Keys.Contains("FirstNode1") Then
+            Dim hasInsertable As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Desk, DomainUserFacade.HasInsertable)
+            If menu.Nodes.Keys.Contains("FirstNode1") AndAlso hasInsertable Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode1").Name, "Desks/DeskInsert.aspx", CommonShared.AppendSecurityCheck("Type=Desk")))
             End If
             If menu.Nodes.Keys.Contains("FirstNode2") Then
@@ -1932,49 +2161,49 @@ Partial Public Class FrameSet
         Dim url As String = String.Empty
         Dim cutil As CommonUtil = New CommonUtil()
         Select Case notificationType
-            Case NotificationType.ProtocolliDaLeggere
+            Case notificationType.ProtocolliDaLeggere
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Da leggere", "PL", UserDesktop.PageScrivania, "Prot"))
                 btnProtocolNotReaded.Visible = True
                 btnProtocolNotReaded.NavigateUrl = GetScrivaniaUrl(url, notificationType)
                 Exit Select
-            Case NotificationType.ProtocolliDifatturaDaLeggere
+            Case notificationType.ProtocolliDifatturaDaLeggere
                 If DocSuiteContext.Current.ProtocolEnv.InvoiceSDIEnabled Then
                     url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Fatture da leggere", "IPL", UserDesktop.PageScrivania, "Prot"))
                     btnProtocolInvoiceNotReaded.Visible = True
                     btnProtocolInvoiceNotReaded.NavigateUrl = GetScrivaniaUrl(url, notificationType)
                 End If
                 Exit Select
-            Case NotificationType.ProtocolliDaDistribuire
+            Case notificationType.ProtocolliDaDistribuire
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Da distribuire", "PD", UserDesktop.PageScrivania, "Prot"))
                 btnProtocolToDistribute.Visible = True
                 btnProtocolToDistribute.NavigateUrl = GetScrivaniaUrl(url, notificationType)
                 Exit Select
-            Case NotificationType.ProtocolliRigettati
+            Case notificationType.ProtocolliRigettati
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Rigettati", UserDesktop.ActionNameProtocolliRigettati, UserDesktop.PageScrivania, "Prot"))
                 btnProtocolRejected.Visible = True
                 btnProtocolRejected.NavigateUrl = GetScrivaniaUrl(url, notificationType)
                 btnProtocolRejected.Icon.PrimaryIconUrl = ImagePath.SmallReject
                 Exit Select
-            Case NotificationType.CollaborazioniDaProtocollare
+            Case notificationType.CollaborazioniDaProtocollare
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Da protocollare/Gestire", CollaborationMainAction.DaProtocollareGestire, UserDesktop.PageCollRisultati, "Prot"))
                 btnCollToProtocol.Visible = True
                 btnCollToProtocol.NavigateUrl = GetScrivaniaUrl(url, notificationType)
                 Exit Select
-            Case NotificationType.CollaborazioniDaVisionare
+            Case notificationType.CollaborazioniDaVisionare
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Da visionare/firmare", CollaborationMainAction.DaVisionareFirmare, UserDesktop.PageCollRisultati, "Prot"))
                 btnCollToVision.Visible = True
                 btnCollToVision.NavigateUrl = GetScrivaniaUrl(url, notificationType)
                 Exit Select
-            Case NotificationType.WorkflowUtenteCorrente
+            Case notificationType.WorkflowUtenteCorrente
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Attività", Nothing, UserDesktop.PageWorkflowRisultati))
                 btnWorkflow.Visible = DocSuiteContext.Current.ProtocolEnv.WorkflowManagerEnabled
                 btnWorkflow.NavigateUrl = GetScrivaniaUrl(url, notificationType)
                 Exit Select
-            Case NotificationType.ProtocolliInEvidenza
+            Case notificationType.ProtocolliInEvidenza
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("In evidenza", "PE", UserDesktop.PageScrivania, "Prot"))
                 btnHighlightProtocols.Visible = True
                 btnHighlightProtocols.NavigateUrl = GetScrivaniaUrl(url, notificationType)
-            Case NotificationType.PECDaLeggere
+            Case notificationType.PECDaLeggere
                 If Not ProtocolEnv.IsPECEnabled Then
                     Exit Select
                 End If
@@ -1987,14 +2216,14 @@ Partial Public Class FrameSet
                 End If
                 btnPECNotReaded.Visible = ProtocolEnv.IsPECEnabled
                 btnPECNotReaded.NavigateUrl = url
-            Case NotificationType.ProtocolliDaAccettare
+            Case notificationType.ProtocolliDaAccettare
                 If ProtocolEnv.RefusedProtocolAuthorizationEnabled Then
                     url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Da accettare", "PDA", UserDesktop.PageAuthorized, "Prot"))
                     btnProtocolToAccept.Visible = True
                     btnProtocolToAccept.NavigateUrl = GetScrivaniaUrl(url, notificationType)
                 End If
                 Exit Select
-            Case NotificationType.ProtocolliRespinti
+            Case notificationType.ProtocolliRespinti
                 If ProtocolEnv.RefusedProtocolAuthorizationEnabled AndAlso CommonShared.HasRefusedProtocolGroupsRight Then
                     url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Respinti", "PRS", UserDesktop.PageAuthorized, "Prot"))
                     btnProtocolRefused.Visible = True
@@ -2002,7 +2231,7 @@ Partial Public Class FrameSet
                 End If
                 Exit Select
                 Exit Select
-            Case NotificationType.UltimePagineDaFirmare
+            Case notificationType.UltimePagineDaFirmare
                 If DocSuiteContext.Current.IsResolutionEnabled AndAlso ResolutionEnv.ShowMassiveResolutionSearchPageEnabled AndAlso CommonShared.HasGroupDigitalLastPageRight Then
                     btnLastPagesToSign.Visible = True
                     btnLastPagesToSign.NavigateUrl = String.Concat("Resl/ReslFirmaUltimaPagina.aspx?", CommonShared.AppendSecurityCheck("Type=Resl"))
@@ -2014,8 +2243,8 @@ Partial Public Class FrameSet
     Private Function GetScrivaniaUrl(action As String, notificationType As NotificationType) As String
         ' Accrocchio url scrivania
         Select Case notificationType
-            Case NotificationType.CollaborazioniDaProtocollare,
-                 NotificationType.CollaborazioniDaVisionare
+            Case notificationType.CollaborazioniDaProtocollare,
+                 notificationType.CollaborazioniDaVisionare
                 Return If(ProtocolEnv.MoveCollaborationMenu, String.Format("User/{0}", action), String.Format("User/UserDesktop.aspx?content={0}", HttpUtility.UrlEncode(action)))
 
             Case Else
@@ -2023,6 +2252,13 @@ Partial Public Class FrameSet
         End Select
     End Function
 
+    Private Function GetCurrentRight(env As Model.Entities.Commons.DSWEnvironmentType, thisProperty As String) As Boolean
+        Dim value As Boolean = True
+        If ProtocolEnv.MenuRightEnabled Then
+            value = Facade.DomainUserFacade.HasCurrentRight(CurrentDomainUser, env, thisProperty)
+        End If
+        Return value
+    End Function
 #End Region
 
 End Class

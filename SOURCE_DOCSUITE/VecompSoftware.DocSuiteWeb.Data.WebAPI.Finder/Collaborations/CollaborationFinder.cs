@@ -60,7 +60,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Collaborations
             //Tipologia documento
             if (!string.IsNullOrEmpty(DocumentType))
             {
-                string filter = string.Format("DocumentType eq '{0}'", DocumentType);
+                string filter = $"DocumentType eq '{DocumentType}'";
                 if (DocumentType.Equals("UDS", StringComparison.InvariantCultureIgnoreCase))
                 {
                     filter = string.Concat(filter, " or (startswith(DocumentType, '1') and length(DocumentType) gt 2)");
@@ -74,7 +74,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Collaborations
                 {
                     //Alla Visione/Firma
                     case Collaborations.CollaborationFinderActionType.AtVisionSign:
-                        odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetAtVisionSignCollaborations, UserName, Domain));
+                        odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetAtVisionSignCollaborations);
                         break;
 
                     //Da Visionare/Firmare
@@ -82,26 +82,26 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Collaborations
                         switch (CollaborationFinderFilterType)
                         {
                             case CollaborationFinderFilterType.AllCollaborations:
-                                odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetToVisionSignCollaborations,
-                                    UserName, Domain));
+                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetToVisionSignCollaborations);
                                 break;
 
                             case CollaborationFinderFilterType.SignRequired:
-                                odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetToVisionSignRequiredCollaborations,
-                                    UserName, Domain));
+                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetToVisionSignRequiredCollaborations);
                                 break;
 
                             case CollaborationFinderFilterType.OnlyVision:
-                                odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetToVisionSignNoRequiredCollaborations,
-                                    UserName, Domain));
+                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetToVisionSignNoRequiredCollaborations);
                                 break;
                         }
+                        break;
+                    //Deleghe
+                    case Collaborations.CollaborationFinderActionType.ToDelegateVisionSign:
+                        odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetToVisionDelegateSignCollaborations);
                         break;
 
                     //Al Protocollo/Segreteria
                     case Collaborations.CollaborationFinderActionType.AtProtocolAdmission:
-                        odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetAtProtocolAdmissionCollaborations,
-                            UserName, Domain));
+                        odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetAtProtocolAdmissionCollaborations);
                         break;
 
                     //Attività in corso
@@ -109,42 +109,36 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Collaborations
                         switch (CollaborationFinderFilterType)
                         {
                             case CollaborationFinderFilterType.AllCollaborations:
-                                odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesAllCollaborations,
-                                    UserName, Domain));
+                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesAllCollaborations);
                                 break;
 
                             case CollaborationFinderFilterType.ActiveCollaborations:
-                                odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesActiveCollaborations,
-                                    UserName, Domain));
+                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesActiveCollaborations);
 
                                 break;
 
                             case CollaborationFinderFilterType.PastCollaborations:
-                                odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesPastCollaborations,
-                                    UserName, Domain));
+                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesPastCollaborations);
                                 break;
                         }
                         break;
 
                     //Da Protocollare/Gestire
                     case Collaborations.CollaborationFinderActionType.ToManage:
-                        odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetToManageCollaborations,
-                            UserName, Domain));
+                        odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetToManageCollaborations);
                         break;
 
                     //Protocollati/Gestiti
                     case Collaborations.CollaborationFinderActionType.Registered:
-                        odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetRegisteredCollaborations,
-                            UserName, Domain, DateFrom.Value.ToString(ODataDateConversion), DateTo.Value.ToString(ODataDateConversion)));
+                        odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetRegisteredCollaborations, DateFrom.Value.ToString(ODataDateConversion), DateTo.Value.ToString(ODataDateConversion)));
                         break;
 
                     //Miei check out
                     case Collaborations.CollaborationFinderActionType.CheckedOut:
-                        odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetMyCheckedOutCollaborations,
-                            UserName, Domain));
+                        odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetMyCheckedOutCollaborations);
                         break;
                 }
-            }            
+            }
 
             return odataQuery;
         }

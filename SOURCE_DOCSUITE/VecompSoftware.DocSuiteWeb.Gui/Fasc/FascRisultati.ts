@@ -3,6 +3,7 @@ import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import FascicleBase = require('Fasc/FascBase');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
+import uscFascicleSearch = require('UserControl/uscFascicleSearch');
 
 
 class FascRisultati extends FascicleBase {
@@ -13,11 +14,13 @@ class FascRisultati extends FascicleBase {
     ajaxLoadingPanelId: string;
     selectableFasciclesThreshold: number;
     uscNotificationId: string;
+    backBtnId: string;
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _btnDocuments: Telerik.Web.UI.RadButton;
     private _btnSelectAll: Telerik.Web.UI.RadButton;
     private _btnDeselectAll: Telerik.Web.UI.RadButton;
+    private _backBtn: Telerik.Web.UI.RadButton;
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
     private _grid: Telerik.Web.UI.RadGrid;
 
@@ -33,6 +36,10 @@ class FascRisultati extends FascicleBase {
      */
     initialize(): void {
         super.initialize();
+        this._backBtn = <Telerik.Web.UI.RadButton>$find(this.backBtnId);
+        if (this._backBtn) {
+            this._backBtn.add_clicked(this.navigateBack);
+        }
         this._btnDocuments = <Telerik.Web.UI.RadButton>$find(this.btnDocumentsId);
         this._btnSelectAll = <Telerik.Web.UI.RadButton>$find(this.btnSelectAllId);
         this._btnDeselectAll = <Telerik.Web.UI.RadButton>$find(this.btnDeselectAllId);
@@ -54,12 +61,16 @@ class FascRisultati extends FascicleBase {
     *------------------------- Events -----------------------------
     */
 
+    private navigateBack(): void {
+        window.history.back();
+    }
+
     /**
      * Evento scatenato al click del pulsante di Visualizza documenti
      * @param sender
      * @param args
      */
-    btnDocuments_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnDocuments_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         let selection: string[] = new Array();
         $.each(this.getSelectedItemIDs(), (index, id) => {
@@ -86,7 +97,7 @@ class FascRisultati extends FascicleBase {
     * @param sender
     * @param args
     */
-    btnSelectAll_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnSelectAll_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         let count: number = 0;
         $.each(this._grid.get_masterTableView().get_dataItems(), (index, item) => {
@@ -107,7 +118,7 @@ class FascRisultati extends FascicleBase {
     * @param sender
     * @param args
     */
-    btnDeselectAll_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnDeselectAll_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         $.each(this.getSelectedItems(), (index, item) => {
             let element = <HTMLInputElement>item.findElement("cbSelect");
@@ -159,6 +170,11 @@ class FascRisultati extends FascicleBase {
     closeWindow(callback: any): void {
         let radWindow: Telerik.Web.UI.RadWindow = this.getRadWindow();
         if (radWindow != null) radWindow.close(callback);
+    }
+
+    loadFolders(selectedFascicleFolderId: string, currentFascicleId: string, destinationFascicleId: any): void {
+        let url: string = `../Fasc/FascMoveItems.aspx?Type=Fasc&idFascicle=${currentFascicleId}&ItemsType=DocumentType&IdFascicleFolder=${selectedFascicleFolderId}&DestinationFascicleId=${destinationFascicleId}&MoveToFascicle=${true}`;
+        location.href = url;
     }
 }
 export = FascRisultati;

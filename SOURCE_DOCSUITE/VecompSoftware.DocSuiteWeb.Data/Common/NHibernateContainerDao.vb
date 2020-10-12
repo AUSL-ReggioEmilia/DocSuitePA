@@ -59,15 +59,7 @@ Public Class NHibernateContainerDao
     End Function
 
     Public Overrides Function GetAll(ByVal orderedExpression As String) As IList(Of Container)
-        criteria = NHibernateSession.CreateCriteria(persitentType)
-
-        Dim expressions As String() = orderedExpression.Split(" "c)
-        Select Case expressions(1).ToUpper()
-            Case "DESC"
-                criteria.AddOrder(Order.Desc(expressions(0)))
-            Case Else
-                criteria.AddOrder(Order.Asc(expressions(0)))
-        End Select
+        criteria = CreateGetContainerCriteria(orderedExpression)
 
         Return criteria.List(Of Container)()
     End Function
@@ -502,6 +494,32 @@ Public Class NHibernateContainerDao
         criteria.SetResultTransformer(Transformers.DistinctRootEntity)
 
         Return criteria.List(Of Container)()
+    End Function
+
+    Public Function GetOrderedContainersByName(Optional orderedExpression As String = Nothing, Optional name As String = Nothing) As IList(Of Container)
+        Dim criteria As ICriteria = CreateGetContainerCriteria(orderedExpression, name)
+
+        Return criteria.List(Of Container)()
+    End Function
+
+    Private Function CreateGetContainerCriteria(Optional orderedExpression As String = Nothing, Optional name As String = Nothing) As ICriteria
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
+
+        If Not String.IsNullOrEmpty(name) Then
+            criteria.Add(Restrictions.Like("Name", name, MatchMode.Anywhere))
+        End If
+
+        If Not String.IsNullOrEmpty(orderedExpression) Then
+            Dim expressions As String() = orderedExpression.Split(" "c)
+            Select Case expressions(1).ToUpper()
+                Case "DESC"
+                    criteria.AddOrder(Order.Desc(expressions(0)))
+                Case Else
+                    criteria.AddOrder(Order.Asc(expressions(0)))
+            End Select
+        End If
+
+        Return criteria
     End Function
 
 #End Region

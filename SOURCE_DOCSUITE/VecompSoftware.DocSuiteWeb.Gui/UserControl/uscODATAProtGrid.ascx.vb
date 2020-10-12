@@ -210,7 +210,7 @@ Partial Public Class uscODATAProtGrid
         End If
 
         Dim boundHeader As WebAPIDto(Of DocumentUnitModel) = DirectCast(e.Item.DataItem, WebAPIDto(Of DocumentUnitModel))
-        Dim hiddenId As String = String.Format("{0}|{1}|{2}", boundHeader.Entity.Year, boundHeader.Entity.Number, boundHeader.TenantModel.TenantName)
+        Dim hiddenId As String = String.Format("{0}|{1}|{2}|{3}", boundHeader.Entity.UniqueId, boundHeader.Entity.Year, boundHeader.Entity.Number, boundHeader.TenantModel.TenantName)
 
         DirectCast(e.Item.FindControl("lblUDName"), Label).Text = boundHeader.Entity.DocumentUnitName
 
@@ -249,16 +249,16 @@ Partial Public Class uscODATAProtGrid
         Select Case e.CommandName
             Case "ViewProtocol"
                 Dim split As String() = e.CommandArgument.ToString().Split("|"c)
-                Dim tenant As TenantModel = DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) x.TenantName.Eq(split(2)))
+                Dim tenant As TenantModel = DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) x.TenantName.Eq(split(3)))
                 If tenant.CurrentTenant Then
-                    Dim prot As Protocol = Facade.ProtocolFacade.GetById(Short.Parse(split(0)), Integer.Parse(split(1)), False)
+                    Dim prot As Protocol = Facade.ProtocolFacade.GetById(Guid.Parse(split(0)), False)
                     If prot IsNot Nothing Then
-                        RedirectOnPage(String.Concat("../Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}&Type=Prot", Short.Parse(split(0)), Integer.Parse(split(1))))))
+                        RedirectOnPage($"../Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={prot.Id}&Type=Prot")}")
                     Else
-                        AjaxManager.Alert(String.Format("Il Protocollo {0}/{1} non è stato trovato", Short.Parse(split(0)), Integer.Parse(split(1))))
+                        AjaxManager.Alert(String.Format("Il Protocollo {0}/{1} non è stato trovato", Short.Parse(split(1)), Integer.Parse(split(2))))
                     End If
                 Else
-                    Dim url As String = String.Format("{0}/?Tipo=Prot&Azione=Apri&Anno={1}&Numero={2}", tenant.DSWUrl, Short.Parse(split(0)), Integer.Parse(split(1)))
+                    Dim url As String = String.Format("{0}/?Tipo=Prot&Azione=Apri&Anno={1}&Numero={2}", tenant.DSWUrl, Short.Parse(split(1)), Integer.Parse(split(2)))
                     Response.RedirectToNewWindow(url)
                 End If
             Case "ViewResolution"
@@ -357,7 +357,7 @@ Partial Public Class uscODATAProtGrid
                 Dim parameters As String
                 Select Case header.Entity.Environment
                     Case DSWEnvironment.Protocol
-                        parameters = String.Format("Year={0}&Number={1}&Type=Prot", header.Entity.Year, header.Entity.Number)
+                        parameters = String.Format("UniqueId={0}&Type=Prot", header.Entity.UniqueId)
                         If (header.TenantModel.CurrentTenant) Then
                             Return String.Concat("~/Viewers/ProtocolViewer.aspx?", CommonShared.AppendSecurityCheck(parameters))
                         End If

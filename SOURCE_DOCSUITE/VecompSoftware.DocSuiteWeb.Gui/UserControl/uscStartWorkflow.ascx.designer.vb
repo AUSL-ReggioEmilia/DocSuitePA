@@ -77,13 +77,22 @@ Partial Public Class uscStartWorkflow
     Protected WithEvents ddlTemplateCollaboration As Global.Telerik.Web.UI.RadComboBox
 
     '''<summary>
-    '''uscProposerRole control.
+    '''uscRoleProposerRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscProposerRole As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
+    Protected WithEvents uscRoleProposerRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+
+    '''<summary>
+    '''uscTenantsSelRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscTenantsSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscTenantsSelRest
 
     '''<summary>
     '''lblContactProposer control.
@@ -104,22 +113,22 @@ Partial Public Class uscStartWorkflow
     Protected WithEvents proposerContactRow As Global.Telerik.Web.UI.LayoutRow
 
     '''<summary>
-    '''uscProposerContact control.
+    '''uscProposerContactRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscProposerContact As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
+    Protected WithEvents uscProposerContactRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscDomainUserSelRest
 
     '''<summary>
-    '''uscRecipientRole control.
+    '''uscRoleRecipientRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscRecipientRole As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
+    Protected WithEvents uscRoleRecipientRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
 
     '''<summary>
     '''lblContactRecipient control.
@@ -140,13 +149,13 @@ Partial Public Class uscStartWorkflow
     Protected WithEvents recipientContactRow As Global.Telerik.Web.UI.LayoutRow
 
     '''<summary>
-    '''uscRecipientContact control.
+    '''uscRecipientContactRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscRecipientContact As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
+    Protected WithEvents uscRecipientContactRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscDomainUserSelRest
 
     '''<summary>
     '''lblUploadDocument control.
@@ -194,6 +203,42 @@ Partial Public Class uscStartWorkflow
     Protected WithEvents rgvDocumentLists As Global.Telerik.Web.UI.RadGrid
 
     '''<summary>
+    '''lblDossierTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDossierTitle As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''lblDossier control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDossier As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lrUscWorkflowFolderSelRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lrUscWorkflowFolderSelRest As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''uscWorkflowFolderSelRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscWorkflowFolderSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscWorkflowFolderSelRest
+
+    '''<summary>
     '''lblDatas control.
     '''</summary>
     '''<remarks>
@@ -201,6 +246,15 @@ Partial Public Class uscStartWorkflow
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDatas As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rdlCCDocument control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rdlCCDocument As Global.System.Web.UI.WebControls.RadioButtonList
 
     '''<summary>
     '''lblPriority control.

@@ -33,7 +33,7 @@ Public Class DeskViewStoryBoard
     Private ReadOnly Property CurrentDocumentInfo As BiblosDocumentInfo
         Get
             If _currentDocumentInfo Is Nothing AndAlso CurrentDeskDocument IsNot Nothing AndAlso CurrentDeskDocument.IdDocument.HasValue Then
-                Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentDesk.Container.DeskLocation.DocumentServer, CurrentDeskDocument.IdDocument.Value)
+                Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentDeskDocument.IdDocument.Value)
                 If Not docInfos.Any() Then
                     Return Nothing
                 End If
@@ -124,7 +124,7 @@ Public Class DeskViewStoryBoard
             Exit Sub
         End If
 
-        Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentDesk.Container.DeskLocation.DocumentServer, CurrentDeskDocument.IdDocument.Value)
+        Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentDeskDocument.IdDocument.Value)
         If docInfos.Any() Then
             AjaxAlert("Nessun documento presente per la visualizzazione")
             FileLogger.Error(LoggerName, "Nessun documento presente per la visualizzazione")

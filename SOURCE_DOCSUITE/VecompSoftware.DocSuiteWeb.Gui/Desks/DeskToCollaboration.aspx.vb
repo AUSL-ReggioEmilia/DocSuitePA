@@ -13,6 +13,7 @@ Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.Templates
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Collaborations
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Biblos
@@ -254,7 +255,7 @@ Public Class DeskToCollaboration
     Private Sub InitializeDocuments()
         Dim documentDtos As ICollection(Of DeskDocumentResult) = New Collection(Of DeskDocumentResult)
         For Each deskDocument As DeskDocument In CurrentDesk.DeskDocuments.Where(Function(x) x.IsActive = 0)
-            Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentDesk.Container.DeskLocation.DocumentServer, deskDocument.IdDocument.Value)
+            Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(deskDocument.IdDocument.Value)
             If Not docInfos.Any() Then
                 Exit Sub
             End If
@@ -306,13 +307,16 @@ Public Class DeskToCollaboration
         Dim templates As ICollection(Of WebAPIDto(Of TemplateCollaboration)) = New List(Of WebAPIDto(Of TemplateCollaboration))
 
         Try
-            CurrentTemplateCollaborationFinder.ResetDecoration()
-            CurrentTemplateCollaborationFinder.OnlyAuthorized = True
-            CurrentTemplateCollaborationFinder.Locked = True
-            CurrentTemplateCollaborationFinder.Status = TemplateCollaborationStatus.Active
-            CurrentTemplateCollaborationFinder.UserName = DocSuiteContext.Current.User.UserName
-            CurrentTemplateCollaborationFinder.Domain = DocSuiteContext.Current.User.Domain
-            templates = CurrentTemplateCollaborationFinder.DoSearch()
+            templates = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentTemplateCollaborationFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.OnlyAuthorized = True
+                        finder.Locked = True
+                        finder.Status = TemplateCollaborationStatus.Active
+                        finder.UserName = DocSuiteContext.Current.User.UserName
+                        finder.Domain = DocSuiteContext.Current.User.Domain
+                        Return finder.DoSearch()
+                    End Function)
         Catch ex As Exception
             FileLogger.Error(LoggerName, ex.Message, ex)
             AjaxAlert("E' avvenuto un errore durante la ricerca delle tipologie di collaborazione. Provare a ricaricare la pagina.")

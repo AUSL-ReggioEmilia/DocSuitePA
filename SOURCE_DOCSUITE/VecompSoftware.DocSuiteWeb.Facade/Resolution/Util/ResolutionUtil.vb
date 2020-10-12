@@ -74,7 +74,7 @@ Public Class ResolutionUtil
         'Creo l'header della tabella
         Dim tableStream As String = "<table class=3DMsoTableGrid border=3D0 cellspacing=3D0 cellpadding=3D0 style=3D'border-collapse:collapse;border:none;mso-yfti-tbllook:1184; mso-padding-alt:0cm 5.4pt 0cm 5.4pt;mso-border-insideh:none;mso-border-insidev: none'>"
 
-        Dim docs As List(Of DocumentInfo) = BiblosDocumentInfo.GetDocuments(New UIDChain(location.DocumentServer, location.ReslBiblosDSDB, idCatena)).Cast(Of DocumentInfo)().ToList()
+        Dim docs As List(Of DocumentInfo) = BiblosDocumentInfo.GetDocuments(New UIDChain(location.ReslBiblosDSDB, idCatena)).Cast(Of DocumentInfo)().ToList()
 
         For Each doc As DocumentInfo In docs
 
@@ -557,7 +557,7 @@ Public Class ResolutionUtil
         Return sOggetto
     End Function
 
-    Public Sub InserisciFrontalino(ByVal data As DateTime, ByVal idResolution As Integer, ByVal resolutionType As Short, ByVal stepDescription As String, ByVal location As Location, ByRef chainId As Long, ByVal number As String, ByVal stepId As Short, ByVal idRole As String, Optional presentSigners As IList(Of String) = Nothing)
+    Public Sub InserisciFrontalino(ByVal data As DateTime, ByVal idResolution As Integer, ByVal resolutionType As Short, ByVal stepDescription As String, ByVal location As Location, ByRef chainId As Integer, ByVal number As String, ByVal stepId As Short, ByVal idRole As String, Optional presentSigners As IList(Of String) = Nothing)
         Dim resolution As Resolution = ResolutionFacade.GetById(idResolution)
         Dim fileName As String = GetNomeFrontalino(resolution.Type.Id, stepDescription)
         Dim fi As FileInfo = GeneraFrontalino(data, resolution, stepDescription, stepId, idRole, presentSigners)
@@ -567,9 +567,9 @@ Public Class ResolutionUtil
 
             Dim frontalinoAttributes As Dictionary(Of String, String) = New Dictionary(Of String, String)()
             frontalinoAttributes = Service.GetBaseAttributes(fileName, signature)
-            frontalinoAttributes.Add(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE, 0)
+            frontalinoAttributes.Add(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE, "0")
 
-            Dim uid As UIDDocument = Service.AddFile(New UIDLocation() With {.Server = location.DocumentServer, .Archive = location.ReslBiblosDSDB}, chainId,
+            Dim uid As UIDDocument = Service.AddFile(New UIDLocation() With {.Archive = location.ReslBiblosDSDB}, chainId,
                                     fi, frontalinoAttributes)
 
             If DocSuiteContext.Current.PrivacyLevelsEnabled Then

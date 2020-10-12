@@ -11,6 +11,7 @@ Imports VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder
 Imports VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Commons
 Imports VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.Commons
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.UDS
 Imports VecompSoftware.DocSuiteWeb.Facade
@@ -56,7 +57,7 @@ Public Class DesignerService
     Public Shared ReadOnly Property UDSRepositoryWebAPIFacade As FacadeWebAPI.UDSRepositoryFacade
         Get
             If _udsRepositoryWebAPIFacade Is Nothing Then
-                _udsRepositoryWebAPIFacade = New FacadeWebAPI.UDSRepositoryFacade(DocSuiteContext.Current.Tenants)
+                _udsRepositoryWebAPIFacade = New FacadeWebAPI.UDSRepositoryFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
             End If
             Return _udsRepositoryWebAPIFacade
         End Get
@@ -68,6 +69,15 @@ Public Class DesignerService
                 _udsRepositoryFacade = New UDSRepositoryFacade(DocSuiteContext.Current.User.FullUserName)
             End If
             Return _udsRepositoryFacade
+        End Get
+    End Property
+
+    Public Overloads Shared ReadOnly Property CurrentTenant As Tenant
+        Get
+            If HttpContext.Current.Session("CurrentTenant") IsNot Nothing Then
+                Return DirectCast(HttpContext.Current.Session("CurrentTenant"), Tenant)
+            End If
+            Return Nothing
         End Get
     End Property
 #End Region
@@ -98,7 +108,7 @@ Public Class DesignerService
 
     <WebMethod>
     Public Shared Function LoadBiblosArchives() As Object
-        Dim archives As Archive() = Service.GetArchives(String.Empty)
+        Dim archives As Archive() = Service.GetArchives()
         Return archives.Select(Function(s) s.Name).OrderBy(Function(o) o).ToArray()
     End Function
 
@@ -247,9 +257,11 @@ Public Class DesignerService
 
     <WebMethod>
     Public Shared Function LoadRootCategories() As Object
-        Dim categoryFinder As CategoryFinder = New CategoryFinder(New MapperCategoryModel(), DocSuiteContext.Current.User.FullUserName)
-        categoryFinder.EnablePaging = False
-        categoryFinder.IsActive = True
+        Dim categoryFinder As CategoryFinder = New CategoryFinder(New MapperCategoryModel(), DocSuiteContext.Current.User.FullUserName) With {
+            .EnablePaging = False,
+            .IsActive = True,
+            .IncludeZeroLevel = False
+        }
         Dim categories As ICollection(Of Data.Category) = categoryFinder.DoSearch()
         If Not categories.Any() Then
             Return String.Empty
@@ -444,7 +456,22 @@ Public Class DesignerService
                 hasError = Not validator.ValidateXml(xml, xmlSchema, Utils.UDSNamespace)
                 validator.Errors.AddRange(errors)
             Else
-                validator.Errors.Add("Il modulo Archivi non è configurato correttamente a livello di installazione. E' neccessario contattara l'assistenza affinché procedano con l'adeguamento della tabella 'SchemaRepository'")
+                validator.Errors.Add("Il modulo Archivi non è configurato correttamente a livello di installazione. E' neccessario contattare l'assistenza affinché procedano con l'adeguamento della tabella 'SchemaRepository'")
+            End If
+            Dim model As UDSModel = UDSModel.LoadXml(xml)
+            If model.Model.Metadata IsNot Nothing Then
+                Dim numberField As NumberField
+                For Each medatada As Section In model.Model.Metadata
+                    If medatada.Items IsNot Nothing Then
+                        For Each item As FieldBaseType In medatada.Items
+                            numberField = TryCast(item, NumberField)
+                            If numberField IsNot Nothing AndAlso (numberField.MaxValueSpecified AndAlso numberField.MinValueSpecified AndAlso numberField.MaxValue < numberField.MinValue) Then
+                                hasError = True
+                                validator.Errors.Add($"Il valore massimo dell'elemento {item.Label} non può essere inferiore al valore minimo")
+                            End If
+                        Next
+                    End If
+                Next
             End If
             Return New With {
                 Key .[error] = hasError,

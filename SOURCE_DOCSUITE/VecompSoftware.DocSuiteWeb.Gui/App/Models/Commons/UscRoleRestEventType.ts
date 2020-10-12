@@ -1,6 +1,9 @@
 ﻿enum UscRoleRestEventType {
     NewRolesAdded,
-    RoleDeleted
+    RoleDeleted,
+    AllRolesAdded,
+    AllRolesDeleted,
+    SetFascicleVisibilityType
 }
 
 export = UscRoleRestEventType;

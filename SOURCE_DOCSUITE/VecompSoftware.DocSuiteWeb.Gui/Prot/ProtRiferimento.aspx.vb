@@ -30,7 +30,7 @@ Public Class ProtRiferimento
         'verifica diritti
         If Not CurrentProtocolRights.IsEditable Then
             Throw New DocSuiteException(
-                "Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber),
+                $"Protocollo n. {CurrentProtocol.FullNumber}",
                 "Mancano diritti di Autorizzazione",
                 Request.Url.ToString(),
                 DocSuiteContext.Current.User.FullUserName)

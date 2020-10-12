@@ -26,4 +26,6 @@ Public Class ProtocolInitializer
     Public Property Category As Category
     Public Property Roles As IList(Of Role)
     Public Property DocumentTypeLabel As String
+    Public Property DocumentProtocol As String
+    Public Property DocumentDate As DateTime?
 End Class

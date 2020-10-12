@@ -118,14 +118,13 @@ Partial Public Class ReslPubblicaWeb
                             End If
                         End If
 
-                        Dim biblosDsServer As String = document.Resolution.Location.DocumentServer
                         Dim ext As String
 
                         If Not document.DocumentsIds Is Nothing AndAlso document.DocumentsIds.Count > 0 Then 'Verifico i componenti del documento da pubblicare
                             Dim files As New List(Of String)
                             ' Eseguo un ciclo sui documenti selezionati dalla catena
                             For Each docGuid As Guid In document.DocumentsIds
-                                Dim doc As New BiblosDocumentInfo(biblosDsServer, docGuid)
+                                Dim doc As New BiblosDocumentInfo(docGuid)
                                 Dim file As FileInfo = BiblosFacade.SaveUniquePdfToTempNoSignature(doc, "WebPubTemp.pdf")
 
                                 ' Salvo il nome del documento temporaneo

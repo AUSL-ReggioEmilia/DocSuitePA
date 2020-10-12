@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class TbltWorkflowEvaluationPropertyGes
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''pnlRinomina control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlRinomina As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''rcbName control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rcbName As Global.Telerik.Web.UI.RadComboBox
-    
+
     '''<summary>
     '''tfvNameWorkflowStartup control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tfvNameWorkflowStartup As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''rntbValueInt control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rntbValueInt As Global.Telerik.Web.UI.RadNumericTextBox
-    
+
     '''<summary>
     '''rtbValueString control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtbValueString As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''rtbValueJson control.
     '''</summary>
@@ -75,7 +75,61 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtbValueJson As Global.Telerik.Web.UI.RadTextBox
-    
+
+    '''<summary>
+    '''uscRoleRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscRoleRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+
+    '''<summary>
+    '''uscWorkflowDesignerValidations control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscWorkflowDesignerValidations As Global.VecompSoftware.DocSuiteWeb.Gui.uscWorkflowDesignerValidations
+
+    '''<summary>
+    '''ddlTemplateCollaboration control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlTemplateCollaboration As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
+    '''ddlCollaborationSignSummary control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlCollaborationSignSummary As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
+    '''ddlActionGenerate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlActionGenerate As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
+    '''uscDomainUserSelRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscDomainUserSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscDomainUserSelRest
+
     '''<summary>
     '''rlbValueBool control.
     '''</summary>
@@ -84,7 +138,7 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rlbValueBool As Global.Telerik.Web.UI.RadListBox
-    
+
     '''<summary>
     '''rdpValueDate control.
     '''</summary>
@@ -93,7 +147,7 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpValueDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''rntbValueDouble control.
     '''</summary>
@@ -102,7 +156,7 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rntbValueDouble As Global.Telerik.Web.UI.RadNumericTextBox
-    
+
     '''<summary>
     '''rdbGuid control.
     '''</summary>
@@ -111,7 +165,7 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdbGuid As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''btnConfirm control.
     '''</summary>

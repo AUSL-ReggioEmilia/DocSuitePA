@@ -168,14 +168,14 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
 
                 _isEditable = IsActive && FacadeFactory.Instance.ContainerFacade.CheckContainerRight(CurrentUDSRepository.Container.Id,
                     DSWEnvironment.UDS, (int)UDSRightPositions.Modify, true) && !HasWorkflowInProgress;
-                if (_isEditable.HasValue && !_isEditable.Value && _UDSDto.UDSModel.Model.Authorizations.Instances != null && _UDSDto.UDSModel.Model.Authorizations.Instances.Any())
+                if (_isEditable.HasValue && !_isEditable.Value && _UDSDto.UDSModel.Model.Authorizations != null && _UDSDto.UDSModel.Model.Authorizations.Instances != null && _UDSDto.UDSModel.Model.Authorizations.Instances.Any())
                 {
                     IList<Role> roles = FacadeFactory.Instance.RoleFacade.GetByIds(_UDSDto.UDSModel.Model.Authorizations.Instances.Where(f=> f.AuthorizationType == AuthorizationType.Responsible).Select(t => t.IdAuthorization).ToList());
                     _isEditable = FacadeFactory.Instance.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.DocumentSeries, roles);
                 }
                 if (_isEditable.HasValue && !_isEditable.Value)
                 {
-                    _isEditable = CurrentUserWorkflowActivity.HasValue;
+                    _isEditable = IsActive && CurrentUserWorkflowActivity.HasValue;
                 }
 
                 return _isEditable.Value;
@@ -209,7 +209,7 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
                 _isClonable = IsActive && IsEditable && !HasWorkflowInProgress;
                 if (_isClonable.HasValue && !_isClonable.Value)
                 {
-                    _isClonable = CurrentUserWorkflowActivity.HasValue;
+                    _isClonable = IsActive && CurrentUserWorkflowActivity.HasValue;
                 }
 
                 return _isClonable.Value;
@@ -365,13 +365,17 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
                     return _isCurrentUserAuthorized.Value;
                 }
                 _isCurrentUserAuthorized = false;
-                CurrentUDSUserFinder.ResetDecoration();
-                CurrentUDSUserFinder.IdUDS = _UDSDto.Id;
-                CurrentUDSUserFinder.EnablePaging = false;
-                CurrentUDSUserFinder.Domain = DocSuiteContext.Current.User.Domain;
-                CurrentUDSUserFinder.Username = DocSuiteContext.Current.User.UserName;
-                CurrentUDSUserFinder.CheckUserAuthorization = true;
-                ICollection<WebAPIDto<UDSUser>> result = CurrentUDSUserFinder.DoSearch();
+                ICollection<WebAPIDto<UDSUser>> result = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentUDSUserFinder,
+                    (impersonationType, finder) =>
+                    {
+                        CurrentUDSUserFinder.ResetDecoration();
+                        CurrentUDSUserFinder.IdUDS = _UDSDto.Id;
+                        CurrentUDSUserFinder.EnablePaging = false;
+                        CurrentUDSUserFinder.Domain = DocSuiteContext.Current.User.Domain;
+                        CurrentUDSUserFinder.Username = DocSuiteContext.Current.User.UserName;
+                        CurrentUDSUserFinder.CheckUserAuthorization = true;
+                        return CurrentUDSUserFinder.DoSearch();
+                    });
 
                 if (result != null && result.Count() > 0)
                 {
@@ -409,12 +413,16 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
             {
                 if (!_hasWorkflowInProgress.HasValue)
                 {
-                    CurrentWorkflowActivityFinder.ResetDecoration();
-                    CurrentWorkflowActivityFinder.EnablePaging = false;
-                    CurrentWorkflowActivityFinder.DocumentUnitReferenced = _UDSDto.Id;
-                    CurrentWorkflowActivityFinder.Top1 = true;
-                    CurrentWorkflowActivityFinder.WorkflowInstanceInProgress = true;
-                    ICollection<WebAPIDto<WorkflowActivity>> result = CurrentWorkflowActivityFinder.DoSearch();
+                    ICollection<WebAPIDto<WorkflowActivity>> result = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowActivityFinder,
+                    (impersonationType, finder) =>
+                    {
+                        CurrentWorkflowActivityFinder.ResetDecoration();
+                        CurrentWorkflowActivityFinder.EnablePaging = false;
+                        CurrentWorkflowActivityFinder.DocumentUnitReferenced = _UDSDto.Id;
+                        CurrentWorkflowActivityFinder.Top1 = true;
+                        CurrentWorkflowActivityFinder.WorkflowInstanceInProgress = true;
+                        return CurrentWorkflowActivityFinder.DoSearch();
+                    });
 
                     _hasWorkflowInProgress = result != null && result.Count() > 0;
                 }
@@ -428,15 +436,19 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
             {
                 if (!_currentIdWorkflowActivity.HasValue)
                 {
-                    CurrentWorkflowActivityFinder.ResetDecoration();
-                    CurrentWorkflowActivityFinder.EnablePaging = false;
-                    CurrentWorkflowActivityFinder.DocumentUnitReferenced = _UDSDto.Id;
-                    CurrentWorkflowActivityFinder.IsAuthorized = true;
-                    CurrentWorkflowActivityFinder.Account = _userName;
-                    CurrentWorkflowActivityFinder.Statuses = new List<WorkflowStatus>() { WorkflowStatus.Todo, WorkflowStatus.Progress };
-                    CurrentWorkflowActivityFinder.Top1 = true;
-                    CurrentWorkflowActivityFinder.WorkflowInstanceInProgress = true;
-                    ICollection<WebAPIDto<WorkflowActivity>> result = CurrentWorkflowActivityFinder.DoSearch();
+                    ICollection<WebAPIDto<WorkflowActivity>> result = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowActivityFinder,
+                    (impersonationType, finder) =>
+                    {
+                        CurrentWorkflowActivityFinder.ResetDecoration();
+                        CurrentWorkflowActivityFinder.EnablePaging = false;
+                        CurrentWorkflowActivityFinder.DocumentUnitReferenced = _UDSDto.Id;
+                        CurrentWorkflowActivityFinder.IsAuthorized = true;
+                        CurrentWorkflowActivityFinder.Account = _userName;
+                        CurrentWorkflowActivityFinder.Statuses = new List<WorkflowStatus>() { WorkflowStatus.Todo, WorkflowStatus.Progress };
+                        CurrentWorkflowActivityFinder.Top1 = true;
+                        CurrentWorkflowActivityFinder.WorkflowInstanceInProgress = true;
+                        return CurrentWorkflowActivityFinder.DoSearch();
+                    });
 
                     _currentIdWorkflowActivity = null;
                     if (result.Any())

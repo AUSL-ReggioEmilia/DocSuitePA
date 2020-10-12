@@ -291,7 +291,9 @@ Public Class TbltSMSPecNotification
         'Se il contatto non è presente in UserLog in quanto non ha mai fatto un accesso in DSW
         'lo creo in modalità base (solo account name)
         If item Is Nothing Then
-            item = New UserLog() With {.Id = contact.GetFullUserName()}
+            item = New UserLog() With {
+                .Id = contact.GetFullUserName(),
+                .CurrentTenantId = Guid.Empty}
             Facade.UserLogFacade.Save(item)
         End If
 

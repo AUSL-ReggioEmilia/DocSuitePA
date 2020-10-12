@@ -7,7 +7,7 @@ Imports System.ComponentModel
 
 <DataObject()> _
 Public Class ProtocolContactFacade
-    Inherits BaseProtocolFacade(Of ProtocolContact, ProtocolContactCompositeKey, NHibernateProtocolContactDao)
+    Inherits BaseProtocolFacade(Of ProtocolContact, Guid, NHibernateProtocolContactDao)
 
     Public Sub New()
     End Sub
@@ -15,12 +15,12 @@ Public Class ProtocolContactFacade
     ''' <summary> Lista di ProtocolContact filtrati per Year, Number e ComunicationType </summary>
     ''' <param name="year">Anno Protocollo</param>
     ''' <param name="number">Numero Protocollo</param>
-    Public Function GetByComunicationType(ByVal year As Short, ByVal number As Integer, ByVal comunicationType As String) As IList(Of ProtocolContact)
-        Return _dao.GetByComunicationType(year, number, comunicationType)
+    Public Function GetByComunicationType(protocol As Protocol, ByVal comunicationType As String) As IList(Of ProtocolContact)
+        Return _dao.GetByComunicationType(protocol.Id, comunicationType)
     End Function
 
-    Public Function GetCountByProtocol(ByVal year As Short, ByVal number As Integer, ByVal comunicationType As String) As Integer
-        Return _dao.GetCountByProtocol(year, number, comunicationType)
+    Public Function GetCountByProtocol(protocol As Protocol, ByVal comunicationType As String) As Integer
+        Return _dao.GetCountByProtocol(protocol.Id, comunicationType)
     End Function
 
     Function GetJournalPrint(ByVal idContainers As String, ByVal dateFrom As Date?, ByVal dateTo As Date?, ByVal idStatus As Integer?) As IList(Of ProtocolContactJournalDTO)
@@ -30,24 +30,17 @@ Public Class ProtocolContactFacade
     ''' <summary> Aggiunge un contatto al protocollo </summary>
     ''' <remarks> Verifica integrità dei dati </remarks>
     Public Shared Sub BindContactToProtocol(ByRef protocol As Protocol, ByVal contact As Contact, ByVal comunicationType As Char, ByVal copiaConoscenza As Boolean)
-        Dim id As New ProtocolContactCompositeKey
-        id.IdContact = contact.Id
-        id.Year = protocol.Year
-        id.Number = protocol.Number
-        id.ComunicationType = comunicationType
-
-        If protocol.Contacts.FirstOrDefault(Function(x) x.Id.Equals(id)) Is Nothing Then
-            Dim pc As New ProtocolContact(id)
+        If Not protocol.Contacts.Any(Function(x) x.Contact.Id.Equals(contact.Id) AndAlso x.ComunicationType = comunicationType) Then
+            Dim pc As ProtocolContact = New ProtocolContact()
+            pc.ComunicationType = comunicationType
             pc.Contact = contact
             If copiaConoscenza Then
                 pc.Type = "CC"
             End If
             pc.Protocol = protocol
-            pc.UniqueIdProtocol = protocol.UniqueId
 
             protocol.Contacts.Add(pc)
         End If
-
     End Sub
 
     ''' <summary>
@@ -68,7 +61,7 @@ Public Class ProtocolContactFacade
             Return Nothing
         End If
 
-        Dim sdicontact As New Contact
+        Dim sdicontact As Contact = New Contact()
         sdicontact.IsActive = 1
         sdicontact.Parent = Nothing
         sdicontact.ContactType = New ContactType(ContactType.Administration)
@@ -76,7 +69,7 @@ Public Class ProtocolContactFacade
         sdicontact.CertifiedMail = currentContainerEnv.InvoicePAContactSDI
         sdicontact.Role = Nothing
 
-        Dim contactDto As New ContactDTO(sdicontact, ContactDTO.ContactType.Manual)
+        Dim contactDto As ContactDTO = New ContactDTO(sdicontact, ContactDTO.ContactType.Manual)
         Return contactDto
     End Function
 
@@ -90,7 +83,7 @@ Public Class ProtocolContactFacade
             Return contactsByName.First()
         End If
 
-        Dim group As New Contact()
+        Dim group As Contact = New Contact()
         group.Description = groupName
         group.ContactType = New ContactType(ContactType.Group)
         group.IsActive = 1

@@ -27,7 +27,7 @@ Partial Public Class ReslUltimaPagina
             Dim lastPageDocument As DocumentInfo = uscDocumentUpload.DocumentInfosAdded.First()
             lastPageDocument.Name = "UltimaPagina.pdf"
             lastPageDocument.Signature = Facade.ResolutionFacade.SqlResolutionGetNumber(idResolution:=CurrentResolution.Id, complete:=True)
-            Dim idChain As Integer = lastPageDocument.ArchiveInBiblos(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB).BiblosChainId
+            Dim idChain As Integer = lastPageDocument.ArchiveInBiblos(CurrentResolution.Location.ReslBiblosDSDB).BiblosChainId
             Facade.ResolutionFacade.SqlResolutionDocumentUpdate(CurrentResolution.Id, idChain, ResolutionFacade.DocType.UltimaPagina)
             Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.RP, "Caricata ultima pagina")
             AjaxManager.ResponseScripts.Add("CloseWindow();")

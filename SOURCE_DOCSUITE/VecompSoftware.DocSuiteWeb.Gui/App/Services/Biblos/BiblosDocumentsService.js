@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "../BaseService"], function (require, exports, BaseService) {
+define(["require", "exports", "App/Services/BaseService"], function (require, exports, BaseService) {
     var BiblosDocumentsService = /** @class */ (function (_super) {
         __extends(BiblosDocumentsService, _super);
         /**

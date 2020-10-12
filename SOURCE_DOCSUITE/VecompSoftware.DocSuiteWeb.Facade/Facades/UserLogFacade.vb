@@ -6,6 +6,7 @@ Imports Newtonsoft.Json
 Imports VecompSoftware.Helpers.Analytics.Models.AdaptiveSearches
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.Commons
 Imports VecompSoftware.Helpers.Analytics
+Imports VecompSoftware.DocSuiteWeb.Model.Documents.Signs
 
 <ComponentModel.DataObject()>
 Public Class UserLogFacade
@@ -13,7 +14,8 @@ Public Class UserLogFacade
 
 #Region " Fields "
     Public Const PROTOCOL_ADAPTIVE_SEARCH_KEY As String = "Protocol"
-    Private _adaptiveSearchAnalysis As AdaptiveSearchAnalysis
+    Private ReadOnly _adaptiveSearchAnalysis As AdaptiveSearchAnalysis
+
 #End Region
 
 #Region " Properties "
@@ -37,7 +39,16 @@ Public Class UserLogFacade
         If String.IsNullOrEmpty(domain) Then
             domain = CommonShared.UserDomain
         End If
-        Return _dao.GetByUser(user, domain)
+
+        Return _dao.GetByUser($"{domain}\{user}")
+    End Function
+
+    Public Function GetByUser(username As String) As UserLog
+        Return _dao.GetByUser(username)
+    End Function
+
+    Public Function GetUnconfiguredUsers() As IList(Of UserLog)
+        Return _dao.GetUnconfiguredUsers()
     End Function
 
     Public Function EmailOfUser(userName As String, userLogEnabled As Boolean) As String
@@ -220,6 +231,24 @@ Public Class UserLogFacade
             Key .Value = s.Value
         }).ToDictionary(Function(d) d.Key, Function(d) d.Value)
         Return model
+    End Function
+    Public Function GetDelegationsSign() As List(Of String)
+        Dim account As String = DocSuiteContext.Current.User.FullUserName
+        Dim currentUserLog As UserLog = GetByUser(account.Split("\"c)(1), account.Split("\"c)(0))
+        Dim listDeletagions As List(Of String) = New List(Of String)
+        If Not String.IsNullOrEmpty(currentUserLog.UserProfile) Then
+            Dim userProfile As DocSuiteWeb.Model.Documents.Signs.UserProfile = JsonConvert.DeserializeObject(Of DocSuiteWeb.Model.Documents.Signs.UserProfile)(currentUserLog.UserProfile)
+            For Each item As DocSuiteWeb.Model.Documents.Signs.RemoteSignProperty In userProfile.Value.Values
+                If Not item.BeenDelegated Is Nothing Then
+                    For Each contactDelegate As KeyValuePair(Of String, DelegateUser) In item.BeenDelegated
+                        If Not listDeletagions.Contains(contactDelegate.Key) Then
+                            listDeletagions.Add(contactDelegate.Key)
+                        End If
+                    Next
+                End If
+            Next
+        End If
+        Return listDeletagions
     End Function
 #End Region
 

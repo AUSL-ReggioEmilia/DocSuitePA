@@ -8,6 +8,10 @@ define(["require", "exports"], function (require, exports) {
             var toMap = {};
             toMap.UniqueId = source.UniqueId;
             toMap.AuthorizationRoleType = source.AuthorizationRoleType;
+            toMap.IsMaster = source.IsMaster;
+            toMap.EntityShortId = source.EntityShortId;
+            toMap.Dossier = source.Dossier;
+            toMap.Status = source.Status;
             return toMap;
         };
         return DossierRoleModelMapper;

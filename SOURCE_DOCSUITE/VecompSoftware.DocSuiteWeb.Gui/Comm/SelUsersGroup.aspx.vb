@@ -63,7 +63,7 @@ Partial Public Class SelUsersGroup
 
             For Each securityUser As SecurityUsers In securityUsers
                 If Not results.ContainsKey(securityUser.DisplayName) Then
-                    results.Add(securityUser.DisplayName, New AccountModel(securityUser.Account, securityUser.Description, securityUser.UserDomain))
+                    results.Add(securityUser.DisplayName, New AccountModel(securityUser.Account, securityUser.Description, domain:=securityUser.UserDomain))
                 End If
             Next
             users = results.Values.ToList()

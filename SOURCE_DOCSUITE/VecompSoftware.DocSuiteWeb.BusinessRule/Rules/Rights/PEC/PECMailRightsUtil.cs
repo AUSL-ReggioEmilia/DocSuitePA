@@ -250,14 +250,19 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.PEC
 
                 if (_isResendable.Value)
                 {
-                    switch (CurrentPecMail.DocumentUnitType)
+                    switch (CurrentPecMail.DocumentUnit.Environment)
                     {
-                        case DSWEnvironment.Protocol:
-                            _isResendable = _isResendable.Value && new ProtocolRights(FacadeFactory.Instance.ProtocolFacade.GetById(CurrentPecMail.Year.Value, CurrentPecMail.Number.Value)).IsPecSendable;
+                        case (int)DSWEnvironment.Protocol:
+                            _isResendable = _isResendable.Value && new ProtocolRights(FacadeFactory.Instance.ProtocolFacade.GetById(CurrentPecMail.DocumentUnit.Id)).IsPECSendable;
                             break;
-                        case DSWEnvironment.UDS:
-                            _isResendable = _isResendable.Value && new UDSRepositoryRightsUtil(_currentUDSRepositoryFacade.GetById(CurrentPecMail.IdUDSRepository.Value),
+                        default:
+                            {
+                                if (CurrentPecMail.DocumentUnit.Environment >= 100)
+                                {
+                                    _isResendable = _isResendable.Value && new UDSRepositoryRightsUtil(_currentUDSRepositoryFacade.GetById(CurrentPecMail.DocumentUnit.IdUDSRepository.Value),
                                 _userName, new UDSDto()).IsPECSendable;
+                                }
+                            }                            
                             break;
                     }
                 }

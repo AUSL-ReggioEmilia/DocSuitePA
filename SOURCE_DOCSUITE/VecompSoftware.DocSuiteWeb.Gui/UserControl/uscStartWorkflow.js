@@ -2,7 +2,7 @@
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
 /// <reference path="../scripts/typings/dsw/dsw.signalr.d.ts" />
 /// <reference path="../Scripts/typings/moment/moment.d.ts" />
-define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService", "App/Services/Workflows/WorkflowStartService", "App/Helpers/ServiceConfigurationHelper", "App/Models/Environment", "App/Models/Workflows/WorkflowPropertyHelper", "App/DTOs/ExceptionDTO", "UserControl/uscSettori", "App/Models/Workflows/WorkflowReferenceType", "App/Models/Workflows/ArgumentType", "UserControl/uscContattiSel", "App/Services/Templates/TemplateCollaborationService", "App/Helpers/EnumHelper"], function (require, exports, WorkflowRepositoryService, WorkflowStartService, ServiceConfigurationHelper, DSWEnvironment, WorkflowPropertyHelper, ExceptionDTO, UscSettori, WorkflowReferenceType, ArgumentType, UscContattiSel, TemplateCollaborationService, EnumHelper) {
+define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService", "App/Services/Workflows/WorkflowStartService", "App/Helpers/ServiceConfigurationHelper", "App/Models/Environment", "App/Models/Workflows/WorkflowPropertyHelper", "App/DTOs/ExceptionDTO", "App/Models/Workflows/WorkflowReferenceType", "App/Models/Workflows/ArgumentType", "App/Models/Fascicles/FascicleModel", "App/Services/Templates/TemplateCollaborationService", "App/Helpers/EnumHelper", "./uscTenantsSelRest", "App/Helpers/PageClassHelper", "App/Models/Commons/UscRoleRestEventType", "App/Models/Workflows/WorkflowDSWEnvironmentType", "App/Helpers/SessionStorageKeysHelper", "App/Helpers/GuidHelper"], function (require, exports, WorkflowRepositoryService, WorkflowStartService, ServiceConfigurationHelper, DSWEnvironment, WorkflowPropertyHelper, ExceptionDTO, WorkflowReferenceType, ArgumentType, FascicleModel, TemplateCollaborationService, EnumHelper, uscTenantsSelRest, PageClassHelper, UscRoleRestEventType, DSWEnvironmentType, SessionStorageKeysHelper, Guid) {
     var uscStartWorkflow = /** @class */ (function () {
         /**
         * Costruttore
@@ -26,14 +26,27 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 var selectedWorkflowRepository = _this._rdlWorkflowRepository.get_selectedItem();
                 _this.setRecipientValidation();
                 _this.setProposerValidation();
+                _this.setUscWorkflowFolderValidation();
                 var isValid = Page_ClientValidate('');
-                if (!isValid || selectedWorkflowRepository == null || String.isNullOrEmpty(selectedWorkflowRepository.get_value())) {
+                var documentTypeRequired = _this.documentHasSelectedType();
+                var uscTenantSelRest = $("#" + _this.uscTenantsSelRestId).data();
+                if (!isValid || selectedWorkflowRepository == null
+                    || String.isNullOrEmpty(selectedWorkflowRepository.get_value())
+                    || documentTypeRequired === false
+                    || (_this.workflowStartTenantRequired && !uscTenantSelRest.hasValue())) {
                     args.set_cancel(true);
                     if (selectedWorkflowRepository == null && !String.isNullOrEmpty(_this._rdlWorkflowRepository.get_text())) {
                         _this.onError("Selezionare una attività valida");
                     }
+                    if (documentTypeRequired === false) {
+                        _this.onError("E' necessario specificare il tipo di documento per tutti i documenti");
+                    }
+                    if (_this.workflowStartTenantRequired && !uscTenantSelRest.hasValue()) {
+                        _this.onError("E' necessario selezionare una UO");
+                    }
                     _this._loadingPanel.hide(_this.contentId);
                     _this._btnConfirm.set_enabled(true);
+                    args.set_cancel(true);
                     return;
                 }
                 _this.startWorkflow();
@@ -48,12 +61,12 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                     env = DSWEnvironment[_this.dswEnvironment];
                 }
                 var onlyDocumentWorkflows = false;
-                var sessionStorageValue = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
+                var sessionStorageValue = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
                 if (sessionStorageValue && sessionStorageValue !== "[]") {
                     onlyDocumentWorkflows = true;
                 }
                 //il false dovrà essere gestito da un checkbox
-                _this._workflowRepositoryService.getByEnvironment(env, args.get_text(), false, onlyDocumentWorkflows, function (data) {
+                _this._workflowRepositoryService.getByEnvironment(env, args.get_text(), false, onlyDocumentWorkflows, _this.showOnlyNoInstanceWorkflows, _this.showOnlyHasIsFascicleClosedRequired, function (data) {
                     _this._rdlWorkflowRepository.clearItems();
                     var repositories = data;
                     _this.addWorkflowRepositories(repositories, _this._rdlWorkflowRepository);
@@ -70,6 +83,9 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                     var defaultTemplate = _this._workflowEvaluationProperties.filter(function (item) {
                         return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_DEFAULT;
                     });
+                    var readonlyTemplate = _this._workflowEvaluationProperties.filter(function (item) {
+                        return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_READONLY;
+                    });
                     for (var _i = 0, templateCollaborations_1 = templateCollaborations; _i < templateCollaborations_1.length; _i++) {
                         var templateCollaboration = templateCollaborations_1[_i];
                         item = new Telerik.Web.UI.RadComboBoxItem();
@@ -83,6 +99,11 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                             }
                         }
                     }
+                    _this._ddlTemplateCollaboration.enable();
+                    if (readonlyTemplate && readonlyTemplate.length > 0
+                        && readonlyTemplate[0].ValueBoolean && _this._ddlTemplateCollaboration.get_selectedItem()) {
+                        _this._ddlTemplateCollaboration.disable();
+                    }
                 });
             };
             this.onRdlWorkflowRepository_SelectedIndexChanged = function () {
@@ -90,8 +111,7 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                     return;
                 }
                 _this._loadingPanel.show(_this.contentId);
-                _this.dswEnvironment = DSWEnvironment[_this._rdlWorkflowRepository.get_selectedItem().get_attributes().getAttribute(uscStartWorkflow.ENVIRONMENT)];
-                _this.setAvailableRoles(_this.dswEnvironment);
+                _this.setPageVisibilities();
                 _this.clearSessionContacts();
             };
             this.setPageVisibilities = function () {
@@ -104,12 +124,28 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                     if (_this._workflowEvaluationProperties == null) {
                         _this._workflowEvaluationProperties = [];
                     }
+                    var varStr = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL);
+                    var fascicle = new FascicleModel();
+                    if (varStr) {
+                        fascicle = JSON.parse(varStr);
+                    }
                     _this.checkWorkflowEvaluationPropertyValues();
+                    if (_this.redirectToFascicleSingDocument) {
+                        if (fascicle) {
+                            varStr = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
+                            if (varStr) {
+                                var documents = JSON.parse(varStr);
+                                window.location.href = "../Fasc/FascDocumentsInsert.aspx?Type=Fasc&IdFascicle=" + fascicle.UniqueId + "&OnlySignEnabled=true&FilterByArchiveDocumentId=" + documents[0].ArchiveDocumentId;
+                            }
+                        }
+                    }
                     _this.setRecipientProperties();
                     _this.setProposerProperties();
                     if (_this.templateCollaborationRequired) {
                         _this.loadTemplateCollaborations();
                     }
+                    _this.setUscWorkflowFolderProperties(fascicle.UniqueId);
+                    _this._loadingPanel.hide(_this.contentId);
                 }, function (exception) {
                     _this._loadingPanel.hide(_this.contentId);
                     _this.showNotificationException(_this.uscNotificationId, exception, "Anomalia nel recupero della definizione dell'attività.");
@@ -123,6 +159,8 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 var recipientRoleRow = $('#'.concat(_this.recipientRoleRowId));
                 var recipientContactRow = $('#'.concat(_this.recipientContactRowId));
                 var lblRecipientContact = $('#'.concat(_this.recipientContactRowLabelId));
+                var lrUscWorkflowFolderSelRest = $("#" + _this.lrUscWorkflowFolderSelRestId);
+                var lblDossierTitle = $("#" + _this.lblDossierTitleId);
                 //motivazione avvia workflow obbligatorietà
                 var startMotivationRequired = false;
                 results = _this._workflowEvaluationProperties.filter(function (item) {
@@ -139,6 +177,13 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                     _this.templateCollaborationRequired = results[0].ValueBoolean;
                 }
                 results = _this._workflowEvaluationProperties.filter(function (item) {
+                    return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_DOCUMENT_ORIGINAL_TYPE_SELECTION;
+                });
+                _this.documentOriginalTypeRequired = false;
+                if (results && results.length > 0) {
+                    _this.documentOriginalTypeRequired = results[0].ValueBoolean;
+                }
+                results = _this._workflowEvaluationProperties.filter(function (item) {
                     return item.Name == WorkflowPropertyHelper.DSW_ACTION_REDIRECT_TO_COLLABORATION;
                 });
                 _this.redirectToCollaboration = false;
@@ -151,6 +196,13 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 _this.redirectToProtocol = false;
                 if (results && results.length > 0) {
                     _this.redirectToProtocol = results[0].ValueBoolean;
+                }
+                results = _this._workflowEvaluationProperties.filter(function (item) {
+                    return item.Name == WorkflowPropertyHelper.DSW_ACTION_REDIRECT_TO_FASICLE_SIGN_DOCUMENT;
+                });
+                _this.redirectToFascicleSingDocument = false;
+                if (results && results.length > 0) {
+                    _this.redirectToFascicleSingDocument = results[0].ValueBoolean;
                 }
                 results = _this._workflowEvaluationProperties.filter(function (item) {
                     return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_START_DOCUMENT;
@@ -183,6 +235,10 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 if (lblRecipientContact) {
                     lblRecipientContact.hide();
                 }
+                if (lrUscWorkflowFolderSelRest) {
+                    lrUscWorkflowFolderSelRest.hide();
+                    lblDossierTitle.hide();
+                }
                 if (isProposerRoleType && proposerRoleRow) {
                     proposerRoleRow.show();
                 }
@@ -210,14 +266,34 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 results = _this._workflowEvaluationProperties.filter(function (item) {
                     return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_DOCUMENT_CHAIN_TYPE_SELECTION;
                 });
-                var documents = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
+                _this.chainTypeRequired = false;
+                var documents = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
                 if (results && results.length > 0 && documents) {
                     _this._rgvDocumentMasterTableView.set_dataSource(documents);
                     _this._rgvDocumentMasterTableView.set_virtualItemCount(documents.length);
                     _this._rgvDocumentMasterTableView.dataBind();
+                    for (var i = 0; i < documents.length; i++) {
+                        _this.createChangeEvent(documents[i].ArchiveDocumentId + "_chainTypes", documents);
+                    }
                     $('#'.concat(_this.lblChainTypeRowId)).show();
                     $('#'.concat(_this.chainTypeRowId)).show();
                     _this.chainTypeRequired = true;
+                }
+                if (_this.documentOriginalTypeRequired) {
+                    $('#'.concat(_this.copiaConformeRowId)).show();
+                }
+                results = _this._workflowEvaluationProperties.filter(function (item) {
+                    return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_START_TENANT_REQUIRED;
+                });
+                _this.workflowStartTenantRequired = false;
+                if (results && results.length > 0) {
+                    _this.workflowStartTenantRequired = results[0].ValueBoolean;
+                }
+                if (_this.workflowStartTenantRequired) {
+                    $('#'.concat(_this.tenantRowId)).show();
+                }
+                else {
+                    $('#'.concat(_this.tenantRowId)).hide();
                 }
             };
             this.setProposerProperties = function () {
@@ -241,16 +317,10 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 var proposerModel = [];
                 if (isProposerContact) {
                     proposerType = uscStartWorkflow.USC_PROPOSER_ACCOUNT;
-                    var uscContacts = $("#".concat(_this.uscProposerContactId)).data();
+                    var uscProposerDomainUserContacts = $("#".concat(_this.uscProposerContactRestId)).data();
+                    uscProposerDomainUserContacts.setImageButtonsVisibility(!proposerDisabled);
                     proposerModel = new Array();
-                    var contactsModel = JSON.parse(uscContacts.getContacts());
-                    if (!contactsModel || contactsModel.length === 0) {
-                        contactsModel = new Array();
-                        var currentUser = uscContacts.getCurrentUser();
-                        if (currentUser) {
-                            contactsModel.push(currentUser);
-                        }
-                    }
+                    var contactsModel = uscProposerDomainUserContacts.getContacts();
                     for (var _i = 0, contactsModel_1 = contactsModel; _i < contactsModel_1.length; _i++) {
                         var contactModel = contactsModel_1[_i];
                         var workflowAccount = {
@@ -270,15 +340,13 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                         proposerModel.push(role);
                     }
                 }
+                var roles = proposerModel;
+                _this.sourceProposerRoles = roles;
+                _this._uscRoleProposerRest.renderRolesTree(roles);
+                _this.registerUscProposerRoleRestEventHandlers();
                 if (isProposerContact || isProposerRole) {
-                    var ajaxModel = {};
-                    ajaxModel.Value = new Array();
-                    ajaxModel.Value.push(JSON.stringify(proposerDisabled));
-                    ajaxModel.Value.push(proposerType);
-                    ajaxModel.Value.push(JSON.stringify(proposerModel));
-                    ajaxModel.Value.push(uscStartWorkflow.SET_WORKFLOW_RECIPIENT);
-                    ajaxModel.ActionName = uscStartWorkflow.LOAD_EXTERNAL_DATA;
-                    $find(_this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
+                    _this.setToolbarRoleVisibility(!proposerDisabled, _this.uscRoleProposerRestId);
+                    _this.setWorkflowRecipient();
                 }
                 _this._loadingPanel.hide(_this.contentId);
             };
@@ -299,6 +367,7 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 role.Name = workflowRole.Role.Name;
                 role.TenantId = workflowRole.Role.TenantId;
                 role.IdRoleTenant = workflowRole.Role.IdRole;
+                role.UniqueId = workflowRole.Role.UniqueId;
                 return role;
             };
             this.setWorkflowRecipient = function () {
@@ -319,7 +388,8 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 var isRecipientContact = _this.hasCurrentWorkflowRecipientContact();
                 var isRecipientRole = _this.hasCurrentWorkflowRecipientRole();
                 if (isRecipientContact) {
-                    ajaxModel.Value.push(uscStartWorkflow.USC_RECIPIENT_ACCOUNT);
+                    var uscDomainUserContacts = $("#".concat(_this.uscRecipientContactRestId)).data();
+                    uscDomainUserContacts.setImageButtonsVisibility(!recipientDisabled);
                     var accountRecipient = _this._workflowEvaluationProperties.filter(function (item) {
                         return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_RECIPIENT_DEFAULT;
                     });
@@ -327,11 +397,20 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                     workflowRecipients = new Array();
                     if (accountRecipient != null && accountRecipient[0] != null) {
                         var account = _this.buildContactDefault(accountRecipient[0].ValueString);
+                        var contacts = [];
+                        var contactModel = {
+                            Description: account.DisplayName,
+                            Code: account.AccountName.split("\\")[1],
+                            EmailAddress: account.EmailAddress,
+                        };
+                        contacts.push(contactModel);
+                        var uscDomainUserContacts_1 = $("#".concat(_this.uscRecipientContactRestId)).data();
+                        uscDomainUserContacts_1.createDomainUsersContactsTree(contacts);
                         workflowRecipients.push(account);
                     }
                 }
                 if (isRecipientRole) {
-                    ajaxModel.Value.push(uscStartWorkflow.USC_RECIPIENT_ROLE);
+                    _this.setToolbarRoleVisibility(!recipientDisabled, _this.uscRoleRecipientRestId);
                     var rolesProp = _this._workflowEvaluationProperties.filter(function (item) {
                         return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_RECIPIENT_DEFAULT;
                     });
@@ -342,59 +421,74 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                         workflowRecipients.push(role);
                     }
                 }
+                var roles = workflowRecipients;
+                _this.sourceRecipientRoles = roles;
+                _this._uscRoleRecipientRest.renderRolesTree(roles);
+                _this.registerUscRecipientRoleRestEventHandlers();
                 ajaxModel.Value.push(JSON.stringify(workflowRecipients));
-                $find(_this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
-            };
-            /**
-            * Caricamento dei settori disponibili per il workflow selezionato
-            */
-            this.setAvailableRoles = function (env) {
-                _this._loadingPanel.hide(_this.contentId);
-                var ajaxModel = {};
-                ajaxModel.Value = new Array();
-                ajaxModel.Value.push(JSON.stringify(_this.dswEnvironment));
-                ajaxModel.Value.push(uscStartWorkflow.SET_PAGE_VISIBILITIES);
-                ajaxModel.ActionName = "EnvironmentChanged";
                 $find(_this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
             };
             /**
             * Callback
             */
             this.updateCallback = function () {
-                //this.setRecipientValidation();
                 _this._loadingPanel.hide(_this.contentId);
             };
             this.setRecipientValidation = function () {
                 var isRecipientContactType = _this.hasCurrentWorkflowRecipientContact();
                 var isRecipientRoleType = _this.hasCurrentWorkflowRecipientRole();
-                var uscWorkflowAuthRole = $("#".concat(_this.uscRecipientRoleId)).data();
-                if (!jQuery.isEmptyObject(uscWorkflowAuthRole)) {
-                    uscWorkflowAuthRole.enableValidators(isRecipientRoleType);
-                }
-                var uscWorkflowAuthContacts = $("#".concat(_this.uscRecipientContactId)).data();
-                if (!jQuery.isEmptyObject(uscWorkflowAuthContacts)) {
-                    uscWorkflowAuthContacts.enableValidators(isRecipientContactType);
-                }
+                PageClassHelper.callUserControlFunctionSafe(_this.uscRoleRecipientRestId)
+                    .done(function (instance) {
+                    instance.forceBehaviourValidationState(isRecipientRoleType);
+                    instance.enableValidators(isRecipientRoleType);
+                });
             };
             this.setProposerValidation = function () {
                 var isProposerContactType = _this.hasCurrentWorkflowProposerContact();
                 var isProposerRoleType = _this.hasCurrentWorkflowProposerRole();
-                var uscWorkflowAuthRole = $("#".concat(_this.uscProposerRoleId)).data();
-                if (!jQuery.isEmptyObject(uscWorkflowAuthRole)) {
-                    uscWorkflowAuthRole.enableValidators(isProposerRoleType);
-                }
-                var uscWorkflowAuthContacts = $("#".concat(_this.uscProposerContactId)).data();
-                if (!jQuery.isEmptyObject(uscWorkflowAuthContacts)) {
-                    uscWorkflowAuthContacts.enableValidators(isProposerContactType);
+                PageClassHelper.callUserControlFunctionSafe(_this.uscRoleProposerRestId)
+                    .done(function (instance) {
+                    instance.forceBehaviourValidationState(isProposerRoleType);
+                    instance.enableValidators(isProposerRoleType);
+                });
+            };
+            this.setUscWorkflowFolderValidation = function () {
+                PageClassHelper.callUserControlFunctionSafe(_this.uscWorkflowFolderSelRestId)
+                    .done(function (instance) {
+                    instance.enableValidator($("#" + _this.uscWorkflowFolderSelRestId).is(":visible"));
+                    return;
+                });
+                var nodeSelectedFromUscWorkflowFolder;
+                PageClassHelper.callUserControlFunctionSafe(_this.uscWorkflowFolderSelRestId)
+                    .done(function (instance) {
+                    nodeSelectedFromUscWorkflowFolder = instance.getSelectedNode();
+                    instance.enableTemplateValidator(!nodeSelectedFromUscWorkflowFolder);
+                });
+                if ($("#" + _this.uscWorkflowFolderSelRestId).is(":visible") && !nodeSelectedFromUscWorkflowFolder) {
+                    _this._loadingPanel.hide(_this.contentId);
+                    _this._btnConfirm.set_enabled(true);
+                    return;
                 }
             };
             this.hasCurrentWorkflowPropValueInt = function (propName, intValue) {
                 var isProperty = false;
                 if (_this._workflowEvaluationProperties) {
                     var property = _this._workflowEvaluationProperties.filter(function (item) {
-                        return item.Name == propName;
+                        return item.Name === propName;
                     });
                     if (property && property.length > 0 && property[0].ValueInt === intValue) {
+                        isProperty = true;
+                    }
+                }
+                return isProperty;
+            };
+            this.hasCurrentWorkflowPropValueBool = function (propName) {
+                var isProperty = false;
+                if (_this._workflowEvaluationProperties) {
+                    var property = _this._workflowEvaluationProperties.filter(function (item) {
+                        return item.Name === propName;
+                    });
+                    if (property && property.length > 0 && property[0].ValueBoolean === true) {
                         isProperty = true;
                     }
                 }
@@ -425,6 +519,12 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 return _this.hasCurrentWorkflowPropValueInt(WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_START_PROPOSER, 0);
             };
             /**
+            * Metodo che determina se il workflow richiede la costruzione del FascicleBuildModel
+            */
+            this.hasCurrentWorkflowFascicleBuildModel = function () {
+                return _this.hasCurrentWorkflowPropValueBool(WorkflowPropertyHelper.DSW_PROPERTY_BUILD_MODEL_CREATE);
+            };
+            /**
             * Metodo che completa il modello per avviare un workflow e spedisce il comando di avvio
             */
             this.startWorkflow = function () {
@@ -435,23 +535,44 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 _this._workflowStartModel = {};
                 _this._workflowStartModel.Arguments = {};
                 _this._workflowStartModel.StartParameters = {};
+                var currentTenantModelSelection = JSON.parse(sessionStorage.getItem(uscTenantsSelRest.SESSION_TENANT_SELECTION_MODEL));
                 var selectedWorkflowRepository = _this._rdlWorkflowRepository.get_selectedItem();
+                if (!currentTenantModelSelection || currentTenantModelSelection.length === 0) {
+                    _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, ArgumentType.PropertyString, _this.tenantName);
+                    _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, ArgumentType.PropertyGuid, _this.tenantId);
+                    _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, ArgumentType.PropertyGuid, _this.tenantAOOId);
+                }
+                else {
+                    for (var i = 0; i < currentTenantModelSelection.length; i++) {
+                        _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, ArgumentType.PropertyString, currentTenantModelSelection[i].TenantName);
+                        _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, ArgumentType.PropertyGuid, currentTenantModelSelection[i].IdTenant);
+                        _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, ArgumentType.PropertyGuid, currentTenantModelSelection[i].IdTenantAOO);
+                    }
+                }
                 _this._workflowStartModel.WorkflowName = selectedWorkflowRepository.get_text();
-                _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, ArgumentType.PropertyString, _this.tenantName);
-                _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, ArgumentType.PropertyGuid, _this.tenantId);
                 _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME, ArgumentType.PropertyString, "DocSuite");
                 _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION, ArgumentType.PropertyString, _this.docSuiteVersion);
+                _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_REFERENCE_UNIQUEID] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_REFERENCE_UNIQUEID, ArgumentType.PropertyGuid, sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_UNIQUEID));
+                _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_REFERENCE_ENVIRONMENT] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_REFERENCE_ENVIRONMENT, ArgumentType.PropertyInt, _this.dswEnvironment);
+                _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ROLES] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_ROLES, ArgumentType.Json, sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_RECIPIENT_ROLES));
                 //Priority
                 var rblPriorityVal = $("input:radio[name='" + _this.rblPriorityId + "']:checked").val();
                 _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PRIORITY] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PRIORITY, ArgumentType.PropertyInt, rblPriorityVal);
                 //Date
                 var dueDateVal = _this._dueDate.val();
                 _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_DUEDATE] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_DUEDATE, ArgumentType.PropertyDate, dueDateVal);
+                if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_PROPOSER_ROLES)) {
+                    var workflowProposerRoleModel = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_PROPOSER_ROLES));
+                    if (workflowProposerRoleModel) {
+                        _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_ROLE] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_ROLE, ArgumentType.Json, JSON.stringify(workflowProposerRoleModel));
+                    }
+                }
+                _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_FOLDER_SELECTED] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_FOLDER_SELECTED, ArgumentType.Json, sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_SELECTED_FASCICLE_FOLDER_ID));
                 if (isProposerRole) {
                     var workflowProposerRole_1 = {};
                     var proposerRoleFromUscRole = new Array();
                     //settore proponente
-                    proposerRoleFromUscRole = _this.getUscRoles(_this.uscProposerRoleId);
+                    proposerRoleFromUscRole = _this.getUscRoles(_this.sourceProposerRoles);
                     if (proposerRoleFromUscRole.length > 0) {
                         //ce ne sarà solo uno
                         proposerRoleFromUscRole.forEach(function (item) {
@@ -463,8 +584,8 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                     }
                 }
                 if (isProposerContact) {
-                    var uscProposerContact = $("#".concat(_this.uscProposerContactId)).data();
-                    var contactsModel = JSON.parse(uscProposerContact.getContacts());
+                    var uscProposerDomainUserContacts = $("#".concat(_this.uscProposerContactRestId)).data();
+                    var contactsModel = uscProposerDomainUserContacts.getContacts();
                     var accountName = "";
                     var displayName = "";
                     var emailAddress = "";
@@ -489,35 +610,69 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 if (isRecipientContact) {
                     _this.setStartWorkflowRecipientContacts();
                 }
+                if (_this.hasCurrentWorkflowFascicleBuildModel()) {
+                    var fascicleBuildModel = {
+                        WorkflowAutoComplete: true,
+                        Fascicle: JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL)),
+                        WorkflowName: selectedWorkflowRepository.get_text()
+                    };
+                    fascicleBuildModel.Fascicle.UniqueId = Guid.newGuid();
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID, fascicleBuildModel.Fascicle.UniqueId);
+                    if (fascicleBuildModel.Fascicle.Category) {
+                        fascicleBuildModel.Fascicle.Category.IdCategory = fascicleBuildModel.Fascicle.Category.EntityShortId;
+                    }
+                    if (fascicleBuildModel.Fascicle.MetadataRepository) {
+                        fascicleBuildModel.Fascicle.MetadataRepository.Id = fascicleBuildModel.Fascicle.MetadataRepository.UniqueId;
+                    }
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(fascicleBuildModel));
+                }
                 var workflowReferenceModel = {};
-                workflowReferenceModel.ReferenceId = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_ID);
+                var env = parseInt(_this.dswEnvironment);
+                workflowReferenceModel.ReferenceId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID);
                 workflowReferenceModel.ReferenceType = DSWEnvironment[_this.dswEnvironment];
-                workflowReferenceModel.ReferenceModel = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_MODEL);
-                workflowReferenceModel.Documents = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
-                workflowReferenceModel.Title = sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_TITLE);
+                if (env >= 100) {
+                    workflowReferenceModel.ReferenceType = DSWEnvironment.UDS;
+                }
+                workflowReferenceModel.ReferenceModel = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL);
+                workflowReferenceModel.Documents = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
+                workflowReferenceModel.DocumentUnits = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENT_UNITS_REFERENCE_MODEL));
+                workflowReferenceModel.Title = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_TITLE);
                 workflowReferenceModel.WorkflowReferenceType = WorkflowReferenceType.Json;
                 var argumentReferenceModel = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL, ArgumentType.Json, JSON.stringify(workflowReferenceModel));
                 _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL] = argumentReferenceModel;
                 //oggetto
-                var argumentSubject = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT, ArgumentType.PropertyString, _this._txtObject.get_textBoxValue());
+                var argumentSubject = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT, ArgumentType.PropertyString, _this._txtObject.get_value());
                 _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT] = argumentSubject;
-                var startMotivation = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION, ArgumentType.PropertyString, _this._txtObject.get_textBoxValue());
+                var startMotivation = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION, ArgumentType.PropertyString, _this._txtObject.get_value());
                 _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION] = startMotivation;
                 //evaluationProperties
                 _this._workflowEvaluationProperties.forEach(function (item) {
                     this.Arguments[item.Name] = item;
                 }, _this._workflowStartModel);
-                var env = parseInt(_this.dswEnvironment);
                 if (env >= 100) {
                     var documentUnit = JSON.parse(workflowReferenceModel.ReferenceModel);
                     var idUDS = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_UDS_ID, ArgumentType.PropertyGuid, documentUnit.UniqueId);
                     _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_UDS_ID] = idUDS;
                     var idUDSRepository = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID, ArgumentType.PropertyGuid, documentUnit.UDSRepository.UniqueId);
                     _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID] = idUDSRepository;
+                    var udsModel = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_UDS_MODEL);
+                    if (udsModel) {
+                        var dsw_p_Model = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_MODEL, ArgumentType.Json, udsModel);
+                        _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_MODEL] = dsw_p_Model;
+                    }
+                }
+                var documentMetadataValues = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENT_METADATAS);
+                if (documentMetadataValues) {
+                    var documentMetadatas = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_GENERATE_DOCUMENT_METADATAS, ArgumentType.Json, documentMetadataValues);
+                    _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_GENERATE_DOCUMENT_METADATAS] = documentMetadatas;
                 }
                 if (_this.templateCollaborationRequired) {
                     var templateCollaboration = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION, ArgumentType.PropertyGuid, _this._ddlTemplateCollaboration.get_selectedItem().get_value());
                     _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION] = templateCollaboration;
+                }
+                if (_this.documentOriginalTypeRequired) {
+                    var documentOriginal = $("input:radio[name='" + _this.rdlCCDocumentId + "']:checked").val();
+                    _this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_DOCUMENT_ORIGINAL_TYPE_SELECTION] = _this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_DOCUMENT_ORIGINAL_TYPE_SELECTION, ArgumentType.PropertyBoolean, (documentOriginal === "1"));
                 }
                 if (_this.chainTypeRequired) {
                     var enumHelper_1 = new EnumHelper();
@@ -527,8 +682,8 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                     });
                 }
                 if (_this.redirectToCollaboration) {
-                    sessionStorage.setItem(uscStartWorkflow.SESSION_KEY_WORKFLOW_REFERENCE_MODEL, JSON.stringify(workflowReferenceModel));
-                    sessionStorage.setItem(uscStartWorkflow.SESSION_KEY_WORKFLOW_START_MODEL, JSON.stringify(_this._workflowStartModel));
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_REFERENCE_MODEL, JSON.stringify(workflowReferenceModel));
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_START_MODEL, JSON.stringify(_this._workflowStartModel));
                     var defaultTemplateId = void 0;
                     var defaultTemplate = _this._workflowEvaluationProperties.filter(function (item) {
                         return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_DEFAULT;
@@ -545,8 +700,8 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                     return;
                 }
                 if (_this.redirectToProtocol) {
-                    sessionStorage.setItem(uscStartWorkflow.SESSION_KEY_WORKFLOW_REFERENCE_MODEL, JSON.stringify(workflowReferenceModel));
-                    sessionStorage.setItem(uscStartWorkflow.SESSION_KEY_WORKFLOW_START_MODEL, JSON.stringify(_this._workflowStartModel));
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_REFERENCE_MODEL, JSON.stringify(workflowReferenceModel));
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_START_MODEL, JSON.stringify(_this._workflowStartModel));
                     _this._loadingPanel.hide(_this.contentId);
                     var result = {};
                     result.ActionName = "redirect";
@@ -588,19 +743,16 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 var wnd = _this.getRadWindow();
                 wnd.close(message);
             };
-            this.getUscRoles = function (uscId) {
+            this.getUscRoles = function (roles) {
                 var workflowRoles = new Array();
-                var uscRoles = $("#".concat(uscId)).data();
-                if (!jQuery.isEmptyObject(uscRoles)) {
-                    var source = JSON.parse(uscRoles.getRoles());
-                    if (source != null) {
-                        for (var _i = 0, source_1 = source; _i < source_1.length; _i++) {
-                            var s = source_1[_i];
-                            var role = {};
-                            role.IdRole = s.EntityShortId;
-                            role.TenantId = s.TenantId;
-                            workflowRoles.push(role);
-                        }
+                var source = roles;
+                if (source != null) {
+                    for (var _i = 0, source_1 = source; _i < source_1.length; _i++) {
+                        var s = source_1[_i];
+                        var role = {};
+                        role.IdRole = s.EntityShortId;
+                        role.TenantId = s.TenantId;
+                        workflowRoles.push(role);
                     }
                 }
                 return workflowRoles;
@@ -672,6 +824,21 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
             $(document).ready(function () {
             });
         }
+        uscStartWorkflow.prototype.documentHasSelectedType = function () {
+            if (this.chainTypeRequired) {
+                var workflowReferenceModel = {};
+                workflowReferenceModel.Documents = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL));
+                var documentTypeSelected_1;
+                workflowReferenceModel.Documents.forEach(function (item) {
+                    var val = $("input:radio[name='" + item.ArchiveDocumentId + "_chainTypes']:checked").val();
+                    if (val === undefined) {
+                        documentTypeSelected_1 = false;
+                    }
+                });
+                return documentTypeSelected_1;
+            }
+            return true;
+        };
         /**
         * ------------------------- Methods -----------------------------
         */
@@ -679,7 +846,6 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
         * Initialize
         */
         uscStartWorkflow.prototype.initialize = function () {
-            var _this = this;
             this._ajaxManager = $find(this.ajaxManagerId);
             this._loadingPanel = $find(this.ajaxLoadingPanelId);
             this._rdlWorkflowRepository = $find(this.rdlWorkflowRepositoryId);
@@ -694,10 +860,15 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
             this._btnConfirm = $find(this.btnConfirmId);
             this._btnConfirm.add_clicking(this.btnConfirm_OnClick);
             this._ddlTemplateCollaboration = $find(this.ddlTemplateCollaborationId);
+            this.clearSessionStorage();
             this._rgvDocumentLists = $find(this.rgvDocumentListsId);
             this._rgvDocumentMasterTableView = this._rgvDocumentLists.get_masterTableView();
             this._rgvDocumentMasterTableView.set_currentPageIndex(0);
             this._rgvDocumentMasterTableView.set_virtualItemCount(0);
+            this._uscRoleProposerRest = $("#" + this.uscRoleProposerRestId).data();
+            this._uscRoleRecipientRest = $("#" + this.uscRoleRecipientRestId).data();
+            this._uscRecipientContactRest = $("#" + this.uscRecipientContactRestId).data();
+            this._uscProposerContactRest = $("#" + this.uscProposerContactRestId).data();
             var templateCollaborationConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "TemplateCollaboration");
             this._templateCollaborationService = new TemplateCollaborationService(templateCollaborationConfiguration);
             this._loadingPanel.show(this.contentId);
@@ -719,7 +890,8 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
             this._masterRoles = new Array();
             switch (env) {
                 case DSWEnvironment.Fascicle: {
-                    var fascicle = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_MODEL));
+                    var fascicle = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL));
+                    this._txtObject.set_value(fascicle.FascicleObject);
                     var fascicleMasterRoles = $.grep(fascicle.FascicleRoles, function (r) { return r.IsMaster; });
                     for (var _i = 0, fascicleMasterRoles_1 = fascicleMasterRoles; _i < fascicleMasterRoles_1.length; _i++) {
                         var role = fascicleMasterRoles_1[_i];
@@ -728,7 +900,7 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                     break;
                 }
                 case DSWEnvironment.Dossier: {
-                    var dossier = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_MODEL));
+                    var dossier = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL));
                     //per ora so che le api ritornano solo quello attivo (che è uno solo)
                     var dossierRoles = dossier.Roles;
                     for (var _a = 0, dossierRoles_1 = dossierRoles; _a < dossierRoles_1.length; _a++) {
@@ -744,7 +916,8 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
                 }
             }
             if (env >= 100) {
-                var documentUnit = JSON.parse(sessionStorage.getItem(uscStartWorkflow.SESSION_KEY_REFERENCE_MODEL));
+                var documentUnit = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL));
+                this._txtObject.set_value(documentUnit.Subject);
                 var documentUnitRoles = documentUnit.Roles;
                 for (var _b = 0, documentUnitRoles_1 = documentUnitRoles; _b < documentUnitRoles_1.length; _b++) {
                     var role = documentUnitRoles_1[_b];
@@ -760,18 +933,6 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
             ajaxModel.Value.push(JSON.stringify(this._masterRoles));
             ajaxModel.Value.push(uscStartWorkflow.UPDATE_CALLBACK);
             $find(this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
-            $("#".concat(this.uscRecipientContactId)).bind(UscContattiSel.LOADED_EVENT, function () {
-                _this.setRecipientValidation();
-            });
-            $("#".concat(this.uscRecipientRoleId)).bind(UscSettori.LOADED_EVENT, function () {
-                _this.setRecipientValidation();
-            });
-            $("#".concat(this.uscProposerContactId)).bind(UscContattiSel.LOADED_EVENT, function () {
-                _this.setProposerValidation();
-            });
-            $("#".concat(this.uscProposerRoleId)).bind(UscSettori.LOADED_EVENT, function () {
-                _this.setProposerValidation();
-            });
             this.setRecipientValidation();
             this.setProposerValidation();
             this.bindLoaded();
@@ -781,6 +942,12 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
         */
         uscStartWorkflow.prototype.loadData = function () {
             this.loadWorkflowRepository(this._rdlWorkflowRepository, new Telerik.Web.UI.RadComboBoxRequestCancelEventArgs());
+        };
+        uscStartWorkflow.prototype.setToolbarRoleVisibility = function (isReadOnly, uscID) {
+            PageClassHelper.callUserControlFunctionSafe(uscID)
+                .done(function (instance) {
+                instance.setToolbarRoleVisibility(isReadOnly);
+            });
         };
         /**
         * Metodo che riempie la RadComboBox dei workflow repository
@@ -810,10 +977,70 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
             $("#".concat(this.contentId)).triggerHandler(uscStartWorkflow.DATA_LOADED_EVENT);
         };
         uscStartWorkflow.prototype.clearSessionContacts = function () {
-            var uscRecipientContact = $("#".concat(this.uscRecipientContactId)).data();
-            uscRecipientContact.clearSessionStorage();
-            var uscProposerContact = $("#".concat(this.uscProposerContactId)).data();
-            uscProposerContact.clearSessionStorage();
+            var uscRecipientDomainUserContacts = $("#".concat(this.uscRecipientContactRestId)).data();
+            uscRecipientDomainUserContacts.clearDomainUsersContactsTree();
+            var uscProposerDomainUserContacts = $("#".concat(this.uscRecipientContactRestId)).data();
+            uscProposerDomainUserContacts.clearDomainUsersContactsTree();
+        };
+        uscStartWorkflow.prototype.setUscWorkflowFolderProperties = function (fascicleId) {
+            this._uscWorkflowFolderSelRest = $("#" + this.uscWorkflowFolderSelRestId).data();
+            var worfklowFolderProperties = {};
+            var dossierFolderEnable = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_DOSSIER_FOLDER;
+            });
+            var dossierType = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name == WorkflowPropertyHelper.DSW_ACTION_DOSSIER_FILTER_TYPE;
+            });
+            var onlyFolderHasTemplate = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name == WorkflowPropertyHelper.DSW_ACTION_DOSSIERFOLDER_FILTER_HASTEMPLATE;
+            });
+            var setResponsibleRole = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name == WorkflowPropertyHelper.DSW_ACTION_FASCICLE_SET_RESPONSIBLE_ROLE;
+            });
+            if (this.dswEnvironment == DSWEnvironmentType.Fascicle.toString()) {
+                worfklowFolderProperties.IdFascicle = fascicleId;
+            }
+            if (dossierFolderEnable.length > 0 && dossierFolderEnable[0].ValueBoolean) {
+                worfklowFolderProperties.DossierEnable = true;
+            }
+            if (dossierType.length > 0 && dossierType[0].ValueInt) {
+                worfklowFolderProperties.DossierType = Number(dossierType[0].ValueInt);
+            }
+            if (setResponsibleRole.length > 0 && setResponsibleRole[0].ValueBoolean) {
+                worfklowFolderProperties.SetRecipientRole = true;
+            }
+            if (onlyFolderHasTemplate.length > 0 && onlyFolderHasTemplate[0].ValueBoolean) {
+                worfklowFolderProperties.OnlyFolderHasTemplate = true;
+            }
+            if (worfklowFolderProperties.DossierEnable && worfklowFolderProperties.IdFascicle) {
+                PageClassHelper.callUserControlFunctionSafe(this.uscWorkflowFolderSelRestId)
+                    .done(function (instance) {
+                    instance.populateTreeByProperties(worfklowFolderProperties);
+                });
+                $("#" + this.lrUscWorkflowFolderSelRestId).show();
+                $("#" + this.lblDossierTitleId).show();
+            }
+        };
+        uscStartWorkflow.prototype.createChangeEvent = function (chainTypeGroupName, documents) {
+            var _this = this;
+            $("input[type=radio][name=" + chainTypeGroupName + "]").click(function (ev) {
+                return _this.allowOnlyOneMainDocumentToBeSelected(ev, documents);
+            });
+        };
+        uscStartWorkflow.prototype.allowOnlyOneMainDocumentToBeSelected = function (ev, documents) {
+            var selectedId = ev.target.id;
+            var count = 0;
+            for (var i = 0; i < documents.length; i++) {
+                var mainDocument = $("#" + documents[i].ArchiveDocumentId + "_1");
+                if (mainDocument.is(':checked') && selectedId.substring(selectedId.length - 2) === "_1") {
+                    count++;
+                }
+                if (count === 2) {
+                    alert("E' possibile selezionare un solo documento principale all volta. Cambiare prima la tipologia del documento principale e poi rifare l'operazione.");
+                    count = 0;
+                    return ev.preventDefault();
+                }
+            }
         };
         uscStartWorkflow.prototype.setRecipientProperties = function () {
             var ajaxModel = {};
@@ -846,14 +1073,14 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
         };
         uscStartWorkflow.prototype.setStartWorkflowRecipientRoles = function () {
             var workflowAuthorizedRoles = new Array();
-            workflowAuthorizedRoles = this.getUscRoles(this.uscRecipientRoleId);
+            workflowAuthorizedRoles = this.getUscRoles(this.sourceRecipientRoles);
             var argumentRoles = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_ROLES, ArgumentType.Json, JSON.stringify(workflowAuthorizedRoles));
             this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ROLES] = argumentRoles;
         };
         uscStartWorkflow.prototype.setStartWorkflowRecipientContacts = function () {
-            var uscContacts = $("#".concat(this.uscRecipientContactId)).data();
+            var uscDomainUserContacts = $("#".concat(this.uscRecipientContactRestId)).data();
+            var contactsModel = uscDomainUserContacts.getContacts();
             var workflowAccounts = [];
-            var contactsModel = JSON.parse(uscContacts.getContacts());
             for (var _i = 0, contactsModel_2 = contactsModel; _i < contactsModel_2.length; _i++) {
                 var contactModel = contactsModel_2[_i];
                 var workflowAccount = {
@@ -866,14 +1093,41 @@ define(["require", "exports", "App/Services/Workflows/WorkflowRepositoryService"
             }
             this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS, ArgumentType.Json, JSON.stringify(workflowAccounts));
         };
+        uscStartWorkflow.prototype.clearSessionStorage = function () {
+            sessionStorage.removeItem(uscTenantsSelRest.SESSION_TENANT_SELECTION_MODEL);
+        };
+        uscStartWorkflow.prototype.registerUscProposerRoleRestEventHandlers = function () {
+            var _this = this;
+            PageClassHelper.callUserControlFunctionSafe(this.uscRoleProposerRestId)
+                .done(function (instance) {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, function (roleId) {
+                    return $.Deferred().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, function (newAddedRoles) {
+                    var existedRole;
+                    _this.roleInsertId = [newAddedRoles[0].IdRole];
+                    _this.sourceProposerRoles = newAddedRoles;
+                    return $.Deferred().resolve(existedRole);
+                });
+            });
+        };
+        uscStartWorkflow.prototype.registerUscRecipientRoleRestEventHandlers = function () {
+            var _this = this;
+            PageClassHelper.callUserControlFunctionSafe(this.uscRoleRecipientRestId)
+                .done(function (instance) {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, function (roleId) {
+                    return $.Deferred().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, function (newAddedRoles) {
+                    var existedRole;
+                    _this.roleInsertId = [newAddedRoles[0].IdRole];
+                    _this.sourceRecipientRoles = newAddedRoles;
+                    return $.Deferred().resolve(existedRole);
+                });
+            });
+        };
         uscStartWorkflow.LOADED_EVENT = "onLoaded";
         uscStartWorkflow.DATA_LOADED_EVENT = "onDataLoaded";
-        uscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL = "DocumentsReferenceModel";
-        uscStartWorkflow.SESSION_KEY_REFERENCE_MODEL = "ReferenceModel";
-        uscStartWorkflow.SESSION_KEY_REFERENCE_ID = "ReferenceId";
-        uscStartWorkflow.SESSION_KEY_REFERENCE_TITLE = "ReferenceTitle";
-        uscStartWorkflow.SESSION_KEY_WORKFLOW_REFERENCE_MODEL = "WorkflowReferenceModel";
-        uscStartWorkflow.SESSION_KEY_WORKFLOW_START_MODEL = "WorkflowStartModel";
         uscStartWorkflow.WORKFLOWSTART_TYPE_NAME = "WorkflowStart";
         uscStartWorkflow.LOAD_EXTERNAL_DATA = "LoadExternalData";
         uscStartWorkflow.UPDATE_CALLBACK = "uscStartWorkflow.updateCallback()";

@@ -118,6 +118,9 @@ Public Class DocSuiteContext
 
     Public ReadOnly Property User() As DocSuiteUser
         Get
+            If ProtocolEnv.ShibbolethEnabled Then
+                Return New DocSuiteUser(CurrentDomainName)
+            End If
             Return New DocSuiteUser()
         End Get
     End Property
@@ -165,15 +168,9 @@ Public Class DocSuiteContext
 
     Public ReadOnly Property IsLogEnable() As Boolean
         Get
-            Return (IsProtocolEnabled AndAlso ProtocolEnv.IsLogEnabled) _
+            Return IsProtocolEnabled _
                 OrElse (IsDocumentEnabled AndAlso DocumentEnv.IsEnvLogEnabled) _
                 OrElse (IsResolutionEnabled AndAlso ResolutionEnv.IsLogEnabled)
-        End Get
-    End Property
-
-    Public Shared ReadOnly Property IsFullApplication() As Boolean
-        Get
-            Return ConfigurationManager.AppSettings.Item("FullVersion").Eq("1")
         End Get
     End Property
 
@@ -221,12 +218,6 @@ Public Class DocSuiteContext
     Public Shared ReadOnly Property PecSegnature() As String
         Get
             Return ConfigurationManager.AppSettings("DocSuite.PEC.Segnature")
-        End Get
-    End Property
-
-    Public Shared ReadOnly Property LocalServerName() As String
-        Get
-            Return ConfigurationManager.AppSettings.Item("LocalServerName")
         End Get
     End Property
 

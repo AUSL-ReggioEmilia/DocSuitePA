@@ -24,9 +24,9 @@ Public Class JournalFacade
     ''' <summary> Recupera tutte le informazioni dai LOG Protocolli per visualizzare le informazioni di diario di un utente </summary>
     ''' <param name="pDateFrom">Data da cui reperire le informazioni di log</param>
     ''' <param name="pDateTo">Data fino a cui reperire le informazioni di log</param>
-    Public Function GetUserProtocolDiary(ByVal pDateFrom As DateTime, ByVal pDateTo As DateTime) As ICollection(Of UserDiary)
+    Public Function GetUserProtocolDiary(ByVal pDateFrom As DateTime, ByVal pDateTo As DateTime, currentTenantAOOId As Guid) As ICollection(Of UserDiary)
         Dim protocolDao As New NHibernateProtocolDao("ProtDB") ' sessionFactoryName mancante, da verificare. - FG
-        Return protocolDao.GetUserProtocolDiary(pDateFrom, pDateTo)
+        Return protocolDao.GetUserProtocolDiary(pDateFrom, pDateTo, currentTenantAOOId)
     End Function
 
 
@@ -45,7 +45,7 @@ Public Class JournalFacade
     ''' <summary> Unisce le informazioni da tutti i LOG per visualizzare il diario completo di un utente. </summary>
     ''' <param name="from">Data da cui reperire le informazioni di log</param>
     ''' <param name="to">Data fino a cui reperire le informazioni di log</param>
-    Public Function GetUserCommonDiary(ByVal [from] As DateTime, ByVal [to] As DateTime) As ICollection(Of UserDiary)
+    Public Function GetUserCommonDiary(ByVal [from] As DateTime, ByVal [to] As DateTime, currentTenantAOOId As Guid) As ICollection(Of UserDiary)
         Dim documentDao As New NHibernateDocumentDao("DocmDB") ' sessionFactoryName mancante, da verificare. - FG
         Dim protocolDao As New NHibernateProtocolDao("ProtDB") ' sessionFactoryName mancante, da verificare. - FG
         Dim resolutionDao As New NHibernateResolutionDao("ReslDB") ' sessionFactoryName mancante, da verificare. - FG
@@ -56,7 +56,7 @@ Public Class JournalFacade
             UserDiaries.AddRange(documentDao.GetUserDocumentDiary([from], [to]))
         End If
         If DocSuiteContext.Current.IsProtocolEnabled Then
-            UserDiaries.AddRange(protocolDao.GetUserProtocolDiary([from], [to]))
+            UserDiaries.AddRange(protocolDao.GetUserProtocolDiary([from], [to], currentTenantAOOId))
         End If
         If DocSuiteContext.Current.IsResolutionEnabled Then
             UserDiaries.AddRange(resolutionDao.GetUserResolutionDiary([from], [to]))

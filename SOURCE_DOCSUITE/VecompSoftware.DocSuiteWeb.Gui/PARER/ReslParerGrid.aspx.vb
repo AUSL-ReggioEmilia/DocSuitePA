@@ -45,6 +45,8 @@ Public Class ReslParerGrid
                     Return "../Comm/images/parer/red.png"
                 Case ResolutionParerFacade.ResolutionParerConservationStatus.Undefined
                     Return "../Comm/images/parer/lightgray.png"
+                Case ResolutionParerFacade.ResolutionParerConservationStatus.NotNeeded
+                    Return "../Comm/images/parer/lightgray.png"
             End Select
         Else
             ' Non soggetto alla conservazione sostitutiva

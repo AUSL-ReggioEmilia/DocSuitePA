@@ -2,11 +2,10 @@
 
 ''' <summary> Richiesta generica PosteOnLine. </summary>
 Public Class POLRequest
-
+    Inherits AuditableDomainObject(Of Guid)
 #Region " Fields "
 
     Private _contacts As IList(Of POLRequestContact)
-    Private _id As Guid
 
     Private _account As POLAccount
 
@@ -22,12 +21,6 @@ Public Class POLRequest
 
     Private _costoTotale As Double
 
-    Private _registrationDate As DateTime?
-    Private _registrationUser As String
-    Private _lastChangedDate As DateTime?
-    Private _lastChangedUser As String
-
-
     Private _recipients As IList(Of POLRequestRecipient)
 
     Private _sender As POLRequestSender
@@ -37,15 +30,6 @@ Public Class POLRequest
 #End Region
 
 #Region " Properties "
-
-    Public Overridable Property Id() As Guid
-        Get
-            Return _id
-        End Get
-        Set(ByVal value As Guid)
-            _id = value
-        End Set
-    End Property
 
     Public Overridable Property Account As POLAccount
         Get
@@ -126,46 +110,6 @@ Public Class POLRequest
         End Set
     End Property
 
-    Public Overridable Property ProtocolYear As Short?
-
-    Public Overridable Property ProtocolNumber As Integer?
-
-    Public Overridable Property RegistrationDate() As DateTime?
-        Get
-            Return _registrationDate
-        End Get
-        Set(ByVal value As DateTime?)
-            _registrationDate = value
-        End Set
-    End Property
-
-    Public Overridable Property RegistrationUser() As String
-        Get
-            Return _registrationUser
-        End Get
-        Set(ByVal value As String)
-            _registrationUser = value
-        End Set
-    End Property
-
-    Public Overridable Property LastChangedDate As DateTime?
-        Get
-            Return _lastChangedDate
-        End Get
-        Set(ByVal value As DateTime?)
-            _lastChangedDate = value
-        End Set
-    End Property
-
-    Public Overridable Property LastChangedUser As String
-        Get
-            Return _lastChangedUser
-        End Get
-        Set(ByVal value As String)
-            _lastChangedUser = value
-        End Set
-    End Property
-
     Protected Friend Overridable Property Contacts() As IList(Of POLRequestContact)
         Get
             Return _contacts
@@ -221,6 +165,11 @@ Public Class POLRequest
         End Set
     End Property
 
+    Public Overridable Property ExtendedProperties As String
+
+
+    Public Overridable Property DocumentUnit As DocumentUnit
+
 #End Region
 
 #Region " Constructors "
@@ -246,6 +195,20 @@ Public Class POLRequest
         Return Recipients.All(Function(ct) ct.Status = POLMessageContactEnum.Received OrElse ct.Status = POLMessageContactEnum.Rejected)
     End Function
 
+    Public Overridable Sub TrySetExtendedProperties(ByRef extendedProperties As POLRequestExtendedProperties)
+        Me.ExtendedProperties = POLRequestExtendedProperties.Serialize(extendedProperties)
+    End Sub
+
+    Public Overridable Function TryGetExtendedProperties() As POLRequestExtendedProperties
+        Try
+            If ExtendedProperties IsNot Nothing Then
+                Return POLRequestExtendedProperties.Deserialize(ExtendedProperties)
+            End If
+            Return Nothing
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
 #End Region
 
 End Class

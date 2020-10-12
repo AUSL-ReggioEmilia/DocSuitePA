@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/BaseMapper"], function (require, exports, BaseMapper) {
+define(["require", "exports", "App/Mappers/BaseMapper", "App/Mappers/Processes/ProcessFascicleTemplateModelMapper"], function (require, exports, BaseMapper, ProcessFascicleTemplateModelMapper) {
     var DossierSummaryFolderViewModelMapper = /** @class */ (function (_super) {
         __extends(DossierSummaryFolderViewModelMapper, _super);
         function DossierSummaryFolderViewModelMapper() {
@@ -33,6 +33,9 @@ define(["require", "exports", "App/Mappers/BaseMapper"], function (require, expo
             toMap.idFascicle = source.IdFascicle;
             toMap.idCategory = source.Category ? source.Category.EntityShortId : source.IdCategory;
             toMap.idRole = (source.DossierFolderRoles && source.DossierFolderRoles[0] && source.DossierFolderRoles[0].Role) ? source.DossierFolderRoles[0].Role.EntityShortId : source.IdRole;
+            toMap.DossierFolders = source.DossierFolders ? this.MapCollection(source.DossierFolders) : null;
+            toMap.FascicleTemplates = source.FascicleTemplates ? new ProcessFascicleTemplateModelMapper().MapCollection(source.FascicleTemplates) : null;
+            toMap.JsonMetadata = source.JsonMetadata;
             return toMap;
         };
         return DossierSummaryFolderViewModelMapper;

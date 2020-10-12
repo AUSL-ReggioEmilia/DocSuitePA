@@ -49,7 +49,7 @@ class TbltTemplateCollaborationManager {
      * @param sender
      * @param args
      */
-    btnNew_OnClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnNew_OnClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._loadingPanel.show(this.grdTemplateCollaborationId);
         window.location.href = TbltTemplateCollaborationManager.TEMPLATE_GESTIONE_URL;
     }
@@ -59,7 +59,7 @@ class TbltTemplateCollaborationManager {
      * @param sender
      * @param args
      */
-    btnDelete_OnClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnDelete_OnClicked = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         let selectedTemplates: Telerik.Web.UI.GridDataItem[] = this._grdTemplateCollaboration.get_selectedItems();
         if (selectedTemplates.length == 0) {
             this.showWarningMessage(this.uscNotificationId,"Selezionare un template");

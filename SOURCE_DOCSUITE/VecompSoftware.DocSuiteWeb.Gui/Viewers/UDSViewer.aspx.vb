@@ -20,9 +20,23 @@ Public Class UDSViewer
     Private _udsSource As UDSDto
     Private _udsKeys As IDictionary(Of Guid, Guid) = Nothing
     Private _udsList As IList(Of UDSDto) = Nothing
+    Private _currentSchemaRepositoryModel As UDSModel = Nothing
 #End Region
 
 #Region "Properties"
+    Public ReadOnly Property CurrentSchemaRepositoryModel() As UDSModel
+        Get
+            If _currentSchemaRepositoryModel Is Nothing Then
+                Dim uds As UDSDto
+                If CurrentIdUDSRepository.HasValue AndAlso CurrentIdUDS.HasValue Then
+                    uds = GetSource()
+                    _currentSchemaRepositoryModel = uds.UDSModel
+                End If
+            End If
+
+            Return _currentSchemaRepositoryModel
+        End Get
+    End Property
 
     Private ReadOnly Property UDSKeys As IDictionary(Of Guid, Guid)
         Get
@@ -117,6 +131,9 @@ Public Class UDSViewer
 
 #Region "Events"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        ViewerLight.StampaConformeEnabled = CurrentSchemaRepositoryModel Is Nothing OrElse CurrentSchemaRepositoryModel.Model.StampaConformeEnabled
+        ViewerLight.DocumentsPreviewEnabled = ViewerLight.StampaConformeEnabled
+
         If Not Page.IsPostBack AndAlso Not Page.IsCallback Then
             MasterDocSuite.TitleVisible = False
             btnSend.PostBackUrl = "~/MailSenders/UDSMailSender.aspx?recipients=false&overridepreviouspageurl=true&Type=UDS"

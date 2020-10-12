@@ -12,8 +12,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder
         {
             public static class DocumentUnitService
             {
-                public const string FX_GetFascicolableDocuments = "DocumentUnitService.GetFascicolableDocumentUnits(username='{0}',domain='{1}',dateFrom='{2}',dateTo='{3}',includeThreshold={4},threshold='{5}',excludeLinked={6})";
-                public const string FX_GetAutorizedDocuments = "DocumentUnitService.GetAuthorizedDocuments(username='{0}',domain='{1}',dateFrom='{2}',dateTo='{3}',isSecurityEnabled={4})";
+                public const string FX_GetFascicolableDocuments = "DocumentUnitService.GetFascicolableDocumentUnits(dateFrom='{0}',dateTo='{1}',includeThreshold={2},threshold='{3}',idTenantAOO={4},excludeLinked={5})";
+                public const string FX_GetAutorizedDocuments = "DocumentUnitService.GetAuthorizedDocuments(dateFrom='{0}',dateTo='{1}',idTenantAOO={2})";
             }
 
             public static class ProtocolService
@@ -23,17 +23,18 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder
 
             public static class CollaborationService
             {
-                public const string FX_GetAtVisionSignCollaborations = "CollaborationService.GetAtVisionSignCollaborations(username='{0}',domain='{1}')";
-                public const string FX_GetToVisionSignCollaborations = "CollaborationService.GetToVisionSignCollaborations(username='{0}',domain='{1}',isRequired=null)";
-                public const string FX_GetToVisionSignRequiredCollaborations = "CollaborationService.GetToVisionSignCollaborations(username='{0}',domain='{1}',isRequired=true)";
-                public const string FX_GetToVisionSignNoRequiredCollaborations = "CollaborationService.GetToVisionSignCollaborations(username='{0}',domain='{1}',isRequired=false)";
-                public const string FX_GetAtProtocolAdmissionCollaborations = "CollaborationService.GetAtProtocolAdmissionCollaborations(username='{0}',domain='{1}')";
-                public const string FX_GetCurrentActivitiesAllCollaborations = "CollaborationService.GetCurrentActivitiesAllCollaborations(username='{0}',domain='{1}')";
-                public const string FX_GetCurrentActivitiesActiveCollaborations = "CollaborationService.GetCurrentActivitiesActiveCollaborations(username='{0}',domain='{1}')";
-                public const string FX_GetCurrentActivitiesPastCollaborations = "CollaborationService.GetCurrentActivitiesPastCollaborations(username='{0}',domain='{1}')";
-                public const string FX_GetToManageCollaborations = "CollaborationService.GetToManageCollaborations(username='{0}',domain='{1}')";
-                public const string FX_GetRegisteredCollaborations = "CollaborationService.GetRegisteredCollaborations(username='{0}',domain='{1}',dateFrom='{2}',dateTo='{3}')";
-                public const string FX_GetMyCheckedOutCollaborations = "CollaborationService.GetMyCheckedOutCollaborations(username='{0}',domain='{1}')";
+                public const string FX_GetAtVisionSignCollaborations = "CollaborationService.GetAtVisionSignCollaborations()";
+                public const string FX_GetToVisionSignCollaborations = "CollaborationService.GetToVisionSignCollaborations(isRequired=null)";
+                public const string FX_GetToVisionSignRequiredCollaborations = "CollaborationService.GetToVisionSignCollaborations(isRequired=true)";
+                public const string FX_GetToVisionSignNoRequiredCollaborations = "CollaborationService.GetToVisionSignCollaborations(isRequired=false)";
+                public const string FX_GetAtProtocolAdmissionCollaborations = "CollaborationService.GetAtProtocolAdmissionCollaborations()";
+                public const string FX_GetCurrentActivitiesAllCollaborations = "CollaborationService.GetCurrentActivitiesAllCollaborations()";
+                public const string FX_GetCurrentActivitiesActiveCollaborations = "CollaborationService.GetCurrentActivitiesActiveCollaborations()";
+                public const string FX_GetCurrentActivitiesPastCollaborations = "CollaborationService.GetCurrentActivitiesPastCollaborations()";
+                public const string FX_GetToManageCollaborations = "CollaborationService.GetToManageCollaborations()";
+                public const string FX_GetRegisteredCollaborations = "CollaborationService.GetRegisteredCollaborations(dateFrom='{0}',dateTo='{1}')";
+                public const string FX_GetMyCheckedOutCollaborations = "CollaborationService.GetMyCheckedOutCollaborations()";
+                public const string FX_GetToVisionDelegateSignCollaborations = "CollaborationService.GetToVisionDelegateSignCollaborations()";
             }
 
             public static class TemplateCollaborationService
@@ -62,8 +63,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder
             public static class FascicleService
             {
                 public const string FX_GetChildrenByParent = "FascicleFolderService.GetChildrenByParent(idFascicleFolder={0})";
-                public const string FX_GetAuthorizedFascicles = @"FascicleService.AuthorizedFascicles(finder=@p0)?@p0={0}";
-                public const string FX_GetCountAuthorizedFascicles = @"FascicleService.CountAuthorizedFascicles(finder=@p0)?@p0={0}";
+                public const string FX_GetAuthorizedFascicles = @"FascicleService.AuthorizedFascicles";
+                public const string FX_GetCountAuthorizedFascicles = @"FascicleService.CountAuthorizedFascicles";
             }
 
             public static class DocumentSeriesService
@@ -74,16 +75,24 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder
                 public const string FX_GetMonitoringSeriesSection = "DocumentSeriesService.GetMonitoringSeriesBySection(dateFrom='{0}',dateTo='{1}')";
             }
 
-            public static class PECMailService
-            {
-                public const string FX_GetEventPECSummaryError = "?topicName={0}&subscriptionName={1}";
-                public const string FX_GetEventPECStreamError = "?topicName={0}&subscriptionName={1}&correlationId={2}";
-                
-            }
-
             public static class TenantService
             {
                 public const string FX_GetUserTenants = "TenantService.GetUserTenants()";
+            }
+            public static class DomainUser
+            {
+                public const string FX_GetCurrentRights = "DomainUserService.GetCurrentRights()";
+            }
+
+            public static class DossierService
+            { 
+                public const string FX_GetAuthorizedDossiers = @"DossierService.GetAuthorizedDossiers";
+            }
+
+            public static class RoleUserService
+            {
+                //(finder=@p0)?@p0={0}
+                public const string FX_AllSecretariesFromDossier = "RoleUserService.GetRoleUsersFromDossier(finder=@p0)?@p0={0}";
             }
         }
 

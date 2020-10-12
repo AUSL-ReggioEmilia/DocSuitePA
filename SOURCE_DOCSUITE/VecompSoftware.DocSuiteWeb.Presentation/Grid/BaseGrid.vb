@@ -194,7 +194,7 @@ Public Class BaseGrid
     End Sub
 
     Private Sub ConfigureSorting()
-        SortingSettings.SortedAscToolTip = "Ordine Crescente"
+        SortingSettings.SortedAscToolTip = "Ordine crescente"
         SortingSettings.SortedDescToolTip = "Ordine Decrescente"
         SortingSettings.SortToolTip = "Ordina"
         MasterTableView.AllowMultiColumnSorting = False

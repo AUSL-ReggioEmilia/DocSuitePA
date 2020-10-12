@@ -25,11 +25,15 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         private bool enabledCQRSSync = true;
         private bool enabledCancelMotivation = false;
         private bool hideRegistrationIdentifier = false;
+        private bool stampaConformeEnabled = true;
+        private bool showArchiveInProtocolSummaryEnabled = true;
         private bool requiredRevisionUDSRepository = false;
         private bool incrementalIdentityEnabled = true;
         private bool createContainer = true;
         private bool resultVisibility = true;
         private bool modifyEnabled = true;
+        private bool showLastChangedDate = false;
+        private bool showLastChangedUser = false;
 
 
         //elenco di controlli
@@ -58,9 +62,9 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         {
             { ContactType.None, "Non definito" },
             { ContactType.Sender, "Mittente" },
-            { ContactType.Recipient, "Destinatario" },
-            { ContactType.AccountAuthorization, "Utente autorizzato" },
-            { ContactType.RoleAuthorization, "Settore autorizzato" }
+            { ContactType.Recipient, "Destinatario" }
+            //{ ContactType.AccountAuthorization, "Utente autorizzato" },
+            //{ ContactType.RoleAuthorization, "Settore autorizzato" }
         };
 
         public List<string> GetContactTypeDescriptionLabels()
@@ -72,6 +76,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             }
             return ListContactLabels;
         }
+        
         public UDSModel ConvertFromJson(JsModel jsonModel)
         {
             if (jsonModel.elements == null)
@@ -118,7 +123,11 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             model.Alias = alias;
             model.CancelMotivationRequired = enabledCancelMotivation;
             model.HideRegistrationIdentifier = hideRegistrationIdentifier;
+            model.StampaConformeEnabled = stampaConformeEnabled;
+            model.ShowArchiveInProtocolSummaryEnabled = showArchiveInProtocolSummaryEnabled;
             model.RequiredRevisionUDSRepository = requiredRevisionUDSRepository;
+            model.ShowLastChangedDate = showLastChangedDate;
+            model.ShowLastChangedUser = showLastChangedUser;
 
             model.Contacts = contacts.ToArray();
             model.Documents = new Documents();
@@ -153,7 +162,6 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             return uds;
         }
 
-
         //A partire dal modello Uds crea un modello di default JSon
         public JsModel ConvertToJs(UDSModel uds)
         {
@@ -161,31 +169,34 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
 
             //title
             List<Element> elements = new List<Element>();
-            Element titleElement = new Element();
-            titleElement.ctrlType = ctlTitle;
-            titleElement.label = model.Title;
-            titleElement.readOnly = false;
-            titleElement.searchable = true;
-            titleElement.modifyEnable = model.Subject.ModifyEnabled;
-            titleElement.subject = model.Subject.DefaultValue;
-            titleElement.clientId = "SubjectId";
-            titleElement.enabledWorkflow = model.WorkflowEnabled;
-            titleElement.enabledProtocol = model.ProtocolEnabled;
-            titleElement.enabledPEC = model.PECEnabled;
-            titleElement.enabledPECButton = model.PECButtonEnabled;
-            titleElement.enabledMailButton = model.MailButtonEnabled;
-            titleElement.enabledMailRoleButton = model.MailRoleButtonEnabled;
-            titleElement.enabledLinkButton = model.LinkButtonEnabled;
-            titleElement.enabledCQRSSync = model.DocumentUnitSynchronizeEnabled;
-            titleElement.alias = model.Alias;
-            titleElement.enabledCancelMotivation = model.CancelMotivationRequired;
-            titleElement.incrementalIdentityEnabled = model.IncrementalIdentityEnabled;
-            titleElement.subjectResultVisibility = model.Subject.ResultVisibility;
-            titleElement.hideRegistrationIdentifier = model.HideRegistrationIdentifier;
-            titleElement.requiredRevisionUDSRepository = model.RequiredRevisionUDSRepository;
-
-
-
+            Element titleElement = new Element
+            {
+                ctrlType = ctlTitle,
+                label = model.Title,
+                readOnly = false,
+                searchable = true,
+                modifyEnable = model.Subject.ModifyEnabled,
+                subject = model.Subject.DefaultValue,
+                clientId = "SubjectId",
+                enabledWorkflow = model.WorkflowEnabled,
+                enabledProtocol = model.ProtocolEnabled,
+                enabledPEC = model.PECEnabled,
+                enabledPECButton = model.PECButtonEnabled,
+                enabledMailButton = model.MailButtonEnabled,
+                enabledMailRoleButton = model.MailRoleButtonEnabled,
+                enabledLinkButton = model.LinkButtonEnabled,
+                enabledCQRSSync = model.DocumentUnitSynchronizeEnabled,
+                alias = model.Alias,
+                enabledCancelMotivation = model.CancelMotivationRequired,
+                incrementalIdentityEnabled = model.IncrementalIdentityEnabled,
+                subjectResultVisibility = model.Subject.ResultVisibility,
+                hideRegistrationIdentifier = model.HideRegistrationIdentifier,
+                stampaConformeEnabled = model.StampaConformeEnabled,
+                showArchiveInProtocolSummaryEnabled = model.ShowArchiveInProtocolSummaryEnabled,
+                requiredRevisionUDSRepository = model.RequiredRevisionUDSRepository,
+                showLastChangedDate = model.ShowLastChangedDate,
+                showLastChangedUser = model.ShowLastChangedUser
+            };
 
             if (model.Category != null)
             {
@@ -273,7 +284,6 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 elements = elements.ToArray()
             };
         }
-
 
         private Element CreateFieldElement(FieldBaseType obj)
         {
@@ -418,8 +428,15 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                     resultVisibility = field.ResultVisibility,
                     resultPosition = field.ResultPosition,
                     format = field.Format
-
                 };
+                if (field.MinValueSpecified)
+                {
+                    numberField.minValue = field.MinValue;
+                }
+                if (field.MaxValueSpecified)
+                {
+                    numberField.maxValue = field.MaxValue;
+                }
                 if (field.Layout != null)
                 {
                     numberField.rows = field.Layout.RowNumber;
@@ -484,7 +501,6 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             return null;
         }
 
-
         private Element CreateDocumentElement(Document doc, string collectionType)
         {
             Element document = new Element
@@ -501,12 +517,12 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 copyProtocol = doc.CopyProtocol,
                 copyResolution = doc.CopyResolution,
                 copySeries = doc.CopySeries,
+                copyUDS = doc.CopyUDS,
                 createBiblosArchive = doc.CreateBiblosArchive,
                 required = doc.Required,
                 searchable = doc.Searchable,
                 documentDeletable = doc.Deletable,
-                modifyEnable = doc.ModifyEnabled,
-                dematerialisationEnabled = doc.DematerialisationEnabled
+                modifyEnable = doc.ModifyEnabled
             };
 
             if (doc.Layout != null)
@@ -516,7 +532,6 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             }
             return document;
         }
-
 
         private Element CreateContactElement(Contacts conts)
         {
@@ -558,7 +573,6 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             return contact;
         }
 
-
         private Element CreateAuthorizationsElement(Authorizations auth)
         {
             Element authorizations = new Element
@@ -583,7 +597,6 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
 
         }
 
-
         public string JsToXml(JsModel jsModel, out List<String> errors)
         {
             errors = new List<String>();
@@ -594,7 +607,6 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             }
             return uds.SerializeToXml();
         }
-
 
         private Dictionary<string, Func<Element, bool>> GetElementParserDict()
         {
@@ -616,14 +628,12 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             return parseDict;
         }
 
-
         //intestazione gruppo controlli
         private bool ParseHeader(Element el)
         {
             sections.AddNew(el.label);
             return true;
         }
-
 
         private bool ParseTitle(Element el)
         {
@@ -634,6 +644,8 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             enabledCancelMotivation = el.enabledCancelMotivation;
 
             hideRegistrationIdentifier = el.hideRegistrationIdentifier;
+            stampaConformeEnabled = el.stampaConformeEnabled;
+            showArchiveInProtocolSummaryEnabled = el.showArchiveInProtocolSummaryEnabled;
             requiredRevisionUDSRepository = el.requiredRevisionUDSRepository;
 
             enabledPEC = el.enabledPEC;
@@ -646,6 +658,8 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             alias = el.alias;
             createContainer = el.createContainer;
             resultVisibility = el.subjectResultVisibility;
+            showLastChangedDate = el.showLastChangedDate;
+            showLastChangedUser = el.showLastChangedUser;
 
             SectionExt section = sections.GetCurrent();
 
@@ -818,6 +832,10 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 ResultVisibility = el.resultVisibility,
                 ResultPosition = el.resultPosition,
                 Format = el.format,
+                MinValue = el.minValue ?? 0,
+                MinValueSpecified = el.minValue.HasValue,
+                MaxValue = el.maxValue ?? 0,
+                MaxValueSpecified = el.maxValue.HasValue,
                 Layout = new LayoutPosition
                 {
                     PanelId = el.columns.ToString(),
@@ -906,6 +924,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 SignRequired = el.signRequired,
                 CopyProtocol = el.copyProtocol,
                 CopyResolution = el.copyResolution,
+                CopyUDS = el.copyUDS,
                 CopySeries = el.copySeries,
                 CreateBiblosArchive = el.createBiblosArchive,
                 Required = el.required,
@@ -913,7 +932,6 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 Deletable = el.documentDeletable,
                 ModifyEnabled = el.modifyEnable,
                 ClientId = el.clientId,
-                DematerialisationEnabled = el.dematerialisationEnabled,
                 Layout = new LayoutPosition
                 {
                     PanelId = el.columns.ToString(),
@@ -940,6 +958,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
 
             return true;
         }
+        
         private bool ParseContact(Element el)
         {
             SectionExt section = sections.GetCurrent();
@@ -1004,6 +1023,5 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             authorizations.ClientId = string.Concat("uds_auth_", el.collectionType, "_", section.Ctrls.Count);
             return true;
         }
-
     }
 }

@@ -451,6 +451,11 @@ function anyNodeCheck(sender, args) {
     args.IsValid = true;
 }
 
+function anySelectedNode(sender, args) {
+    var selectedNode = $find(sender.controltovalidate).get_selectedNode();
+    args.IsValid = !!selectedNode;
+}
+
 function RadConfirm(sender, args) {
     var callBackFunction = Function.createDelegate(sender, function (shouldSubmit) {
         if (shouldSubmit) {

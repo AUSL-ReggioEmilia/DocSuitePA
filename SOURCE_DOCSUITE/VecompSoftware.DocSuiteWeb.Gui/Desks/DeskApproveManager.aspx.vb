@@ -96,7 +96,7 @@ Public Class DeskApproveManager
         CurrentDeskEndorments = baseFinder.DoSearchHeader().ToList()
         For Each deskEndorsement As DeskEndorsement In CurrentDeskEndorments
             If documentNameList.Where(Function(x) x.IdChainBiblos = deskEndorsement.IdChainBiblos).Count() = 0 Then
-                Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentDesk.Container.DeskLocation.DocumentServer, deskEndorsement.IdChainBiblos.Value)
+                Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(deskEndorsement.IdChainBiblos.Value)
                 If Not docInfos.Any() Then
                     Exit For
                 End If

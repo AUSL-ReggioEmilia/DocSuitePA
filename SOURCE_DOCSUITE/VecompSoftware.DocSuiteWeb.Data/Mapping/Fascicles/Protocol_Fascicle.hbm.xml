@@ -69,6 +69,9 @@
     <property name="DSWEnvironment">
       <column name="DSWEnvironment" not-null="false" />
     </property>
+    <property name="CustomActions">
+      <column name="CustomActions" not-null="false" />
+    </property>
     <many-to-one column="IdCategory" name="Category" class="Category" not-null="true" />
     <many-to-one column="IdContainer" name="Container" class="Container" not-null="false" />
     <bag name="FascicleDocumentUnits" table="FascicleDocumentUnits">

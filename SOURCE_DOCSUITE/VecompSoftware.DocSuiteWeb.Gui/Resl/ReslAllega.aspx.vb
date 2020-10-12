@@ -22,26 +22,6 @@ Public Class ReslAllega
 #End Region
 
 #Region " Properties "
-
-    ''' <summary>
-    ''' Elenco dei protocolli collegati che han passato i documenti al protocollo in inserimento.
-    ''' </summary>
-    ''' <remarks>Stringa di ID separata da virgole.</remarks>
-    Public Property SessionProtInserimentoLinks As String
-        Get
-            If Not Session.Item("ProtInserimento-Link") Is Nothing Then
-                Return Session.Item("ProtInserimento-Link").ToString()
-            End If
-            Return String.Empty
-        End Get
-        Set(value As String)
-            If String.IsNullOrEmpty(value) Then
-                Session.Remove("ProtInserimento-Link")
-            Else
-                Session.Item("ProtInserimento-Link") = value
-            End If
-        End Set
-    End Property
     Public Property SessionProtocolNumber As String
         Get
             If Not Session.Item("ResolutionNumberAttach") Is Nothing Then
@@ -322,14 +302,7 @@ Public Class ReslAllega
         MasterDocSuite.AjaxManager.ResponseScripts.Add(closeWindow)
 
 
-        Dim identifier As String = String.Format("{0}/{1}", txtYear.Value.Value, txtNumber.Text)
-        Dim protocolNumber As String = WebHelper.UploadDocumentRename(CurrentResolution.Type.Id, Int16.Parse(hf_selectYear.Value), Int32.Parse(hf_selectNumber.Value))
-        If Not SessionProtInserimentoLinks.Contains(identifier) Then
-            SessionProtInserimentoLinks &= identifier & ","
-        End If
-        If Not SessionProtocolNumber.Contains(protocolNumber) Then
-            SessionProtocolNumber = protocolNumber
-        End If
+
     End Sub
 
 #End Region

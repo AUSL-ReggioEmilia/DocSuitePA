@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class WorkflowActivitySummary
-    
+
     '''<summary>
     '''RadScriptBlock control.
     '''</summary>
@@ -21,7 +21,16 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock As Global.Telerik.Web.UI.RadScriptBlock
-    
+
+    '''<summary>
+    '''uscNotification control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
+
     '''<summary>
     '''attivitaContainer control.
     '''</summary>
@@ -30,7 +39,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents attivitaContainer As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''ddlNameWorkflow control.
     '''</summary>
@@ -39,7 +48,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlNameWorkflow As Global.Telerik.Web.UI.RadComboBox
-    
+
     '''<summary>
     '''tblFilterState control.
     '''</summary>
@@ -48,7 +57,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblFilterState As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''manager control.
     '''</summary>
@@ -57,7 +66,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents manager As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''singleSign control.
     '''</summary>
@@ -66,7 +75,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents singleSign As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''mainContainer control.
     '''</summary>
@@ -75,7 +84,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents mainContainer As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''applicantContainer control.
     '''</summary>
@@ -84,7 +93,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents applicantContainer As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''uscProponente control.
     '''</summary>
@@ -93,7 +102,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscProponente As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''receiverContainer control.
     '''</summary>
@@ -102,7 +111,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents receiverContainer As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''uscDestinatari control.
     '''</summary>
@@ -111,7 +120,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDestinatari As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''documentUpload control.
     '''</summary>
@@ -120,7 +129,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents documentUpload As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''uscUploadDocumenti control.
     '''</summary>
@@ -129,7 +138,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUploadDocumenti As Global.VecompSoftware.DocSuiteWeb.Gui.uscUploadDocumentRest
-    
+
     '''<summary>
     '''dateContainer control.
     '''</summary>
@@ -138,7 +147,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dateContainer As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''rtdDate control.
     '''</summary>
@@ -147,7 +156,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtdDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtNote control.
     '''</summary>
@@ -156,7 +165,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''lblActivityDate control.
     '''</summary>
@@ -165,7 +174,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblActivityDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtParere control.
     '''</summary>
@@ -174,7 +183,25 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtParere As Global.Telerik.Web.UI.RadTextBox
-    
+
+    '''<summary>
+    '''logContainer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents logContainer As Global.Telerik.Web.UI.RadPageLayout
+
+    '''<summary>
+    '''logTree control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents logTree As Global.Telerik.Web.UI.RadTreeView
+
     '''<summary>
     '''cmdDocuments control.
     '''</summary>
@@ -183,7 +210,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdDocuments As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''cmdManageActivity control.
     '''</summary>
@@ -192,7 +219,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdManageActivity As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''cmdApprove control.
     '''</summary>
@@ -201,7 +228,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdApprove As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''cmdRefuse control.
     '''</summary>
@@ -210,7 +237,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdRefuse As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''cmdSign control.
     '''</summary>
@@ -219,7 +246,7 @@ Partial Public Class WorkflowActivitySummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdSign As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''cmdCompleteActivity control.
     '''</summary>

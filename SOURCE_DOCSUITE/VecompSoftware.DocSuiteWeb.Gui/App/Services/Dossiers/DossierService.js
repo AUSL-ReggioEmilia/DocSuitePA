@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/DossierSummaryViewModelMapper", "App/Mappers/Dossiers/DossierSummaryContactViewModelMapper", "App/Mappers/Dossiers/DossierSummaryRoleViewModelMapper", "App/Mappers/Dossiers/DossierGridViewModelMapper"], function (require, exports, BaseService, DossierSummaryViewModelMapper, DossierSummaryContactViewModelMapper, DossierSummaryRoleViewModelMapper, DossierGridViewModelMapper) {
+define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/DossierSummaryViewModelMapper", "App/Mappers/Dossiers/DossierSummaryContactViewModelMapper", "App/Mappers/Dossiers/DossierSummaryRoleViewModelMapper", "App/Mappers/Dossiers/DossierGridViewModelMapper", "App/Models/Dossiers/DossierType"], function (require, exports, BaseService, DossierSummaryViewModelMapper, DossierSummaryContactViewModelMapper, DossierSummaryRoleViewModelMapper, DossierGridViewModelMapper, DossierType) {
     var DossierService = /** @class */ (function (_super) {
         __extends(DossierService, _super);
         /**
@@ -36,10 +36,10 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/
                 ;
             }, error);
         };
-        DossierService.prototype.getDossiers = function (skip, top, searchFilter, callback, error) {
-            var url = this._configuration.ODATAUrl.
-                concat("/DossierService.GetAuthorizedDossiers(skip=", skip.toString(), ",top=", top.toString(), ",year=", !!searchFilter.year ? searchFilter.year.toString() : null, ",number=", !!searchFilter.number ? searchFilter.number.toString() : null, ",subject=\'", searchFilter.subject, "\',note=\'", searchFilter.note, "\',idContainer=", !!searchFilter.idContainer ? searchFilter.idContainer.toString() : null, ",startDateFrom=\'", searchFilter.startDateFrom, "\',startDateTo=\'", searchFilter.startDateTo, "\',endDateFrom=\'", searchFilter.endDateFrom, "\',endDateTo=\'", searchFilter.endDateTo, "\',idMetadataRepository=", searchFilter.idMetadataRepository ? searchFilter.idMetadataRepository.toString() : null, "\,metadataValue=\'", searchFilter.metadataValue, "\')");
-            this.getRequest(url, null, function (response) {
+        DossierService.prototype.getAuthorizedDossiers = function (searchFilter, callback, error) {
+            var odataUrl = this._configuration.ODATAUrl + "/DossierService.GetAuthorizedDossiers";
+            var odataActionParameter = JSON.stringify({ finder: searchFilter });
+            this.postRequest(odataUrl, odataActionParameter, function (response) {
                 if (callback && response) {
                     var viewModelMapper_2 = new DossierGridViewModelMapper();
                     var dossiers_2 = [];
@@ -51,10 +51,10 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/
                 ;
             }, error);
         };
-        DossierService.prototype.countDossiers = function (searchFilter, callback, error) {
-            var url = this._configuration.ODATAUrl.
-                concat("/DossierService.CountAuthorizedDossiers(year=", !!searchFilter.year ? searchFilter.year.toString() : null, ",number=", !!searchFilter.number ? searchFilter.number.toString() : null, ",subject=\'", searchFilter.subject, "\',idContainer=", !!searchFilter.idContainer ? searchFilter.idContainer.toString() : null, ",idMetadataRepository=", !!searchFilter.idMetadataRepository ? searchFilter.idMetadataRepository.toString() : null, ",metadataValue='", searchFilter.metadataValue, "')");
-            this.getRequest(url, null, function (response) {
+        DossierService.prototype.countAuthorizedDossiers = function (searchFilter, callback, error) {
+            var url = this._configuration.ODATAUrl + "/DossierService.CountAuthorizedDossiers";
+            var odataActionParameter = JSON.stringify({ finder: searchFilter });
+            this.postRequest(url, odataActionParameter, function (response) {
                 if (callback && response) {
                     callback(response.value);
                 }
@@ -172,13 +172,36 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Dossiers/
                 }
             }, error);
         };
-        DossierService.prototype.countDossiersById = function (uniqueId, callback, error) {
+        DossierService.prototype.allFasciclesAreClosed = function (idDossier, callback, error) {
+            var url = this._configuration.ODATAUrl + "/DossierService.AllFasciclesAreClosed(idDossier=" + idDossier + ")";
+            var data = "";
+            this.getRequest(url, data, function (response) {
+                if (callback && response) {
+                    callback(response.value);
+                }
+            }, error);
+        };
+        DossierService.prototype.getDossiersWithTemplatesByFascicleId = function (idFascicle, dossierType, onlyFolderHasTemplate, dossierFolderLevel, dossierFolderPath, callback, error) {
             var url = this._configuration.ODATAUrl;
-            var data = "/$count?$filter=DossierFolders/any(d: d/Fascicle/Uniqueid eq " + uniqueId + ")";
-            url = url.concat(data);
-            this.getRequest(url, null, function (response) {
-                if (callback) {
-                    callback(response);
+            var data = "$filter=DossierFolders/any(df: df/Fascicle/UniqueId eq " + idFascicle + ")";
+            var dossierChildren = "and DossierFolderLevel eq " + dossierFolderLevel + " and startswith(DossierFolderPath,'" + dossierFolderPath + "');$expand=DossierFolderRoles($expand=Role)";
+            var onlyFolderFilter = "($filter=JsonMetadata ne null and Fascicle ne null " + dossierChildren + ";$expand=Fascicle,DossierFolderRoles($expand=Role);$orderby=Name)";
+            var expandDossierFolder = "$expand=DossierRoles($expand=Role),DossierFolders";
+            if (dossierType != null && onlyFolderHasTemplate) {
+                data = data + " and DossierType eq '" + DossierType[dossierType] + "'&" + expandDossierFolder + onlyFolderFilter;
+            }
+            else if (dossierType != null) {
+                data = data + " and DossierType eq '" + DossierType[dossierType] + "'&" + expandDossierFolder + "($filter=DossierFolderLevel eq " + dossierFolderLevel + " and startswith(DossierFolderPath,'" + dossierFolderPath + "');$expand=DossierFolderRoles($expand=Role);$orderby=Name)";
+            }
+            else if (onlyFolderHasTemplate) {
+                data = data + "&" + expandDossierFolder + onlyFolderFilter;
+            }
+            else {
+                data = data + "&" + expandDossierFolder + "($filter=Fascicle eq null " + dossierChildren + ";$orderby=Name)";
+            }
+            this.getRequest(url, data, function (response) {
+                if (callback && response) {
+                    callback(response.value);
                 }
             }, error);
         };

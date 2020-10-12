@@ -68,15 +68,6 @@ Partial Public Class TbltProcess
     Protected WithEvents rcbProcessNote As Global.Telerik.Web.UI.RadTextBox
 
     '''<summary>
-    '''rcbFascicleType control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rcbFascicleType As Global.Telerik.Web.UI.RadComboBox
-
-    '''<summary>
     '''uscCategoryRest control.
     '''</summary>
     '''<remarks>
@@ -129,6 +120,24 @@ Partial Public Class TbltProcess
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RequiredFieldValidator3 As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
+    '''rtbCloneDossierFolderName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rtbCloneDossierFolderName As Global.Telerik.Web.UI.RadTextBox
+
+    '''<summary>
+    '''RequiredFieldValidator4 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents RequiredFieldValidator4 As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''rbConfirm control.

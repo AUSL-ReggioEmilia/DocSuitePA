@@ -8,7 +8,7 @@ Imports VecompSoftware.Helpers.Signer.Security
 
 <DataObject()>
 Public Class ProtocolLogFacade
-    Inherits BaseProtocolFacade(Of ProtocolLog, Integer, NHibernateProtocolLogDao)
+    Inherits BaseProtocolFacade(Of ProtocolLog, Guid, NHibernateProtocolLogDao)
 
 #Region " Constructor "
 
@@ -44,28 +44,31 @@ Public Class ProtocolLogFacade
     Public Function InitializeNewProtocolLog(year As Short, number As Integer) As ProtocolLog
         Return InitializeNewProtocolLog(Factory.ProtocolFacade.GetById(year, number))
     End Function
+
+    Public Function InitializeNewProtocolLog(idProtocol As Guid) As ProtocolLog
+        Return InitializeNewProtocolLog(Factory.ProtocolFacade.GetById(idProtocol))
+    End Function
+
     Public Function InitializeNewProtocolLog(protocol As Protocol) As ProtocolLog
         Dim pLog As ProtocolLog = New ProtocolLog() With {
-                    .Year = protocol.Year,
-                    .Number = protocol.Number,
                     .LogDate = _dao.GetServerDate(),
                     .SystemComputer = DocSuiteContext.Current.UserComputer,
                     .SystemUser = DocSuiteContext.Current.User.FullUserName,
                     .Program = DocSuiteContext.Program,
-                    .UniqueIdProtocol = protocol.UniqueId
+                    .Protocol = protocol
                 }
 
         Return pLog
     End Function
 
     Public Overrides Sub Save(ByRef obj As ProtocolLog)
-        Dim str As String = String.Concat(obj.SystemUser, "|", obj.Year, "|", obj.Number, "|", obj.LogType, "|", obj.LogDescription, "|", obj.UniqueId, "|", obj.UniqueIdProtocol, "|", obj.LogDate.ToString("yyyyMMddHHmmss"))
+        Dim str As String = String.Concat(obj.SystemUser, "|", obj.Year, "|", obj.Number, "|", obj.LogType, "|", obj.LogDescription, "|", obj.UniqueId, "|", obj.Protocol.Id, "|", obj.LogDate.ToString("yyyyMMddHHmmss"))
         obj.Hash = HashHelper.GenerateHash(str)
         MyBase.Save(obj)
     End Sub
 
     Public Overrides Sub SaveWithoutTransaction(ByRef obj As ProtocolLog)
-        Dim str As String = String.Concat(obj.SystemUser, "|", obj.Year, "|", obj.Number, "|", obj.LogType, "|", obj.LogDescription, "|", obj.UniqueId, "|", obj.UniqueIdProtocol, "|", obj.LogDate.ToString("yyyyMMddHHmmss"))
+        Dim str As String = String.Concat(obj.SystemUser, "|", obj.Year, "|", obj.Number, "|", obj.LogType, "|", obj.LogDescription, "|", obj.UniqueId, "|", obj.Protocol.Id, "|", obj.LogDate.ToString("yyyyMMddHHmmss"))
         obj.Hash = HashHelper.GenerateHash(str)
         MyBase.SaveWithoutTransaction(obj)
     End Sub
@@ -84,9 +87,9 @@ Public Class ProtocolLogFacade
 
     Public Sub Handle(ByRef protocol As Protocol, subject As String, status As Boolean)
         If status Then
-            Log(protocol, PECMailLogType.Modified, String.Concat("Protocollo preso in carico da: ", subject))
+            Log(protocol, ProtocolLogEvent.PM, String.Concat("Protocollo preso in carico da: ", subject))
         Else
-            Log(protocol, PECMailLogType.Modified, String.Concat("Protocollo rilasciato da: ", subject))
+            Log(protocol, ProtocolLogEvent.PM, String.Concat("Protocollo rilasciato da: ", subject))
         End If
     End Sub
 
@@ -198,9 +201,7 @@ Public Class ProtocolLogFacade
     End Sub
 
     Private Sub ProtocolAuthorization(protocol As Protocol, message As String)
-        If DocSuiteContext.Current.ProtocolEnv.IsLogEnabled Then
-            Insert(protocol, ProtocolLogEvent.PZ, message)
-        End If
+        Insert(protocol, ProtocolLogEvent.PZ, message)
     End Sub
 
 #End Region
@@ -260,29 +261,6 @@ Public Class ProtocolLogFacade
 
     Public Function GetMailRolesLogs(uniqueId As Guid) As IList(Of ProtocolLog)
         Return _dao.GetMailRolesLogs(uniqueId)
-    End Function
-
-    Public Sub InsertDematerialisationSuccesfullLog(uniqueid As Guid)
-        Dim protocol As Protocol = FacadeFactory.Instance.ProtocolFacade.GetByUniqueId(uniqueid)
-        Insert(protocol, ProtocolLogEvent.SC, "Inviato con successo il comando Attestazione di Conformità")
-    End Sub
-
-    Public Sub InsertSecureDocumentSuccesfullLog(uniqueid As Guid, idDocument As Guid)
-        Dim protocol As Protocol = FacadeFactory.Instance.ProtocolFacade.GetByUniqueId(uniqueid)
-        Insert(protocol, ProtocolLogEvent.LC, String.Concat("Inviato con successo il comando di securizzazione del documento ", idDocument))
-    End Sub
-
-    Public Function SearchSecureDocumentLockLog(uniqueid As Guid, user As String, idDocument As Guid) As IList(Of ProtocolLog)
-        Return SearchLogByProtocolUniqueId(uniqueid, user, ProtocolLogEvent.LC, idDocument.ToString())
-    End Function
-
-    Public Sub InsertSecurePaperSuccesfullLog(uniqueid As Guid, idDocument As Guid)
-        Dim protocol As Protocol = FacadeFactory.Instance.ProtocolFacade.GetByUniqueId(uniqueid)
-        Insert(protocol, ProtocolLogEvent.CS, String.Concat("Inviato con successo il comando di applicazione del contrassegno a stampa del documento ", idDocument))
-    End Sub
-
-    Public Function SearchSecurePaperLockLog(uniqueid As Guid, user As String, idDocument As Guid) As IList(Of ProtocolLog)
-        Return SearchLogByProtocolUniqueId(uniqueid, user, ProtocolLogEvent.CS, idDocument.ToString())
     End Function
 
 #End Region

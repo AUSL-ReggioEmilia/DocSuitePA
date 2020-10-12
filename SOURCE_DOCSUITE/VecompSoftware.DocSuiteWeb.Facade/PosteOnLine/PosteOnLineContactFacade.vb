@@ -69,6 +69,14 @@ Public Class PosteOnLineContactFacade
         recipient.Province = String.Format("{0}", address.CityCode).Trim()
     End Sub
 
+    Public Sub TryRecursiveSetRecipientAddress(ByRef recipient As POLRequestRecipient, contact As Contact)
+        If contact IsNot Nothing AndAlso contact.Address IsNot Nothing AndAlso Not String.IsNullOrEmpty(contact.Address.Address) Then
+            SetRecipientAddress(recipient, contact.Address)
+        ElseIf contact.Parent IsNot Nothing Then
+            TryRecursiveSetRecipientAddress(recipient, contact.Parent)
+        End If
+    End Sub
+
     Public Sub RecursiveSetRecipientAddress(ByRef recipient As POLRequestRecipient, contact As Contact)
         If contact IsNot Nothing AndAlso contact.Address IsNot Nothing AndAlso Not String.IsNullOrEmpty(contact.Address.Address) Then
             SetRecipientAddress(recipient, contact.Address)

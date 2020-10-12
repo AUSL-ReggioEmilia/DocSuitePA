@@ -48,6 +48,7 @@
                     udsLink.currentIdUDS = "<%= CurrentIdUDS %>";
                     udsLink.selectedUDSRepositoryId = "<%= SelectedUDSRepository %>";
                     udsLink.ajaxManagerId = "<%= AjaxManager.ClientID %>";
+                    udsLink.currentAction = "<%= CurrentAction %>";
                     udsLink.initialize();
                 });
             });

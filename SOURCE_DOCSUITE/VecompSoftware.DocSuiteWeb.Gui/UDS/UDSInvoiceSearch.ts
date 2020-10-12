@@ -10,6 +10,7 @@ import EnumHelper = require("App/Helpers/EnumHelper");
 import UDSInvoiceDirection = require("App/Models/UDS/UDSInvoiceDirection");
 import UDSRepositoryModel = require('App/Models/UDS/UDSRepositoryModel');
 import UDSService = require('App/Services/UDS/UDSService');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 abstract class UDSInvoiceSearch extends UDSInvoiceBase {
 
@@ -64,6 +65,8 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
     invoiceStatus: string;
     tenantCompanyName: string;
 
+    private static FILTER_CACHE_KEY: string = "udsInvoiceFilter";
+    private static UDSINVOICE_FILTER_KEY: string = "UdsInvoiceSearch";
     private _dpStartDate: Telerik.Web.UI.RadDatePicker;
     private _dpEndDate: Telerik.Web.UI.RadDatePicker;
     private _cmdRepositoriName: Telerik.Web.UI.RadComboBox;
@@ -72,8 +75,6 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
     private _txtNumeroFattura: Telerik.Web.UI.RadTextBox;
 
     private _txtImporto: Telerik.Web.UI.RadTextBox;
-
-    private _txtPIVACF: Telerik.Web.UI.RadTextBox;
 
     private _txtDenominazioneManual: Telerik.Web.UI.RadTextBox;
     private _txtYear: Telerik.Web.UI.RadTextBox;
@@ -87,13 +88,7 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
     private _dtpDataAcceptFrom: Telerik.Web.UI.RadDatePicker;
     private _dtpDataAcceptTo: Telerik.Web.UI.RadDatePicker;
 
-    private _txtIDSDI: Telerik.Web.UI.RadTextBox;
-    private _txtProgressIDSDIId: Telerik.Web.UI.RadTextBox;
-
     private _btnSearch: Telerik.Web.UI.RadButton;
-    private _btnDocuments: Telerik.Web.UI.RadButton;
-    private _btnSelectAll: Telerik.Web.UI.RadButton;
-    private _btnDeselectAll: Telerik.Web.UI.RadButton;
     private _btnUpload: Telerik.Web.UI.RadButton;
     private _btnClean: Telerik.Web.UI.RadButton;
 
@@ -105,19 +100,17 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
 
     private _udsInvoiveGridGrid: Telerik.Web.UI.RadGrid;
     private _masterTableView: Telerik.Web.UI.GridTableView;
-    private _enumHelper: EnumHelper;
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _serviceConfiguration: ServiceConfiguration[];
     private _txtPecMail: Telerik.Web.UI.RadTextBox;
-    private _gridTemplateColumn: Telerik.Web.UI.GridColumn;
     private _ltlchktxtPecMail: JQuery;
     private _ltlLabelPecMail: JQuery;
+    private _emptyPecMailCheckbox: JQuery;
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         super(serviceConfigurations);
         this._serviceConfiguration = serviceConfigurations;
-        this._enumHelper = new EnumHelper();
         $(document).ready(() => { });
     }
 
@@ -142,13 +135,6 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         this._cmbStato = <Telerik.Web.UI.RadComboBox>$find(this.cmbStatoId);
         this._btnSearch = <Telerik.Web.UI.RadButton>$find(this.btnSearchId);
         this._btnSearch.add_clicking(this.btnSearch_onClick);
-
-        //this._btnDocuments = <Telerik.Web.UI.RadButton>$find(this.btnDocumentsId);
-        //this._btnDocuments.add_clicking(this.btnDocuments_onClick);
-        //this._btnSelectAll = <Telerik.Web.UI.RadButton>$find(this.btnSelectAllId);
-        //this._btnSelectAll.add_clicking(this.btnSelectAll_onClick);
-        //this._btnDeselectAll = <Telerik.Web.UI.RadButton>$find(this.btnDeselectAllId);
-        //this._btnDeselectAll.add_clicking(this.btnDeselectAll_onClick);
         this._btnUpload = <Telerik.Web.UI.RadButton>$find(this.btnUploadId);
         this._btnUpload.add_clicking(this.btnUpload_onClick);
 
@@ -169,9 +155,6 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
 
         this._txtNumeroFattura = <Telerik.Web.UI.RadTextBox>$find(this.txtNumeroFatturaId);
         this._txtImporto = <Telerik.Web.UI.RadTextBox>$find(this.txtImportoId);
-        this._txtPIVACF = <Telerik.Web.UI.RadTextBox>$find(this.txtPIVACFId);
-
-
         this._txtDenominazioneManual = <Telerik.Web.UI.RadTextBox>$find(this.txtDenominazioneManualId);
         this._txtYear = <Telerik.Web.UI.RadTextBox>$find(this.txtYearId);
         this._dtpDataIvaFrom = <Telerik.Web.UI.RadDatePicker>$find(this.dtpDataIvaFromId);
@@ -180,15 +163,13 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         this._dtpDataReciveSDITo = <Telerik.Web.UI.RadDatePicker>$find(this.dtpDataReciveSDIToId);
         this._dtpDataAcceptFrom = <Telerik.Web.UI.RadDatePicker>$find(this.dtpDataAcceptFromId);
         this._dtpDataAcceptTo = <Telerik.Web.UI.RadDatePicker>$find(this.dtpDataAcceptToId);
-        this._txtIDSDI = <Telerik.Web.UI.RadTextBox>$find(this.txtIDSDIId);
-        this._txtProgressIDSDIId = <Telerik.Web.UI.RadTextBox>$find(this.txtProgressIDSDIId);
         this._txtPecMail = <Telerik.Web.UI.RadTextBox>$find(this.txtIndirizzoPECId);
 
         this._ltlLabelPecMail = $("#ltlPecMail");
         this._ltlchktxtPecMail = $("#ltlchktxtPecMail");
+        this._emptyPecMailCheckbox = $("#chktxtPecMail");
 
-        this._gridTemplateColumn = <Telerik.Web.UI.GridColumn>$find("IndirizzoPec");
-
+        this.cleanSearchFilters();
         this.invoiceSelections = [];
         this.loadData();
     }
@@ -273,7 +254,7 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         ddlRepositoriName = thisCmbRepositoriName.findItemByText(tipoarchiviofinder);
         var enablerepository: boolean = true;
         if (tipoarchivioName == "") {
-            this.setLastRepositoriSearchFilter("UdsInvoiceSearch");
+            this.setLastRepositoriSearchFilter(UDSInvoiceSearch.UDSINVOICE_FILTER_KEY);
             if (this._cmdRepositoriName && this._cmdRepositoriName.get_selectedItem() !== null) {
                 tipoarchivioId = this._cmdRepositoriName.get_selectedItem().get_value();
                 tipoarchivioName = this._cmdRepositoriName.get_selectedItem().get_text();
@@ -281,7 +262,9 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
             ddlRepositoriName = thisCmbRepositoriName.findItemByValue(tipoarchivioId);
         } else {
             ddlRepositoriName = this._cmdRepositoriName.findItemByText(tipoarchiviofinder);
-            ddlRepositoriName.select();
+            if (ddlRepositoriName) {
+                ddlRepositoriName.select();
+            }
             enablerepository = false;
         }
 
@@ -308,7 +291,9 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
 
     setComboState(valore: string) {
         let selectedItem: Telerik.Web.UI.RadComboBoxItem = this._cmbStato.findItemByText(valore);
-        selectedItem.select();
+        if (selectedItem) {
+            selectedItem.select();
+        }
         this._cmbStato.trackChanges();
     }
 
@@ -332,6 +317,8 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
                 (exception: ExceptionDto) => {
                     this._loadingPanel.hide(this.cmdRepositoriNameId);
                     $("#".concat(this.cmdRepositoriNameId)).hide();
+                    this.showNotificationException(this.cmdRepositoriNameId, exception, "Errore nel caricamento dei dati.");
+                    promise.reject(exception);
                 });
 
         } catch (error) {
@@ -344,27 +331,28 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
     cmdRepositoriName_OnSelectedIndexChange = (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
         let selectedItem: Telerik.Web.UI.RadComboBoxItem = sender.get_selectedItem();
         if (selectedItem != null && selectedItem.get_value() != "") {
-            this.loadUDSInvoiceTipologyByID(selectedItem.get_value());
-            let isReceivableInvoice = selectedItem.get_text().endsWith(InvoiceRepositories.B2BReceivable.toString());
-            this._ltlLabelPecMail.hide();
-            this._ltlchktxtPecMail.hide();
-            if (isReceivableInvoice) {
-                this._ltlLabelPecMail.show();
-                this._ltlchktxtPecMail.show();
-            }
-            document.getElementById("ltlSupplier").hidden = !isReceivableInvoice;
-            document.getElementById("ltlCustomer").hidden = isReceivableInvoice;
-            if (this._btnInvoiceMove) {
-                this._btnInvoiceMove.set_enabled(isReceivableInvoice);
-            }
-            this._btnInvoiceDelete.set_visible(!isReceivableInvoice);
-            let tipoarchivioName: string = selectedItem.get_text();
-            this.setLastSearchFilter(tipoarchivioName);
-            return;
+            this.loadUDSInvoiceTipologyByID(selectedItem.get_value()).done(() => {
+                let isReceivableInvoice = selectedItem.get_text().endsWith(InvoiceRepositories.B2BReceivable.toString());
+                this._ltlLabelPecMail.hide();
+                this._ltlchktxtPecMail.hide();
+                if (isReceivableInvoice) {
+                    this._ltlLabelPecMail.show();
+                    this._ltlchktxtPecMail.show();
+                }
+                document.getElementById("ltlSupplier").hidden = !isReceivableInvoice;
+                document.getElementById("ltlCustomer").hidden = isReceivableInvoice;
+                if (this._btnInvoiceMove) {
+                    this._btnInvoiceMove.set_enabled(isReceivableInvoice);
+                }
+                this._btnInvoiceDelete.set_visible(!isReceivableInvoice);
+                let tipoarchivioName: string = selectedItem.get_text();
+                this.setLastSearchFilter(tipoarchivioName);
+                return;
+            });
         }
     }
 
-    btnSearch_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnSearch_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.loadResults(0);
     }
     /**
@@ -383,48 +371,25 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         return false;
     }
 
-    btnDocuments_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
-        //showGridLoadingPanel();
-        //var selectedItems = getSelectedItems();
-        //if (!selectedItems || selectedItems.length == 0) {
-        //    hideGridLoadingPanel();
-        //    alert("Nessun archivio selezionato.");
-        //    return;
-        //}
-        //var selection = selectedItems.reduce(function (prev, curr) {
-        //    prev[curr.getDataKeyValue("UDSId")] = curr.getDataKeyValue("IdUDSRepository");
-        //    return prev;
-        //}, {});
-        //window.location.href = "../Viewers/UDSViewer.aspx?UDSIds=".concat(encodeURIComponent(JSON.stringify(selection)));
-    }
-
-    btnSelectAll_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
-
-    }
-
-    btnDeselectAll_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
-
-    }
-
-    btnUpload_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnUpload_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         let url: string = 'UDSInvoicesUpload.aspx?Type=UDS';
         this.openWindow(url, 'managerUploadDocument', 770, 450);
     }
 
 
-    btnInvoiceMoved_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnInvoiceMoved_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         let url: string = 'UDSInvoiceMove.aspx?Type=UDS&IdUDS='.concat(sender.get_value());
         this.openWindow(url, 'managerUploadDocument', 770, 450);
     }
 
 
-    btnInvoiceDelete_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnInvoiceDelete_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         let url: string = 'UDSInvoiceDelete.aspx?Type=UDS&IdUDS='.concat(sender.get_value());
         this.openWindow(url, 'managerUploadDocument', 770, 450);
     }
 
 
-    btnClean_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnClean_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this.cleanSearchFilters();
     }
 
@@ -459,16 +424,26 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         return promise.promise();
     }
 
+    private _buildUdsService(): UDSService {
+        let selectedInvoiceItem: Telerik.Web.UI.RadComboBoxItem = this._cmdRepositoriName.get_selectedItem();
 
+        if (!selectedInvoiceItem) {
+            return undefined;
+        }
+
+        let UDSInvoice_TYPE_NAME = selectedInvoiceItem.get_text();
+        let UDSInvoiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfiguration, UDSInvoice_TYPE_NAME);
+
+        return new UDSService(UDSInvoiceConfiguration);;
+    }
 
     loadResults(skip: number) {
+        let udsService: UDSService = this._buildUdsService();
 
-        let UDSInvoice_TYPE_NAME = this._cmdRepositoriName.get_selectedItem().get_text();
-        let udsService: UDSService;
-        let UDSInvoiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfiguration, UDSInvoice_TYPE_NAME);
-        udsService = new UDSService(UDSInvoiceConfiguration);
-
-        this._loadingPanel.show(this.udsInvoiceGridId);
+        if (!udsService) {
+            alert("Nessun nome di archivio selezionato");
+            return;
+        }
 
         let cmdRepositoryName: string = "";
         let cmdRepositoryId: string = "";
@@ -493,11 +468,6 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         let numerofatturafilter: string = this._txtNumeroFattura.get_value();
         let numerofatturafilterEq: boolean = !$("#chkNumeroFatturafilter").is(":checked");
         let importoFilter: string = this._txtImporto.get_value();
-        //let importoFilterEq: boolean = !$("#rbltxtImportofilter").is(":checked");
-
-        //let pivacfFilter: string = this._txtPIVACF.get_textBoxValue();
-        //let pivacfFilterEq: boolean = !$("#rbltxtPIVACFfilter").is(":checked");
-
         let denomiazioneFilter: string = this._txtDenominazioneManual.get_value();
         let denomiazioneFilterEq: boolean = !$("#chkDenominazioneManualfilter").is(":checked");
 
@@ -532,14 +502,8 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         if (this._dtpDataAcceptTo && this._dtpDataAcceptTo.get_selectedDate()) {
             dataacceptToFilter = moment(this._dtpDataAcceptTo.get_selectedDate()).add(1, 'days').add(-1, 'seconds').format("YYYY-MM-DDTHH:mm:ss[Z]");
         }
-
-        //let identificativoSdiFilter: string = this._txtIDSDI.get_textBoxValue();
-        //let identificativoSdiFilterEq: boolean = !$("#rbltxtIDSDIfilter").is(":checked");
-
-        //let progressIDSDIFilter: string = this._txtProgressIDSDIId.get_textBoxValue();
-        //let progressIDSDIFilterEq: boolean = !$("#rbltxtProgressIDSDIfilter").is(":checked");
         let pecMailBoxFilter: string = this._txtPecMail.get_textBoxValue();
-        let pecMailBoxFilterEq: boolean = $("#chktxtPecMail").is(":checked");
+        let pecMailBoxFilterEq: boolean = this._emptyPecMailCheckbox.is(":checked");
 
         let searchDTO: UDSInvoiceSearchFilterDTO = new UDSInvoiceSearchFilterDTO();
 
@@ -549,9 +513,6 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         searchDTO.numerofatturafilter = numerofatturafilter;
         searchDTO.numerofatturafilterEq = numerofatturafilterEq;
         searchDTO.importoFilter = importoFilter;
-        //searchDTO.importoFilterEq = importoFilterEq;
-        //searchDTO.pivacfFilter = pivacfFilter;
-        //searchDTO.pivacfFilterEq = pivacfFilterEq;
         searchDTO.denomiazioneFilter = denomiazioneFilter;
         searchDTO.denomiazioneFilterEq = denomiazioneFilterEq;
         searchDTO.annoivaFilter = annoivaFilter;
@@ -566,17 +527,12 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         searchDTO.dataacceptFromFilter = dataacceptFromFilter;
         searchDTO.dataacceptToFilter = dataacceptToFilter;
 
-        //searchDTO.identificativoSdiFilter = identificativoSdiFilter;
-        //searchDTO.identificativoSdiFilterEq = identificativoSdiFilterEq;
-        //searchDTO.progressIDSDIFilter = progressIDSDIFilter;
-        //searchDTO.progressIDSDIFilterEq = progressIDSDIFilterEq;
-
         searchDTO.statofatturaFilter = statofatturafilter;
         searchDTO.pecMailBoxFilter = pecMailBoxFilter;
         searchDTO.pecMailBoxFilterEq = pecMailBoxFilterEq;
 
-        sessionStorage.setItem(cmdRepositoryName, JSON.stringify(searchDTO));
-        sessionStorage.setItem("UdsInvoiceSearch", JSON.stringify(searchDTO));
+        this._saveValueToSessionStorage(cmdRepositoryName, JSON.stringify(searchDTO));
+        this._saveValueToSessionStorage(UDSInvoiceSearch.UDSINVOICE_FILTER_KEY, JSON.stringify(searchDTO));
 
         var sortExpressions = this._masterTableView.get_sortExpressions();
         var orderbyExpressions;
@@ -600,6 +556,7 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         }
 
         try {
+            this._loadingPanel.show(this.udsInvoiceGridId);
             udsService.getUDSInvoices(searchDTO, top, skip, orderbyExpressions, (data) => {
                 if (!data) return;
                 this.gridResult = data;
@@ -617,10 +574,22 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         }
     }
 
+    private _saveValueToSessionStorage(identifier: string, value: string): void {
+        let cachedItemKey: string = `${UDSInvoiceSearch.FILTER_CACHE_KEY}_${identifier}`;
+
+        sessionStorage.setItem(cachedItemKey, value);
+    }
+
+    private _getCachedValueFromSession(identifier: string): string {
+        let cachedItemKey: string = `${UDSInvoiceSearch.FILTER_CACHE_KEY}_${identifier}`;
+
+        return sessionStorage.getItem(cachedItemKey);
+    }
+
     setLastRepositoriSearchFilter(tipoarchivioName: string) {
-        let UDSinvoiceLastSearch: string = sessionStorage.getItem(tipoarchivioName);
+        let UDSinvoiceLastSearch: string = this._getCachedValueFromSession(tipoarchivioName);
         if (UDSinvoiceLastSearch == null) {
-            UDSinvoiceLastSearch = sessionStorage.getItem("UdsInvoiceSearch");
+            UDSinvoiceLastSearch = this._getCachedValueFromSession(UDSInvoiceSearch.UDSINVOICE_FILTER_KEY);
         }
         if (UDSinvoiceLastSearch) {
             let lastsearchFilter: UDSInvoiceSearchFilterDTO = <UDSInvoiceSearchFilterDTO>JSON.parse(UDSinvoiceLastSearch);
@@ -634,10 +603,11 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
 
     setLastSearchFilter(tipoarchivioName: string) {
 
-        let UDSinvoiceLastSearch: string = sessionStorage.getItem(tipoarchivioName);
+        let UDSinvoiceLastSearch: string = this._getCachedValueFromSession(tipoarchivioName);
         if (UDSinvoiceLastSearch == null) {
-            UDSinvoiceLastSearch = sessionStorage.getItem("UdsInvoiceSearch");
+            UDSinvoiceLastSearch = this._getCachedValueFromSession(UDSInvoiceSearch.UDSINVOICE_FILTER_KEY);
         }
+
         if (UDSinvoiceLastSearch) {
             let lastsearchFilter: UDSInvoiceSearchFilterDTO = <UDSInvoiceSearchFilterDTO>JSON.parse(UDSinvoiceLastSearch);
             this._dpStartDate.set_selectedDate(lastsearchFilter.startDateFromFilter ? new Date(lastsearchFilter.startDateFromFilter.toString()) : null);
@@ -676,14 +646,25 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
         this.loadResults(skip);
     }
 
+    private _clearSessionFilterCache(): void {
+        let sessionStorageKeys: string[] = Object.keys(sessionStorage);
+
+        sessionStorageKeys.forEach((sessionKey: string) => {
+            if (sessionKey.startsWith(UDSInvoiceSearch.FILTER_CACHE_KEY)) {
+                sessionStorage.removeItem(sessionKey);
+            }
+        });
+    }
 
     cleanSearchFilters = () => {
+        this._clearSessionFilterCache();
         this._dpStartDate.clear();
         this._dpEndDate.clear();
-        this._cmdRepositoriName.clearSelection();
-        this._cmdRepositoriName.enable();
-        this._cmbStato.clearSelection();
-        this._cmbStato.enable();
+        if (this._cmdRepositoriName.get_enabled()) {
+            this._cmdRepositoriName.clearSelection();
+            this._cmbStato.clearSelection();
+        }
+
         this._txtNumeroFattura.clear();
         this._txtImporto.clear();
         this._txtYear.clear();
@@ -697,7 +678,9 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
 
         this._dtpDataReciveSDIFrom.clear();
         this._dtpDataReciveSDITo.clear();
-        sessionStorage.removeItem(this._cmdRepositoriName.get_selectedItem().get_text());
+
+        this._txtPecMail.clear();
+        this._emptyPecMailCheckbox.prop("checked", false);
     }
 
     //region [ Grid Configuration Methods ]
@@ -745,7 +728,7 @@ abstract class UDSInvoiceSearch extends UDSInvoiceBase {
                 this.invoiceSelections.splice(index, 1);
             }
         }
-        sessionStorage.setItem("InvoiceSelections", JSON.stringify(this.invoiceSelections));
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_INVOICE_SELECTIONS, JSON.stringify(this.invoiceSelections));
     }
 }
 //endregion

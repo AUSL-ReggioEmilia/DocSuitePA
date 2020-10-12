@@ -11,7 +11,6 @@ Public Class uscMassimarioScarto
     Inherits DocSuite2008BaseControl
 
 #Region "Fields"
-
 #End Region
 
 #Region "Properties"
@@ -26,6 +25,11 @@ Public Class uscMassimarioScarto
     Protected ReadOnly Property HideCanceledFilterJson As String
         Get
             Return JsonConvert.SerializeObject(HideCanceledFilter)
+        End Get
+    End Property
+    Public ReadOnly Property FolderToolBar_Grid As RadToolBar
+        Get
+            Return FolderToolBar
         End Get
     End Property
 #End Region

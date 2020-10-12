@@ -1,7 +1,13 @@
-define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", "App/Helpers/EnumHelper", "App/Helpers/ServiceConfigurationHelper", "../App/Models/Workflows/WorkflowPriorityType", "App/Models/Workflows/WorkflowPropertyHelper", "App/Models/DocumentUnits/ChainType", "App/Models/Workflows/WorkflowStatus", "App/Models/Workflows/ActivityAction", "App/Models/Workflows/AcceptanceStatus", "App/Services/Workflows/WorkflowNotifyService", "App/Models/Workflows/ArgumentType", "App/Models/Environment"], function (require, exports, WorkflowActivityService, EnumHelper, ServiceConfigurationHelper, WorkflowPriorityType, WorkflowPropertyHelper, ChainType, WorkflowStatus, ActivityAction, AcceptanceStatus, WorkflowNotifyService, ArgumentType, Environment) {
+define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", "App/Helpers/EnumHelper", "App/Helpers/ServiceConfigurationHelper", "App/Models/Workflows/WorkflowPriorityType", "App/Models/Workflows/WorkflowPropertyHelper", "App/Models/DocumentUnits/ChainType", "App/Models/Workflows/WorkflowStatus", "App/Models/Workflows/ActivityAction", "App/Models/Workflows/AcceptanceStatus", "App/Services/Workflows/WorkflowNotifyService", "App/Models/Workflows/ArgumentType", "App/Models/Environment", "App/Services/Workflows/WorkflowActivityLogService"], function (require, exports, WorkflowActivityService, EnumHelper, ServiceConfigurationHelper, WorkflowPriorityType, WorkflowPropertyHelper, ChainType, WorkflowStatus, ActivityAction, AcceptanceStatus, WorkflowNotifyService, ArgumentType, Environment, WorkflowActivityLogService) {
     var WorkflowActivitySummary = /** @class */ (function () {
         function WorkflowActivitySummary(serviceConfigurations) {
             var _this = this;
+            this._handleException = function (exception) {
+                var uscNotification = $("#".concat(_this.uscNotificationId)).data();
+                if (!jQuery.isEmptyObject(uscNotification)) {
+                    uscNotification.showNotification(exception);
+                }
+            };
             this.btnDocuments_OnClicked = function (sender, eventArgs) {
                 window.location.href = "../Viewers/WorkflowActivityViewer.aspx?Title=" + _this.workflowActivity.WorkflowInstance.WorkflowRepository.Name + "&IdWorkflowActivity=" + _this.workflowActivity.UniqueId + "&IdArchiveChain=" + _this.workflowActivity.IdArchiveChain;
             };
@@ -69,9 +75,12 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
                 documentReferenceModel.ReferenceType = Environment.Document;
                 documentReferenceModel.ReferenceModel = encodedDocuments;
                 var dsw_e_ActivityEndReferenceModel = {};
-                dsw_e_ActivityEndReferenceModel.Name = WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL;
-                dsw_e_ActivityEndReferenceModel.PropertyType = ArgumentType.Json;
-                dsw_e_ActivityEndReferenceModel.ValueString = JSON.stringify(documentReferenceModel);
+                var documents = JSON.parse(documentReferenceModel.ReferenceModel);
+                if (documents.Documents[0].Value.FileName.length != 0) {
+                    dsw_e_ActivityEndReferenceModel.Name = WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL;
+                    dsw_e_ActivityEndReferenceModel.PropertyType = ArgumentType.Json;
+                    dsw_e_ActivityEndReferenceModel.ValueString = JSON.stringify(documentReferenceModel);
+                }
                 var dsw_p_Accounts = {};
                 dsw_p_Accounts.Name = WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS;
                 dsw_p_Accounts.PropertyType = ArgumentType.Json;
@@ -82,17 +91,16 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
                 dsw_p_Subject.ValueString = dsw_e_ActivityEndMotivation.ValueString;
                 workflowNotify.OutputArguments = {};
                 workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_MOTIVATION] = dsw_e_ActivityEndMotivation;
-                workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL] = dsw_e_ActivityEndReferenceModel;
+                if (documents.Documents[0].Value.FileName.length != 0) {
+                    workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL] = dsw_e_ActivityEndReferenceModel;
+                }
                 workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS] = dsw_p_Accounts;
                 workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT] = dsw_p_Subject;
                 _this._workflowNotifyService.notifyWorkflow(workflowNotify, function (data) {
                     alert("Attività completata con successo");
                     _this._loadingPanel.hide(_this.mainContainerId);
                     window.location.href = "../User/UserWorkflow.aspx?Type=Comm";
-                }, function (error) {
-                    _this._loadingPanel.hide(_this.mainContainerId);
-                    console.log(error);
-                });
+                }, _this._handleException);
             };
             this.btnManageActivity_OnClicked = function (sender, eventArgs) {
                 window.location.href = "../Workflows/WorkflowActivityManage.aspx?&IdWorkflowActivity=" + _this.workflowActivity.UniqueId + "&IdChain=" + _this.workflowActivity.IdArchiveChain;
@@ -103,9 +111,12 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
             });
         }
         WorkflowActivitySummary.prototype.initialize = function () {
+            var _this = this;
             this._loadingPanel = $find(this.ajaxLoadingPanelId);
             var serviceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowActivity");
             this._service = new WorkflowActivityService(serviceConfiguration);
+            var workflowActivityLogserviceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowActivityLog");
+            this._workflowActivityLog = new WorkflowActivityLogService(workflowActivityLogserviceConfiguration);
             var workflowNotifyConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowNotify');
             this._workflowNotifyService = new WorkflowNotifyService(workflowNotifyConfiguration);
             this._btnDocuments = $find(this.cmdDocumentsId);
@@ -133,6 +144,7 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
             this._lblActivityDate = $("#" + this.lblActivityDateId);
             this._uscProponenteId = $("#" + this.uscProponenteId);
             this._uscDestinatariId = $("#" + this.uscDestinatariId);
+            this._logTree = $find(this.logTreeId);
             this._tdpDateId = $find(this.tdpDateId);
             this._rtbNoteId = $find(this.rtbNoteId);
             this._rtbParereId = $find(this.rtbParereId);
@@ -143,18 +155,22 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
             this._activityDateId = $("#" + this.activityDateId);
             this._tlrDateId = $("#" + this.tlrDateId);
             this.documentSection.hidden = true;
-            this._btnCompleteActivity.set_visible(false);
-            this._btnApprove.set_visible(false);
-            this._btnRefuse.set_visible(false);
-            this._btnSign.set_visible(false);
-            this.loadData(uniqueId);
+            this.createNode("Attività gestita in", function () { return _this.loadWorkflowActivitiesDoneLogCount(uniqueId, WorkflowStatus.Done); });
+            this.loadData(uniqueId, WorkflowStatus.Done);
         };
         WorkflowActivitySummary.prototype.getUrlParams = function (URL) {
             var vars = URL.split("&");
             var value = vars[2].split("=")[1];
             return value;
         };
-        WorkflowActivitySummary.prototype.loadData = function (uniqueId) {
+        WorkflowActivitySummary.prototype.loadWorkflowActivitiesDoneLogCount = function (uniqueId, workflowStatus) {
+            var _this = this;
+            this._workflowActivityLog.countWorkflowActivityByLogType(uniqueId, workflowStatus, function (data) {
+                var parentNode = _this._logTree.get_nodes().getNode(0);
+                parentNode.set_text("Attivit\u00E0 gestita in (" + data + ")");
+            });
+        };
+        WorkflowActivitySummary.prototype.loadData = function (uniqueId, workflowStatus) {
             var _this = this;
             this._loadingPanel.show(this.mainContainerId);
             this._service.getWorkflowActivityById(uniqueId, function (data) {
@@ -258,12 +274,12 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
                 if (ActivityAction[_this.workflowActivity.ActivityAction.toString()] == approveAction) {
                     _this._activityDateId.hide();
                     if (!workflowAcceptanceJson) {
-                        _this._btnApprove.set_visible(true);
-                        _this._btnRefuse.set_visible(true);
+                        $("#" + _this.cmdApproveId).show();
+                        $("#" + _this.cmdRefuseId).show();
                     }
                 }
                 if (ActivityAction[_this.workflowActivity.ActivityAction.toString()] == signAction) {
-                    _this._btnSign.set_visible(true);
+                    $("#" + _this.cmdSignId).show();
                     _this._tlrDateId.hide();
                     if (_this._btnDocuments.get_enabled()) {
                         _this._btnSign.set_enabled(true);
@@ -274,14 +290,35 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
                 }
                 if (ActivityAction[_this.workflowActivity.ActivityAction.toString()] == creatAction) {
                     _this.documentSection.hidden = false;
-                    _this._btnCompleteActivity.set_visible(true);
+                    $("#" + _this.cmdCompleteActivityId).show();
                     var enableButtons = _this.workflowActivity.WorkflowAuthorizations.filter(function (x) { return _this.currentUser.toLocaleLowerCase() == x.Account.toLocaleLowerCase(); }).length == 1;
                     if (!enableButtons) {
                         _this._btnCompleteActivity.set_enabled(false);
                         _this._rtbParereId.disable();
                     }
                 }
+            }, this._handleException, WorkflowActivitySummary.WORKFLOW_ACTIVITY_EXPAND_PROPERTIES);
+            this._service.getWorkflowActivityByLogType(uniqueId, workflowStatus, function (data) {
+                if (!data)
+                    return;
+                _this.workflowActivityDoneLog = data;
+                for (var _i = 0, _a = _this.workflowActivityDoneLog.WorkflowActivityLogs; _i < _a.length; _i++) {
+                    var wfaDoneLog = _a[_i];
+                    var wtfDoneLogName = "Attivit\u00E0 gestita da " + wfaDoneLog.RegistrationUser + " in " + moment(wfaDoneLog.RegistrationDate).format("DD/MM/YYYY") + " in " + wfaDoneLog.LogDescription;
+                    var node = new Telerik.Web.UI.RadTreeNode();
+                    node.set_text(wtfDoneLogName);
+                    _this._logTree.get_nodes().getNode(0).set_expanded(true);
+                    _this._logTree.get_nodes().getNode(0).get_nodes().add(node);
+                    _this._logTree.commitChanges();
+                }
             });
+        };
+        WorkflowActivitySummary.prototype.createNode = function (nodeText, callback) {
+            var node = new Telerik.Web.UI.RadTreeNode();
+            node.set_text(nodeText);
+            node.set_cssClass("font_node");
+            this._logTree.get_nodes().add(node);
+            callback();
         };
         WorkflowActivitySummary.prototype.populateAcceptanceModel = function (acceptanceStatus) {
             var workflowNotifyModel = {};
@@ -343,6 +380,9 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
             wnd.center();
             return false;
         };
+        WorkflowActivitySummary.WORKFLOW_ACTIVITY_EXPAND_PROPERTIES = [
+            "WorkflowProperties", "WorkflowAuthorizations", "WorkflowInstance($expand=WorkflowRepository)"
+        ];
         return WorkflowActivitySummary;
     }());
     return WorkflowActivitySummary;

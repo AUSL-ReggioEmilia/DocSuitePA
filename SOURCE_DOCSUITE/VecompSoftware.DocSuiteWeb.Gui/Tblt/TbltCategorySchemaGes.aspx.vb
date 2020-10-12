@@ -1,4 +1,5 @@
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Logging
 
@@ -42,6 +43,10 @@ Partial Public Class TbltCategorySchemaGes
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupTblCategoryRight Then
+            Throw New DocSuiteException("Utente non autorizzato alla visualizzazione della Versione del Classificatore.")
+        End If
+
         InitializeAjax()
         If Not Page.IsPostBack Then
             InitializePage()

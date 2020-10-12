@@ -9,6 +9,8 @@ interface DomainUserModel extends DomainBaseModel {
     Surname?: string;
     VoiceTelephoneNumber?: string;
     DomainGroups?: DomainGroupModel[];
+    Account?: string;
+    Domain?: string;
 }
 
 export = DomainUserModel;

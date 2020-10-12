@@ -62,6 +62,17 @@ Public Class uscCategoryRest
             Return treeCategory.GetAllNodes().Where(Function(x) x.Attributes.Item("IsSelected").Eq(True.ToString())).Select(Function(s) Integer.Parse(s.Value)).ToList()
         End Get
     End Property
+
+    Public Property ShowProcesses As Boolean = False
+
+    Public Property IsRequired As Boolean
+        Get
+            Return AnyNodeCheck.Enabled
+        End Get
+        Set(value As Boolean)
+            AnyNodeCheck.Enabled = value
+        End Set
+    End Property
 #End Region
 
 #Region " Events "
@@ -74,7 +85,7 @@ Public Class uscCategoryRest
     End Sub
 
     ''' <summary>
-    ''' TODO: rimuover in 8.80 con refactor usc fascicolo
+    ''' TODO: rimuovere solo quando lo usercontrol dei contatti sarà REST
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>

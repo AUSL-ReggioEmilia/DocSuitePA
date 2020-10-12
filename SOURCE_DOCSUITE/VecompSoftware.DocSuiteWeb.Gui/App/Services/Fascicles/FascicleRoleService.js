@@ -30,6 +30,10 @@ define(["require", "exports", "App/Services/BaseService"], function (require, ex
             var url = this._configuration.WebAPIUrl;
             this.deleteRequest(url, JSON.stringify(model), callback, error);
         };
+        FascicleRoleService.prototype.updateFascicleRole = function (model, callback, error) {
+            var url = this._configuration.WebAPIUrl;
+            this.putRequest(url, JSON.stringify(model), callback, error);
+        };
         return FascicleRoleService;
     }(BaseService));
     return FascicleRoleService;

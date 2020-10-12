@@ -22,6 +22,7 @@ Public Class Fascicle
     Public Overridable Property IdMetadataRepository As Guid?
     Public Overridable Property FascicleDocumentUnits As IList(Of FascicleDocumentUnit)
     Public Overridable Property Container As Container
+    Public Overridable Property CustomActions As String
 
     Public Overridable ReadOnly Property CalculatedLink As String
         Get

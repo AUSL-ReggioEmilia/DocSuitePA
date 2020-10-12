@@ -13,6 +13,8 @@ Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
 Imports System.Diagnostics
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
+Imports System.IO
 
 Namespace Viewers
     Public Class FascicleViewer
@@ -25,11 +27,11 @@ Namespace Viewers
         Private _currentFascicleFinder As Data.WebAPI.Finder.Fascicles.FascicleFinder = Nothing
         Private _currentDocumentUnitChainFacade As DocumentUnitChainFacade = Nothing
         Private _currentDocumentUnitChainFinder As Data.WebAPI.Finder.DocumentUnits.DocumentUnitChainFinder = Nothing
-        Private _defaultDocumentServer As String = Nothing
         Private _fascicleList As IList(Of Entity.Fascicles.Fascicle) = Nothing
         Private _currentInsertsLocation As Location = Nothing
         Private _currentFascicleFolderFinder As FascicleFolderFinder = Nothing
         Private _currentFascicleDocumentUnitFinder As FascicleDocumentUnitFinder
+        Public Const GET_WF_VISIBILITY_VALUE As String = "getWfVisibilityValue();"
 
 
 #End Region
@@ -54,11 +56,14 @@ Namespace Viewers
         Private ReadOnly Property FascicleList As IList(Of Entity.Fascicles.Fascicle)
             Get
                 If Not FascicleKeys.IsNullOrEmpty() AndAlso _fascicleList Is Nothing Then
-                    Dim fasciclesDto As ICollection(Of WebAPIDto(Of Entity.Fascicles.Fascicle)) = New List(Of WebAPIDto(Of Entity.Fascicles.Fascicle))
-                    CurrentFascicleFinder.ExpandProperties = True
-                    CurrentFascicleFinder.EnablePaging = False
-                    CurrentFascicleFinder.FascicleIds = FascicleKeys
-                    fasciclesDto = CurrentFascicleFinder.DoSearch()
+                    Dim fasciclesDto As ICollection(Of WebAPIDto(Of Entity.Fascicles.Fascicle)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentFascicleFinder,
+                            Function(impersonationType, finder)
+                                finder.ResetDecoration()
+                                finder.ExpandProperties = True
+                                finder.EnablePaging = False
+                                finder.FascicleIds = FascicleKeys
+                                Return finder.DoSearch()
+                            End Function)
 
                     Dim fascicles As IList(Of Entity.Fascicles.Fascicle) = New List(Of Entity.Fascicles.Fascicle)()
                     For Each fascicleDto As WebAPIDto(Of Entity.Fascicles.Fascicle) In fasciclesDto
@@ -154,19 +159,10 @@ Namespace Viewers
         Public ReadOnly Property CurrentDocumentUnitChainFacade() As DocumentUnitChainFacade
             Get
                 If _currentDocumentUnitChainFacade Is Nothing Then
-                    _currentDocumentUnitChainFacade = New DocumentUnitChainFacade(DocSuiteContext.Current.Tenants)
+                    _currentDocumentUnitChainFacade = New DocumentUnitChainFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
                     Return _currentDocumentUnitChainFacade
                 End If
                 Return _currentDocumentUnitChainFacade
-            End Get
-        End Property
-        Public ReadOnly Property DefaultDocumentServer() As String
-            Get
-                If _defaultDocumentServer Is Nothing Then
-                    _defaultDocumentServer = Facade.LocationFacade.DefaultDocumentServer()
-                    Return _defaultDocumentServer
-                End If
-                Return _defaultDocumentServer
             End Get
         End Property
         Public ReadOnly Property CurrentFascicleFolderFinder As FascicleFolderFinder
@@ -185,7 +181,6 @@ Namespace Viewers
                 Return _currentFascicleDocumentUnitFinder
             End Get
         End Property
-
 #End Region
 
 #Region " Events "
@@ -201,14 +196,15 @@ Namespace Viewers
 
                 BindViewerLight()
             End If
+            ViewerLight.Button_StartWorklow = btnWorkflow.ClientID
             ViewerLight.CheckViewableRight = True
             ViewerLight.AlwaysDocumentTreeOpen = ProtocolEnv.ViewLightAlwaysOpenPages.Contains("FascicleViewer")
+            AjaxManager.ResponseScripts.Add(GET_WF_VISIBILITY_VALUE)
         End Sub
 
 #End Region
 
 #Region " Methods "
-
         Private Sub BindViewerLight()
             Dim datasource As List(Of DocumentInfo) = FascicleList.Select(Function(k) GetFascicleUDDocuments(k)).ToList()
             ViewerLight.DataSource = datasource
@@ -238,20 +234,25 @@ Namespace Viewers
         Private Sub FillFascicleFolders(folder As FolderInfo, fascicle As Entity.Fascicles.Fascicle, fascicleFolder As FascicleFolder, userIsAuthorized As Boolean,
                                         fascicleDocumentUnits As ICollection(Of Entity.Fascicles.FascicleDocumentUnit), fascicleInserts As ICollection(Of Tuple(Of Guid, ICollection(Of BiblosDocumentInfo))))
             Dim UDguids As IEnumerable(Of Guid) = fascicleDocumentUnits.Where(Function(x) x.FascicleFolder.UniqueId = fascicleFolder.UniqueId).Select(Function(f) f.DocumentUnit.UniqueId)
-            Dim fascicleFolderInfo As FolderInfo = New FolderInfo()
-            fascicleFolderInfo.Name = fascicleFolder.Name
-            fascicleFolderInfo.ID = fascicleFolder.UniqueId.ToString()
+            Dim fascicleFolderInfo As FolderInfo = New FolderInfo With {
+                .Name = fascicleFolder.Name,
+                .ID = fascicleFolder.UniqueId.ToString()
+            }
 
-            Dim results As ICollection(Of WebAPIDto(Of DocumentUnitChain)) = Nothing
+            Dim results As ICollection(Of WebAPIDto(Of Entity.DocumentUnits.DocumentUnitChain)) = Nothing
             Dim documents As DocumentInfo = Nothing
             For Each guid As Guid In UDguids
-                CurrentDocumentUnitChainFinder.ResetDecoration()
-                CurrentDocumentUnitChainFinder.IdDocumentUnit = guid
-                CurrentDocumentUnitChainFinder.EnablePaging = False
-                CurrentDocumentUnitChainFinder.ExpandProperties = True
-                results = CurrentDocumentUnitChainFinder.DoSearch()
-                If (results IsNot Nothing) Then
-                    documents = CurrentDocumentUnitChainFacade.GetDocumentUnitChainsDocuments(results.Select(Function(f) f.Entity).ToList(), DefaultDocumentServer, ProtocolEnv.DocumentSeriesDocumentsLabel, userIsAuthorized)
+                results = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentDocumentUnitChainFinder,
+                            Function(impersonationType, finder)
+                                finder.ResetDecoration()
+                                finder.IdDocumentUnit = guid
+                                finder.EnablePaging = False
+                                finder.ExpandProperties = True
+                                Return finder.DoSearch()
+                            End Function).OrderByDescending(Function(docUnitChain) docUnitChain.Entity.RegistrationDate).ToList()
+
+                If results IsNot Nothing Then
+                    documents = CurrentDocumentUnitChainFacade.GetDocumentUnitChainsDocuments(results.Select(Function(f) f.Entity).ToList(), ProtocolEnv.DocumentSeriesDocumentsLabel, userIsAuthorized)
                     If documents IsNot Nothing Then
                         fascicleFolderInfo.AddChild(documents)
                     End If
@@ -281,31 +282,42 @@ Namespace Viewers
         End Sub
 
         Private Function GetFolderMiscellaneaByFascicle(fascicle As Entity.Fascicles.Fascicle) As ICollection(Of Tuple(Of Guid, ICollection(Of BiblosDocumentInfo)))
-            Dim insertsDocuments As ICollection(Of FascicleDocument) = fascicle.FascicleDocuments.Where(Function(x) x.ChainType = ChainType.Miscellanea).ToList()
+            Dim insertsDocuments As ICollection(Of FascicleDocument) = fascicle.FascicleDocuments.Where(Function(x) x.ChainType = Entity.DocumentUnits.ChainType.Miscellanea).ToList()
             Dim insertsDocs As ICollection(Of Tuple(Of Guid, ICollection(Of BiblosDocumentInfo))) = New List(Of Tuple(Of Guid, ICollection(Of BiblosDocumentInfo)))()
             If CurrentInsertsLocation IsNot Nothing Then
                 insertsDocs = insertsDocuments.Select(Function(s) New Tuple(Of Guid, ICollection(Of BiblosDocumentInfo))(s.FascicleFolder.UniqueId,
-                                                                                                                         BiblosDocumentInfo.GetDocumentsLatestVersion(CurrentInsertsLocation.DocumentServer, s.IdArchiveChain).ToList())).ToList()
+                                                                                                                         BiblosDocumentInfo.GetDocumentsLatestVersion(s.IdArchiveChain).OrderByDescending(Function(doc) doc.DateCreated).ToList())).ToList()
             End If
             Return insertsDocs
         End Function
 
         Private Function FindFolderChildren(parentFolder As FascicleFolder) As ICollection(Of FascicleFolder)
-            CurrentFascicleFolderFinder.ResetDecoration()
-            CurrentFascicleFolderFinder.EnablePaging = False
-            CurrentFascicleFolderFinder.ReadChildren = True
-            CurrentFascicleFolderFinder.UniqueId = parentFolder.UniqueId
+            Dim results As ICollection(Of WebAPIDto(Of FascicleFolder)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentFascicleFolderFinder,
+                            Function(impersonationType, finder)
+                                finder.ResetDecoration()
+                                finder.EnablePaging = False
+                                finder.ReadChildren = True
+                                finder.UniqueId = parentFolder.UniqueId
+                                Return finder.DoSearch()
+                            End Function)
 
-            Return CurrentFascicleFolderFinder.DoSearch().Select(Of FascicleFolder)(Function(s) s.Entity).ToList()
+            Return results.Select(Function(s) s.Entity).ToList()
         End Function
 
         Private Function GetDocumentUnitsByFascicle(fascicle As Entity.Fascicles.Fascicle) As ICollection(Of Entity.Fascicles.FascicleDocumentUnit)
-            CurrentFascicleDocumentUnitFinder.ResetDecoration()
-            CurrentFascicleDocumentUnitFinder.EnablePaging = False
-            CurrentFascicleDocumentUnitFinder.ExpandProperties = True
-            CurrentFascicleDocumentUnitFinder.IdFascicle = fascicle.UniqueId
+            Dim results As ICollection(Of WebAPIDto(Of Entity.Fascicles.FascicleDocumentUnit)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentFascicleDocumentUnitFinder,
+                            Function(impersonationType, finder)
+                                finder.ResetDecoration()
+                                finder.EnablePaging = False
+                                finder.ExpandProperties = True
+                                finder.IdFascicle = fascicle.UniqueId
+                                If Not ProtocolEnv.MultiAOOFascicleEnabled Then
+                                    finder.IdDocumentUnitTenantAOO = CurrentTenant.TenantAOO.UniqueId
+                                End If
+                                Return finder.DoSearch()
+                            End Function)
 
-            Return CurrentFascicleDocumentUnitFinder.DoSearch().Select(Of Entity.Fascicles.FascicleDocumentUnit)(Function(s) s.Entity).ToList()
+            Return results.Select(Function(s) s.Entity).OrderByDescending(Function(fdi) fdi.DocumentUnit.RegistrationDate).ToList()
         End Function
 
 #End Region

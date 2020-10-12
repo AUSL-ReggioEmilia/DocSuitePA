@@ -31,7 +31,7 @@ Partial Public Class ProtRecupera
     End Sub
 
     Private Sub BtnCancelClick(sender As Object, e As EventArgs) Handles btnCancel.Click
-        Dim selectedProtocols As IList(Of Protocol) = Facade.ProtocolFacade.GetProtocols(GetSelectedProtocolKeys)
+        Dim selectedProtocols As ICollection(Of Protocol) = Facade.ProtocolFacade.GetProtocols(GetSelectedProtocolKeys)
 
         If selectedProtocols Is Nothing Then
             AjaxAlert("E' necessario selezionare almeno un protocollo.")
@@ -48,10 +48,10 @@ Partial Public Class ProtRecupera
                     p.IdStatus = ProtocolStatusId.Annullato
                     p.LastChangedReason = txtAnnulla.Text.Trim
                     Facade.ProtocolFacade.Update(p)
-
-                    If DocSuiteContext.Current.ProtocolEnv.IsLogEnabled Then Facade.ProtocolLogFacade.Insert(p, ProtocolLogEvent.PA, p.LastChangedReason)
-                    
-                    If (chkDisableUnlinkPec.Checked) Then Facade.ProtocolFacade.PecUnlink(p)
+                    Facade.ProtocolLogFacade.Insert(p, ProtocolLogEvent.PA, p.LastChangedReason)
+                    If chkDisableUnlinkPec.Checked Then
+                        Facade.ProtocolFacade.PecUnlink(p)
+                    End If
                 Next
                 DoSearch()
                 txtAnnulla.Text = String.Empty
@@ -88,20 +88,16 @@ Partial Public Class ProtRecupera
     End Sub
 
     ''' <summary> Ritorna l'elenco delle chiavi selezionate. </summary>
-    Private Function GetSelectedProtocolKeys() As IList(Of YearNumberCompositeKey)
-        Dim retval As New List(Of YearNumberCompositeKey)
+    Private Function GetSelectedProtocolKeys() As ICollection(Of Guid)
+        Dim retval As ICollection(Of Guid) = New List(Of Guid)
         For Each griditem As GridDataItem In uscProtocolGrid.Grid.Items
             Dim currentCheckBox As CheckBox = DirectCast(griditem.FindControl("cbSelect"), CheckBox)
             If Not currentCheckBox.Checked Then
                 Continue For
             End If
 
-            Dim lbtViewProtocol As Label = DirectCast(griditem.FindControl("lblFullProtocolNumber"), Label)
-            Dim keyToAdd As YearNumberCompositeKey = New YearNumberCompositeKey
-            keyToAdd.Year = CShort(Mid(lbtViewProtocol.Text, 1, InStr(lbtViewProtocol.Text, "/") - 1))
-            keyToAdd.Number = CInt(Mid(lbtViewProtocol.Text, InStr(lbtViewProtocol.Text, "/") + 1))
-            retval.Add(keyToAdd)
-
+            Dim protocolUniqueIdHiddenField As HiddenField = DirectCast(griditem.FindControl("hf_protocol_unique"), HiddenField)
+            retval.Add(Guid.Parse(protocolUniqueIdHiddenField.Value))
         Next
 
         Return retval

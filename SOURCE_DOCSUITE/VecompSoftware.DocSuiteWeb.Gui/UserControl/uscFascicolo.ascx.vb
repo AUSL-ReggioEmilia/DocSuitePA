@@ -21,9 +21,18 @@ Partial Public Class uscFascicolo
     Inherits DocSuite2008BaseControl
 
 #Region " Fields "
-    Private Const EXTERNAL_DATA_INITIALIZE_CALLBACK As String = "uscFascicolo.loadExternalDataCallback();"
+    Private Const EXTERNAL_DATA_INITIALIZE_CALLBACK As String = "uscFascicolo.loadExternalDataCallback({0});"
     Private Const GRID_REFRESH_CALLBACK As String = "uscFascicolo.refreshGridUDCallback({0},{1});"
     Private Const INSERTS_DOCUMENTUNIT_NAME As String = "Inserto"
+
+    Private Const WORD_TABLE_COLUMN_FDU_SUBJECT As String = "Oggetto"
+    Private Const WORD_TABLE_COLUMN_FDU_CATEGORY As String = "Classificatore"
+    Private Const WORD_TABLE_COLUMN_FDU_REGISTRATION_DATE As String = "Data di registrazione"
+    Private Const WORD_TABLE_COLUMN_FDU_FASCICLE_REGISTRATION_DATE As String = "Data di registrazione nel fascicolo"
+    Private Const WORD_TABLE_COLUMN_FDU_FASCICLE_REGISTRATION_USER As String = "Utente di registrazione nel fascicolo"
+    Private Const WORD_TABLE_COLUMN_FD_DOCUMENT_NAME As String = "Nome file"
+    Private Const WORD_TABLE_COLUMN_FD_DOCUMENT_CREATED_DATE As String = "Data di creazione"
+    Private Const WORD_TABLE_COLUMN_FD_DOCUMENT_REGISTRATION_USER As String = "Utente di registrazione nel documento"
 #End Region
 
 #Region " Properties "
@@ -98,20 +107,7 @@ Partial Public Class uscFascicolo
         End Get
     End Property
 
-    Public ReadOnly Property RolesAccountedAdded As ICollection(Of Integer)
-        Get
-            Return uscSettoriAccounted.RoleListAdded()
-        End Get
-    End Property
-
-    Public ReadOnly Property RolesAccountedRemoved As ICollection(Of Integer)
-        Get
-            Return uscSettoriAccounted.RoleListRemoved()
-        End Get
-    End Property
-
     Public Property CurrentWorkflowActivityId As String
-
 
     Private Property GrdUDFilters As IDictionary(Of String, String)
 
@@ -122,19 +118,21 @@ Partial Public Class uscFascicolo
     Private Sub uscFascicolo_Load(sender As Object, e As EventArgs) Handles Me.Load
         InitializeAjax()
         GrdUDFilters = Nothing
-        uscDynamicMetadata.IsReadOnly = Not IsEditPage
         uscFascSummary.IsEditPage = IsEditPage
         uscFascicleFolders.IsVisibile = Not IsEditPage AndAlso Not IsAuthorizePage
         uscResponsabili.TreeViewCaption = DocSuiteContext.Current.ProtocolEnv.FascicleRoleRPLabel
+        uscCustomActionsRest.IsSummary = Not IsEditPage
         If Not IsPostBack Then
             grdUD.DataSource = New List(Of String)
             uscResponsabili.Visible = IsEditPage
-            uscSettoriAccounted.Visible = IsAuthorizePage
-            uscSettoriAccounted.MultiSelect = IsAuthorizePage
-            uscSettoriAccounted.MultipleRoles = IsAuthorizePage
-            uscSettoriAccounted.FascicleVisibilityTypeEnabled = False
+            uscRole.Visible = IsAuthorizePage
+            uscRole.MultipleRoles = IsAuthorizePage
+            uscRole.FascicleVisibilityTypeButtonEnabled = False
             If Not IsEditPage AndAlso Not IsAuthorizePage Then
-                uscSettoriAccounted.ReadOnly = True
+                uscRole.ReadOnlyMode = True
+            End If
+            If IsEditPage Then
+                uscDynamicMetadataSummaryRest.Visible = False
             End If
             rowAuthorizations.SetDisplay(Not (IsEditPage OrElse IsAuthorizePage))
         End If
@@ -163,30 +161,29 @@ Partial Public Class uscFascicolo
                                 workflowHandler = ajaxModel.Value(2)
                             End If
 
-                            uscSettoriAccounted.FascicleVisibilityTypeEnabled = IsAuthorizePage AndAlso (fascicle.FascicleType = Entity.Fascicles.FascicleType.Procedure)
-                            uscSettoriAccounted.Initialize()
-                            uscSettoriAccounted.FascicleVisibilityType = CType(fascicle.VisibilityType, Data.VisibilityType)
-                            LoadAuthorizations(fascicle, isActiveWorkflow, workflowHandler)
+                            uscRole.FascicleVisibilityTypeButtonEnabled = IsAuthorizePage AndAlso (fascicle.FascicleType = Entity.Fascicles.FascicleType.Procedure)
+                            LoadAuthorizations(fascicle, workflowHandler)
                             LoadRoles(fascicle)
                             If IsEditPage Then
                                 uscResponsabili.Visible = True
                                 LoadRiferimenti(fascicle)
                             End If
-                            If ProtocolEnv.MetadataRepositoryEnabled AndAlso Not IsEditPage AndAlso Not String.IsNullOrEmpty(fascicle.MetadataValues) Then
-                                Dim metadataModel As MetadataModel = JsonConvert.DeserializeObject(Of MetadataModel)(fascicle.MetadataValues)
-                                uscDynamicMetadata.LoadControls(metadataModel)
+                            If Not IsEditPage Then
                                 Dim metadata As List(Of BaseDocumentGeneratorParameter) = New List(Of BaseDocumentGeneratorParameter)()
-                                For Each item As BaseFieldModel In metadataModel.DateFields.Union(metadataModel.BoolFields).Union(metadataModel.NumberFields).Union(metadataModel.EnumFields).Union(metadataModel.TextFields)
-                                    metadata.Add(New StringParameter(item.Label, Server.HtmlEncode(item.Value)))
-                                Next
-                                For Each item As DiscussionFieldModel In metadataModel.DiscussionFields
-                                    metadata.Add(New StringParameter(item.Label, Server.HtmlEncode(String.Join(", ", item.Comments.Select(Function(f) f.Comment).ToArray()))))
-                                Next
-                                metadata.Add(New StringParameter("_subject", Server.HtmlEncode(fascicle.FascicleObject)))
-                                metadata.Add(New StringParameter("_filename", fascicle.Title.Replace(".", "_").Replace("-", "_")))
-                                AjaxManager.ResponseScripts.Add(String.Concat("$(document).ready(function() {SetMetadataSessionStorage('", JsonConvert.SerializeObject(metadata, DocSuiteContext.DefaultWebAPIJsonSerializerSettings), "')});"))
+                                If ProtocolEnv.MetadataRepositoryEnabled AndAlso Not String.IsNullOrEmpty(fascicle.MetadataValues) Then
+                                    Dim metadataDesigner As MetadataDesignerModel = JsonConvert.DeserializeObject(Of MetadataDesignerModel)(fascicle.MetadataDesigner)
+                                    Dim metadataValues As ICollection(Of MetadataValueModel) = JsonConvert.DeserializeObject(Of ICollection(Of MetadataValueModel))(fascicle.MetadataValues)
+                                    For Each item As MetadataValueModel In metadataValues.Where(Function(x) Not metadataDesigner.DiscussionFields.Any(Function(xx) xx.KeyName = x.KeyName))
+                                        metadata.Add(New StringParameter(item.KeyName, Server.HtmlEncode(item.Value)))
+                                    Next
+                                    For Each item As DiscussionFieldModel In metadataDesigner.DiscussionFields
+                                        metadata.Add(New StringParameter(item.Label, Server.HtmlEncode(String.Join(", ", item.Comments.Select(Function(f) f.Comment).ToArray()))))
+                                    Next
+                                End If
+                                AddDocumentGeneratorParameters(metadata, fascicle)
+                                AjaxManager.ResponseScripts.Add(String.Concat("$(document).ready(function() {SetMetadataSessionStorage(`", JsonConvert.SerializeObject(metadata, DocSuiteContext.DefaultWebAPIJsonSerializerSettings), "`)});"))
                             End If
-                            AjaxManager.ResponseScripts.Add(EXTERNAL_DATA_INITIALIZE_CALLBACK)
+                            AjaxManager.ResponseScripts.Add(String.Format(EXTERNAL_DATA_INITIALIZE_CALLBACK, uscRole.FascicleVisibilityTypeButtonEnabled.ToString().ToLower()))
                         End If
 
                     Case "ReloadGrid"
@@ -338,6 +335,13 @@ Partial Public Class uscFascicolo
         btnUDLink.Icon.PrimaryIconHeight = Unit.Pixel(16)
         btnUDLink.Icon.PrimaryIconWidth = Unit.Pixel(16)
 
+        If ProtocolEnv.MultiAOOFascicleEnabled AndAlso boundHeader.TenantAOO IsNot Nothing AndAlso boundHeader.TenantAOO.IdTenantAOO <> CurrentTenant.TenantAOO.UniqueId Then
+            btnUDLink.Enabled = False
+            e.Item.BackColor = Drawing.Color.LightGray
+            e.Item.SelectableMode = GridItemSelectableMode.None
+            e.Item.Enabled = False
+        End If
+
         Dim lblUDRegistrationDate As Label = DirectCast(e.Item.FindControl("lblUDRegistrationDate"), Label)
         If boundHeader.RegistrationDate.HasValue Then
             lblUDRegistrationDate.Text = boundHeader.RegistrationDate.Value.Date.ToShortDateString()
@@ -370,10 +374,7 @@ Partial Public Class uscFascicolo
         AddHandler AjaxManager.AjaxRequest, AddressOf UscFascicoloAjaxRequest
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, grdUD)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscResponsabili)
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscSettori)
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscSettoriAccounted)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscAuthorizations)
-        AjaxManager.AjaxSettings.AddAjaxSetting(uscSettoriAccounted, uscSettoriAccounted)
     End Sub
 
     Private Sub LoadUD(models As IList(Of DocumentUnitModel))
@@ -396,20 +397,20 @@ Partial Public Class uscFascicolo
         uscResponsabili.DataBind()
     End Sub
 
-    Private Sub LoadAuthorizations(fascicle As Entity.Fascicles.Fascicle, isActiveWorkflow As Boolean, handler As String)
-        Dim accountedRoleCaption As String = "Settori autorizzati"
+    Private Sub LoadAuthorizations(fascicle As Entity.Fascicles.Fascicle, handler As String)
+        Dim roleCaption As String = "Settori autorizzati"
         uscAuthorizations.MasterRoles = New List(Of Data.Role)()
         If Not String.IsNullOrEmpty(handler) Then
             uscAuthorizations.WorkflowHandler = handler
         End If
 
         If (Not String.IsNullOrEmpty(ProtocolEnv.FascicleAuthorizedRoleCaption)) Then
-            accountedRoleCaption = ProtocolEnv.FascicleAuthorizedRoleCaption.ToString()
+            roleCaption = ProtocolEnv.FascicleAuthorizedRoleCaption.ToString()
         End If
         If fascicle.FascicleRoles IsNot Nothing AndAlso fascicle.FascicleRoles.Count > 0 Then
 
             If (fascicle.VisibilityType.Equals(Entity.Fascicles.VisibilityType.Accessible)) Then
-                accountedRoleCaption = "Settori autorizzati (documenti disponibili ai settori autorizzati)"
+                roleCaption = "Settori autorizzati (documenti disponibili ai settori autorizzati)"
             End If
 
             Dim responsibleRoles As List(Of Data.Role) = New List(Of Data.Role)
@@ -435,7 +436,7 @@ Partial Public Class uscFascicolo
                 uscAuthorizations.WorkflowRole = workflowRole
             End If
             If accountedRoles.Any() Then
-                uscAuthorizations.AccountedRoleCaption = accountedRoleCaption
+                uscAuthorizations.AccountedRoleCaption = roleCaption
                 uscAuthorizations.AccountedRoles = accountedRoles.OrderBy(Function(x) x.Name).ToList()
             End If
         End If
@@ -447,39 +448,16 @@ Partial Public Class uscFascicolo
     Private Sub LoadRoles(fascicle As Entity.Fascicles.Fascicle)
 
         If (Not String.IsNullOrEmpty(ProtocolEnv.FascicleAuthorizedRoleCaption)) Then
-            uscSettoriAccounted.Caption = ProtocolEnv.FascicleAuthorizedRoleCaption.ToString()
+            uscRole.Caption = ProtocolEnv.FascicleAuthorizedRoleCaption.ToString()
         End If
         If fascicle.FascicleRoles IsNot Nothing AndAlso fascicle.FascicleRoles.Count > 0 Then
-            uscSettori.Caption = If(fascicle.FascicleType.Equals(Entity.Fascicles.FascicleType.Activity), "Settore responsabile", "Settore del flusso di lavoro")
-
             If (fascicle.VisibilityType.Equals(Entity.Fascicles.VisibilityType.Accessible)) Then
-                uscSettoriAccounted.Caption = String.Format("Autorizzazioni ({0})", "documenti disponibili ai settori autorizzati")
+                uscRole.Caption = String.Format("Autorizzazioni ({0})", "documenti disponibili ai settori autorizzati")
             End If
-
-            Dim roles As List(Of Data.Role) = New List(Of Data.Role)
-            Dim accountedRoles As List(Of Data.Role) = New List(Of Data.Role)
-            Dim role As Data.Role = New Data.Role()
-            For Each item As Entity.Fascicles.FascicleRole In fascicle.FascicleRoles.Where(Function(r) Not r.IsMaster)
-                role = Facade.RoleFacade.GetById(item.Role.EntityShortId)
-                If item.AuthorizationRoleType <> Entity.Commons.AuthorizationRoleType.Responsible Then
-                    accountedRoles.Add(role)
-                Else
-                    roles.Add(role)
-                End If
-            Next
-            If roles.Any() Then
-                uscSettori.Required = fascicle.FascicleType = Entity.Fascicles.FascicleType.Activity
-                uscSettori.Visible = IsAuthorizePage OrElse IsEditPage
-                rowRoles.Visible = IsAuthorizePage OrElse IsEditPage
-                uscSettori.SourceRoles = roles
-                uscSettori.DataBind()
-            End If
-            If accountedRoles.Any() Then
-                uscSettoriAccounted.Required = False
-                uscSettoriAccounted.Visible = True
-                uscSettoriAccounted.MultipleRoles = True
-                uscSettoriAccounted.SourceRoles = accountedRoles
-                uscSettoriAccounted.DataBind()
+            If fascicle.FascicleRoles.Any(Function(r) Not r.IsMaster) Then
+                uscRole.Required = False
+                uscRole.Visible = True
+                uscRole.MultipleRoles = True
             End If
         End If
     End Sub
@@ -506,9 +484,9 @@ Partial Public Class uscFascicolo
         Dim location As Location = Facade.LocationFacade.GetById(ProtocolEnv.FascicleMiscellaneaLocation)
         Dim documentModels As List(Of DocumentUnitModel) = New List(Of DocumentUnitModel)
 
-        If location IsNot Nothing AndAlso Not String.IsNullOrEmpty(location.DocumentServer) Then
+        If location IsNot Nothing Then
             For Each idArchiveChain As Guid In idArchiveChains
-                documentInfoList.AddRange(BiblosDocumentInfo.GetDocumentsLatestVersion(location.DocumentServer, idArchiveChain).ToList())
+                documentInfoList.AddRange(BiblosDocumentInfo.GetDocumentsLatestVersion(idArchiveChain).ToList())
             Next
 
             Dim mappedDoc As DocumentUnitModel
@@ -539,6 +517,24 @@ Partial Public Class uscFascicolo
         End If
         Return documentModels
     End Function
+
+    Private Sub AddDocumentGeneratorParameters(metadata As List(Of BaseDocumentGeneratorParameter), fascicle As Entity.Fascicles.Fascicle)
+        metadata.Add(New StringParameter("_filename", fascicle.Title.Replace(".", "_").Replace("-", "_")))
+        metadata.Add(New IntParameter("Year", fascicle.Year))
+        metadata.Add(New IntParameter("Number", fascicle.Number))
+        metadata.Add(New DateTimeParameter("StartDate", fascicle.StartDate.Date))
+        metadata.Add(New StringParameter("Title", fascicle.Title))
+        metadata.Add(New StringParameter("FascicleObject", Server.HtmlEncode(fascicle.FascicleObject)))
+        metadata.Add(New StringParameter("Contact", If(fascicle.Contacts.Any(), fascicle.Contacts.FirstOrDefault().Description, String.Empty)))
+        metadata.Add(New StringParameter("FDU_Subject", WORD_TABLE_COLUMN_FDU_SUBJECT))
+        metadata.Add(New StringParameter("FDU_Category", WORD_TABLE_COLUMN_FDU_CATEGORY))
+        metadata.Add(New StringParameter("FDU_RegistrationDate", WORD_TABLE_COLUMN_FDU_REGISTRATION_DATE))
+        metadata.Add(New StringParameter("FDU_FascicleRegistrationDate", WORD_TABLE_COLUMN_FDU_FASCICLE_REGISTRATION_DATE))
+        metadata.Add(New StringParameter("FDU_FascicleRegistrationUser", WORD_TABLE_COLUMN_FDU_FASCICLE_REGISTRATION_USER))
+        metadata.Add(New StringParameter("FD_DocumentName", WORD_TABLE_COLUMN_FD_DOCUMENT_NAME))
+        metadata.Add(New StringParameter("FD_DocumentCreatedDate", WORD_TABLE_COLUMN_FD_DOCUMENT_CREATED_DATE))
+        metadata.Add(New StringParameter("FD_DocumentRegistrationUser", WORD_TABLE_COLUMN_FD_DOCUMENT_REGISTRATION_USER))
+    End Sub
 #End Region
 
 End Class

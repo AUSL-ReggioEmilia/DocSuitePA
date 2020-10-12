@@ -129,7 +129,7 @@ Public Class uscDeskStoryBoard
         lblDeskDocumentRef.Visible = False
         If GenericStoryBoard AndAlso dto.IdDocument.HasValue Then
             lblDeskDocumentRef.Visible = True
-            Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentDesk.Container.DeskLocation.DocumentServer, dto.IdDocument.Value)
+            Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(dto.IdDocument.Value)
             If Not docInfos.Any() Then
                 Exit Sub
             End If

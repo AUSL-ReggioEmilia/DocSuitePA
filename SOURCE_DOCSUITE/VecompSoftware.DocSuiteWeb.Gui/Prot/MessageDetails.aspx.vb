@@ -31,7 +31,7 @@ Public Class MessageDetails
             End If
 
             If Not _isMessageReadable.HasValue Then
-                Dim protocol As Protocol = Facade.ProtocolFacade.GetByUniqueId(DocumentUnitId)
+                Dim protocol As Protocol = Facade.ProtocolFacade.GetById(DocumentUnitId)
                 _isMessageReadable = New ProtocolRights(protocol).IsDocumentReadable
             End If
             Return _isMessageReadable.Value

@@ -131,7 +131,7 @@ namespace VecompSoftware.NHibernateManager
             ContextSessions[sessionFactoryName] = null;
         }
 
-        public ISession GetSessionFrom(string sessionFactoryName)
+        public ISession GetSessionFrom(string sessionFactoryName, bool applyDefaultFilters = true)
         {
             ISession session = (ISession)ContextSessions[sessionFactoryName];
 
@@ -152,15 +152,31 @@ namespace VecompSoftware.NHibernateManager
                 ContextSessions[sessionFactoryName] = session;
             }
 
+            if (NHibernateSessionUtil.ApplyFilterActions.Count > 0 && applyDefaultFilters)
+            {
+                foreach (Action<ISession> applyFilterAction in NHibernateSessionUtil.ApplyFilterActions)
+                {
+                    applyFilterAction(session);
+                }
+            }
+
             if (session == null)
             {
                 throw new Exception("session was null");
             }
             return session;
         }
-        public ISession OpenSession(string factoryName)
+        public ISession OpenSession(string factoryName, bool applyDefaultFilters = true)
         {
-            return GetSessionFactoryFor(factoryName).OpenSession();
+            ISession session = GetSessionFactoryFor(factoryName).OpenSession();
+            if (NHibernateSessionUtil.ApplyFilterActions.Count > 0 && applyDefaultFilters)
+            {
+                foreach (Action<ISession> applyFilterAction in NHibernateSessionUtil.ApplyFilterActions)
+                {
+                    applyFilterAction(session);
+                }
+            }
+            return session;
         }
         public IStatelessSession OpenStatelessSession(string factoryName)
         {

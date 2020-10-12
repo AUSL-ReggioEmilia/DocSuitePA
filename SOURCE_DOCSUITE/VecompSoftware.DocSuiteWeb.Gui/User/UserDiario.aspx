@@ -115,12 +115,13 @@
                 </MasterTableView>
                 <ClientSettings AllowDragToGroup="True">
                 </ClientSettings>
-                <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Decrescente" SortToolTip="Ordina" />
+                <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine Decrescente" SortToolTip="Ordina" />
             </DocSuite:BaseGrid>
             <asp:ObjectDataSource ID="odsProtocol" OldValuesParameterFormatString="original_{0}" runat="server" SelectMethod="GetUserProtocolDiary" TypeName="VecompSoftware.DocSuiteWeb.Facade.JournalFacade">
                 <SelectParameters>
                     <asp:Parameter Name="pDateFrom" Type="DateTime" />
                     <asp:Parameter Name="pDateTo" Type="DateTime" />
+                    <asp:Parameter Name="currentTenantAOOId" Type="Object" />
                 </SelectParameters>
             </asp:ObjectDataSource>
         

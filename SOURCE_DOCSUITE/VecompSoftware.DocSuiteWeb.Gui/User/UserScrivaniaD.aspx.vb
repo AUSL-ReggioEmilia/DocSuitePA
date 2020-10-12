@@ -52,8 +52,8 @@ Public Class UserScrivaniaD
     Private ReadOnly Property CurrentManageableRoleId As Integer?
         Get
             If Not _currentManageableRoleId.HasValue AndAlso Not String.IsNullOrEmpty(CommonUtil.GroupProtocolManagerSelected) Then
-                If CommonUtil.GroupProtocolManagerSelected.Replace("|", "").Split(","c).Length = 1 Then
-                    _currentManageableRoleId = CInt(CommonUtil.GroupProtocolManagerSelected.Replace("|", ""))
+                If CommonUtil.GroupProtocolManagerSelected.Replace("|", String.Empty).Split(","c).Length = 1 Then
+                    _currentManageableRoleId = CInt(CommonUtil.GroupProtocolManagerSelected.Replace("|", String.Empty))
                 End If
             End If
             Return _currentManageableRoleId
@@ -164,7 +164,7 @@ Public Class UserScrivaniaD
         Loading()
         If Not IsPostBack Then
             Select Case Action
-                Case "PL"
+                Case "PL", "IPL"
                     rdpDateFilterFrom.SelectedDate = DateTime.Today.AddDays(-ProtocolEnv.DesktopDayDiff).Date
                     ' Setto le ore 23:59:59
                     rdpDateFilterTo.SelectedDate = DateTime.Today.Date.AddDays(1).AddMilliseconds(-1)
@@ -190,7 +190,6 @@ Public Class UserScrivaniaD
                     rdpDateFilterTo.SelectedDate = DateTime.Today.Date.AddDays(1).AddMilliseconds(-1)
                     rbCC.Items.Add(New ListItem("Solo autorizzati", "APC"))       'solo autorizzati per competenza
                     rbCC.Items.Add(New ListItem("Solo autorizzati (CC)", "ACC"))  'solo autorizzati in copia conoscenza
-                    uscProtocolGrid.ColumnNoteVisible = True
                 Case "PDL"
                     rdpDateFilterFrom.SelectedDate = DateTime.Today.AddDays(-ProtocolEnv.DesktopDayDiff).Date
                     ' Setto le ore 23:59:59
@@ -250,7 +249,10 @@ Public Class UserScrivaniaD
 
             Dim lbtViewProtocol As LinkButton = CType(gridItem.FindControl("lbtViewProtocol"), LinkButton)
             If lbtViewProtocol IsNot Nothing Then
-                selectedProtocolKeys &= lbtViewProtocol.CommandArgument & ";"
+                If Not selectedProtocolKeys.IsNullOrEmpty() Then
+                    selectedProtocolKeys = $"{selectedProtocolKeys}|"
+                End If
+                selectedProtocolKeys = $"{selectedProtocolKeys}{lbtViewProtocol.CommandArgument}"
             End If
         Next
 
@@ -262,7 +264,6 @@ Public Class UserScrivaniaD
             Exit Sub
         End If
 
-        selectedProtocolKeys = selectedProtocolKeys.Substring(0, selectedProtocolKeys.Length - 1)
         Session("ProtMultiAutorizza_ProtocolList") = selectedProtocolKeys
 
         Response.Redirect("../Prot/ProtMultiAutorizza.aspx")
@@ -288,8 +289,8 @@ Public Class UserScrivaniaD
     Private Sub btnRemoveHighlight_Click(sender As Object, e As EventArgs) Handles btnRemoveHighlight.Click
         Dim selectedItems As IList(Of GridDataItem) = New List(Of GridDataItem)
         For Each item As GridDataItem In uscProtocolGrid.Grid.SelectedItems
-            Dim id As YearNumberCompositeKey = GetProtocolKey(item)
-            Facade.ProtocolUserFacade.RemoveHighlightUser(id, DocSuiteContext.Current.User.FullUserName)
+            Dim id As Guid = GetProtocolUniqueId(item).Value
+            Facade.ProtocolUserFacade.RemoveHighlightUser(Facade.ProtocolFacade.GetById(id), DocSuiteContext.Current.User.FullUserName)
         Next
 
         If uscProtocolGrid.Grid.SelectedItems.Count = 0 Then
@@ -333,10 +334,11 @@ Public Class UserScrivaniaD
         InitializeDataBind()
     End Sub
     Private Sub cmdMultiDistribuzione_Click(sender As Object, e As EventArgs) Handles cmdMultiDistribuzione.Click
-        Dim selectedKeys As List(Of YearNumberCompositeKey) = uscProtocolGrid.Grid.Items.Cast(Of GridDataItem)() _
+        Dim selectedKeys As List(Of Guid) = uscProtocolGrid.Grid.Items.Cast(Of GridDataItem)() _
                                                             .Where(Function(i) Me.GetChecked(i)) _
-                                                            .Select(Function(i) Me.GetProtocolKey(i)) _
-                                                            .Where(Function(k) k IsNot Nothing) _
+                                                            .Select(Function(i) Me.GetProtocolUniqueId(i)) _
+                                                            .Where(Function(k) k.HasValue) _
+                                                            .Select(Function(i) i.Value) _
                                                             .ToList()
 
         If selectedKeys.IsNullOrEmpty() Then
@@ -345,11 +347,8 @@ Public Class UserScrivaniaD
         End If
 
         Me.Session(UserScrivaniaD.MultiDistribuzioneSessionName) = selectedKeys
-        Dim first As YearNumberCompositeKey = selectedKeys.First()
-        Dim qs As String = "Year={0}&Number={1}&Type=Prot"
-        qs = String.Format(qs, first.Year, first.Number)
-        qs = CommonShared.AppendSecurityCheck(qs)
-        Me.Response.Redirect("../Prot/ProtVisualizza.aspx?" & qs)
+        Dim first As Guid = selectedKeys.First()
+        Me.Response.Redirect($"../Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={first}&Type=Prot")}")
     End Sub
 
     Private Function GetChecked(item As GridDataItem) As Boolean
@@ -363,17 +362,6 @@ Public Class UserScrivaniaD
             Return Nothing
         End If
         Return uniqueId
-    End Function
-    Private Function GetProtocolKey(item As GridDataItem) As YearNumberCompositeKey
-        Dim lbtViewProtocol As LinkButton = CType(item.FindControl("lbtViewProtocol"), LinkButton)
-        If lbtViewProtocol Is Nothing Then
-            Return Nothing
-        End If
-
-        Dim splitted As String() = lbtViewProtocol.CommandArgument.Split("|"c)
-        Dim year As Short = CShort(splitted(0))
-        Dim number As Integer = CInt(splitted(1))
-        Return New YearNumberCompositeKey(year, number)
     End Function
 
     Private Sub rdpDateFilter_SelectedDateChanged(sender As Object, e As EventArgs) Handles rdpDateFilterFrom.SelectedDateChanged, rdpDateFilterTo.SelectedDateChanged
@@ -393,7 +381,7 @@ Public Class UserScrivaniaD
             uniqueId = GetProtocolUniqueId(myGridItem)
             checked = GetChecked(myGridItem)
             If (checked OrElse myGridItem.Selected) AndAlso uniqueId.HasValue Then
-                Dim protocolRoleUsers As List(Of ProtocolRoleUser) = Facade.ProtocolRoleUserFacade.GetByUniqueIdProtocolAndAccount(uniqueId.Value, account).ToList()
+                Dim protocolRoleUsers As List(Of ProtocolRoleUser) = Facade.ProtocolRoleUserFacade.GetByProtocolIdAndAccount(uniqueId.Value, account).ToList()
                 For Each protocolRoleUser As ProtocolRoleUser In protocolRoleUsers
                     protocolRoleUser.Status = 1
                     Facade.ProtocolRoleUserFacade.Update(protocolRoleUser)
@@ -470,7 +458,7 @@ Public Class UserScrivaniaD
                 AjaxManager.AjaxSettings.AddAjaxSetting(ddlProtocolTypes, divTitolo)
 
                 Select Case Action
-                    Case "PL"
+                    Case "PL", "IPL"
                         SetPanelButtonBar()
                         pnlDateFilter.Visible = True
                         rdpDateFilterFrom.DateInput.Label = "Da:"
@@ -507,11 +495,12 @@ Public Class UserScrivaniaD
                     Case "PE"
                         uscProtocolGrid.ColumnSelectionVisible = True
                         uscProtocolGrid.ColumnClientSelectVisible = False
+                        uscProtocolGrid.ColumnHighlightNoteVisible = True
+                        uscProtocolGrid.ColumnHighlightRegistrationUserVisible = True
                         pnlDateFilter.Visible = True
                         rdpDateFilterFrom.DateInput.Label = "Da:"
                         rdpDateFilterTo.DateInput.Label = "A:"
                         pnlHighlight.Visible = True
-                        uscProtocolGrid.ColumnNoteVisible = True
                     Case "PDL"
                         uscProtocolGridBar.SelectButton.Visible = True
                         uscProtocolGridBar.DeselectButton.Visible = True
@@ -643,6 +632,12 @@ Public Class UserScrivaniaD
         Dim containers As IList(Of ContainerRightsDto)
         If ResolutionEnv.ApplyGeneralistUserDeskRight Then
             containers = Facade.ContainerFacade.GetAllRights(Type, 1)
+            Select Case Action
+                Case "PL"
+                    containers = containers.Where(Function(f) Not DocSuiteContext.Current.ProtocolEnv.InvoiceProtocolContainerIdentifiers.Any(Function(c) c = f.ContainerId)).ToList()
+                Case "IPL"
+                    containers = containers.Where(Function(f) DocSuiteContext.Current.ProtocolEnv.InvoiceProtocolContainerIdentifiers.Any(Function(c) c = f.ContainerId)).ToList()
+            End Select
         Else
             Dim right As ResolutionRightPositions = ResolutionRightPositions.Preview
             Select Case Action
@@ -669,10 +664,9 @@ Public Class UserScrivaniaD
             .Name = c.Name
             }).ToList()
         End If
-        ddl.Items.Add(New DropDownListItem("", ""))
+        ddl.Items.Add(New DropDownListItem(String.Empty, String.Empty))
         If containers.Count > 0 Then
             For Each cont As ContainerRightsDto In containers.Where(Function(f) f.LocationId >= 0)
-                ' TODO: trovare un modo per rendere un oggetto questo abominio spalmato su 9 files
                 Dim containerId As String = cont.ContainerId.ToString()
                 Dim name As String = cont.Name
                 Dim locationId As String = cont.LocationId.ToString()
@@ -726,8 +720,10 @@ Public Class UserScrivaniaD
                 If ProtocolEnv.DaLeggereSubject Then
                     uscProtocolGrid.EnableColumn(uscProtGrid.COLUMN_SUBJECT)
                 End If
-            Case "IPL" 'Da Leggere
+            Case "IPL" 'Fatture da Leggere
                 ' Visualizzo solo protocolli di fattura a cui ho accesso e che non ho mai aperto
+                _protocolFinder.LoadFetchModeFascicleEnabled = False
+                _protocolFinder.LoadFetchModeProtocolLogs = False
                 commonUtil.ApplyProtocolFinderSecurity(_protocolFinder, SecurityType.Read)
                 commonUtil.OnlyInvoiceContainer(_protocolFinder)
 
@@ -782,13 +778,11 @@ Public Class UserScrivaniaD
                 _protocolFinder.AdvancedStatus = "A"
                 uscProtocolGridBar.SetAssignButton.Visible = DocSuiteContext.Current.ProtocolEnv.SendProtocolMessageFromViewerEnabled
             Case "PE"
-                uscProtocolGrid.ColumnNoteVisible = True
                 If Not ProtocolEnv.ProtocolHighlightSecurityEnabled Then
                     commonUtil.ApplyProtocolFinderSecurity(_protocolFinder, SecurityType.Read)
                 End If
                 pnlCC.Visible = DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled
                 _protocolFinder.ProtocolHighlightToMe = True
-                uscProtocolGrid.ColumnNoteVisible = True
             Case UserDesktop.ActionNameProtocolliRigettati
                 commonUtil.ApplyProtocolFinderSecurity(_protocolFinder, SecurityType.Read)
                 _protocolFinder.IdStatus = ProtocolStatusId.Rejected
@@ -869,7 +863,7 @@ Public Class UserScrivaniaD
         End If
 
         If Action.Eq("DR") Then
-            Dim rights As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, DocumentRoleRightPositions.Workflow, True)
+            Dim rights As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, DossierRoleRightPositions.Workflow, True)
 
             If rights.Count > 0 Then
                 For Each role As Role In rights
@@ -1113,7 +1107,7 @@ Public Class UserScrivaniaD
         Dim dateFrom As Date? = Nothing
         Dim dateTo As Date? = Nothing
         Select Case Action
-            Case "PL", "PA"
+            Case "PL", "PA", "IPL"
                 dateFrom = rdpDateFilterFrom.SelectedDate.Value.Date
                 dateTo = rdpDateFilterTo.SelectedDate.Value.Date.AddDays(1).AddSeconds(-1)
                 lblHeader.Text &= String.Format(" dal {0}", dateFrom.Value.ToShortDateString(), dateTo.Value.ToShortDateString())
@@ -1134,7 +1128,8 @@ Public Class UserScrivaniaD
                 lblHeader.Text &= String.Format(" dal {0} - al {1}", dateFrom.Value.ToShortDateString(), dateTo.Value.ToShortDateString())
                 uscProtocolGrid.ColumnProtocolContactVisible = DocSuiteContext.Current.ProtocolEnv.SenderToProtocolGridVisible
                 uscProtocolGrid.ColumnCategoryNameVisible = DocSuiteContext.Current.ProtocolEnv.CategoryToProtocolGridVisible
-                uscProtocolGrid.ColumnNoteVisible = True
+                uscProtocolGrid.ColumnHighlightNoteVisible = True
+                uscProtocolGrid.ColumnHighlightRegistrationUserVisible = True
             Case "PU"
                 dateFrom = rdpDateFilterFrom.SelectedDate.Value.Date
                 dateTo = rdpDateFilterTo.SelectedDate.Value.Date.AddDays(1).AddSeconds(-1)

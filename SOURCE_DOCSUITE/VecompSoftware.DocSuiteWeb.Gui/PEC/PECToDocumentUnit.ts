@@ -7,12 +7,13 @@ import WorkflowActivityLogService = require('App/Services/Workflows/WorkflowActi
 import WorkflowActivityLogModel = require('App/Models/Workflows/WorkflowActivityLogModel');
 import FascicleDocumentModel = require('App/Models/Fascicles/FascicleDocumentModel');
 import WorkflowActivityModel = require('App/Models/Workflows/WorkflowActivityModel');
-import ChainType = require('../App/Models/DocumentUnits/ChainType');
-import FascicleFolderModel = require('../App/Models/Fascicles/FascicleFolderModel');
-import FascicleDocumentService = require('../App/Services/Fascicles/FascicleDocumentService');
-import uscFascicleSearch = require('../UserControl/uscFascicleSearch');
-import AjaxModel = require('../App/Models/AjaxModel');
+import ChainType = require('App/Models/DocumentUnits/ChainType');
+import FascicleFolderModel = require('App/Models/Fascicles/FascicleFolderModel');
+import FascicleDocumentService = require('App/Services/Fascicles/FascicleDocumentService');
+import uscFascicleSearch = require('UserControl/uscFascicleSearch');
+import AjaxModel = require('App/Models/AjaxModel');
 import FascicleFolderService = require('App/Services/Fascicles/FascicleFolderService');
+import FascicleSummaryFolderViewModel = require('App/ViewModels/Fascicles/FascicleSummaryFolderViewModel');
 
 class PECToDocumentUnit extends PECBase {
     uscNotificationId: string;
@@ -44,27 +45,27 @@ class PECToDocumentUnit extends PECBase {
 
     private static INSERT_MISCELLANEA: string = "InsertMiscellanea";
 
-    private get cmdInit(): JQuery {
+    private cmdInit(): JQuery {
         return $(`#${this.cmdInitId}`);
     }
 
-    private get cmdInitAndClone(): JQuery {
+    private cmdInitAndClone(): JQuery {
         return $(`#${this.cmdInitAndCloneId}`);
     }
 
-    private get pnlTemplateProtocol(): JQuery {
+    private pnlTemplateProtocol(): JQuery {
         return $(`#${this.pnlTemplateProtocolId}`);
     }
 
-    private get pnlUDS(): JQuery {
+    private pnlUDS(): JQuery {
         return $(`#${this.pnlUDSSelectId}`);
     }
 
-    private get pnlFascicle(): JQuery {
+    private pnlFascicle(): JQuery {
         return $(`#${this.pnlFascicleSelectId}`);
     }
 
-    private get pnlButtons(): JQuery {
+    private pnlButtons(): JQuery {
         return $(`#${this.pnlButtonsId}`);
     }
 
@@ -91,14 +92,14 @@ class PECToDocumentUnit extends PECBase {
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._documentListGrid = $find(this.documentListGridId) as Telerik.Web.UI.RadGrid;
 
-        this.cmdInitAndClone.hide();
+        this.cmdInitAndClone().hide();
         if (this.isPecClone) {
-            this.cmdInitAndClone.show();
+            this.cmdInitAndClone().show();
         }
 
-        this.pnlTemplateProtocol.hide();
+        this.pnlTemplateProtocol().hide();
         if (this.templateProtocolEnabled) {
-            this.pnlTemplateProtocol.show();
+            this.pnlTemplateProtocol().show();
         }
 
         this._rblDocumentUnit = $("#".concat(this.rblDocumentUnitId));
@@ -137,39 +138,39 @@ class PECToDocumentUnit extends PECBase {
         this._documentListGrid.get_masterTableView().showColumn(1);
         switch (selected) {
             case "1": {
-                this.cmdInitAndClone.hide();
+                this.cmdInitAndClone().hide();
                 if (this.isPecClone) {
-                    this.cmdInitAndClone.show();
+                    this.cmdInitAndClone().show();
                 }
 
-                this.pnlTemplateProtocol.hide();
+                this.pnlTemplateProtocol().hide();
                 if (this.templateProtocolEnabled) {
-                    this.pnlTemplateProtocol.show();
+                    this.pnlTemplateProtocol().show();
                 }
 
-                this.pnlUDS.hide();
-                this.pnlFascicle.hide();
+                this.pnlUDS().hide();
+                this.pnlFascicle().hide();
                 break;
             }                
 
             case "7": {
-                this.cmdInitAndClone.hide();
+                this.cmdInitAndClone().hide();
                 if (this.isPecClone) {
-                    this.cmdInitAndClone.show();
+                    this.cmdInitAndClone().show();
                 }
 
-                this.pnlTemplateProtocol.hide();
-                this.pnlUDS.show();
-                this.pnlFascicle.hide();
+                this.pnlTemplateProtocol().hide();
+                this.pnlUDS().show();
+                this.pnlFascicle().hide();
                 break;
             }                
 
             case "8": {
                 this._documentListGrid.get_masterTableView().hideColumn(1);
-                this.cmdInitAndClone.hide();
-                this.pnlTemplateProtocol.hide();
-                this.pnlUDS.hide();
-                this.pnlFascicle.show();
+                this.cmdInitAndClone().hide();
+                this.pnlTemplateProtocol().hide();
+                this.pnlUDS().hide();
+                this.pnlFascicle().show();
                 break;
             }                
         }
@@ -188,9 +189,13 @@ class PECToDocumentUnit extends PECBase {
         if (!jQuery.isEmptyObject(uscFascicleSearch)) {
             let selectedFascicle: FascicleModel = uscFascicleSearch.getSelectedFascicle();
             if (selectedFascicle) {
+                let selectedFascicleFolder: FascicleSummaryFolderViewModel = uscFascicleSearch.getSelectedFascicleFolder();
                 let ajaxModel: AjaxModel = <AjaxModel>{};
                 ajaxModel.Value = new Array<string>();
                 ajaxModel.Value.push(selectedFascicle.UniqueId);
+                if (selectedFascicleFolder) {
+                    ajaxModel.Value.push(selectedFascicleFolder.UniqueId);
+                }                
                 ajaxModel.ActionName = PECToDocumentUnit.INSERT_MISCELLANEA;
                 (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
             } else {
@@ -199,11 +204,11 @@ class PECToDocumentUnit extends PECBase {
         }
     }
 
-    confirmCallback(idChain: string, idFascicle: string, isNewArchiveChain: boolean, errorMessage: string) {
+    confirmCallback(idChain: string, idFascicle: string, isNewArchiveChain: boolean, errorMessage: string, idFascicleFolder: string) {
         if (errorMessage) {
             alert(errorMessage);
             this._loadingPanel.hide(this.documentListGridId);
-            this.pnlButtons.show();
+            this.pnlButtons().show();
             return;
         }
 
@@ -213,7 +218,7 @@ class PECToDocumentUnit extends PECBase {
             fascicleDocumentModel.IdArchiveChain = idChain;
             fascicleDocumentModel.Fascicle = new FascicleModel();
             fascicleDocumentModel.Fascicle.UniqueId = idFascicle;
-            this._fascicleFolderService.getDefaultFascicleFolder(idFascicle,
+            this._fascicleFolderService.getById(idFascicleFolder,
                 (data: any) => {
                     if (!data) {
                         this._loadingPanel.hide(this.pageContentId);
@@ -238,7 +243,7 @@ class PECToDocumentUnit extends PECBase {
         } else {
             window.location.href = `../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=${idFascicle}`;
         }       
-    }
+    }        
 }
 
 export = PECToDocumentUnit;

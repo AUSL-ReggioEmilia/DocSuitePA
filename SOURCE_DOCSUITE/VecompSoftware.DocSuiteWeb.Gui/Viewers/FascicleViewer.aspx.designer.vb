@@ -11,9 +11,9 @@ Option Strict On
 Option Explicit On
 
 Namespace Viewers
-    
+
     Partial Public Class FascicleViewer
-        
+
         '''<summary>
         '''RadCodeBlock1 control.
         '''</summary>
@@ -22,7 +22,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
-        
+
         '''<summary>
         '''pnlMainContent control.
         '''</summary>
@@ -31,7 +31,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents pnlMainContent As Global.System.Web.UI.WebControls.Panel
-        
+
         '''<summary>
         '''ViewerLight control.
         '''</summary>
@@ -40,7 +40,7 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents ViewerLight As Global.VecompSoftware.DocSuiteWeb.Gui.Viewers.ViewerLight
-        
+
         '''<summary>
         '''btnSend control.
         '''</summary>
@@ -49,5 +49,14 @@ Namespace Viewers
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents btnSend As Global.Telerik.Web.UI.RadButton
+
+        '''<summary>
+        '''btnWorkflow control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents btnWorkflow As Global.Telerik.Web.UI.RadButton
     End Class
 End Namespace

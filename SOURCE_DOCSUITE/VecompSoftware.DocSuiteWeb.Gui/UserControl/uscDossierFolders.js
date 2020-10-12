@@ -9,6 +9,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
         */
         function uscDossierFolders(serviceConfigurations) {
             var _this = this;
+            this._dossierFolders = [];
             /**
             *---------------------------- Events ---------------------------
             */
@@ -20,7 +21,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                 if (item) {
                     var rootNode = _this._treeDossierFolders.get_nodes().getNode(0);
                     switch (item.get_value()) {
-                        case "createFolder": {
+                        case uscDossierFolders.CREATE_FOLDER: {
                             var selectedNodeId = _this._currentSelectedNode.get_value();
                             if (selectedNodeId != "00000000-0000-0000-0000-000000000000") {
                                 _this.setDossierFolder(rootNode.get_value());
@@ -29,16 +30,16 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                             _this.openWindow(url, "managerCreateFolder", 750, 600);
                             break;
                         }
-                        case "createFascicle": {
+                        case uscDossierFolders.CREATE_FASCICLE: {
                             var selectedNodeId = _this._currentSelectedNode.get_value();
                             if (selectedNodeId != "00000000-0000-0000-0000-000000000000") {
                                 _this.setDossierFolder(rootNode.get_value());
                             }
                             var url = '../Dossiers/DossierFascicleFolderInserimento.aspx?Type=Dossier&idDossier='.concat(rootNode.get_value(), '&PersistanceDisabled=', _this.persistanceDisabled.toString());
-                            _this.openWindow(url, "managerCreateFascicleFolder", 750, 600);
+                            _this.openWindow(url, "managerCreateFascicleFolder", 750, 650);
                             break;
                         }
-                        case "deleteFolder": {
+                        case uscDossierFolders.DELETE_FOLDER: {
                             if (_this._currentSelectedNode.get_attributes() && !_this._currentSelectedNode.get_attributes().getAttribute("idFascicle")) {
                                 _this.removeDossierFolder();
                             }
@@ -50,7 +51,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                             }
                             break;
                         }
-                        case "removeFascicle": {
+                        case uscDossierFolders.REMOVE_FASCICLE: {
                             if (_this._currentSelectedNode.get_attributes() && _this._currentSelectedNode.get_attributes().getAttribute("idFascicle")) {
                                 _this.removeFascicleFromfolder();
                             }
@@ -62,7 +63,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                             }
                             break;
                         }
-                        case "addFascicle": {
+                        case uscDossierFolders.ADD_FASCICLE: {
                             if (_this._currentSelectedNode.get_attributes() && !_this._currentSelectedNode.get_attributes().getAttribute("idFascicle")) {
                                 _this.setDossierFolder(rootNode.get_value());
                                 var url = '../Dossiers/DossierFolderLinkFascicle.aspx?Type=Dossier&idDossier='.concat(rootNode.get_value());
@@ -76,13 +77,31 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                             }
                             break;
                         }
-                        case "modifyFolder": {
+                        case uscDossierFolders.MODIFY_FOLDER: {
                             if (_this._currentSelectedNode.get_attributes()) {
                                 _this.setDossierFolder(rootNode.get_value());
                                 var url = '../Dossiers/DossierFolderModifica.aspx?Type=Dossier&idDossier='.concat(rootNode.get_value(), '&PersistanceDisabled=', _this.persistanceDisabled.toString());
                                 _this.openWindow(url, "managerModifyFolder", 750, 600);
                             }
                             break;
+                        }
+                        case uscDossierFolders.MODIFY_FASCICLE: {
+                            var selectedNodeId = _this._currentSelectedNode.get_value();
+                            if (selectedNodeId != "00000000-0000-0000-0000-000000000000") {
+                                _this.setDossierFolder(rootNode.get_value());
+                            }
+                            var selectedNodeIdFascicle = _this._currentSelectedNode.get_attributes().getAttribute("idFascicle");
+                            var url = "../Dossiers/DossierFascicleFolderInserimento.aspx?Type=Dossier&ActionType=Update&idDossier=" + rootNode.get_value() + "&idFascicle=" + selectedNodeIdFascicle + "&PersistanceDisabled=" + _this.persistanceDisabled.toString();
+                            _this.openWindow(url, "managerModifyFascicle", 750, 650);
+                            break;
+                        }
+                        case uscDossierFolders.REFRESH_DOSSIER_FOLDERS: {
+                            _this._treeDossierFolders.get_nodes().getNode(0).collapse();
+                            _this._treeDossierFolders.get_nodes().getNode(0).select();
+                            $("#" + _this.pageId).triggerHandler(uscDossierFolders.ROOT_NODE_CLICK);
+                        }
+                        case uscDossierFolders.CREATE_FASCICLE_FROM_TEMPLATE: {
+                            _this.createAndLinkFascicle(_this._templateDossierFolder.UniqueId, _this._treeDossierFolders.get_selectedNode().get_parent().get_value());
                         }
                     }
                 }
@@ -99,13 +118,19 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                 var node = args.get_node();
                 sender.set_loadingStatusPosition(Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
                 _this._currentSelectedNode = node;
-                _this._btnCreateFolder.set_enabled(true);
-                _this._btnRemoveFascicle.set_enabled(false);
-                _this._btnDeleteFolder.set_enabled(false);
-                _this._btnAddFascicle.set_enabled(true);
-                _this._btnModifyFolder.set_enabled(true);
-                _this._btnCreateFascicle.set_enabled(true);
-                _this._dossierFolderService.getChildren(node.get_value(), _this._checkedToolBarButtons, function (data) {
+                if (_this.isWindowPopupEnable) {
+                    _this._setToolbarButtonsEnabled(false);
+                }
+                else {
+                    _this._btnCreateFolder.set_enabled(true);
+                    _this._btnRemoveFascicle.set_enabled(false);
+                    _this._btnModifyFascicle.set_enabled(false);
+                    _this._btnDeleteFolder.set_enabled(false);
+                    _this._btnAddFascicle.set_enabled(true);
+                    _this._btnModifyFolder.set_enabled(true);
+                    _this._btnCreateFascicle.set_enabled(true);
+                }
+                _this._dossierFolderService.getChildren(node.get_value(), uscDossierFolders.defaultFilterStatus != 0 ? uscDossierFolders.defaultFilterStatus : _this._checkedToolBarButtons, function (data) {
                     _this.loadNodes(data, node);
                 }, function (exception) {
                     var uscNotification = $("#".concat(_this.uscNotificationId)).data();
@@ -148,6 +173,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                         _this._btnCreateFolder.set_enabled(true);
                         _this._btnRemoveFascicle.set_enabled(false);
                         _this._btnDeleteFolder.set_enabled(false);
+                        _this._btnModifyFascicle.set_enabled(false);
                         _this._btnCreateFascicle.set_enabled(true);
                         _this._btnAddFascicle.set_enabled(false);
                         _this._btnModifyFolder.set_enabled(false);
@@ -212,7 +238,21 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
             this.treeView_ClientNodeClicked = function (sender, eventArgs) {
                 _this._currentSelectedNode = eventArgs.get_node();
                 sender.set_loadingStatusPosition(Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
-                _this.setVisibilityButtonsByStatus();
+                if (_this.isWindowPopupEnable) {
+                    _this._setToolbarButtonsEnabled(false);
+                    var btnSelectDossierFolder = $find(_this.btnSelectDossierFolderId);
+                    btnSelectDossierFolder.set_enabled(_this._currentSelectedNode.get_level() !== 0);
+                    btnSelectDossierFolder.remove_clicked(_this.btnSelectDossierFolder_onClick);
+                    btnSelectDossierFolder.add_clicked(_this.btnSelectDossierFolder_onClick);
+                }
+                else {
+                    _this.setVisibilityButtonsByStatus();
+                }
+                var selectedDossierFolder = _this._dossierFolders.filter(function (x) { return x.UniqueId === _this._currentSelectedNode.get_value(); })[0];
+                _this._btnCreateFascicleFromTemplate.set_enabled(false);
+                if (_this._currentSelectedNode.get_level() > 1) {
+                    _this._enableBtnCreateFascicleFromTemplate(selectedDossierFolder);
+                }
             };
             /*
             * Eliminazione di una cartellina
@@ -240,6 +280,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                             _this.removeNode(dossierFolder_1.UniqueId);
                             _this._btnCreateFolder.set_enabled(false);
                             _this._btnRemoveFascicle.set_enabled(false);
+                            _this._btnModifyFascicle.set_enabled(false);
                             _this._btnDeleteFolder.set_enabled(false);
                             _this._btnCreateFascicle.set_enabled(false);
                             _this._btnAddFascicle.set_enabled(false);
@@ -291,6 +332,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                 if (_this._currentSelectedNode == _this._treeDossierFolders.get_nodes().getNode(0)) {
                     _this._btnCreateFolder.set_enabled(true);
                     _this._btnRemoveFascicle.set_enabled(false);
+                    _this._btnModifyFascicle.set_enabled(false);
                     _this._btnDeleteFolder.set_enabled(false);
                     _this._btnCreateFascicle.set_enabled(true);
                     _this._btnAddFascicle.set_enabled(true);
@@ -304,6 +346,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                     case DossierFolderStatus.InProgress: {
                         _this._btnCreateFolder.set_enabled(true);
                         _this._btnRemoveFascicle.set_enabled(false);
+                        _this._btnModifyFascicle.set_enabled(false);
                         _this._btnDeleteFolder.set_enabled(true);
                         _this._btnCreateFascicle.set_enabled(true);
                         _this._btnAddFascicle.set_enabled(true);
@@ -314,6 +357,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                     case DossierFolderStatus.Folder: {
                         _this._btnCreateFolder.set_enabled(true);
                         _this._btnRemoveFascicle.set_enabled(false);
+                        _this._btnModifyFascicle.set_enabled(false);
                         _this._btnDeleteFolder.set_enabled(false);
                         _this._btnCreateFascicle.set_enabled(true);
                         _this._btnAddFascicle.set_enabled(true);
@@ -326,10 +370,11 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                         if (_this.fascicleId) {
                             _this._btnCreateFolder.set_enabled(false);
                             _this._btnRemoveFascicle.set_enabled(true);
+                            _this._btnModifyFascicle.set_enabled(!_this.isWindowPopupEnable && _this.fascicleModifyButtonEnable);
                             _this._btnDeleteFolder.set_enabled(false);
                             _this._btnCreateFascicle.set_enabled(false);
                             _this._btnAddFascicle.set_enabled(false);
-                            _this._btnModifyFolder.set_enabled(true);
+                            _this._btnModifyFolder.set_enabled(false);
                             $("#".concat(_this.pageId)).triggerHandler(uscDossierFolders.FASCICLE_TREE_NODE_CLICK, _this.fascicleId);
                         }
                         break;
@@ -339,6 +384,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                         if (_this.fascicleId) {
                             _this._btnCreateFolder.set_enabled(false);
                             _this._btnRemoveFascicle.set_enabled(false);
+                            _this._btnModifyFascicle.set_enabled(false);
                             _this._btnDeleteFolder.set_enabled(false);
                             _this._btnCreateFascicle.set_enabled(false);
                             _this._btnAddFascicle.set_enabled(false);
@@ -350,6 +396,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                     case DossierFolderStatus.DoAction: {
                         _this._btnCreateFolder.set_enabled(false);
                         _this._btnRemoveFascicle.set_enabled(false);
+                        _this._btnModifyFascicle.set_enabled(false);
                         _this._btnDeleteFolder.set_enabled(false);
                         _this._btnCreateFascicle.set_enabled(false);
                         _this._btnAddFascicle.set_enabled(false);
@@ -398,6 +445,34 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                 }
                 return promise.promise();
             };
+            this.loadFascicleDossierFolders = function (dossierId, fascicleId, dossierFoldersModel) {
+                _this._dossierFolderService.getAllParentsOfFascicle(dossierId, fascicleId, function (data) {
+                    if (!data)
+                        return;
+                    var dossierFolders = data.reverse();
+                    _this.setRootNode(dossierFolders[0].Name, dossierFolders[0].UniqueId);
+                    var parentNode = _this._treeDossierFolders.get_nodes().getNode(0);
+                    for (var _i = 0, _a = dossierFolders.slice(1); _i < _a.length; _i++) {
+                        var dossierFolder = _a[_i];
+                        parentNode = _this._createFascicleDossierFolderParent(parentNode, dossierFolder);
+                    }
+                    parentNode.select();
+                    _this._currentSelectedNode = parentNode;
+                    _this.setVisibilityButtonsByStatus();
+                    _this._loadingPanel.hide(_this.pageId);
+                }, function (exception) {
+                    _this._loadingPanel.hide(_this.pageId);
+                    _this.showNotificationException(_this.uscNotificationId, exception);
+                });
+            };
+            this.btnSelectDossierFolder_onClick = function (sender, args) {
+                var idDossier = _this._treeDossierFolders.get_nodes().getNode(0).get_value();
+                var idDossierFolder = _this._currentSelectedNode.get_value();
+                _this.closeGridWindow(idDossier, idDossierFolder);
+            };
+            this.getSelectedDossierFolderNode = function () {
+                return _this._currentSelectedNode;
+            };
             this._serviceConfigurations = serviceConfigurations;
             $(document).ready(function () {
             });
@@ -420,19 +495,23 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
             this._managerAddFascLink = $find(this.managerFascicleLinkId);
             this._managerModifyFolder = $find(this.managerModifyFolderId);
             this._managerCreateFascicleFolder = $find(this.managerCreateFascicleFolderId);
+            this._managerModifyFascicle = $find(this.managerModifyFascicle);
             this._manager = $find(this.managerId);
             this._loadingPanel.show(this.pageId);
-            this._btnCreateFolder = this._folderToolBar.findItemByValue("createFolder");
-            this._btnDeleteFolder = this._folderToolBar.findItemByValue("deleteFolder");
-            this._btnRemoveFascicle = this._folderToolBar.findItemByValue("removeFascicle");
-            this._btnAddFascicle = this._folderToolBar.findItemByValue("addFascicle");
-            this._btnModifyFolder = this._folderToolBar.findItemByValue("modifyFolder");
-            this._btnCreateFascicle = this._folderToolBar.findItemByValue("createFascicle");
+            this._btnCreateFolder = this._folderToolBar.findItemByValue(uscDossierFolders.CREATE_FOLDER);
+            this._btnDeleteFolder = this._folderToolBar.findItemByValue(uscDossierFolders.DELETE_FOLDER);
+            this._btnRemoveFascicle = this._folderToolBar.findItemByValue(uscDossierFolders.REMOVE_FASCICLE);
+            this._btnModifyFascicle = this._folderToolBar.findItemByValue(uscDossierFolders.MODIFY_FASCICLE);
+            this._btnAddFascicle = this._folderToolBar.findItemByValue(uscDossierFolders.ADD_FASCICLE);
+            this._btnModifyFolder = this._folderToolBar.findItemByValue(uscDossierFolders.MODIFY_FOLDER);
+            this._btnCreateFascicle = this._folderToolBar.findItemByValue(uscDossierFolders.CREATE_FASCICLE);
+            this._btnCreateFascicleFromTemplate = this._folderToolBar.findItemByValue(uscDossierFolders.CREATE_FASCICLE_FROM_TEMPLATE);
             this._checkedToolBarButtons = 0;
             this._managerCreateFolder.add_close(this.closeFolderInsertWindow);
             this._managerCreateFascicleFolder.add_close(this.closeFolderInsertWindow);
             this._managerAddFascLink.add_close(this.closeFolderInsertWindow);
             this._managerModifyFolder.add_close(this.closeModifyWindow);
+            this._managerModifyFascicle.add_close(this.closeModifyWindow);
             if (this.hideFascicleAssociateButton) {
                 this._btnAddFascicle.set_visible(false);
             }
@@ -460,6 +539,11 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                 this._roleService = new RoleService(roleConfiguration);
             }
             this._currentSelectedNode = this._treeDossierFolders.get_nodes().getNode(0);
+            if (this.isWindowPopupEnable) {
+                var btnSelectDossierFolder = $find(this.btnSelectDossierFolderId);
+                btnSelectDossierFolder.set_enabled(false);
+            }
+            this._btnCreateFascicleFromTemplate.set_enabled(false);
             this.bindLoaded();
         };
         /**
@@ -560,24 +644,36 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
             rootNode.set_expanded(true);
             rootNode.set_selected(true);
             this._treeDossierFolders.commitChanges();
-            this._btnCreateFolder.set_enabled(true);
-            this._btnRemoveFascicle.set_enabled(false);
-            this._btnDeleteFolder.set_enabled(false);
-            this._btnCreateFascicle.set_enabled(true);
-            this._btnAddFascicle.set_enabled(true);
-            this._btnModifyFolder.set_enabled(false);
-            this.currentDossierId = dossierId;
+            if (this.isWindowPopupEnable) {
+                this._setToolbarButtonsEnabled(false);
+            }
+            else {
+                this._btnCreateFolder.set_enabled(true);
+                this._btnRemoveFascicle.set_enabled(false);
+                this._btnModifyFascicle.set_enabled(false);
+                this._btnDeleteFolder.set_enabled(false);
+                this._btnCreateFascicle.set_enabled(true);
+                this._btnAddFascicle.set_enabled(true);
+                this._btnModifyFolder.set_enabled(false);
+                this.currentDossierId = dossierId;
+            }
         };
         uscDossierFolders.prototype.setButtonVisibility = function (isManager) {
             if (!isManager) {
                 $(this._folderToolBar.get_element()).hide();
             }
         };
+        uscDossierFolders.prototype.setStatusVisibility = function (isManager) {
+            if (!isManager) {
+                $("#".concat(this.statusToolBarId)).hide();
+            }
+        };
         /**
         * Carica i dati dello user control
         */
-        uscDossierFolders.prototype.loadNodes = function (dossierFolders, node) {
+        uscDossierFolders.prototype.loadNodes = function (dossierFolders, node, appendToParentNode) {
             var _this = this;
+            if (appendToParentNode === void 0) { appendToParentNode = false; }
             if (dossierFolders == null)
                 return;
             var parentSelectedNode;
@@ -587,16 +683,22 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
             else {
                 parentSelectedNode = this._treeDossierFolders.get_nodes().getNode(0);
             }
-            parentSelectedNode.get_nodes().clear();
-            parentSelectedNode.select();
+            this._btnCreateFascicleFromTemplate.set_enabled(false);
+            if (!appendToParentNode) {
+                parentSelectedNode.get_nodes().clear();
+                parentSelectedNode.select();
+            }
             var newNode;
             $.each(dossierFolders, function (index, dossierFolder) {
+                _this._dossierFolders.push(dossierFolder);
                 if (_this._treeDossierFolders.findNodeByValue(dossierFolder.UniqueId) != undefined) {
                     return;
                 }
-                newNode = new Telerik.Web.UI.RadTreeNode();
-                parentSelectedNode.get_nodes().add(newNode);
-                _this.setNodeAttribute(newNode, dossierFolder);
+                if (!_this.isWindowPopupEnable || (_this.isWindowPopupEnable && DossierFolderStatus[dossierFolder.Status] !== DossierFolderStatus.Fascicle)) {
+                    newNode = new Telerik.Web.UI.RadTreeNode();
+                    parentSelectedNode.get_nodes().add(newNode);
+                    _this.setNodeAttribute(newNode, dossierFolder);
+                }
             });
             this._treeDossierFolders.commitChanges();
             $("#".concat(this.treeDossierFoldersId)).triggerHandler(uscDossierFolders.ON_END_LOAD_EVENT);
@@ -627,6 +729,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                             _this.setNodeAttribute(_this._currentSelectedNode, mapper.Map(data));
                             _this._btnCreateFolder.set_enabled(true);
                             _this._btnRemoveFascicle.set_enabled(false);
+                            _this._btnModifyFascicle.set_enabled(false);
                             _this._btnDeleteFolder.set_enabled(true);
                             _this._btnCreateFascicle.set_enabled(true);
                             _this._btnAddFascicle.set_enabled(true);
@@ -659,8 +762,9 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
             wnd.center();
             return false;
         };
-        uscDossierFolders.prototype.createAndLinkFascicle = function (dossierFolderId) {
+        uscDossierFolders.prototype.createAndLinkFascicle = function (dossierFolderId, dossierFolderParentId) {
             var _this = this;
+            if (dossierFolderParentId === void 0) { dossierFolderParentId = null; }
             this._loadingPanel.show(this.pageId);
             this._dossierFolderService.getFullDossierFolder(dossierFolderId, function (dossierFolder) {
                 var folder = dossierFolder;
@@ -679,9 +783,10 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                 var insertFascicleAction = filteredItems[0];
                 var fascicleToInsert = JSON.parse(insertFascicleAction.Model);
                 if (fascicleToInsert.MetadataRepository && folder.Dossier.MetadataRepository && fascicleToInsert.MetadataRepository.UniqueId == folder.Dossier.MetadataRepository.UniqueId) {
-                    fascicleToInsert.MetadataValues = folder.Dossier.JsonMetadata;
+                    fascicleToInsert.MetadataDesigner = folder.Dossier.MetadataDesigner;
+                    fascicleToInsert.MetadataValues = folder.Dossier.MetadataValues;
                 }
-                _this._fascicleService.insertFascicle(fascicleToInsert, function (fascicle) {
+                _this._fascicleService.insertFascicle(fascicleToInsert, null, function (fascicle) {
                     folder.Fascicle = fascicle;
                     folder.Status = DossierFolderStatus.Fascicle;
                     var category = new CategoryModel();
@@ -690,17 +795,37 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
                     fascicleToInsert.UniqueId = fascicle.UniqueId;
                     $.when(_this.setFascicleRoles(fascicleToInsert, folder.DossierFolderRoles))
                         .done(function () {
-                        _this._dossierFolderService.updateDossierFolder(folder, null, function (data) {
-                            var mapper = new DossierFolderSummaryModelMapper();
-                            var node = _this._treeDossierFolders.findNodeByValue(dossierFolderId);
-                            data.Fascicle = fascicle;
-                            _this.setNodeAttribute(node, mapper.Map(data));
-                            $("#".concat(_this.pageId)).triggerHandler(uscDossierFolders.FASCICLE_TREE_NODE_CLICK, fascicle.UniqueId);
-                            _this._loadingPanel.hide(_this.pageId);
-                        }, function (exception) {
-                            _this._loadingPanel.hide(_this.pageId);
-                            _this.showNotificationException(_this.uscNotificationId, exception);
-                        });
+                        if (dossierFolderParentId) {
+                            folder.ParentInsertId = dossierFolderParentId;
+                            folder.UniqueId = null;
+                            _this._dossierFolderService.insertDossierFolder(folder, null, function (data) {
+                                var mapper = new DossierFolderSummaryModelMapper();
+                                var insertedDossierFolder = mapper.Map(data);
+                                insertedDossierFolder.idFascicle = fascicleToInsert.UniqueId;
+                                var parentNode = _this._treeDossierFolders.findNodeByValue(dossierFolderParentId);
+                                _this.loadNodes([insertedDossierFolder], parentNode, true);
+                            }, function (exception) {
+                                _this._loadingPanel.hide(_this.pageId);
+                                _this.showNotificationException(_this.uscNotificationId, exception);
+                            });
+                        }
+                        else {
+                            _this._dossierFolderService.updateDossierFolder(folder, null, function (data) {
+                                var node = _this._treeDossierFolders.findNodeByValue(dossierFolderId);
+                                data.Fascicle = fascicle;
+                                var mapper = new DossierFolderSummaryModelMapper();
+                                var updatedDossierFolder = mapper.Map(data);
+                                _this._dossierFolders = _this._dossierFolders.filter(function (x) { return x.UniqueId !== updatedDossierFolder.UniqueId; });
+                                _this._dossierFolders.push(updatedDossierFolder);
+                                _this._enableBtnCreateFascicleFromTemplate(updatedDossierFolder);
+                                _this.setNodeAttribute(node, updatedDossierFolder);
+                                $("#".concat(_this.pageId)).triggerHandler(uscDossierFolders.FASCICLE_TREE_NODE_CLICK, fascicle.UniqueId);
+                                _this._loadingPanel.hide(_this.pageId);
+                            }, function (exception) {
+                                _this._loadingPanel.hide(_this.pageId);
+                                _this.showNotificationException(_this.uscNotificationId, exception);
+                            });
+                        }
                     })
                         .fail(function () {
                         _this._loadingPanel.hide(_this.pageId);
@@ -753,6 +878,54 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
             });
             return promise.promise();
         };
+        uscDossierFolders.prototype._createFascicleDossierFolderParent = function (parentNode, dossierFolder) {
+            var childNode = new Telerik.Web.UI.RadTreeNode();
+            parentNode.get_nodes().clear();
+            parentNode.get_nodes().add(childNode);
+            this.setNodeAttribute(childNode, dossierFolder);
+            parentNode.expand();
+            return childNode;
+        };
+        uscDossierFolders.prototype._setToolbarButtonsEnabled = function (isEnabled) {
+            this._btnCreateFolder.set_enabled(isEnabled);
+            this._btnRemoveFascicle.set_enabled(isEnabled);
+            this._btnDeleteFolder.set_enabled(isEnabled);
+            this._btnCreateFascicle.set_enabled(isEnabled);
+            this._btnAddFascicle.set_enabled(isEnabled);
+            this._btnModifyFolder.set_enabled(isEnabled);
+            this._btnModifyFascicle.set_enabled(isEnabled);
+        };
+        uscDossierFolders.prototype.setToolbarButtonsVisibility = function (isVisible) {
+            this._btnCreateFolder.set_visible(isVisible);
+            this._btnRemoveFascicle.set_visible(isVisible);
+            this._btnDeleteFolder.set_visible(isVisible);
+            this._btnCreateFascicle.set_visible(isVisible);
+            this._btnAddFascicle.set_visible(isVisible);
+            this._btnModifyFolder.set_visible(isVisible);
+            this._btnModifyFascicle.set_visible(isVisible);
+            this._btnCreateFascicleFromTemplate.set_visible(isVisible);
+        };
+        uscDossierFolders.prototype.closeGridWindow = function (idDossier, idDossierFolder) {
+            var wnd = this._getRadWindow();
+            wnd.close(idDossier + "|" + idDossierFolder);
+        };
+        uscDossierFolders.prototype._getRadWindow = function () {
+            var wnd = null;
+            if (window.radWindow)
+                wnd = window.radWindow;
+            else if (window.frameElement.radWindow)
+                wnd = window.frameElement.radWindow;
+            return wnd;
+        };
+        uscDossierFolders.prototype._enableBtnCreateFascicleFromTemplate = function (dossierFolder) {
+            if (dossierFolder.Status === DossierFolderStatus[DossierFolderStatus.Fascicle] && dossierFolder.JsonMetadata) {
+                var actionModels = JSON.parse(dossierFolder.JsonMetadata);
+                if (actionModels.filter(function (x) { return x.BuildType === BuildActionType.Build; }).length > 0) {
+                    this._btnCreateFascicleFromTemplate.set_enabled(true);
+                    this._templateDossierFolder = dossierFolder;
+                }
+            }
+        };
         uscDossierFolders.prototype.showNotificationException = function (uscNotificationId, exception, customMessage) {
             if (exception && exception instanceof ExceptionDTO) {
                 var uscNotification = $("#".concat(uscNotificationId)).data();
@@ -774,6 +947,16 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "App/Mod
         uscDossierFolders.LOADED_EVENT = "onLoaded";
         uscDossierFolders.FASCICLE_TREE_NODE_CLICK = "onFascicleTreeNodeClick";
         uscDossierFolders.ROOT_NODE_CLICK = "onRootTreeNodeClick";
+        uscDossierFolders.CREATE_FOLDER = "createFolder";
+        uscDossierFolders.CREATE_FASCICLE = "createFascicle";
+        uscDossierFolders.DELETE_FOLDER = "deleteFolder";
+        uscDossierFolders.REMOVE_FASCICLE = "removeFascicle";
+        uscDossierFolders.ADD_FASCICLE = "addFascicle";
+        uscDossierFolders.MODIFY_FOLDER = "modifyFolder";
+        uscDossierFolders.MODIFY_FASCICLE = "modifyFascicle";
+        uscDossierFolders.REFRESH_DOSSIER_FOLDERS = "refreshDossierFolders";
+        uscDossierFolders.CREATE_FASCICLE_FROM_TEMPLATE = "createFascicleFromTemplate";
+        uscDossierFolders.defaultFilterStatus = 0;
         return uscDossierFolders;
     }());
     return uscDossierFolders;

@@ -32,12 +32,12 @@ Public Class FascUDManager
         End Get
     End Property
 
-    Public ReadOnly Property CurrentCategoryId As Integer
+    Public ReadOnly Property CurrentCategoryId As Integer?
         Get
             If Not _currentCategoryId.HasValue Then
                 _currentCategoryId = Request.QueryString.GetValue(Of Integer?)("CategoryId")
             End If
-            Return _currentCategoryId.Value
+            Return _currentCategoryId
         End Get
     End Property
 
@@ -54,10 +54,10 @@ Public Class FascUDManager
         Get
             Dim category As Category = Nothing
             If ProtocolEnv.IsDistributionEnabled AndAlso UDTypeId.Equals(DSWEnvironment.Protocol) Then
-                Dim protocol As Protocol = Facade.ProtocolFacade.GetByUniqueId(CurrentUDUniqueId)
+                Dim protocol As Protocol = Facade.ProtocolFacade.GetById(CurrentUDUniqueId)
                 category = protocol.Category
             Else
-                category = Facade.CategoryFacade.GetById(CurrentCategoryId)
+                category = Facade.CategoryFacade.GetById(CurrentCategoryId.Value)
             End If
 
             Return SerializeValidationModel(category)
@@ -85,13 +85,37 @@ Public Class FascUDManager
             Return _currentUDRepositoryName
         End Get
     End Property
+
+    Public ReadOnly Property FolderSelectionEnabled As Boolean
+        Get
+            Return GetKeyValueOrDefault("FolderSelectionEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property CategoryFullIncrementalPath As String
+        Get
+            Return Request.QueryString.Get("CategoryFullIncrementalPath")
+        End Get
+    End Property
+
+    Public ReadOnly Property FascicleObject As String
+        Get
+            Return Request.QueryString.Get("FascicleObject")
+        End Get
+    End Property
 #End Region
 
 #Region "Events"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         InitializeAjax()
+        uscFascicleSearch.DefaultCategoryId = CurrentCategoryId
+        uscFascicleSearch.CategoryFullIncrementalPath = CategoryFullIncrementalPath
+        uscFascicleSearch.FascicleObject = FascicleObject
+        uscFascicleSearch.DSWEnvironment = UDTypeId
         If Not IsPostBack Then
+            uscFascicleSearch.FolderSelectionEnabled = FolderSelectionEnabled
             rgvAssociatedFascicles.DataSource = New List(Of String)()
+            availableFascicleRow.Visible = CurrentODataFacade.HasViewableRight(CurrentUDUniqueId, DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
         End If
     End Sub
 
@@ -110,11 +134,11 @@ Public Class FascUDManager
             Dim categoryId As Integer = Nothing
             If ProtocolEnv.IsDistributionEnabled AndAlso ajaxModel.ActionName.Equals("ChangeCategory") AndAlso ajaxModel.Value IsNot Nothing AndAlso ajaxModel.Value.Any() AndAlso ajaxModel.Value(0) IsNot Nothing AndAlso Integer.TryParse(ajaxModel.Value(0), categoryId) Then
                 Try
-                    Dim protocol As Protocol = Facade.ProtocolFacade.GetByUniqueId(CurrentUDUniqueId)
+                    Dim protocol As Protocol = Facade.ProtocolFacade.GetById(CurrentUDUniqueId)
                     Dim category As Category = Facade.CategoryFacade.GetById(categoryId, False)
                     protocol.Category = category
                     Facade.ProtocolFacade.Update(protocol)
-                    Facade.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.PM, String.Concat("Modifica classificatore: ", category.Id, "(", category.Name, ") da Gestione Fascicolo"))
+                    Facade.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.PM, String.Concat("Modifica classificatore: ", category.Id, "(", category.Name, ") da Gestione fascicolo"))
                     Facade.ProtocolFacade.SendUpdateProtocolCommand(protocol)
                     AjaxManager.ResponseScripts.Add(String.Format(CHANGE_CATEGORY_CALLBACK, category.Name, SerializeValidationModel(category)))
                 Catch ex As Exception
@@ -138,7 +162,7 @@ Public Class FascUDManager
         Dim canInsertFascicle As Boolean = CurrentODataFacade.HasFascicleInsertRight(FascicleType.Procedure)
         Dim canChangeCategory As Boolean = False
         If ProtocolEnv.IsDistributionEnabled AndAlso UDTypeId.Equals(DSWEnvironment.Protocol) Then
-            Dim protocol As Protocol = Facade.ProtocolFacade.GetByUniqueId(CurrentUDUniqueId)
+            Dim protocol As Protocol = Facade.ProtocolFacade.GetById(CurrentUDUniqueId)
             If protocol IsNot Nothing Then
                 Dim categoryFascicleFacade As CategoryFascicleFacade = New CategoryFascicleFacade()
                 Dim protocolrights As ProtocolRights = New ProtocolRights(protocol, True)

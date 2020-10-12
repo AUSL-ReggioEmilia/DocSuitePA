@@ -17,6 +17,7 @@ Public Class CommMessage
     Private _mailBody As String
     Private _subject As String
     Private _body As String
+    Private _uniqueIdProtocol As Guid?
 
 #End Region
 
@@ -25,6 +26,17 @@ Public Class CommMessage
     Protected ReadOnly Property Action As String
         Get
             Return MailFacade.RetrieveParam(Request.QueryString, "Action")
+        End Get
+    End Property
+
+    Protected ReadOnly Property UniqueIdProtocol As Guid
+        Get
+            If Not _uniqueIdProtocol.HasValue Then
+                Dim tmp As Guid = Guid.Empty
+                Guid.TryParse(MailFacade.RetrieveParam(Request.QueryString, "UniqueIdProtocol"), tmp)
+                _uniqueIdProtocol = tmp
+            End If
+            Return _uniqueIdProtocol.Value
         End Get
     End Property
 
@@ -290,12 +302,12 @@ Public Class CommMessage
     End Sub
 
     Private Function GetProtocolMailData() As String
-        Dim prot As Protocol = Facade.ProtocolFacade.GetById(Year, Number)
+        Dim prot As Protocol = Facade.ProtocolFacade.GetById(UniqueIdProtocol)
         If prot Is Nothing Then
-            Throw New DocSuiteException("Errore protocollo", String.Format("Impossibile trovare protocollo {0}/{1}", Year, Number))
+            Throw New DocSuiteException("Errore protocollo", String.Format("Impossibile trovare protocollo {0}", UniqueIdProtocol))
         End If
 
-        Dim intestazione As String = String.Format("Protocollo n. {0}/{1} del {2:dd/MM/yyyy}", Year, Number, prot.RegistrationDate.ToLocalTime())
+        Dim intestazione As String = String.Format("Protocollo n. {0} del {1:dd/MM/yyyy}", prot.FullNumber, prot.RegistrationDate.ToLocalTime())
 
         Dim tempSubject As String = String.Format("{2} {0} - {1}", intestazione, prot.ProtocolObject, DocSuiteContext.ProductName)
         If tempSubject.Length > 150 Then
@@ -304,10 +316,10 @@ Public Class CommMessage
         Subject = tempSubject
 
         If Not String.IsNullOrEmpty(MailBody) Then
-            Return String.Concat(String.Format(ProtocolEnv.ProtocolMailDataWithBody, DocSuiteContext.Current.CurrentTenant.DSWUrl, Year, Number, intestazione), MailBody)
+            Return String.Concat(String.Format(ProtocolEnv.ProtocolMailDataWithBody, DocSuiteContext.Current.CurrentTenant.DSWUrl, prot.Year, prot.Number, intestazione), MailBody)
         End If
 
-        Return String.Format(ProtocolEnv.ProtocolMailData, intestazione, StringHelper.ReplaceCrLf(HttpUtility.HtmlEncode(prot.ProtocolObject)), DocSuiteContext.Current.CurrentTenant.DSWUrl, Year, Number)
+        Return String.Format(ProtocolEnv.ProtocolMailData, intestazione, StringHelper.ReplaceCrLf(HttpUtility.HtmlEncode(prot.ProtocolObject)), DocSuiteContext.Current.CurrentTenant.DSWUrl, prot.Year, prot.Number)
 
     End Function
 
@@ -340,28 +352,27 @@ Public Class CommMessage
     Private Sub GetLinkMailData()
 
         Dim protFacade As New ProtocolFacade()
-        Dim prot As Protocol = protFacade.GetById(Year, Number)
+        Dim prot As Protocol = protFacade.GetById(UniqueIdProtocol)
 
         If (prot Is Nothing) Then
             Exit Sub
         End If
 
-        Dim sIntestazione As String = "Collegamenti del protocollo n. " & Year & "/" & Number &
-            " del " & String.Format("{0:dd/MM/yyyy}", prot.RegistrationDate.ToLocalTime().ToString())
+        Dim sIntestazione As String = $"Collegamenti del protocollo n. {prot.FullNumber} del {prot.RegistrationDate:dd/MM/yyyy}"
 
         Subject = Left(String.Concat(DocSuiteContext.ProductName, " ", sIntestazione, " - ", prot.ProtocolObject), 150)
 
         Body = "<b>" & DocSuiteContext.ProductName & " - Gestione Documentale</b><BR>" &
                 "<BR>Allego il " & sIntestazione &
                 "<BR>Oggetto: " & StringHelper.ReplaceCrLf(HttpUtility.HtmlEncode(prot.ProtocolObject)) & "<BR>" &
-                "<BR><a href=""" & DocSuiteContext.Current.CurrentTenant.DSWUrl & "?Tipo=Prot&Azione=Apri&Anno=" & Year & "&Numero=" & Number & """>" &
+                "<BR><a href=""" & DocSuiteContext.Current.CurrentTenant.DSWUrl & $"?Tipo=Prot&Azione=Apri&Anno={prot.Year}&Numero={prot.Number}"">" &
                 sIntestazione & "</a>"
 
     End Sub
 
     ''' <summary> Permette di inserire il log visualizzabile dalla UI. </summary>
     Private Sub ProtocolLog(ByVal motivazione As String)
-        Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(Year, Number)
+        Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(UniqueIdProtocol)
         Facade.ProtocolLogFacade.Insert(currentProtocol, ProtocolLogEvent.PO, String.Format("Generato nuovo messaggio e-mail per {0}", motivazione))
     End Sub
 

@@ -52,7 +52,7 @@ class commonSelMiscellanea {
    * @param eventArgs
    * @returns
    */
-    btnSave_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnSave_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         if (Page_IsValid) {
             this.showLoadingPanel(this.insertsPageContentId);
             this._btnSave.set_enabled(false);

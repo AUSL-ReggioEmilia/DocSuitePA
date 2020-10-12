@@ -32,16 +32,14 @@ class uscTenantsSelector extends PECInvoiceBase {
         this._cmbWorkflowRepositories = <Telerik.Web.UI.RadComboBox>$find(this.cmbWorkflowRepositoriesId);
         this._cmbWorkflowRepositories.add_selectedIndexChanged(this._cmbWorkflowRepositories_onClick);
 
-        let searchDTO: TenantSearchFilterDTO = new TenantSearchFilterDTO();
-        this.loadResults(searchDTO);
+        this.loadResults();
         this._cmbSelectPecMailBox.disable();
         this._cmbWorkflowRepositories.disable();
     }
 
-    private loadResults(searchDTO: TenantSearchFilterDTO) {
+    private loadResults() {
         var comboItem = null;
-        this._tenantService.getTenants(searchDTO,
-            (data) => {
+        this._tenantService.getTenants((data) => {
                 if (!data) return;
                 $.each(data,
                     (idx, con) => {

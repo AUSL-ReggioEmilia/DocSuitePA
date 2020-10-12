@@ -67,7 +67,7 @@ Public Class PECMailBox
 
     Public Overridable Property InvoiceType As InvoiceType?
 
-    Public Overridable Property HumanEnabled As Boolean
+    Public Overridable Property LoginError As Boolean
 
 #End Region
 

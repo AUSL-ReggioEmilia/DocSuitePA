@@ -1,14 +1,37 @@
 ﻿import ServiceConfiguration = require('App/Services/ServiceConfiguration');
-import WorkflowEvalutionPropertyHelper = require('App/Models/Workflows/WorkflowEvalutionPropertyHelper');
-import WorkflowEvaluationPropertyService = require('App/Services/Workflows/WorkflowEvaluationPropertyService');
-import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import WorkflowEvaluationProperty = require('App/Models/Workflows/WorkflowEvaluationProperty');
 import WorkflowType = require('App/Models/Workflows/WorkflowType');
-import WorkflowPropertyType = require('App/Models/Workflows/WorkflowPropertyType');
-import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import WorkflowRepositoryModel = require('App/Models/Workflows/WorkflowRepositoryModel');
+import ArgumentType = require('App/Models/Workflows/ArgumentType');
+import RoleModel = require('App/Models/Commons/RoleModel');
+import UscRoleRestEventType = require('App/Models/Commons/UscRoleRestEventType');
+import RoleSearchFilterDTO = require('App/DTOs/RoleSearchFilterDTO');
+import ContactModel = require('App/Models/Commons/ContactModel');
+
+import WorkflowEvaluationPropertyService = require('App/Services/Workflows/WorkflowEvaluationPropertyService');
+import RolesService = require('App/Services/Commons/RoleService');
+
+import WorkflowEvalutionPropertyHelper = require('App/Models/Workflows/WorkflowEvalutionPropertyHelper');
+import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
+import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import EnumHelper = require("App/Helpers/EnumHelper");
-import WorkflowEvaluationPropertyType = require('App/Models/Workflows/WorkflowEvaluationPropertyType');
+import PropertyJsonValueSettori = require('App/Models/Workflows/JsonModels/PropertyJsonValueSettori');
+import PropertyJsonValueContact = require('App/Models/Workflows/JsonModels/PropertyJsonValueContact');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import QueryParameters = require('App/Models/Workflows/QueryStringModels/QueryParametersWorkflowEvaluationProperty')
+
+import uscRoleRest = require('UserControl/uscRoleRest');
+import uscDomainUserSelRest = require('UserControl/uscDomainUserSelRest');
+import WorkflowPropertyHelper = require('App/Models/Workflows/WorkflowPropertyHelper');
+import WorkflowRoleModel = require('App/Models/Workflows/WorkflowRoleModel');
+import WorkflowAccountModel = require('App/Models/Workflows/WorkflowAccountModel');
+import TemplateCollaborationService = require('App/Services/Templates/TemplateCollaborationService');
+import UIHandlerEvalPropertyTemplateCollaboration = require('App/Services/Handlers/UIHandlerEvalPropertyTemplateCollaboration');
+import UIHandlerEvalPropertyTemplateDeposito = require('App/Services/Handlers/UIHandlerEvalPropertyTemplateDeposito');
+import WorkflowAuthorizationType = require('App/Models/Workflows/WorkflowAuthorizationType');
+import uscWorkflowDesignerValidations = require('UserControl/uscWorkflowDesignerValidations');
+import DSWEnvironmentType = require('App/Models/Workflows/WorkflowDSWEnvironmentType');
+import WorkflowRuleDefinitionModel = require('App/Models/Workflows/WorkflowRuleDefinitionModel');
 
 class TbltWorkflowEvaluationPropertyGes {
     rcbNameId: string;
@@ -21,6 +44,31 @@ class TbltWorkflowEvaluationPropertyGes {
     rdpValueDateId: string;
     rntbValueDoubleId: string;
     rdbGuidId: string;
+    workflowEnv: string;
+
+    //roles - View Rendering
+    uscRoleRestId: string;
+    uscRoleRestContainerId: string;
+
+    //domain users - View Rendering
+    uscDomainUserSelRestId: string;
+    uscDomainUserSelRestContainerId: string;
+
+    //validationRules - View Rendering
+    uscWorkflowDesignerValidationsId: string;
+    uscWorkflowDesignerValidationsContainerId: string;
+
+    //template di collaborazione - View Rendering
+    ddlTemplateCollaborationId: string;
+    uscTemplateCollaborationContainerId: string;
+
+    //template collaboration sign summary
+    ddlCollaborationSignSummaryId: string;
+    uscCollaborationSignSummaryContainerId: string;
+
+    //template generate id
+    ddlActionGenerateId: string;
+    uscActionGenerateContainerId: string;
 
     private _rcbName: Telerik.Web.UI.RadComboBox;
     private _rntbValueInt: Telerik.Web.UI.RadNumericTextBox;
@@ -30,22 +78,65 @@ class TbltWorkflowEvaluationPropertyGes {
     private _rdpValueDate: Telerik.Web.UI.RadDatePicker;
     private _rntbValueDouble: Telerik.Web.UI.RadNumericTextBox;
     private _rdbGuid: Telerik.Web.UI.RadTextBox;
+    private _ddlTemplateCollaboration: Telerik.Web.UI.RadComboBox;
+    private _ddlTemplateCollaborationSignSummary: Telerik.Web.UI.RadComboBox;
+    private _ddlTemplateGenerate: Telerik.Web.UI.RadComboBox;;
 
     private btnConfirm: Telerik.Web.UI.RadButton;
 
     private _serviceConfigurations: ServiceConfiguration[];
-    private _service: WorkflowEvaluationPropertyService;
+
+    private _workflowEvaluationPropertyService: WorkflowEvaluationPropertyService;
+    private _rolesService: RolesService;
+    private _templateCollaborationService: TemplateCollaborationService;
+    private _templateCollabUIHandler: UIHandlerEvalPropertyTemplateCollaboration;
+    private _collaborationSignSummaryUIHandler: UIHandlerEvalPropertyTemplateDeposito;
+    private _actionGenerateUIHandler: UIHandlerEvalPropertyTemplateDeposito;
+
     private _enumHelper: EnumHelper;
 
+    private _uscRoleRestContainer: JQuery;
+    private _uscContattiSelContainer: JQuery;
+    private _uscWorkflowDesignerValidationsContainer: JQuery;
+    private _uscTemplateCollaborationContainer: JQuery;
+    private _uscCollaborationSignSummaryContainer: JQuery;
+    private _uscActionGenerateContainer: JQuery;
+
+    private _uscWorkflowDesignerValidations: uscWorkflowDesignerValidations;
+
+    private queryParameters: QueryParameters;
+    private static CONFIGURATION_ROLE = "Role";
+    private static CONFIGURATION_EVALUATION_PROPERTY = "WorkflowEvaluationProperty";
+
+    // _dsw_p_WorkflowDefaultProposer
+    private static PROPERTY_NAME_WORKFLOW_DEFAULT_PROPOSER = WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_DEFAULT;
+    // _dsw_p_WorkflowDefaultRecipient
+    private static PROPERTY_NAME_WORKFLOW_DEFAULT_RECIPIENT = WorkflowPropertyHelper.DSW_PROPERTY_RECIPIENT_DEFAULT;
+    // _dsw_p_WorkflowDefaultTemplateCollaboration
+    private static PROPERTY_NAME_TEMPLATE_COLLABORATION_DEFAULT = WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_DEFAULT;
+    // _dsw_p_CollaborationSignSummaryTemplateId
+    private static PROPERTY_NAME_COLLABORATION_SIGN_SUMMARY = WorkflowPropertyHelper.DSW_PROPERTY_COLLABORATION_SIGN_SUMMARY_TEMPLATE_ID;
+    // _dsw_a_Generate_TemplateId
+    private static PROPERTY_NAME_ACTION_GENERATE = WorkflowPropertyHelper.DSW_ACTION_GENERATE_TEMPLATE_ID;
+
+    private static PROPERTY_NAME_DSW_WORKFLOW_STARTVALIDATIONS: string = WorkflowPropertyHelper.DSW_VALIDATION_WORKFLOW_START;
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         this._serviceConfigurations = serviceConfigurations;
         this._enumHelper = new EnumHelper();
+
+        let templateServiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "TemplateCollaboration");
+        this._templateCollaborationService = new TemplateCollaborationService(templateServiceConfiguration);
     }
 
     initialize(): void {
-        let serviceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowEvaluationProperty");
-        this._service = new WorkflowEvaluationPropertyService(serviceConfiguration);
+        this.queryParameters = new QueryParameters();
+
+        const serviceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, TbltWorkflowEvaluationPropertyGes.CONFIGURATION_EVALUATION_PROPERTY);
+        this._workflowEvaluationPropertyService = new WorkflowEvaluationPropertyService(serviceConfiguration);
+
+        const rolesServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, TbltWorkflowEvaluationPropertyGes.CONFIGURATION_ROLE);
+        this._rolesService = new RolesService(rolesServiceConfiguration);
 
         this.btnConfirm = <Telerik.Web.UI.RadButton>$find(this.btnConfirmId);
         this.btnConfirm.add_clicked(this.btnConfirm_onClick);
@@ -53,7 +144,6 @@ class TbltWorkflowEvaluationPropertyGes {
         this._rcbName = <Telerik.Web.UI.RadComboBox>$find(this.rcbNameId);
         this._rcbName.add_selectedIndexChanged(this.rcbName_onSelectedIndexChanged);
         this._rcbName.add_itemsRequested(this.rcbName_OnClientItemsRequested);
-
 
         this._rntbValueInt = <Telerik.Web.UI.RadNumericTextBox>$find(this.rntbValueIntId);
         this._rtbValueString = <Telerik.Web.UI.RadTextBox>$find(this.rtbValueStringId);
@@ -63,9 +153,33 @@ class TbltWorkflowEvaluationPropertyGes {
         this._rntbValueDouble = <Telerik.Web.UI.RadNumericTextBox>$find(this.rntbValueDoubleId);
         this._rdbGuid = <Telerik.Web.UI.RadTextBox>$find(this.rdbGuidId);
 
+        // combobox that shows a list of collaboration templates. Will render the value of the property  WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_DEFAULT
+        this._ddlTemplateCollaboration = <Telerik.Web.UI.RadComboBox>$find(this.ddlTemplateCollaborationId);
+        // handler for _ddlTemplateCollaboration , that will load templates and manages updateing the underlying rtbValue storage
+        this._templateCollabUIHandler = new UIHandlerEvalPropertyTemplateCollaboration(this._rtbValueString, this._ddlTemplateCollaboration, this._templateCollaborationService);
+
+        // combobox that shows a list of deposito documentale templates. 
+        this._ddlTemplateCollaborationSignSummary = <Telerik.Web.UI.RadComboBox>$find(this.ddlCollaborationSignSummaryId);
+        // handler for _ddlTemplateCollaborationSignSummary 
+        this._collaborationSignSummaryUIHandler = new UIHandlerEvalPropertyTemplateDeposito(this._rtbValueString, this._ddlTemplateCollaborationSignSummary, this._serviceConfigurations);
+
+        // combobox that shows a list of deposito documentale templates. 
+        this._ddlTemplateGenerate = <Telerik.Web.UI.RadComboBox>$find(this.ddlActionGenerateId);
+        // handler for _ddlTemplateGenerate 
+        this._actionGenerateUIHandler = new UIHandlerEvalPropertyTemplateDeposito(this._rtbValueString, this._ddlTemplateGenerate, this._serviceConfigurations);
+
+        this._uscRoleRestContainer = $(`#${this.uscRoleRestContainerId}`);
+        this._uscContattiSelContainer = $(`#${this.uscDomainUserSelRestContainerId}`);
+        this._uscTemplateCollaborationContainer = $(`#${this.uscTemplateCollaborationContainerId}`);
+        this._uscCollaborationSignSummaryContainer= $(`#${this.uscCollaborationSignSummaryContainerId}`);
+        this._uscActionGenerateContainer = $(`#${this.uscActionGenerateContainerId}`);
+        this._uscWorkflowDesignerValidationsContainer = $(`#${this.uscWorkflowDesignerValidationsContainerId}`);
+        this._uscWorkflowDesignerValidations = <uscWorkflowDesignerValidations>$(`#${this.uscWorkflowDesignerValidationsId}`).data();
+
         this.populateComboNames();
         this.resetValueVisibility();
 
+        this.getQueryParameters(window.location.search);
         this.initializeEditOperation();
     }
 
@@ -99,14 +213,10 @@ class TbltWorkflowEvaluationPropertyGes {
         }
     }
 
-
-
     private initializeEditOperation() {
-        let qs = this.parse_query_string(window.location.search);
-        let param = qs["?Action"];
-        if (param === "Edit") {
-            let propId = qs["WorkflowEvaluationPropertyId"];
-            this._service.getWorkflowEvaluationProperty(propId, (data: WorkflowEvaluationProperty) => {
+
+        if (this.queryParameters.Action === "Edit") {
+            this._workflowEvaluationPropertyService.getWorkflowEvaluationProperty(this.queryParameters.WorkflowEvaluationPropertyId, (data: WorkflowEvaluationProperty) => {
                 let valueName = this._rcbName.findItemByValue(data.Name);
                 valueName.select();
                 this._rcbName.disable();
@@ -118,6 +228,74 @@ class TbltWorkflowEvaluationPropertyGes {
     }
 
     private getFirstNonNullValue(model: WorkflowEvaluationProperty) {
+
+        /**
+         * Specific Properties
+         */
+        //specific property: DEFAULT PROPOSER
+        if (model.Name === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_WORKFLOW_DEFAULT_PROPOSER) {
+
+            if (this.queryParameters.StartProposer === 0) {
+                this.WorkflowRestRoleRenderProperty(model);
+            } else {
+                //this.queryParameters.ProponenteDiAvio === 1
+                this.WorkflowRestContactsRenderProperty(model);
+            }
+
+            //setting value in the json field to be used in model validation. Field is not visible
+            this._rtbValueJson.set_value(model.ValueString);
+            return;
+        }
+
+        //specific property: DEFAULT RECIPIENT
+        if (model.Name === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_WORKFLOW_DEFAULT_RECIPIENT) {
+
+            if (this.queryParameters.StartReceiver === 0) {
+                this.WorkflowRestRoleRenderProperty(model);
+            } else {
+                //this.queryParameters.DestinatarioDiAvio === 1
+                this.WorkflowRestContactsRenderProperty(model);
+            }
+
+            //setting value in the json field to be used in model validation. Field is not visible
+            this._rtbValueJson.set_value(model.ValueString);
+            return;
+        }
+
+        if (model.Name === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_DSW_WORKFLOW_STARTVALIDATIONS) {
+            //setting value in the json field to be used in model validation. Field is not visible
+            PageClassHelper.callUserControlFunctionSafe<uscWorkflowDesignerValidations>(this.uscWorkflowDesignerValidationsId).done((instance) => {
+                this._rtbValueJson.set_textBoxValue(instance.getWorkflowRulesModel(this.workflowEnv));
+                instance.createValidationTree((<WorkflowRuleDefinitionModel>(JSON.parse(model.ValueString))[this.workflowEnv]).Rules);
+            });
+            this._rtbValueJson.set_value(model.ValueString);
+            return;
+        }
+
+        if (model.Name === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_TEMPLATE_COLLABORATION_DEFAULT) {
+            this._templateCollabUIHandler.SetSelectedItem(model.ValueGuid);
+            this._templateCollabUIHandler.UpdateSelection();
+            this._rtbValueString.set_value(model.ValueGuid);
+            return;
+        }
+
+        if (model.Name === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_COLLABORATION_SIGN_SUMMARY) {
+            this._collaborationSignSummaryUIHandler.SetSelectedItem(model.ValueString);
+            this._collaborationSignSummaryUIHandler.UpdateSelection();
+            this._rtbValueString.set_value(model.ValueString);
+            return;
+        }
+
+        if (model.Name === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_ACTION_GENERATE) {
+            this._actionGenerateUIHandler.SetSelectedItem(model.ValueGuid);
+            this._actionGenerateUIHandler.UpdateSelection();
+            this._rtbValueString.set_value(model.ValueGuid);
+            return;
+        }
+
+        /**
+         * general properties
+         */
         if (model.ValueBoolean != undefined || model.ValueBoolean != null) {
             let item = this._rlbValueBool.getItem(Number(model.ValueBoolean));
             item.select();
@@ -140,10 +318,173 @@ class TbltWorkflowEvaluationPropertyGes {
         }
     }
 
+    private ensureUscRoleRestEvents(instance: uscRoleRest): void {
+
+        instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, (roleId: number) => {
+
+            this._rtbValueJson.set_value("");
+            this.WorkflowRestRoleRenderRoles([]);
+
+            //solving manually
+            return $.Deferred<void>().reject();
+        });
+
+        instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, (newAddedRoles: RoleModel[]) => {
+            let existedRole: RoleModel;
+
+            const json = new PropertyJsonValueSettori();
+
+            json.AuthorizationType = WorkflowAuthorizationType.AllRoleUser;
+
+            json.Role = <WorkflowRoleModel>{
+                IdRole: newAddedRoles[newAddedRoles.length - 1].EntityShortId,
+                Name: newAddedRoles[newAddedRoles.length - 1].Name,
+                TenantId: newAddedRoles[newAddedRoles.length - 1].TenantId,
+                UniqueId: newAddedRoles[newAddedRoles.length - 1].UniqueId
+            }
+
+            this._rtbValueJson.set_value(JSON.stringify(json));
+
+            return $.Deferred<RoleModel>().resolve(existedRole);
+        });
+    }
+
+    /**
+     * The method will always ensure that the events are registered. 
+     * The initial logic for using this method implied calling it from the constructor, but it does not always work
+     * because sometimes code reaches using the instance faster then the rest component is loaded
+     * @param usc
+     */
+    private ensureUscContattiSelRestEvents(usc: uscDomainUserSelRest): void {
+
+        usc.registerEventHandlerContactsDeleted((data: ContactModel[]) => {
+
+            this._rtbValueJson.set_value("");
+
+            //manually setting the rendering for an empty array. Rejecting default action of usc rest component
+            this.WorkflowRestContactsRenderContacts([]);
+
+            //we rendered manually. Prevent rest component to render:
+            return $.Deferred<void>().reject();
+        });
+
+        usc.registerEventHandlerContactsAdded((data: ContactModel[]) => {
+
+            const json = new PropertyJsonValueContact();
+
+            if (data.length === 0) {
+
+                this._rtbValueJson.set_value("");
+                this.WorkflowRestContactsRenderContacts([]);
+
+            } else {
+
+                //the rest control returns only one element(in an array...)
+                let newAddedContact = data[0];
+
+                json.AuthorizationType = WorkflowAuthorizationType.UserName;
+
+                //see uscStartWorkflow.ts/startWorkflow
+                json.Account = <WorkflowAccountModel>{
+                    AccountName: newAddedContact.Code,
+                    DisplayName: newAddedContact.Description,
+                    Required: true,
+                    EmailAddress: newAddedContact.EmailAddress
+                }
+
+                this._rtbValueJson.set_value(JSON.stringify(json));
+
+                //manually rendering the saved json in the rest component. We will reject the default action
+                this.WorkflowRestContactsRenderJsonModel(json);
+            }
+            //we rendered manually. Prevent rest component to render:
+            return $.Deferred<void>().reject();
+        });
+    }
+
+    //#region WorkflowRestRole
+
+    private WorkflowRestRoleRenderRoles(model: RoleModel[]): void {
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRestId)
+            .done((instance) => {
+                this.ensureUscRoleRestEvents(instance);
+                instance.renderRolesTree(model);
+            });
+    }
+
+    private WorkflowRestRoleRenderProperty(model: WorkflowEvaluationProperty): void {
+        if (model.ValueString === "" || model.ValueString === undefined || model.ValueString === null) {
+            this.WorkflowRestRoleRenderRoles([]);
+
+        } else {
+
+            let proposerModel: PropertyJsonValueSettori = <PropertyJsonValueSettori>JSON.parse(model.ValueString)
+            this.WorkflowRestRoleRenderJsonModel(proposerModel);
+        }
+    }
+
+    private WorkflowRestRoleRenderJsonModel(model: PropertyJsonValueSettori): void {
+        this._rolesService.findRoles(
+            <RoleSearchFilterDTO>{
+                LoadAlsoParent: true,
+                UniqueId: model.Role.UniqueId
+            },
+            (data: RoleModel[]) => {
+                if (data === null || data === undefined) {
+                    this.WorkflowRestRoleRenderRoles([]);
+                } else {
+                    this.WorkflowRestRoleRenderRoles(data);
+                }
+            },
+            (exception: ExceptionDTO) => {
+                console.log(exception);
+            });
+    }
+
+    //#endregion
+
+    //#region WorkflowRestContacts
+
+    private WorkflowRestContactsRenderContacts(model: ContactModel[]): void {
+        PageClassHelper.callUserControlFunctionSafe<uscDomainUserSelRest>(this.uscDomainUserSelRestId)
+            .done((instance) => {
+                this.ensureUscContattiSelRestEvents(instance);
+                instance.createDomainUsersContactsTree(model);
+            });
+    }
+
+    private WorkflowRestContactsRenderProperty(model: WorkflowEvaluationProperty): void {
+        if (model.ValueString === "" || model.ValueString === undefined || model.ValueString === null) {
+
+            this.WorkflowRestContactsRenderContacts([]);
+
+        } else {
+
+            const jsonModel: PropertyJsonValueContact = <PropertyJsonValueContact>JSON.parse(model.ValueString);
+            this.WorkflowRestContactsRenderJsonModel(jsonModel);
+        }
+    }
+
+    private WorkflowRestContactsRenderJsonModel(model: PropertyJsonValueContact): void {
+        this.WorkflowRestContactsRenderContacts([
+            <ContactModel>{
+                EmailAddress: model.Account.EmailAddress,
+                Code: model.Account.AccountName,
+                Description: (model.Account.DisplayName !== null
+                    && model.Account.DisplayName !== undefined
+                    && model.Account.DisplayName !== "|")
+                    ? model.Account.DisplayName
+                    : model.Account.EmailAddress
+            }
+        ]);
+    }
+
+    //#endregion
+
     private populateComboNames() {
         let cmbItem: Telerik.Web.UI.RadComboBoxItem = null;
-        let obj = this;
-        let workflowEvaluationPropertyHelper = [];
+        const obj = this;
+        const workflowEvaluationPropertyHelper = [];
         $.each(WorkflowEvalutionPropertyHelper, function (index, item) {
             if (item.Name != undefined || item.Type != undefined) {
                 workflowEvaluationPropertyHelper.push({ Value: item, Key: index });
@@ -170,6 +511,12 @@ class TbltWorkflowEvaluationPropertyGes {
         $("#valueDate").hide();
         this._rntbValueDouble.set_visible(false);
         this._rdbGuid.set_visible(false);
+        this._uscRoleRestContainer.hide();
+        this._uscWorkflowDesignerValidationsContainer.hide();
+        this._uscContattiSelContainer.hide();
+        this._uscTemplateCollaborationContainer.hide();
+        this._uscCollaborationSignSummaryContainer.hide();
+        this._uscActionGenerateContainer.hide();
     }
 
     private rcbName_onSelectedIndexChanged = (sender: any, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
@@ -178,46 +525,159 @@ class TbltWorkflowEvaluationPropertyGes {
         this.dynamicallyAdjustInputFields(vals);
     }
 
-    private dynamicallyAdjustInputFields(vals: string): void {
-        if (WorkflowEvalutionPropertyHelper[vals].Type === WorkflowEvaluationPropertyType.String) {
-            this._rtbValueString.set_visible(true);
-            this._rtbValueString.clear();
-        }
-        else if (WorkflowEvalutionPropertyHelper[vals].Type === WorkflowEvaluationPropertyType.Boolean) {
-            $("#valueBool").show();
-            this._rlbValueBool.clearSelection();
-        }
-        else if (WorkflowEvalutionPropertyHelper[vals].Type === WorkflowEvaluationPropertyType.Json) {
-            this._rtbValueJson.set_visible(true);
+    private dynamicallyAdjustInputFields(propertyFieldName: string): void {
+
+        /*
+         * specific properties
+         */
+
+        if (propertyFieldName === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_WORKFLOW_DEFAULT_PROPOSER
+            && this.queryParameters.StartProposer === 0) {
+            // The main storage remains the rbtValueJson which stores the serialized data
+            // The rest component will replace the default view by taking the data and rendering it
+            this.WorkflowRestRoleRenderRoles([])
             this._rtbValueJson.clear();
+            this._uscRoleRestContainer.show();
+            return;
         }
-        else if (WorkflowEvalutionPropertyHelper[vals].Type === WorkflowEvaluationPropertyType.Integer) {
-            this._rntbValueInt.set_visible(true);
-            this._rntbValueInt.clear();
+
+        // specific properties
+        if (propertyFieldName === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_WORKFLOW_DEFAULT_PROPOSER
+            && this.queryParameters.StartProposer === 1) {
+            // The main storage remains the rbtValueJson which stores the serialized data
+            // The rest component will replace the default view by taking the data and rendering it
+            this.WorkflowRestContactsRenderContacts([]);
+            this._rtbValueJson.clear();
+            this._uscContattiSelContainer.show();
+            return;
         }
-        else if (WorkflowEvalutionPropertyHelper[vals].Type === WorkflowEvaluationPropertyType.Date) {
-            $("#valueDate").show();
-            this._rdpValueDate.clear();
+
+        if (propertyFieldName === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_WORKFLOW_DEFAULT_RECIPIENT
+            && this.queryParameters.StartReceiver === 0) {
+            // The main storage remains the rbtValueJson which stores the serialized data
+            // The rest component will replace the default view by taking the data and rendering it
+            this.WorkflowRestRoleRenderRoles([])
+            this._rtbValueJson.clear();
+            this._uscRoleRestContainer.show();
+            return;
         }
-        else if (WorkflowEvalutionPropertyHelper[vals].Type === WorkflowEvaluationPropertyType.Double) {
-            this._rntbValueDouble.set_visible(true);
-            this._rntbValueDouble.clear();
+
+        if (propertyFieldName === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_WORKFLOW_DEFAULT_RECIPIENT
+            && this.queryParameters.StartReceiver === 1) {
+            // The main storage remains the rbtValueJson which stores the serialized data
+            // The rest component will replace the default view by taking the data and rendering it
+            this.WorkflowRestContactsRenderContacts([]);
+            this._rtbValueJson.clear();
+            this._uscContattiSelContainer.show();
+            return;
         }
-        else if (WorkflowEvalutionPropertyHelper[vals].Type === WorkflowEvaluationPropertyType.Guid) {
-            this._rdbGuid.set_visible(true);
-            this._rdbGuid.clear();
+
+        if (propertyFieldName === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_TEMPLATE_COLLABORATION_DEFAULT) {
+            // The main storage remains the rtbValueString which stores the serialized data
+            // The rest component will replace the default view by taking the data and rendering it
+            this._templateCollabUIHandler.SetSelectedItem(null);
+            this._rtbValueString.clear();
+            this._uscTemplateCollaborationContainer.show();
+            this._templateCollabUIHandler.LoadTemplateCollaborations();
+            return;
         }
+
+        if (propertyFieldName === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_COLLABORATION_SIGN_SUMMARY) {
+            // The main storage remains the rtbValueString which stores the serialized data
+            // The rest component will replace the default view by taking the data and rendering it
+            this._collaborationSignSummaryUIHandler.SetSelectedItem(null);
+            this._rtbValueString.clear();
+            this._uscCollaborationSignSummaryContainer.show();
+            this._collaborationSignSummaryUIHandler.LoadTemplateDocumenti();
+            return;
+        }
+
+        if (propertyFieldName === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_ACTION_GENERATE) {
+            // The main storage remains the rtbValueString which stores the serialized data
+            // The rest component will replace the default view by taking the data and rendering it
+            this._actionGenerateUIHandler.SetSelectedItem(null);
+            this._rtbValueString.clear();
+            this._uscActionGenerateContainer.show();
+            this._actionGenerateUIHandler.LoadTemplateDocumenti();
+            return;
+        }
+
+        if (propertyFieldName === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_DSW_WORKFLOW_STARTVALIDATIONS) {
+            this._rtbValueJson.clear();
+            this._uscWorkflowDesignerValidationsContainer.show();
+
+            if (this.workflowEnv != DSWEnvironmentType[DSWEnvironmentType.Fascicle]) {
+                PageClassHelper.callUserControlFunctionSafe<uscWorkflowDesignerValidations>(this.uscWorkflowDesignerValidationsId).done((instance) => {
+                    instance.displayDisableEnvironmentMessage();
+                });
+            }
+
+            return;
+
+        }
+
+        /**
+         * general properties
+         **/
+        const prop = WorkflowEvalutionPropertyHelper[propertyFieldName];
+        if (prop) {
+            switch (prop.Type) {
+                case ArgumentType.PropertyString: {
+                    this._rtbValueString.set_visible(true);
+                    this._rtbValueString.clear();
+                    break;
+                }
+                case ArgumentType.PropertyBoolean: {
+                    $("#valueBool").show();
+                    this._rlbValueBool.clearSelection();
+                    break;
+                }
+                case ArgumentType.PropertyInt: {
+                    this._rntbValueInt.set_visible(true);
+                    this._rntbValueInt.clear();
+                    break;
+                }
+                case ArgumentType.PropertyDate: {
+                    $("#valueDate").show();
+                    this._rdpValueDate.clear();
+                    break;
+                }
+                case ArgumentType.PropertyDouble: {
+                    this._rntbValueDouble.set_visible(true);
+                    this._rntbValueDouble.clear();
+                    break;
+                }
+                case ArgumentType.PropertyGuid: {
+                    this._rdbGuid.set_visible(true);
+                    this._rdbGuid.clear();
+                    break;
+                }
+                case ArgumentType.Json: {
+                    this._rtbValueJson.set_visible(true);
+                    this._rtbValueJson.clear();
+                    break;
+                }
+            }
+        }
+
         this._rcbName.hideDropDown();
     }
 
-    private btnConfirm_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
-        let qs = this.parse_query_string(window.location.search);
+    private btnConfirm_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
+        this._templateCollabUIHandler.Commit();
+        this._collaborationSignSummaryUIHandler.Commit();
+        this._actionGenerateUIHandler.Commit();
 
-        let param = qs["?Action"];
-        if (param === "Add") {
-            this.AddWorkflowEvaluationProperty(qs["WorkflowRepositoryId"]);
-        } else if (param === "Edit") {
-            this.EditWorkflowEvaluationProperty(qs["WorkflowRepositoryId"], qs["WorkflowEvaluationPropertyId"]);
+        if (this._rcbName.get_selectedItem().get_value() === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_DSW_WORKFLOW_STARTVALIDATIONS) {
+            PageClassHelper.callUserControlFunctionSafe<uscWorkflowDesignerValidations>(this.uscWorkflowDesignerValidationsId).done((instance) => {
+                this._rtbValueJson.set_textBoxValue(instance.getWorkflowRulesModel(this.workflowEnv));
+            });
+        }
+
+        if (this.queryParameters.Action === "Add") {
+            this.AddWorkflowEvaluationProperty(this.queryParameters.WorkflowRepositoryId);
+        } else if (this.queryParameters.Action === "Edit") {
+            this.EditWorkflowEvaluationProperty(this.queryParameters.WorkflowRepositoryId, this.queryParameters.WorkflowEvaluationPropertyId);
         }
 
         return false;
@@ -232,7 +692,7 @@ class TbltWorkflowEvaluationPropertyGes {
     private EditWorkflowEvaluationProperty(workflowRepositoryId: string, workflowEvaluationPropertyId: string): void {
         let validModel: WorkflowEvaluationProperty = this.validateModel(workflowRepositoryId);
         validModel.UniqueId = workflowEvaluationPropertyId;
-        this._service.updateWorkflowEvaluationProperty(validModel, (data: any) => {
+        this._workflowEvaluationPropertyService.updateWorkflowEvaluationProperty(validModel, (data: any) => {
             let operator = this.getRadWindow();
             this.closeWindow(operator);
         }, (exception: ExceptionDTO) => {
@@ -262,7 +722,7 @@ class TbltWorkflowEvaluationPropertyGes {
     }
 
     private insertWorkflowEvaluationProperty(model: WorkflowEvaluationProperty): void {
-        this._service.insertWorkflowEvaluationProperty(model,
+        this._workflowEvaluationPropertyService.insertWorkflowEvaluationProperty(model,
             (data: any) => {
                 let operator = this.getRadWindow();
                 this.closeWindow(operator);
@@ -273,24 +733,93 @@ class TbltWorkflowEvaluationPropertyGes {
     }
 
     private checkModelValidation(model: WorkflowEvaluationProperty): WorkflowEvaluationProperty {
+
+        /*
+         *Specific linked containers
+         */
+        if (this._uscRoleRestContainer.is(":visible")) {
+            const valueString = this._rtbValueJson.get_textBoxValue();
+            if (valueString === "") {
+                alert("Inserisci un valore");
+                return;
+            }
+            model.ValueString = valueString;
+            return model;
+        }
+
+        if (this._uscWorkflowDesignerValidationsContainer.is(":visible")) {
+            const valueString = this._rtbValueJson.get_textBoxValue();
+            if (valueString === "") {
+                alert("Inserisci un valore");
+                return;
+            }
+            model.ValueString = valueString;
+            return model;
+        }
+
+        if (this._uscContattiSelContainer.is(":visible")) {
+            const valueString = this._rtbValueJson.get_textBoxValue();
+            if (valueString === "") {
+                alert("Inserisci un valore");
+                return;
+            }
+            model.ValueString = valueString;
+            return model;
+        }
+
+        if (this._uscTemplateCollaborationContainer.is(":visible")) {
+            const valueGuid = this._rtbValueString.get_textBoxValue();
+
+            if (valueGuid === "") {
+                alert("Inserisci un valore");
+                return;
+            }
+            model.ValueGuid = valueGuid;
+            return model;
+        }
+
+        if (this._uscCollaborationSignSummaryContainer.is(":visible")) {
+            const valueString = this._rtbValueString.get_textBoxValue();
+
+            if (valueString === "") {
+                alert("Inserisci un valore");
+                return;
+            }
+            model.ValueString = valueString;
+            return model;
+        }
+
+        if (this._uscActionGenerateContainer.is(":visible")) {
+
+            const valueGuid = this._rtbValueString.get_textBoxValue();
+
+            if (valueGuid === "") {
+                alert("Inserisci un valore");
+                return;
+            }
+            model.ValueGuid = valueGuid;
+            return model;
+        }
+
+        //general containers
         if (this._rtbValueString.get_visible()) {
-            let valueString = this._rtbValueString.get_textBoxValue();
-            if (valueString == "") {
+            const valueString = this._rtbValueString.get_textBoxValue();
+            if (valueString === "") {
                 alert("Inserisci un valore");
                 return;
             }
             model.ValueString = valueString;
         }
         else if ($("#valueBool").is(":visible")) {
-            let valueBool = this._rlbValueBool.get_selectedItem();
-            if (valueBool == undefined || valueBool == null) {
+            const valueBool = this._rlbValueBool.get_selectedItem();
+            if (valueBool === undefined || valueBool == null) {
                 alert("Inserisci un valore");
                 return;
             }
             model.ValueBoolean = valueBool.get_value() === "1";
         }
         else if (this._rntbValueInt.get_visible()) {
-            let valueInt = this._rntbValueInt.get_value();
+            const valueInt = this._rntbValueInt.get_value();
             if (valueInt === "") {
                 alert("Inserisci un valore");
                 return;
@@ -299,23 +828,23 @@ class TbltWorkflowEvaluationPropertyGes {
             model.ValueInt = Number(valueInt);
         }
         else if (this._rtbValueJson.get_visible()) {
-            let valueJson = this._rtbValueJson.get_textBoxValue();
-            if (valueJson == "") {
+            const valueJson = this._rtbValueJson.get_textBoxValue();
+            if (valueJson === "") {
                 alert("Inserisci un valore");
                 return;
             }
             model.ValueString = valueJson;
         }
         else if ($("#valueDate").is(":visible")) {
-            let valueDate = this._rdpValueDate.get_selectedDate();
-            if (valueDate == undefined || valueDate == null) {
+            const valueDate = this._rdpValueDate.get_selectedDate();
+            if (valueDate === undefined || valueDate === null) {
                 alert("Inserisci un valore");
                 return;
             }
             model.ValueDate = valueDate;
         }
         else if (this._rntbValueDouble.get_visible()) {
-            let valueDouble = this._rntbValueDouble.get_value();
+            const valueDouble = this._rntbValueDouble.get_value();
             if (valueDouble === "") {
                 alert("Inserisci un valore");
                 return;
@@ -324,8 +853,8 @@ class TbltWorkflowEvaluationPropertyGes {
             model.ValueDouble = Number(valueDouble);
         }
         else if (this._rdbGuid.get_visible()) {
-            let valueGuid = this._rdbGuid.get_textBoxValue();
-            if (valueGuid == "") {
+            const valueGuid = this._rdbGuid.get_textBoxValue();
+            if (valueGuid === "") {
                 alert("Inserisci un valore");
                 return;
             }
@@ -347,26 +876,49 @@ class TbltWorkflowEvaluationPropertyGes {
         wnd.close(operator);
     }
 
+    private getQueryParameters(query: string): void {
+        //removing ? and getting string on the right side
+        if (query.indexOf('?') > -1) {
+            query = query.split('?')[1];
+        }
 
-    private parse_query_string(query): any {
-        var vars = query.split("&");
-        var query_string = {};
-        for (var i = 0; i < vars.length; i++) {
-            var pair = vars[i].split("=");
-            var key = decodeURIComponent(pair[0]);
-            var value = decodeURIComponent(pair[1]);
-            if (typeof query_string[key] === "undefined") {
-                query_string[key] = decodeURIComponent(value);
-            } else if (typeof query_string[key] === "string") {
-                var arr = [query_string[key], decodeURIComponent(value)];
-                query_string[key] = arr;
-            } else {
-                query_string[key].push(decodeURIComponent(value));
+        const queryPairCollection: string[] = query.split("&");
+        const queryString: { [id: string]: string } = {};
+
+        //decompose raw query string
+        for (let i = 0; i < queryPairCollection.length; i++) {
+            const queryPair: string[] = queryPairCollection[i].split("=");
+
+            const key: string = decodeURIComponent(queryPair[0]);
+            const value: string = decodeURIComponent(queryPair[1]);
+
+            queryString[key] = decodeURIComponent(value);
+        }
+
+        //populate typed query parameters
+        for (const key of Object.keys(queryString)) {
+            if (key === QueryParameters.QUERY_PARAM_ACTION) {
+                this.queryParameters.Action = queryString[QueryParameters.QUERY_PARAM_ACTION];
+                continue;
+            }
+            if (key === QueryParameters.QUERY_PARAM_WORKFLOW_REPOSITORY_ID) {
+                this.queryParameters.WorkflowRepositoryId = queryString[QueryParameters.QUERY_PARAM_WORKFLOW_REPOSITORY_ID];
+                continue;
+            }
+            if (key === QueryParameters.QUERY_PARAM_WORKFLOW_EVALUATION_PROPERTY_ID) {
+                this.queryParameters.WorkflowEvaluationPropertyId = queryString[QueryParameters.QUERY_PARAM_WORKFLOW_EVALUATION_PROPERTY_ID];
+                continue;
+            }
+            if (key === QueryParameters.QUERY_PARAM_START_PROPOSER) {
+                this.queryParameters.StartProposer = parseInt(queryString[QueryParameters.QUERY_PARAM_START_PROPOSER]);
+                continue;
+            }
+            if (key === QueryParameters.QUERY_PARAM_START_RECEIVER) {
+                this.queryParameters.StartReceiver = parseInt(queryString[QueryParameters.QUERY_PARAM_START_RECEIVER]);
+                continue;
             }
         }
-        return query_string;
     }
-
 }
 
 export = TbltWorkflowEvaluationPropertyGes;

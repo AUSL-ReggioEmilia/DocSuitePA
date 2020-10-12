@@ -4,6 +4,7 @@ using System.Linq;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao.MassimariScarto;
 using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
 using VecompSoftware.DocSuiteWeb.Entity.MassimariScarto;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
 
 namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.MassimariScarto
@@ -11,8 +12,8 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.MassimariScarto
     public class MassimarioScartoFacade : FacadeWebAPIBase<MassimarioScarto, MassimarioScartoDao>
     {
         #region [Constructor ]
-        public MassimarioScartoFacade(ICollection<TenantModel> model)
-            : base(model.Select(s => new WebAPITenantConfiguration<MassimarioScarto, MassimarioScartoDao>(s)).ToList())
+        public MassimarioScartoFacade(IReadOnlyCollection<TenantModel> model, Tenant currentTenant)
+            : base(model.Select(s => new WebAPITenantConfiguration<MassimarioScarto, MassimarioScartoDao>(s)).ToList(), currentTenant)
         {
         }
         #endregion

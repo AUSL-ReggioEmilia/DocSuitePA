@@ -16,8 +16,9 @@ Public Class NHibernateProtocolJournalLogDao
     End Sub
 
 
-    Public Function GetLastLogDate() As Date?
+    Public Function GetLastLogDate(currentTenantAOOId As Guid) As Date?
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolJournalLog)()
+        criteria.Add(Restrictions.Eq("IdTenantAOO", currentTenantAOOId))
         criteria.SetMaxResults(1)
         criteria.SetProjection(Projections.Max("ProtocolJournalDate"))
         Return criteria.UniqueResult(Of DateTime)()
@@ -28,19 +29,20 @@ Public Class NHibernateProtocolJournalLogDao
     ''' </summary>
     ''' <param name="registrationDate"></param>
     ''' <remarks></remarks>
-    Public Sub ClearProtocolJournalReferencesByDate(registrationDate As DateTimeOffset)
-        Dim sql As String = "update Protocol p set p.JournalDate=null, p.JournalLog.Id=null where p.RegistrationDate between :LOWERLIMIT and :UPPERLIMIT"
+    Public Sub ClearProtocolJournalReferencesByDate(registrationDate As DateTimeOffset, currentTenantAOOId As Guid)
+        Dim sql As String = "update Protocol p set p.JournalDate=null, p.JournalLog.Id=null where p.RegistrationDate between :LOWERLIMIT and :UPPERLIMIT AND p.IdTenantAOO = :IDTENANTAOO"
         Dim query As IQuery = NHibernateSession.CreateQuery(sql)
         Dim lowerLimit As DateTime = registrationDate.Date
         query.SetDateTimeOffset("LOWERLIMIT", lowerLimit)
         Dim upperLimit As DateTime = lowerLimit.AddDays(1).AddSeconds(-1)
         query.SetDateTimeOffset("UPPERLIMIT", upperLimit)
+        query.SetGuid("IDTENANTAOO", currentTenantAOOId)
 
         query.ExecuteUpdate()
     End Sub
 
 
-    Public Function GetUnfinishedLogDates(lowerDateLimit As Date?, upperDateLimit As Date?) As IList(Of DateTime)
+    Public Function GetUnfinishedLogDates(lowerDateLimit As Date?, upperDateLimit As Date?, currentTenantAOOId As Guid) As IList(Of DateTime)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolJournalLog)()
         criteria.Add(Restrictions.IsNull("EndDate"))
 
@@ -59,6 +61,7 @@ Public Class NHibernateProtocolJournalLogDao
             criteria.Add(Restrictions.Le("ProtocolJournalDate", upper))
         End If
 
+        criteria.Add(Restrictions.Eq("IdTenantAOO", currentTenantAOOId))
         criteria.SetProjection(Projections.Distinct(Projections.Property("ProtocolJournalDate")))
         criteria.AddOrder(Order.Asc("ProtocolJournalDate"))
 
@@ -72,7 +75,7 @@ Public Class NHibernateProtocolJournalLogDao
     ''' <param name="upperLimit">Data di limite superiore</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function GetBrokenJournals(lowerLimit As Date?, upperLimit As Date?) As IList(Of ProtocolJournalLog)
+    Public Function GetBrokenJournals(lowerLimit As Date?, upperLimit As Date?, currentTenantAOOId As Guid) As IList(Of ProtocolJournalLog)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of ProtocolJournalLog)()
         criteria.Add(Restrictions.IsNull("EndDate"))
 
@@ -90,6 +93,8 @@ Public Class NHibernateProtocolJournalLogDao
         ElseIf upper.HasValue Then
             criteria.Add(Restrictions.Le("ProtocolJournalDate", upper))
         End If
+
+        criteria.Add(Restrictions.Eq("IdTenantAOO", currentTenantAOOId))
         criteria.AddOrder(Order.Asc("ProtocolJournalDate"))
 
         Return criteria.List(Of ProtocolJournalLog)()

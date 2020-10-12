@@ -21,10 +21,19 @@ import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import EnumHelper = require('App/Helpers/EnumHelper');
 import ContainerService = require('App/Services/Commons/ContainerService');
 import ContainerModel = require('App/Models/Commons/ContainerModel');
+import uscCustomActionsRest = require('UserControl/uscCustomActionsRest');
+import FascicleCustomActionModel = require('App/Models/Commons/FascicleCustomActionModel');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import uscRoleRest = require('./uscRoleRest');
+import UscRoleRestEventType = require('App/Models/Commons/UscRoleRestEventType');
+import AjaxModel = require('App/Models/AjaxModel');
+import AuthorizationRoleType = require('App/Models/Commons/AuthorizationRoleType');
+import UscRoleRestConfiguration = require('App/Models/Commons/UscRoleRestConfiguration');
 
 declare var Page_IsValid: any;
 declare var ValidatorEnable: any;
 class uscFascicleInsert extends FascicleBase {
+    clientId: string;
     ajaxLoadingPanelId: string;
     ajaxManagerId: string;
     uscNotificationId: string;
@@ -36,8 +45,8 @@ class uscFascicleInsert extends FascicleBase {
     activityFascicleEnabled: boolean;
     isMasterRowId: string;
     uscClassificatoreId: string;
-    uscSettoriId: string;
-    uscMasterRolesId: string;
+    uscRoleMasterId: string;
+    uscRoleId: string;
     uscContattiRespId: string;
     fascicleTypologyRowId: string;
     txtNoteId: string;
@@ -56,6 +65,7 @@ class uscFascicleInsert extends FascicleBase {
     ddlContainerId: string;
     fascicleContainerEnabled: boolean;
     rfvContainerId: string;
+    uscCustomActionsRestId: string;
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _serviceConfigurations: ServiceConfiguration[];
@@ -68,6 +78,8 @@ class uscFascicleInsert extends FascicleBase {
     private _containerService: ContainerService;
     private _ddlContainer: Telerik.Web.UI.RadDropDownList;
 
+    private _selectedResponsibleRole: RoleModel;
+    private _fascicleVisibilityType: VisibilityType;
 
     public static LOADED_EVENT: string = "onLoaded";
     public static FASCICLE_TYPE_CHANGED_EVENT: string = "onFascicleTypeChanged";
@@ -86,31 +98,31 @@ class uscFascicleInsert extends FascicleBase {
         return null;
     }
 
-    private get fascicleDataRow(): JQuery {
+    private fascicleDataRow(): JQuery {
         return $(`#${this.fascicleDataRowId}`);
     }
 
-    private get contattiRespRow(): JQuery {
+    private contattiRespRow(): JQuery {
         return $(`#${this.contattiRespRowId}`);
     }
 
-    private get isMasterRow(): JQuery {
+    private isMasterRow(): JQuery {
         return $(`#${this.isMasterRowId}`);
     }
 
-    private get startDateRow(): JQuery {
+    private startDateRow(): JQuery {
         return $(`#${this.rowStartDateId}`);
     }
 
-    private get metadataRepositoryRow(): JQuery {
+    private metadataRepositoryRow(): JQuery {
         return $(`#${this.metadataRepositoryRowId}`);
     }
 
-    private get fascicleTypologyRow(): JQuery {
+    private fascicleTypologyRow(): JQuery {
         return $(`#${this.fascicleTypologyRowId}`);
     }
 
-    private get containerRow(): JQuery {
+    private containerRow(): JQuery {
         return $(`#${this.containerRowId}`);
     }
 
@@ -149,7 +161,7 @@ class uscFascicleInsert extends FascicleBase {
             txtConservation.set_value("0");
         }
 
-        this.metadataRepositoryRow.hide();
+        this.metadataRepositoryRow().hide();
 
         if (this.selectedFascicleType && this.selectedFascicleType == FascicleType.Period) {
             this.initializeFasciclePeriodic();
@@ -159,8 +171,20 @@ class uscFascicleInsert extends FascicleBase {
             this.initializeEmptyFascicleTypeSelected();
         }
 
+        this._fascicleVisibilityType = VisibilityType.Confidential;
+        this.registerUscRoleRestEventHandlers();
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId).done((instance) => {
+            instance.setToolbarVisibility(true);
+            instance.renderRolesTree([]);
+        });
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((instance) => {
+            instance.setToolbarVisibility(true);
+            instance.renderRolesTree([]);
+        });
+        sessionStorage.removeItem(`${this.clientId}_FascicleRolesToAdd`);
+
         if (this.metadataRepositoryEnabled) {
-            this.metadataRepositoryRow.show();
+            this.metadataRepositoryRow().show();
             this.setMetadataRepositorySelectedIndexEvent();
         }
 
@@ -184,7 +208,11 @@ class uscFascicleInsert extends FascicleBase {
 
                     initializeContainersAction()
                         .done(() => {
-                            (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest("Initialize");
+                            let ajaxModel: AjaxModel = <AjaxModel>{
+                                ActionName: "Initialize",
+                                Value: []
+                            };
+                            (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
                         })
                         .fail((exception: ExceptionDTO) => promise.reject(exception));
                     return promise.promise();
@@ -214,7 +242,7 @@ class uscFascicleInsert extends FascicleBase {
      * Evento scatenato al cambio di selezione del classificatore
      * @param conservationYear
      */
-    onCategoryChanged = (conservationYear: string, idMetadataRepository: string) => {
+    onCategoryChanged = (conservationYear: string, idMetadataRepository: string, customActionsJson: string) => {
         if (this.selectedFascicleType == FascicleType.Procedure) {
             let txtConservation: Telerik.Web.UI.RadNumericTextBox = <Telerik.Web.UI.RadNumericTextBox>$find(this.txtConservationId);
             if (conservationYear && Number(conservationYear) != -1)
@@ -242,6 +270,13 @@ class uscFascicleInsert extends FascicleBase {
                 }
             }
         }
+
+        if (customActionsJson !== "") {
+            PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
+                .done((instance) => {
+                    instance.loadItems(<FascicleCustomActionModel>JSON.parse(customActionsJson));
+                });
+        }
     }
 
     /**
@@ -262,6 +297,27 @@ class uscFascicleInsert extends FascicleBase {
             return;
         }
         this.setPageBehaviourAfterFascicleTypeChanged();
+
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
+            .done((instance) => {
+                instance.forceBehaviourValidationState(this.selectedFascicleType === FascicleType.Procedure);
+                instance.enableValidators(this.selectedFascicleType === FascicleType.Procedure);
+            });
+
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
+            .done((instance) => {
+                instance.forceBehaviourValidationState(this.selectedFascicleType !== FascicleType.Procedure);
+                instance.enableValidators(this.selectedFascicleType !== FascicleType.Procedure);
+                instance.disableRaciRoleButton();
+            });
+
+        PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
+            .done((instance) => {
+                instance.loadItems(<FascicleCustomActionModel>{
+                    AutoClose: false,
+                    AutoCloseAndClone: false
+                });
+            });
     }
 
     ddlContainer_onSelectedIndexChanged = (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListIndexChangedEventArgs) => {
@@ -398,7 +454,14 @@ class uscFascicleInsert extends FascicleBase {
                     initializeContainersAction()
                         .done(() => {
                             setTimeout(() => {
-                                (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest("FascicleTypeSelected");
+                                let ajaxModel: AjaxModel = <AjaxModel>{
+                                    ActionName: "FascicleTypeSelected",
+                                    Value: []
+                                };
+                                if (this._selectedResponsibleRole) {
+                                    ajaxModel.Value.push(this._selectedResponsibleRole.EntityShortId.toString());
+                                }
+                                (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
                             }, 500);
                         })
                         .fail((exception: ExceptionDTO) => promise.reject(exception));
@@ -437,6 +500,50 @@ class uscFascicleInsert extends FascicleBase {
     }
 
     fascicleTypeSelectedCallback(): void {
+        switch (+this._rdlFascicleType.get_selectedItem().get_value()) {
+            case FascicleType.Activity: {
+                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
+                    .done((instance) => {
+                        instance.requiredValidationEnabled = "true";
+                        instance.multipleRoles = "false";
+                        instance.onlyMyRoles = "true";
+                        instance.setConfiguration(<UscRoleRestConfiguration>{
+                            isReadOnlyMode: false
+                        });
+                    });
+                break;
+            }
+            case FascicleType.Procedure: {
+                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
+                    .done((instance) => {
+                        instance.multipleRoles = "true";
+                        instance.onlyMyRoles = "false";
+                        instance.setConfiguration(<UscRoleRestConfiguration>{
+                            isReadOnlyMode: true
+                        });
+                    });
+                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
+                    .done((instance) => {
+                        instance.multipleRoles = "false";
+                        instance.onlyMyRoles = "true";
+                    });
+                break;
+            }
+            case FascicleType.Period: {
+                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
+                    .done((instance) => {
+                        instance.multipleRoles = "true";
+                        instance.onlyMyRoles = "false";
+                    });
+                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
+                    .done((instance) => {
+                        instance.requiredValidationEnabled = `${!this.fascicleContainerEnabled}`;
+                        instance.multipleRoles = "false";
+                        instance.onlyMyRoles = "true";
+                    });
+                break;
+            }
+        }
         this._deferredFascicleSelectedTypeActions.forEach((item: JQueryDeferred<void>) => item.resolve());
     }
 
@@ -446,19 +553,19 @@ class uscFascicleInsert extends FascicleBase {
 
     private initializeFascicleProcedure(): void {
         if (this.fascicleContainerEnabled) {
-            this.containerRow.show();
+            this.containerRow().show();
             ValidatorEnable($get(this.rfvContainerId), true);
             $(`#${this.rfvContainerId}`).show();
         } else {
-            this.containerRow.hide();
+            this.containerRow().hide();
             ValidatorEnable($get(this.rfvContainerId), false);
             $(`#${this.rfvContainerId}`).hide();
         }
 
-        this.fascicleDataRow.show();
-        this.contattiRespRow.show();
-        this.isMasterRow.show();
-        this.startDateRow.hide();
+        this.fascicleDataRow().show();
+        this.contattiRespRow().show();
+        this.isMasterRow().show();
+        this.startDateRow().hide();
 
         if (!String.isNullOrEmpty(this.pnlConservationId)) {
             $("#".concat(this.pnlConservationId)).show();
@@ -468,11 +575,11 @@ class uscFascicleInsert extends FascicleBase {
     private initializeFascicleActivity(): void {
         ValidatorEnable($get(this.rfvContainerId), false);
         $(`#${this.rfvContainerId}`).hide();
-        this.containerRow.hide();
-        this.fascicleDataRow.show();
-        this.contattiRespRow.hide();
-        this.isMasterRow.hide();
-        this.startDateRow.hide();
+        this.containerRow().hide();
+        this.fascicleDataRow().show();
+        this.contattiRespRow().hide();
+        this.isMasterRow().hide();
+        this.startDateRow().hide();
 
         if (!String.isNullOrEmpty(this.pnlConservationId)) {
             $("#".concat(this.pnlConservationId)).hide();
@@ -481,29 +588,28 @@ class uscFascicleInsert extends FascicleBase {
 
     private initializeFasciclePeriodic(): void {
         if (this.fascicleContainerEnabled) {
-            this.containerRow.show();
+            this.containerRow().show();
             ValidatorEnable($get(this.rfvContainerId), true);
             $(`#${this.rfvContainerId}`).hide();
         } else {
-            this.containerRow.hide();
+            this.containerRow().hide();
             ValidatorEnable($get(this.rfvContainerId), false);
             $(`#${this.rfvContainerId}`).hide();
-            this.isMasterRow.show();
+            this.isMasterRow().show();
         }
-        this.fascicleDataRow.show();
-        this.contattiRespRow.hide();
-        this.fascicleTypologyRow.hide();
+        this.fascicleDataRow().show();
+        this.contattiRespRow().hide();
+        this.fascicleTypologyRow().hide();
     }
 
     private initializeEmptyFascicleTypeSelected(): void {
         ValidatorEnable($get(this.rfvContainerId), false);
         $(`#${this.rfvContainerId}`).hide();
-        this.fascicleDataRow.hide();
+        this.fascicleDataRow().hide();
     }
 
     //contact: number
-    getFascicle = () => {
-
+    getFascicle = (): FascicleModel => {
         let fascicleModel: FascicleModel = new FascicleModel();
         fascicleModel.Conservation = null;
 
@@ -544,49 +650,8 @@ class uscFascicleInsert extends FascicleBase {
         //    fascicleModel.Contacts.push(contactModel);
         //}
 
-        let uscRoles: UscSettori = <UscSettori>$("#".concat(this.uscSettoriId)).data();
-        if (!jQuery.isEmptyObject(uscRoles)) {
-            if (this.selectedFascicleType == FascicleType.Procedure) {
-                fascicleModel.VisibilityType = uscRoles.getFascicleVisibilityType();
-            }
-
-            let source: any = JSON.parse(uscRoles.getRoles());
-            if (source != null) {
-                let role: RoleModel;
-                let fascicleRole: FascicleRoleModel;
-                for (let s of source) {
-                    role = <RoleModel>{};
-                    fascicleRole = new FascicleRoleModel();
-                    role.IdRole = s.EntityShortId;
-                    role.EntityShortId = s.EntityShortId;
-                    role.TenantId = s.TenantId;
-                    fascicleRole.Role = role;
-                    fascicleModel.FascicleRoles.push(fascicleRole);
-                }
-            }
-        }
-
-        if (fascicleModel.FascicleType != FascicleType.Activity) {
-            let uscMasterRoles: UscSettori = <UscSettori>$("#".concat(this.uscMasterRolesId)).data();
-            if (!jQuery.isEmptyObject(uscMasterRoles)) {
-                let source: any = JSON.parse(uscMasterRoles.getRoles());
-                if (source != null) {
-                    let role: RoleModel;
-                    let fascicleRole: FascicleRoleModel;
-                    for (let s of source) {
-                        role = <RoleModel>{};
-                        fascicleRole = new FascicleRoleModel();
-                        role.IdRole = s.EntityShortId;
-                        role.EntityShortId = s.EntityShortId;
-                        role.TenantId = s.TenantId;
-                        fascicleRole.Role = role;
-                        fascicleRole.IsMaster = true;
-                        fascicleModel.FascicleRoles.push(fascicleRole);
-
-                    }
-                }
-            }
-        }
+        fascicleModel.VisibilityType = this._fascicleVisibilityType;
+        fascicleModel.FascicleRoles = this.populateFascicleRoles();
         return fascicleModel;
     }
     /**
@@ -604,15 +669,6 @@ class uscFascicleInsert extends FascicleBase {
     enableValidators = (enabled: boolean) => {
         ValidatorEnable($get(this.rfvConservationId), enabled);
 
-        let uscMasterRoles: UscSettori = <UscSettori>$("#".concat(this.uscMasterRolesId)).data();
-        if (!jQuery.isEmptyObject(uscMasterRoles)) {
-            uscMasterRoles.enableValidators(enabled);
-        }
-
-        let uscRoles: UscSettori = <UscSettori>$("#".concat(this.uscSettoriId)).data();
-        if (!jQuery.isEmptyObject(uscRoles)) {
-            uscRoles.enableValidators(enabled);
-        }
 
         let uscOggetto: UscOggetto = <UscOggetto>$("#".concat(this.uscOggettoId)).data();
         if (!jQuery.isEmptyObject(uscOggetto)) {
@@ -645,16 +701,6 @@ class uscFascicleInsert extends FascicleBase {
 
         ValidatorEnable($get(this.rfvConservationId), isProcedure);
 
-        let uscMasterRoles: UscSettori = <UscSettori>$("#".concat(this.uscMasterRolesId)).data();
-        if (!jQuery.isEmptyObject(uscMasterRoles)) {
-            uscMasterRoles.enableValidators(isProcedure);
-        }
-
-        let uscRoles: UscSettori = <UscSettori>$("#".concat(this.uscSettoriId)).data();
-        if (!jQuery.isEmptyObject(uscRoles)) {
-            uscRoles.enableValidators(!isProcedure);
-        }
-
         let uscContattiResp: UscContattiSel = <UscContattiSel>$("#".concat(this.uscContattiRespId)).data();
         if (!jQuery.isEmptyObject(uscContattiResp)) {
             uscContattiResp.enableValidators(isProcedure);
@@ -670,13 +716,15 @@ class uscFascicleInsert extends FascicleBase {
     }
 
     private setMetadataRepositorySelectedIndexEvent() {
-        $("#".concat(this.uscMetadataRepositorySelId)).off(UscMetadataRepositorySel.SELECTED_INDEX_EVENT);
-        $("#".concat(this.uscMetadataRepositorySelId)).on(UscMetadataRepositorySel.SELECTED_INDEX_EVENT, (args, data) => {
-            let uscDynamicMetadata: UscDynamicMetadata = <UscDynamicMetadata>$("#".concat(this.uscDynamicMetadataId)).data();
-            if (!jQuery.isEmptyObject(uscDynamicMetadata)) {
-                setTimeout(() => {
-                    uscDynamicMetadata.loadDynamicMetadata(data);
-                }, 500);
+        $("#".concat(this.uscMetadataRepositorySelId)).off(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT);
+        $("#".concat(this.uscMetadataRepositorySelId)).on(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, (args, data) => {
+            if (data) {
+                let uscDynamicMetadata: UscDynamicMetadata = <UscDynamicMetadata>$("#".concat(this.uscDynamicMetadataId)).data();
+                if (!jQuery.isEmptyObject(uscDynamicMetadata)) {
+                    setTimeout(() => {
+                        uscDynamicMetadata.loadDynamicMetadata(data);
+                    }, 500);
+                }
             }
         });
     }
@@ -686,6 +734,138 @@ class uscFascicleInsert extends FascicleBase {
         if (!jQuery.isEmptyObject(uscClassificatore)) {
             uscClassificatore.setShowRoleParam(idRole);
         }
+    }
+
+    getCustomActions(): JQueryPromise<FascicleCustomActionModel> {
+        let promise: JQueryDeferred<FascicleCustomActionModel> = $.Deferred<FascicleCustomActionModel>();
+        PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
+            .done((instance) => {
+                promise.resolve(instance.getCustomActions<FascicleCustomActionModel>());
+            });
+        return promise.promise();
+    }
+
+    private registerUscRoleRestEventHandlers(): void {
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
+            .done((instance) => {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, (roleId: number) => {
+                    this.deleteRoleFromModel(roleId);
+                    return $.Deferred<void>().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, (newAddedRoles: RoleModel[]) => {
+                    let existedRole: RoleModel;
+                    this.addRoleToModel(this.uscRoleMasterId, newAddedRoles, (role) => {
+                        existedRole = role;
+                    });
+                    return $.Deferred<RoleModel>().resolve(existedRole);
+                });
+            });
+
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
+            .done((instance) => {
+                instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, (roleId: number) => {
+                    this.deleteRoleFromModel(roleId);
+                    return $.Deferred<void>().resolve();
+                });
+                instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, (newAddedRoles: RoleModel[]) => {
+                    let existedRole: RoleModel;
+                    this.addRoleToModel(this.uscRoleId, newAddedRoles, (role) => {
+                        existedRole = role;
+                    });
+                    if (!existedRole) {
+                        this._selectedResponsibleRole = newAddedRoles[0];
+                    }
+                    return $.Deferred<RoleModel>().resolve(existedRole, true);
+                });
+                instance.registerEventHandler(UscRoleRestEventType.SetFascicleVisibilityType, (visibilityType: VisibilityType) => {
+                    this._fascicleVisibilityType = visibilityType;
+                    return $.Deferred<void>().resolve();
+                });
+            });
+    }
+
+    private addRoleToModel(toCheckControlId: string, newAddedRoles: RoleModel[], existedRoleCallback?: (RoleModel) => void): void {
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(toCheckControlId)
+            .done((instance) => {
+                let existedRole: RoleModel = instance.existsRole(newAddedRoles);
+                if (existedRole) {
+                    alert(`Non è possibile selezionare il settore ${existedRole.Name} in quanto già presente come settore ${toCheckControlId == this.uscRoleMasterId ? "responsabile" : "autorizzato"} del fascicolo`);
+                    existedRoleCallback(existedRole);
+                    newAddedRoles = newAddedRoles.filter(x => x.IdRole !== existedRole.IdRole);
+                }
+                if (toCheckControlId === this.uscRoleMasterId) {
+                    this.setCategoryRole(newAddedRoles[0].EntityShortId);
+                    return this.addRole(newAddedRoles, false);
+                }
+            });
+    }
+
+    private addRole(newAddedRoles: RoleModel[], isMaster: boolean): void {
+        if (!newAddedRoles.length)
+            return;
+
+        let fascicleRoles: FascicleRoleModel[] = [];
+        if (this.getFascicleRolesToAdd()) {
+            fascicleRoles = this.getFascicleRolesToAdd();
+        }
+
+        for (let newAddedRole of newAddedRoles) {
+            let fascicleRole = new FascicleRoleModel();
+            fascicleRole.IsMaster = isMaster;
+            fascicleRole.Role = newAddedRole;
+            fascicleRoles.push(fascicleRole);
+        }
+        this.setFascicleRolesToSession(fascicleRoles);
+    }
+
+    private getFascicleRolesToAdd(): FascicleRoleModel[] {
+        let itemsFromSession: string = sessionStorage.getItem(`${this.clientId}_FascicleRolesToAdd`);
+        if (itemsFromSession) {
+            return JSON.parse(itemsFromSession) as FascicleRoleModel[];
+        }
+        return null;
+    }
+
+    private setFascicleRolesToSession(fascicleRoles: FascicleRoleModel[]): void {
+        if (!fascicleRoles) {
+            sessionStorage.removeItem(`${this.clientId}_FascicleRolesToAdd`);
+        }
+
+        sessionStorage[`${this.clientId}_FascicleRolesToAdd`] = JSON.stringify(fascicleRoles);
+    }
+
+    private deleteRoleFromModel(roleIdToDelete: number): void {
+        if (!roleIdToDelete)
+            return;
+
+        let fascicleRoles: FascicleRoleModel[] = [];
+        if (this.getFascicleRolesToAdd()) {
+            fascicleRoles = this.getFascicleRolesToAdd();
+        }
+
+        fascicleRoles = fascicleRoles.filter(x => x.Role.IdRole !== roleIdToDelete && x.Role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) === -1);
+        this.setFascicleRolesToSession(fascicleRoles);
+    }
+
+    private populateFascicleRoles(): FascicleRoleModel[] {
+        let fascicleRoles: FascicleRoleModel[] = this.getFascicleRolesToAdd();
+        if (this._selectedResponsibleRole) {
+            if (!fascicleRoles) {
+                fascicleRoles = [];
+            }
+            fascicleRoles.push(<FascicleRoleModel>{
+                Role: this._selectedResponsibleRole,
+                IsMaster: true
+            });
+        }
+        let uscRole: uscRoleRest = $(`#${this.uscRoleId}`).data();
+        let raciRoles: RoleModel[] = uscRole.getRaciRoles();
+        for (let fascicleRole of fascicleRoles) {
+            fascicleRole.AuthorizationRoleType = (raciRoles && raciRoles.some(x => x.EntityShortId === fascicleRole.Role.EntityShortId)) || fascicleRole.IsMaster
+                ? AuthorizationRoleType.Responsible
+                : AuthorizationRoleType.Accounted;
+        }
+        return fascicleRoles;
     }
 }
 export = uscFascicleInsert;

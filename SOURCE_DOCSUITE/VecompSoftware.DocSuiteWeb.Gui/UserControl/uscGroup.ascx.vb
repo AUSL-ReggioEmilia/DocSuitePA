@@ -70,7 +70,10 @@ Partial Public Class uscGroup
             InitializeTreeContainer()
             LoadGroups()
         End If
-        AjaxManager.ResponseScripts.Add(SCROLL_TREE)
+
+        If Me.Visible Then
+            AjaxManager.ResponseScripts.Add(SCROLL_TREE)
+        End If
     End Sub
 
     Private Sub btnEliminaGruppo_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminaGruppo.Click
@@ -106,8 +109,8 @@ Partial Public Class uscGroup
                     Dim node As RadTreeNode = RadTreeViewGroups.FindNodeByText(groupName)
                     RaiseEvent NodeClick(sender, New RadTreeNodeEventArgs(node))
                 Next
-                If groupNames.Count > 1 Then
-                    Dim rootNode As RadTreeNode = RadTreeViewGroups.Nodes.Item(0)
+                If groupNames.Count > 0 Then
+                    Dim rootNode As RadTreeNode = RadTreeViewGroups.FindNodeByText(groupNames.First())
                     rootNode.Selected = True
                     rootNode.Focus()
                     RaiseEvent NodeClick(sender, New RadTreeNodeEventArgs(rootNode))
@@ -115,6 +118,14 @@ Partial Public Class uscGroup
         End Select
 
         AjaxManager.ResponseScripts.Add("HideLoadingPanel();")
+    End Sub
+
+    Public Sub AddGroup(ByVal groupName As String)
+
+        CreateNode(groupName)
+        Dim node As RadTreeNode = RadTreeViewGroups.FindNodeByText(groupName)
+        RaiseEvent NodeClick(New Object, New RadTreeNodeEventArgs(node))
+
     End Sub
 
     Private Sub RadTreeViewGroups_NodeClick(ByVal sender As Object, ByVal e As RadTreeNodeEventArgs) Handles RadTreeViewGroups.NodeClick
@@ -142,7 +153,7 @@ Partial Public Class uscGroup
     End Sub
 
     Private Sub LoadGroups()
-        If CurrentGroups.Count = 0 Then
+        If CurrentGroups Is Nothing OrElse CurrentGroups.Count = 0 Then
             Exit Sub
         End If
 

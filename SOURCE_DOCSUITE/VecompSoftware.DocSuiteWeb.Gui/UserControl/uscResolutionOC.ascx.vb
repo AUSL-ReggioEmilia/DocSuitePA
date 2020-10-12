@@ -384,7 +384,8 @@ Partial Public Class uscResolutionOC
             Exit Sub
         End If
 
-        Dim url As String = "../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}", Resolution.FormatProtocolLink(link, "Y"), Resolution.FormatProtocolLink(link, "N")))
+        Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(Short.Parse(Resolution.FormatProtocolLink(link, "Y")), Integer.Parse(Resolution.FormatProtocolLink(link, "N")))
+        Dim url As String = $"../Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={currentProtocol.Id}&Type=Prot")}"
         imgButton.Attributes.Add("onclick", "document.location='" & url & "'; return false;")
         imgButton.Visible = True
     End Sub

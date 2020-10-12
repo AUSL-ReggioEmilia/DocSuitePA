@@ -1,13 +1,11 @@
-﻿Imports System.DirectoryServices
+﻿Imports System.Collections.Concurrent
+Imports System.DirectoryServices
+Imports System.DirectoryServices.AccountManagement
 Imports System.Linq
-Imports System.Runtime.InteropServices
-Imports System.Text
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Model.Parameters
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.DocSuiteWeb.Model.Parameters
-Imports System.Collections.Concurrent
-Imports System.DirectoryServices.AccountManagement
 
 ''' <summary> Classe che gestisce le chiamate a LDAP e WinNT attraverso i DirectoryServices. </summary>
 Public Class CommonAD
@@ -68,7 +66,7 @@ Public Class CommonAD
             domain = splited.First()
         End If
 
-        Dim result As AccountModel = New AccountModel(account, account, domain)
+        Dim result As AccountModel = New AccountModel(account, account, domain:=domain)
         Try
             If _cache_getCurrentUser.ContainsKey(userName) AndAlso _cache_getCurrentUser.TryGetValue(userName, result) Then
                 Return result
@@ -166,6 +164,18 @@ Public Class CommonAD
         Return contacts.Values
     End Function
 
+    Public Shared Function GetSafeProperty(propName As String, directoryEntry As DirectoryEntry) As String
+        If directoryEntry Is Nothing Then
+            Return String.Empty
+        End If
+        Try
+            Return directoryEntry.Properties(propName).Value.ToString()
+        Catch ex As Exception
+        End Try
+        Return String.Empty
+
+    End Function
+
     ''' <summary> Ricerca User in AD </summary>
     Public Shared Function FindADUsers(ByVal filter As String, ByVal domain As String) As IList(Of AccountModel)
         FileLogger.Debug(LogName.DirectoryServiceLog, $"FindADUsers [{filter}, {domain}]")
@@ -188,8 +198,8 @@ Public Class CommonAD
                 Using entry As New DirectoryEntry($"{GetQueryADFormat(configuration)}{configuration.DomainAddress}", configuration.DomainUser, configuration.DomainPassword)
                     If configuration.SecurityContext = SecurityContextType.Machine Then
                         For Each found As DirectoryEntry In entry.Children.OfType(Of DirectoryEntry)
-                            If found.SchemaClassName = "User" AndAlso (found.Name.Contains(filter) OrElse found.Username.Contains(filter)) Then
-                                user = New AccountModel(found.Username.Split("\"c).Last(), found.Name, configuration.DomainName)
+                            If found.SchemaClassName = "User" AndAlso (found.Name.ContainsIgnoreCase(filter) OrElse GetSafeProperty("Fullname", found).ContainsIgnoreCase(filter)) Then
+                                user = New AccountModel(found.Name, GetSafeProperty("Fullname", found), domain:=configuration.DomainName, displayName:=GetSafeProperty("Fullname", found))
                                 If Not users.ContainsKey(user.GetFullUserName()) Then
                                     users.Add(user.GetFullUserName(), user)
                                 End If

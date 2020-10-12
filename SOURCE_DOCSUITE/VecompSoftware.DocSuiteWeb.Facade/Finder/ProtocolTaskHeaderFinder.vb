@@ -81,7 +81,6 @@ Public Class ProtocolTaskHeaderFinder
 
     Protected Overrides Sub DecorateCriteria(ByRef criteria As ICriteria)
         MyBase.DecorateCriteria(criteria)
-        Dim protocolKeys As List(Of YearNumberCompositeKey) = New List(Of YearNumberCompositeKey)
 
         If Not String.IsNullOrWhiteSpace(Me.ContactDescription) Then
 
@@ -106,15 +105,6 @@ Public Class ProtocolTaskHeaderFinder
         End If
 
     End Sub
-
-    Public Function GetProtocolContactFinder() As ProtocolContactFinder
-        Return New ProtocolContactFinder() With {
-            .IncludeManuals = True,
-            .Year = Year,
-            .Description = ContactDescription,
-            .DescriptionSearchBehaviour = ContactDescriptionSearchBehaviour
-        }
-    End Function
 
 #End Region
 

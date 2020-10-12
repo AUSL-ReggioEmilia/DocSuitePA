@@ -1,5 +1,7 @@
 ﻿import MassimarioScartoModel = require('App/Models/MassimariScarto/MassimarioScartoModel');
 import MetadataRepositoryModel = require('App/Models/Commons/MetadataRepositoryModel');
+import TenantAOOModel = require('APP/Models/Tenants/TenantAOOModel');
+import CategoryFascicleViewModel = require('APP/ViewModels/Commons/CategoryFascicleViewModel');
 
 class CategoryModel {
     constructor()
@@ -17,6 +19,7 @@ class CategoryModel {
     MassimarioScarto: MassimarioScartoModel;
     MetadataRepository: MetadataRepositoryModel;
     Parent: CategoryModel;
+    TenantAOO: TenantAOOModel;
     UniqueId: string;
     Id: number;
     StartDate: Date;
@@ -25,6 +28,7 @@ class CategoryModel {
     RegistrationUser: string;
     LastChangedUser: string;
     LastChangedDate?: Date;
+    CategoryFascicles: CategoryFascicleViewModel[];
 
     /**
      * Formatta il FullCode del classificatore

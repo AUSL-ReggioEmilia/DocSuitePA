@@ -5,6 +5,7 @@ Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentSeries
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Monitors
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
@@ -119,22 +120,26 @@ Public Class MonitoringQuality
     End Sub
 
     Private Sub LoadMonitoringQualitySummary()
-        Dim finder As MonitoringQualitySummaryFinder = New MonitoringQualitySummaryFinder(DocSuiteContext.Current.CurrentTenant) With {
-            .DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value),
-            .DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1),
-            .EnablePaging = False,
-            .EnableTopOdata = False
-        }
-        If DocumentSeriesId.HasValue Then
-            finder.IdDocumentSeries = DocumentSeriesId.Value.ToString()
-        End If
-        If Not String.IsNullOrEmpty(RoleName) Then
-            finder.RoleName = RoleName
-        End If
-        If Not String.IsNullOrEmpty(SeriesName) Then
-            finder.DocumentSeries = SeriesName
-        End If
-        Dim elements As ICollection(Of WebAPIDto(Of MonitoringQualitySummaryModel)) = finder.DoSearchHeader()
+        Dim elements As ICollection(Of WebAPIDto(Of MonitoringQualitySummaryModel)) = WebAPIImpersonatorFacade.ImpersonateFinder(New MonitoringQualitySummaryFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value)
+                        finder.DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1)
+                        finder.EnablePaging = False
+                        finder.EnableTopOdata = False
+
+                        If DocumentSeriesId.HasValue Then
+                            finder.IdDocumentSeries = DocumentSeriesId.Value.ToString()
+                        End If
+                        If Not String.IsNullOrEmpty(RoleName) Then
+                            finder.RoleName = RoleName
+                        End If
+                        If Not String.IsNullOrEmpty(SeriesName) Then
+                            finder.DocumentSeries = SeriesName
+                        End If
+                        Return finder.DoSearchHeader()
+                    End Function)
+
         Dim gridElements As List(Of MonitoringQualitySummaryModel) = elements.Select(Function(x) x.Entity).ToList()
         Dim gridElementsGrouped As List(Of MonitoringQualitySummaryModel) = (From row In gridElements
                                                                              Group row By IdDocumentSeries = row.IdDocumentSeries.Value Into MonitoringQualityGroup = Group
@@ -153,34 +158,41 @@ Public Class MonitoringQuality
     End Sub
 
     Private Sub LoadMonitoringQualitySummary(IdDocumentSeries As String, detailTableView As GridTableView)
-        Dim finder As MonitoringQualitySummaryFinder = New MonitoringQualitySummaryFinder(DocSuiteContext.Current.Tenants) With {
-            .DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value),
-            .DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1),
-            .IdDocumentSeries = IdDocumentSeries,
-            .EnablePaging = False,
-            .EnableTopOdata = False
-        }
-        If Not String.IsNullOrEmpty(RoleName) Then
-            finder.RoleName = RoleName
-        End If
-        If Not String.IsNullOrEmpty(SeriesName) Then
-            finder.DocumentSeries = SeriesName
-        End If
-        Dim elements As ICollection(Of WebAPIDto(Of MonitoringQualitySummaryModel)) = finder.DoSearchHeader()
+        Dim elements As ICollection(Of WebAPIDto(Of MonitoringQualitySummaryModel)) = WebAPIImpersonatorFacade.ImpersonateFinder(New MonitoringQualitySummaryFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value)
+                        finder.DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1)
+                        finder.IdDocumentSeries = IdDocumentSeries
+                        finder.EnablePaging = False
+                        finder.EnableTopOdata = False
+
+                        If Not String.IsNullOrEmpty(RoleName) Then
+                            finder.RoleName = RoleName
+                        End If
+                        If Not String.IsNullOrEmpty(SeriesName) Then
+                            finder.DocumentSeries = SeriesName
+                        End If
+                        Return finder.DoSearchHeader()
+                    End Function)
+
         Dim detailTableViewElements As List(Of MonitoringQualitySummaryModel) = elements.Select(Function(x) x.Entity).OrderBy(Function(f) f.Role).ToList()
         detailTableView.DataSource = detailTableViewElements
     End Sub
 
     Private Sub LoadMonitoringQualityDetails(IdDocumentSeries As String, IdRole As String, detailTableView As GridTableView)
-        Dim finder As MonitoringQualityDetailsFinder = New MonitoringQualityDetailsFinder(DocSuiteContext.Current.Tenants) With {
-            .DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value),
-            .DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1),
-            .IdDocumentSeries = IdDocumentSeries,
-            .IdRole = IdRole,
-            .EnablePaging = False,
-            .EnableTopOdata = False
-        }
-        Dim elements As ICollection(Of WebAPIDto(Of MonitoringQualityDetailsModel)) = finder.DoSearchHeader()
+        Dim elements As ICollection(Of WebAPIDto(Of MonitoringQualityDetailsModel)) = WebAPIImpersonatorFacade.ImpersonateFinder(New MonitoringQualityDetailsFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value)
+                        finder.DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1)
+                        finder.IdDocumentSeries = IdDocumentSeries
+                        finder.IdRole = IdRole
+                        finder.EnablePaging = False
+                        finder.EnableTopOdata = False
+                        Return finder.DoSearchHeader()
+                    End Function)
+
         Dim detailTableViewElements As List(Of MonitoringQualityDetailsModel) = elements.Select(Function(x) x.Entity).OrderBy(Function(f) f.Year.Value).OrderBy(Function(f) f.Number.Value).ToList()
         detailTableView.DataSource = detailTableViewElements
     End Sub

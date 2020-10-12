@@ -18,11 +18,11 @@ define(["require", "exports"], function (require, exports) {
                 _this.selectedCategoryButtonId = _this.btnDocSuiteId;
                 var buttonsIds = [_this.btnSolutionsId, _this.btnRulesId, _this.btnFAQsId];
                 _this.setButtonsColor(_this.btnDocSuiteId, buttonsIds);
-                _this.sendAjaxRequest("DocSuite");
+                _this.sendAjaxRequest("DocSuite PA");
             };
             this.btnFAQs_Clicked = function (sender, eventArgs) {
                 _this.selectedCategoryButtonId = _this.btnFAQsId;
-                var buttonsIds = [_this.btnSolutionsId, _this.btnDocSuiteId, _this.btnSolutionsId];
+                var buttonsIds = [_this.btnSolutionsId, _this.btnDocSuiteId, _this.btnRulesId];
                 _this.setButtonsColor(_this.btnFAQsId, buttonsIds);
                 _this.sendAjaxRequest("FAQs");
             };

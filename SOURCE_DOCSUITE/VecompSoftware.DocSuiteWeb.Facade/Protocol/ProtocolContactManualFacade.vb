@@ -5,28 +5,26 @@ Imports VecompSoftware.DocSuiteWeb.Data
 
 <ComponentModel.DataObject()> _
 Public Class ProtocolContactManualFacade
-    Inherits BaseProtocolFacade(Of ProtocolContactManual, YearNumberIdCompositeKey, NHibernateProtocolContactManualDao)
+    Inherits BaseProtocolFacade(Of ProtocolContactManual, Guid, NHibernateProtocolContactManualDao)
 
     Public Sub New()
         MyBase.New()
     End Sub
 
     ''' <summary> Restituisce per un protocollo i relativi contatti manuali della tipologia specificata. </summary>
-    ''' <param name="year">Anno del protocollo.</param>
-    ''' <param name="number">Numero del protocollo.</param>
-    ''' <param name="type">Tipologia del contatto manuale.</param>
-    Public Function GetByComunicationType(ByVal year As Short, ByVal number As Integer, ByVal type As String) As IList(Of ProtocolContactManual)
-        Return _dao.GetByComunicationType(year, number, type)
-    End Function
     Public Function GetByComunicationType(protocol As Protocol, type As String) As IList(Of ProtocolContactManual)
-        Return GetByComunicationType(protocol.Id.Year.Value, protocol.Id.Number.Value, type)
+        Return _dao.GetByComunicationType(protocol.Id, type)
     End Function
     Public Function GetByProtocol(protocol As Protocol) As IList(Of ProtocolContactManual)
         Return GetByComunicationType(protocol, Nothing)
     End Function
 
-    Public Function GetCountByProtocol(ByVal year As Short, ByVal number As Integer, ByVal comunicationType As String) As Integer
-        Return _dao.GetCountByProtocol(year, number, comunicationType)
+    Public Function GetByProtocolAndIncremental(protocol As Protocol, incremental As Integer) As ProtocolContactManual
+        Return _dao.GetByProtocolAndIncremental(protocol.Id, incremental)
+    End Function
+
+    Public Function GetCountByProtocol(protocol As Protocol, ByVal comunicationType As String) As Integer
+        Return _dao.GetCountByProtocol(protocol.Id, comunicationType)
     End Function
 
     Function GetJournalPrint(ByVal idContainers As String, ByVal dateFrom As Date?, ByVal dateTo As Date?, ByVal idStatus As Integer?) As IList(Of ProtocolContactJournalDTO)
@@ -36,17 +34,16 @@ Public Class ProtocolContactManualFacade
     ''' <summary> Aggiunge un contatto manuale al protocollo </summary>
     ''' <remarks> Verifica integrità dei dati </remarks>
     Public Shared Sub BindContactToProtocol(ByRef protocol As Protocol, ByVal contact As Contact, ByVal comunicationType As Char, ByVal copiaConoscenza As Boolean)
-        Dim pcm As New ProtocolContactManual()
+        Dim pcm As ProtocolContactManual = New ProtocolContactManual()
         pcm.ComunicationType = comunicationType
         If copiaConoscenza Then
             pcm.Type = "CC"
         End If
         pcm.Contact = contact
         pcm.Protocol = protocol
-        pcm.UniqueIdProtocol = protocol.UniqueId
-        pcm.Id.Id = protocol.ManualContacts.Max(Function(x) x.Id.Id) + 1
+        pcm.Incremental = protocol.ManualContacts.Max(Function(x) x.Incremental) + 1
         protocol.ManualContacts.Add(pcm)
-        pcm.Contact.FullIncrementalPath = pcm.Id.Id.ToString()
+        pcm.Contact.FullIncrementalPath = pcm.Incremental.ToString()
     End Sub
 
 

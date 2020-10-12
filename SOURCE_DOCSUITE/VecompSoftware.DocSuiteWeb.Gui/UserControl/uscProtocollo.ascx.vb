@@ -11,6 +11,7 @@ Imports VecompSoftware.Helpers.UDS
 Imports VecompSoftware.Helpers.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 Imports VecompSoftware.Services.Logging
+Imports VecompSoftware.DocSuiteWeb.Facade.ProtocolParerFacade
 
 Partial Public Class uscProtocollo
     Inherits DocSuite2008BaseControl
@@ -38,14 +39,6 @@ Partial Public Class uscProtocollo
             Return btnViewUDS
         End Get
     End Property
-    Protected ReadOnly Property WebAPIHelper As IWebAPIHelper
-        Get
-            If _webAPIHelper Is Nothing Then
-                _webAPIHelper = New WebAPIHelper()
-            End If
-            Return _webAPIHelper
-        End Get
-    End Property
 
     Public ReadOnly Property CurrentUDSFacade As UDSFacade
         Get
@@ -58,12 +51,9 @@ Partial Public Class uscProtocollo
 
     Public Property CurrentProtocol() As Protocol
         Get
-            If Not _currentProtocol.Id.Year.HasValue Then
+            If _currentProtocol Is Nothing Then
                 If TypeOf Page Is ProtBasePage Then
                     _currentProtocol = DirectCast(Page, ProtBasePage).CurrentProtocol
-                Else
-                    ' Caso in cui uscProtocollo sia usato fuori dalla protbasepage (deve esserci un riferimento in query string)
-                    _currentProtocol = Facade.ProtocolFacade.GetById(Request.QueryString.GetValue(Of Short)("Year"), Request.QueryString.GetValue(Of Integer)("Number"), False)
                 End If
             End If
             Return _currentProtocol
@@ -296,6 +286,14 @@ Partial Public Class uscProtocollo
             trSourceCollaboration.Visible = value AndAlso DocSuiteContext.Current.ProtocolEnv.CollaborationSourceProtocolEnabled
         End Set
     End Property
+    Public Property VisibleMulticlassification As Boolean
+        Get
+            Return uscMulticlassificationRest.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            uscMulticlassificationRest.Visible = value
+        End Set
+    End Property
 
     Protected Function WindowWidth() As Integer
         Return ProtocolEnv.PECWindowWidth
@@ -455,7 +453,7 @@ Partial Public Class uscProtocollo
 
     Private Sub Page_Init(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Init
         ' TODO: perchè inizializzare così? dangerous!
-        CurrentProtocol = New Protocol()
+        CurrentProtocol = Nothing
         VisibleAltri = False
         VisibleAnnullamento = False
         VisibleAssegnatario = False
@@ -552,16 +550,11 @@ Partial Public Class uscProtocollo
         Try
             Dim currentUDSDocumentUnit As Entity.UDS.UDSDocumentUnit = CurrentRelatedUDS
             udsDynamicControls.ResetState()
-            Dim repository As UDSRepository = CurrentUDSRepositoryFacade.GetById(currentUDSDocumentUnit.Repository.UniqueId)
-            If repository Is Nothing Then
-                Throw New DocSuiteException(String.Format("Nessun repository configurato con ID {0}", currentUDSDocumentUnit.Repository.UniqueId))
-            End If
-            Dim udsSource As UDSDto = CurrentUDSFacade.GetUDSSource(repository, String.Format(ODATA_EQUAL_UDSID, currentUDSDocumentUnit.IdUDS))
-            If udsSource Is Nothing Then
-                Throw New DocSuiteException(String.Format("Nessun archivio trovato con ID {0}", currentUDSDocumentUnit.IdUDS))
-            End If
+            Dim repository As UDSRepository = GetCurrentUDSRepository()
+            Dim udsSource As UDSDto = GetCurrentUDSSource(repository)
+
             btnViewUDS.Text = String.Format("{0} {1}/{2:0000000}", repository.Name, udsSource.Year, udsSource.Number)
-            Dim schemaRepositoryModel As UDSModel = UDSModel.LoadXml(repository.ModuleXML)
+            Dim schemaRepositoryModel As UDSModel = GetCurrentSchemaRepositoryModel(repository)
             udsDynamicControls.LoadDynamicControls(schemaRepositoryModel.Model, False)
             udsDynamicControls.SetUDSValues(udsSource.UDSModel.Model)
         Catch ex As Exception
@@ -587,16 +580,76 @@ Partial Public Class uscProtocollo
         End If
 
         InitializeSourceCollaboation()
-        InitializeUDSSource()
+        InitializeUDSDynamicsControl()
 
-        uscDocumentUnitReferences.IdDocumentUnit = CurrentProtocol.UniqueId.ToString()
-        uscDocumentUnitReferences.DocumentUnitYear = CurrentProtocol.Id.Year.ToString()
-        uscDocumentUnitReferences.DocumentUnitNumber = CurrentProtocol.Id.Number.ToString()
-
-        uscMulticlassificationRest.IdDocumentUnit = CurrentProtocol.UniqueId.ToString()
+        uscMulticlassificationRest.IdDocumentUnit = CurrentProtocol.Id.ToString()
         uscMulticlassificationRest.Visible = ProtocolEnv.MulticlassificationEnabled
-
         Dim showCheckBox As Boolean = checkPECSendMessages()
+
+        uscDocumentUnitReferences.IdDocumentUnit = CurrentProtocol.Id.ToString()
+        uscDocumentUnitReferences.DocumentUnitYear = CurrentProtocol.Year.ToString()
+        uscDocumentUnitReferences.DocumentUnitNumber = CurrentProtocol.Number.ToString()
+        uscDocumentUnitReferences.ShowArchiveRelationLinks = ProtocolEnv.UDSEnabled
+        uscDocumentUnitReferences.ShowActiveWorkflowActivities = ProtocolEnv.WorkflowManagerEnabled AndAlso ProtocolEnv.WorkflowStateSummaryEnabled
+        uscDocumentUnitReferences.ShowDoneWorkflowActivities = ProtocolEnv.WorkflowManagerEnabled AndAlso ProtocolEnv.WorkflowStateSummaryEnabled
+        uscDocumentUnitReferences.ShowTNotice = ProtocolEnv.TNoticeEnabled
+        uscDocumentUnitReferences.ShowPECIncoming = False
+        uscDocumentUnitReferences.ShowPECOutgoing = False
+
+        If ProtocolEnv.IsPECEnabled Then
+            If CurrentProtocol.Type.ShortDescription.Eq("U") Then
+                uscDocumentUnitReferences.ShowPECOutgoing = True
+                uscDocumentUnitReferences.ShowPECIncoming = False
+            End If
+            If Not CurrentProtocol.Type.ShortDescription.Eq("U") Then
+                uscDocumentUnitReferences.ShowPECOutgoing = True
+                uscDocumentUnitReferences.ShowPECIncoming = True
+            End If
+
+        End If
+
+    End Sub
+    Private Function GetCurrentUDSRepository() As UDSRepository
+        Dim repository As UDSRepository = CurrentUDSRepositoryFacade.GetById(CurrentRelatedUDS.Repository.UniqueId)
+        If repository Is Nothing Then
+            Throw New DocSuiteException(String.Format("Nessun repository configurato con ID {0}", CurrentRelatedUDS.Repository.UniqueId))
+        End If
+
+        Return repository
+    End Function
+
+    Private Function GetCurrentUDSSource(repository As UDSRepository) As UDSDto
+        Dim udsSource As UDSDto = CurrentUDSFacade.GetUDSSource(repository, String.Format(ODATA_EQUAL_UDSID, CurrentRelatedUDS.IdUDS))
+        If udsSource Is Nothing Then
+            Throw New DocSuiteException(String.Format("Nessun archivio trovato con ID {0}", CurrentRelatedUDS.IdUDS))
+        End If
+
+        Return udsSource
+    End Function
+
+    Private Function GetCurrentSchemaRepositoryModel(repository As UDSRepository) As UDSModel
+        Dim schemaRepositoryModel As UDSModel = UDSModel.LoadXml(repository.ModuleXML)
+
+        Return schemaRepositoryModel
+    End Function
+
+    Private Sub InitializeUDSDynamicsControl()
+        tblUds.SetDisplay(False)
+        If CurrentRelatedUDS Is Nothing OrElse Not ViewUDSSource Then
+            Exit Sub
+        End If
+
+        Dim udsRepository As UDSRepository = GetCurrentUDSRepository()
+        Dim schemaRepositoryModel As UDSModel = GetCurrentSchemaRepositoryModel(udsRepository)
+        Dim showArchiveProtocol As Boolean = schemaRepositoryModel.Model.ShowArchiveInProtocolSummaryEnabled
+
+        tblUds.SetDisplay(showArchiveProtocol)
+
+        If Not showArchiveProtocol Then
+            Exit Sub
+        End If
+
+        InitializeUDSSource()
     End Sub
 
     ''' <summary> Caricamento dello stato per i controlli legacy </summary>
@@ -734,19 +787,6 @@ Partial Public Class uscProtocollo
             VisibleInvoicePA = False
         End If
 
-        uscDocumentUnitReferences.ShowPECIncoming = False
-        uscDocumentUnitReferences.ShowPECOutgoing = False
-        If ProtocolEnv.IsPECEnabled Then
-            If CurrentProtocol.Type.ShortDescription.Eq("U") Then
-                uscDocumentUnitReferences.ShowPECOutgoing = True
-                uscDocumentUnitReferences.ShowPECIncoming = False
-            End If
-            If Not CurrentProtocol.Type.ShortDescription.Eq("U") Then
-                uscDocumentUnitReferences.ShowPECOutgoing = True
-                uscDocumentUnitReferences.ShowPECIncoming = True
-            End If
-        End If
-
         'Altri
         If ProtocolEnv.DomainLookUpEnabled Then
             lblProtocolRegistrationUser.Text = String.Format("{0} {1:dd/MM/yyyy}", CommonAD.GetDisplayName(CurrentProtocol.RegistrationUser), CurrentProtocol.RegistrationDate.ToLocalTime)
@@ -763,8 +803,8 @@ Partial Public Class uscProtocollo
         End If
 
         'Collegamento Protocolli
-        If CurrentProtocol.ProtocolLinked IsNot Nothing AndAlso CurrentProtocol.ProtocolLinked.Count > 0 Then
-            lblProtocolLink.Text = CurrentProtocol.ProtocolLinked.Count.ToString()
+        If CurrentProtocol.ProtocolLinks IsNot Nothing AndAlso CurrentProtocol.ProtocolLinks.Count > 0 Then
+            lblProtocolLink.Text = CurrentProtocol.ProtocolLinks.Count.ToString()
         End If
 
         If VisibleRefusedTreeView Then
@@ -796,7 +836,7 @@ Partial Public Class uscProtocollo
             Exit Sub
         End If
 
-        Dim lst As IList(Of POLRequestRecipientHeader) = Facade.PosteOnLineRequestFacade.GetRecipientByProtocol(CurrentProtocol.Year, CurrentProtocol.Number)
+        Dim lst As IList(Of POLRequestRecipientHeader) = Facade.PosteOnLineRequestFacade.GetRecipientByProtocol(CurrentProtocol.Id)
         If lst.Count <= 0 Then
             Exit Sub
         End If
@@ -816,22 +856,10 @@ Partial Public Class uscProtocollo
         End If
 
         parerInfo.ImageUrl = "../Comm/images/info.png"
-        parerInfo.OnClientClick = String.Format("return OpenParerDetail({0}, {1});", CurrentProtocol.Year, CurrentProtocol.Number)
-
-        Select Case Facade.ProtocolParerFacade.GetConservationStatus(CurrentProtocol)
-            Case ProtocolParerFacade.ProtocolParerConservationStatus.Correct
-                parerIcon.ImageUrl = "../Comm/images/parer/green.png"
-                parerLabel.Text = "Conservazione corretta."
-            Case ProtocolParerFacade.ProtocolParerConservationStatus.Warning
-                parerIcon.ImageUrl = "../Comm/images/parer/yellow.png"
-                parerLabel.Text = "Conservazione con avviso."
-            Case ProtocolParerFacade.ProtocolParerConservationStatus.Error
-                parerIcon.ImageUrl = "../Comm/images/parer/red.png"
-                parerLabel.Text = "Conservazione con errori."
-            Case ProtocolParerFacade.ProtocolParerConservationStatus.Undefined
-                parerIcon.ImageUrl = "../Comm/images/parer/lightgray.png"
-                parerLabel.Text = "Stato conservazione non definito."
-        End Select
+        parerInfo.OnClientClick = String.Format("return OpenParerDetail('{0}');", CurrentProtocol.Id)
+        Dim status As ProtocolParerConservationStatus = Facade.ProtocolParerFacade.GetConservationStatus(CurrentProtocol)
+        parerIcon.ImageUrl = uscProtGrid.GetParerStatusIcon(status)
+        parerLabel.Text = ConservationsStatus(status)
     End Sub
 
     Public Sub LoadInvoicePA()
@@ -874,25 +902,25 @@ Partial Public Class uscProtocollo
                 uscMittenti.EnableCompression = False
                 uscMittenti.MultiSelect = True
                 uscMittenti.ButtonSelectVisible = True
-                uscMittenti.ButtonSelectDomainVisible = True
+                uscMittenti.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
                 uscMittenti.ButtonSelectOChartVisible = True
                 uscMittenti.ButtonDeleteVisible = True
                 uscMittenti.ButtonManualVisible = True
                 uscMittenti.ButtonPropertiesVisible = True
                 uscMittenti.ButtonImportVisible = ProtocolEnv.IsImportContactEnabled
-                uscMittenti.ButtonIPAVisible = (Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa))
+                uscMittenti.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
 
                 uscDestinatari.ReadOnly = False
                 uscDestinatari.EnableCompression = False
                 uscDestinatari.MultiSelect = True
                 uscDestinatari.ButtonSelectVisible = True
-                uscDestinatari.ButtonSelectDomainVisible = True
+                uscDestinatari.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
                 uscDestinatari.ButtonSelectOChartVisible = True
                 uscDestinatari.ButtonDeleteVisible = True
                 uscDestinatari.ButtonManualVisible = True
                 uscDestinatari.ButtonPropertiesVisible = True
                 uscDestinatari.ButtonImportVisible = ProtocolEnv.IsImportContactEnabled
-                uscDestinatari.ButtonIPAVisible = (Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa))
+                uscDestinatari.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
             Else
                 If ContactMittenteModifyEnable Then
                     uscMittenti.IsRequired = True
@@ -900,13 +928,13 @@ Partial Public Class uscProtocollo
                     uscMittenti.EnableCompression = False
                     uscMittenti.MultiSelect = False ' non supporta la multiselezione, eventualmente prevedere una proprietà ContactMittentiModifyEnable
                     uscMittenti.ButtonSelectVisible = True
-                    uscMittenti.ButtonSelectDomainVisible = True
+                    uscMittenti.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
                     uscMittenti.ButtonSelectOChartVisible = True
                     uscMittenti.ButtonDeleteVisible = True
                     uscMittenti.ButtonManualVisible = True
                     uscMittenti.ButtonPropertiesVisible = True
                     uscMittenti.ButtonImportVisible = ProtocolEnv.IsImportContactEnabled
-                    uscMittenti.ButtonIPAVisible = (Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa))
+                    uscMittenti.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
                 End If
 
                 If ContactDestinatariModifyEnable Then
@@ -915,13 +943,13 @@ Partial Public Class uscProtocollo
                     uscDestinatari.EnableCompression = False
                     uscDestinatari.MultiSelect = True
                     uscDestinatari.ButtonSelectVisible = True
-                    uscDestinatari.ButtonSelectDomainVisible = True
+                    uscDestinatari.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
                     uscDestinatari.ButtonSelectOChartVisible = True
                     uscDestinatari.ButtonDeleteVisible = True
                     uscDestinatari.ButtonManualVisible = True
                     uscDestinatari.ButtonPropertiesVisible = True
                     uscDestinatari.ButtonImportVisible = ProtocolEnv.IsImportContactEnabled
-                    uscDestinatari.ButtonIPAVisible = (Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa))
+                    uscDestinatari.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
                 End If
             End If
 
@@ -929,11 +957,11 @@ Partial Public Class uscProtocollo
             Dim countMittContacts As Integer = 0
             Dim countDestContacts As Integer = 0
             If (checkMaxItems) Then
-                countMittContacts = Facade.ProtocolContactFacade.GetCountByProtocol(CurrentProtocol.Year, CurrentProtocol.Number, "M")
-                countMittContacts += Facade.ProtocolContactManualFacade.GetCountByProtocol(CurrentProtocol.Year, CurrentProtocol.Number, "M")
+                countMittContacts = Facade.ProtocolContactFacade.GetCountByProtocol(CurrentProtocol, "M")
+                countMittContacts += Facade.ProtocolContactManualFacade.GetCountByProtocol(CurrentProtocol, "M")
                 'recupera il numero di contatti manuali
-                countDestContacts = Facade.ProtocolContactFacade.GetCountByProtocol(CurrentProtocol.Year, CurrentProtocol.Number, "D")
-                countDestContacts += Facade.ProtocolContactManualFacade.GetCountByProtocol(CurrentProtocol.Year, CurrentProtocol.Number, "D")
+                countDestContacts = Facade.ProtocolContactFacade.GetCountByProtocol(CurrentProtocol, "D")
+                countDestContacts += Facade.ProtocolContactManualFacade.GetCountByProtocol(CurrentProtocol, "D")
             End If
 
 
@@ -948,16 +976,22 @@ Partial Public Class uscProtocollo
     End Sub
 
     Private Sub LoadRoles()
-        If CurrentProtocol.Roles.Count > 0 OrElse (DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso CurrentProtocol.Users.Where(Function(u) u.Type = ProtocolUserType.Authorization).Count > 0) Then
+        If CurrentProtocol.Roles.Count > 0 OrElse (DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso CurrentProtocol.Users.Where(Function(u) u.Type = ProtocolUserType.Authorization).Count > 0) _
+            OrElse (ProtocolEnv.ProtocolHighlightEnabled AndAlso CurrentProtocol.Users.Where(Function(u) u.Type = ProtocolUserType.Highlight).Count > 0) Then
             uscSettori.Visible = True
             uscSettori.Caption = "Settori con Autorizzazione"
             uscSettori.CurrentProtocol = CurrentProtocol
-            uscSettori.DataBindProtocolRoles(CurrentProtocol.Roles, True, CurrentProtocol.Users.Where(Function(u) u.Type = ProtocolUserType.Authorization).ToList())
+            uscSettori.DataBindProtocolRoles(CurrentProtocol.Roles, True, CurrentProtocol.Users.Where(Function(u) u.Type = ProtocolUserType.Authorization OrElse u.Type = ProtocolUserType.Highlight).ToList())
         Else
             uscSettori.Visible = False
         End If
 
         BindProtocolRoleUsers(uscSettori.RoleUserViewMode.RoleUsers)
+    End Sub
+
+    Public Sub RefreshProtocolRolesTree()
+        uscSettori.TreeViewControl.Nodes().Clear()
+        LoadRoles()
     End Sub
 
     Public Function GetProtocolStatusDescription() As String
@@ -1055,7 +1089,6 @@ Partial Public Class uscProtocollo
     End Sub
 
     Private Sub InitializeUDSSource()
-        tblUds.SetDisplay(False)
         udsDynamicControls.IsReadOnly = True
         If CurrentRelatedUDS Is Nothing Then
             Exit Sub

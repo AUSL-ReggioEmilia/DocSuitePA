@@ -27,7 +27,7 @@
             <td style="width: 20px; display: none;" runat="server" id="colAcceptanceRole">
                 <asp:RadioButtonList AutoPostBack="true" ID="rblAcceptance" RepeatDirection="Vertical" runat="server">
                     <asp:ListItem Text='<img src="../App_Themes/DocSuite2008/imgset16/accept.png"/> Accetta' Value="1" />
-                    <asp:ListItem Text='<img  src="~/App_Themes/DocSuite2008/imgset16/delete.png"/> Rifiuta' Value="-1" />
+                    <asp:ListItem Text='<img  src="../App_Themes/DocSuite2008/imgset16/delete.png"/> Rifiuta' Value="-1" />
                 </asp:RadioButtonList>
             </td>
             <td style="width: 20px; display: none;" runat="server" id="colVisibilityNoteRole">

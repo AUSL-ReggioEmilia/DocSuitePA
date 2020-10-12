@@ -46,10 +46,6 @@ Public Class TaskHeaderFacade
         Return True
     End Function
 
-    Public Function GetProtocolsKey(ids As IEnumerable(Of Integer)) As IList(Of YearNumberCompositeKey)
-        Return Me._dao.GetProtocolsKey(ids)
-    End Function
-
     Public Sub ActivatePECTaskProcess(pecMail As PECMail)
         Dim taskHeader As TaskHeader = GetByPEC(pecMail)
         If taskHeader Is Nothing Then

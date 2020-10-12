@@ -8,6 +8,8 @@ interface FascicleDocumentModel {
     Fascicle: FascicleModel;
     ChainType: ChainType;
     FascicleFolder: FascicleFolderModel;
+    FileName: string;
+    ImageUrl: string;
 }
 
 export = FascicleDocumentModel;

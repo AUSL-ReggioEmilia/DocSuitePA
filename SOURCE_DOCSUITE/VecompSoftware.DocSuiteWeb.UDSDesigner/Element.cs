@@ -39,6 +39,8 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         public bool enabledCancelMotivation { get; set; }
 
         public bool hideRegistrationIdentifier { get; set; }
+        public bool stampaConformeEnabled { get; set; }
+        public bool showArchiveInProtocolSummaryEnabled { get; set; }
         public bool requiredRevisionUDSRepository { get; set; }
         public bool searchable { get; set; }
         public string contactTypeSelected { get; set; }
@@ -69,6 +71,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         public bool copyProtocol { get; set; }
         public bool copyResolution { get; set; }
         public bool copySeries { get; set; }
+        public bool copyUDS { get; set; }
         public bool enableAD { get; set; }
         public bool enableAddressBook { get; set; }
         public bool enableADDistribution { get; set; }
@@ -83,7 +86,6 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         public bool hiddenField { get; set; }
         public bool incrementalIdentityEnabled { get; set; }
         public bool createContainer { get; set; }
-        public bool dematerialisationEnabled { get; set; }
         public string lookupRepositoryName { get; set; }
         public string lookupFieldName { get; set; }
         public bool resultVisibility { get; set; }
@@ -91,5 +93,9 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         public bool categoryResultVisibility { get; set; }
         public short resultPosition { get; set; }
         public bool multipleValues { get; set; }
+        public bool showLastChangedDate { get; set; }
+        public bool showLastChangedUser { get; set; }
+        public double? minValue { get; set; }
+        public double? maxValue { get; set; }
     }
 }

@@ -68,6 +68,22 @@
                             </tr>
                             <tr>
                                 <td class="col-dsw-2 label" style="vertical-align: middle;">
+                                    <label>Nome documento:</label>
+                                </td>
+                                <td class="col-dsw-8">
+                                    <telerik:RadTextBox ID="txtDocumentName" runat="server" Width="100%" TextMode="SingleLine"></telerik:RadTextBox>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td class="col-dsw-2 label" style="vertical-align: middle;">
+                                    <label>Privo di documenti:</label>
+                                </td>
+                                <td class="col-dsw-8">
+                                    <asp:CheckBox runat="server" ID="chkGenericDocument" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-dsw-2 label" style="vertical-align: middle;">
                                     <label>Archivi annullati:</label>
                                 </td>
                                 <td class="col-dsw-8">

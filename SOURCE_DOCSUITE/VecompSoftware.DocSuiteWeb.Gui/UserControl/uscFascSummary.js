@@ -1,7 +1,7 @@
 /// <reference path="../scripts/typings/telerik/telerik.web.ui.d.ts" />
 /// <reference path="../scripts/typings/moment/moment.d.ts" />
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
-define(["require", "exports", "App/Services/Fascicles/FascicleService", "App/Models/Fascicles/FascicleType", "App/Services/Securities/DomainUserService", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO", "App/Models/Workflows/WorkflowPropertyHelper", "App/Services/Workflows/WorkflowActivityService"], function (require, exports, FascicleService, FascicleType, DomainUserService, ServiceConfigurationHelper, ExceptionDTO, WorkflowPropertyHelper, WorkflowActivityService) {
+define(["require", "exports", "App/Services/Fascicles/FascicleService", "App/Services/Dossiers/DossierFolderService", "App/Models/Fascicles/FascicleType", "App/Services/Securities/DomainUserService", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO", "App/Models/Workflows/WorkflowPropertyHelper", "App/Services/Workflows/WorkflowActivityService", "App/Models/Dossiers/DossierFolderStatus"], function (require, exports, FascicleService, DossierFolderService, FascicleType, DomainUserService, ServiceConfigurationHelper, ExceptionDTO, WorkflowPropertyHelper, WorkflowActivityService, DossierFolderStatus) {
     var uscFascSummary = /** @class */ (function () {
         /**
          * Costruttore
@@ -35,20 +35,15 @@ define(["require", "exports", "App/Services/Fascicles/FascicleService", "App/Mod
             $(document).ready(function () {
             });
         }
-        Object.defineProperty(uscFascSummary.prototype, "lblContainer", {
-            get: function () {
-                return $("#" + this.lblContainerId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(uscFascSummary.prototype, "containerRow", {
-            get: function () {
-                return $("#" + this.containerRowId);
-            },
-            enumerable: true,
-            configurable: true
-        });
+        uscFascSummary.prototype.lblContainer = function () {
+            return $("#" + this.lblContainerId);
+        };
+        uscFascSummary.prototype.containerRow = function () {
+            return $("#" + this.containerRowId);
+        };
+        uscFascSummary.prototype.lblSerieNameRow = function () {
+            return $("#" + this.serieLabelRowId);
+        };
         /**
          * Inizializzazione
          */
@@ -63,6 +58,7 @@ define(["require", "exports", "App/Services/Fascicles/FascicleService", "App/Mod
             this._lblLastChangedDate = $("#".concat(this.lblLastChangedDateId));
             this._lblLastChangedUser = $("#".concat(this.lblLastChangedUserId));
             this._lblRegistrationDate = $("#".concat(this.lblRegistrationDateId));
+            this._lblSerieName = $("#".concat(this.serieLabelId));
             this._loadingPanel = $find(this.ajaxLoadingPanelId);
             this._ajaxManager = $find(this.ajaxManagerId);
             this._btnExpandFascInfo = $find(this.btnExpandFascInfoId);
@@ -72,12 +68,17 @@ define(["require", "exports", "App/Services/Fascicles/FascicleService", "App/Mod
             this._fascInfoContent = $("#".concat(this.fascInfoId));
             this._fascInfoContent.show();
             this._lblViewFascicle = $("#".concat(this.lblViewFascicleId));
+            var dossierFolderServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DossierFolder");
+            this._dossierFolderService = new DossierFolderService(dossierFolderServiceConfiguration);
             var domainUserConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DomainUserModel");
             this._domainUserService = new DomainUserService(domainUserConfiguration);
             var workflowActivityConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, 'WorkflowActivity');
             this._workflowActivityService = new WorkflowActivityService(workflowActivityConfiguration);
             if (this.isSummaryLink) {
                 $("#".concat(this.fascCaptionId)).hide();
+            }
+            if (this.processEnabled) {
+                this.lblSerieNameRow().show();
             }
             this.bindLoaded();
         };
@@ -100,11 +101,11 @@ define(["require", "exports", "App/Services/Fascicles/FascicleService", "App/Mod
             if (fascicle == null) {
                 return promise.resolve();
             }
-            $.when(this.getFascicleUserDisplayName(fascicle.RegistrationUser), this.getFascicleUserDisplayName(fascicle.LastChangedUser))
-                .done(function (registrationUser, lastChangedUser) {
+            $.when(this.getFascicleUserDisplayName(fascicle.RegistrationUser), this.getFascicleUserDisplayName(fascicle.LastChangedUser), this.getFascicleSerieName(fascicle.UniqueId))
+                .done(function (registrationUser, lastChangedUser, serieName) {
                 fascicle.RegistrationUser = registrationUser;
                 fascicle.LastChangedUser = lastChangedUser;
-                _this.setSummaryData(fascicle)
+                _this.setSummaryData(fascicle, serieName)
                     .done(function () { return promise.resolve(); })
                     .fail(function (exception) {
                     _this._uscNotification = $("#".concat(_this.uscNotificationId)).data();
@@ -136,17 +137,34 @@ define(["require", "exports", "App/Services/Fascicles/FascicleService", "App/Mod
             });
             return promise.promise();
         };
+        uscFascSummary.prototype.getFascicleSerieName = function (fascicleId) {
+            var _this = this;
+            var promise = $.Deferred();
+            this._dossierFolderService.getProcessByFascicleId(fascicleId, function (odataResult) {
+                if (!odataResult.length) {
+                    return promise.resolve("");
+                }
+                var dossierFolder = odataResult[0];
+                var serieName = dossierFolder.Dossier.Subject + "/" + _this.buildDossierProcessFullNameRecursive(dossierFolder.Dossier.DossierFolders, dossierFolder);
+                return promise.resolve(serieName);
+            }, function (exception) {
+                console.warn("E' avvenuto un errore durante la ricerca della serie per fascicolo con id " + fascicleId + ".");
+                return promise.resolve("");
+            });
+            return promise.promise();
+        };
         /**
          * Imposta i dati nel sommario
          * @param fascicle
          */
-        uscFascSummary.prototype.setSummaryData = function (fascicle) {
+        uscFascSummary.prototype.setSummaryData = function (fascicle, serieName) {
             var _this = this;
             var promise = $.Deferred();
             try {
                 this._lblViewFascicle.hide();
                 var title = fascicle.Title + " - " + fascicle.Category.Name;
                 this._lblTitle.html(title);
+                this._lblSerieName.html(serieName);
                 if (this.isSummaryLink) {
                     this._lblTitle.hide();
                     this._lblViewFascicle.show();
@@ -189,12 +207,12 @@ define(["require", "exports", "App/Services/Fascicles/FascicleService", "App/Mod
                 }
                 this._lblRegistrationDate.html(moment(fascicle.RegistrationDate).format("DD/MM/YYYY"));
                 this._lblRegistrationUser.html(fascicle.RegistrationUser);
-                this.containerRow.hide();
+                this.containerRow().hide();
                 if (this.fascicleContainerEnabled && (fascicle.FascicleType == FascicleType.Period
                     || fascicle.FascicleType == FascicleType.Procedure)
                     && fascicle.Container) {
-                    this.containerRow.show();
-                    this.lblContainer.html(fascicle.Container.Name);
+                    this.containerRow().show();
+                    this.lblContainer().html(fascicle.Container.Name);
                 }
                 if (!this.workflowActivityId) {
                     return promise.resolve();
@@ -218,6 +236,27 @@ define(["require", "exports", "App/Services/Fascicles/FascicleService", "App/Mod
             catch (exception) {
                 return promise.reject(exception);
             }
+        };
+        uscFascSummary.prototype.buildDossierProcessFullNameRecursive = function (source, dossierFolder) {
+            var fullName = "";
+            var paths = dossierFolder.DossierFolderPath.split('/').filter(function (item, index) {
+                return !!item;
+            });
+            if (paths.length > 1) {
+                paths.pop();
+                var folderPathToCheck_1 = "/" + paths.join('/') + "/";
+                var parentFolder = source.filter(function (dossierFolder, index) {
+                    return dossierFolder.DossierFolderPath == folderPathToCheck_1;
+                })[0];
+                if (parentFolder && DossierFolderStatus[parentFolder.Status.toString()] != DossierFolderStatus.InProgress) {
+                    var parentName = this.buildDossierProcessFullNameRecursive(source, parentFolder);
+                    fullName = parentFolder.Name;
+                    if (parentName) {
+                        fullName = parentName + "/" + parentFolder.Name;
+                    }
+                }
+            }
+            return fullName;
         };
         uscFascSummary.LOADED_EVENT = "onLoaded";
         uscFascSummary.DATA_LOADED_EVENT = "onDataLoaded";

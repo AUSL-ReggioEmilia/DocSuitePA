@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using VecompSoftware.Clients.WebAPI.Http;
 using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
 using VecompSoftware.DocSuiteWeb.Model.WebAPI.Client;
@@ -19,6 +20,7 @@ namespace VecompSoftware.WebAPIManager.Dao
         private readonly IHttpClientConfiguration _originalConfiguration;
         private readonly TWebAPIFinder _finder;
         private WebAPIHelper _context;
+        private Func<ICredential, HttpClientHandler> _customAuthFunc;
 
         #endregion
 
@@ -53,6 +55,7 @@ namespace VecompSoftware.WebAPIManager.Dao
             _originalConfiguration = originalConfiguration;
             _finder = finder;
             _finder.EnablePaging = false;
+            _customAuthFunc = null;
         }
 
         #endregion
@@ -63,7 +66,7 @@ namespace VecompSoftware.WebAPIManager.Dao
         {
             SetEntityREST();
             //return _finder.Count();
-            return Context.GetRequest<T, int>(_clientConfiguration, _originalConfiguration, "$count");
+            return Context.GetRequest<T, int>(_clientConfiguration, _originalConfiguration, "$count", _customAuthFunc);
         }
 
         public void Delete(ref T entity)
@@ -88,19 +91,19 @@ namespace VecompSoftware.WebAPIManager.Dao
         public void Save(ref T entity)
         {
             SetEntityREST();
-            Context.SendRequest(_clientConfiguration, _originalConfiguration, entity);
+            Context.SendRequest(_clientConfiguration, _originalConfiguration, entity, externalHandlerInitialize: _customAuthFunc);
         }
 
         public void Update(ref T entity)
         {
             SetEntityREST();
-            Context.SendUpdateRequest(_clientConfiguration, _originalConfiguration, entity);
+            Context.SendUpdateRequest(_clientConfiguration, _originalConfiguration, entity, externalHandlerInitialize: _customAuthFunc);
         }
 
         public void Update(ref T entity, string actionType)
         {
             SetEntityREST();
-            Context.SendUpdateRequest(_clientConfiguration, _originalConfiguration, entity, actionType);
+            Context.SendUpdateRequest(_clientConfiguration, _originalConfiguration, entity, actionType, _customAuthFunc);
         }
 
         private void SetEntityREST()
@@ -109,6 +112,12 @@ namespace VecompSoftware.WebAPIManager.Dao
             IWebApiControllerEndpoint controller = _clientConfiguration.EndPoints.Single(f => f.EndpointName.Equals(entityName, StringComparison.InvariantCultureIgnoreCase));
             controller.AddressName = WebApiHttpClient.API_ADDRESS_NAME;
             controller.ControllerName = entityName;
+        }
+
+        public void SetCustomAuthenticationInizializer(Func<ICredential, HttpClientHandler> authenticationInitializer)
+        {
+            _customAuthFunc = authenticationInitializer;
+            Finder.SetCustomAuthenticationInizializer(_customAuthFunc);
         }
         #endregion
     }

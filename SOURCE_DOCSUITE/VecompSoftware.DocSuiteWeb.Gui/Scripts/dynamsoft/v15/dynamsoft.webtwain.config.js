@@ -25,7 +25,7 @@ Dynamsoft.WebTwainEnv.Containers = [{ ContainerId: 'dwtcontrolContainer', Width:
 /////////////////////////////////////////////////////////////////////////////////////
 /// If you need to use multiple keys on the same server, you can combine keys and write like this 
 /// Dynamsoft.WebTwainEnv.ProductKey = 'key1;key2;key3';
-Dynamsoft.WebTwainEnv.ProductKey = 'key1;key2;key3';
+Dynamsoft.WebTwainEnv.ProductKey = '';
 
 ///
 Dynamsoft.WebTwainEnv.Trial = false;

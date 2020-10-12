@@ -14,10 +14,10 @@ GO
 BEGIN TRANSACTION
 GO
 --#############################################################################
-PRINT 'Versionamento database alla 8.81'
+PRINT 'Versionamento database alla 9.00'
 GO
 
-EXEC dbo.VersioningDatabase N'8.81',N'DSW Version','MigrationDate'
+EXEC dbo.VersioningDatabase N'9.00',N'DSW Version','MigrationDate'
 GO
 IF @@ERROR <> 0 AND @@TRANCOUNT > 0
     BEGIN ROLLBACK;

@@ -47,6 +47,7 @@ Public Class TemplateDocumentViewer
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         InitializeAjax()
         If Not Page.IsPostBack AndAlso Not Page.IsCallback Then
+            MasterDocSuite.TitleVisible = False
             If IsPreview Then
                 ViewerLight.ToolBarVisible = False
                 ViewerLight.LeftPaneStartWidth = 0
@@ -65,7 +66,7 @@ Public Class TemplateDocumentViewer
     End Sub
 
     Private Sub BindViewerLight()
-        Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(String.Empty, IdChain)
+        Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(IdChain)
         Dim temp As List(Of DocumentInfo) = docs.Cast(Of DocumentInfo)().ToList()
 
         Dim main As New FolderInfo() With {.Name = LabelName}

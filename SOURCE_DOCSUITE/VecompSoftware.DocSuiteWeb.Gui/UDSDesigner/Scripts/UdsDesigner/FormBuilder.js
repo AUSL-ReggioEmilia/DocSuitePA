@@ -76,6 +76,12 @@ var UdsDesigner;
                 if (!isNaN(_this.differentCols))
                     $("#itemChanger").val(_this.differentCols).trigger('change'); //bind layout column to existing value
                 $(e.currentTarget).find("input").first().focus();
+                $(e.currentTarget).find("span").each(function (i, spanElement) {
+                    var ctrl = UdsDesigner.CtrlBase.getElementCtrl(_this.getElement());
+                    if (spanElement.id === "deleteSelectedItem" && ctrl.getValues().defaultValue === "") {
+                        $("#" + spanElement.id).hide();
+                    }
+                });
             });
             $("#options_modal").submit(function (e) {
                 e.preventDefault();
@@ -160,13 +166,19 @@ var UdsDesigner;
             var _loop_1 = function (i) {
                 columnTable.append("<td style=\"background:RGBA(132,121,121,0,51); width:30%; height:100%;\" class=\"component\" id=\"column" + i + "\">Trascina nella colonna " + (i + 1) + "</td>");
                 $("#column" + i).droppable({
-                    accept: '.component',
                     hoverClass: 'content-hover',
                     drop: function (e, ui) {
-                        var ctrlType = ui.draggable.data('type');
-                        _this.addCustomComponent(ctrlType, i);
-                        _this.columns = i;
-                        _this.rows = $("#column" + i).children("div").length;
+                        if (ui.draggable[0].parentElement.id === "") {
+                            var ctrlType = ui.draggable.data('type');
+                            _this.addCustomComponent(ctrlType, i);
+                            _this.columns = i;
+                            _this.rows = $("#column" + i).children("div").length;
+                        }
+                        else {
+                            if ($("#column" + i).children("div").length === 0) {
+                                $("#column" + i).append(ui.draggable);
+                            }
+                        }
                         document.dispatchEvent(_this.modelChanged);
                     }
                 });
@@ -198,13 +210,35 @@ var UdsDesigner;
         };
         // the form editor is a droppable area that accepts components,
         // converts them to elements and makes them sortable
-        FormBuilder.prototype.addCustomComponent = function (componentType, indexColumn, elementClass, addClose) {
+        FormBuilder.prototype.addCustomComponent = function (componentType, indexColumn, elementClass, addClose, addDrag) {
+            var _this = this;
             if (elementClass === void 0) { elementClass = "element"; }
             if (addClose === void 0) { addClose = true; }
-            //debugger;
+            if (addDrag === void 0) { addDrag = true; }
             var ctrl = $("#component-" + componentType).clone();
             ctrl.addClass(elementClass);
             ctrl.removeAttr('id');
+            if (addDrag) {
+                ctrl.draggable({
+                    helper: function (e) {
+                        return $(e.currentTarget).clone().addClass('component-drag');
+                    }
+                });
+                ctrl.droppable({
+                    hoverClass: 'content-hover',
+                    drop: function (e, ui) {
+                        if (ui.draggable[0].parentElement.id !== "") {
+                            if (ui.draggable[0].parentElement.id === ctrl[0].parentElement.id) {
+                                _this.swapNodes(ui.draggable[0], ctrl[0]);
+                            }
+                            else {
+                                ui.draggable.insertAfter(ctrl);
+                            }
+                            document.dispatchEvent(_this.modelChanged);
+                        }
+                    }
+                });
+            }
             if (addClose)
                 ctrl.prepend('<div class="close">&times;</div>');
             ctrl.appendTo("#column" + indexColumn);
@@ -213,6 +247,12 @@ var UdsDesigner;
             ctrlData.afterAppend();
             $("#options_modal").modal('hide');
             return ctrl[0];
+        };
+        FormBuilder.prototype.swapNodes = function (a, b) {
+            var aparent = a.parentNode;
+            var asibling = a.nextSibling === b ? a : a.nextSibling;
+            b.parentNode.insertBefore(a, b);
+            aparent.insertBefore(b, asibling);
         };
         FormBuilder.prototype.initControls = function () {
             var _this = this;
@@ -298,14 +338,35 @@ var UdsDesigner;
                 var ctrl = UdsDesigner.CtrlBase.getElementCtrl(item);
                 elements.push(ctrl.getValues());
             });
+            var allElementsArePositioned = true;
             $(".element").each(function (index, item) {
                 var ctrl = UdsDesigner.CtrlBase.getElementCtrl(item);
+                if (!ctrl)
+                    return;
                 if (ctrl.columns === undefined && ctrl.rows === undefined) {
+                    allElementsArePositioned = false;
                     ctrl.columns = _this.columns;
                     ctrl.rows = _this.rows;
                 }
                 elements.push(ctrl.getValues());
             });
+            if (allElementsArePositioned) {
+                var tempCollumns_1 = 0;
+                var rowIndex_1 = 0;
+                $(".element").each(function (index, item) {
+                    var ctrl = UdsDesigner.CtrlBase.getElementCtrl(item);
+                    if (!ctrl)
+                        return;
+                    rowIndex_1++;
+                    var currentColumn = Number(item.parentElement.id[item.parentElement.id.length - 1]);
+                    ctrl.columns = currentColumn;
+                    if (currentColumn !== tempCollumns_1) {
+                        tempCollumns_1 = currentColumn;
+                        rowIndex_1 = 1;
+                    }
+                    ctrl.rows = rowIndex_1;
+                });
+            }
             return elements;
         };
         FormBuilder.prototype.updateRequiredRevisionUDSRepository = function (value) {

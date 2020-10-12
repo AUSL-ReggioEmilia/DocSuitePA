@@ -27,6 +27,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Commons
 
         public bool? IsActive { get; set; }
 
+        public bool? IncludeZeroLevel { get; set; }
+
         public int? ParentId { get; set; }
 
         public bool? IncludeChildren { get; set; }
@@ -67,6 +69,15 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Commons
         {
             CategoryFascicle categoryFascicle = null;
             IQueryOver<Category, Category> query = queryOver;
+
+            if (IncludeZeroLevel.HasValue && IncludeZeroLevel.Value)
+            {
+                query = query.Where(x => x.Code >= 0);
+            }
+            else
+            {
+                query = query.Where(x => x.Code > 0);
+            }
 
             if (CategorySchemaId.HasValue)
             {
@@ -131,7 +142,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Commons
                     }
                     else
                     {
-                        query = query.Where(x => x.Parent == null);
+                        query = query.Where(x => x.Code > 0);
                     }
                 }
             }

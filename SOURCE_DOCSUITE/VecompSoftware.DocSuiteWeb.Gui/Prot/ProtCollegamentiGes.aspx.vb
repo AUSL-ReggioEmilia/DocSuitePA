@@ -22,19 +22,6 @@ Public Class ProtCollegamentiGes
 
 #Region " Properties "
 
-    Private ReadOnly Property Year As String
-        Get
-            Return Request.QueryString("Year")
-        End Get
-    End Property
-
-    Private ReadOnly Property Number As String
-        Get
-            Return Request.QueryString("Number")
-        End Get
-    End Property
-
-
     Public Property SelectedProtocol() As Protocol
         Get
             Return selProtocol
@@ -63,7 +50,7 @@ Public Class ProtCollegamentiGes
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         ' Inizializza gli oggetti di pagina
         If Not Me.IsPostBack Then
-            txtYear.Text = Year
+            txtYear.Text = CurrentProtocol.Year.ToString()
             txtNumber.Focus()
         End If
         Initialize()
@@ -105,7 +92,7 @@ Public Class ProtCollegamentiGes
         End If
 
         ' Verifica che il protocollo selezionato non sia successivo a quello del padre
-        If (SelectedProtocol.Id.Year.Value > CurrentProtocol.Id.Year.Value) OrElse (SelectedProtocol.Id.Year.Value = CurrentProtocol.Id.Year.Value AndAlso SelectedProtocol.Id.Number.Value > CurrentProtocol.Id.Number.Value) Then
+        If (SelectedProtocol.Year > CurrentProtocol.Year) OrElse (SelectedProtocol.Year = CurrentProtocol.Year AndAlso SelectedProtocol.Number > CurrentProtocol.Number) Then
             uscProtocolPreview.Visible = False
             btnAdd.Visible = False
             btnAdd.Enabled = False
@@ -127,14 +114,14 @@ Public Class ProtCollegamentiGes
     Private Sub btnAdd_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnAdd.Click
         Dim vYear As Short
         Dim vNumber As Integer
-        If Short.TryParse(txtYear.Text, vYear) And Integer.TryParse(txtNumber.Text, vNumber) Then
+        If Short.TryParse(txtYear.Text, vYear) AndAlso Integer.TryParse(txtNumber.Text, vNumber) Then
             ' Ricerca protocollo per anno/numero
             SelectedProtocol = Facade.ProtocolFacade.GetById(vYear, vNumber, False)
             ' Aggiunge il protocollo selezionato come collegamento al protocollo corrente
-            Dim fascicleDocumentUnitFacade As WebAPI.Fascicles.FascicleDocumentUnitFacade = New WebAPI.Fascicles.FascicleDocumentUnitFacade(DocSuiteContext.Current.Tenants)
+            Dim fascicleDocumentUnitFacade As WebAPI.Fascicles.FascicleDocumentUnitFacade = New WebAPI.Fascicles.FascicleDocumentUnitFacade(DocSuiteContext.Current.Tenants.ToList(), CurrentTenant)
             Dim fascicleReference As Action(Of Guid, Guid) = AddressOf fascicleDocumentUnitFacade.LinkFascicleReference
             Facade.ProtocolFacade.AddProtocolLink(CurrentProtocol, SelectedProtocol, ProtocolFacade.ProtocolLinkType.Normale, fascicleReference)
-            CurrentProtocol.ProtocolLinked.Add(SelectedProtocol)
+            CurrentProtocol.ProtocolLinks.Add(New ProtocolLink() With {.Protocol = CurrentProtocol, .ProtocolLinked = SelectedProtocol})
         End If
         ' Chiude la finestra
         MasterDocSuite.AjaxManager.ResponseScripts.Add("CloseWindow();")
@@ -149,10 +136,6 @@ Public Class ProtCollegamentiGes
         AjaxManager.AjaxSettings.AddAjaxSetting(btnSeleziona, btnAdd)
 
         WebUtils.ExpandOnClientNodeAttachEvent(tvwProtocolLink)
-
-        If String.IsNullOrEmpty(Year) OrElse String.IsNullOrEmpty(Number) Then
-            Exit Sub
-        End If
 
         ' Popola il treeview
         ' Primo nodo: protocollo in lavorazione
@@ -172,8 +155,7 @@ Public Class ProtCollegamentiGes
     Private Function createNode(ByVal protocol As Protocol) As RadTreeNode
 
         Dim childNode As New RadTreeNode()
-        childNode.Text = protocol.Id.ToString()
-        childNode.Text &= " del " & String.Format("{0:dd/MM/yyyy}", protocol.RegistrationDate.ToLocalTime())
+        childNode.Text = $"{protocol.FullNumber} del {protocol.RegistrationDate:dd/MM/yyyy}"
         ' protocollo in entrata
         If protocol.Type.Id = 1 Then
             childNode.ImageUrl = iconMailU
@@ -201,19 +183,15 @@ Public Class ProtCollegamentiGes
             vProtocol = CurrentProtocol
         Else
             ' Protocolli figli
-            Dim vId As Array = Split(vFather.Value, "/")
-            'Anno
-            Dim vYear As Short = Short.Parse(vId(0))
-            ' Numero
-            Dim vNumber As Integer = Integer.Parse(vId(1))
+            Dim vId As Guid = Guid.Parse(vFather.Value)
             ' Protocollo
-            vProtocol = Facade.ProtocolFacade.GetById(vYear, vNumber, False)
+            vProtocol = Facade.ProtocolFacade.GetById(vId, False)
         End If
-        If vProtocol.ProtocolLinked.Count > 0 Then
+        If vProtocol.ProtocolLinks.Count > 0 Then
             ' Per ogni protocollo collegato aggiunge un nodo al treeview
-            For Each link As Protocol In vProtocol.ProtocolLinked
+            For Each link As ProtocolLink In vProtocol.ProtocolLinks
                 Dim vNode As RadTreeNode
-                vNode = createNode(link)
+                vNode = createNode(link.ProtocolLinked)
                 vFather.Nodes.Add(vNode)
             Next
         End If
@@ -229,8 +207,8 @@ Public Class ProtCollegamentiGes
         If selectedProt.Id.Equals(currentProt.Id) Then
             Return True
         End If
-        For Each link As Protocol In currentProt.ProtocolLinked
-            result = CheckExistLink(selectedProt, link)
+        For Each link As ProtocolLink In currentProt.ProtocolLinks
+            result = CheckExistLink(selectedProt, link.ProtocolLinked)
         Next
         Return result
     End Function

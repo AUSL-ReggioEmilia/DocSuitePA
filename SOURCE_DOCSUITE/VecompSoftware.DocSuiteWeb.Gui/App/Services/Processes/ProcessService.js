@@ -19,8 +19,8 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Processes
             _this._configuration = configuration;
             return _this;
         }
-        ProcessService.prototype.getAll = function (searchName, fascicleType, isActive, callback, error) {
-            var url = this._configuration.ODATAUrl + "?$expand=Dossier,Category,Roles";
+        ProcessService.prototype.getAll = function (searchName, isActive, callback, error) {
+            var url = this._configuration.ODATAUrl + "?$expand=Dossier,Category,Roles($expand=Father)";
             if (isActive !== null) {
                 var filter = "";
                 if (isActive) {
@@ -30,15 +30,6 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Processes
                     filter = "&$filter=EndDate le now()";
                 }
                 url = url.concat(filter);
-                if (fascicleType !== undefined && fascicleType !== null) {
-                    url = url.concat(" and cast(FascicleType,Edm.String) eq '" + fascicleType + "'");
-                }
-                if (searchName !== "") {
-                    url = url.concat(" and contains(Name,'" + searchName + "')");
-                }
-            }
-            else if (fascicleType !== undefined && fascicleType !== null) {
-                url = url.concat("&$filter=cast(FascicleType,Edm.String) eq '" + fascicleType + "'");
                 if (searchName !== "") {
                     url = url.concat(" and contains(Name,'" + searchName + "')");
                 }
@@ -60,7 +51,7 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Processes
             }, error);
         };
         ProcessService.prototype.getById = function (uniqueId, callback, error) {
-            var url = this._configuration.ODATAUrl + "?$filter=UniqueId eq " + uniqueId + "&$expand=Category,Dossier,Roles";
+            var url = this._configuration.ODATAUrl + "?$filter=UniqueId eq " + uniqueId + "&$expand=Category,Dossier,Roles($expand=Father)";
             this.getRequest(url, null, function (response) {
                 if (callback && response) {
                     var modelMapper = new ProcessModelMapper();
@@ -73,11 +64,31 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Processes
             if (name) {
                 name = "'" + name + "'";
             }
-            var url = this._configuration.ODATAUrl + "/ProcessService.AvailableProcesses(name=" + name + ",categoryId=" + (!!categoryId ? categoryId.toString() : null) + ",dossierId=" + (!!dossierId ? dossierId.toString() : null) + ",loadOnlyMy=" + loadOnlyMy + ")";
+            var url = this._configuration.ODATAUrl + "/ProcessService.AvailableProcesses(name=" + name + ",categoryId=" + (!!categoryId ? categoryId.toString() : null) + ",dossierId=" + (!!dossierId ? dossierId.toString() : null) + ",loadOnlyMy=" + loadOnlyMy + ")?$orderby=Name asc";
             this.getRequest(url, null, function (response) {
                 if (callback && response) {
                     var mapper = new ProcessModelMapper();
                     callback(mapper.MapCollection(response.value));
+                }
+            }, error);
+        };
+        ProcessService.prototype.getProcessesByCategoryId = function (categoryId, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var odataFilter = "$filter=Category/EntityShortId eq " + categoryId + "&$expand=Dossier,Category,Roles&$orderby=Name";
+            this.getRequest(url, odataFilter, function (response) {
+                if (callback && response) {
+                    var mapper = new ProcessModelMapper();
+                    callback(mapper.MapCollection(response.value));
+                }
+            }, error);
+        };
+        ProcessService.prototype.getProcessByDossierFolderId = function (dossierFolderId, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var odataFilter = "$filter=Dossier/DossierFolders/any(df: df/UniqueId eq " + dossierFolderId + ")";
+            this.getRequest(url, odataFilter, function (response) {
+                if (callback && response) {
+                    var mapper = new ProcessModelMapper();
+                    callback(mapper.Map(response.value[0]));
                 }
             }, error);
         };

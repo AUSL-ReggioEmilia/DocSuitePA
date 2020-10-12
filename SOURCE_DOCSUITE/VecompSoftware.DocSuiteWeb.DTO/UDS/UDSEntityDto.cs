@@ -15,6 +15,7 @@ namespace VecompSoftware.DocSuiteWeb.DTO.UDS
             Messages = new List<UDSEntityMessageDto>();
             PecMails = new List<UDSEntityPECMailDto>();
             DocumentUnits = new List<UDSEntityDocumentUnitDto>();
+            Collaborations = new List<UDSEntityCollaborationDto>();
         }
 
         [JsonProperty("UDSId")]
@@ -62,5 +63,7 @@ namespace VecompSoftware.DocSuiteWeb.DTO.UDS
         public IList<UDSEntityPECMailDto> PecMails { get; set; }
 
         public IList<UDSEntityDocumentUnitDto> DocumentUnits { get; set; }
+
+        public IList<UDSEntityCollaborationDto> Collaborations { get; set; }
     }    
 }

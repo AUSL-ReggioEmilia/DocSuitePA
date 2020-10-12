@@ -206,7 +206,7 @@
     }
 
     function sendNotificationMessageRequest() {
-        dswSignalR.sendServerMessage("GetNotificationCounter", "", null, signalrErrorCallback);
+        dswSignalR.sendServerMessage("GetNotificationCounter", framesetElement.idTenantAOO, null, signalrErrorCallback);
     }
 
     function tickNotificationCounter() {

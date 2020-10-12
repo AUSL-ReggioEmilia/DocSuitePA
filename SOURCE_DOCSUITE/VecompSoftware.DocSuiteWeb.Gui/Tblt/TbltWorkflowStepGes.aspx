@@ -1,6 +1,5 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="TbltWorkflowStepGes.aspx.vb"
-    Inherits="VecompSoftware.DocSuiteWeb.Gui.TbltWorkflowStepGes" 
-    MasterPageFile="~/MasterPages/DocSuite2008.Master" %>
+﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="TbltWorkflowStepGes.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.TbltWorkflowStepGes"  MasterPageFile="~/MasterPages/DocSuite2008.Master" 
+    Title="Gestione step del flusso di lavoro"%>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1" EnableViewState="false">
@@ -21,10 +20,6 @@
                     tbltWorkflowStepGes.btnWorkflowStepSelectorOkId = "<%= btnWorkflowStepSelectorOk.ClientID %>";
                     tbltWorkflowStepGes.btnWorkflowStepSelectorCancelId = "<%= btnWorkflowStepSelectorCancel.ClientID %>";
                     tbltWorkflowStepGes.actionPage = "<% = PageAction %>";
-                    tbltWorkflowStepGes.authorizationDataSourceId = "<% = authorizationDataSource.ClientID %>";
-                    tbltWorkflowStepGes.activityDataSourceId = "<% = activityDataSource.ClientID %>";
-                    tbltWorkflowStepGes.areaDataSourceId = "<% = areaDataSource.ClientID%>";
-                    tbltWorkflowStepGes.actionDataSourceId = "<% = actionDataSource.ClientID %>";
 
                     tbltWorkflowStepGes.initialize();
                 });
@@ -39,51 +34,47 @@
             <tr>
                 <td class="label">Tipo autorizzazione: </td>
                 <td>
-                    <telerik:RadClientDataSource runat="server" ID="authorizationDataSource" />
                     <telerik:RadComboBox runat="server" CausesValidation="false" ID="cbWorkflowStepAuthorizationType"
                                         AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true" 
                                         ItemRequestTimeout="500" Width="550px" ShowMoreResultsBox="true" Filter="Contains" 
-                                        ClientDataSourceID="authorizationDataSource" DataTextField="Name" DataValueField="Value">
+                                        DataTextField="Name" DataValueField="Value">
                     </telerik:RadComboBox>
                 </td>
              </tr>
                 <tr>
                     <td class="label">Nome: </td>
                     <td>
-                        <telerik:RadTextBox ID="txtWorkflowStepName" runat="server"></telerik:RadTextBox>
+                        <telerik:RadTextBox ID="txtWorkflowStepName" runat="server" Width="550px"></telerik:RadTextBox>
                     </td>
                 </tr>
               
                 <tr>
                     <td class="label">Tipo attività: </td>
                     <td>
-                        <telerik:RadClientDataSource runat="server" ID="activityDataSource" />
                         <telerik:RadComboBox runat="server" CausesValidation="false" ID="cbWorkflowStepActivityType"
                                             AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true" 
                                             ItemRequestTimeout="500" Width="550px" ShowMoreResultsBox="true"
-                                            ClientDataSourceID="activityDataSource" DataTextField="Name" DataValueField="Value">
+                                            DataTextField="Name" DataValueField="Value">
                         </telerik:RadComboBox>
                     </td>
                 </tr>
                  <tr>
                     <td class="label">Area workflow: </td>
                     <td>
-                        <telerik:RadClientDataSource runat="server" ID="areaDataSource" />
                         <telerik:RadComboBox runat="server" CausesValidation="false" ID="cbWorkflowStepActivityArea"
                                             AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true" 
                                             ItemRequestTimeout="500" Width="550px" ShowMoreResultsBox="true"
-                                            ClientDataSourceID="areaDataSource" DataTextField="Name" DataValueField="Value">
+                                            DataTextField="Name" DataValueField="Value">
                         </telerik:RadComboBox>
                     </td>
                 </tr>
                 <tr>
                     <td class="label">Azione workflow: </td>
                     <td>
-                        <telerik:RadClientDataSource runat="server" ID="actionDataSource" />
                         <telerik:RadComboBox runat="server" CausesValidation="false" ID="cbWorkflowStepActivityAction"
                                             AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true" 
                                             ItemRequestTimeout="500" Width="550px" ShowMoreResultsBox="true"
-                                            ClientDataSourceID="actionDataSource" DataTextField="Name" DataValueField="Value">
+                                            DataTextField="Name" DataValueField="Value">
                         </telerik:RadComboBox>
                     </td>
                 </tr>

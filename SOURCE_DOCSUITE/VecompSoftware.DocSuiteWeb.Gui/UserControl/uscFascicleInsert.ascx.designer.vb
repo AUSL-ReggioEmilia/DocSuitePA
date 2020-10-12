@@ -113,22 +113,31 @@ Partial Public Class uscFascicleInsert
     Protected WithEvents isMasterRow As Global.Telerik.Web.UI.LayoutRow
 
     '''<summary>
-    '''uscSettoreMaster control.
+    '''uscRoleMaster control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscSettoreMaster As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
+    Protected WithEvents uscRoleMaster As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
 
     '''<summary>
-    '''uscSettori control.
+    '''uscRole control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscSettori As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
+    Protected WithEvents uscRole As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+
+    '''<summary>
+    '''rowGeneral control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowGeneral As Global.Telerik.Web.UI.LayoutRow
 
     '''<summary>
     '''uscObject control.
@@ -201,6 +210,24 @@ Partial Public Class uscFascicleInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDynamicMetadata As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadata
+
+    '''<summary>
+    '''customActionsRow control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents customActionsRow As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''uscCustomActionsRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscCustomActionsRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscCustomActionsRest
 
     '''<summary>
     '''uscNotification control.

@@ -103,6 +103,7 @@
     <many-to-one name="BidType" column="idBidType" class="BidType" />
     <many-to-one name="Category" column="idCategory" class="Category" />
     <many-to-one name="SubCategory" column="idSubCategory" class="Category" />
+	<many-to-one name="CategoryAPI" column="IdCategoryAPI" class="Category" insert="false" update="false" />
     <many-to-one name="ResolutionKind" column="IdResolutionKind" class="ResolutionKind" />
     <many-to-one name="RoleProposer" column="IdRoleProposer" class="Role" />
     

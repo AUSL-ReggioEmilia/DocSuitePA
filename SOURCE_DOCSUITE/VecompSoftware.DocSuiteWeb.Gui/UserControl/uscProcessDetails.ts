@@ -3,7 +3,6 @@ import EnumHelper = require("App/Helpers/EnumHelper");
 import ProcessService = require('App/Services/Processes/ProcessService');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import ProcessModel = require('App/Models/Processes/ProcessModel');
-import FascicleType = require('App/Models/Fascicles/FascicleType');
 import DossierFolderService = require('App/Services/Dossiers/DossierFolderService');
 import DossierFolderModel = require('App/Models/Dossiers/DossierFolderModel');
 import ProcessFascicleWorkflowRepositoryModel = require('App/Models/Processes/ProcessFascicleWorkflowRepositoryModel');
@@ -24,15 +23,25 @@ import ContactModel = require('App/Models/Commons/ContactModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import MetadataRepositoryModel = require('App/Models/Commons/MetadataRepositoryModel');
 import ProcessFascicleTemplateModel = require('App/Models/Processes/ProcessFascicleTemplateModel');
-import UscErrorNotification = require('UserControl/uscErrorNotification');
-import uscRoleRest = require('UserControl/uscRoleRest');
+import UscErrorNotification = require('./uscErrorNotification');
+import uscRoleRest = require('./uscRoleRest');
 import RoleModel = require('App/Models/Commons/RoleModel');
 import ProcessNodeType = require('App/Models/Processes/ProcessNodeType');
 import DossierFolderRoleModel = require('App/Models/Dossiers/DossierFolderRoleModel');
-import AuthorizationRoleType = require('App/Models/Fascicles/AuthorizationRoleType');
+import AuthorizationRoleType = require('App/Models/Commons/AuthorizationRoleType');
 import FascicleRoleModel = require('App/Models/Fascicles/FascicleRoleModel');
-import uscContattiSelRest = require('UserControl/uscContattiSelRest');
+import uscContattiSelRest = require('./uscContattiSelRest');
 import ProcessFascicleTemplateService = require('App/Services/Processes/ProcessFascicleTemplateService');
+import TbltProcess = require('Tblt/TbltProcess');
+import ExternalSourceActionEnum = require('App/Helpers/ExternalSourceActionEnum');
+import FascicleType = require('App/Models/Fascicles/FascicleType');
+import CategoryService = require('App/Services/Commons/CategoryService');
+import CategoryModel = require('App/Models/Commons/CategoryModel');
+import CategoryFascicleViewModel = require('App/ViewModels/Commons/CategoryFascicleViewModel');
+import FascicleCustomActionModel = require('App/Models/Commons/FascicleCustomActionModel');
+import uscCustomActionsRest = require('./uscCustomActionsRest');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class uscProcessDetails {
 
@@ -41,21 +50,25 @@ class uscProcessDetails {
     workflowRepositories: WorkflowRepositoryModel[];
     metadataRepositories: MetadataRepositoryViewModel[];
     fascicleFolders: FascicleFolderModel[];
-    static responsibleRoles: RoleModel[];
+    static responsibleRole: RoleModel;
     static authorizedRoles: RoleModel[];
     static contacts: ContactModel[];
+    static raciRoles: RoleModel[] = <RoleModel[]>[];
 
+    static selectedCategoryId: number;
     static selectedProcessId: string;
     static selectedDossierFolderId: string;
     static selectedProcessFascicleTemplateId: string;
     static selectedEntityType: ProcessNodeType;
+    static selectedFascicleTemplate: string;
 
     uscNotificationId: string;
     ajaxLoadingPanelId: string;
     pnlDetailsId: string;
     lblNameId: string;
+    lblFolderNameId: string;
+    divFolderNameId: string;
     lblClasificationNameId: string;
-    lblFascicleTypeId: string;
     rcbWorkflowRepositoryId: string;
     toolbarWorkflowRepositoryId: string;
     rtvWorkflowRepositoryId: string;
@@ -68,10 +81,31 @@ class uscProcessDetails {
     uscRoleRestId: string;
     uscResponsibleRolesId: string;
     uscAuthorizedRolesId: string;
+    lblActivationDateId: string;
+    rcbFascicleTypeId: string;
+    rpbDetailsId: string;
+    lblCategoryCodeId: string;
+    lblCategoryNameId: string;
+    lblStartDateId: string;
+    lblEndDateId: string;
+    lblMetadataId: string;
+    lblMassimarioNameId: string;
+    lblRegistrationDateId: string;
+    lblNoteId: string;
+    uscCustomActionsRestId: string;
 
+    public static InformationDetails_PanelName: string = "informationDetails";
+    public static CategoryInformationDetails_PanelName: string = "categoryInformationDetails";
+    public static RoleDetails_PanelName: string = "roleDetails";
+    public static WorkflowDetails_PanelName: string = "workflowDetails";
+    public static FascicleDetails_PanelName: string = "fascicleDetails";
+    public TYPOLOGY_ATTRIBUTE: string = "Typology";
+
+    private _lblActivationDate: HTMLLabelElement;
     private _lblProcessName: HTMLLabelElement;
+    private _lblFolderName: HTMLLabelElement;
+    private _divFolderName: HTMLTableRowElement;
     private _lblClasificationName: HTMLLabelElement;
-    private _lblFascicleType: HTMLLabelElement;
     private _ajaxLoadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _rcbWorkflowRepository: Telerik.Web.UI.RadComboBox;
     private _toolbarWorkflowRepository: Telerik.Web.UI.RadToolBar;
@@ -85,16 +119,34 @@ class uscProcessDetails {
     private _uscRoleRest: uscRoleRest;
     private _uscResponsibleRoles: uscRoleRest;
     private _uscAuthorizedRoles: uscRoleRest;
+    private _rcbFascicleType: Telerik.Web.UI.RadComboBox;
+    private _rpbDetails: Telerik.Web.UI.RadPanelBar;
+    private _pnlInformations: Telerik.Web.UI.RadPanelItem;
+    private _pnlCategoryInformations: Telerik.Web.UI.RadPanelItem;
+    private _pnlRoleDetails: Telerik.Web.UI.RadPanelItem;
+    private _pnlWorkflowDetails: Telerik.Web.UI.RadPanelItem;
+    private _pnlFascicleDetails: Telerik.Web.UI.RadPanelItem;
+    private _lblCategoryCode: HTMLLabelElement;
+    private _lblCategoryName: HTMLLabelElement;
+    private _lblStartDate: HTMLLabelElement;
+    private _lblEndDate: HTMLLabelElement;
+    private _lblMetadata: HTMLLabelElement;
+    private _lblMassimarioName: HTMLLabelElement;
+    private _lblRegistrationDate: HTMLLabelElement;
+    private _lblNote: HTMLLabelElement;
 
     private _serviceConfigurations: ServiceConfiguration[];
     private _enumHelper: EnumHelper;
 
+    private _categoryService: CategoryService;
     private _processService: ProcessService;
     private _dossierFolderService: DossierFolderService;
     private _processFascicleWorkflowRepositoryService: ProcessFascicleWorkflowRepositoryService;
     private _workflowRepositoryService: WorkflowRepositoryService;
     private _metadataRepositoryService: MetadataRepositoryService;
     private _processFascicleTemplateService: ProcessFascicleTemplateService;
+
+    private needRolesFromExternalSource_eventArgs: string[];
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         this._serviceConfigurations = serviceConfigurations;
@@ -110,10 +162,17 @@ class uscProcessDetails {
         this._ajaxLoadingPanel.show(this.rcbMetadataRepositoryId);
         this.loadWorkflowRepositories();
         this.loadMetadataRepositories();
+        this.loadCustomActions(<FascicleCustomActionModel>{
+            AutoClose: false,
+            AutoCloseAndClone: false
+        });
         this.bindLoaded();
+        this.loadFascicleTypes();
     }
 
     initializeServices(): void {
+        let categoryConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Category");
+        this._categoryService = new CategoryService(categoryConfiguration);
         let processConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Process");
         this._processService = new ProcessService(processConfiguration);
         let dossierFolderConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "DossierFolder");
@@ -130,8 +189,12 @@ class uscProcessDetails {
 
     initializeControls(): void {
         this._lblProcessName = <HTMLLabelElement>document.getElementById(this.lblNameId);
+        this._lblFolderName = <HTMLLabelElement>document.getElementById(this.lblFolderNameId);
+        this._divFolderName = <HTMLTableRowElement>document.getElementById(this.divFolderNameId);
+        this._lblActivationDate = <HTMLLabelElement>document.getElementById(this.lblActivationDateId);
+        this._lblNote = <HTMLLabelElement>document.getElementById(this.lblNoteId);
+
         this._lblClasificationName = <HTMLLabelElement>document.getElementById(this.lblClasificationNameId);
-        this._lblFascicleType = <HTMLLabelElement>document.getElementById(this.lblFascicleTypeId);
         this._ajaxLoadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._rcbWorkflowRepository = <Telerik.Web.UI.RadComboBox>$find(this.rcbWorkflowRepositoryId);
         this._toolbarWorkflowRepository = <Telerik.Web.UI.RadToolBar>$find(this.toolbarWorkflowRepositoryId);
@@ -142,6 +205,21 @@ class uscProcessDetails {
         this._rbAddFascicle.add_clicked(this.rbAddFascicle_onClick);
         this._rtbFascicleSubject = <Telerik.Web.UI.RadTextBox>$find(this.rtbFascicleSubjectId);
         this._rbFascicleVisibilityType = <Telerik.Web.UI.RadButton>$find(this.rbFascicleVisibilityTypeId);
+        this._rcbFascicleType = <Telerik.Web.UI.RadComboBox>$find(this.rcbFascicleTypeId);
+        this._rcbFascicleType.add_selectedIndexChanged(this.rcbFascicleType_selectedIndexChanged);
+        this._rpbDetails = <Telerik.Web.UI.RadPanelBar>$find(this.rpbDetailsId);
+        this._pnlInformations = this._rpbDetails.findItemByValue("pnlInformations");
+        this._pnlCategoryInformations = this._rpbDetails.findItemByValue("pnlCategoryInformations");
+        this._pnlRoleDetails = this._rpbDetails.findItemByValue("pnlRoleDetails");
+        this._pnlWorkflowDetails = this._rpbDetails.findItemByValue("pnlWorkflowDetails");
+        this._pnlFascicleDetails = this._rpbDetails.findItemByValue("pnlFascicleDetails");
+        this._lblCategoryCode = <HTMLLabelElement>document.getElementById(this.lblCategoryCodeId);
+        this._lblCategoryName = <HTMLLabelElement>document.getElementById(this.lblCategoryNameId);
+        this._lblStartDate = <HTMLLabelElement>document.getElementById(this.lblStartDateId);
+        this._lblEndDate = <HTMLLabelElement>document.getElementById(this.lblEndDateId);
+        this._lblMetadata = <HTMLLabelElement>document.getElementById(this.lblMetadataId);
+        this._lblMassimarioName = <HTMLLabelElement>document.getElementById(this.lblMassimarioNameId);
+        this._lblRegistrationDate = <HTMLLabelElement>document.getElementById(this.lblRegistrationDateId);
     }
 
     initializeUserControls(): void {
@@ -199,6 +277,7 @@ class uscProcessDetails {
         if (!roleIdToDelete)
             return promise.promise();
         switch (uscProcessDetails.selectedEntityType) {
+            case ProcessNodeType.Category:
             case ProcessNodeType.Process: {
                 this._processService.getById(uscProcessDetails.selectedProcessId, (data) => {
                     let process: ProcessModel = data;
@@ -208,11 +287,11 @@ class uscProcessDetails {
                         promise.resolve(data);
                     },
                         (error: ExceptionDTO) => {
-                            this._ajaxLoadingPanel.hide("ItemDetailTable");
+                            this._ajaxLoadingPanel.hide(this._pnlInformations.get_element().id);
                             this.showNotificationException(error);
                         });
                 }, (error) => {
-                    this._ajaxLoadingPanel.hide("ItemDetailTable");
+                    this._ajaxLoadingPanel.hide(this._pnlInformations.get_element().id);
                     this.showNotificationException(error);
                 });
                 break;
@@ -225,11 +304,11 @@ class uscProcessDetails {
                     this._dossierFolderService.updateDossierFolder(dossierFolder, null, (data) => {
                         promise.resolve(data);
                     }, (error) => {
-                        this._ajaxLoadingPanel.hide("ItemDetailTable");
+                        this._ajaxLoadingPanel.hide(this._pnlInformations.get_element().id);
                         this.showNotificationException(error);
                     });
                 }, (error) => {
-                    this._ajaxLoadingPanel.hide("workflowDetails");
+                    this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
                     this.showNotificationException(error);
                 });
                 break;
@@ -237,9 +316,8 @@ class uscProcessDetails {
             case ProcessNodeType.ProcessFascicleTemplate: {
                 switch (senderId) {
                     case this.uscResponsibleRolesId: {
-                        uscProcessDetails.responsibleRoles = uscProcessDetails.responsibleRoles
-                            .filter(role => role.IdRole !== roleIdToDelete || role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) === -1);
-                        promise.resolve(uscProcessDetails.responsibleRoles);
+                        promise.resolve(uscProcessDetails.responsibleRole ? [uscProcessDetails.responsibleRole] : []);
+                        uscProcessDetails.responsibleRole = null;
                         break;
                     }
                     case this.uscAuthorizedRolesId: {
@@ -259,7 +337,9 @@ class uscProcessDetails {
         let promise: JQueryDeferred<any> = $.Deferred<any>();
         if (!newAddedRoles.length)
             return promise.promise();
+
         switch (uscProcessDetails.selectedEntityType) {
+            case ProcessNodeType.Category:
             case ProcessNodeType.Process: {
                 this._processService.getById(uscProcessDetails.selectedProcessId, (data) => {
                     let process: ProcessModel = data;
@@ -268,11 +348,11 @@ class uscProcessDetails {
                         promise.resolve(data);
                     },
                         (error: ExceptionDTO) => {
-                            this._ajaxLoadingPanel.hide("ItemDetailTable");
+                            this._ajaxLoadingPanel.hide(this._pnlInformations.get_element().id);
                             this.showNotificationException(error);
                         });
                 }, (error) => {
-                    this._ajaxLoadingPanel.hide("ItemDetailTable");
+                    this._ajaxLoadingPanel.hide(this._pnlInformations.get_element().id);
                     this.showNotificationException(error);
                 });
                 break;
@@ -292,11 +372,11 @@ class uscProcessDetails {
                     this._dossierFolderService.updateDossierFolder(dossierFolder, null, (data) => {
                         promise.resolve(data);
                     }, (error) => {
-                        this._ajaxLoadingPanel.hide("ItemDetailTable");
+                        this._ajaxLoadingPanel.hide(this._pnlInformations.get_element().id);
                         this.showNotificationException(error);
                     });
                 }, (error) => {
-                    this._ajaxLoadingPanel.hide("workflowDetails");
+                    this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
                     this.showNotificationException(error);
                 });
                 break;
@@ -304,11 +384,30 @@ class uscProcessDetails {
             case ProcessNodeType.ProcessFascicleTemplate: {
                 switch (senderId) {
                     case this.uscResponsibleRolesId: {
-                        uscProcessDetails.responsibleRoles = [...uscProcessDetails.responsibleRoles, ...newAddedRoles];
-                        promise.resolve(uscProcessDetails.responsibleRoles);
+                        for (let authorizedRole of uscProcessDetails.authorizedRoles) {
+                            if (newAddedRoles.filter(x => x.IdRole === authorizedRole.IdRole).length > 0) {
+                                let existedRole: RoleModel = newAddedRoles.filter(x => x.IdRole === authorizedRole.IdRole)[0];
+                                alert(`Non è possibile selezionare il settore ${existedRole.Name} in quanto già presente come settore autorizzato del modello di fascicolo`);
+                                newAddedRoles = newAddedRoles.filter(x => x.IdRole !== authorizedRole.IdRole);
+                                promise.resolve(existedRole, true);
+                            }
+                        }
+                        if (newAddedRoles.length > 0) {
+                            uscProcessDetails.responsibleRole = newAddedRoles[0];
+                            promise.resolve([uscProcessDetails.responsibleRole]);
+                        }
+                        else {
+                            promise.resolve([]);
+                        }
                         break;
                     }
                     case this.uscAuthorizedRolesId: {
+                        if (uscProcessDetails.responsibleRole && (newAddedRoles.filter(x => x.IdRole === uscProcessDetails.responsibleRole.IdRole).length > 0)) {
+                            let existedRole: RoleModel = newAddedRoles.filter(x => x.IdRole === uscProcessDetails.responsibleRole.IdRole)[0];
+                            alert(`Non è possibile selezionare il settore ${existedRole.Name} in quanto già presente come settore responsabile del modello di fascicolo`);
+                            newAddedRoles = newAddedRoles.filter(x => x.IdRole !== uscProcessDetails.responsibleRole.IdRole);
+                            promise.resolve(existedRole);
+                        }
                         uscProcessDetails.authorizedRoles = [...uscProcessDetails.authorizedRoles, ...newAddedRoles];
                         promise.resolve(uscProcessDetails.authorizedRoles);
                         break;
@@ -370,7 +469,6 @@ class uscProcessDetails {
             this._rcbMetadataRepository.get_items().clear();
             let item: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
             item.set_text("");
-            item.set_value("");
             this._rcbMetadataRepository.get_items().add(item);
             for (let metadataRepository of this.metadataRepositories) {
                 let item: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
@@ -385,26 +483,91 @@ class uscProcessDetails {
         });
     }
 
-    setProcessDetails(): void {
-        this._rcbWorkflowRepository.get_items().getItem(0).select();
-        this._rcbMetadataRepository.get_items().getItem(0).select();
+    setCategoryDetails(): void {
+        this._uscRoleRest.disableButtons();
+        this._categoryService.getRolesByCategoryId(uscProcessDetails.selectedCategoryId, (data) => {
+            let category: CategoryModel = data;
+            this._lblCategoryCode.innerText = category.getFullCodeDotted();
+            this._lblCategoryName.innerText = `${category.Name} (${category.EntityShortId})`;
+            this._lblStartDate.innerText = category.StartDate ? moment(new Date(category.StartDate)).format("DD/MM/YYYY") : "";
+            this._lblEndDate.innerText = category.EndDate ? moment(new Date(category.EndDate)).format("DD/MM/YYYY") : "";
+            if (this._lblMetadata) {
+                this._lblMetadata.innerText = category.MetadataRepository ? category.MetadataRepository.Name : "";
+            }
+            this._lblMassimarioName.innerText = category.MassimarioScarto
+                ? `${category.MassimarioScarto.FullCode.replace("|", ".")}.${category.MassimarioScarto.Name}(${category.MassimarioScarto.ConservationPeriod} Anni)`
+                : "";
+            this._lblRegistrationDate.innerText = moment(new Date(category.RegistrationDate)).format("DD/MM/YYYY");
+
+            if (category.CategoryFascicles.length > 0) {
+                let categoryFascicleRightsModel = category.CategoryFascicles.map(x => x.CategoryFascicleRights);
+                let roleArray: RoleModel[] = [];
+                for (let cfrm of categoryFascicleRightsModel) {
+                    roleArray = cfrm.map(x => x.Role);
+                }
+                this._uscRoleRest.renderRolesTree(roleArray);
+            } else {
+                this._uscRoleRest.renderRolesTree([]);
+            }
+        }, (error) => {
+            this._ajaxLoadingPanel.hide(this._pnlInformations.get_element().id);
+            this.showNotificationException(error);
+        });
+    }
+
+    setProcessDetails(dossierFolderName: string, populateRoles: boolean): void {
+        this._uscRoleRest.enableButtons();
+        let workflowRepositories: Telerik.Web.UI.RadComboBoxItemCollection = this._rcbWorkflowRepository.get_items();
+        let metadataRepositories: Telerik.Web.UI.RadComboBoxItemCollection = this._rcbMetadataRepository.get_items();
+        if (workflowRepositories.get_count() > 0) {
+            workflowRepositories.getItem(0).select();
+        }
+        if (metadataRepositories.get_count() > 0) {
+            metadataRepositories.getItem(0).select();
+        }
         this._uscResponsibleRoles.renderRolesTree([]);
         this._uscAuthorizedRoles.renderRolesTree([]);
+        this._uscAuthorizedRoles.disableRaciRoleButton();
+
+        this._uscFascicleFolders.fileManagementButtonsVisibility(false);
+        if (uscProcessDetails.selectedEntityType === ProcessNodeType.ProcessFascicleTemplate) {
+            uscProcessDetails.responsibleRole = null;
+            uscProcessDetails.authorizedRoles = [];
+            uscProcessDetails.raciRoles = [];
+        }
+
         this._processService.getById(uscProcessDetails.selectedProcessId, (data) => {
             let process: ProcessModel = data;
+            this._divFolderName.style.display = "none";
             this._lblProcessName.innerText = process.Name;
-            this._lblClasificationName.innerText = process.Category.Name;
-            this._lblFascicleType.innerText = FascicleType[FascicleType[process.FascicleType]];
-            if (uscProcessDetails.selectedEntityType === ProcessNodeType.Process) {
+
+            if (process.StartDate) {
+                this._lblActivationDate.innerText = moment(process.StartDate).format("DD/MM/YYYY");
+            }
+
+            if (dossierFolderName && dossierFolderName !== '') {
+                this._divFolderName.style.display = "";
+                this._lblFolderName.innerText = dossierFolderName;
+            }
+            this._lblClasificationName.innerText = `${process.Category.getFullCodeDotted()} - ${process.Category.Name}`;
+            this._lblNote.innerText = process.Note;
+
+            if (populateRoles) {
+                //set popup roles source
+                if (uscProcessDetails.selectedEntityType === ProcessNodeType.Process) {
+                    this.needRolesFromExternalSource_eventArgs = [ExternalSourceActionEnum.Process.toString(), uscProcessDetails.selectedProcessId];
+                }
+                else if (uscProcessDetails.selectedEntityType === ProcessNodeType.Category) {
+                    this.needRolesFromExternalSource_eventArgs = [ExternalSourceActionEnum.Category.toString(), uscProcessDetails.selectedCategoryId.toString()];
+                }
+                $(`#${this.uscRoleRestId}`).triggerHandler(uscRoleRest.NEED_ROLES_FROM_EXTERNAL_SOURCE, this.needRolesFromExternalSource_eventArgs);
+
                 this._uscRoleRest.renderRolesTree(process.Roles);
+
             }
-            else if (uscProcessDetails.selectedEntityType === ProcessNodeType.ProcessFascicleTemplate) {
-                uscProcessDetails.responsibleRoles = [];
-                uscProcessDetails.authorizedRoles = [];
-            }
-            this._ajaxLoadingPanel.hide("ItemDetailTable");
+            this._ajaxLoadingPanel.hide(this._pnlInformations.get_element().id);
         }, (error) => {
-            this._ajaxLoadingPanel.hide("ItemDetailTable");
+            this._ajaxLoadingPanel.hide(this._pnlInformations.get_element().id);
             this.showNotificationException(error);
         });
     }
@@ -412,10 +575,10 @@ class uscProcessDetails {
     clearProcessDetails(): void {
         this._lblProcessName.innerText = "";
         this._lblClasificationName.innerText = "";
-        this._lblFascicleType.innerText = "";
     }
 
     setDossierFolderWorkflowRepositories(): void {
+        this._uscRoleRest.enableButtons();
         this._processFascicleWorkflowRepositoryService.getByDossierFolderId(uscProcessDetails.selectedDossierFolderId, (data) => {
             uscProcessDetails.processFascicleWorkflowRepositories = data;
             this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().clear();
@@ -426,21 +589,29 @@ class uscProcessDetails {
                 this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().add(node);
             }
             this._rtvWorkflowRepository.get_nodes().getNode(0).expand();
-            this._ajaxLoadingPanel.hide("workflowDetails");
+            this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
         }, (error) => {
-            this._ajaxLoadingPanel.hide("workflowDetails");
+            this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
             this.showNotificationException(error);
         });
     }
 
     setDossierFolderRoles(): void {
+        this._uscRoleRest.enableButtons();
         this._dossierFolderService.getDossierFolderById(uscProcessDetails.selectedDossierFolderId, (data) => {
             let dossierFolder: DossierFolderModel = data[0];
+
+            //set popup roles source
+            this.needRolesFromExternalSource_eventArgs = [ExternalSourceActionEnum.Process.toString(), uscProcessDetails.selectedProcessId];
+            $(`#${this.uscRoleRestId}`).triggerHandler(uscRoleRest.NEED_ROLES_FROM_EXTERNAL_SOURCE, this.needRolesFromExternalSource_eventArgs);
+
             if (dossierFolder.DossierFolderRoles && dossierFolder.DossierFolderRoles.length > 0) {
                 this._uscRoleRest.renderRolesTree(dossierFolder.DossierFolderRoles.map(x => x.Role));
+            } else {
+                this._uscRoleRest.clearRoleTreeView();
             }
         }, (error) => {
-            this._ajaxLoadingPanel.hide("workflowDetails");
+            this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
             this.showNotificationException(error);
         });
     }
@@ -461,7 +632,7 @@ class uscProcessDetails {
                     alert("Selezionare flusso di lavoro");
                     return;
                 }
-                this._ajaxLoadingPanel.show("workflowDetails");
+                this._ajaxLoadingPanel.show(this._pnlWorkflowDetails.get_element().id);
                 let processFascicleWorkflowRepository: ProcessFascicleWorkflowRepositoryModel = <ProcessFascicleWorkflowRepositoryModel>{};
                 processFascicleWorkflowRepository.Process = <ProcessModel>{};
                 processFascicleWorkflowRepository.Process.UniqueId = uscProcessDetails.selectedProcessId;
@@ -476,17 +647,30 @@ class uscProcessDetails {
                         break;
                     }
                 }
-                this._processFascicleWorkflowRepositoryService.insert(processFascicleWorkflowRepository, (data) => {
-                    let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-                    node.set_text(selectedWorkflowRepository.Name);
-                    node.set_value(data.UniqueId);
-                    this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().add(node);
-                    this._rtvWorkflowRepository.get_nodes().getNode(0).expand();
-                    this._ajaxLoadingPanel.hide("workflowDetails");
-                }, (error) => {
-                    this._ajaxLoadingPanel.hide("workflowDetails");
-                    this.showNotificationException(error);
-                });
+                let exist: boolean = false;
+
+                for (let i = 0; i < this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().get_count(); i++) {
+                    if (this._rcbWorkflowRepository.get_selectedItem().get_text() === this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().getItem(i).get_text())
+                        exist = true;
+                }
+
+                if (!exist) {
+                    this._processFascicleWorkflowRepositoryService.insert(processFascicleWorkflowRepository, (data) => {
+                        let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+                        node.set_text(selectedWorkflowRepository.Name);
+                        node.set_value(data.UniqueId);
+                        this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().add(node);
+                        this._rtvWorkflowRepository.get_nodes().getNode(0).expand();
+                        this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
+                    }, (error) => {
+                        this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
+                        this.showNotificationException(error);
+                    });
+                }
+                else {
+                    this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
+                    alert("Un flusso del lavoro con il nome scelto è già esistente.");
+                }
                 break;
             }
             case "delete": {
@@ -494,14 +678,14 @@ class uscProcessDetails {
                     alert("Selezionare flusso di lavoro");
                     return;
                 }
-                this._ajaxLoadingPanel.show("workflowDetails");
+                this._ajaxLoadingPanel.show(this._pnlWorkflowDetails.get_element().id);
                 let processFascicleWorkflowRepository: ProcessFascicleWorkflowRepositoryModel = <ProcessFascicleWorkflowRepositoryModel>{};
                 processFascicleWorkflowRepository.UniqueId = this._rtvWorkflowRepository.get_selectedNode().get_value();
                 this._processFascicleWorkflowRepositoryService.delete(processFascicleWorkflowRepository, (data) => {
                     this._rtvWorkflowRepository.get_nodes().getNode(0).get_nodes().remove(this._rtvWorkflowRepository.get_selectedNode());
-                    this._ajaxLoadingPanel.hide("workflowDetails");
+                    this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
                 }, (error) => {
-                    this._ajaxLoadingPanel.hide("workflowDetails");
+                    this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
                     this.showNotificationException(error);
                 });
                 break;
@@ -509,17 +693,45 @@ class uscProcessDetails {
         }
     }
 
-    rbAddFascicle_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
-        this._ajaxLoadingPanel.show("fascicleDetails");
+    rbAddFascicle_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
+        let processFascicleTemplate: ProcessFascicleTemplateModel = <ProcessFascicleTemplateModel>{};
+        processFascicleTemplate.DossierFolder = <DossierFolderModel>{};
+        processFascicleTemplate.Process = <ProcessModel>{};
+        processFascicleTemplate.UniqueId = uscProcessDetails.selectedProcessFascicleTemplateId;
+        processFascicleTemplate.Process.UniqueId = uscProcessDetails.selectedProcessId;
+        this.populateFascicleTemplateInfo().then((jsonModel) => {
+            processFascicleTemplate.JsonModel = jsonModel;
+            processFascicleTemplate.Name = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_PROCESS_FASCICLE_TEMPLATE_NAME);
+            sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_PROCESS_FASCICLE_TEMPLATE_NAME, JSON.stringify(processFascicleTemplate));
+            this._processFascicleTemplateService.update(processFascicleTemplate, (data) => {
+                alert("Modificato con successo");
+                this._ajaxLoadingPanel.hide(this._pnlFascicleDetails.get_element().id);
+            }, (error) => {
+                this._ajaxLoadingPanel.hide(this._pnlFascicleDetails.get_element().id);
+                this.showNotificationException(error);
+            });
+        });
+    }
+
+    public populateFascicleTemplateInfo(): JQueryPromise<string> {
+        let promise: JQueryDeferred<string> = $.Deferred<string>();
         let fascicleModel: FascicleModel = new FascicleModel();
-        fascicleModel.FascicleObject = this._rtbFascicleSubject.get_textBoxValue();
-        fascicleModel.VisibilityType = this._rbFascicleVisibilityType.get_checked() ? VisibilityType.Accessible : VisibilityType.Confidential;
+        fascicleModel.FascicleObject = this._rtbFascicleSubject.get_value();
+        if (this._rcbFascicleType.get_selectedItem()) {
+            fascicleModel.FascicleType = FascicleType[this._rcbFascicleType.get_selectedItem().get_value()];
+        }
+
+        let rbFascicleVisibilityType_isVisible: any = this._rbFascicleVisibilityType.get_visible();
+        fascicleModel.VisibilityType = (rbFascicleVisibilityType_isVisible && this._rbFascicleVisibilityType.get_checked())
+            ? VisibilityType.Accessible
+            : VisibilityType.Confidential;
+        uscProcessDetails.raciRoles = this._uscAuthorizedRoles.getRaciRoles();
         fascicleModel.FascicleRoles = [];
-        for (let responsibleRole of uscProcessDetails.responsibleRoles) {
+        if (uscProcessDetails.responsibleRole) {
             let fascicleRole: FascicleRoleModel = new FascicleRoleModel();
             fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Responsible;
             fascicleRole.IsMaster = true;
-            fascicleRole.Role = responsibleRole;
+            fascicleRole.Role = uscProcessDetails.responsibleRole;
             fascicleModel.FascicleRoles.push(fascicleRole);
         }
         for (let authorizedRole of uscProcessDetails.authorizedRoles) {
@@ -527,6 +739,10 @@ class uscProcessDetails {
             fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Accounted;
             fascicleRole.IsMaster = false;
             fascicleRole.Role = authorizedRole;
+            fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Accounted;
+            if (uscProcessDetails.raciRoles && uscProcessDetails.raciRoles.some(x => x.IdRole === authorizedRole.IdRole)) {
+                fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Responsible;
+            }
             fascicleModel.FascicleRoles.push(fascicleRole);
         }
         this.fascicleFolders = [];
@@ -534,24 +750,17 @@ class uscProcessDetails {
         fascicleModel.FascicleFolders = this.fascicleFolders;
         fascicleModel.Contacts = uscProcessDetails.contacts;
         fascicleModel.MetadataRepository = new MetadataRepositoryModel();
-        if (this._rcbMetadataRepository.get_selectedItem()) {
+        if (this._rcbMetadataRepository.get_selectedItem() && this._rcbMetadataRepository.get_selectedItem().get_value()) {
             fascicleModel.MetadataRepository.Name = this._rcbMetadataRepository.get_selectedItem().get_text();
             fascicleModel.MetadataRepository.UniqueId = this._rcbMetadataRepository.get_selectedItem().get_value();
         }
-        let processFascicleTemplate: ProcessFascicleTemplateModel = <ProcessFascicleTemplateModel>{};
-        processFascicleTemplate.DossierFolder = <DossierFolderModel>{};
-        processFascicleTemplate.Process = <ProcessModel>{};
-        processFascicleTemplate.UniqueId = uscProcessDetails.selectedProcessFascicleTemplateId;
-        processFascicleTemplate.Process.UniqueId = uscProcessDetails.selectedProcessId;
-        processFascicleTemplate.JsonModel = JSON.stringify(fascicleModel);
-        sessionStorage.setItem("ProcessFascicleTemplate", JSON.stringify(processFascicleTemplate));
-        this._processFascicleTemplateService.update(processFascicleTemplate, (data) => {
-            alert("Modificato con successo");
-            this._ajaxLoadingPanel.hide("fascicleDetails");
-        }, (error) => {
-            this._ajaxLoadingPanel.hide("fascicleDetails");
-            this.showNotificationException(error);
-        });
+        PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
+            .done((instance) => {
+                let customActions: FascicleCustomActionModel = instance.getCustomActions<FascicleCustomActionModel>();
+                fascicleModel.CustomActions = JSON.stringify(customActions);
+                promise.resolve(JSON.stringify(fascicleModel));
+            });
+        return promise.promise();
     }
 
     private populateDetails(data: any) {
@@ -561,30 +770,41 @@ class uscProcessDetails {
         }
         let fascicle: FascicleModel = JSON.parse(processFascicleTemplate.JsonModel);
         this._rtbFascicleSubject.set_value(fascicle.FascicleObject);
+        if (fascicle.FascicleType) {
+            let fascicleTypeItem: Telerik.Web.UI.RadComboBoxItem = this._rcbFascicleType.findItemByValue(FascicleType[fascicle.FascicleType]);
+            fascicleTypeItem.select();
+        }
         this._rbFascicleVisibilityType.set_checked(fascicle.VisibilityType === VisibilityType.Accessible);
-        uscProcessDetails.responsibleRoles = fascicle.FascicleRoles.filter(x => x.IsMaster === true).map(x => x.Role);
-        this._uscResponsibleRoles.renderRolesTree(uscProcessDetails.responsibleRoles);
+        if (fascicle.FascicleRoles.filter(x => x.IsMaster === true).map(x => x.Role).length > 0) {
+            uscProcessDetails.responsibleRole = fascicle.FascicleRoles.filter(x => x.IsMaster === true).map(x => x.Role)[0];
+            this._uscResponsibleRoles.renderRolesTree([uscProcessDetails.responsibleRole]);
+        }
         uscProcessDetails.authorizedRoles = fascicle.FascicleRoles.filter(x => x.IsMaster === false).map(x => x.Role);
+        uscProcessDetails.raciRoles = fascicle.FascicleRoles
+            .filter(x => x.IsMaster === false && x.AuthorizationRoleType === AuthorizationRoleType.Responsible).map(x => x.Role);
+
+        //set popup roles source
+        this.needRolesFromExternalSource_eventArgs = [ExternalSourceActionEnum.Process.toString(), uscProcessDetails.selectedProcessId];
+        $(`#${this.uscResponsibleRolesId}`).triggerHandler(uscRoleRest.NEED_ROLES_FROM_EXTERNAL_SOURCE, this.needRolesFromExternalSource_eventArgs);
+        if (uscProcessDetails.raciRoles) {
+            this._uscAuthorizedRoles.setRaciRoles(uscProcessDetails.raciRoles);
+        }
         this._uscAuthorizedRoles.renderRolesTree(uscProcessDetails.authorizedRoles);
         this.populateFascicleFoldersTree(fascicle.FascicleFolders);
         uscProcessDetails.contacts = fascicle.Contacts;
         this._uscContactRest.renderContactsTree(uscProcessDetails.contacts);
-        let rcbItem: Telerik.Web.UI.RadComboBoxItem = this._rcbMetadataRepository.findItemByValue(fascicle.MetadataRepository.UniqueId);
-        if (rcbItem) {
-            rcbItem.select();
+        if (fascicle.MetadataRepository) {
+            let rcbItem: Telerik.Web.UI.RadComboBoxItem = this._rcbMetadataRepository.findItemByValue(fascicle.MetadataRepository.UniqueId);
+            if (rcbItem) {
+                rcbItem.select();
+            }
+        }
+        if (fascicle.CustomActions) {
+            this.loadCustomActions(<FascicleCustomActionModel>JSON.parse(fascicle.CustomActions));
         }
     }
 
     getFascicleFolderListFromTree(fascicleFoldersNode: Telerik.Web.UI.RadTreeNode): void {
-        if (fascicleFoldersNode.get_level() === 0) {
-            let fascicleFolder: FascicleFolderModel = <FascicleFolderModel>{};
-            fascicleFolder.Name = fascicleFoldersNode.get_text();
-            fascicleFolder.UniqueId = fascicleFoldersNode.get_value();
-            fascicleFolder.Typology = FascicleFolderTypology.Fascicle;
-            fascicleFolder.Status = FascicleFolderStatus.Active;
-            this.fascicleFolders.push(fascicleFolder);
-            fascicleFoldersNode = fascicleFoldersNode.get_nodes().getNode(0);
-        }
         for (let index = 0; index < fascicleFoldersNode.get_nodes().get_count(); index++) {
             let child: Telerik.Web.UI.RadTreeNode = fascicleFoldersNode.get_nodes().getNode(index);
             let fascicleFolder: FascicleFolderModel = <FascicleFolderModel>{};
@@ -596,9 +816,7 @@ class uscProcessDetails {
                 ? fascicleFoldersNode.get_parent().get_value()
                 : fascicleFoldersNode.get_value();
             this.fascicleFolders.push(fascicleFolder);
-            if (child.get_attributes().getAttribute("hasChildren")) {
-                this.getFascicleFolderListFromTree(child);
-            }
+            this.getFascicleFolderListFromTree(child);
         }
     }
 
@@ -664,6 +882,7 @@ class uscProcessDetails {
             child.set_text(fasciclefolder.Name);
             child.set_value(fasciclefolder.UniqueId);
             child.set_imageUrl("../App_Themes/DocSuite2008/imgset16/folder_closed.png");
+            child.get_attributes().setAttribute(this.TYPOLOGY_ATTRIBUTE, fasciclefolder.Typology);
             child.expand();
             node.get_nodes().add(child);
             return;
@@ -676,6 +895,7 @@ class uscProcessDetails {
 
     clearFascicleInputs(): void {
         this._rtbFascicleSubject.clear();
+        this._rcbFascicleType.clearSelection();
         this._rbFascicleVisibilityType.set_checked(false);
         this._uscResponsibleRoles.renderRolesTree([]);
         this._uscAuthorizedRoles.renderRolesTree([]);
@@ -683,6 +903,88 @@ class uscProcessDetails {
         this._uscFascicleFolders.getFascicleFolderTree().get_nodes().getNode(0).get_nodes().getNode(0).get_nodes().clear();
         this._uscContactRest.renderContactsTree([]);
         this._rcbMetadataRepository.set_selectedItem(this._rcbMetadataRepository.get_items().getItem(0));
+    }
+
+    private loadFascicleTypes(): void {
+        let emptyItem: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
+        emptyItem.set_text("");
+        this._rcbFascicleType.get_items().add(emptyItem);
+        this.setFascicleTypeItem(this._rcbFascicleType, [FascicleType.Procedure, FascicleType.Activity]);
+    }
+
+    setFascicleTypeItem(comboBox: Telerik.Web.UI.RadComboBox, fascicleTypes: FascicleType[]): void {
+        for (let itemType of fascicleTypes) {
+            let item = new Telerik.Web.UI.RadComboBoxItem();
+            item.set_text(this._enumHelper.getFascicleTypeDescription(itemType));
+            item.set_value(FascicleType[itemType]);
+            comboBox.get_items().add(item);
+        }
+    }
+
+    setPanelVisibility(panelName: string, isVisible: boolean): void {
+        switch (panelName) {
+            case uscProcessDetails.InformationDetails_PanelName: {
+                this._pnlInformations.set_visible(isVisible);
+                break;
+            }
+            case uscProcessDetails.CategoryInformationDetails_PanelName: {
+                this._pnlCategoryInformations.set_visible(isVisible);
+                break;
+            }
+            case uscProcessDetails.RoleDetails_PanelName: {
+                this._pnlRoleDetails.set_visible(isVisible);
+                break;
+            }
+            case uscProcessDetails.WorkflowDetails_PanelName: {
+                this._pnlWorkflowDetails.set_visible(isVisible);
+                break;
+            }
+            case uscProcessDetails.FascicleDetails_PanelName: {
+                this._pnlFascicleDetails.set_visible(isVisible);
+                break;
+            }
+        }
+    }
+
+    setPanelLoading(panelName: string, isVisible: boolean): void {
+        switch (panelName) {
+            case uscProcessDetails.InformationDetails_PanelName: {
+                this.setLoading(this._pnlInformations.get_element().id, isVisible);
+                break;
+            }
+            case uscProcessDetails.CategoryInformationDetails_PanelName: {
+                this.setLoading(this._pnlCategoryInformations.get_element().id, isVisible);
+                break;
+            }
+            case uscProcessDetails.RoleDetails_PanelName: {
+                this.setLoading(this._pnlRoleDetails.get_element().id, isVisible);
+                break;
+            }
+            case uscProcessDetails.WorkflowDetails_PanelName: {
+                this.setLoading(this._pnlWorkflowDetails.get_element().id, isVisible);
+                break;
+            }
+            case uscProcessDetails.FascicleDetails_PanelName: {
+                this.setLoading(this._pnlFascicleDetails.get_element().id, isVisible);
+                break;
+            }
+        }
+    }
+
+    private setLoading(elementId: string, isVisible: boolean): void {
+        if (isVisible) {
+            this._ajaxLoadingPanel.show(elementId);
+        }
+        else {
+            this._ajaxLoadingPanel.hide(elementId);
+        }
+    }
+
+    rcbFascicleType_selectedIndexChanged = (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
+        let fascicleIsProcedureOrDefault: boolean = ["", FascicleType[FascicleType.Procedure]].indexOf(args.get_item().get_value()) > -1;
+        $("#uscContactRestFieldset").toggle(fascicleIsProcedureOrDefault);
+        $("#responsibleRoleFieldset").toggle(fascicleIsProcedureOrDefault);
+        this._rbFascicleVisibilityType.set_visible(fascicleIsProcedureOrDefault);
     }
 
     private showNotificationException(exception: ExceptionDTO, customMessage?: string): void {
@@ -702,6 +1004,13 @@ class uscProcessDetails {
         if (!jQuery.isEmptyObject(uscNotification)) {
             uscNotification.showNotificationMessage(customMessage);
         }
+    }
+
+    private loadCustomActions(customActions: FascicleCustomActionModel) {
+        PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
+            .done((instance) => {
+                instance.loadItems(customActions);
+            });
     }
 }
 

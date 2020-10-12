@@ -4,9 +4,9 @@ Imports NHibernate.Criterion
 Imports VecompSoftware.NHibernateManager.Dao
 
 Public Class NHibernateAdvancedProtocolDao
-	Inherits BaseNHibernateDao(Of Protocol.AdvancedProtocol)
+    Inherits BaseNHibernateDao(Of AdvancedProtocol)
 
-	Public Sub New(ByVal sessionFactoryName As String)
+    Public Sub New(ByVal sessionFactoryName As String)
 		MyBase.New(sessionFactoryName)
 	End Sub
 
@@ -42,7 +42,7 @@ Public Class NHibernateAdvancedProtocolDao
         Return criteria.UniqueResult()
     End Function
 
-    Function SearchInvoiceAccountingDouble(ByVal idContainer As Integer, ByVal accountingSectional As String, ByVal accountinYear As Short, ByVal accountingNumber As Integer) As IList(Of Protocol.AdvancedProtocol)
+    Function SearchInvoiceAccountingDouble(ByVal idContainer As Integer, ByVal accountingSectional As String, ByVal accountinYear As Short, ByVal accountingNumber As Integer) As IList(Of AdvancedProtocol)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         criteria.CreateAlias("Protocol", "Protocol", SqlCommand.JoinType.LeftOuterJoin)
@@ -56,6 +56,6 @@ Public Class NHibernateAdvancedProtocolDao
         criteria.Add(Restrictions.Eq("Protocol.Container.Id", idContainer))
         criteria.Add(Restrictions.Eq("Protocol.IdStatus", 0))
 
-        Return criteria.List(Of Protocol.AdvancedProtocol)()
+        Return criteria.List(Of AdvancedProtocol)()
     End Function
 End Class

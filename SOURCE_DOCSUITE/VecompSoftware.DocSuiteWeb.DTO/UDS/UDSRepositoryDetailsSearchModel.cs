@@ -11,5 +11,7 @@ namespace VecompSoftware.DocSuiteWeb.DTO.UDS
         public string Subject { get; set; }
         public int CategoryId { get; set; }
         public bool IsCancelledArchive { get; set; }
+        public string DocumentName { get; set; }
+        public bool GenericDocument { get; set; }
     }
 }

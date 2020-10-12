@@ -155,7 +155,7 @@ Public Class ReslUltimaPaginaPrintPdf
         If archive Then
             Dim doc As New MemoryDocumentInfo(buffer, "UltimaPagina.pdf")
             doc.Signature = Facade.ResolutionFacade.SqlResolutionGetNumber(idResolution:=resolution.Id, complete:=True)
-            Dim idChain As Integer = doc.ArchiveInBiblos(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB).BiblosChainId
+            Dim idChain As Integer = doc.ArchiveInBiblos(resolution.Location.ReslBiblosDSDB).BiblosChainId
             Facade.ResolutionFacade.SqlResolutionDocumentUpdate(resolution.Id, idChain, ResolutionFacade.DocType.UltimaPagina)
         End If
 

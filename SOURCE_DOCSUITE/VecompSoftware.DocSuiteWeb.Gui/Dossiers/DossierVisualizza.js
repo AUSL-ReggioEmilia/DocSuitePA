@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossiers/DossierBase", "App/Services/Dossiers/DossierFolderService", "UserControl/uscDossierFolders", "App/Services/Dossiers/DossierDocumentService", "App/Services/Fascicles/FascicleService", "App/Services/Workflows/WorkflowActivityService", "App/Services/Workflows/WorkflowAuthorizationService", "App/Models/Workflows/WorkflowStatus", "App/Models/Environment", "App/Managers/HandlerWorkflowManager", "../Workflows/StartWorkflow"], function (require, exports, ServiceConfigurationHelper, DossierBase, DossierFolderService, UscDossierFolders, DossierDocumentService, FascicleService, WorkflowActivityService, WorkflowAuthorizationService, WorkflowStatus, Environment, HandlerWorkflowManager, StartWorkflow) {
+define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossiers/DossierBase", "App/Services/Dossiers/DossierFolderService", "UserControl/uscDossierFolders", "App/Services/Dossiers/DossierDocumentService", "App/Services/Fascicles/FascicleService", "App/Services/Workflows/WorkflowActivityService", "App/Services/Workflows/WorkflowAuthorizationService", "App/Models/Workflows/WorkflowStatus", "App/Models/Environment", "App/Managers/HandlerWorkflowManager", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, ServiceConfigurationHelper, DossierBase, DossierFolderService, UscDossierFolders, DossierDocumentService, FascicleService, WorkflowActivityService, WorkflowAuthorizationService, WorkflowStatus, Environment, HandlerWorkflowManager, SessionStorageKeysHelper) {
     var DossierVisualizza = /** @class */ (function (_super) {
         __extends(DossierVisualizza, _super);
         /**
@@ -39,6 +39,11 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
                 _this.setButtonEnable(false);
                 window.location.href = "DossierModifica.aspx?Type=Dossier&IdDossier=".concat(_this.currentDossierId);
             };
+            _this.btnAutorizza_OnCLick = function (sender, eventArgs) {
+                _this._loadingPanel.show(_this.splContentId);
+                _this.setButtonEnable(false);
+                window.location.href = "DossierAutorizza.aspx?Type=Dossier&IdDossier=".concat(_this.currentDossierId);
+            };
             /**
             * Evento al click del pulsante di Avvio Workflow
             * @param sender
@@ -46,9 +51,9 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
             */
             _this.btnWorkflow_OnClick = function (sender, args) {
                 args.set_cancel(true);
-                sessionStorage.setItem(StartWorkflow.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(_this._DossierModel));
-                sessionStorage.setItem(StartWorkflow.SESSION_KEY_REFERENCE_ID, _this.currentDossierId);
-                sessionStorage.setItem(StartWorkflow.SESSION_KEY_REFERENCE_TITLE, _this._DossierModel.Year.toString().concat("/", _this._DossierModel.Number.toString()));
+                sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(_this._DossierModel));
+                sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID, _this.currentDossierId);
+                sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_TITLE, _this._DossierModel.Year.toString().concat("/", _this._DossierModel.Number.toString()));
                 var url = "../Workflows/StartWorkflow.aspx?Type=Dossier".concat("&ManagerID=", _this.radWindowManagerCollegamentiId, "&DSWEnvironment=Dossier&Callback=", window.location.href);
                 return _this.openWindow(url, "windowStartWorkflow", 730, 550);
             };
@@ -154,7 +159,8 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
         DossierVisualizza.prototype.initialize = function () {
             var _this = this;
             _super.prototype.initialize.call(this);
-            this._isWorkflowEnabled = this.workflowEnabled && this.workflowEnabled.toLowerCase() == 'true';
+            this._isWorkflowEnabled = this.workflowEnabled && this.workflowEnabled.toLowerCase() === 'true';
+            this._isSendToSecretariesEnabled = this.sendToSecretariesEnabled && this.sendToSecretariesEnabled.toLowerCase() === 'true';
             this._ajaxManager = $find(this.ajaxManagerId);
             this._loadingPanel = $find(this.ajaxLoadingPanelId);
             this._notificationInfo = $find(this.radNotificationId);
@@ -167,6 +173,8 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
             this._btnDocumenti.add_clicked(this.btnDocumenti_OnClicked);
             this._btnClose = $find(this.btnCloseId);
             this._btnModifica = $find(this.btnModificaId);
+            this._btnSendToSecretaries = $find(this.btnSendToSecretariesId);
+            this._btnSendToRoles = $find(this.btnSendToRolesId);
             this._btnWorkflow = $find(this.btnAvviaWorkflowId);
             this._btnCompleteWorkflow = $find(this.btnCompleteWorkflowId);
             this._btnAutorizza = $find(this.btnAutorizzaId);
@@ -178,16 +186,11 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
             this.setButtonEnable(false);
             this._btnModifica.add_clicking(this.btnModifica_OnClick);
             this._btnInserti.add_clicking(this.btnInserti_OnClick);
-            //this._btnWorkflow.add_clicking(this.btnWorkflow_OnClick);
-            //this._btnCompleteWorkflow.add_clicking(this.btnCompleteWorkflow_OnClick);
+            this._btnAutorizza.add_clicking(this.btnAutorizza_OnCLick);
             this._btnLog.add_clicking(this.btnLog_OnClick);
-            //this._isFromWorkflow = !String.isNullOrEmpty(this.workflowActivityId);
-            //this._btnCompleteWorkflow.set_visible(this._isFromWorkflow && this._isWorkflowEnabled);
-            //this._btnCompleteWorkflow.set_enabled(false);
-            //this._btnWorkflow.set_visible(!this._isFromWorkflow && this._isWorkflowEnabled);
-            if (!this.logEnabled) {
-                this._btnLog.set_visible(false);
-            }
+            this._btnSendToSecretaries.set_visible(false);
+            this._btnSendToRoles.set_visible(false);
+            this._btnInserti.set_visible(false);
             this._fascPage = $find(this.fascPaneId);
             this._dossierPage = $find(this.dossierPageId);
             this._fascPage.collapse(Telerik.Web.UI.SplitterDirection.Backward);
@@ -209,53 +212,16 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
                 _this._dossierPage.collapse(Telerik.Web.UI.SplitterDirection.Forward);
                 _this._fascPage.expand(Telerik.Web.UI.SplitterDirection.Backward);
             });
+            this.resizeDetails();
             $("#".concat(this.uscDossierFoldersId)).on(UscDossierFolders.ROOT_NODE_CLICK, function (args) {
-                _this._fascPage.collapse(Telerik.Web.UI.SplitterDirection.Backward);
-                _this._dossierPage.expand(Telerik.Web.UI.SplitterDirection.Forward);
-                _this._fascPage.collapse(Telerik.Web.UI.SplitterDirection.Backward);
-                _this._dossierPage.expand(Telerik.Web.UI.SplitterDirection.Forward);
+                _this.resizeDetails();
             });
+            if (!this.isWindowPopupEnable) {
+                this._dossierPage.expand(Telerik.Web.UI.SplitterDirection.Forward);
+            }
             this.service.hasRootNode(this.currentDossierId, function (data) {
                 if (data) {
-                    _this.service.isManageableDossier(_this.currentDossierId, function (data) {
-                        if (data) {
-                            _this._isManager = true;
-                            if (_this._isWorkflowEnabled) {
-                                _this.setWorkflowConfiguration();
-                            }
-                            else {
-                                _this.loadData();
-                            }
-                        }
-                        else {
-                            _this.service.isViewableDossier(_this.currentDossierId, function (data) {
-                                if (data) {
-                                    _this.loadData();
-                                    _this._btnModifica.set_visible(false);
-                                    //this._btnClose.set_visible(false);
-                                    //this._btnWorkflow.set_visible(false);
-                                    //this._btnCompleteWorkflow.set_visible(false);
-                                    _this._btnLog.set_visible(false);
-                                    _this._btnInserti.set_visible(false);
-                                }
-                                else {
-                                    _this.setButtonEnable(false);
-                                    $("#".concat(_this.splContentId)).hide();
-                                    _this._loadingPanel.hide(_this.splContentId);
-                                    _this.hideUscLoadingPanels();
-                                    _this.showNotificationMessage(_this.uscNotificationId, "Impossibile visualizzare il Dossier.<br/> Non si dispone dei diritti necessari.");
-                                }
-                                ;
-                            }, function (exception) {
-                                _this._loadingPanel.hide(_this.splContentId);
-                                _this.hideUscLoadingPanels();
-                                _this.showNotificationException(_this.uscNotificationId, exception);
-                            });
-                        }
-                    }, function (exception) {
-                        _this._loadingPanel.hide(_this.splContentId);
-                        _this.showNotificationException(_this.uscNotificationId, exception);
-                    });
+                    _this.checkManageable();
                 }
                 else {
                     _this.setButtonEnable(false);
@@ -269,6 +235,63 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
                 _this.hideUscLoadingPanels();
                 _this.showNotificationException(_this.uscNotificationId, exception);
             });
+        };
+        DossierVisualizza.prototype.checkViewable = function () {
+            var _this = this;
+            this.service.isViewableDossier(this.currentDossierId, function (data) {
+                _this.isViewable = data;
+                if (!_this.isViewable) {
+                    $("#".concat(_this.splContentId)).hide();
+                    _this._loadingPanel.hide(_this.splContentId);
+                    _this.hideUscLoadingPanels();
+                    _this.showNotificationMessage(_this.uscNotificationId, "Impossibile visualizzare il Dossier.<br/> Non si dispone dei diritti necessari.");
+                    return;
+                }
+                _this.loadData();
+                _this.setButtonVisibility(false);
+                _this._btnDocumenti.set_visible(true);
+            }, function (exception) {
+                _this._loadingPanel.hide(_this.splContentId);
+                _this.hideUscLoadingPanels();
+                _this.showNotificationException(_this.uscNotificationId, exception);
+            });
+        };
+        DossierVisualizza.prototype.checkManageable = function () {
+            var _this = this;
+            this.service.isManageableDossier(this.currentDossierId, function (data) {
+                _this.isManageable = data;
+                if (_this.isManageable) {
+                    _this._isManager = true;
+                    if (_this._isWorkflowEnabled) {
+                        _this.setWorkflowConfiguration();
+                        return;
+                    }
+                    else {
+                        _this.loadData();
+                        return;
+                    }
+                }
+                else {
+                    _this.checkViewable();
+                }
+            }, function (exception) {
+                _this._loadingPanel.hide(_this.splContentId);
+                _this.showNotificationException(_this.uscNotificationId, exception);
+            });
+        };
+        DossierVisualizza.prototype.checkEditable = function () {
+            var _this = this;
+            this.service.hasModifyRight(this.currentDossierId, function (data) {
+                _this.isEditable = data;
+                _this._btnModifica.set_visible(_this.isEditable);
+                _this._btnAutorizza.set_visible(_this.isEditable);
+            });
+        };
+        DossierVisualizza.prototype.resizeDetails = function () {
+            this._fascPage.collapse(Telerik.Web.UI.SplitterDirection.Backward);
+            this._dossierPage.expand(Telerik.Web.UI.SplitterDirection.Forward);
+            this._fascPage.collapse(Telerik.Web.UI.SplitterDirection.Backward);
+            this._dossierPage.expand(Telerik.Web.UI.SplitterDirection.Forward);
         };
         /**
        * funzione per nascondere il loading panel del pannello dell'alberatura delle cartelle'
@@ -288,15 +311,18 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
         */
         DossierVisualizza.prototype.loadUscDossier = function () {
             var _this = this;
+            this._loadingPanel.show(this.splContentId);
             var promise = $.Deferred();
-            $.when(this.loadDossier(), this.loadRoles(), this.loadContacts(), this.loadInserts()).done(function () {
+            $.when(this.loadDossier(), this.loadRoles(), this.loadContacts(), this.loadMiscellaneous()).done(function () {
                 _this._DossierModel.Roles = _this._DossierRoles;
                 _this._DossierModel.Contacts = _this._DossierContacts;
                 _this._DossierModel.Documents = _this._DossierDocuments;
-                _this.loadDossierVisualize();
+                _this.loadDossierSummary();
                 promise.resolve();
             }).fail(function (exception) {
                 promise.reject(exception);
+            }).always(function () {
+                _this._loadingPanel.hide(_this.splContentId);
             });
             return promise.promise();
         };
@@ -307,6 +333,8 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
             var _this = this;
             $.when(this.loadUscDossier(), this.loadFolders()).done(function () {
                 _this.setButtonEnable(true);
+                _this.checkEditable();
+                _this.updateSentEmailVisibility();
             }).fail(function (exception) {
                 _this.showNotificationException(_this.uscNotificationId, exception, "Errore nel caricamento del Dossier.");
             });
@@ -407,22 +435,19 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
         */
         DossierVisualizza.prototype.setWorkflowConfiguration = function () {
             var _this = this;
+            var wfCheckActivityAction;
             if (this.workflowActivityId) {
-                $.when(this._handlerManager.manageHandlingWorkflowWithActivity(this.workflowActivityId)).done(function (idActivity) {
-                    _this.workflowActivityId = idActivity;
-                    _this.setWorkflowButtons();
-                }).fail(function (exception) {
-                    _this.showNotificationException(_this.uscNotificationId, exception, "Errore nel caricamento delle attività del fusso di lavoro associate al fascicolo.");
-                });
+                wfCheckActivityAction = function () { return _this._handlerManager.manageHandlingWorkflow(_this.workflowActivityId); };
             }
             else {
-                $.when(this._handlerManager.manageHandlingWorkflow(this.currentDossierId, Environment.Dossier)).done(function (idActivity) {
-                    _this.workflowActivityId = idActivity;
-                    _this.setWorkflowButtons();
-                }).fail(function (exception) {
-                    _this.showNotificationException(_this.uscNotificationId, exception, "Errore nel caricamento delle attività del fusso di lavoro associate al fascicolo.");
-                });
+                wfCheckActivityAction = function () { return _this._handlerManager.manageHandlingWorkflow(_this.currentDossierId, Environment.Dossier); };
             }
+            wfCheckActivityAction()
+                .done(function (idActivity) {
+                _this.workflowActivityId = idActivity;
+                _this.setWorkflowButtons();
+            })
+                .fail(function (exception) { return _this.showNotificationException(_this.uscNotificationId, exception, "Errore nel caricamento delle attività del fusso di lavoro associate al fascicolo."); });
         };
         /**
          * Imposto i bottoni del workflow a seconda delle mie autorizzazioni
@@ -484,7 +509,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
         /**
        * carico gli inserti del Dossier
        */
-        DossierVisualizza.prototype.loadInserts = function () {
+        DossierVisualizza.prototype.loadMiscellaneous = function () {
             var _this = this;
             var promise = $.Deferred();
             try {
@@ -514,7 +539,7 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
         /**
         * Inizializzo lo user control del sommario di Dossier
         */
-        DossierVisualizza.prototype.loadDossierVisualize = function () {
+        DossierVisualizza.prototype.loadDossierSummary = function () {
             var uscDossier = $("#".concat(this.uscDossierId)).data();
             if (!jQuery.isEmptyObject(uscDossier)) {
                 uscDossier.workflowActivityId = this.workflowActivityId;
@@ -527,22 +552,49 @@ define(["require", "exports", "App/Helpers/ServiceConfigurationHelper", "Dossier
         DossierVisualizza.prototype.loadDossierFoldersPanel = function () {
             var uscDossierFolders = $("#".concat(this.uscDossierFoldersId)).data();
             if (!jQuery.isEmptyObject(uscDossierFolders)) {
-                uscDossierFolders.setRootNode(this.currentDossierTitle, this.currentDossierId);
-                uscDossierFolders.loadNodes(this._DossierFolders);
-                uscDossierFolders.setButtonVisibility(this._isManager);
+                if (this.currentFascicleId) {
+                    uscDossierFolders.loadFascicleDossierFolders(this.currentDossierId, this.currentFascicleId, this._DossierFolders);
+                }
+                else {
+                    uscDossierFolders.setRootNode(this.currentDossierTitle, this.currentDossierId);
+                    uscDossierFolders.loadNodes(this._DossierFolders);
+                }
+                uscDossierFolders.setToolbarButtonsVisibility(this._isManager);
             }
         };
         DossierVisualizza.prototype.setButtonEnable = function (value) {
             //this._btnWorkflow.set_enabled(value);
             this._btnDocumenti.set_enabled(value);
             this._btnModifica.set_enabled(value);
+            this._btnSendToSecretaries.set_enabled(value && this._isSendToSecretariesEnabled);
+            this._btnSendToRoles.set_enabled(value);
             //this._btnClose.set_enabled(value);
-            //this._btnAutorizza.set_enabled(value);
+            this._btnAutorizza.set_enabled(value);
             this._btnLog.set_enabled(value);
             //this._btnCompleteWorkflow.set_enabled(value);
-            this._btnInserti.set_enabled(value);
+            //this._btnInserti.set_enabled(value);
+            //if (!this.miscellaneaLocationEnabled) {
+            //this._btnInserti.set_enabled(false);
+            //this._btnInserti.set_toolTip("Nessuna configurazione definita per l'inserimento degli inserti.Contattare Assistenza.");
+            //}
+        };
+        DossierVisualizza.prototype.updateSentEmailVisibility = function () {
+            var _this = this;
+            this._dossierFolderService.hasAssociatedFascicles(this.currentDossierId, function (exists) {
+                _this._btnSendToSecretaries.set_visible(_this._isSendToSecretariesEnabled && _this._isManager && exists);
+                _this._btnSendToRoles.set_visible(_this._isManager && exists);
+            }, function (exception) {
+                console.log(exception);
+            });
+        };
+        DossierVisualizza.prototype.setButtonVisibility = function (value) {
+            this._btnDocumenti.set_visible(value);
+            this._btnModifica.set_visible(value);
+            this._btnAutorizza.set_visible(value);
+            this._btnLog.set_visible(value);
+            this._btnInserti.set_visible(value);
             if (!this.miscellaneaLocationEnabled) {
-                this._btnInserti.set_enabled(false);
+                this._btnInserti.set_visible(false);
                 this._btnInserti.set_toolTip("Nessuna configurazione definita per l'inserimento degli inserti.Contattare Assistenza.");
             }
         };

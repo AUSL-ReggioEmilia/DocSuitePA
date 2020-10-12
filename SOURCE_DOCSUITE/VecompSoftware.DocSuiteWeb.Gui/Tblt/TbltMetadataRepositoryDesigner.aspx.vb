@@ -1,4 +1,5 @@
 ﻿Imports System.Web
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class TbltMetadataRepositoryDesigner
@@ -17,6 +18,10 @@ Public Class TbltMetadataRepositoryDesigner
     End Property
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
 
     End Sub
 

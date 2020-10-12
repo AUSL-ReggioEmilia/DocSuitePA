@@ -8,26 +8,29 @@ import UscMetadataRepositorySummary = require('UserControl/uscMetadataRepository
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import MetadataRepositoryService = require('App/Services/Commons/MetadataRepositoryService');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class TbltMetadataRepository extends MetadataRepositoryBase {
 
-    btnAggiungiId: string;
-    btnModificaId: string;
     uscMetadataRepositorySummaryId: string;
     ajaxLoadingPanelId: string;
     pnlRtvMetadataId: string;
     uscNotificationId: string;
     uscMetadataRepositoryId: string;
     pageContentId: string;
+    folderToolbarId: string;
 
     private _serviceConfigurations: ServiceConfiguration[];
     private _serviceConfigurationHelper: ServiceConfigurationHelper;
-    private _btnAggiungi: Telerik.Web.UI.RadButton;
-    private _btnModifica: Telerik.Web.UI.RadButton;
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
+    private _folderToolbar: Telerik.Web.UI.RadToolBar;
 
     private _metadataRepositoryId: string;
 
+
+    private static CREATE_OPTION = "create";
+    private static MODIFY_OPTION = "modify";
+    private static DELETE_OPTION = "delete";
     /**
      * Costruttore
      * @param serviceConfigurations
@@ -41,27 +44,19 @@ class TbltMetadataRepository extends MetadataRepositoryBase {
      * ----------------------------- Events ---------------------------
      */
 
-    /**
-     *  Evento scatenato al click del bottone Aggiungi
-     * @param sender
-     * @param args
-     */
-    btnAggiungi_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
-
-        window.location.href = "../Tblt/TbltMetadataRepositoryDesigner.aspx?Type=Comm";
-
-    }
-
-    /**
-     * Evento scatenato al clik del bottone Modifica
-     * @param sender
-     * @param args
-     */
-    btnModifica_OnClick(sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) {
-
-        this._metadataRepositoryId = sessionStorage.getItem("UniqueIdMetadataRepository");
-        if (!!this._metadataRepositoryId) {
-            window.location.href = "../Tblt/TbltMetadataRepositoryDesigner.aspx?Type=Comm&IdMetadtaRepository=".concat(this._metadataRepositoryId, "&IsEditPage=True");
+    folderToolBar_onClick = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
+        switch (args.get_item().get_value()) {
+            case TbltMetadataRepository.CREATE_OPTION: {
+                window.location.href = "../Tblt/TbltMetadataRepositoryDesigner.aspx?Type=Comm";
+                break;
+            }
+            case TbltMetadataRepository.MODIFY_OPTION: {
+                this._metadataRepositoryId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_UNIQUEID_METADATA_REPOSITORY);
+                if (!!this._metadataRepositoryId) {
+                    window.location.href = "../Tblt/TbltMetadataRepositoryDesigner.aspx?Type=Comm&IdMetadtaRepository=".concat(this._metadataRepositoryId, "&IsEditPage=True");
+                }
+                break;
+            }
         }
     }
 
@@ -70,10 +65,8 @@ class TbltMetadataRepository extends MetadataRepositoryBase {
      */
     initialize() {
         super.initialize();
-        this._btnAggiungi = <Telerik.Web.UI.RadButton>$find(this.btnAggiungiId);
-        this._btnAggiungi.add_clicking(this.btnAggiungi_OnClick);
-        this._btnModifica = <Telerik.Web.UI.RadButton>$find(this.btnModificaId);
-        this._btnModifica.add_clicking(this.btnModifica_OnClick);
+        this._folderToolbar = <Telerik.Web.UI.RadToolBar>$find(this.folderToolbarId);
+        this._folderToolbar.add_buttonClicked(this.folderToolBar_onClick);
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
 
         $("#".concat(this.uscMetadataRepositoryId)).on(UscMetadataRepository.ON_ROOT_NODE_CLICKED, (args, data) => {
@@ -82,19 +75,19 @@ class TbltMetadataRepository extends MetadataRepositoryBase {
             if (!jQuery.isEmptyObject(uscMetadaRepository)) {
                 uscMetadaRepository.clearPage();
             }
-            this._btnAggiungi.set_enabled(true);
-            this._btnModifica.set_enabled(false);
+            this._folderToolbar.findItemByValue(TbltMetadataRepository.CREATE_OPTION).set_enabled(true);
+            this._folderToolbar.findItemByValue(TbltMetadataRepository.MODIFY_OPTION).set_enabled(false);
         });
 
         $("#".concat(this.uscMetadataRepositoryId)).on(UscMetadataRepository.ON_NODE_CLICKED, (args, data) => {
 
             let uscMetadaRepository: UscMetadataRepositorySummary = <UscMetadataRepositorySummary>$("#".concat(this.uscMetadataRepositorySummaryId)).data();
             if (!jQuery.isEmptyObject(uscMetadaRepository)) {
-                sessionStorage.setItem("UniqueIdMetadataRepository", data);
+                sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_UNIQUEID_METADATA_REPOSITORY, data);
                 uscMetadaRepository.loadMetadataRepository(data);
             }
-            this._btnAggiungi.set_enabled(false);
-            this._btnModifica.set_enabled(true);
+            this._folderToolbar.findItemByValue(TbltMetadataRepository.CREATE_OPTION).set_enabled(false);
+            this._folderToolbar.findItemByValue(TbltMetadataRepository.MODIFY_OPTION).set_enabled(true);
         });
 
     }

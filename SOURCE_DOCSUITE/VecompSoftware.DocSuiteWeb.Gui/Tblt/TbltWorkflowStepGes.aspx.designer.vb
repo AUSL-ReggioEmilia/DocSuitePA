@@ -32,15 +32,6 @@ Partial Public Class TbltWorkflowStepGes
     Protected WithEvents pnlWorkflowStep As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''authorizationDataSource control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents authorizationDataSource As Global.Telerik.Web.UI.RadClientDataSource
-
-    '''<summary>
     '''cbWorkflowStepAuthorizationType control.
     '''</summary>
     '''<remarks>
@@ -59,15 +50,6 @@ Partial Public Class TbltWorkflowStepGes
     Protected WithEvents txtWorkflowStepName As Global.Telerik.Web.UI.RadTextBox
 
     '''<summary>
-    '''activityDataSource control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents activityDataSource As Global.Telerik.Web.UI.RadClientDataSource
-
-    '''<summary>
     '''cbWorkflowStepActivityType control.
     '''</summary>
     '''<remarks>
@@ -77,15 +59,6 @@ Partial Public Class TbltWorkflowStepGes
     Protected WithEvents cbWorkflowStepActivityType As Global.Telerik.Web.UI.RadComboBox
 
     '''<summary>
-    '''areaDataSource control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents areaDataSource As Global.Telerik.Web.UI.RadClientDataSource
-
-    '''<summary>
     '''cbWorkflowStepActivityArea control.
     '''</summary>
     '''<remarks>
@@ -93,15 +66,6 @@ Partial Public Class TbltWorkflowStepGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cbWorkflowStepActivityArea As Global.Telerik.Web.UI.RadComboBox
-
-    '''<summary>
-    '''actionDataSource control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents actionDataSource As Global.Telerik.Web.UI.RadClientDataSource
 
     '''<summary>
     '''cbWorkflowStepActivityAction control.

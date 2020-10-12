@@ -10,6 +10,7 @@
                 uscDossierGrid = new UscDossierGrid(tenantModelConfiguration.serviceConfiguration);
                 uscDossierGrid.dossierGridId = "<%= dossierGrid.ClientID %>";
                 uscDossierGrid.pageId = "<%= pageContent.ClientID %>";
+                uscDossierGrid.isWindowPopupEnable = <%= IsWindowPopupEnable.ToString().ToLower() %>;
                 uscDossierGrid.initialize();
             });
         });
@@ -44,13 +45,17 @@
                 <telerik:GridTemplateColumn HeaderText="Dossier" AllowFiltering="false" UniqueName="Title" HeaderStyle-Width="120px">
                     <ClientItemTemplate>
                          <center>
-                             <a href="../Dossiers/DossierVisualizza.aspx?Type=Dossier&IdDossier=#= UniqueId #&DossierTitle=#= Title#" class="dossierLink">#= Title #</a>
+                             # if(!uscDossierGrid.isWindowPopupEnable){#
+                                 <a href="../Dossiers/DossierVisualizza.aspx?Type=Dossier&IdDossier=#= UniqueId #&DossierTitle=#= Title#" class="dossierLink">#= Title #</a>
+                            #} else{#
+                                 <a href="" onClick="uscDossierGrid.closeResultWindow('#= UniqueId #'); return false;" class="dossierLink">#= Title #</a>
+                            #}#
                          </center>
                     </ClientItemTemplate>
                 </telerik:GridTemplateColumn>
                 <telerik:GridBoundColumn DataField="StartDate" UniqueName="StartDate" HeaderText="Data apertura" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="130px" />
                 <telerik:GridBoundColumn DataField="ContainerName" UniqueName="Container" HeaderText="Contenitore" FilterControlWidth="87%" />
-                <telerik:GridBoundColumn DataField="MasterRoleName" UniqueName="MasterRole" HeaderText="Settore Responsabile" FilterControlWidth="87%" />
+                <telerik:GridBoundColumn DataField="MasterRoleName" UniqueName="MasterRole" HeaderText="Settore responsabile" FilterControlWidth="87%" />
                 <telerik:GridBoundColumn DataField="Subject" UniqueName="Subject" HeaderText="Oggetto" HeaderStyle-Width="35%" FilterControlWidth="87%" />
             </Columns>
         </MasterTableView>

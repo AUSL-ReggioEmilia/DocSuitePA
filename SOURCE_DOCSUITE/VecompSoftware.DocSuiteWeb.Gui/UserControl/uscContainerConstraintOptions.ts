@@ -10,6 +10,7 @@ import GuidHelper = require('App/Helpers/GuidHelper');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
 
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class UscContainerConstraintOptions {
     rtbConstraintActionsId: string;
@@ -40,9 +41,8 @@ class UscContainerConstraintOptions {
     private static REMOVE_CONSTRAINT_ACTION = "removeConstraint";
     private static NODE_COMMAND_ATTRIBUTE = "NodeCommandType";
     private static PERSISTED_ATTRIBUTE = "IsAlreadyPersisted";
-    private static TO_DELETE_STORAGE_KEY = "ConstraintsToDelete";
 
-    private get currentSelectedNode(): Telerik.Web.UI.RadTreeNode {
+    private currentSelectedNode(): Telerik.Web.UI.RadTreeNode {
         return this._rtvConstraints.get_selectedNode();
     }
 
@@ -72,10 +72,10 @@ class UscContainerConstraintOptions {
                     }
                     case UscContainerConstraintOptions.EDIT_CONSTRAINT_ACTION: {
                         {
-                            if (!this.currentSelectedNode.get_value()) {
+                            if (!this.currentSelectedNode().get_value()) {
                                 return;
                             }
-                            this._txtConstraintName.set_value(this.currentSelectedNode.get_text());
+                            this._txtConstraintName.set_value(this.currentSelectedNode().get_text());
                             this._btnConfirm.set_commandArgument(UscContainerConstraintOptions.EDIT_CONSTRAINT_ACTION);
                             this.openWindow(this.windowManageConstraintId, "Modifica obbligo di trasparenza");
                         }
@@ -83,13 +83,13 @@ class UscContainerConstraintOptions {
                     }
                     case UscContainerConstraintOptions.REMOVE_CONSTRAINT_ACTION: {
                         {
-                            if (!this.currentSelectedNode.get_value()) {
+                            if (!this.currentSelectedNode().get_value()) {
                                 return;
                             }
                             this._windowManager.radconfirm("Sei sicuro di voler rimuovere l'obbligo selezionato?", (arg) => {
                                 if (arg) {
                                     let constraintModel: DocumentSeriesConstraintModel = {} as DocumentSeriesConstraintModel;
-                                    constraintModel.UniqueId = this.currentSelectedNode.get_value();
+                                    constraintModel.UniqueId = this.currentSelectedNode().get_value();
                                     this.saveConstraint(UscContainerConstraintOptions.REMOVE_CONSTRAINT_ACTION, constraintModel);
                                 }
                             }, 300, 160);                            
@@ -109,7 +109,7 @@ class UscContainerConstraintOptions {
         this.setNodeActionBehaviours(currentNode);
     }
 
-    btnConfirm_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnConfirm_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         try {
             let constraintName: string = this._txtConstraintName.get_value();
             if (!constraintName) {
@@ -131,7 +131,7 @@ class UscContainerConstraintOptions {
                     {
                         constraintModel = {} as DocumentSeriesConstraintModel;
                         constraintModel.Name = constraintName;
-                        constraintModel.UniqueId = this.currentSelectedNode.get_value();
+                        constraintModel.UniqueId = this.currentSelectedNode().get_value();
                         this.saveConstraint(UscContainerConstraintOptions.EDIT_CONSTRAINT_ACTION, constraintModel);
                     }
                     break;                
@@ -169,7 +169,7 @@ class UscContainerConstraintOptions {
 
     loadConstraints(idSeries: number): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
-        sessionStorage.removeItem(UscContainerConstraintOptions.TO_DELETE_STORAGE_KEY);
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_TO_DELETE_STORAGE);
         this._rtvConstraints.get_nodes().getNode(0).get_nodes().clear();
         this.seriesId = idSeries;
         this._loadingPanel.show(this.splPageContentId);

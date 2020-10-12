@@ -1,46 +1,25 @@
-﻿Imports Newtonsoft.Json
+﻿Imports System.Collections.Generic
+Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Metadata
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class FascProcessInserimento
     Inherits FascBasePage
 
-    Private Const FASCICLE_INSERT_CALLBACK As String = "fascInserimento.insertCallback('{0}');"
+    Private _idDocumentUnit As Guid?
+
+    Public ReadOnly Property IdDocumentUnit As Guid?
+        Get
+            If Not _idDocumentUnit.HasValue Then
+                _idDocumentUnit = Request.QueryString.GetValueOrDefault(Of Guid?)("IdDocumentUnit", Nothing)
+            End If
+            Return _idDocumentUnit
+        End Get
+    End Property
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        uscContact.FilterByParentId = ProtocolEnv.FascicleContactId
-        AddHandler AjaxManager.AjaxRequest, AddressOf FascProcessInserimento_AjaxRequest
-    End Sub
-
-    Private Sub uscCategory_CategoryChange(ByVal sender As Object, ByVal e As EventArgs) Handles uscCategory.CategoryAdded, uscCategory.CategoryRemoved
-
-    End Sub
-
-    Public Function GetDynamicValues() As MetadataModel
-        Return uscDynamicMetadata.GetControlValues()
-    End Function
-
-    Protected Sub FascProcessInserimento_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
-        Dim ajaxModel As AjaxModel = Nothing
-        Try
-            ajaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument)
-            If ajaxModel Is Nothing Then
-                Return
-            End If
-            Select Case ajaxModel.ActionName
-                Case "Insert"
-                    Dim metadataModel As MetadataModel = Nothing
-                    If ProtocolEnv.MetadataRepositoryEnabled Then
-                        metadataModel = GetDynamicValues()
-                    End If
-
-                    AjaxManager.ResponseScripts.Add(String.Format(FASCICLE_INSERT_CALLBACK, If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel).Replace("'", "\'"), Nothing)))
-                    Exit Select
-            End Select
-        Catch ex As Exception
-            Exit Sub
-        End Try
     End Sub
 
 End Class

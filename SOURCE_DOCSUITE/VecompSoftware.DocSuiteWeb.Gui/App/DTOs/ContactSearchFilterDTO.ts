@@ -5,6 +5,7 @@ interface ContactSearchFilterDTO {
     ExcludeRoleContacts?: boolean;
     ParentId?: number;
     ParentToExclude?: number;
+    IdTenant?: string;
 }
 
 export = ContactSearchFilterDTO;

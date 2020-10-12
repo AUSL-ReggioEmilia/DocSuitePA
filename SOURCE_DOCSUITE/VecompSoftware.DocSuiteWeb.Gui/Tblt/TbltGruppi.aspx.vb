@@ -1,14 +1,10 @@
 ﻿Imports System.Collections.Generic
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.Services.Logging
+Imports System.Linq
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
-Imports System.Linq
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.DTO.Commons
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.Desks
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.Services.Logging
 
 Partial Public Class TbltGruppi
     Inherits CommonBasePage
@@ -111,13 +107,14 @@ Partial Public Class TbltGruppi
     End Sub
 
     Private Sub RadTreeViewGroups_NodeClick(ByVal sender As Object, ByVal e As RadTreeNodeEventArgs) Handles RadTreeViewGroups.NodeClick
-        btnAddUser.Enabled = False
-        btnImportFrom.Enabled = False
-        btnDeleteUser.Enabled = False
+        groupDetails.Button_AddUser.Enabled = False
+        groupDetails.Button_ImportUser.Enabled = False
+        groupDetails.Button_DeleteUser.Enabled = False
         If SelectedGroup IsNot Nothing Then
-            btnAddUser.Enabled = Not SelectedGroup.HasAllUsers AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight)
-            btnImportFrom.Enabled = Not SelectedGroup.HasAllUsers AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight)
-            btnDeleteUser.Enabled = Not SelectedGroup.HasAllUsers AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight)
+            groupDetails.Button_AddUser.Enabled = Not SelectedGroup.HasAllUsers AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight)
+            groupDetails.Button_ImportUser.Enabled = Not SelectedGroup.HasAllUsers AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight)
+            groupDetails.Button_DeleteUser.Enabled = Not SelectedGroup.HasAllUsers AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight)
+
             groupDetails.LoadDetails()
         End If
     End Sub
@@ -152,13 +149,10 @@ Partial Public Class TbltGruppi
     End Sub
 
     Private Sub InitializeControls()
-        btnAddGroup.Visible = DocSuiteContext.IsFullApplication AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight)
-        btnRenameGroup.Visible = DocSuiteContext.IsFullApplication AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight)
-        btnDeleteGroup.Visible = DocSuiteContext.IsFullApplication AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight)
-        btnLogGroup.Visible = DocSuiteContext.IsFullApplication AndAlso (CommonShared.HasGroupAdministratorRight)
-        btnAddUser.Enabled = False
-        btnImportFrom.Enabled = False
-        btnDeleteUser.Enabled = False
+        btnAddGroup.Visible = CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight
+        btnRenameGroup.Visible = CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight
+        btnDeleteGroup.Visible = CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight
+        btnLogGroup.Visible = CommonShared.HasGroupAdministratorRight
     End Sub
 
     Private Sub LoadGroups()

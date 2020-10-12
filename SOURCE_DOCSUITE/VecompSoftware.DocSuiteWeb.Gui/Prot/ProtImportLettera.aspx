@@ -69,7 +69,7 @@
                 <asp:DropDownList AppendDataBoundItems="True" DataSourceID="odsTableDocType" ID="cmbIdDocType" runat="server" Visible="false">
                     <asp:ListItem />
                 </asp:DropDownList>
-                <asp:RequiredFieldValidator ControlToValidate="cmbIdDocType" Display="Dynamic" ErrorMessage="Tipo Documento Obbligatorio" ID="rfvDocType" runat="server" />
+                <asp:RequiredFieldValidator ControlToValidate="cmbIdDocType" Display="Dynamic" ErrorMessage="Tipo Documento obbligatorio" ID="rfvDocType" runat="server" />
             </td>
         </tr>
     </table>

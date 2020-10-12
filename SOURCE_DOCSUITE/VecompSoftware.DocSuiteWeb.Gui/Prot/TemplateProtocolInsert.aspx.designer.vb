@@ -257,6 +257,15 @@ Partial Public Class TemplateProtocolInsert
     Protected WithEvents uscAutorizzazioni As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
 
     '''<summary>
+    '''pnlUscOggetto control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlUscOggetto As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''uscOggetto control.
     '''</summary>
     '''<remarks>
@@ -363,4 +372,13 @@ Partial Public Class TemplateProtocolInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAnnulla As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''btnSave control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSave As Global.System.Web.UI.WebControls.Button
 End Class

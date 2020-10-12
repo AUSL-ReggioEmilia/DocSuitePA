@@ -23,9 +23,5 @@ namespace VecompSoftware.DocSuiteWeb.AVCP.Import
             return dict;
         }
 
-        public static void SaveXml(int anno, string codiceServizio, int numerof, string xml)
-        {
-            Console.WriteLine(xml);
-        }
     }
 }

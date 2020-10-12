@@ -101,7 +101,6 @@ Public Class uscUDSStaticDataInsert
     End Sub
 
     Public Sub SetData(model As UDSModel) Implements IUDSInsertStaticData.SetData
-        'Necessario fare il seguente if: questo metodo viene chiamato sempre dopo aver chiamato "ResetControls()" e successivamente "InitializeControls()"
         If txtSubject.Visible Then
             txtSubject.Text = If(String.IsNullOrEmpty(model.Model.Subject.Value), model.Model.Subject.DefaultValue, model.Model.Subject.Value)
 
@@ -121,6 +120,7 @@ Public Class uscUDSStaticDataInsert
                 Dim category As Data.Category = Facade.CategoryFacade.GetById(Integer.Parse(model.Model.Category.IdCategory))
                 uscSelCategory.DataSource = New List(Of Data.Category) From {category}
                 uscSelCategory.DataBind()
+                uscSelCategory.ReadOnly = model.Model.Category.ReadOnly
             End If
         End If
     End Sub

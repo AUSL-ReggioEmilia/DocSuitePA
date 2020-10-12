@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Services/BaseService"], function (require, exports, BaseService) {
+define(["require", "exports", "App/Services/BaseService", "App/Models/Workflows/WorkflowStatus"], function (require, exports, BaseService, WorkflowStatus) {
     var WorkflowActivityLogService = /** @class */ (function (_super) {
         __extends(WorkflowActivityLogService, _super);
         /**
@@ -25,6 +25,16 @@ define(["require", "exports", "App/Services/BaseService"], function (require, ex
         WorkflowActivityLogService.prototype.insertWorkflowActivityLog = function (model, callback, error) {
             var url = this._configuration.WebAPIUrl;
             this.postRequest(url, JSON.stringify(model), callback, error);
+        };
+        WorkflowActivityLogService.prototype.countWorkflowActivityByLogType = function (id, workflowStatus, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var data = "/$count?$filter=LogType eq '" + WorkflowStatus[workflowStatus] + "' and Entity/UniqueId eq " + id;
+            url = url.concat(data);
+            this.getRequest(url, null, function (response) {
+                if (callback) {
+                    callback(response);
+                }
+            }, error);
         };
         return WorkflowActivityLogService;
     }(BaseService));

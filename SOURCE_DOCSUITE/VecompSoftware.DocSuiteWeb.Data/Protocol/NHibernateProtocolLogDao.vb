@@ -36,7 +36,8 @@ Public Class NHibernateProtocolLogDao
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         If Not uniqueId.Equals(Guid.Empty) Then
-            criteria.Add(Restrictions.Eq("UniqueIdProtocol", uniqueId))
+            criteria.CreateAlias("Protocol", "Protocol", SqlCommand.JoinType.InnerJoin)
+            criteria.Add(Restrictions.Eq("Protocol.Id", uniqueId))
         End If
 
         If Not String.IsNullOrEmpty(user) Then
@@ -57,10 +58,11 @@ Public Class NHibernateProtocolLogDao
     Public Function SearchLog(ByVal anno As Short, ByVal numero As Integer, ByVal user As String, ByVal logType As String) As IList(Of ProtocolLog)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
-        criteria.Add(Restrictions.Eq("Year", anno))
+        criteria.CreateAlias("Protocol", "Protocol")
+        criteria.Add(Restrictions.Eq("Protocol.Year", anno))
 
         If numero <> 0 Then
-            criteria.Add(Restrictions.Eq("Number", numero))
+            criteria.Add(Restrictions.Eq("Protocol.Number", numero))
         End If
 
         If Not String.IsNullOrEmpty(user) Then
@@ -71,7 +73,7 @@ Public Class NHibernateProtocolLogDao
             criteria.Add(Restrictions.Eq("LogType", logType))
         End If
 
-        criteria.AddOrder(Order.Desc("Id"))
+        criteria.AddOrder(Order.Desc("Incremental"))
         criteria.SetFirstResult(0)
         criteria.SetMaxResults(50)
 
@@ -146,7 +148,8 @@ Public Class NHibernateProtocolLogDao
 
     Public Function CountMailRolesLogs(uniqueId As Guid) As Integer
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.Eq("UniqueIdProtocol", uniqueId))
+        criteria.CreateAlias("Protocol", "Protocol", SqlCommand.JoinType.InnerJoin)
+        criteria.Add(Restrictions.Eq("Protocol.Id", uniqueId))
         criteria.Add(Restrictions.Eq("LogType", "PW"))
         criteria.SetProjection(Projections.RowCount())
         Return criteria.UniqueResult(Of Integer)
@@ -154,7 +157,8 @@ Public Class NHibernateProtocolLogDao
 
     Public Function GetMailRolesLogs(uniqueId As Guid) As IList(Of ProtocolLog)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.Eq("UniqueIdProtocol", uniqueId))
+        criteria.CreateAlias("Protocol", "Protocol", SqlCommand.JoinType.InnerJoin)
+        criteria.Add(Restrictions.Eq("Protocol.Id", uniqueId))
         criteria.Add(Restrictions.Eq("LogType", "PW"))
         Return criteria.List(Of ProtocolLog)
     End Function

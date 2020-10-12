@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class PECInsert
-    
+
     '''<summary>
     '''RadCodeBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
-    
+
     '''<summary>
     '''WarningPanel control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents WarningPanel As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''WarningLabel control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents WarningLabel As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''HFcorrelatedCommandId control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents HFcorrelatedCommandId As Global.System.Web.UI.WebControls.HiddenField
-    
+
     '''<summary>
     '''udsNotification control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udsNotification As Global.Telerik.Web.UI.RadNotification
-    
+
     '''<summary>
     '''responseNotificationError control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents responseNotificationError As Global.Telerik.Web.UI.RadNotification
-    
+
     '''<summary>
     '''pnlContent control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlContent As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkMultiPec control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkMultiPec As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkSetPecInteroperable control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkSetPecInteroperable As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkZip control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkZip As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkZipPassword control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkZipPassword As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkAddOriginalAttachments control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkAddOriginalAttachments As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''ddlMailFrom control.
     '''</summary>
@@ -128,8 +128,8 @@ Partial Public Class PECInsert
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ddlMailFrom As Global.System.Web.UI.WebControls.DropDownList
-    
+    Protected WithEvents ddlMailFrom As Global.Telerik.Web.UI.RadComboBox
+
     '''<summary>
     '''uscDestinatari control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDestinatari As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''tblCc control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblCc As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''uscDestinatariCc control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDestinatariCc As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''ddlPriority control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlPriority As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''uscAttachmentList control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscAttachmentList As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentList
-    
+
     '''<summary>
     '''uscAttachment control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscAttachment As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
     '''<summary>
     '''txtMailSubject control.
     '''</summary>
@@ -192,7 +192,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtMailSubject As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''txtMailBody control.
     '''</summary>
@@ -201,7 +201,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtMailBody As Global.Telerik.Web.UI.RadEditor
-    
+
     '''<summary>
     '''pnlButtons control.
     '''</summary>
@@ -210,7 +210,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''cmdSend control.
     '''</summary>
@@ -219,7 +219,7 @@ Partial Public Class PECInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdSend As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''cmdInsertSign control.
     '''</summary>

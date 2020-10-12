@@ -1,4 +1,4 @@
-define(["require", "exports", "../App/Services/UDS/UDSRepositoryService", "../App/Services/UDS/UDSLogService", "../App/Helpers/ServiceConfigurationHelper"], function (require, exports, UDSRepositoryService, UDSLogService, ServiceConfigurationHelper) {
+define(["require", "exports", "App/Services/UDS/UDSRepositoryService", "App/Services/UDS/UDSLogService", "App/Helpers/ServiceConfigurationHelper"], function (require, exports, UDSRepositoryService, UDSLogService, ServiceConfigurationHelper) {
     var UserUDSBase = /** @class */ (function () {
         function UserUDSBase(serviceConfigurations) {
             this._serviceConfigurations = serviceConfigurations;

@@ -26,7 +26,7 @@
             height: auto !important;
         }
     </style>
-    <script type="text/javascript" src="../Scripts/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" src="Scripts/rivets.bundled.min.js"></script>
     <script type="text/javascript" src="../Scripts/moment.js"></script>
     <script type="text/javascript" src="Scripts/nprogress.js"></script>

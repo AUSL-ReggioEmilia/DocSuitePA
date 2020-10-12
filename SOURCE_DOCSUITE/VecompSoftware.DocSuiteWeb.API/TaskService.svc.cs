@@ -77,7 +77,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             var header = FacadeFactory.Instance.TaskHeaderFacade.GetById(dto.Id.Value);
 
             if (dto.HasProtocols())
-                dto.Protocols.ToList().ForEach(f => header.AddProtocol(FacadeFactory.Instance.ProtocolFacade.GetById(f.Year.Value, f.Number.Value)));
+                dto.Protocols.ToList().ForEach(f => header.AddProtocol(FacadeFactory.Instance.ProtocolFacade.GetById(f.UniqueId.Value)));
             if (dto.HasPECMails())
                 dto.PECMails.ToList().ForEach(f => header.AddPECMail(FacadeFactory.Instance.PECMailFacade.GetById(int.Parse(f.Id))));
             if (dto.HasPOLMails())
@@ -93,7 +93,7 @@ namespace VecompSoftware.DocSuiteWeb.API
         {
             var header = FacadeFactory.Instance.TaskHeaderFacade.GetById(taskDTO.Id.Value);
             var protocol = new Protocol();
-            protocol.Id = new YearNumberCompositeKey(protocolDTO.Year, protocolDTO.Number);
+            protocol.Id = protocolDTO.UniqueId.Value;
 
             header.AddProtocol(protocol);
             FacadeFactory.Instance.TaskHeaderFacade.Update(ref header);

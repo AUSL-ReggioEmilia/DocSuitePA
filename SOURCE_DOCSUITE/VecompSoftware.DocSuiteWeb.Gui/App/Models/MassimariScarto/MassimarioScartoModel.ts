@@ -5,6 +5,7 @@ class MassimarioScartoModel {
     Status: MassimarioScartoStatusType;
     Name: string;
     Code: number;
+    FullCode: string;
     Note: string;
     ConservationPeriod: number;
     StartDate: Date;

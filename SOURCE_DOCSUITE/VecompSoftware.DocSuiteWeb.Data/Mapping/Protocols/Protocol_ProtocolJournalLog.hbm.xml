@@ -21,8 +21,11 @@
     <property name="ProtocolOthers" column="ProtocolOthers" />
     <property name="IdDocument" column="IdDocument" />
     <property name="LogDescription" column="LogDescription" />
+    <property name="IdTenantAOO" column="IdTenantAOO" />
 
     <many-to-one name="Location" class="Location" column="idLocation" />
+
+    <filter name="TenantFilter" condition=":tenantAOOId = IdTenantAOO" />
   </class>
 
 </hibernate-mapping>

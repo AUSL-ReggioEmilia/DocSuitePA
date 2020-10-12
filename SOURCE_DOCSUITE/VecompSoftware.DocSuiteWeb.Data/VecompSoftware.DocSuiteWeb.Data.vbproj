@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -17,7 +17,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -99,18 +99,15 @@
     <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper, Version=8.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.8.1.1\lib\net461\AutoMapper.dll</HintPath>
-    </Reference>
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.9.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.9\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=5.1.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\NHibernate.5.1.3\lib\net461\NHibernate.dll</HintPath>
@@ -142,41 +139,41 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Telerik.Web.UI, Version=2018.3.910.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.Web.UI.2018.3.910.45\lib\net45\Telerik.Web.UI.dll</HintPath>
+    <Reference Include="Telerik.Web.UI, Version=2020.1.114.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Web.UI.2020.1.114.45\lib\net45\Telerik.Web.UI.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Clients.WebAPI, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Clients.WebAPI.8.87.19296.2\lib\net461\VecompSoftware.Clients.WebAPI.dll</HintPath>
+    <Reference Include="VecompSoftware.Clients.WebAPI, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Clients.WebAPI.9.9.20267.1\lib\net48\VecompSoftware.Clients.WebAPI.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Commons.Interfaces, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.8.87.19295.1\lib\net461\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.9.20254.2\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.9.20254.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.9.20254.5\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers, Version=8.87.0.0, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.8.87.19296.1\lib\net461\VecompSoftware.Helpers.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.9.9.20267.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Json, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Json.8.87.19296.1\lib\net461\VecompSoftware.Helpers.Json.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Json, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Json.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Json.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.NHibernate, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.NHibernate.8.87.19296.1\lib\net461\VecompSoftware.Helpers.NHibernate.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.NHibernate, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.NHibernate.9.9.20267.1\lib\net48\VecompSoftware.Helpers.NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Web, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Web.8.87.19296.1\lib\net461\VecompSoftware.Helpers.Web.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Web, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Web.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Web.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Command, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Command.8.87.19296.2\lib\net461\VecompSoftware.Services.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Logging, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Logging.8.87.19296.1\lib\net461\VecompSoftware.Services.Logging.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Logging, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Logging.9.9.20267.1\lib\net48\VecompSoftware.Services.Logging.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -212,10 +209,12 @@
     <Compile Include="Data\IMessageLogDao.vb" />
     <Compile Include="Data\PrivacyType.vb" />
     <Compile Include="Data\ParameterViewMode.vb" />
+    <Compile Include="DocSuiteSignRequiredException.vb" />
     <Compile Include="DocumentSeries\DTO\MonitoringQualityDetailsDTO.vb" />
     <Compile Include="DocumentSeries\DTO\MonitoringQualitySummaryDTO.vb" />
     <Compile Include="Domain\Collaboration\DTO\CollaborationManagerDTO.vb" />
     <Compile Include="Domain\Collaboration\WorkflowMetadataXml.vb" />
+    <Compile Include="Domain\Common\AuthorizationRoleType.vb" />
     <Compile Include="Domain\Common\CategorySchema.vb" />
     <Compile Include="Domain\Common\Contact\ContactList.vb" />
     <Compile Include="Domain\Common\Contact\LanguageType.vb" />
@@ -223,12 +222,15 @@
     <Compile Include="Domain\Common\DTO\ContactListDto.vb" />
     <Compile Include="Domain\Common\LogEvent.vb" />
     <Compile Include="Domain\Common\TenantRole.vb" />
+    <Compile Include="Domain\DocumentUnits\DocumentUnit.vb" />
+    <Compile Include="Domain\DocumentUnits\DocumentUnitStatus.vb" />
     <Compile Include="Domain\Fascicle\FascicleDocumentUnit.vb" />
     <Compile Include="Domain\Fascicle\FascicleStatus.vb" />
     <Compile Include="Domain\Fascicle\RoleAuthorizationType.vb" />
     <Compile Include="Domain\Fascicle\VisibilityType.vb" />
     <Compile Include="Domain\Fascicle\ReferenceType.vb" />
     <Compile Include="Domain\Fascicle\FascicleType.vb" />
+    <Compile Include="Domain\ISupportTenant.vb" />
     <Compile Include="Domain\PEC\InvoiceStatus.vb" />
     <Compile Include="Domain\PEC\InvoiceType.vb" />
     <Compile Include="Domain\PEC\PECMailReceiptType.vb" />
@@ -256,14 +258,24 @@
     <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASEMitente.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASESede.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASESpedizione.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PolAccountSercAuth.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PolAccountSercExtendedProperties.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\POLRequestContactSercExtendedProperties.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PRCEProtocolInformation.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PRCESede.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\POLAccountExtendedProperties.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\POLRequestContactExtendedProperties.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\ExceptionInfo.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\POLRequestExtendedProperties.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\POLRequestMetaData.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\TNoticeFatalErrorType.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\PRETNoticeGetStatusResponse.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\PRETNoticePushResponse.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\TNoticeReturnCodeType.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\TNoticeStatusCodeType.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\POLRequestRecipientHeader.vb" />
     <Compile Include="Domain\PosteOnLine\SOLRequest.vb" />
+    <Compile Include="Domain\Protocol\IProtocolLog.vb" />
     <Compile Include="Domain\Protocol\ProtocolRoleNoteType.vb" />
     <Compile Include="Domain\Protocol\ProtocolRoleStatus.vb" />
     <Compile Include="Domain\Protocol\DTO\ProtocolContactDTO.vb" />
@@ -312,11 +324,14 @@
     <Compile Include="Domain\Resolution\ResolutionKindDocumentSeries.vb" />
     <Compile Include="Domain\Resolution\ResolutionMessage.vb" />
     <Compile Include="Domain\Resolution\PrintLetterRole.vb" />
+    <Compile Include="Events\EventListenerUtil.vb" />
+    <Compile Include="Events\TenantInsertEventListener.vb" />
     <Compile Include="ExtensionMethods\CategoryDTOEx.vb" />
     <Compile Include="ExtensionMethods\ContactDTOEx.vb" />
     <Compile Include="ExtensionMethods\ContainerDTOEx.vb" />
     <Compile Include="ExtensionMethods\MailboxDTOEx.vb" />
     <Compile Include="ExtensionMethods\ProtocolDTOEx.vb" />
+    <Compile Include="ExtensionMethods\ServiceCategoryDTOEx.vb" />
     <Compile Include="ExtensionMethods\TableDocTypeDTOex.vb" />
     <Compile Include="ExtensionMethods\TaskDTOEx.vb" />
     <Compile Include="ExtensionMethods\ProtocolModelEx.vb" />
@@ -331,6 +346,7 @@
     <Compile Include="Models\AdaptiveSearchMappingControl.vb" />
     <Compile Include="Models\AdaptiveSearchModel.vb" />
     <Compile Include="Models\ColumnOrder.vb" />
+    <Compile Include="Models\ContactDelegateModel.vb" />
     <Compile Include="Models\HighlightProtocolGroup.vb" />
     <Compile Include="Models\IconModality.vb" />
     <Compile Include="Models\DocumentSeriesConfigurationOrder.vb" />
@@ -339,11 +355,9 @@
     <Compile Include="Models\InvoiceStylesheetNames.vb" />
     <Compile Include="Models\PublicationResolutionDocumentModel.vb" />
     <Compile Include="Models\ResolutionActivityDocumentModel.vb" />
-    <Compile Include="Models\SecureDocumentVisibilityConfiguration.vb" />
     <Compile Include="Models\SignedIconRenderingModality.vb" />
     <Compile Include="Models\TenantEntityConfigurationEx.vb" />
     <Compile Include="Models\WebDoc.vb" />
-    <Compile Include="Models\SecureDocumentWorkflowStatementVisibilityConfiguration.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -517,7 +531,6 @@
     <Compile Include="Domain\Common\ContainerDocType.vb" />
     <Compile Include="Domain\Common\ContainerGroup.vb" />
     <Compile Include="Domain\Common\ContainerType.vb" />
-    <Compile Include="Domain\Common\DBInfo.vb" />
     <Compile Include="Domain\Common\DocumentType.vb" />
     <Compile Include="Domain\Common\GroupRights.vb" />
     <Compile Include="Domain\Common\IContainerExtensionCollection.vb" />
@@ -591,9 +604,7 @@
     <Compile Include="Domain\PEC\PECMailTypes.vb" />
     <Compile Include="Domain\PosteOnLine\PolDtoCosti.vb" />
     <Compile Include="Domain\PosteOnLine\POLRequestType.vb" />
-    <Compile Include="Domain\Protocol\AdvancedProtocol.vb">
-      <DependentUpon>Protocol.vb</DependentUpon>
-    </Compile>
+    <Compile Include="Domain\Protocol\AdvancedProtocol.vb" />
     <Compile Include="Domain\Protocol\DTO\ProtocolHeader.vb" />
     <Compile Include="Domain\PosteOnLine\POLAccount.vb" />
     <Compile Include="Domain\PosteOnLine\POLMessageContactEnum.vb" />
@@ -627,30 +638,18 @@
     <Compile Include="Domain\PEC\PECMail.vb" />
     <Compile Include="Domain\PEC\PECMailAttachment.vb" />
     <Compile Include="Domain\PEC\PECMailBox.vb" />
-    <Compile Include="Domain\Protocol\ProtocoContactCompositeKey.vb" />
     <Compile Include="Domain\Protocol\Protocol.vb" />
-    <Compile Include="Domain\Protocol\ProtocolContact.vb">
-      <DependentUpon>Protocol.vb</DependentUpon>
-    </Compile>
+    <Compile Include="Domain\Protocol\ProtocolContact.vb" />
     <Compile Include="Domain\Protocol\ProtocolContactIssue.vb" />
-    <Compile Include="Domain\Protocol\ProtocolContactManual.vb">
-      <DependentUpon>Protocol.vb</DependentUpon>
-    </Compile>
+    <Compile Include="Domain\Protocol\ProtocolContactManual.vb" />
     <Compile Include="Domain\Protocol\ProtocolFile.vb" />
     <Compile Include="Domain\Protocol\ProtocolJournalLog.vb" />
-    <Compile Include="Domain\Protocol\ProtocolLink.vb">
-      <DependentUpon>Protocol.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Domain\Protocol\ProtocolLinkCompositeKey.vb" />
+    <Compile Include="Domain\Protocol\ProtocolLink.vb" />
     <Compile Include="Domain\Protocol\ProtocolLog.vb" />
-    <Compile Include="Domain\Protocol\ProtocolRole.vb">
-      <DependentUpon>Protocol.vb</DependentUpon>
-    </Compile>
+    <Compile Include="Domain\Protocol\ProtocolRole.vb" />
     <Compile Include="Domain\Protocol\ProtocolRoleUser.vb" />
-    <Compile Include="Domain\Protocol\ProtocolRoleUserKey.vb" />
     <Compile Include="Domain\Protocol\ProtocolStatus.vb" />
     <Compile Include="Domain\Protocol\ProtocolType.vb" />
-    <Compile Include="Domain\Protocol\Security\ADGroupRights.vb" />
     <Compile Include="Domain\Protocol\Security\ProtocolRoleRights.vb" />
     <Compile Include="Domain\PosteOnLine\TOLRequest.vb" />
     <Compile Include="Domain\Resolution\BidType.vb" />
@@ -689,7 +688,6 @@
     <Compile Include="Domain\Resolution\WebPublication.vb" />
     <Compile Include="Domain\ServiceCodeDescriptor.vb" />
     <Compile Include="Domain\TaskTypeTaskIdCompositeKey.vb" />
-    <Compile Include="Domain\Common\DBInfoCompositeKey.vb" />
     <Compile Include="Domain\YearNumberCompositeKey.vb" />
     <Compile Include="Domain\YearNumberIdCompositeKey.vb" />
     <Compile Include="ExpiredSessionStateException.vb" />
@@ -1006,9 +1004,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowActivity.hbm.xml" />
-    <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowActivityLog.hbm.xml" />
     <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowInstance.hbm.xml" />
-    <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowProperty.hbm.xml" />
     <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowRepository.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1019,11 +1015,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowAuthorization.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowRole.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailBox.hbm.xml">
@@ -1568,6 +1559,10 @@
   <ItemGroup>
     <None Include="Resources\SearchProtocolRblDefaultValue.txt" />
     <None Include="Resources\FascicleRoleLabels.txt" />
+    <EmbeddedResource Include="Mapping\DocumentUnits\Protocol_DocumentUnit.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Tenants\Protocol_TenantRole.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Tenants\Protocol_TenantContact.hbm.xml" />
+    <Content Include="favicon.ico" />
     <Content Include="Resources\WorkflowActivityImages.txt" />
     <None Include="Resources\ProtocolAdaptiveSearchMapping.txt" />
     <None Include="Resources\RadGridLocalizeConfig.txt" />
@@ -1607,9 +1602,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolRejectedRole.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowRoleMapping.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Resources\HighlightProtocolGroups.txt" />

@@ -15,6 +15,10 @@ import CategoryFascicleModel = require('App/Models/Commons/CategoryFascicleModel
 import CategoryModel = require('App/Models/Commons/CategoryModel');
 import FascicleType = require('App/Models/Fascicles/FascicleType');
 import AjaxModel = require('App/Models/AjaxModel');
+import uscCustomActionsRest = require('UserControl/uscCustomActionsRest');
+import FascicleCustomActionModel = require('App/Models/Commons/FascicleCustomActionModel');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import CustomActionsIconModel = require('App/Models/Commons/CustomActionsIconModel');
 
 
 
@@ -39,6 +43,8 @@ class TbltClassificatore {
     fascicleContainerEnabled: boolean;
     pnlSettoriId: string;
     actionsToolbarId: string;
+    uscCustomActionsRestId: string;
+    btnUpdateCustomActionsId: string;
 
     private _categoryFascicleService: CategoryFascicleService;
     private _pnlFasciclePlan: JQuery;
@@ -46,6 +52,7 @@ class TbltClassificatore {
     private _serviceConfigurations: ServiceConfiguration[];
     private _lblMetadata: JQuery;
     private _actionToolbar: Telerik.Web.UI.RadToolBar;
+    private _btnUpdateCustomActions: Telerik.Web.UI.RadButton;
 
     private static ADD_COMMANDNAME = "AddCategory";
     private static DELETE_COMMANDNAME = "DeleteCategory";
@@ -57,7 +64,7 @@ class TbltClassificatore {
     private static RUNFASCICLEPLAN_COMMANDNAME = "RunFasciclePlan";
     private static CLOSEFASCICLEPLAN_COMMANDNAME = "CloseFasciclePlan";
 
-    private get toolbarActions(): Array<[string, () => void]> {
+    private toolbarActions(): Array<[string, () => void]> {
         let items: Array<[string, () => void]> = [
             [TbltClassificatore.ADD_COMMANDNAME, () => this.openEditWindow('rwEdit', 'Add')],
             [TbltClassificatore.DELETE_COMMANDNAME, () => this.openEditWindow('rwEdit', 'Delete')],
@@ -259,7 +266,7 @@ class TbltClassificatore {
      */
     onCloseMetadataCallback = (sender: any, args: Telerik.Web.UI.WindowCloseCancelEventArgs) => {
         let treeView: Telerik.Web.UI.RadTreeView = <Telerik.Web.UI.RadTreeView>$find(this.treeViewCategoryId);
-        let params: string = "ReloadNodes|".concat(treeView.get_selectedNode().get_value());        
+        let params: string = "ReloadNodes|".concat(treeView.get_selectedNode().get_value());
         if (<boolean>args.get_argument()) {
             (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(params);
         }
@@ -558,7 +565,7 @@ class TbltClassificatore {
                                 this._categoryFascicleService.deleteCategoryFascicle(categoryFascicle,
                                     (data: any) => {
                                         let params: string = `ResetPeriodicCategoryFascicles|${selectedNode.get_value()}`;
-                                        (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(params);                  
+                                        (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(params);
                                     },
                                     (exception: ExceptionDTO) => {
                                         let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(this.uscNotificationId)).data();
@@ -697,7 +704,7 @@ class TbltClassificatore {
 
     protected actionToolbar_ButtonClicked = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
         let currentActionButtonItem: Telerik.Web.UI.RadToolBarButton = args.get_item() as Telerik.Web.UI.RadToolBarButton;
-        let currentAction: () => void = this.toolbarActions.filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
+        let currentAction: () => void = this.toolbarActions().filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
             .map((item: [string, () => void]) => item[1])[0];
         currentAction();
     }
@@ -712,6 +719,38 @@ class TbltClassificatore {
                 uscNotification.showNotificationMessage(customMessage);
             }
         }
+    }
+
+    loadCustomActions(isVisible: boolean, customActionsJson: string) {
+        if (isVisible) {
+            PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
+                .done((instance) => {
+                    if (!jQuery.isEmptyObject(instance)) {
+                        let customActions: FascicleCustomActionModel = customActionsJson
+                            ? <FascicleCustomActionModel>JSON.parse(customActionsJson)
+                            : <FascicleCustomActionModel>{
+                                AutoClose: false,
+                                AutoCloseAndClone: false
+                            };
+                        instance.loadItems(customActions);
+                        this._btnUpdateCustomActions = <Telerik.Web.UI.RadButton>$find(this.btnUpdateCustomActionsId);
+                        this._btnUpdateCustomActions.add_clicked(this.btnUpdateCustomActions_onClick);
+                        this._btnUpdateCustomActions.set_visible(!instance.isSummary);
+                    }
+                });
+        }
+    }
+
+    btnUpdateCustomActions_onClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
+        PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
+            .done((instance) => {
+                let ajaxModel: AjaxModel = <AjaxModel>{
+                    ActionName: "UpdateCustomActions",
+                    Value: [JSON.stringify(instance.getCustomActions())]
+                };
+                (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
+            });
+
     }
 }
 

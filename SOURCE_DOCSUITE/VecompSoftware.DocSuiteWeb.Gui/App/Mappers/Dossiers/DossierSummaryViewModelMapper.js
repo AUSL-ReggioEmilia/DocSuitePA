@@ -1,4 +1,4 @@
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "App/Mappers/Commons/CategoryTreeViewModelMapper"], function (require, exports, CategoryTreeViewModelMapper) {
     var DossierSummaryViewModelMapper = /** @class */ (function () {
         function DossierSummaryViewModelMapper() {
         }
@@ -21,12 +21,16 @@ define(["require", "exports"], function (require, exports) {
             }
             toMap.LastChangedUser = source.LastChangedUser;
             toMap.ContactId = source.ContactId;
-            toMap.JsonMetadata = source.JsonMetadata;
+            toMap.MetadataDesigner = source.MetadataDesigner;
+            toMap.MetadataValues = source.MetadataValues;
             toMap.FormattedStartDate = moment(source.StartDate).format("DD/MM/YYYY");
             toMap.StartDate = source.StartDate;
+            toMap.DossierType = source.DossierType;
+            toMap.Status = source.Status;
             toMap.Contacts = new Array();
             toMap.Roles = new Array();
             toMap.Documents = new Array();
+            toMap.Category = new CategoryTreeViewModelMapper().Map(source.Category);
             return toMap;
         };
         return DossierSummaryViewModelMapper;

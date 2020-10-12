@@ -2,6 +2,7 @@
 Imports Newtonsoft.Json
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Entity.Commons
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Commons
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
@@ -151,6 +152,29 @@ Public Class DocSuite2008BaseControl
             End If
             Return _fileExtensionBlackList
         End Get
+    End Property
+    Public Property CurrentTenant As Tenant
+        Get
+            If Session("CurrentTenant") IsNot Nothing Then
+                Return DirectCast(Session("CurrentTenant"), Tenant)
+            End If
+            Return Nothing
+        End Get
+        Set(value As Tenant)
+            Session("CurrentTenant") = value
+        End Set
+    End Property
+
+    Public Property CurrentDomainUser As Model.Securities.DomainUserModel
+        Get
+            If Session("CurrentDomainUser") IsNot Nothing Then
+                Return DirectCast(Session("CurrentDomainUser"), Model.Securities.DomainUserModel)
+            End If
+            Return Nothing
+        End Get
+        Set(value As Model.Securities.DomainUserModel)
+            Session("CurrentDomainUser") = value
+        End Set
     End Property
 #End Region
 

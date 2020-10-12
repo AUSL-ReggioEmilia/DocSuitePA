@@ -24,6 +24,7 @@ Imports System.Web
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.Templates
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Templates
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 
 Partial Public Class ReslFlussoElenco
     Inherits ReslBasePage
@@ -421,6 +422,8 @@ Partial Public Class ReslFlussoElenco
                         DoDataBindDdlServizio()
                         rfvServizio.Visible = TabWorkflowFacade.TestManagedWorkflowDataProperty(s, "ServiceNumber", "OBB", "")
                     End If
+                    Dim isDefaultFrontalinoDigitale As Boolean = TabWorkflowFacade.TestManagedWorkflowDataProperty(s, "Frontespizio", "SEL", "Digitale")
+                    radioFrontalino.SelectedValue = If(isDefaultFrontalinoDigitale, "1", "0")
                 End If
 
             Case "TrasmAvvenutaAdozione"
@@ -500,12 +503,13 @@ Partial Public Class ReslFlussoElenco
                 pnlCollaborationSigner.Visible = False
                 pnlServiceCode.Visible = False
 
-                _myStep = 4
                 Dim ss As String = Request.QueryString("PublishingDate")
                 If Not String.IsNullOrEmpty(ss) Then ss = DateTime.ParseExact(ss, "yyyyMMdd", Nothing)
                 rdpData.SelectedDate = DateAdd(DateInterval.Day, 10, CommonUtil.ConvData(ss))
                 '--
                 Dim codeWorkflow As String = Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia)
+                _myStep = Facade.TabWorkflowFacade.GetByDescription("Esecutività", codeWorkflow).Id.ResStep
+
                 If Facade.TabWorkflowFacade.SqlTabWorkflowManagedWData(0, codeWorkflow, _myStep, s) Then
                     rdpData.Enabled = TabWorkflowFacade.TestManagedWorkflowDataProperty(s, "Date", "INS", "")
                     '--
@@ -613,7 +617,7 @@ Partial Public Class ReslFlussoElenco
 
         '' Se ho un idCatena valido allora carico i documenti presenti su tale id (eventualmente solo se firmati)
         If idCatena > 0 Then
-            For Each biblosDocumentInfo As BiblosDocumentInfo In From biblosDocumentInfo1 In BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idCatena) Where Not onlySigned OrElse biblosDocumentInfo1.IsSigned
+            For Each biblosDocumentInfo As BiblosDocumentInfo In From biblosDocumentInfo1 In BiblosDocumentInfo.GetDocuments(resl.Location.ReslBiblosDSDB, idCatena) Where Not onlySigned OrElse biblosDocumentInfo1.IsSigned
                 biblosDocumentInfo.Signature = signature
                 documents.Add(biblosDocumentInfo)
             Next
@@ -636,7 +640,7 @@ Partial Public Class ReslFlussoElenco
         '' Se non richiesto l'append genero una nuova catena biblos, altrimenti riutilizzo quella passata
         If Not append Then idCatena = 0
 
-        Return DocumentInfoFactory.ArchiveDocumentsInBiblos(sourceList, resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idCatena)
+        Return DocumentInfoFactory.ArchiveDocumentsInBiblos(sourceList, resl.Location.ReslBiblosDSDB, idCatena)
     End Function
 
     Private Shared Function DuplicaDocumento(ByVal sourceList As List(Of DocumentInfo), ByRef idCatena As Guid, ByVal resl As Resolution, ByVal append As Boolean, ByVal onlySigned As Boolean, ByVal signature As String) As Guid
@@ -644,7 +648,7 @@ Partial Public Class ReslFlussoElenco
 
         '' Se ho un idCatena valido allora carico i documenti presenti su tale id (eventualmente solo se firmati)
         If idCatena <> Guid.Empty Then
-            For Each biblosDocumentInfo As BiblosDocumentInfo In From biblosDocumentInfo1 In BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, idCatena) Where Not onlySigned OrElse biblosDocumentInfo1.IsSigned
+            For Each biblosDocumentInfo As BiblosDocumentInfo In From biblosDocumentInfo1 In BiblosDocumentInfo.GetDocuments(idCatena) Where Not onlySigned OrElse biblosDocumentInfo1.IsSigned
                 biblosDocumentInfo.Signature = signature
                 documents.Add(biblosDocumentInfo)
             Next
@@ -664,7 +668,7 @@ Partial Public Class ReslFlussoElenco
         '' Se non richiesto l'append genero una nuova catena biblos, altrimenti riutilizzo quella passata
         If Not append Then idCatena = Guid.Empty
 
-        Return DocumentInfoFactory.ArchiveDocumentsInBiblos(sourceList, resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idCatena)
+        Return DocumentInfoFactory.ArchiveDocumentsInBiblos(sourceList, resl.Location.ReslBiblosDSDB, idCatena)
     End Function
 
     Private Function GetSignature(ByRef resl As Resolution, ByVal documentTypeAcronym As String, ByVal stato As String, ByVal signature As String, ByVal data As DateTime, ByVal number As String, Optional resolution As Resolution = Nothing) As String
@@ -952,7 +956,9 @@ Partial Public Class ReslFlussoElenco
     End Function
 
     Private Sub ToAdoption(ByRef gestioneDigitale As Boolean, ByRef fileTemp As String, ByRef confirmSuccess As Boolean, ByRef workStep As TabWorkflow)
-        _myStep = BarWorkflowStep.TrasmissioneServizi
+        Dim codeWorkflow As String = Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia)
+        _myStep = Facade.TabWorkflowFacade.GetByDescription(Action, codeWorkflow).Id.ResStep
+
         '-- Ordinare le proposte per ufficio proponente e numero provvisorio
         Dim proposte As IList(Of Resolution) = Facade.ResolutionFacade.GetResolutionsOrderProposerCode(SelezioneLista)
         If proposte IsNot Nothing Then
@@ -989,9 +995,11 @@ Partial Public Class ReslFlussoElenco
                         frontispieceResolution.Number = number
                         frontispieceResolution.AdoptionDate = adoptionDate
                         frontispieceResolution.Container = DirectCast(prop.Container.Clone(), Container)
-                        Dim reslContact As ResolutionContact = New ResolutionContact()
-                        reslContact.Contact = DirectCast(prop.ResolutionContactProposers(0).Contact.Clone(), Contact)
-                        frontispieceResolution.ResolutionContactProposers = New List(Of ResolutionContact)() From {reslContact}
+                        Dim reslContacts As IList(Of ResolutionContact) = New List(Of ResolutionContact)()
+                        For Each resolutionContactProposer As ResolutionContact In prop.ResolutionContactProposers
+                            reslContacts.Add(New ResolutionContact() With {.Contact = DirectCast(resolutionContactProposer.Contact.Clone(), Contact)})
+                        Next
+                        frontispieceResolution.ResolutionContactProposers = reslContacts
 
                         Try
                             Dim digitale As Boolean = (radioFrontalino.SelectedValue = "1")
@@ -1011,7 +1019,7 @@ Partial Public Class ReslFlussoElenco
                             ' In posizione 1 si trova quello privacy (se previsto dal contenitore)
                             If digitale Then
                                 'Copia e incolla del codice della ReslFlusso
-                                Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(prop.Location.DocumentServer, prop.Location.ReslBiblosDSDB, prop.File.IdFrontespizio.Value)
+                                Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(prop.Location.ReslBiblosDSDB, prop.File.IdFrontespizio.Value)
                                 'Dim chainenum As Integer = If(prop.Container.Privacy.GetValueOrDefault(0) = 1, 1, 0)
                                 'Dim document As New TempFileDocumentInfo(BiblosFacade.SaveUniquePdfToTempNoSignature(docs(chainenum)))
                                 'document.Name = "Frontalino.pdf"
@@ -1150,18 +1158,21 @@ Partial Public Class ReslFlussoElenco
         Dim idAllegatiOmissis As Nullable(Of Guid) = Nothing
         Dim idAnnexes As Guid = Guid.Empty
 
-        Dim _currentTemplateCollaborationFinder As TemplateCollaborationFinder
         If proposte IsNot Nothing Then
             '--- crea collaborazione 
             For Each prop As Resolution In proposte
                 containerName = prop.Container.Name
-                _currentTemplateCollaborationFinder = New TemplateCollaborationFinder(DocSuiteContext.Current.Tenants)
-                _currentTemplateCollaborationFinder.ResetDecoration()
-                _currentTemplateCollaborationFinder.EnablePaging = False
-                _currentTemplateCollaborationFinder.Name = containerName
-                _currentTemplateCollaborationFinder.ExpandProperties = True
 
-                Dim currentTemplate As WebAPIDto(Of TemplateCollaboration) = _currentTemplateCollaborationFinder.DoSearch().FirstOrDefault()
+                Dim templates As ICollection(Of WebAPIDto(Of TemplateCollaboration)) = WebAPIImpersonatorFacade.ImpersonateFinder(New TemplateCollaborationFinder(DocSuiteContext.Current.Tenants),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.EnablePaging = False
+                        finder.Name = containerName
+                        finder.ExpandProperties = True
+                        Return finder.DoSearch()
+                    End Function)
+
+                Dim currentTemplate As WebAPIDto(Of TemplateCollaboration) = templates.FirstOrDefault()
                 If currentTemplate Is Nothing OrElse currentTemplate.Entity Is Nothing Then
                     Throw New DocSuiteException(String.Format("Errore in caricamento Template, nessun Template di collaborazione trovato con name {0}", containerName))
                 End If
@@ -1198,13 +1209,18 @@ Partial Public Class ReslFlussoElenco
 
                 'aggiunge settore proponente come segreteria 
                 If prop.ResolutionContactProposers IsNot Nothing Then
-                    Dim nhRole As Role = prop.ResolutionContactProposers(0).Contact.Role
-                    If nhRole IsNot Nothing AndAlso Not segreterie.Any(Function(x) x.IdRole = nhRole.Id) Then
-                        collaborationUser = New CollaborationUser(nhRole)
-                        collaborationUser.DestinationFirst = False
-                        collaborationUser.DestinationType = DestinatonType.S.ToString()
-                        segreterie.Insert(0, collaborationUser)
-                    End If
+                    Dim nhRole As Role
+                    Dim position As Integer = 0
+                    For Each resolutionContactProposer As ResolutionContact In prop.ResolutionContactProposers
+                        nhRole = resolutionContactProposer.Contact.Role
+                        If nhRole IsNot Nothing AndAlso Not segreterie.Any(Function(x) x.IdRole = nhRole.Id) Then
+                            collaborationUser = New CollaborationUser(nhRole)
+                            collaborationUser.DestinationFirst = False
+                            collaborationUser.DestinationType = DestinatonType.S.ToString()
+                            segreterie.Insert(position, collaborationUser)
+                            position = position + 1
+                        End If
+                    Next
                 End If
 
                 FacadeFactory.Instance.CollaborationFacade.Insert(collaborationFromAffariGenerali, destinatariFirma, altriDestinatari, segreterie)
@@ -1224,27 +1240,27 @@ Partial Public Class ReslFlussoElenco
                 Dim fileAnnexes As IList(Of DocumentInfo) = New List(Of DocumentInfo)()
 
                 If prop.File.IdProposalFile.HasValue AndAlso prop.File.IdProposalFile.Value <> 0 Then
-                    fileMain = GetResolutionDocuments(prop.Location.DocumentServer, prop.Location.ReslBiblosDSDB, prop.File.IdProposalFile.Value)
+                    fileMain = GetResolutionDocuments(prop.Location.ReslBiblosDSDB, prop.File.IdProposalFile.Value)
                     AddDocumentsToVersioning(fileMain, VersioningDocumentGroup.MainDocument, collaborationFromAffariGenerali)
                 End If
 
                 If prop.File.IdAttachements.HasValue AndAlso prop.File.IdAttachements.Value <> 0 Then
-                    fileAttachements = GetResolutionDocuments(prop.Location.DocumentServer, prop.Location.ReslBiblosDSDB, prop.File.IdAttachements.Value)
+                    fileAttachements = GetResolutionDocuments(prop.Location.ReslBiblosDSDB, prop.File.IdAttachements.Value)
                     AddDocumentsToVersioning(fileAttachements, VersioningDocumentGroup.Attachment, collaborationFromAffariGenerali)
                 End If
 
                 If Not prop.File.IdMainDocumentsOmissis.Equals(Guid.Empty) Then
-                    fileMainOmissis = GetResolutionDocuments(prop.Location.DocumentServer, prop.File.IdMainDocumentsOmissis)
+                    fileMainOmissis = GetResolutionDocuments(prop.File.IdMainDocumentsOmissis)
                     AddDocumentsToVersioning(fileMainOmissis, VersioningDocumentGroup.MainDocumentOmissis, collaborationFromAffariGenerali)
                 End If
 
                 If Not prop.File.IdAttachmentsOmissis.Equals(Guid.Empty) Then
-                    fileAllegatiOmissis = GetResolutionDocuments(prop.Location.DocumentServer, prop.File.IdAttachmentsOmissis)
+                    fileAllegatiOmissis = GetResolutionDocuments(prop.File.IdAttachmentsOmissis)
                     AddDocumentsToVersioning(fileAllegatiOmissis, VersioningDocumentGroup.AttachmentOmissis, collaborationFromAffariGenerali)
                 End If
 
                 If Not prop.File.IdAnnexes.Equals(Guid.Empty) Then
-                    fileAnnexes = GetResolutionDocuments(prop.Location.DocumentServer, prop.File.IdAnnexes)
+                    fileAnnexes = GetResolutionDocuments(prop.File.IdAnnexes)
                     AddDocumentsToVersioning(fileAnnexes, VersioningDocumentGroup.Annexed, collaborationFromAffariGenerali)
                 End If
                 'Sospende l'atto cosi non puo essere visualizzato
@@ -1254,18 +1270,18 @@ Partial Public Class ReslFlussoElenco
             confirmSuccess = True
         End If
     End Sub
-    Private Function GetResolutionDocuments(ByVal documentServer As String, ByVal reslBiblosDSDB As String, ByVal idChain As Integer) As IList(Of DocumentInfo)
+    Private Function GetResolutionDocuments(ByVal reslBiblosDSDB As String, ByVal idChain As Integer) As IList(Of DocumentInfo)
         Dim listFile As IList(Of DocumentInfo) = New List(Of DocumentInfo)()
-        Dim attachs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(documentServer, reslBiblosDSDB, idChain)
+        Dim attachs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(reslBiblosDSDB, idChain)
         For Each di As BiblosDocumentInfo In attachs
             listFile.Add(di)
         Next
         Return listFile
     End Function
 
-    Private Function GetResolutionDocuments(ByVal documentServer As String, ByVal guidChain As Guid) As IList(Of DocumentInfo)
+    Private Function GetResolutionDocuments(ByVal guidChain As Guid) As IList(Of DocumentInfo)
         Dim listFile As IList(Of DocumentInfo) = New List(Of DocumentInfo)()
-        Dim attachs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(documentServer, guidChain)
+        Dim attachs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(guidChain)
         For Each di As BiblosDocumentInfo In attachs
             listFile.Add(di)
         Next

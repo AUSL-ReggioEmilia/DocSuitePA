@@ -4,10 +4,15 @@ import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import ServiceConfigurationHelper = require("App/Helpers/ServiceConfigurationHelper");
 import uscContactRest = require("UserControl/uscContactREST");
 import ExceptionDTO = require("../App/DTOs/ExceptionDTO");
+import TenantService = require("App/Services/Tenants/TenantService");
+import TenantViewModel = require("App/ViewModels/Tenants/TenantViewModel");
+import UpdateActionType = require("App/Models/UpdateActionType");
 
 enum UscContattiSelRestEvent {
     NewContactsAdded,
-    ContactDeleted
+    ContactDeleted,
+    AllContactsAdded,
+    AllContactsDeleted
 }
 
 enum contactTypeIcons {
@@ -39,6 +44,12 @@ class uscContactSelRest {
     public validatorAnyNodeId: string;
     public requiredValidationEnabled: string;
     public filterByParentId?: number;
+    public multiTenantEnabled: string;
+    public currentTenantId: string;
+    public managerId: string;
+    public addAllDataButtonVisibility: string;
+    public removeAllDataButtonVisibility: string;
+    confirmAndNewEnabled: boolean;
 
     public uscContattiSelRestEvents = UscContattiSelRestEvent;
 
@@ -47,13 +58,15 @@ class uscContactSelRest {
     private _btnContactConfirm: Telerik.Web.UI.RadButton;
     private _btnContactConfirmAndNew: Telerik.Web.UI.RadButton;
     private _tbContactsControl: Telerik.Web.UI.RadToolBar;
+    private _manager: Telerik.Web.UI.RadWindowManager;
 
-    private get _requiredValidationEnabled(): boolean {
+    private _requiredValidationEnabled(): boolean {
         return JSON.parse(this.requiredValidationEnabled.toLowerCase());
     }
-
+    private readonly _roleValidationSessionKey: string;
 
     private readonly _contactService: ContactService;
+    private readonly _tenantService: TenantService;
     private _serviceConfiguration: ServiceConfiguration[];
     private _uscContactRest: uscContactRest;
 
@@ -66,9 +79,14 @@ class uscContactSelRest {
             promiseCallback: (data: any) => JQueryPromise<any>
         };
 
-    constructor(serviceConfigurations: ServiceConfiguration[]) {
+    constructor(serviceConfigurations: ServiceConfiguration[], uscId: string) {
         let contactServiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "Contact");
         this._contactService = new ContactService(contactServiceConfiguration);
+        let tenantServiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "Tenant");
+        this._tenantService = new TenantService(tenantServiceConfiguration);
+
+        this._roleValidationSessionKey = `${uscId}_validationState`;
+        sessionStorage.removeItem(this._roleValidationSessionKey);
     }
 
     initialize(): void {
@@ -76,6 +94,9 @@ class uscContactSelRest {
         this._tbContactsControl = $find(this.tbContactsControlId) as Telerik.Web.UI.RadToolBar;
         if (this._tbContactsControl) {
             this._tbContactsControl.add_buttonClicking(this.toolbarContacts_onClick);
+            this._tbContactsControl.findItemByValue("ADDALL").set_visible(this.addAllDataButtonVisibility.toLowerCase() === "true" ? true : false);
+            this._tbContactsControl.findItemByValue("REMOVEALL").set_visible(this.removeAllDataButtonVisibility.toLowerCase() === "true" ? true : false);
+
         }
         this._rwContactSelector = $find(this.rwContactSelectorId) as Telerik.Web.UI.RadWindow;
         this._rwContactSelector.add_show(this._rwContactSelector_show);
@@ -83,17 +104,20 @@ class uscContactSelRest {
         this._btnContactConfirm.add_clicking(this.btnContactConfirm_onClick);
         this._btnContactConfirmAndNew = $find(this.btnContactConfirmAndNewId) as Telerik.Web.UI.RadButton;
         this._btnContactConfirmAndNew.add_clicking(this.btnContactConfirmAndNew_onClick);
+        this._btnContactConfirmAndNew.set_visible(this.confirmAndNewEnabled);
+        this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.managerId);
 
         this._uscContactRest = <uscContactRest>$(`#${this.uscContactRestId}`).data();
         $(`#${this.pnlContentId}`).data(this);
     }
+
 
     public registerEventHandler = (eventType: UscContattiSelRestEvent, callback: (data: any) => JQueryPromise<any>): void => {
         this._parentPageEventHandlersDictionary[eventType] = callback;
     }
 
     public renderContactsTree(contactCollection: ContactModel[]): void {
-        this.enableValidators(contactCollection.length === 0 && this._requiredValidationEnabled ? true : false);
+        this.enableValidators(contactCollection.length === 0 && this._requiredValidationEnabled() ? true : false);
         this.populateContactsTreeView(contactCollection);
     }
 
@@ -105,6 +129,12 @@ class uscContactSelRest {
                 break;
             case 1:
                 this.deleteContacts();
+                break;
+            case 2:
+                this.addAllContacts();
+                break;
+            case 3:
+                this.deleteAllContacts();
                 break;
         }
     }
@@ -126,6 +156,12 @@ class uscContactSelRest {
                 let parentUpdateCallback: JQueryPromise<any> = this._parentPageEventHandlersDictionary[this.uscContattiSelRestEvents.NewContactsAdded](newlyAddedContact);
                 parentUpdateCallback.then((data: any) => {
                     this.createNode(newlyAddedContact);
+                    if (Boolean(this.multiTenantEnabled.toLowerCase())) {
+                        let tenant: TenantViewModel = new TenantViewModel();
+                        tenant.UniqueId = this.currentTenantId;
+                        tenant.Contacts = [newlyAddedContact];
+                        this._tenantService.updateTenant(tenant, UpdateActionType.TenantContactAdd, (data) => { });
+                    }
                 });
             }
             this._uscContactRest.clear();
@@ -157,13 +193,13 @@ class uscContactSelRest {
                     this._treeContact.trackChanges();
                     selectedNodeToDelete.get_parent().get_nodes().removeAt(selectedNodeToDelete.get_index());
                     let selectedParentToDelete: Telerik.Web.UI.RadTreeNode = this._treeContact.get_allNodes().filter(node => +node.get_value() === contactParentId)[0];
-                    if (!selectedParentToDelete.get_allNodes().length && selectedParentToDelete.get_contentCssClass() == 'initial') {
+                    if (selectedParentToDelete && !selectedParentToDelete.get_allNodes().length && selectedParentToDelete.get_contentCssClass() == 'initial') {
                         this._treeContact.get_nodes().remove(selectedParentToDelete);
                     }
 
                     let treeHasChildrenLeft: boolean = this._treeContact.get_allNodes().length > 0;
 
-                    if (!treeHasChildrenLeft && this._requiredValidationEnabled) {
+                    if (!treeHasChildrenLeft && this._requiredValidationEnabled()) {
                         this.enableValidators(true);
                     }
 
@@ -175,20 +211,36 @@ class uscContactSelRest {
         }
     }
 
+    addAllContacts = (): void => {
+        this._manager.radconfirm("Sei sicuro di voler aggiungere tutti i contatti?", (arg) => {
+            if (arg) {
+                this._parentPageEventHandlersDictionary[this.uscContattiSelRestEvents.AllContactsAdded]();
+            }
+
+            document.getElementsByTagName("body")[0].setAttribute("class", "comm chrome");
+
+        }, 400, 300);
+    }
+
+    deleteAllContacts = (): void => {
+        this._manager.radconfirm("Sei sicuro di voler eliminare tutti i contatti?", (arg) => {
+            if (arg) {
+                let deleteCallback: JQueryPromise<any> = this._parentPageEventHandlersDictionary[this.uscContattiSelRestEvents.AllContactsDeleted]();
+
+                deleteCallback.then(() => this._treeContact.get_nodes().clear());
+            }
+
+            document.getElementsByTagName("body")[0].setAttribute("class", "comm chrome");
+
+        }, 400, 300);
+    }
+
     private createNode(contactModel: any): JQueryPromise<Telerik.Web.UI.RadTreeNode> {
-        if (this._requiredValidationEnabled)
+        if (this._requiredValidationEnabled())
             this.enableValidators(false);
 
         let promise: JQueryDeferred<Telerik.Web.UI.RadTreeNode> = $.Deferred<Telerik.Web.UI.RadTreeNode>();
-        let currentNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-        let currentNodeDescription: string = contactModel.Description;
-        let currentNodeImageUrl: string = `${contactModel.IdContactType || contactModel.ContactType}`;
-
-        currentNode.set_text(currentNodeDescription);
-        currentNode.set_value(`${contactModel.EntityId || contactModel.Id}`);
-        currentNode.set_imageUrl(contactTypeIcons[currentNodeImageUrl]);
-        currentNode.set_expanded(true);
-        currentNode.set_contentCssClass('dsw-text-bold');
+        let currentNode: Telerik.Web.UI.RadTreeNode = this.populateNode(contactModel);
 
         let currentNodeFromTree: Telerik.Web.UI.RadTreeNode = this._treeContact.get_allNodes().filter(node => +node.get_value() === +currentNode.get_value())[0];
 
@@ -200,13 +252,9 @@ class uscContactSelRest {
             let parentNode: Telerik.Web.UI.RadTreeNode = this._treeContact.get_allNodes().filter(node => +node.get_value() === contactModel.IncrementalFather)[0];
             if (!parentNode) {
                 this._contactService.getContactParents(contactModel.IncrementalFather, (data: ContactModel[]) => {
-                    this.createNode(data[0])
-                        .done((node) => {
-                            node.set_contentCssClass('initial');
-                            node.get_nodes().add(currentNode);
-                            node.set_expanded(true);
-                            promise.resolve(currentNode);
-                        });
+                    parentNode = this.populateParentNode(data);
+                    parentNode.get_nodes().add(currentNode);
+                    promise.resolve(currentNode);
                 });
             } else {
                 parentNode.get_nodes().add(currentNode);
@@ -216,6 +264,39 @@ class uscContactSelRest {
             return promise.resolve(currentNode);
         }
         return promise.promise();
+    }
+
+    private populateNode(contactModel: any): Telerik.Web.UI.RadTreeNode {
+        let currentNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+        let currentNodeDescription: string = contactModel.Description;
+        let currentNodeImageUrl: string = `${contactModel.IdContactType || contactModel.ContactType}`;
+
+        currentNode.set_text(currentNodeDescription.replace('|', ' '));
+        currentNode.set_value(`${contactModel.EntityId || contactModel.Id}`);
+        currentNode.set_imageUrl(contactTypeIcons[currentNodeImageUrl]);
+        currentNode.set_expanded(true);
+        currentNode.set_contentCssClass('dsw-text-bold');
+        return currentNode;
+    }
+
+    private populateParentNode(contactModel: any[]): Telerik.Web.UI.RadTreeNode {
+        let parentNode: Telerik.Web.UI.RadTreeNode = null;
+        for (let contact of contactModel) {
+            let currentNode: Telerik.Web.UI.RadTreeNode = this.populateNode(contact);
+            currentNode.set_contentCssClass('initial');
+            let existingParent: Telerik.Web.UI.RadTreeNode = this._treeContact.get_allNodes().filter(node => +node.get_value() === +currentNode.get_value())[0];
+            if (existingParent) {
+                parentNode = existingParent;
+                continue;
+            }
+            if (!parentNode) {
+                this._treeContact.get_nodes().add(currentNode);
+            } else {
+                parentNode.get_nodes().add(currentNode);
+            }
+            parentNode = currentNode;
+        }
+        return parentNode;
     }
 
     private populateContactsTreeView(contactTreeModels: ContactModel[]): void {
@@ -228,14 +309,25 @@ class uscContactSelRest {
         });
     }
 
-    private enableValidators = (state: boolean) => {
-        ValidatorEnable($get(this.validatorAnyNodeId), state);
+    public enableValidators = (state: boolean) => {
+        let behaviourValidationConfiguration: string = sessionStorage.getItem(this._roleValidationSessionKey);
+        let behaviourValidationConfigurationValue: boolean = state;
+        if (behaviourValidationConfiguration) {
+            behaviourValidationConfigurationValue = behaviourValidationConfiguration.toLowerCase() == "true";
+        }
+        ValidatorEnable($get(this.validatorAnyNodeId), behaviourValidationConfigurationValue);
     }
 
     public setToolbarVisibility(isVisible: boolean): void {
-        this._tbContactsControl.get_items().forEach(function (item: Telerik.Web.UI.RadToolBarItem) {
-            item.set_enabled(isVisible);
-        });
+        if (this._tbContactsControl) {
+            this._tbContactsControl.get_items().forEach(function (item: Telerik.Web.UI.RadToolBarItem) {
+                item.set_enabled(isVisible);
+            });
+        }
+    }
+
+    forceBehaviourValidationState(state: boolean): void {
+        sessionStorage[this._roleValidationSessionKey] = state;
     }
 }
 

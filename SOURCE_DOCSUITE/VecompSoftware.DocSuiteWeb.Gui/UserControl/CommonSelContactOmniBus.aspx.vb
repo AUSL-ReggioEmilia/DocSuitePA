@@ -62,8 +62,9 @@ Public Class CommonSelContactOmniBus
     End Sub
 
     Private Function CreateFinder() As OmniBusFinderModel
-        Dim finderModel As OmniBusFinderModel = New OmniBusFinderModel()
-        finderModel.CodiceApplicativo = ProtocolEnv.OmniBusApplicationKey
+        Dim finderModel As OmniBusFinderModel = New OmniBusFinderModel With {
+            .CodiceApplicativo = ProtocolEnv.OmniBusApplicationKey
+        }
         If Not String.IsNullOrEmpty(txtNome.Text) Then
             finderModel.Nome = txtNome.Text
         End If
@@ -100,7 +101,7 @@ Public Class CommonSelContactOmniBus
         Dim contact As Contact = New Contact() With {.ContactType = New ContactType(ContactType.Person)}
         contact.Description = String.Concat(model.Cognome, "|", model.Nome)
         contact.BirthDate = model.DataDiNascita
-        contact.EmailAddress = model.Email
+        contact.EmailAddress = model.EmailUfficio
         contact.FiscalCode = model.CodiceFiscale
         contact.IsActive = 1
         contact.TelephoneNumber = If(String.IsNullOrEmpty(model.Telefono1), model.Telefono2, model.Telefono1)

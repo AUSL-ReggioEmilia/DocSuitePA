@@ -562,8 +562,11 @@ Public Class ContactFacade
             contact.SearchCode = dto.Code
             contact.ContactType = New ContactType(ContactType.Person)
             contact.CertifiedMail = dto.EmailAddress
-            contact.EmailAddress = contact.CertifiedMail
+            contact.EmailAddress = dto.EmailAddress
             contact.Description = dto.Description
+            If dto.BirthDate.HasValue AndAlso Not dto.BirthDate.Value.Equals(DateTime.MinValue) Then
+                contact.BirthDate = dto.BirthDate
+            End If
 
             contact.Address = New Address()
             contact.Address.Address = dto.Address
@@ -634,6 +637,11 @@ Public Class ContactFacade
     Public Function GetContactByRole(ByVal searchCode As String, ByVal isActive As Short, Optional parentId As Integer? = Nothing, Optional idRole As Integer? = Nothing) As IList(Of Contact)
         Dim contactList As IList(Of Contact) = _dao.GetContactByRole(searchCode, isActive, parentId:=parentId, idRole:=idRole)
         Return contactList
+    End Function
+
+    Public Function GetByIdRole(ByVal idRole As Integer) As Contact
+        Dim contact As Contact = _dao.GetByIdRole(idRole)
+        Return contact
     End Function
 
     Public Function GetContactByIncrementalFatherAndSearchCode(ByVal incrementalFather As Integer, ByVal searchCode As String, ByVal isActive As Boolean) As Contact

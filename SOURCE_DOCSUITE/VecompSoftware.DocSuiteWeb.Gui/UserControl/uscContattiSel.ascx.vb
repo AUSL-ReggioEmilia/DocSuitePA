@@ -436,13 +436,18 @@ Partial Public Class uscContattiSel
             btnSelContact.Visible = value
         End Set
     End Property
-
+    ''' <summary>
+    ''' Visualizza/nasconde il pulsante di selezione da AD (controllare il parametro AbilitazioneRubricaDomain)
+    ''' </summary>
     Public Property ButtonSelectDomainVisible As Boolean
         Get
-            Return btnSelContactDomain.Visible
+            If ViewState("_buttonSelectDomainVisible") Is Nothing Then
+                ViewState("_buttonSelectDomainVisible") = ProtocolEnv.AbilitazioneRubricaDomain
+            End If
+            Return DirectCast(ViewState("_buttonSelectDomainVisible"), Boolean)
         End Get
-        Set(value As Boolean)
-            btnSelContactDomain.Visible = value AndAlso DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
+        Set(ByVal value As Boolean)
+            ViewState("_buttonSelectDomainVisible") = value
         End Set
     End Property
 
@@ -528,7 +533,7 @@ Partial Public Class uscContattiSel
         End Set
     End Property
 
-    ''' <summary> Visualizza/Nasconde il pulsante di selezione contatto IPA. </summary>
+    ''' <summary> Visualizza/Nasconde il pulsante di selezione contatto IPA o RubricaAUS. </summary>
     Public Property ButtonIPAVisible() As Boolean
         Get
             Return btnIPAContact.Visible
@@ -660,18 +665,6 @@ Partial Public Class uscContattiSel
 
     Public Property FascicleContactEnabled As Boolean
 
-    Public Property IP4DRestriction As Boolean
-        Get
-            If ViewState("IP4DRestriction") IsNot Nothing Then
-                Return DirectCast(ViewState("IP4DRestriction"), Boolean)
-            End If
-            Return False
-        End Get
-        Set(value As Boolean)
-            ViewState("IP4DRestriction") = value
-        End Set
-    End Property
-
     Public Property EnableFlagGroupChild As Boolean = False
 
     Public Property SearchInCategoryContacts As Integer?
@@ -705,9 +698,7 @@ Partial Public Class uscContattiSel
 #Region " Events "
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
-        If Not DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain Then
-            ButtonSelectDomainVisible = False
-        End If
+        btnSelContactDomain.Visible = ButtonSelectDomainVisible
         If Not DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaOChart Then
             ButtonSelectOChartVisible = False
         End If
@@ -1062,12 +1053,13 @@ Partial Public Class uscContattiSel
         btnSelContact.OnClientClick = AddSelContactCode()
         btnSelContact2.OnClientClick = AddSelContactCode()
         btnIPAContact.OnClientClick = AddIpaCode()
-
-        Dim contactDomainUrl As String = String.Empty
-        If String.IsNullOrEmpty(ProtocolEnv.OmniBusApplicationKey) Then
-            contactDomainUrl = String.Concat("../UserControl/CommonSelContactDomain.aspx?Type=", BasePage.Type, "&ParentID= ", ID, "&IP4DRestriction=", IP4DRestriction)
-        Else
-            contactDomainUrl = String.Concat("../UserControl/CommonSelContactOmniBus.aspx?Type=", BasePage.Type, "&ParentID= ", ID)
+        If ProtocolEnv.AUSIntegrationEnabled Then
+            btnIPAContact.OnClientClick = String.Format(DefaultOpenWindowScript, ID, $"../UserControl/CommonSelAUSContact.aspx?Type={BasePage.Type}&ParentID={ID}", "windowSelContact", "_CloseManualFunction")
+        End If
+        Dim contactDomainUrl As String
+        contactDomainUrl = $"../UserControl/CommonSelContactDomain.aspx?Type={BasePage.Type}&ParentID={ID}"
+        If Not String.IsNullOrEmpty(ProtocolEnv.OmniBusApplicationKey) Then
+            contactDomainUrl = $"../UserControl/CommonSelContactOmniBus.aspx?Type={BasePage.Type}&ParentID={ID}"
         End If
         btnSelContactDomain.OnClientClick = String.Format(DefaultOpenWindowScript, ID, contactDomainUrl, "windowSelContact", "_CloseDomain")
 
@@ -1201,7 +1193,7 @@ Partial Public Class uscContattiSel
         'Devo quindi estrarre i veri contatti
         If btnContactMaxItems.Visible Then
             'esegue il caricamento dei contatti manuali
-            Dim lm As IList(Of ProtocolContactManual) = Facade.ProtocolContactManualFacade.GetByComunicationType(CurrentProtocol.Year, CurrentProtocol.Number, "")
+            Dim lm As IList(Of ProtocolContactManual) = Facade.ProtocolContactManualFacade.GetByProtocol(CurrentProtocol)
             For Each protContact As ProtocolContactManual In lm
                 Dim vContactDto As ContactDTO = New ContactDTO()
                 vContactDto.Contact = protContact.Contact
@@ -1223,8 +1215,8 @@ Partial Public Class uscContattiSel
                     vContact.Contact = JsonConvert.DeserializeObject(Of Contact)(node.Attributes(ManualContactAttribute))
                     vContact.IsCopiaConoscenza = node.Checked
                     If Not String.IsNullOrEmpty(node.Attributes("IdManualContact")) Then
-                        vContact.IdManualContact = JsonConvert.DeserializeObject(Of YearNumberIdCompositeKey)(node.Attributes("IdManualContact"))
-                        vContact.Contact = Facade.ProtocolContactManualFacade.GetById(vContact.IdManualContact).Contact
+                        vContact.IdManualContact = JsonConvert.DeserializeObject(Of Guid)(node.Attributes("IdManualContact"))
+                        vContact.Contact = Facade.ProtocolContactManualFacade.GetById(vContact.IdManualContact.Value).Contact
                     End If
                     vContact.Contact = vContact.Contact.EscapingJSON(vContact.Contact, Function(f) HttpUtility.HtmlDecode(f))
                     manualContactList.Add(vContact)
@@ -1243,8 +1235,8 @@ Partial Public Class uscContattiSel
                     vContact.Contact = JsonConvert.DeserializeObject(Of Contact)(node.Attributes(ManualContactAttribute))
 
                     If Not String.IsNullOrEmpty(node.Attributes("IdManualContact")) Then
-                        vContact.IdManualContact = JsonConvert.DeserializeObject(Of YearNumberIdCompositeKey)(node.Attributes("IdManualContact"))
-                        vContact.Contact = Facade.ProtocolContactManualFacade.GetById(vContact.IdManualContact).Contact
+                        vContact.IdManualContact = JsonConvert.DeserializeObject(Of Guid)(node.Attributes("IdManualContact"))
+                        vContact.Contact = Facade.ProtocolContactManualFacade.GetById(vContact.IdManualContact.Value).Contact
                     End If
                     manualContactList.Add(vContact)
                 Case CONTACT_ADDRESSBOOK
@@ -1297,7 +1289,7 @@ Partial Public Class uscContattiSel
                 Throw
             End If
             ' Errore utente: loggo per ottimizzazioni future
-            FileLogger.Info(LoggerName, "Errore utente in importazione excel.", ex)
+            FileLogger.Info(LoggerName, "Errore utente In importazione excel.", ex)
             BasePage.AjaxAlert("Attenzione:{0}{1}", Environment.NewLine, ex.Descrizione)
 
         Catch ex As Exception
@@ -1636,6 +1628,10 @@ Partial Public Class uscContattiSel
         btnImportContactManual.ToolTip = "Importazione Contatti Manuali nei " & lblCaption.Text
         btnRoleUser.ToolTip = "Inserisci Dirigente o Vice"
         btnIPAContact.ToolTip = String.Format("Inserisci {0} da IPA", lblCaption.Text)
+        If ProtocolEnv.AUSIntegrationEnabled Then
+            btnIPAContact.ToolTip = "Rubrica AUS"
+        End If
+
         btnAddMyself.ToolTip = "Invia a me"
     End Sub
 
@@ -2010,7 +2006,7 @@ Partial Public Class uscContattiSel
 
     Public Function EncodeContact(nodeAttributes As String) As String
         Dim contact As Contact = JsonConvert.DeserializeObject(Of Contact)(nodeAttributes)
-        contact = Contact.EscapingJSON(contact, Function(f) HttpUtility.UrlEncode(f))
+        contact = contact.EscapingJSON(contact, Function(f) HttpUtility.UrlEncode(f))
         Dim contactJSon As String = JsonConvert.SerializeObject(contact).Replace("'", "\'").Replace("\", "")
         Return HttpUtility.UrlEncode(contactJSon)
     End Function

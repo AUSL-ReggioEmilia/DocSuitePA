@@ -13,6 +13,7 @@ Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.OData
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Model.DocumentGenerator
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Compress
@@ -45,12 +46,19 @@ Namespace Viewers
         Public Const NODE_FOLDER_IDENTIFIER As String = "FOLDER"
 
         Public Const BIBLOS_ATTRIBUTE_UniqueId As String = "UniqueId"
+        Public Const BIBLOS_ATTRIBUTE_Year As String = "Year"
+        Public Const BIBLOS_ATTRIBUTE_Number As String = "Number"
         Public Const BIBLOS_ATTRIBUTE_Environment As String = "Environment"
         Public Const BIBLOS_ATTRIBUTE_IsPublic As String = "IsPublic"
         Public Const BIBLOS_ATTRIBUTE_Miscellanea As String = "Miscellanea"
         Public Const BIBLOS_ATTRIBUTE_UserVisibilityAuthorized As String = "UserVisibilityAuthorized"
         Public Const BIBLOS_ATTRIBUTE_InvoiceKind As String = "InvoiceKind"
         Public Const BIBLOS_ATTRIBUTE_IsInvoice As String = "IsInvoice"
+        Public Const BIBLOS_ATTRIBUTE_Disabled As String = "Disabled"
+
+        Public Const BIBLOS_ATTRIBUTE_BiblosChainId As String = "BiblosChainId"
+        Public Const BIBLOS_ATTRIBUTE_BiblosDocumentName As String = "BiblosDocumentName"
+        Public Const BIBLOS_ATTRIBUTE_BiblosDocumentId As String = "BiblosDocumentId"
 
 
         Private _prefixFileName As String
@@ -310,28 +318,42 @@ Namespace Viewers
                 Return currentNode
             End Get
         End Property
+
+        Public Property Button_StartWorklow As String
+
+        Public ReadOnly Property StartWorkflow_Window As String
+            Get
+                Return windowStartWorkflow.ClientID
+            End Get
+        End Property
+
+        Private ReadOnly Property CopiaConforme_Btn As RadToolBarButton
+            Get
+                Dim downloadButtonToolbarBtn As RadToolBarButton = DirectCast(ToolBar.FindItemByValue("ViewerLight_Download"), RadToolBarButton)
+                Return downloadButtonToolbarBtn
+            End Get
+        End Property
+
+        Public Property StampaConformeEnabled As Boolean = True
+        Public Property DocumentsPreviewEnabled As Boolean = True
+
 #End Region
 
 #Region " Events "
         Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
             InitializeAjax()
+            InitializePageElements()
 
-            ToolBar.Items(0).Visible = ProtocolEnv.ViewLightSelectAllEnabled
             For Each key As String In TreeViewKeys
                 InitializeTreeView(key)
             Next
             If Not Page.IsPostBack Then
                 RadScriptManager.GetCurrent(Page).AsyncPostBackTimeout = 120
-                AjaxManager.ClientEvents.OnRequestStart = "RequestStart"
-                AjaxManager.ClientEvents.OnResponseEnd = "ResponseEnd"
                 AjaxManager.DefaultLoadingPanelID = "RadAjaxLoadingPanel1"
 
-                LeftPane.Width = LeftPaneStartWidth
                 If Not EnabledCheckIsSignedButton Then
                     ToolBar.Items.Remove(ToolBar.Items.FindItemByValue("ViewerLight_CheckIsSigned"))
                 End If
-
-
 
                 If ModifyPrivacyEnabled Then
                     windowModifyPrivacyLevel.Title = String.Concat("Modifica livelli di ", CommonBasePage.PRIVACY_LABEL)
@@ -394,7 +416,7 @@ Namespace Viewers
                         Dim node As RadTreeNode = CurrentTreeView.CheckedNodes.SingleOrDefault(Function(n) (n.Value.Eq(NODE_DOCUMENT_IDENTIFIER) OrElse n.Value.Eq(NODE_GROUP_IDENTIFIER)) AndAlso n.Attributes("key").Eq(checkedDocument.Serialized))
                         Dim nodehasdoc As Boolean = False
                         If checkedDocument.DocumentParentId.HasValue AndAlso (Not node Is Nothing) Then
-                            Dim BiblosDocInfos As ICollection(Of BiblosDocumentInfo) = Service.GetAllDocumentVersions(checkedDocument.DocumentParentId.Value, checkedDocument.Server)
+                            Dim BiblosDocInfos As ICollection(Of BiblosDocumentInfo) = Service.GetAllDocumentVersions(checkedDocument.DocumentParentId.Value)
                             Dim DocInfos As IList(Of DocumentInfo) = New List(Of DocumentInfo)
                             node.Selected = True
                             Dim count As Integer = node.Nodes.Count
@@ -436,6 +458,11 @@ Namespace Viewers
                     End If
 
                 Case "ViewerLight_Download"
+
+                    If Not StampaConformeEnabled Then
+                        AjaxManager.Alert("La stampa conforme è disabilitata")
+                        Exit Sub
+                    End If
 
                     If documents.Count > 0 Then
                         Dim file As FileInfo = ZipPdfDocuments(documents)
@@ -488,13 +515,29 @@ Namespace Viewers
 #End Region
 
 #Region " Methods "
-
         Private Sub InitializeAjax()
             AddHandler AjaxManager.AjaxRequest, AddressOf RadAjaxManagerAjaxRequest
             AjaxManager.AjaxSettings.AddAjaxSetting(ToolBar, ToolBar)
             AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, RadPageSplitter)
-            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, ToolBar)
+            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, ToolBar, BasePage.MasterDocSuite.AjaxFlatLoadingPanel)
             AjaxManager.ClientEvents.OnResponseEnd = "requestEnd"
+        End Sub
+
+        Private Sub InitializePageElements()
+            CopiaConforme_Btn.Enabled = StampaConformeEnabled
+            PDFPane.Visible = DocumentsPreviewEnabled
+            SplitBar.Visible = DocumentsPreviewEnabled
+
+            If LeftPaneStartWidth <> 0 Then
+                LeftPaneStartWidth = If(DocumentsPreviewEnabled, 30, 100)
+            End If
+
+            If DocumentsPreviewEnabled Then
+                PDFPane.Width = Unit.Percentage(70)
+            End If
+
+            ToolBar.Items(0).Visible = ProtocolEnv.ViewLightSelectAllEnabled
+            LeftPane.Width = Unit.Percentage(LeftPaneStartWidth)
         End Sub
 
         Private Shared Function ExtractDocumentInfo(node As RadTreeNode) As DocumentInfo
@@ -520,6 +563,9 @@ Namespace Viewers
             End If
             If node.Attributes.Keys.OfType(Of String).Any(Function(f) f = BIBLOS_ATTRIBUTE_InvoiceKind) Then
                 documentInfo.AddAttribute(BIBLOS_ATTRIBUTE_InvoiceKind, node.Attributes(BIBLOS_ATTRIBUTE_InvoiceKind))
+            End If
+            If node.Attributes.Keys.OfType(Of String).Any(Function(f) f = BIBLOS_ATTRIBUTE_Disabled) Then
+                documentInfo.AddAttribute(BIBLOS_ATTRIBUTE_Disabled, node.Attributes(BIBLOS_ATTRIBUTE_Disabled))
             End If
 
             Return documentInfo
@@ -686,128 +732,170 @@ Namespace Viewers
             Dim items As NameValueCollection = doc.ToQueryString()
             Dim key As String = items.AsEncodedQueryString()
 
-            Dim retval As RadTreeNode = New RadTreeNode
-            retval.Attributes.Add("key", key)
+            Dim treeNode As RadTreeNode = New RadTreeNode
+            Dim containDisabledAttribute As Boolean = False
+            treeNode.Attributes.Add("key", key)
             If doc.Attributes IsNot Nothing Then
+                Dim val As String
                 If doc.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_UniqueId) Then
-                    retval.Attributes.Add(BIBLOS_ATTRIBUTE_UniqueId, doc.Attributes(BIBLOS_ATTRIBUTE_UniqueId))
-                    items.Add(BIBLOS_ATTRIBUTE_UniqueId, doc.Attributes(BIBLOS_ATTRIBUTE_UniqueId))
+                    val = doc.Attributes(BIBLOS_ATTRIBUTE_UniqueId)
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_UniqueId, val)
+                    items.Add(BIBLOS_ATTRIBUTE_UniqueId, val)
                 End If
                 If doc.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_Environment) Then
-                    retval.Attributes.Add(BIBLOS_ATTRIBUTE_Environment, doc.Attributes(BIBLOS_ATTRIBUTE_Environment))
-                    items.Add(BIBLOS_ATTRIBUTE_Environment, doc.Attributes(BIBLOS_ATTRIBUTE_Environment))
+                    val = doc.Attributes(BIBLOS_ATTRIBUTE_Environment)
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_Environment, val)
+                    items.Add(BIBLOS_ATTRIBUTE_Environment, val)
                 End If
                 If doc.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_IsPublic) Then
-                    retval.Attributes.Add(BIBLOS_ATTRIBUTE_IsPublic, doc.Attributes(BIBLOS_ATTRIBUTE_IsPublic))
-                    items.Add(BIBLOS_ATTRIBUTE_IsPublic, doc.Attributes(BIBLOS_ATTRIBUTE_IsPublic))
+                    val = doc.Attributes(BIBLOS_ATTRIBUTE_IsPublic)
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_IsPublic, val)
+                    items.Add(BIBLOS_ATTRIBUTE_IsPublic, val)
                 End If
                 If doc.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_Miscellanea) Then
-                    retval.Attributes.Add(BIBLOS_ATTRIBUTE_Miscellanea, doc.Attributes(BIBLOS_ATTRIBUTE_Miscellanea))
-                    items.Add(BIBLOS_ATTRIBUTE_Miscellanea, doc.Attributes(BIBLOS_ATTRIBUTE_Miscellanea))
+                    val = doc.Attributes(BIBLOS_ATTRIBUTE_Miscellanea)
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_Miscellanea, val)
+                    items.Add(BIBLOS_ATTRIBUTE_Miscellanea, val)
                 End If
                 If doc.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized) Then
-                    retval.Attributes.Add(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized, doc.Attributes(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized))
-                    items.Add(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized, doc.Attributes(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized))
+                    val = doc.Attributes(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized)
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized, val)
+                    items.Add(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized, val)
+                End If
+                If doc.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_Disabled) Then
+                    val = doc.Attributes(BIBLOS_ATTRIBUTE_Disabled)
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_Disabled, val)
+                    items.Add(BIBLOS_ATTRIBUTE_Disabled, val)
+                    containDisabledAttribute = If(val = Boolean.TrueString, True, False)
+                End If
+                If doc.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_Year) Then
+                    val = doc.Attributes(BIBLOS_ATTRIBUTE_Year)
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_Year, val)
+                    items.Add(BIBLOS_ATTRIBUTE_Year, val)
+                End If
+                If doc.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_Number) Then
+                    val = doc.Attributes(BIBLOS_ATTRIBUTE_Number)
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_Number, val)
+                    items.Add(BIBLOS_ATTRIBUTE_Number, val)
                 End If
             End If
 
             If TypeOf doc Is FolderInfo Then
                 Dim fi As FolderInfo = DirectCast(doc, FolderInfo)
                 ' Devo costruire un documento di tipo Folder
-                retval.Text = fi.Caption
-                retval.ToolTip = fi.Name
-                retval.ImageUrl = ImagePath.SmallFolder
-                retval.ExpandMode = TreeNodeExpandMode.ClientSide
-                retval.Expanded = True
-                retval.Value = NODE_FOLDER_IDENTIFIER
-                retval.Checkable = True
+                treeNode.Text = fi.Caption
+                treeNode.ToolTip = fi.Name
+                treeNode.ImageUrl = ImagePath.SmallFolder
+                treeNode.ExpandMode = TreeNodeExpandMode.ClientSide
+                treeNode.Expanded = True
+                treeNode.Value = NODE_FOLDER_IDENTIFIER
+                treeNode.Checkable = True
             Else
 
                 If ProtocolEnv.InvoiceSDIEnabled Then
                     If CheckIsInvoice(doc) Then
-                        retval.Attributes.Add(BIBLOS_ATTRIBUTE_IsInvoice, True.ToString())
+                        treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_IsInvoice, True.ToString())
                         items.Add(BIBLOS_ATTRIBUTE_IsInvoice, True.ToString())
 
                         Dim invoiceModel As XMLConverterModel = GetInvoiceModel(doc)
-                        retval.Attributes.Add(BIBLOS_ATTRIBUTE_InvoiceKind, invoiceModel.ModelKind.ToString())
+                        treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_InvoiceKind, invoiceModel.ModelKind.ToString())
                         items.Add(BIBLOS_ATTRIBUTE_InvoiceKind, invoiceModel.ModelKind.ToString())
                     End If
                 End If
 
-
-                _counter = _counter + 1
+                _counter += 1
                 ' DocumentInfo normale
-                retval.Text = doc.Caption
-                retval.ToolTip = $"Visualizza {doc.Name} come PDF"
+                treeNode.Text = doc.Caption
+
+                If DocumentsPreviewEnabled Then
+                    treeNode.ToolTip = $"Visualizza {doc.Name} come PDF"
+                End If
+
                 If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso doc.Attributes.ContainsKey(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE) Then
                     Dim privacyLevel As WebAPICommons.PrivacyLevel = DocSuiteContext.Current.CurrentPrivacyLevels.SingleOrDefault(Function(x) x.Level = Convert.ToInt32(doc.Attributes(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE)))
                     If privacyLevel IsNot Nothing Then
                         If Not String.IsNullOrEmpty(privacyLevel.Colour) AndAlso Not privacyLevel.Colour.ToLower().Eq("#ffffff") Then
-                            retval.Style.Add("color", privacyLevel.Colour)
+                            treeNode.Style.Add("color", privacyLevel.Colour)
                         End If
-                        retval.SelectedCssClass = "selectedLevel"
-                        retval.ToolTip = String.Concat(retval.ToolTip, " - livello di ", CommonBasePage.PRIVACY_LABEL, ": ", privacyLevel.Description)
+                        treeNode.SelectedCssClass = "selectedLevel"
+                        treeNode.ToolTip = String.Concat(treeNode.ToolTip, " - livello di ", CommonBasePage.PRIVACY_LABEL, ": ", privacyLevel.Description)
                     End If
                 End If
-                retval.ImageUrl = ImagePath.FromDocumentInfo(doc)
-                retval.Value = If((FileHelper.MatchExtension(doc.Name, FileHelper.ZIP) _
+                treeNode.ImageUrl = ImagePath.FromDocumentInfo(doc)
+                treeNode.Value = If((FileHelper.MatchExtension(doc.Name, FileHelper.ZIP) _
                     OrElse FileHelper.MatchExtension(doc.Name, FileHelper.RAR)), NODE_GROUP_IDENTIFIER, NODE_DOCUMENT_IDENTIFIER)
-
-                If (doc.Attributes.Any(Function(x) x.Key.Eq("year"))) Then
-                    items.Add("year", doc.Attributes.Where(Function(x) x.Key.Eq("year")).First().Value)
-                End If
-                If (doc.Attributes.Any(Function(x) x.Key.Eq("number"))) Then
-                    items.Add("number", doc.Attributes.Where(Function(x) x.Key.Eq("number")).First().Value)
-                End If
 
                 items.Add("parent", GetParentID(doc))
                 Dim resFileName As String = doc.PDFName
-                retval.NavigateUrl = GetViewerLink(items, resFileName)
-                retval.Attributes.Add("onclick", "return false;")
+                treeNode.NavigateUrl = GetViewerLink(items, resFileName)
+                treeNode.Attributes.Add("onclick", "return false;")
 
                 If ProtocolEnv.EnableViewerLightFileRename AndAlso Not String.IsNullOrEmpty(_prefixFileName) Then
                     resFileName = String.Concat(_prefixFileName, "_Doc", _counter.ToString("000"), FileHelper.PDF)
                 End If
 
-                retval.Attributes.Add("ResFileName", resFileName)
+                treeNode.Attributes.Add("ResFileName", resFileName)
 
                 Dim viewItems As NameValueCollection = items
                 If ViewOriginal Then
                     viewItems.Add("Original", "True")
                 End If
 
-                retval.Attributes.Add("ViewLink", GetViewerLink(viewItems, resFileName))
-                retval.Attributes.Add("Extension", doc.Extension)
+                If DocumentsPreviewEnabled AndAlso Not containDisabledAttribute Then
+                    treeNode.Attributes.Add("ViewLink", GetViewerLink(viewItems, resFileName))
+                End If
+
+                treeNode.Attributes.Add("Extension", doc.Extension)
 
                 If TypeOf doc Is BiblosDocumentInfo Then
                     Dim fi As BiblosDocumentInfo = DirectCast(doc, BiblosDocumentInfo)
                     If fi.Version > 1 Then
-                        retval.Attributes.Add("MoreVersion", "true")
+                        treeNode.Attributes.Add("MoreVersion", "true")
                     Else
-                        retval.Attributes.Add("MoreVersion", "false")
+                        treeNode.Attributes.Add("MoreVersion", "false")
                     End If
                 End If
 
-                items.Add("Download", "true")
-                retval.Attributes.Add("DownloadLink", GetViewerLink(items, resFileName))
+                If StampaConformeEnabled AndAlso Not containDisabledAttribute Then
+                    items.Add("Download", "true")
+                    treeNode.Attributes.Add("DownloadLink", GetViewerLink(items, resFileName))
+                End If
+
                 items.Add("Original", "true")
-                retval.Attributes.Add("DownloadOriginalLink", GetViewerLink(items, resFileName))
+                treeNode.Attributes.Add("DownloadOriginalLink", GetViewerLink(items, resFileName))
 
-                retval.Checkable = True
+                treeNode.Checkable = True
                 If FileExtensionBlackList IsNot Nothing AndAlso FileExtensionBlackList.Contains(doc.Extension) Then
-                    retval.Attributes.Clear()
-                    retval.Checkable = False
-                    retval.Enabled = False
-                    retval.NavigateUrl = ""
-                    retval.ToolTip = "Estensione del file configurata come non sicura o non valida. L'anteprima e il download del file è inibito dalle policy di sicurezza aziendali."
-                End If
-                If retval.Enabled AndAlso isDefaultTreeView AndAlso String.IsNullOrEmpty(DefaultDocument) OrElse key.Eq(DefaultDocument) Then
-                    SetFirst(retval)
+                    treeNode.Attributes.Clear()
+                    treeNode.Checkable = False
+                    treeNode.Enabled = False
+                    treeNode.NavigateUrl = String.Empty
+                    treeNode.ToolTip = "Estensione del file configurata come non sicura o non valida. L'anteprima e il download del file è inibito dalle policy di sicurezza aziendali."
                 End If
 
+                If DocumentsPreviewEnabled AndAlso Not containDisabledAttribute Then
+                    If treeNode.Enabled AndAlso isDefaultTreeView AndAlso String.IsNullOrEmpty(DefaultDocument) OrElse key.Eq(DefaultDocument) Then
+                        SetFirst(treeNode)
+                    End If
+                End If
+
+                If TypeOf doc Is BiblosDocumentInfo Then
+                    Dim fi As BiblosDocumentInfo = DirectCast(doc, BiblosDocumentInfo)
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_BiblosChainId, fi.ChainId.ToString())
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_BiblosDocumentId, fi.DocumentId.ToString())
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_BiblosDocumentName, fi.Name)
+                    treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_Environment, Convert.ToInt32(DSWEnvironment.Document).ToString())
+                End If
             End If
 
-            Return retval
+            If containDisabledAttribute Then
+                treeNode.ToolTip = "Il seguente file non può essere convertito in un PDF in quanto la funzionalità è stata disattivata dall'amministratore del sistema. E' disponibile il solo download in originale"
+                treeNode.NavigateUrl = String.Empty
+            Else
+                treeNode.Attributes.Add("HasDownload", "true")
+            End If
+
+            Return treeNode
         End Function
 
         ''' <summary>
@@ -878,11 +966,15 @@ Namespace Viewers
                 If doc.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized) Then
                     items.Add(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized, doc.Attributes(BIBLOS_ATTRIBUTE_UserVisibilityAuthorized))
                 End If
+                If doc.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_Disabled) Then
+                    items.Add(BIBLOS_ATTRIBUTE_Disabled, doc.Attributes(BIBLOS_ATTRIBUTE_Disabled))
+                End If
             End If
 
             items.Add("parent", GetParentID(CurrentTreeView.SelectedNode))
             items.Add("Download", "true")
-            Dim link As String = String.Empty
+            Dim link As String
+
             If Not pdf Then
                 items.Add("Original", "true")
                 link = Me.GetViewerLink(items, doc.Name)
@@ -994,11 +1086,13 @@ Namespace Viewers
             Dim environment As String = String.Empty
             Dim isPublic As Boolean = False
             Dim id As Guid
-            Dim finder As DocumentUnitFinder
             Dim viewRight As Boolean
-            Dim documentUnit As DocumentUnit
+            Dim documentUnit As Entity.DocumentUnits.DocumentUnit
             Dim validTypes As Integer()
+            Dim udRight As Boolean
+            Dim disabled As Boolean = False
             For Each doc As DocumentInfo In documents.Where(Function(x) Not x.IsRemoved)
+                disabled = False
                 If doc.Attributes.Any(Function(a) a.Key.Eq(BIBLOS_ATTRIBUTE_UniqueId)) Then
                     uniqueId = doc.Attributes(BIBLOS_ATTRIBUTE_UniqueId)
                 End If
@@ -1006,10 +1100,16 @@ Namespace Viewers
                     environment = doc.Attributes(BIBLOS_ATTRIBUTE_Environment)
                 End If
 
+                If doc.Attributes.Any(Function(a) a.Key.Eq(BIBLOS_ATTRIBUTE_Disabled)) Then
+                    disabled = Boolean.Parse(doc.Attributes(BIBLOS_ATTRIBUTE_Disabled))
+                End If
+                If disabled Then
+                    Continue For
+                End If
+
                 If doc.Attributes.Any(Function(a) a.Key.Eq(BIBLOS_ATTRIBUTE_IsPublic)) Then
                     isPublic = Convert.ToBoolean(doc.Attributes(BIBLOS_ATTRIBUTE_IsPublic))
                 End If
-
                 validTypes = New Integer() {DSWEnvironment.Protocol, DSWEnvironment.DocumentSeries, DSWEnvironment.UDS, DSWEnvironment.Resolution}
                 If isPublic OrElse String.IsNullOrEmpty(environment) OrElse Not validTypes.Contains(Convert.ToInt32(environment)) Then
                     filteredDocuments.Add(doc)
@@ -1024,29 +1124,33 @@ Namespace Viewers
 
                 If Not String.IsNullOrEmpty(uniqueId) Then
                     id = Guid.Parse(uniqueId)
-                    finder = New DocumentUnitFinder(DocSuiteContext.Current.Tenants)
-                    finder.ResetDecoration()
-                    finder.EnablePaging = False
-                    finder.IdDocumentUnit = id
-                    finder.ExpandContainer = True
-                    finder.ExpandRoles = True
-                    finder.ExpandUsers = True
-                    documentUnit = finder.DoSearch().Select(Function(f) f.Entity).SingleOrDefault()
-                    If documentUnit IsNot Nothing Then
-                        If CheckViewableRight Then
-                            viewRight = CurrentODataFacade.HasViewableRight(documentUnit.UniqueId, DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
-                        End If
+                    If CheckViewableRight Then
+                        viewRight = CurrentODataFacade.HasViewableRight(id, DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
+                    End If
 
-                        If (Not CheckViewableRight OrElse viewRight) AndAlso
-                            (Not DocSuiteContext.Current.PrivacyEnabled OrElse FromFascicle OrElse
-                             Facade.DocumentFacade.CheckPrivacy(doc, documentUnit.Container.EntityShortId,
-                                                                documentUnit.DocumentUnitRoles.Where(Function(d) Not d.AuthorizationRoleType = RoleAuthorizationType.Responsible).Select(Function(r) r.UniqueIdRole).ToArray(),
-                                                                documentUnit.DocumentUnitRoles.Where(Function(d) d.AuthorizationRoleType = RoleAuthorizationType.Responsible).Select(Function(r) r.UniqueIdRole).ToArray(),
-                                                                documentUnit.Environment, documentUnit.DocumentUnitUsers.Any(Function(d) d.AuthorizationType = RoleAuthorizationType.Accounted AndAlso d.Account.Equals(DocSuiteContext.Current.User.FullUserName)))) Then
-                            filteredDocuments.Add(doc)
+                    If (Not CheckViewableRight OrElse viewRight) AndAlso (Not DocSuiteContext.Current.PrivacyEnabled OrElse FromFascicle) Then
+                        documentUnit = WebAPIImpersonatorFacade.ImpersonateFinder(New DocumentUnitFinder(DocSuiteContext.Current.Tenants),
+                            Function(impersonationType, wfinder)
+                                wfinder.ResetDecoration()
+                                wfinder.EnablePaging = False
+                                wfinder.IdDocumentUnit = id
+                                wfinder.ExpandContainer = True
+                                wfinder.ExpandRoles = True
+                                wfinder.ExpandUsers = True
+                                Return wfinder.DoSearch().Select(Function(f) f.Entity).SingleOrDefault()
+                            End Function)
+
+                        If documentUnit IsNot Nothing Then
+                            udRight = Facade.DocumentFacade.CheckPrivacy(doc, documentUnit.Container.EntityShortId,
+                                                               documentUnit.DocumentUnitRoles.Where(Function(d) Not d.AuthorizationRoleType = RoleAuthorizationType.Responsible).Select(Function(r) r.UniqueIdRole).ToArray(),
+                                                               documentUnit.DocumentUnitRoles.Where(Function(d) d.AuthorizationRoleType = RoleAuthorizationType.Responsible).Select(Function(r) r.UniqueIdRole).ToArray(),
+                                                               documentUnit.Environment, documentUnit.DocumentUnitUsers.Any(Function(d) d.AuthorizationType = RoleAuthorizationType.Accounted AndAlso d.Account.Equals(DocSuiteContext.Current.User.FullUserName)))
+                            If udRight Then
+                                filteredDocuments.Add(doc)
+                            End If
+                        Else
+                            FileLogger.Warn(LogName.FileLog, String.Concat("Unità documentaria con id ", uniqueId, " non trovata"))
                         End If
-                    Else
-                        FileLogger.Warn(LogName.FileLog, String.Concat("Unità documentaria con id ", uniqueId, " non trovata"))
                     End If
                 End If
             Next
@@ -1165,6 +1269,9 @@ Namespace Viewers
                         End If
                         If currentSelectedDocument.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_InvoiceKind) Then
                             documentAttributes.Add(BIBLOS_ATTRIBUTE_InvoiceKind, currentSelectedDocument.Attributes(BIBLOS_ATTRIBUTE_InvoiceKind))
+                        End If
+                        If currentSelectedDocument.Attributes.ContainsKey(BIBLOS_ATTRIBUTE_Disabled) Then
+                            documentAttributes.Add(BIBLOS_ATTRIBUTE_Disabled, currentSelectedDocument.Attributes(BIBLOS_ATTRIBUTE_Disabled))
                         End If
                     End If
 

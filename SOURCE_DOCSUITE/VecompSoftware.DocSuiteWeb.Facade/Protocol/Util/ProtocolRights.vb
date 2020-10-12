@@ -23,6 +23,7 @@ Public Class ProtocolRights
     Private _isInteroperable As Boolean?
     Private _isPECSendable As Boolean?
     Private _isPECAnswerable As Boolean?
+    Private _isTNoticeSendable As Boolean?
     Private _isErrorEditable As Boolean?
     Private _isLinkable As Boolean?
     Private _isAuthorizable As Boolean?
@@ -42,8 +43,6 @@ Public Class ProtocolRights
     Private _hasPrivacyAuthorizations As Boolean?
     Private _isProtocolDistributableType As Boolean?
     Private _isArchivable As Boolean?
-    Private _canSecureDocument As Boolean?
-    Private _canDematerialise As Boolean?
 
 #End Region
 
@@ -200,10 +199,6 @@ Public Class ProtocolRights
     ''' <remarks></remarks>
     Public ReadOnly Property EnableViewLog As Boolean
         Get
-            If Not DocSuiteContext.Current.ProtocolEnv.IsLogEnabled Then
-                Return False
-            End If
-
             If CommonShared.HasGroupAdministratorRight() Then
                 Return True
             End If
@@ -274,7 +269,7 @@ Public Class ProtocolRights
     Public ReadOnly Property IsEditableAttachment As Nullable(Of Boolean)
         Get
             If _isEditableAttachment Is Nothing Then
-                _isEditableAttachment = DocSuiteContext.IsFullApplication AndAlso CurrentEnv.EditableAttachment AndAlso (IsEditable OrElse IsReadable)
+                _isEditableAttachment = CurrentEnv.EditableAttachment AndAlso (IsEditable OrElse IsReadable)
             End If
             Return _isEditableAttachment
         End Get
@@ -285,7 +280,7 @@ Public Class ProtocolRights
             If Not _isFlushAnnexedEnable.HasValue Then
                 _isFlushAnnexedEnable = False
                 If Not SourceProtocol.IdAnnexed.Equals(Guid.Empty) Then
-                    _isFlushAnnexedEnable = DocSuiteContext.IsFullApplication AndAlso IsEditable
+                    _isFlushAnnexedEnable = IsEditable
                 End If
             End If
             Return _isFlushAnnexedEnable.Value
@@ -295,7 +290,7 @@ Public Class ProtocolRights
     Public ReadOnly Property IsInteroperable As Boolean
         Get
             If _isInteroperable Is Nothing Then
-                _isInteroperable = DocSuiteContext.IsFullApplication AndAlso CurrentEnv.IsPECEnabled AndAlso CurrentEnv.IsInteropEnabled AndAlso (DocSuiteContext.Current.ProtocolEnv.ProtNewPecMailEnabled OrElse SourceProtocol.Type.ShortDescription.Eq("U")) _
+                _isInteroperable = CurrentEnv.IsPECEnabled AndAlso CurrentEnv.IsInteropEnabled AndAlso (DocSuiteContext.Current.ProtocolEnv.ProtNewPECMailEnabled OrElse SourceProtocol.Type.ShortDescription.Eq("U")) _
                     AndAlso CurrentFacade.SecurityGroupsUserRight(SourceProtocol, CurrentSecurityGroups, ProtocolContainerRightPositions.InteropOut, ProtocolContainerRightPositions.Preview, ProtocolContainerRightPositions.View, StatusCancel, DocSuiteContext.Current.User.FullUserName)
             End If
             Return _isInteroperable.Value
@@ -303,19 +298,29 @@ Public Class ProtocolRights
     End Property
 
     ''' <summary> Determina se è possibile mandare pec. </summary>
-    Public ReadOnly Property IsPecSendable As Boolean
+    Public ReadOnly Property IsPECSendable As Boolean
         Get
             If _isPECSendable Is Nothing Then
                 'Se il protocollo è in uscita è sempre inviabile per PEC
                 'se invece è ingresso lo è solo con il nuovo meccanismo di invio PEC
-                _isPECSendable = DocSuiteContext.IsFullApplication AndAlso CurrentEnv.IsPECEnabled AndAlso (DocSuiteContext.Current.ProtocolEnv.ProtNewPecMailEnabled OrElse SourceProtocol.Type.ShortDescription.Eq("U")) _
+                _isPECSendable = CurrentEnv.IsPECEnabled AndAlso (DocSuiteContext.Current.ProtocolEnv.ProtNewPECMailEnabled OrElse SourceProtocol.Type.ShortDescription.Eq("U")) _
                     AndAlso CurrentFacade.SecurityGroupsUserRight(SourceProtocol, CurrentSecurityGroups, ProtocolContainerRightPositions.PECOut, ProtocolContainerRightPositions.Preview, ProtocolContainerRightPositions.View, StatusCancel, DocSuiteContext.Current.User.FullUserName)
             End If
             Return _isPECSendable.Value
         End Get
     End Property
 
-    Public ReadOnly Property IsPecAnswerable As Nullable(Of Boolean)
+    Public ReadOnly Property IsTNoticeSendable As Boolean
+        Get
+            If _isTNoticeSendable Is Nothing Then
+                _isTNoticeSendable = CurrentEnv.TNoticeEnabled AndAlso SourceProtocol.Type.ShortDescription.Eq("U") _
+                    AndAlso CurrentFacade.SecurityGroupsUserRight(SourceProtocol, CurrentSecurityGroups, ProtocolContainerRightPositions.PECOut, ProtocolContainerRightPositions.Preview, ProtocolContainerRightPositions.View, StatusCancel, DocSuiteContext.Current.User.FullUserName)
+            End If
+            Return _isTNoticeSendable.Value
+        End Get
+    End Property
+
+    Public ReadOnly Property IsPECAnswerable As Nullable(Of Boolean)
         Get
             If _isPECAnswerable Is Nothing Then
                 _isPECAnswerable = CurrentEnv.IsPECEnabled AndAlso SourceProtocol.Type.ShortDescription.Eq("I") AndAlso SourceProtocol.PecMails IsNot Nothing AndAlso SourceProtocol.PecMails.Count > 0
@@ -327,8 +332,7 @@ Public Class ProtocolRights
     Public ReadOnly Property IsErrorEditable As Nullable(Of Boolean)
         Get
             If _isErrorEditable Is Nothing Then
-                _isErrorEditable = DocSuiteContext.IsFullApplication _
-                    AndAlso CurrentFacade.SecurityGroupsUserRight(SourceProtocol, CurrentSecurityGroups, ProtocolContainerRightPositions.Modify, ProtocolContainerRightPositions.Preview, ProtocolContainerRightPositions.View, False, True, True, DocSuiteContext.Current.User.FullUserName)
+                _isErrorEditable = CurrentFacade.SecurityGroupsUserRight(SourceProtocol, CurrentSecurityGroups, ProtocolContainerRightPositions.Modify, ProtocolContainerRightPositions.Preview, ProtocolContainerRightPositions.View, False, True, True, DocSuiteContext.Current.User.FullUserName)
             End If
             Return _isErrorEditable
         End Get
@@ -557,29 +561,6 @@ Public Class ProtocolRights
         End Get
     End Property
 
-    Public ReadOnly Property CanSecureDocument As Boolean
-        Get
-            If Not _canSecureDocument.HasValue Then
-                _canSecureDocument = DocSuiteContext.Current.ProtocolEnv.SecureDocumentEnabled AndAlso SourceProtocol.Container.ManageSecureDocument _
-                    AndAlso (CommonShared.UserConnectedBelongsTo(DocSuiteContext.Current.ProtocolEnv.SecureDocumentGroups) OrElse CommonShared.HasGroupAdministratorRight)
-            End If
-            Return _canSecureDocument.Value
-        End Get
-    End Property
-
-    Public ReadOnly Property CanDematerialise As Boolean
-        Get
-            If Not _canDematerialise.HasValue Then
-                _canDematerialise = DocSuiteContext.IsFullApplication AndAlso DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled _
-                    AndAlso (IsIncludable OrElse IsEditable OrElse FacadeFactory.Instance.ProtocolFacade.SecurityGroupsUserRole(SourceProtocol, FacadeFactory.Instance.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName), "1")) _
-                     AndAlso Not IsPecAnswerable AndAlso (FacadeFactory.Instance.ProtocolLogFacade.SearchLogByProtocolUniqueId(SourceProtocol.UniqueId, String.Empty, ProtocolLogEvent.SC).Count = 0 _
-                                AndAlso FacadeFactory.Instance.ProtocolLogFacade.SearchLogByProtocolUniqueId(SourceProtocol.UniqueId, String.Empty, ProtocolLogEvent.SB).Count = 0) _
-                    AndAlso Not (Not DocSuiteContext.Current.ProtocolEnv.ConsentiDuplicaProtDaPEC AndAlso SourceProtocol.PecMails IsNot Nothing AndAlso SourceProtocol.PecMails.Count > 0)
-
-            End If
-            Return _canDematerialise.Value
-        End Get
-    End Property
 #End Region
 
 #Region " Methods "
@@ -597,7 +578,7 @@ Public Class ProtocolRights
 
         If roleRight.HasValue AndAlso Not DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled Then
             If RoleRightDictionary.ContainsKey(roleRight.Value) Then
-                Return SourceProtocol.Roles.Any(Function(pr) RoleRightDictionary(ProtocolRoleRightPositions.Enabled).Contains(pr.Id.Id))
+                Return SourceProtocol.Roles.Any(Function(pr) RoleRightDictionary(ProtocolRoleRightPositions.Enabled).Contains(pr.Role.Id))
             End If
         End If
 

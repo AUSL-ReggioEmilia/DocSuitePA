@@ -151,14 +151,14 @@
                     </asp:DropDownList></td>
             </tr>
             <tr>
-                <td class="label" style="width: 30%">HumanEnabled</td>
+                <td class="label" style="width: 30%">Errori di autenticazione</td>
                 <td>
-                    <asp:CheckBox runat="server" ID="chkHumanEnabled" /></td>
+                    <asp:CheckBox runat="server" ID="chkLoginError" Enabled="false" /></td>
             </tr>
         </table>
     </asp:Panel>
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="cphFooter">
-    <asp:Button ID="btnSave" runat="server" Text="Salva" Width="150" ValidationGroup="PecMailBoxes" />
-    <asp:Button ID="btnAnnulla" runat="server" Text="Annulla" Width="150" />
+    <telerik:RadButton ID="saveBtn" runat="server" Text="Salva" Width="150" ValidationGroup="PecMailBoxes"/>
+    <telerik:RadButton ID="cancelBtn" runat="server" Text="Annulla" Width="150" />
 </asp:Content>

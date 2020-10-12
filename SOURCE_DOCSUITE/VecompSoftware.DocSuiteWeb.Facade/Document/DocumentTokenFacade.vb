@@ -32,7 +32,7 @@ Public Class DocumentTokenFacade
         Return _documentToken
     End Function
 
-    Public Overloads Function GetById(ByVal year As Short, ByVal number As Integer, ByVal incremental As Integer, Optional ByVal shoudLock As Boolean = False) As DocumentToken
+    Public Overloads Function GetById(ByVal year As Short, ByVal number As Integer, ByVal incremental As Short, Optional ByVal shoudLock As Boolean = False) As DocumentToken
         Dim id As YearNumberIncrCompositeKey = New YearNumberIncrCompositeKey(year, number, incremental)
         Return MyBase.GetById(id, shoudLock)
     End Function
@@ -75,7 +75,7 @@ Public Class DocumentTokenFacade
         Return _dao.GetDocumentTokenByTokenType(year, number, idTokenTypes, roles, bAddResponseCriteria, isActive)
     End Function
 
-    Function GetByYearNumber(ByVal year As Short, ByVal number As Integer, ByVal isActive As Integer) As IList(Of DocumentToken)
+    Function GetByYearNumber(ByVal year As Short, ByVal number As Integer, ByVal isActive As Short) As IList(Of DocumentToken)
         Return _dao.GetByYearNumber(year, number, isActive)
     End Function
 

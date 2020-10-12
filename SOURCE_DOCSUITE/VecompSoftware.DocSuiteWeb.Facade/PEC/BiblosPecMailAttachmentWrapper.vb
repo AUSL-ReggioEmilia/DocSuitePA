@@ -7,7 +7,6 @@ Public Class BiblosPecMailAttachmentWrapper
     Private ReadOnly _pecAttachment As PECMailAttachment
     Private _biblosDocumentInfo As BiblosDocumentInfo
     Private _checkSignedEvaluateStream As Boolean
-    Private ReadOnly _documentServer As String
     Private _children As IList(Of BiblosPecMailAttachmentWrapper)
     Private _parent As BiblosPecMailAttachmentWrapper
 
@@ -16,18 +15,17 @@ Public Class BiblosPecMailAttachmentWrapper
     ''' </summary>
     ''' <param name="pecAttachment"></param>
     ''' <remarks></remarks>
-    Public Sub New(ByVal pecAttachment As PECMailAttachment, ByVal documentServer As String, checkSignedEvaluateStream As Boolean)
+    Public Sub New(ByVal pecAttachment As PECMailAttachment, checkSignedEvaluateStream As Boolean)
         _pecAttachment = pecAttachment
-        _documentServer = documentServer
         _checkSignedEvaluateStream = checkSignedEvaluateStream
     End Sub
 
     Public ReadOnly Property Document As BiblosDocumentInfo
         Get
             If _biblosDocumentInfo Is Nothing Then
-                _biblosDocumentInfo = BiblosDocumentInfo.GetDocumentInfo(_documentServer, _pecAttachment.IDDocument, Nothing, True, True).SingleOrDefault()
+                _biblosDocumentInfo = BiblosDocumentInfo.GetDocumentInfo(_pecAttachment.IDDocument, Nothing, True, True).SingleOrDefault()
                 If _biblosDocumentInfo IsNot Nothing AndAlso _biblosDocumentInfo.IsRemoved Then
-                    _biblosDocumentInfo = New BiblosDeletedDocumentInfo(_documentServer, _pecAttachment.IDDocument)
+                    _biblosDocumentInfo = New BiblosDeletedDocumentInfo(_pecAttachment.IDDocument)
                 End If
                 _biblosDocumentInfo.CheckSignedEvaluateStream = _checkSignedEvaluateStream
             End If
@@ -41,7 +39,7 @@ Public Class BiblosPecMailAttachmentWrapper
                 _children = New List(Of BiblosPecMailAttachmentWrapper)
                 If (_pecAttachment.Children IsNot Nothing) Then
                     For Each pecAttachment As PECMailAttachment In _pecAttachment.Children
-                        _children.Add(New BiblosPecMailAttachmentWrapper(pecAttachment, _documentServer, _checkSignedEvaluateStream))
+                        _children.Add(New BiblosPecMailAttachmentWrapper(pecAttachment, _checkSignedEvaluateStream))
                     Next
                 End If
             End If
@@ -52,7 +50,7 @@ Public Class BiblosPecMailAttachmentWrapper
     Public ReadOnly Property Parent As BiblosPecMailAttachmentWrapper
         Get
             If _parent Is Nothing AndAlso _pecAttachment.Parent IsNot Nothing Then
-                _parent = New BiblosPecMailAttachmentWrapper(_pecAttachment.Parent, _documentServer, _checkSignedEvaluateStream)
+                _parent = New BiblosPecMailAttachmentWrapper(_pecAttachment.Parent, _checkSignedEvaluateStream)
             End If
             Return _parent
         End Get

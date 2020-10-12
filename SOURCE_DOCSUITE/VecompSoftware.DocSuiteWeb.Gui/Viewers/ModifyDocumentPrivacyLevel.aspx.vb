@@ -7,6 +7,7 @@ Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Biblos
@@ -21,7 +22,7 @@ Public Class ModifyDocumentPrivacyLevel
     Private _currentLocationId As Integer?
     Private _currentUserPrivacyLevel As Integer?
     Private _documentUnitFinder As DocumentUnitFinder
-    Private _currentDocumentUnit As DocumentUnit
+    Private _currentDocumentUnit As Entity.DocumentUnits.DocumentUnit
     Private _currentDocumentUnitId As Guid?
     Private _currentLocation As Location
     Private _uSCSDocuments As IList(Of uscDocumentUpload)
@@ -70,16 +71,19 @@ Public Class ModifyDocumentPrivacyLevel
     End Property
 
 
-    Private ReadOnly Property CurrentDocumentUnit As DocumentUnit
+    Private ReadOnly Property CurrentDocumentUnit As Entity.DocumentUnits.DocumentUnit
         Get
             If _currentDocumentUnit Is Nothing Then
-                DocumentUnitFinder.ResetDecoration()
-                DocumentUnitFinder.IdDocumentUnit = CurrentDocumentUnitId
-                DocumentUnitFinder.EnablePaging = False
-                DocumentUnitFinder.ExpandContainer = True
-                DocumentUnitFinder.ExpandChains = True
-                DocumentUnitFinder.ExpandRoles = True
-                _currentDocumentUnit = DocumentUnitFinder.DoSearch().Select(Function(f) f.Entity).SingleOrDefault()
+                _currentDocumentUnit = WebAPIImpersonatorFacade.ImpersonateFinder(DocumentUnitFinder,
+                            Function(impersonationType, finder)
+                                finder.ResetDecoration()
+                                finder.IdDocumentUnit = CurrentDocumentUnitId
+                                finder.EnablePaging = False
+                                finder.ExpandContainer = True
+                                finder.ExpandChains = True
+                                finder.ExpandRoles = True
+                                Return finder.DoSearch().Select(Function(f) f.Entity).SingleOrDefault()
+                            End Function)
             End If
             Return _currentDocumentUnit
         End Get
@@ -205,32 +209,32 @@ Public Class ModifyDocumentPrivacyLevel
         Dim supervisoryBoardDocuments As List(Of BiblosDocumentInfo) = New List(Of BiblosDocumentInfo)
 
         For Each documentModel As ReferenceModel In Documents
-            If BelongToChain(documentModel.IdArchiveChain, ChainType.MainChain) Then
-                mainDocuments.Add(New BiblosDocumentInfo(CurrentLocation.DocumentServer, Guid.Parse(documentModel.UniqueId)))
+            If BelongToChain(documentModel.IdArchiveChain, Entity.DocumentUnits.ChainType.MainChain) Then
+                mainDocuments.Add(New BiblosDocumentInfo(Guid.Parse(documentModel.UniqueId)))
             End If
 
-            If BelongToChain(documentModel.IdArchiveChain, ChainType.AttachmentsChain) Then
-                attachments.Add(New BiblosDocumentInfo(CurrentLocation.DocumentServer, Guid.Parse(documentModel.UniqueId)))
+            If BelongToChain(documentModel.IdArchiveChain, Entity.DocumentUnits.ChainType.AttachmentsChain) Then
+                attachments.Add(New BiblosDocumentInfo(Guid.Parse(documentModel.UniqueId)))
             End If
 
-            If BelongToChain(documentModel.IdArchiveChain, ChainType.AnnexedChain) Then
-                annexed.Add(New BiblosDocumentInfo(CurrentLocation.DocumentServer, Guid.Parse(documentModel.UniqueId)))
+            If BelongToChain(documentModel.IdArchiveChain, Entity.DocumentUnits.ChainType.AnnexedChain) Then
+                annexed.Add(New BiblosDocumentInfo(Guid.Parse(documentModel.UniqueId)))
             End If
 
-            If BelongToChain(documentModel.IdArchiveChain, ChainType.AssumedProposalChain) Then
-                adoptedDocuments.Add(New BiblosDocumentInfo(CurrentLocation.DocumentServer, Guid.Parse(documentModel.UniqueId)))
+            If BelongToChain(documentModel.IdArchiveChain, Entity.DocumentUnits.ChainType.AssumedProposalChain) Then
+                adoptedDocuments.Add(New BiblosDocumentInfo(Guid.Parse(documentModel.UniqueId)))
             End If
 
-            If BelongToChain(documentModel.IdArchiveChain, ChainType.UnpublishedAnnexedChain) Then
-                unPublishedAnnexed.Add(New BiblosDocumentInfo(CurrentLocation.DocumentServer, Guid.Parse(documentModel.UniqueId)))
+            If BelongToChain(documentModel.IdArchiveChain, Entity.DocumentUnits.ChainType.UnpublishedAnnexedChain) Then
+                unPublishedAnnexed.Add(New BiblosDocumentInfo(Guid.Parse(documentModel.UniqueId)))
             End If
 
-            If BelongToChain(documentModel.IdArchiveChain, ChainType.ProposalChain) Then
-                proposedDocuments.Add(New BiblosDocumentInfo(CurrentLocation.DocumentServer, Guid.Parse(documentModel.UniqueId)))
+            If BelongToChain(documentModel.IdArchiveChain, Entity.DocumentUnits.ChainType.ProposalChain) Then
+                proposedDocuments.Add(New BiblosDocumentInfo(Guid.Parse(documentModel.UniqueId)))
             End If
 
-            If BelongToChain(documentModel.IdArchiveChain, ChainType.SupervisoryBoardChain) Then
-                supervisoryBoardDocuments.Add(New BiblosDocumentInfo(CurrentLocation.DocumentServer, Guid.Parse(documentModel.UniqueId)))
+            If BelongToChain(documentModel.IdArchiveChain, Entity.DocumentUnits.ChainType.SupervisoryBoardChain) Then
+                supervisoryBoardDocuments.Add(New BiblosDocumentInfo(Guid.Parse(documentModel.UniqueId)))
             End If
         Next
 
@@ -250,7 +254,7 @@ Public Class ModifyDocumentPrivacyLevel
 
     Private Sub UpdateDocument(doc As DocumentInfo)
         Try
-            Dim chain As BiblosChainInfo = New BiblosChainInfo(CurrentLocation.DocumentServer, DirectCast(doc, BiblosDocumentInfo).ChainId)
+            Dim chain As BiblosChainInfo = New BiblosChainInfo(DirectCast(doc, BiblosDocumentInfo).ChainId)
             If Not doc.Attributes.SequenceEqual(chain.Attributes) Then
                 If chain.Attributes.Count > 0 Then
                     Dim toUpdateAttributes As Dictionary(Of String, String) = chain.Attributes.Where(Function(x) Not x.Key.Eq(BiblosFacade.FILENAME_ATTRIBUTE) _
@@ -269,7 +273,7 @@ Public Class ModifyDocumentPrivacyLevel
         End Try
     End Sub
 
-    Private Function BelongToChain(idChain As String, type As ChainType) As Boolean
+    Private Function BelongToChain(idChain As String, type As Entity.DocumentUnits.ChainType) As Boolean
         Return Guid.Parse(idChain) = CurrentDocumentUnit.DocumentUnitChains.Where(Function(y) y.ChainType = type).Select(Function(x) x.IdArchiveChain).FirstOrDefault()
     End Function
 

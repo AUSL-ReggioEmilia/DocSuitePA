@@ -1,11 +1,12 @@
 ﻿import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import MetadataRepositoryService = require('App/Services/Commons/MetadataRepositoryService');
-import MetadataViewModel = require('App/ViewModels/Metadata/MetadataViewModel');
 import MetadataRepositoryModel = require('App/Models/Commons/MetadataRepositoryModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
 import AjaxModel = require('App/Models/AjaxModel');
+import uscSetiContactSel = require('./uscSetiContactSel');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class uscDynamicMetadata {
     dynamicPageContentId: string;
@@ -13,7 +14,8 @@ class uscDynamicMetadata {
     ajaxManagerId: string;
     pnlDynamicContentId: string;
     managerId: string;
-
+    fascicleInsertCommonIdEvent: string;
+    
     private _serviceConfigurations: ServiceConfiguration[];
     private _metadataRepositoryConfiguration: ServiceConfiguration;
     private _metadataRepositoryService: MetadataRepositoryService;
@@ -40,10 +42,19 @@ class uscDynamicMetadata {
         this._metadataRepositoryService = new MetadataRepositoryService(this._metadataRepositoryConfiguration);
         this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.managerId);
         $("#".concat(this.pnlDynamicContentId)).data(this);
+
+
+        $("#".concat(this.fascicleInsertCommonIdEvent)).on(uscSetiContactSel.SELECTED_SETI_CONTACT_EVENT, (sender, args) => {
+            let ajaxModel = <AjaxModel>{};
+            ajaxModel.ActionName = "PopulateFields";
+
+            ajaxModel.Value = [JSON.stringify(args)];
+            (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxModel));
+        });
     }
 
     loadDynamicMetadata(id: string) {
-        sessionStorage.removeItem("MetadataRepository");
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
         if (!id || id == "") {
             let ajaxModel = <AjaxModel>{};
             ajaxModel.ActionName = "ClearControls";
@@ -54,7 +65,7 @@ class uscDynamicMetadata {
             this._metadataRepositoryService.getFullModelById(id,
                 (data: MetadataRepositoryModel) => {
                     if (data && !!data.JsonMetadata) {
-                        sessionStorage.setItem("MetadataRepository", data.UniqueId);
+                        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY, data.UniqueId);
                         let ajaxModel = <AjaxModel>{};
                         ajaxModel.ActionName = "LoadControls";
                         ajaxModel.Value = [];
@@ -70,7 +81,7 @@ class uscDynamicMetadata {
                         }
                     }
                 });
-        }        
+        }
     }
 
     openCommentsWindow(label: string) {

@@ -47,7 +47,7 @@ Public Class AggregateToProtocol
     Private ReadOnly Property ProtocolList As List(Of Protocol)
         Get
             If Not ProtocolsKeys.IsNullOrEmpty() AndAlso _protocols Is Nothing Then
-                _protocols = ProtocolsKeys.Select(Function(f) FacadeFactory.Instance.ProtocolFacade.GetByUniqueId(f)).ToList()
+                _protocols = ProtocolsKeys.Select(Function(f) FacadeFactory.Instance.ProtocolFacade.GetById(f)).ToList()
             End If
             If _protocols Is Nothing Then
                 _protocols = New List(Of Protocol)()

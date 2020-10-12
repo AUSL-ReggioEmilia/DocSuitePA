@@ -5,6 +5,7 @@ Imports VecompSoftware.DocSuiteWeb.Facade
 Imports Telerik.Web.UI
 Imports Newtonsoft.Json
 Imports System.Linq
+Imports VecompSoftware.DocSuiteWeb.Facade.ProtocolParerFacade
 
 Partial Public Class uscProtGrid
     Inherits GridControl
@@ -39,13 +40,14 @@ Partial Public Class uscProtGrid
     Public Const COLUMN_PROTOCOL_INVOICE_NUMBER As String = "AP.InvoiceNumber"
     Public Const COLUMN_PROTOCOL_INVOICE_YEAR As String = "AP.InvoiceYear"
     Public Const COLUMN_PROTOCOL_ACCOUNTING_NUMBER As String = "AP.AccountingNumber"
-    Public Const COLUMN_NOTE As String = "PU.Note"
+    Public Const COLUMN_HIGHLIGHT_NOTE As String = "PU.Note"
+    Public Const COLUMN_HIGHLIGHT_REGISTRATION_USER As String = "PU.RegistrationUser"
 
     Protected Const GridPageHistoryKey As String = "PageHistoryKey"
 
     Private _gridDataSource As IList(Of ProtocolHeader)
-    Private _protocolRightsDictionary As IDictionary(Of YearNumberCompositeKey, ProtocolRights)
-    Private _protocolContactLabelsDictionary As IDictionary(Of YearNumberCompositeKey, String)
+    Private _protocolRightsDictionary As IDictionary(Of Guid, ProtocolRights)
+    Private _protocolContactLabelsDictionary As IDictionary(Of Guid, String)
 
 #End Region
 
@@ -58,7 +60,7 @@ Partial Public Class uscProtGrid
             Return _gridDataSource
         End Get
     End Property
-    Private ReadOnly Property protocolRightsDictionary As IDictionary(Of YearNumberCompositeKey, ProtocolRights)
+    Private ReadOnly Property protocolRightsDictionary As IDictionary(Of Guid, ProtocolRights)
         Get
             If _protocolRightsDictionary Is Nothing Then
                 _protocolRightsDictionary = Facade.ProtocolFacade.GetProtocolRightsDictionary(GridDataSource)
@@ -66,7 +68,7 @@ Partial Public Class uscProtGrid
             Return _protocolRightsDictionary
         End Get
     End Property
-    Private ReadOnly Property protocolContactLabelsDictionary As IDictionary(Of YearNumberCompositeKey, String)
+    Private ReadOnly Property protocolContactLabelsDictionary As IDictionary(Of Guid, String)
         Get
             If _protocolContactLabelsDictionary Is Nothing Then
                 _protocolContactLabelsDictionary = Facade.ProtocolFacade.GetProtocolContactLabelsDictionary(GridDataSource)
@@ -221,15 +223,22 @@ Partial Public Class uscProtGrid
             grdProtocols.Columns.FindByUniqueName(COLUMN_CATEGORY_NAME).Visible = value
         End Set
     End Property
-    Public Property ColumnNoteVisible() As Boolean
+    Public Property ColumnHighlightNoteVisible() As Boolean
         Get
-            Return grdProtocols.Columns.FindByUniqueName(COLUMN_NOTE).Visible
+            Return grdProtocols.Columns.FindByUniqueName(COLUMN_HIGHLIGHT_NOTE).Visible
         End Get
         Set(ByVal value As Boolean)
-            grdProtocols.Columns.FindByUniqueName(COLUMN_NOTE).Visible = value
+            grdProtocols.Columns.FindByUniqueName(COLUMN_HIGHLIGHT_NOTE).Visible = value
         End Set
     End Property
-
+    Public Property ColumnHighlightRegistrationUserVisible() As Boolean
+        Get
+            Return grdProtocols.Columns.FindByUniqueName(COLUMN_HIGHLIGHT_REGISTRATION_USER).Visible
+        End Get
+        Set(ByVal value As Boolean)
+            grdProtocols.Columns.FindByUniqueName(COLUMN_HIGHLIGHT_REGISTRATION_USER).Visible = value
+        End Set
+    End Property
     Public Property ColumnProtocolContactVisible() As Boolean
         Get
             Return grdProtocols.Columns.FindByUniqueName(COLUMN_PROTOCOL_CONTACT).Visible
@@ -342,7 +351,7 @@ Partial Public Class uscProtGrid
         End If
 
         Dim boundHeader As ProtocolHeader = DirectCast(e.Item.DataItem, ProtocolHeader)
-        Dim hiddenId As String = String.Format("{0}|{1}", boundHeader.Year, boundHeader.Number)
+        Dim hiddenId As String = boundHeader.UniqueId.ToString()
         If DocSuiteContext.Current.ProtocolEnv.ParerEnabled Then
             If ColumnPARERIconVisible Then
                 DirectCast(e.Item.FindControl("imgParerIcon"), Image).ImageUrl = getHeaderImageUrl(boundHeader, "ParerIcon")
@@ -421,7 +430,7 @@ Partial Public Class uscProtGrid
             DirectCast(e.Item.FindControl("imgProtocolType"), Image).ImageUrl = getHeaderImageUrl(boundHeader, "ProtocolType")
         End If
         If ColumnViewDocumentsVisible Then
-            Dim protocolRights As ProtocolRights = protocolRightsDictionary.Item(boundHeader.ProtocolCompositeKey)
+            Dim protocolRights As ProtocolRights = protocolRightsDictionary.Item(boundHeader.UniqueId)
             With DirectCast(e.Item.FindControl("ibtViewDocuments"), ImageButton)
                 .CommandArgument = hiddenId
                 .ImageUrl = getHeaderImageUrl(boundHeader, .CommandName)
@@ -438,24 +447,23 @@ Partial Public Class uscProtGrid
         If ColumnViewLinksVisible Then
             With DirectCast(e.Item.FindControl("cmdViewLinks"), RadButton)
                 If boundHeader.Links.HasValue AndAlso boundHeader.Links > 0 Then
-                    .Image.ImageUrl = "~/comm/images/docsuite/collegamento16.gif"
-                    .NavigateUrl = String.Concat("~/Prot/ProtCollegamenti.aspx?", CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}&Type=Prot", boundHeader.Year, boundHeader.Number)))
+                    .Image.ImageUrl = "~/comm/images/docsuite/Link16.png"
+                    .NavigateUrl = $"~/Prot/ProtCollegamenti.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={boundHeader.UniqueId}&Type=Prot")}"
                 Else
                     .Visible = False
                 End If
             End With
         End If
+        With DirectCast(e.Item.FindControl("hf_protocol_unique"), HiddenField)
+            .Value = boundHeader.UniqueId.ToString()
+        End With
         If ColumnViewProtocolVisible Then
-            With DirectCast(e.Item.FindControl("hf_protocol_unique"), HiddenField)
-                .Value = boundHeader.UniqueId.ToString()
-            End With
-
             With DirectCast(e.Item.FindControl("lbtViewProtocol"), LinkButton)
                 .Text = boundHeader.FullProtocolNumber
                 .CommandArgument = hiddenId
 
                 If RedirectOnParentPage Then
-                    Dim parameters As String = String.Format("Year={0}&Number={1}&Type={2}", boundHeader.Year, boundHeader.Number, "Prot")
+                    Dim parameters As String = String.Format("UniqueId={0}&Type=Prot", boundHeader.UniqueId)
                     parameters = CommonShared.AppendSecurityCheck(parameters)
 
                     Dim parentPageUrl As String = "../Prot/ProtVisualizza.aspx?" & parameters
@@ -478,11 +486,23 @@ Partial Public Class uscProtGrid
             DirectCast(e.Item.FindControl("lblCategoryProjection"), Label).Text = getTextByHeader(boundHeader, COLUMN_CATEGORY_NAME)
         End If
 
-        If ColumnNoteVisible = True Then
-            Dim protocolUser As ProtocolUser = Facade.ProtocolUserFacade.GetProtocolUsersByProtocolUniqueId(boundHeader.UniqueId, DocSuiteContext.Current.User.FullUserName)
-            DirectCast(e.Item.FindControl("lblProtocolNote"), Label).Visible = True
+        If ColumnHighlightNoteVisible = True Then
+            Dim protocolUser As ProtocolUser = Facade.ProtocolUserFacade.GetProtocolUsersByProtocol(boundHeader.UniqueId, DocSuiteContext.Current.User.FullUserName)
             If protocolUser IsNot Nothing Then
-                DirectCast(e.Item.FindControl("lblProtocolNote"), Label).Text = protocolUser.Note
+                Dim lblProtocolNote As Label = DirectCast(e.Item.FindControl("lblProtocolNote"), Label)
+                lblProtocolNote.Visible = True
+                lblProtocolNote.Text = protocolUser.Note
+                If ColumnHighlightRegistrationUserVisible = True Then
+                    Dim data As Date = protocolUser.RegistrationDate.Date
+                    Dim user As String = protocolUser.RegistrationUser
+                    If protocolUser.LastChangedDate.HasValue Then
+                        data = protocolUser.LastChangedDate.Value.Date
+                        user = protocolUser.LastChangedUser
+                    End If
+                    Dim lblHighlightRegistrationUser As Label = DirectCast(e.Item.FindControl("lblHighlightRegistrationUser"), Label)
+                    lblHighlightRegistrationUser.Visible = True
+                    lblHighlightRegistrationUser.Text = $"{CommonAD.GetDisplayName(user)} il {data.ToShortDateString()}"
+                End If
             End If
         End If
 
@@ -533,7 +553,7 @@ Partial Public Class uscProtGrid
 
         If DocSuiteContext.Current.ProtocolEnv.IsInvoiceDataGridResultEnabled Then
             DirectCast(e.Item.FindControl("lblSectional"), Label).Text = boundHeader.AccountingSectional
-            DirectCast(e.Item.FindControl("lblInvoiceNumber"), Label).Text = If(String.IsNullOrEmpty(boundHeader.InvoiceNumber), String.Empty, boundHeader.InvoiceNumber.PadLeft(7, "0"))
+            DirectCast(e.Item.FindControl("lblInvoiceNumber"), Label).Text = If(String.IsNullOrEmpty(boundHeader.InvoiceNumber), String.Empty, boundHeader.InvoiceNumber.PadLeft(7, "0"c))
             DirectCast(e.Item.FindControl("lblInvoiceYear"), Label).Text = If(boundHeader.InvoiceYear.HasValue, boundHeader.InvoiceYear.Value.ToString(), String.Empty)
             DirectCast(e.Item.FindControl("lblAccountingNumber"), Label).Text = If(boundHeader.AccountingNumber.HasValue, boundHeader.AccountingNumber.Value.ToString(), String.Empty)
         End If
@@ -542,34 +562,30 @@ Partial Public Class uscProtGrid
     Private Sub grdProtocols_ItemCommand(ByVal source As Object, ByVal e As GridCommandEventArgs) Handles grdProtocols.ItemCommand
         Select Case e.CommandName
             Case "Repair", "Complete"
-                Dim ynck As YearNumberCompositeKey = GetHiddenId(e.CommandArgument)
-
-                Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(ynck)
+                Dim uniqueIdProtocol As Guid = Guid.Parse(e.CommandArgument.ToString())
+                Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(uniqueIdProtocol)
                 If currentProtocol.ProtocolObject.Eq("dummy") Then
                     currentProtocol.IdStatus = ProtocolStatusId.Sospeso
                     Facade.ProtocolFacade.Update(currentProtocol)
                     Facade.ProtocolLogFacade.Insert(currentProtocol, ProtocolLogEvent.PM, "Protocollo rimesso in status Sospeso")
                 Else
-                    Dim parameters As String = CommonShared.AppendSecurityCheck(String.Format("Action=Repair&Year={0}&Number={1}&Type={2}", ynck.Year, ynck.Number, "Prot"))
-                    RedirectOnPage("../Prot/ProtModifica.aspx?" & parameters)
+                    Dim parameters As String = CommonShared.AppendSecurityCheck($"Action=Repair&UniqueId={uniqueIdProtocol}&Type=Prot")
+                    RedirectOnPage($"~/Prot/ProtModifica.aspx?{parameters}")
                 End If
 
             Case "Cancel"
-                Dim ynck As YearNumberCompositeKey = GetHiddenId(e.CommandArgument)
-
-                Dim parameters As String = CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}&Type=Prot", ynck.Year, ynck.Number))
-                RedirectOnPage("../Prot/ProtAnnulla.aspx?" & parameters)
+                Dim uniqueIdProtocol As Guid = Guid.Parse(e.CommandArgument.ToString())
+                Dim parameters As String = CommonShared.AppendSecurityCheck($"UniqueId={uniqueIdProtocol}&Type=Prot")
+                RedirectOnPage($"~/Prot/ProtAnnulla.aspx?{parameters}")
 
             Case "Recover"
-                Dim ynck As YearNumberCompositeKey = GetHiddenId(e.CommandArgument)
-
-                Dim parameters As String = CommonShared.AppendSecurityCheck(String.Format("Action=Recover&Year={0}&Number={1}&Type=Prot", ynck.Year, ynck.Number))
-                RedirectOnPage("../Prot/ProtInserimento.aspx?" & parameters)
+                Dim uniqueIdProtocol As Guid = Guid.Parse(e.CommandArgument.ToString())
+                Dim parameters As String = CommonShared.AppendSecurityCheck($"Action=Recover&UniqueId={uniqueIdProtocol}&Type=Prot")
+                RedirectOnPage($"~/Prot/ProtInserimento.aspx?{parameters}")
 
             Case "Steal"
-                Dim ynck As YearNumberCompositeKey = GetHiddenId(e.CommandArgument)
-
-                Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(ynck)
+                Dim uniqueIdProtocol As Guid = Guid.Parse(e.CommandArgument.ToString())
+                Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(uniqueIdProtocol)
                 Dim previousOwner As String = currentProtocol.RegistrationUser
                 currentProtocol.RegistrationUser = DocSuiteContext.Current.User.FullUserName
                 Facade.ProtocolFacade.Update(currentProtocol)
@@ -577,20 +593,21 @@ Partial Public Class uscProtGrid
                 grdProtocols.DataBindFinder()
 
             Case "Redo"
-                Dim ynck As YearNumberCompositeKey = GetHiddenId(e.CommandArgument)
-
-                Dim parameters As String = CommonShared.AppendSecurityCheck(String.Format("Action=Redo&Year={0}&Number={1}&Type=Prot", ynck.Year, ynck.Number))
-                RedirectOnPage("../Prot/ProtInserimento.aspx?" & parameters)
+                Dim uniqueIdProtocol As Guid = Guid.Parse(e.CommandArgument.ToString())
+                Dim parameters As String = CommonShared.AppendSecurityCheck($"Action=Redo&UniqueId={uniqueIdProtocol}&Type=Prot")
+                RedirectOnPage($"~/Prot/ProtInserimento.aspx?{parameters}")
 
             Case "ViewProtocol"
                 ' TODO: questo codice dovrebbe stare nella pagina, non nel controllo
                 Select Case BasePage.Action
                     Case "CopyProtocolDocuments", "Fasc", "Resl"
-                        AjaxManager.ResponseScripts.Add(String.Format("CloseWindow('{0}');", e.CommandArgument))
+                        Dim uniqueIdProtocol As Guid = Guid.Parse(e.CommandArgument.ToString())
+                        Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(uniqueIdProtocol)
+                        AjaxManager.ResponseScripts.Add(String.Format("CloseWindow('{0}|{1}');", currentProtocol.Year, currentProtocol.Number))
 
                     Case Else
-                        Dim ynck As YearNumberCompositeKey = GetHiddenId(e.CommandArgument)
-                        RedirectOnPage("../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}&Type=Prot", ynck.Year, ynck.Number)))
+                        Dim uniqueIdProtocol As Guid = Guid.Parse(e.CommandArgument.ToString())
+                        RedirectOnPage($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={uniqueIdProtocol}&Type=Prot")}")
                 End Select
 
         End Select
@@ -601,17 +618,26 @@ Partial Public Class uscProtGrid
 #Region " Methods "
 
     Private Sub InitializeColumns()
-        ColumnNoteVisible = False
         If Not DocSuiteContext.Current.IsProtocolEnabled Then
             Exit Sub
         End If
 
+        ColumnProtocolRegistrationUserVisible = False
+        ColumnHighlightNoteVisible = False
+        ColumnHighlightRegistrationUserVisible = False
+        ColumnProtocolSectionalVisible = False
+        ColumnInvoiceNumberVisible = False
+        ColumnAccountingNumberVisible = False
+        ColumnInvoiceYearVisible = False
+
         If Not DocSuiteContext.Current.ProtocolEnv.IsLogStatusEnabled Then
             ColumnHasReadVisible = False
         End If
+
         If Not DocSuiteContext.Current.ProtocolEnv.IsSearchContactEnabled Then
             ColumnProtocolContactVisible = False
         End If
+
         If Not DocSuiteContext.Current.ProtocolEnv.IsStatusEnabled Then
             ColumnProtocolStatusVisible = False
         End If
@@ -623,6 +649,7 @@ Partial Public Class uscProtGrid
             col.Visible = True
             col.HeaderImageUrl = ImagePath.SmallDocumentSignature
         End If
+
         If DocSuiteContext.Current.ProtocolEnv.SimplifiedProtocolGridResultEnabled AndAlso
             (BasePage.Action.Eq("CopyProtocolDocuments") OrElse BasePage.Action.Eq("Fasc") OrElse BasePage.Action.Eq("Resl")) Then
             ColumnHasReadVisible = False
@@ -632,10 +659,6 @@ Partial Public Class uscProtGrid
             ColumnPARERDescriptionVisible = False
         End If
 
-        ColumnProtocolSectionalVisible = False
-        ColumnInvoiceNumberVisible = False
-        ColumnAccountingNumberVisible = False
-        ColumnInvoiceYearVisible = False
         If DocSuiteContext.Current.ProtocolEnv.IsInvoiceDataGridResultEnabled Then
             ColumnProtocolSectionalVisible = True
             ColumnInvoiceNumberVisible = True
@@ -651,6 +674,9 @@ Partial Public Class uscProtGrid
                 End If
             Next
             grdProtocols.Rebind()
+            _protocolContactLabelsDictionary = Nothing
+            _protocolRightsDictionary = Nothing
+            _gridDataSource = Nothing
         End If
     End Sub
 
@@ -692,33 +718,38 @@ Partial Public Class uscProtGrid
         If String.IsNullOrEmpty(privacyObject) Then
             Return protocolObject
         Else
-            Dim pr As ProtocolRights = protocolRightsDictionary(header.ProtocolCompositeKey)
+            Dim pr As ProtocolRights = protocolRightsDictionary(header.UniqueId)
             If pr IsNot Nothing AndAlso pr.IsPreviewable Then
                 Return protocolObject
             End If
             Return privacyObject
         End If
     End Function
+
+    Public Shared Function GetParerStatusIcon(status As ProtocolParerConservationStatus) As String
+        Select Case status
+            Case ProtocolParerConservationStatus.Correct
+                Return "../Comm/images/parer/green.png"
+            Case ProtocolParerConservationStatus.Warning
+                Return "../Comm/images/parer/yellow.png"
+            Case ProtocolParerConservationStatus.Error
+                Return "../Comm/images/parer/red.png"
+            Case ProtocolParerConservationStatus.Undefined
+                Return "../Comm/images/parer/lightgray.png"
+            Case ProtocolParerConservationStatus.NotNeeded
+                Return "../Comm/images/parer/lightgray.png"
+        End Select
+        Return "../Comm/images/parer/lightgray.png"
+    End Function
+
     Private Function getHeaderImageUrl(header As ProtocolHeader, discriminator As String) As String
         Select Case discriminator
             Case "ParerIcon"
                 If DocSuiteContext.Current.ProtocolEnv.ParerEnabled Then
-                    If header.HasParer Then
-                        Select Case Facade.ProtocolParerFacade.GetConservationStatus(header.ProxiedProtocolParer)
-                            Case ProtocolParerFacade.ProtocolParerConservationStatus.Correct
-                                Return "../Comm/images/parer/green.png"
-                            Case ProtocolParerFacade.ProtocolParerConservationStatus.Warning
-                                Return "../Comm/images/parer/yellow.png"
-                            Case ProtocolParerFacade.ProtocolParerConservationStatus.Error
-                                Return "../Comm/images/parer/red.png"
-                            Case ProtocolParerFacade.ProtocolParerConservationStatus.Undefined
-                                Return "../Comm/images/parer/lightgray.png"
-                        End Select
-                    End If
-                    Return "../Comm/images/parer/lightgray.png"
+                    Dim status As ProtocolParerConservationStatus = GetConservationStatus(header.ProxiedProtocolParer)
+                    Return GetParerStatusIcon(status)
                 End If
                 Return String.Empty
-
             Case "ViewDocuments"
                 Dim icon As String
                 If header.IdStatus = ProtocolStatusId.Incompleto Then
@@ -758,21 +789,18 @@ Partial Public Class uscProtGrid
                 If BasePage.Action.Eq("Fasc") OrElse BasePage.Action.Eq("Resl") Then
                     Return String.Empty
                 End If
-                Dim parameters As String = "Year={0}&Number={1}&Type={2}"
-                parameters = String.Format(parameters, header.Year, header.Number, "Prot")
-
-                Return "~/Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(parameters)
+                Dim parameters As String = $"UniqueId={header.UniqueId}&Type=Prot"
+                Return $"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck(parameters)}"
 
             Case "ViewDocuments"
                 ' Verifico permessi di lettura per la visualizzazione selezionata.
-                Dim protocolRights As ProtocolRights = protocolRightsDictionary.Item(header.ProtocolCompositeKey)
+                Dim protocolRights As ProtocolRights = protocolRightsDictionary.Item(header.UniqueId)
                 If Not protocolRights.IsDocumentReadable Then
                     Return String.Empty
                 End If
 
-                Dim parameters As String = "Year={0}&Number={1}&Type={2}"
-                parameters = String.Format(parameters, header.Year, header.Number, "Prot")
-                Return "~/Viewers/ProtocolViewer.aspx?" & CommonShared.AppendSecurityCheck(parameters)
+                Dim parameters As String = $"UniqueId={header.UniqueId}&Type=Prot"
+                Return $"~/Viewers/ProtocolViewer.aspx?{CommonShared.AppendSecurityCheck(parameters)}"
 
             Case Else
                 Return String.Empty
@@ -782,7 +810,7 @@ Partial Public Class uscProtGrid
     Private Function getHeaderClientScript(header As ProtocolHeader, discriminator As String) As String
         Select Case discriminator
             Case "ViewDocuments"
-                Dim protocolRights As ProtocolRights = protocolRightsDictionary.Item(header.ProtocolCompositeKey)
+                Dim protocolRights As ProtocolRights = protocolRightsDictionary.Item(header.UniqueId)
                 If Not protocolRights.IsDocumentReadable Then
                     Dim script As String = "alert('Protocollo: {0}\nDiritti insufficienti per la visualizzazione del documento.'); return false;"
                     script = String.Format(script, header.FullProtocolNumber)
@@ -792,8 +820,8 @@ Partial Public Class uscProtGrid
 
             Case "ViewParerDetail"
                 If DocSuiteContext.Current.ProtocolEnv.ParerEnabled AndAlso header.HasParer Then
-                    Dim script As String = "return OpenParerDetail('{0}?Type=Prot&Year={1}&Number={2}');"
-                    script = String.Format(script, ResolveUrl("~/Prot/ProtParerDetail.aspx"), header.Year, header.Number)
+                    Dim script As String = "return OpenParerDetail('{0}?Type=Prot&UniqueId={1}');"
+                    script = String.Format(script, ResolveUrl("~/Prot/ProtParerDetail.aspx"), header.UniqueId)
                     Return script
                 End If
                 Return "return false;"
@@ -814,8 +842,8 @@ Partial Public Class uscProtGrid
         Select Case discriminator
             Case COLUMN_PROTOCOL_CONTACT
                 If protocolContactLabelsDictionary IsNot Nothing AndAlso protocolContactLabelsDictionary.Keys IsNot Nothing _
-                                       AndAlso header IsNot Nothing AndAlso protocolContactLabelsDictionary.Keys.Contains(header.ProtocolCompositeKey) Then
-                    Return protocolContactLabelsDictionary.Item(header.ProtocolCompositeKey).Replace("|"c, " ")
+                                       AndAlso header IsNot Nothing AndAlso protocolContactLabelsDictionary.Keys.Contains(header.UniqueId) Then
+                    Return protocolContactLabelsDictionary.Item(header.UniqueId).Replace("|"c, " ")
                 End If
                 Return "MANCANTE!"
             Case COLUMN_CATEGORY_NAME
@@ -863,11 +891,6 @@ Partial Public Class uscProtGrid
             DirectCast(column, GridBoundColumn).DataField = dataField
         End If
     End Sub
-
-    Private Function GetHiddenId(ByVal commandArgument As Object) As YearNumberCompositeKey
-        Dim split As String() = commandArgument.ToString().Split("|"c)
-        Return New YearNumberCompositeKey(Short.Parse(split(0)), Integer.Parse(split(1)))
-    End Function
 
 #End Region
 

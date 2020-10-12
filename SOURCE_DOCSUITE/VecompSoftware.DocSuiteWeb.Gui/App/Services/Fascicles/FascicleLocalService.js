@@ -2,7 +2,7 @@ define(["require", "exports", "App/Helpers/GuidHelper"], function (require, expo
     var FascicleLocalService = /** @class */ (function () {
         function FascicleLocalService() {
         }
-        FascicleLocalService.prototype.insertFascicle = function (model, callback, error) {
+        FascicleLocalService.prototype.insertFascicle = function (model, actionType, callback, error) {
             model.UniqueId = Guid.newGuid();
             if (callback) {
                 callback(model);
@@ -29,7 +29,7 @@ define(["require", "exports", "App/Helpers/GuidHelper"], function (require, expo
         FascicleLocalService.prototype.getLinkedFascicles = function (model, qs, callback, error) {
             throw new Error("Method not implemented.");
         };
-        FascicleLocalService.prototype.getFascicleByCategory = function (idCategory, name, callback, error) {
+        FascicleLocalService.prototype.getFascicleByCategory = function (idCategory, name, hasProcess, callback, error) {
             throw new Error("Method not implemented.");
         };
         return FascicleLocalService;

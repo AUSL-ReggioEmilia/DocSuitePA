@@ -1,5 +1,4 @@
 ﻿<%@ Page Language="vb" AutoEventWireup="false" Inherits="VecompSoftware.DocSuiteWeb.Gui.TbltContenitori" CodeBehind="TbltContenitori.aspx.vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="Gestione Contenitori" %>
-
 <%@ Register Src="~/UserControl/uscContainerExtGes.ascx" TagName="ContainerExtGes" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscContainerDossierOptions.ascx" TagName="uscContainerDossierOptions" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscContainerConstraintOptions.ascx" TagName="uscContainerConstraintOptions" TagPrefix="usc" %>
@@ -16,6 +15,8 @@
             require(["Tblt/TbltContenitori"], function (TbltContenitori) {
                 $(function () {
                     tbltContenitori = new TbltContenitori(tenantModelConfiguration.serviceConfiguration);
+                    tbltContenitori.active = "<% = active.Checked %>";
+
                     tbltContenitori.initialize();
                 });
             });
@@ -59,7 +60,7 @@
             }
 
             //Apre la finestra di selezione Gruppi
-            function OpenGroupsWindow(name) {
+            function OpenGroupsWindow(name, env) {
                 var treeView = $find("<%= rtvContainers.ClientID%>");
 
                 var selectedNode = treeView.get_selectedNode();
@@ -69,6 +70,11 @@
                 if (nodeType === "Group") {
                     url += "&GroupName=" + selectedNode.get_text();
                 }
+
+                env = !env ? "" : env;
+
+                url += "&Environment=" + env;
+                url += "&Active=" + tbltContenitori.active;
 
                 return OpenWindow(url, name, WIDTH_EDIT_WINDOW, 500);
             }
@@ -100,11 +106,14 @@
                 return false;
             }
 
+            
+
             // Chiamata dopo la chiusura della finestra di modifica di un contenitore
             function CloseEdit(sender, args) {
                 if (args.get_argument() !== null) {
                     UpdateGroups(args.get_argument());
                 }
+                
             }
 
             function CloseGroup(sender, args) {
@@ -190,15 +199,15 @@
                 </telerik:RadToolBar>
                         <telerik:RadToolBar EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%" RenderMode="Lightweight">
                             <Items>
-                                <telerik:RadToolBarButton ToolTip="Aggiungi" Value="create" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
-                                <telerik:RadToolBarButton ToolTip="Modifica" Enabled="false" Value="modify" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
-                                <telerik:RadToolBarButton ToolTip="Elimina" Enabled="false" Value="delete" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
-                                <telerik:RadToolBarButton ToolTip="Stampa" Enabled="false" Value="print" ImageUrl="~/App_Themes/DocSuite2008/imgset16/printer.png" />
-                                <telerik:RadToolBarButton ToolTip="Recupera" Enabled="false" Value="recover" ImageUrl="~/App_Themes/DocSuite2008/imgset16/view_history.png" />
-                                <telerik:RadToolBarButton ToolTip="Gruppi" Enabled="false" Value="modifica" ImageUrl="~/App_Themes/DocSuite2008/imgset16/GroupMembers.png" />
-                                <telerik:RadToolBarButton ToolTip="Log" Value="log" ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_log.png" />
-                                <telerik:RadToolBarButton ToolTip="Parametri" Value="properties" ImageUrl="~/App_Themes/DocSuite2008/imgset16/property.png" />
-                                <telerik:RadToolBarButton ToolTip="Opzioni" Enabled="false" Value="option" ImageUrl="~/App_Themes/DocSuite2008/imgset16/option.png" />
+                                <telerik:RadToolBarButton ToolTip="Aggiungi" Value="create" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+                                <telerik:RadToolBarButton ToolTip="Modifica" Enabled="false" Value="modify" Text="Modifica" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+                                <telerik:RadToolBarButton ToolTip="Elimina" Enabled="false" Value="delete" Text="Elimina" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
+                                <telerik:RadToolBarButton ToolTip="Gruppi" Enabled="false" Value="modifica" Text="Gruppi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/GroupMembers.png" />
+                                <telerik:RadToolBarButton ToolTip="Opzioni" Enabled="false" Value="option" Text="Opzioni" ImageUrl="~/App_Themes/DocSuite2008/imgset16/option.png" />
+                                <telerik:RadToolBarButton ToolTip="Parametri" Value="properties" Text="Parametri" ImageUrl="~/App_Themes/DocSuite2008/imgset16/property.png" />
+                                <telerik:RadToolBarButton ToolTip="Recupera" Enabled="false" Value="recover" Text="Recupera" ImageUrl="~/App_Themes/DocSuite2008/imgset16/view_history.png" />
+                                <telerik:RadToolBarButton ToolTip="Stampa" Enabled="false" Value="print" Text="Stampa" ImageUrl="~/App_Themes/DocSuite2008/imgset16/printer.png" />
+                                <telerik:RadToolBarButton ToolTip="Log" Value="log" Text="Log" ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_log.png" />
                             </Items>
                         </telerik:RadToolBar>
 
@@ -227,10 +236,6 @@
                                                         <b>Note:</b>
                                                         <asp:Label ID="lblContainerNote" runat="server"></asp:Label>
                                                     </div>
-                                                    <asp:Panel CssClass="col-dsw-10" ID="pnlSecureDocument" runat="server">
-                                                        <b>Securizzazione documenti:</b>
-                                                        <asp:Label ID="lblSecureDocumentEnabled" runat="server"></asp:Label>
-                                                    </asp:Panel>
                                                     <asp:Panel CssClass="col-dsw-10" ID="pnlPrivacy" runat="server">
                                                         <b><%= PrivacyLabelTitle %>:</b>
                                                         <asp:Label ID="lblIsPrivacy" runat="server"></asp:Label>

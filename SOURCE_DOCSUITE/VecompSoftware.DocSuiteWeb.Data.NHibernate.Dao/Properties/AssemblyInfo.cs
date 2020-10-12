@@ -1,12 +1,13 @@
-﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyConfiguration("release")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2019")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyMetadata("tags", "VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao")]
@@ -17,5 +18,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("cabefd4f-db49-4dc3-85dd-eef31dc32e0c")]
 
-[assembly: AssemblyVersion("8.88.0.0")]
-[assembly: AssemblyFileVersion("8.88.0.0")]
+[assembly: AssemblyVersion("9.09.20286.02")]
+[assembly: AssemblyFileVersion("9.09.20286.02")]

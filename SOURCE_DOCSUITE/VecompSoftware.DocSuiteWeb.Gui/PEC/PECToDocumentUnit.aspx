@@ -73,9 +73,9 @@
                 require(["PEC/PECToDocumentUnit"], function (PECToDocumentUnit) {
                     pecToDocumentUnit = new PECToDocumentUnit(tenantModelConfiguration.serviceConfiguration);
                     Initialize();
-
                     pecToDocumentUnit.initialize();
                     pecToDocumentUnit.radioButton_OnClick();
+
                     setResizeSensors();
                 });
 

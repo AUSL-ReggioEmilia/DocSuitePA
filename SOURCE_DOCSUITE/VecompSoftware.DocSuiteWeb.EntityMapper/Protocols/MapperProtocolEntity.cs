@@ -38,7 +38,7 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Protocols
                 throw new ArgumentException("Impossibile trasformare Protocol se l'entità non è inizializzata");
 
             APIProtocol.Protocol apiProtocol = new APIProtocol.Protocol();
-            apiProtocol.UniqueId = entity.UniqueId;
+            apiProtocol.UniqueId = entity.Id;
             apiProtocol.Year = entity.Year;
             apiProtocol.Number = entity.Number;
             apiProtocol.Object = entity.ProtocolObject;

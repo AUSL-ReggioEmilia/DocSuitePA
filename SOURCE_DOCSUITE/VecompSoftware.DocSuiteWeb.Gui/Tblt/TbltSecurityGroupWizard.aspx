@@ -2,7 +2,6 @@
     MasterPageFile="~/MasterPages/DocSuite2008.Master" %>
 
 <%@ Register TagPrefix="usc" TagName="uscGroupDetails" Src="~/UserControl/uscGroupDetails.ascx" %>
-<%@ Register Src="../UserControl/uscSettori.ascx" TagName="uscSettori" TagPrefix="uc3" %>
 
 <asp:Content ContentPlaceHolderID="cphHeader" runat="server">
     <telerik:RadScriptBlock runat="server" EnableViewState="false">
@@ -18,6 +17,22 @@
                 currentUpdatedControl = "<%= pnlMain.ClientID%>";
                 currentLoadingPanel.hide(currentUpdatedControl);
             }
+
+            function RadTreeGroups_NodeClicking(sender, args) {
+                let nodeType = args.get_node().get_attributes().getAttribute("NodeType");
+
+                if (nodeType !== "SecurityGroup") {
+                    args.set_cancel(true);
+                } 
+            }
+
+            function RadTreeGroups_NodeChecking(sender, args) {
+                let nodeIsDefaultChecked = args.get_node().get_attributes().getAttribute("DefaultChecked");
+
+                if (nodeIsDefaultChecked) {
+                    args.set_cancel(true);
+                }
+            }
         </script>
     </telerik:RadScriptBlock>
 
@@ -27,49 +42,47 @@
 
     <asp:Panel ID="pnlMain" runat="server" Height="100%">
         <telerik:RadSplitter runat="server" ID="Splitter1" Width="100%" Height="100%">
-            <telerik:RadPane runat="server" ID="Pane1">
-                <telerik:RadToolBar RenderMode="Lightweight" EnableRoundedCorners="false" ID="ToolBarSearchConfig" OnButtonClick="ToolBarSearch_ButtonClick" runat="server" Width="100%">
+            <telerik:RadPane runat="server" ID="TreeViewPane">
+                <telerik:RadToolBar RenderMode="Lightweight" 
+                                    EnableRoundedCorners="false" 
+                                    ID="SearchToolbar" 
+                                    runat="server" Width="100%">
                     <Items>
-                        <telerik:RadToolBarButton Value="btnConfigs">
+                        <telerik:RadToolBarButton Value="searchBtn">
                             <ItemTemplate>
-                                <label>Gruppi configurati su:</label>
-                                <telerik:RadComboBox runat="server" ID="rcbConfigType" AutoPostBack="true" OnSelectedIndexChanged="rcbConfigType_SelectedIndexChanged" />                                
+                                <telerik:RadTextBox ID="searchInput" 
+                                                    Placeholder="Cerca..." 
+                                                    runat="server" 
+                                                    Width="200px"></telerik:RadTextBox>
                             </ItemTemplate>
                         </telerik:RadToolBarButton>
-                         <telerik:RadToolBarButton IsSeparator="true" />
-                                <telerik:RadToolBarButton Text="Cerca" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
+                        <telerik:RadToolBarButton IsSeparator="true" />
+                        <telerik:RadToolBarButton Text="Cerca" CommandName="search" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
                     </Items>
                 </telerik:RadToolBar>
-                <telerik:RadToolBar RenderMode="Lightweight" EnableRoundedCorners="false" ID="ToolBarSearchContainer" runat="server" Width="100%">
-                    <Items>
-                        <telerik:RadToolBarButton Value="btnContainers">
-                            <ItemTemplate>
-                                <telerik:RadComboBox runat="server" ID="rcbContainer" AllowCustomText="true" Filter="Contains" AutoPostBack="true" Width="300px" EnableVirtualScrolling="true" DropDownHeight="200px" DataTextField="Name" DataValueField="Id" />
-                            </ItemTemplate>
-                        </telerik:RadToolBarButton>
-                    </Items>
-                </telerik:RadToolBar>
-                <telerik:RadToolBar RenderMode="Lightweight" EnableRoundedCorners="false" ID="ToolBarSearchRole" runat="server" Width="100%">
-                    <Items>
-                        <telerik:RadToolBarButton Value="btnRolesUsc" Width="100%">
-                            <ItemTemplate>
-                                <telerik:RadComboBox runat="server" ID="rcbRole" AllowCustomText="true" Filter="Contains" AutoPostBack="true" Width="300px" EnableVirtualScrolling="true" DropDownHeight="200px" DataTextField="Name" DataValueField="id" />
-                            </ItemTemplate>
-                        </telerik:RadToolBarButton>
-                    </Items>
-                </telerik:RadToolBar>
-                <telerik:RadTreeView ID="RadTreeGroups" runat="server" CheckBoxes="True" Height="90%" Width="100%">
-                    <Nodes>
-                        <telerik:RadTreeNode Expanded="true" runat="server" Text="Gruppi" Checkable="false"/>
-                    </Nodes>
-                </telerik:RadTreeView>
+                <telerik:RadTreeView ID="RadTreeGroups" OnClientNodeClicking="RadTreeGroups_NodeClicking" 
+                                     OnClientNodeChecking="RadTreeGroups_NodeChecking"
+                                     runat="server" LoadingMessage="" LoadingStatusPosition="BeforeNodeText"
+                                     CheckBoxes="True" Height="90%" Width="100%" />
             </telerik:RadPane>
 
             <telerik:RadSplitBar runat="server" ID="Bar1" />
 
             <telerik:RadPane runat="server">
-                <asp:Panel runat="server" ID="pnlGroupDetails" Height="100%">
+                <asp:Panel runat="server" ID="pnlGroupDetails" Height="100%" Visible="false">
                     <usc:uscGroupDetails runat="server" ID="groupDetails" />
+                    <telerik:RadPanelBar runat="server" AllowCollapseAllItems="true" Width="100%" ID="rpbGroups">
+                        <Items>
+                            <telerik:RadPanelItem Value="rpiGroupDetails" Text="Impostazioni di sicurezza" Expanded="true" runat="server">
+                                <ContentTemplate>
+                                    <telerik:RadSplitter runat="server" ID="grpSplitter" Width="100%">
+                                        <telerik:RadPane runat="server" ID="groupDetailsPane" ShowContentDuringLoad="false">
+                                        </telerik:RadPane>
+                                    </telerik:RadSplitter>
+                                </ContentTemplate>
+                            </telerik:RadPanelItem>
+                        </Items>
+                    </telerik:RadPanelBar>
                 </asp:Panel>
             </telerik:RadPane>
         </telerik:RadSplitter>

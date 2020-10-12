@@ -16,7 +16,7 @@ Namespace Viewers.Handlers
         Private ReadOnly Property CurrentProtocol As Protocol
             Get
                 If _currentProtocol Is Nothing AndAlso UniqueId.HasValue Then
-                    _currentProtocol = FacadeFactory.ProtocolFacade.GetByUniqueId(UniqueId.Value)
+                    _currentProtocol = FacadeFactory.ProtocolFacade.GetById(UniqueId.Value)
                 End If
                 Return _currentProtocol
             End Get

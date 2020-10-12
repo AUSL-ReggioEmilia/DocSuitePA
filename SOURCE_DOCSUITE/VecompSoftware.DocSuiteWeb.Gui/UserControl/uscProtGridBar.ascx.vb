@@ -6,9 +6,14 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports Telerik.Web.UI
+Imports System.Web.Services
 
 Partial Public Class uscProtGridBar
     Inherits BaseGridBar
+
+#Region " Fields "
+    Private changeContainerFunctionality As Boolean = False
+#End Region
 
 #Region " Properties "
 
@@ -41,16 +46,22 @@ Partial Public Class uscProtGridBar
             Return btnSelectAll
         End Get
     End Property
+
     Public ReadOnly Property SetAssignButton() As Button
         Get
             Return btnAssign
         End Get
     End Property
 
-
     Public Overrides ReadOnly Property SetReadButton() As Button
         Get
             Return btnSetRead
+        End Get
+    End Property
+
+    Public ReadOnly Property ChangeContainerButton() As Button
+        Get
+            Return btnChangeContainer
         End Get
     End Property
 
@@ -78,8 +89,10 @@ Partial Public Class uscProtGridBar
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         Initialize()
+        If changeContainerFunctionality Then
+            InitializeChangeContainerDialog()
+        End If
     End Sub
-
 
     Protected Overrides Sub SelectOrDeselectAll(ByVal Selected As Boolean)
         Dim count As Int32 = 0
@@ -120,7 +133,7 @@ Partial Public Class uscProtGridBar
         For Each item As GridDataItem In _grid.Items.Cast(Of GridDataItem)().Where(Function(i) GetChecked(i))
             uniqueId = GetProtocolUniqueId(item)
             If uniqueId.HasValue Then
-                protocol = FacadeFactory.Instance.ProtocolFacade.GetByUniqueId(uniqueId.Value)
+                protocol = FacadeFactory.Instance.ProtocolFacade.GetById(uniqueId.Value)
                 protocolRights = New ProtocolRights(protocol)
                 If protocolRights.IsEditable OrElse protocolRights.IsEditableAttachment.GetValueOrDefault(False) Then
                     allKeys.Add(uniqueId.Value)
@@ -141,14 +154,14 @@ Partial Public Class uscProtGridBar
         Dim statusCancel As Boolean
         Dim autorizza As Boolean
         ' Registro il log di visualizzazione dei documenti
-        For Each yearNumberId As YearNumberCompositeKey In GetSelectedItems()
-            currentProtocol = Facade.ProtocolFacade.GetById(yearNumberId)
+        For Each uniqueIdProtocol As Guid In GetSelectedItems()
+            currentProtocol = Facade.ProtocolFacade.GetById(uniqueIdProtocol)
             statusCancel = currentProtocol.IdStatus.GetValueOrDefault(ProtocolStatusId.Attivo) = ProtocolStatusId.Annullato
             autorizza = New ProtocolRights(currentProtocol, statusCancel).IsDocumentReadable
 
             If autorizza Then
-                Facade.ProtocolLogFacade.Insert(yearNumberId.Year.Value, yearNumberId.Number.Value, "PD", "Visualizzazione documento da MultiCatena", DocSuiteContext.Current.User.FullUserName)
-                selection.Add(currentProtocol.UniqueId)
+                Facade.ProtocolLogFacade.Insert(currentProtocol.Year, currentProtocol.Number, "PD", "Visualizzazione documento da MultiCatena", DocSuiteContext.Current.User.FullUserName)
+                selection.Add(currentProtocol.Id)
             End If
         Next
 
@@ -165,7 +178,7 @@ Partial Public Class uscProtGridBar
 
     Private Sub btnExport_Click(ByVal sender As Object, ByVal e As EventArgs)
 
-        Dim listID As IList(Of YearNumberCompositeKey) = CType(GetSelectedItems(), List(Of YearNumberCompositeKey))
+        Dim listID As IList(Of Guid) = CType(GetSelectedItems(), List(Of Guid))
 
         Session("ExportStartDate") = DateTime.Now
         Dim resultsErrorString As String = CommExport.InitializeExportTask(listID)
@@ -183,12 +196,98 @@ Partial Public Class uscProtGridBar
         If e.Argument.Eq("E") Then
             WindowBuilder.LoadWindow("windowExportError", String.Format("../Prot/ProtExportResult.aspx?Data={0}&Module=BiblosDSExtract", Session("ExportStartDate")))
             Session.Remove("ExportStartDate")
+            'Return New List(Of Integer) From {1, 2, 3}
+        ElseIf e.Argument.StartsWith("updateProtocolContainer") Then
+
+            Dim protocolIds As IList(Of Guid) = CType(GetSelectedItems(), IList(Of Guid))
+
+            If protocolIds.Count = 0 Then
+                AjaxManager.Alert("No protocols selected")
+                Return
+            End If
+
+            Dim containerIdStr As String = e.Argument.Split(","c).Last()
+
+            Dim selectedContainerId As Integer = -1
+            Integer.TryParse(containerIdStr, selectedContainerId)
+
+            If selectedContainerId = -1 Then
+                'this will not likely happen
+                AjaxManager.Alert("Seleziona un contenitore valido")
+                Return
+            End If
+
+            Dim targetContainer As Container = Facade.ContainerFacade.GetById(selectedContainerId)
+
+            If targetContainer Is Nothing Then
+                Throw New Exception($"Could not find container with id {selectedContainerId}")
+            End If
+
+            For Each protocolId As Guid In protocolIds
+                Dim protocol As Protocol = Facade.ProtocolFacade.GetById(protocolId)
+
+                Dim protocolRights As ProtocolRights = New ProtocolRights(protocol)
+
+                If (protocol.Container IsNot Nothing AndAlso protocol.Container.Id = selectedContainerId) Then
+                    'protocol already has this container selected
+                    Continue For
+                End If
+
+                If protocolRights.IsEditable Then
+                    Dim newContainerMsg As String = $"{targetContainer.Id} ({targetContainer.Name})"
+                    Dim oldContainerMsg As String = String.Empty
+                    If protocol.Container IsNot Nothing Then
+                        oldContainerMsg = String.Format("{0} ({1})", protocol.Container.Id, protocol.Container.Name)
+                    End If
+
+                    protocol.Container = targetContainer
+
+                    Facade.ProtocolFacade.Update(protocol)
+                    Facade.ProtocolFacade.SendUpdateProtocolCommand(protocol)
+                    CreateFieldChangeLog(protocol, "Contenitore", oldContainerMsg, newContainerMsg)
+                End If
+
+            Next
+
+            'always rebind to refresh checkbox events
+            _grid.Rebind()
         End If
     End Sub
+
 
 #End Region
 
 #Region " Methods "
+
+    Private Sub InitializeChangeContainerDialog()
+
+        Dim availableContainers As IList(Of Container) = Facade.ContainerFacade.GetContainers(DSWEnvironment.Protocol, ProtocolContainerRightPositions.Insert, True)
+
+        If availableContainers.Count = 0 Then
+            'if there are no containers the button remains disabled and no checkbox events are added to enable it
+            Return
+        End If
+
+        AjaxManager.ResponseScripts.Add("changeContainer.addCheckboxEvents();")
+
+        For Each avCont As Container In availableContainers
+            ddlContainers.Items.Add(New RadComboBoxItem(avCont.Name, avCont.Id.ToString()))
+        Next
+
+        btnChangeContainer.OnClientClick = $"changeContainer.showContainerChangeDialog();return false;"
+
+        'preinitialize value of hidden field
+        hfSelectedContainer.Value = availableContainers(0).Id.ToString()
+    End Sub
+
+    Private Sub CreateFieldChangeLog(ByRef protocol As Protocol, ByVal message As String, ByVal oldValue As String, ByVal newValue As String)
+        If oldValue.Eq(newValue) Then
+            Exit Sub
+        End If
+
+        Facade.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.PM, message & " (old): " & oldValue)
+        Facade.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.PM, message & " (new): " & newValue)
+    End Sub
 
     Protected Overrides Sub InitializeAjaxSettings()
         MyBase.InitializeAjaxSettings()
@@ -199,6 +298,7 @@ Partial Public Class uscProtGridBar
         WindowBuilder.RegisterWindowManager(RadWindowManager)
         WindowBuilder.RegisterOpenerElement(btnExport)
         WindowBuilder.RegisterOpenerElement(AjaxManager)
+
     End Sub
 
     Protected Overrides Sub AttachEvents()
@@ -213,10 +313,12 @@ Partial Public Class uscProtGridBar
         LogDescription = "Marcato come già letto"
         SetReadFunction = New SetReadDelegate(AddressOf Facade.ProtocolLogFacade.Insert)
     End Sub
+
     Private Function GetChecked(item As GridDataItem) As Boolean
         Dim chk As CheckBox = CType(item("colClientSelect").Controls(1), CheckBox)
         Return chk IsNot Nothing AndAlso chk.Checked
     End Function
+
     Private Function GetProtocolUniqueId(item As GridDataItem) As Guid?
         Dim hf_protocol_unique As HiddenField = CType(item.FindControl("hf_protocol_unique"), HiddenField)
         Dim uniqueId As Guid = Guid.Empty
@@ -227,9 +329,9 @@ Partial Public Class uscProtGridBar
     End Function
 
     Public Overrides Function GetSelectedItems() As IList
-        Dim ids As New List(Of YearNumberCompositeKey)
+        Dim ids As New List(Of Guid)
 
-        For Each item As Telerik.Web.UI.GridDataItem In _grid.Items
+        For Each item As GridDataItem In _grid.Items
             Dim cb As CheckBox = DirectCast(item.FindControl("cbSelect"), CheckBox)
             If Not cb.Checked Then
                 Continue For
@@ -240,11 +342,7 @@ Partial Public Class uscProtGridBar
                 Continue For
             End If
 
-            Dim yn As New YearNumberCompositeKey()
-            yn.Year = Mid(lb.CommandArgument, 1, InStr(lb.CommandArgument, "|") - 1)
-            yn.Number = Mid(lb.CommandArgument, InStr(lb.CommandArgument, "|") + 1)
-            ' Verifico i diritti di visualizzazione
-            ids.Add(yn)
+            ids.Add(GetProtocolUniqueId(item).Value)
         Next
 
         Return ids
@@ -257,7 +355,7 @@ Partial Public Class uscProtGridBar
 
     Protected Overrides Sub Print()
         Dim protocolprint As New ProtocolPrint()
-        protocolprint.ListId = GetSelectedItems()
+        protocolprint.ListId = CType(GetSelectedItems(), List(Of Guid))
         Session.Add("Printer", protocolprint)
         Response.Redirect("..\Comm\CommPrint.aspx?Type=Prot&PrintName=Protocol")
     End Sub
@@ -282,6 +380,31 @@ Partial Public Class uscProtGridBar
         If Not String.IsNullOrEmpty(DocSuiteContext.Current.ProtocolEnv.ExportPath) Then
             ExportButton.Visible = True
         End If
+    End Sub
+
+    Public Sub InitializeChangeContainerFunctionality()
+        ChangeContainerButton.Visible = True
+        changeContainerFunctionality = True
+    End Sub
+
+    Protected Overrides Sub SetReadedSelectedItems()
+        Dim selected As Boolean = False
+        Dim errorMessage As String = String.Empty
+
+        Dim listId As IList(Of Guid) = CType(GetSelectedItems(), IList(Of Guid))
+        Try
+            Dim protocol As Protocol
+            For Each key As Guid In listId
+                protocol = Facade.ProtocolFacade.GetById(key)
+                SetReadFunction()(protocol.Year, protocol.Number, LogType, LogDescription)
+                selected = True
+            Next
+        Catch ex As Exception
+            errorMessage = "Errore durante la segnature come già letti"
+            selected = False
+        End Try
+
+        SendSetReadEvent(selected, errorMessage)
     End Sub
 
 #End Region

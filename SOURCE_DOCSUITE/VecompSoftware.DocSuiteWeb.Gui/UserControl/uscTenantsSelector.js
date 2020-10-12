@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "PEC/PECInvoiceBase", "App/DTOs/TenantSearchFilterDTO"], function (require, exports, PECInvoiceBase, TenantSearchFilterDTO) {
+define(["require", "exports", "PEC/PECInvoiceBase"], function (require, exports, PECInvoiceBase) {
     var uscTenantsSelector = /** @class */ (function (_super) {
         __extends(uscTenantsSelector, _super);
         function uscTenantsSelector(serviceConfigurations) {
@@ -44,15 +44,14 @@ define(["require", "exports", "PEC/PECInvoiceBase", "App/DTOs/TenantSearchFilter
             this._cmbSelectPecMailBox.add_selectedIndexChanged(this.cmbSelectPecMailBox_onClick);
             this._cmbWorkflowRepositories = $find(this.cmbWorkflowRepositoriesId);
             this._cmbWorkflowRepositories.add_selectedIndexChanged(this._cmbWorkflowRepositories_onClick);
-            var searchDTO = new TenantSearchFilterDTO();
-            this.loadResults(searchDTO);
+            this.loadResults();
             this._cmbSelectPecMailBox.disable();
             this._cmbWorkflowRepositories.disable();
         };
-        uscTenantsSelector.prototype.loadResults = function (searchDTO) {
+        uscTenantsSelector.prototype.loadResults = function () {
             var _this = this;
             var comboItem = null;
-            this._tenantService.getTenants(searchDTO, function (data) {
+            this._tenantService.getTenants(function (data) {
                 if (!data)
                     return;
                 $.each(data, function (idx, con) {

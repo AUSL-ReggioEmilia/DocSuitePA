@@ -11,8 +11,7 @@ define(["require", "exports"], function (require, exports) {
         ActivityType[ActivityType["CollaborationCreate"] = 6] = "CollaborationCreate";
         ActivityType[ActivityType["CollaborationSign"] = 7] = "CollaborationSign";
         ActivityType[ActivityType["CollaborationToProtocol"] = 8] = "CollaborationToProtocol";
-        ActivityType[ActivityType["FascicleAssignment"] = 9] = "FascicleAssignment";
-        ActivityType[ActivityType["DossierAssignment"] = 10] = "DossierAssignment";
+        ActivityType[ActivityType["Assignment"] = 9] = "Assignment";
         ActivityType[ActivityType["DematerialisationStatement"] = 11] = "DematerialisationStatement";
         ActivityType[ActivityType["SecureDocumentCreate"] = 12] = "SecureDocumentCreate";
         ActivityType[ActivityType["BuildAchive"] = 13] = "BuildAchive";

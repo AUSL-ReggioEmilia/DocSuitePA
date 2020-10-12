@@ -1,4 +1,6 @@
-﻿namespace VecompSoftware.DocSuiteWeb.API
+﻿using System;
+
+namespace VecompSoftware.DocSuiteWeb.API
 {
     public class ContactDTO : IContactDTO
     {
@@ -38,6 +40,8 @@
         public string CityCode { get; set; }
 
         public string FiscalCode { get; set; }
+
+        public DateTime? BirthDate { get; set; }
 
         #endregion
 

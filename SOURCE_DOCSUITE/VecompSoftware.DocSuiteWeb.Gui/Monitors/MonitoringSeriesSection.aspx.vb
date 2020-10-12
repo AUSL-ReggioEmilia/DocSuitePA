@@ -4,6 +4,7 @@ Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentSeries
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Monitors
 
 Public Class MonitoringSeriesSection
@@ -97,13 +98,16 @@ Public Class MonitoringSeriesSection
     End Sub
 
     Private Sub LoadMonitoringSeriesSectionFamilies()
-        Dim finder As MonitoringSeriesSectionFinder = New MonitoringSeriesSectionFinder(DocSuiteContext.Current.Tenants) With {
-            .DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value),
-            .DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1),
-            .EnablePaging = False,
-            .EnableTopOdata = False
-        }
-        Dim elements As ICollection(Of WebAPIDto(Of MonitoringSeriesSectionModel)) = finder.DoSearchHeader()
+        Dim elements As ICollection(Of WebAPIDto(Of MonitoringSeriesSectionModel)) = WebAPIImpersonatorFacade.ImpersonateFinder(New MonitoringSeriesSectionFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value)
+                        finder.DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1)
+                        finder.EnablePaging = False
+                        finder.EnableTopOdata = False
+                        Return finder.DoSearchHeader()
+                    End Function)
+
         Dim gridElements As List(Of MonitoringSeriesSectionModel) = elements.Select(Function(x) x.Entity).ToList()
         Dim gridElementsGrouped As List(Of MonitoringSeriesSectionModel) = (From row In gridElements
                                                                             Group row By Family = row.Family Into MonitoringSeriesSectionGroup = Group
@@ -123,14 +127,17 @@ Public Class MonitoringSeriesSection
     End Sub
 
     Private Sub LoadMonitoringSeriesSectionSummary(familyName As String)
-        Dim finder As MonitoringSeriesSectionFinder = New MonitoringSeriesSectionFinder(DocSuiteContext.Current.Tenants) With {
-            .DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value),
-            .DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1),
-            .FamilyName = familyName.Replace("'"c, "''"),
-            .EnablePaging = False,
-            .EnableTopOdata = False
-        }
-        Dim elements As ICollection(Of WebAPIDto(Of MonitoringSeriesSectionModel)) = finder.DoSearchHeader()
+        Dim elements As ICollection(Of WebAPIDto(Of MonitoringSeriesSectionModel)) = WebAPIImpersonatorFacade.ImpersonateFinder(New MonitoringSeriesSectionFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value)
+                        finder.DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1)
+                        finder.FamilyName = familyName.Replace("'"c, "''")
+                        finder.EnablePaging = False
+                        finder.EnableTopOdata = False
+                        Return finder.DoSearchHeader()
+                    End Function)
+
         Dim gridElements As List(Of MonitoringSeriesSectionModel) = elements.Select(Function(x) x.Entity).ToList()
 
         Dim gridElementsGrouped As List(Of MonitoringSeriesSectionModel) = (From row In gridElements
@@ -151,15 +158,18 @@ Public Class MonitoringSeriesSection
     End Sub
 
     Private Sub LoadMonitoringSeriesSectionDetails(familyName As String, seriesName As String)
-        Dim finder As MonitoringSeriesSectionFinder = New MonitoringSeriesSectionFinder(DocSuiteContext.Current.Tenants) With {
-            .DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value),
-            .DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1),
-            .FamilyName = familyName.Replace("'"c, "''"),
-            .SeriesName = seriesName.Replace("'"c, "''"),
-            .EnablePaging = False,
-            .EnableTopOdata = False
-        }
-        Dim elements As ICollection(Of WebAPIDto(Of MonitoringSeriesSectionModel)) = finder.DoSearchHeader()
+        Dim elements As ICollection(Of WebAPIDto(Of MonitoringSeriesSectionModel)) = WebAPIImpersonatorFacade.ImpersonateFinder(New MonitoringSeriesSectionFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.DateFrom = New DateTimeOffset(dtpDateFrom.SelectedDate.Value)
+                        finder.DateTo = New DateTimeOffset(dtpDateTo.SelectedDate.Value).AddDays(1)
+                        finder.FamilyName = familyName.Replace("'"c, "''")
+                        finder.SeriesName = seriesName.Replace("'"c, "''")
+                        finder.EnablePaging = False
+                        finder.EnableTopOdata = False
+                        Return finder.DoSearchHeader()
+                    End Function)
+
         Dim gridElements As List(Of MonitoringSeriesSectionModel) = elements.Select(Function(x) x.Entity).ToList()
         monitoringSeriesSectionGrid.Visible = True
         If gridElements.Count <= 0 OrElse (gridElements.Count = 1 AndAlso String.IsNullOrEmpty(gridElements.First().SubSection)) Then

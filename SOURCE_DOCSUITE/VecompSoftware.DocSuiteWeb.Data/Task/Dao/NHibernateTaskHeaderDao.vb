@@ -43,15 +43,6 @@ Public Class NHibernateTaskHeaderDao
         End Using
     End Function
 
-    Public Function GetProtocolsKey(ids As IEnumerable(Of Integer)) As IList(Of YearNumberCompositeKey)
-        Using session As ISession = NHibernateSessionManager.Instance.OpenSession(FactoryName)
-            Dim criteria As ICriteria = session.CreateCriteria(Of TaskHeaderProtocol)()
-            criteria.Add(Restrictions.In("Header.Id", ids.ToArray()))
-            criteria.SetProjection(Projections.Distinct(Projections.Property("Protocol.Id")))
-            Return criteria.List(Of YearNumberCompositeKey)()
-        End Using
-    End Function
-
     Public Function GetByPOL(request As POLRequest) As TaskHeader
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.CreateAlias("POLRequests", "TPOL")

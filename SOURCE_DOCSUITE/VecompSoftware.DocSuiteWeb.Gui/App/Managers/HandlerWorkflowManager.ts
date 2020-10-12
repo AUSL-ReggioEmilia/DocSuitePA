@@ -1,25 +1,28 @@
 ﻿import WorkflowActivityModel = require('App/Models/Workflows/WorkflowActivityModel')
 import UpdateActionType = require("App/Models/UpdateActionType");
-import WorkflowStatus = require('App/Models/Workflows/WorkflowStatus');
-import WorkflowAuthorizationModel = require('App/Models/Workflows/WorkflowAuthorizationModel');
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
-import Environment = require('App/Models/Environment');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import WorkflowActivityService = require('App/Services/Workflows/WorkflowActivityService');
-import WorkflowPropertyService = require('App/Services/Workflows/WorkflowPropertyService');
 import WorkflowPropertyModel = require('App/Models/Workflows/WorkflowProperty');
 import WorkflowPropertyHelper = require('App/Models/Workflows/WorkflowPropertyHelper');
-import WorkflowAuthorizationService = require('App/Services/Workflows/WorkflowAuthorizationService')
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
+import WorkflowNotifyService = require('App/Services/Workflows/WorkflowNotifyService');
+import WorkflowNotifyModel = require('App/Models/Workflows/WorkflowNotifyModel');
+import WorkflowArgumentModel = require('App/Models/Workflows/WorkflowArgumentModel');
+import ArgumentType = require('App/Models/Workflows/ArgumentType');
+import Environment = require('App/Models/Environment');
 
 class HandlerWorkflowManager {
 
     private _serviceConfigurations: ServiceConfiguration[];
     private _workflowActivityService: WorkflowActivityService;
-    private _workflowPropertyService: WorkflowPropertyService;
-    private _workflowAuthorizationService: WorkflowAuthorizationService;
-    private _workflowActivity: WorkflowActivityModel;
-    private _workflowProperties: WorkflowPropertyModel[];
+    private _workflowNotifyService: WorkflowNotifyService
+    
+    public static DOCSUITE_MODULE_NAME = "DocSuite";
+    private static WORKFLOW_ACTIVITY_EXPAND_PROPERTIES: string[] =
+        [
+            "WorkflowProperties", "WorkflowInstance($expand=WorkflowRepository)"
+        ];
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         this._serviceConfigurations = serviceConfigurations;
@@ -30,11 +33,8 @@ class HandlerWorkflowManager {
         let workflowActivityConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowActivity");
         this._workflowActivityService = new WorkflowActivityService(workflowActivityConfiguration);
 
-        let workflowPropertyConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowProperty");
-        this._workflowPropertyService = new WorkflowPropertyService(workflowPropertyConfiguration);
-
-        let workflowAuthorizationConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowAuthorizations");
-        this._workflowAuthorizationService = new WorkflowAuthorizationService(workflowPropertyConfiguration);
+        let workflowNotifyConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowNotify");
+        this._workflowNotifyService = new WorkflowNotifyService(workflowNotifyConfiguration);
     }
 
 
@@ -66,105 +66,93 @@ class HandlerWorkflowManager {
      * @param currentEnvironmentId
      * @param environment
      */
-    manageHandlingWorkflow(currentEnvironmentId: string, environment: number): JQueryPromise<string> {
+    manageHandlingWorkflow(idWorkflowActivity: string): JQueryPromise<string>
+    manageHandlingWorkflow(currentEnvironmentId: string, environment: Environment): JQueryPromise<string>
+    manageHandlingWorkflow(environmentOrActivityId: any, environment?: Environment): JQueryPromise<string> {
         let promise: JQueryDeferred<string> = $.Deferred<string>();
-        var workflowActivity: WorkflowActivityModel;
 
-        this._workflowActivityService.getActiveActivitiesByReferenceIdAndEnvironment(currentEnvironmentId, environment,
-            (data: any) => {
-                if (data) {
-                    workflowActivity = <WorkflowActivityModel>data;
-                    this._workflowActivityService.hasHandler(workflowActivity.UniqueId,
-                        (data: boolean) => {
-                            if (!data) {
-                                this._workflowPropertyService.getPropertiesFromActivity(workflowActivity.UniqueId,
-                                    (data: any) => {
-                                        if (data) {
-                                            if (!this.handlingIsAutomatic(data)) {
-                                                promise.resolve(workflowActivity.UniqueId);
-                                                return;
-                                            }
-                                            this._workflowActivityService.getWorkflowActivity(workflowActivity.UniqueId,
-                                                (data: any) => {
-                                                    if (data) {
-                                                        workflowActivity = data;
-                                                        this._workflowActivityService.updateHandlingWorkflowActivity(workflowActivity, UpdateActionType.HandlingWorkflow,
-                                                            (data: any) => {
-                                                                promise.resolve(workflowActivity.UniqueId);
-                                                            },
-                                                            (exception: ExceptionDTO) => {
-                                                                promise.reject(exception);
-                                                            });
-                                                    }
-                                                    promise.resolve(workflowActivity.UniqueId);
-                                                },
-                                                (exception: ExceptionDTO) => {
-                                                    promise.reject(exception);
-                                                });
-                                        }
-                                    },
-                                    (exception: ExceptionDTO) => {
-                                        promise.reject(exception);
-                                    });
-                            } else {
-                                promise.resolve(workflowActivity.UniqueId);
-                            }
-                        },
-                        (exception: ExceptionDTO) => {
-                            promise.reject(exception);
-                        });
-                } else {
+        let wfAction: () => JQueryPromise<string> = () => $.Deferred<string>().resolve(environmentOrActivityId as string).promise();
+        if (environment) {
+            wfAction = () => {
+                const promise: JQueryDeferred<string> = $.Deferred<string>();
+                this._workflowActivityService.getActiveActivitiesByReferenceIdAndEnvironment(environmentOrActivityId as string, environment,
+                    (data: any) => {
+                        if (!data) {
+                            promise.resolve(null);
+                            return;
+                        }
+                        promise.resolve((data as WorkflowActivityModel).UniqueId);
+                    },
+                    (exception: ExceptionDTO) => promise.reject(exception));
+                return promise.promise();
+            }
+        }
+
+        wfAction()
+            .done((activityId) => {
+                if (!activityId) {
                     promise.resolve(null);
+                    return;
                 }
-            },
-            (exception: ExceptionDTO) => {
-                promise.reject(exception);
-            });
-        return promise.promise();
-    }
 
-    /**
-     * Gestisco l'attivita' di workflow corrente se ho gia' l'id
-     * @param idWorkflowActivityId
-     */
-    manageHandlingWorkflowWithActivity(idWorkflowActivityId: string): JQueryPromise<string> {
-        let promise: JQueryDeferred<string> = $.Deferred<string>();
-        var workflowActivity: WorkflowActivityModel;
+                this._workflowActivityService.hasHandler(activityId,
+                    (workflowActivityHasHandler: boolean) => {
+                        if (workflowActivityHasHandler) {
+                            promise.resolve(activityId);
+                            return;
+                        }
 
-        this._workflowActivityService.hasHandler(idWorkflowActivityId,
-            (data: boolean) => {
-                if (!data) {
-                    this._workflowActivityService.getWorkflowActivity(idWorkflowActivityId,
-                        (data: any) => {
-                            if (data) {
-                                workflowActivity = data;
-                                if (!this.handlingIsAutomatic(workflowActivity.WorkflowProperties)) {
-                                    promise.resolve(workflowActivity.UniqueId);
+                        this._workflowActivityService.getWorkflowActivityById(activityId,
+                            (workflowActivityData: any) => {
+                                if (!workflowActivityData) {
+                                    let exception = {} as ExceptionDTO;
+                                    exception.statusText = "Errore nel caricamento delle attività del fusso di lavoro associate al fascicolo.";
+                                    promise.reject(exception);
                                     return;
                                 }
-                                this._workflowActivityService.updateHandlingWorkflowActivity(workflowActivity, UpdateActionType.HandlingWorkflow,
-                                    (data: any) => {
-                                        promise.resolve(workflowActivity.UniqueId);
-                                    },
-                                    (exception: ExceptionDTO) => {
-                                        promise.reject(exception);
-                                    });
-                            }
-                        },
-                        (exception: ExceptionDTO) => {
-                            promise.reject(exception);
-                        });
-                } else {
-                    promise.resolve(idWorkflowActivityId);
-                }
-                
-            },
-            (exception: ExceptionDTO) => {
-                promise.reject(exception);
-            });
+
+                                if (workflowActivityData.WorkflowProperties && !this.handlingIsAutomatic(workflowActivityData.WorkflowProperties)) {
+                                    promise.resolve(activityId);
+                                    return;
+                                }
+
+                                this._updateWorkflowActivityAuthorization((workflowActivityData as WorkflowActivityModel))
+                                    .done((data: string) => promise.resolve(activityId))
+                                    .fail((exception: ExceptionDTO) => promise.reject(exception));
+                            }, (exception: ExceptionDTO) => promise.reject(exception), HandlerWorkflowManager.WORKFLOW_ACTIVITY_EXPAND_PROPERTIES);
+                    },
+                    (exception: ExceptionDTO) => {
+                        promise.reject(exception);
+                    });
+            })
+            .fail((exception: ExceptionDTO) => promise.reject(exception));
 
         return promise.promise();
     }
 
+    private _updateWorkflowActivityAuthorization = (workflowActivity: WorkflowActivityModel): JQueryPromise<string> => {
+        let deffered: JQueryDeferred<string> = $.Deferred<string>();
+
+        const workflowNotifyModel = {} as WorkflowNotifyModel;
+        workflowNotifyModel.WorkflowActivityId = workflowActivity.UniqueId;
+        workflowNotifyModel.WorkflowName = workflowActivity.WorkflowInstance?.WorkflowRepository?.Name;
+        workflowNotifyModel.ModuleName = HandlerWorkflowManager.DOCSUITE_MODULE_NAME;
+
+        const dsw_a_ToHandler = {} as WorkflowArgumentModel;
+        dsw_a_ToHandler.Name = WorkflowPropertyHelper.DSW_ACTION_TO_HANDLER;
+        dsw_a_ToHandler.PropertyType = ArgumentType.PropertyBoolean;
+        dsw_a_ToHandler.ValueBoolean = true;
+
+        workflowNotifyModel.OutputArguments = {};
+        workflowNotifyModel.OutputArguments[WorkflowPropertyHelper.DSW_ACTION_TO_HANDLER] = dsw_a_ToHandler;
+
+        this._workflowNotifyService.notifyWorkflow(workflowNotifyModel, (response: any) => {
+            deffered.resolve(workflowActivity.UniqueId);
+        }, (error: ExceptionDTO) => {
+            deffered.reject(error);
+        });
+
+        return deffered.promise();
+    }
 }
 export = HandlerWorkflowManager;

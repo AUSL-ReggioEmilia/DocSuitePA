@@ -57,7 +57,7 @@
             <Excel Format="Html" />
             <Csv ColumnDelimiter="Comma" RowDelimiter="NewLine" />
         </ExportSettings>
-        <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente"
+        <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente"
             SortToolTip="Ordina" />
     </DocSuite:BindGrid>
 </asp:Content>

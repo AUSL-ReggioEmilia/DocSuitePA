@@ -154,9 +154,9 @@ Partial Public Class DocmVisualizza
                 Throw New DocSuiteException("Visualizzazione pratica", "Verifica di sicurezza fallita, parametro mancante o non valido.")
             End If
 
-            toolbarDocument.Visible = DocSuiteContext.IsFullApplication
-            toolbarFolder.Visible = DocSuiteContext.IsFullApplication
-            toolbarWorkflow.Visible = DocSuiteContext.IsFullApplication
+            toolbarDocument.Visible = True
+            toolbarFolder.Visible = True
+            toolbarWorkflow.Visible = True
             ' Status documento
             If CurrentDocument.Status IsNot Nothing AndAlso (CurrentDocument.Status.Id.Eq("CP") OrElse CurrentDocument.Status.Id.Eq("PA")) Then
                 toolbarFolder.Visible = False
@@ -257,9 +257,6 @@ Partial Public Class DocmVisualizza
 
         DirectCast(toolbarInfo.FindButtonByCommandName("send"), RadToolBarButton).Visible = True
 
-        If Not DocSuiteContext.IsFullApplication Then
-            Exit Sub
-        End If
         If (CurrentDocument.Status IsNot Nothing) AndAlso (CurrentDocument.Status.Id.Eq("CP") OrElse CurrentDocument.Status.Id.Eq("PA")) Then
             Exit Sub
         End If
@@ -347,7 +344,7 @@ Partial Public Class DocmVisualizza
         '---sicurezza user
         Dim roleFacade As New RoleFacade()
 
-        Dim enabledRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DocumentRoleRightPositions.Enabled, True)
+        Dim enabledRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True)
         Dim txtAll As String = String.Empty
         For Each role As Role In enabledRoles
             If txtAll <> "" Then
@@ -357,7 +354,7 @@ Partial Public Class DocmVisualizza
         Next
         enabledRoles.Clear()
 
-        Dim workflowRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DocumentRoleRightPositions.Workflow, True)
+        Dim workflowRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True)
         Dim txtWorkFlow As String = String.Empty
         For Each role As Role In workflowRoles
             If txtWorkFlow <> "" Then txtWorkFlow += SEP
@@ -365,7 +362,7 @@ Partial Public Class DocmVisualizza
         Next
         workflowRoles.Clear()
 
-        Dim managerRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DocumentRoleRightPositions.Manager, True)
+        Dim managerRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True)
         Dim txtManager As String = String.Empty
         For Each role As Role In managerRoles
             If txtManager <> "" Then
@@ -577,9 +574,6 @@ Partial Public Class DocmVisualizza
     End Function
 
     Private Sub SetButtonsDocument()
-        If Not DocSuiteContext.IsFullApplication Then
-            Exit Sub
-        End If
 
         DirectCast(toolbarInfo.FindButtonByCommandName("log"), RadToolBarButton).Visible = DocSuiteContext.Current.DocumentEnv.IsEnvLogEnabled AndAlso StringHelper.InStrTest(txtIdRoleRightM.Text, txtPIdOwner.Text)
 
@@ -626,7 +620,7 @@ Partial Public Class DocmVisualizza
         Textboxes(TextboxAction.Clean)
 
         ' Controlla diritti
-        Dim roleRightsList As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DocumentRoleRightPositions.Enabled, True)
+        Dim roleRightsList As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True)
         If roleRightsList.Count > 0 Then
             Dim roles As New StringBuilder
             For Each role As Role In roleRightsList
@@ -639,7 +633,7 @@ Partial Public Class DocmVisualizza
         End If
         roleRightsList.Clear()
 
-        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DocumentRoleRightPositions.Workflow, True)
+        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -651,7 +645,7 @@ Partial Public Class DocmVisualizza
         End If
         roleRightsList.Clear()
 
-        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DocumentRoleRightPositions.Manager, True)
+        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList

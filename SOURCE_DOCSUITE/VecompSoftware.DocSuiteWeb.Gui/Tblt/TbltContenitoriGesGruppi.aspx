@@ -21,13 +21,48 @@
 
             function UpdateGroups() {
                // GetRadWindow().BrowserWindow.UpdateGroups();
+                GetRadWindow().close();
             }
+
+            function OpenContenitoriCopyWindow() {
+                var manager = $find("<%=RadWindowManagerContainerGroups.ClientID%>");
+                var wnd = manager.open(null, "windowContainersCopy");
+                wnd.setSize(500, 350);
+                wnd.center();
+            }
+
+            function CloseContenitoriCopy(sender, args) {
+                var ajaxManager = $find("<%= AjaxManager.ClientID%>");
+                let node = $find("<%= rtvContainersCopy.ClientID%>").get_selectedNode();
+                let selectedValue = node.get_value();
+                ajaxManager.ajaxRequest("Copy|" + selectedValue);
+                var window = $find("<%=windowContainersCopy.ClientID%>");
+                window.close();
+            }
+
         </script>
     </telerik:RadScriptBlock>
     <usc:SelGroup runat="server" ID="uscGruppi" />
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphContent">
+    <telerik:RadWindowManager runat="server" EnableViewState="false" ID="RadWindowManagerContainerGroups" Modal="true">
+        <Windows>
+            <telerik:RadWindow ID="windowContainersCopy" runat="server">
+                <ContentTemplate>
+                    <asp:Panel runat="server">
+                        <telerik:RadTreeView runat="server" ID="rtvContainersCopy" Height="25em" BorderStyle="Solid" BorderColor="Gray">
+                            <Nodes>
+                                <telerik:RadTreeNode Expanded="true" NodeType="Root" runat="server" Text="Contenitore" Value="" />
+                            </Nodes>
+                        </telerik:RadTreeView>
+                    </asp:Panel>
+                    <telerik:RadButton runat="server" Text="Conferma" ID="btnConfirmCopyContainer" OnClientClicked="CloseContenitoriCopy" AutoPostBack="false"></telerik:RadButton>
+                </ContentTemplate>
+            </telerik:RadWindow>
+        </Windows>
+    </telerik:RadWindowManager>
+
     <asp:Panel ID="pnlPrivacy" runat="server" Width="100%" Visible="false">
         <table runat="server" width="100%">
             <tr class="tabella">
@@ -98,4 +133,5 @@
 
 <asp:Content runat="server" ContentPlaceHolderID="cphFooter">
     <asp:Button ID="btnConfermaDiritti" runat="server" Text="Conferma" />
+    <asp:Button ID="btnCopia" runat="server" Text="Copia da altro contenitore" />
 </asp:Content>

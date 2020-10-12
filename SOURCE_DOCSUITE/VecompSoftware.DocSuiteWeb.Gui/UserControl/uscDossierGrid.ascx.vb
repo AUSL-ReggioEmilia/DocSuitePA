@@ -9,6 +9,7 @@ Public Class uscDossierGrid
             Return pageContent
         End Get
     End Property
+    Public Property IsWindowPopupEnable As Boolean = False
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Not IsPostBack Then

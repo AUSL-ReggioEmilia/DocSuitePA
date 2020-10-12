@@ -360,7 +360,7 @@ Public Class CommImportLettera
 
             NHibernateSessionManager.Instance.InvalidateSessionFrom("ProtDB")
 
-            localProtocol = protFacade.CreateProtocol()
+            localProtocol = protFacade.CreateProtocol(CurrentTenant.TenantAOO.UniqueId)
 
             With localProtocol
                 .IdDocument = _protocol.IdDocument
@@ -506,7 +506,7 @@ Public Class CommImportLettera
 
             Dim protFacade As New ProtocolFacade()
 
-            localProtocol = protFacade.CreateProtocol()
+            localProtocol = protFacade.CreateProtocol(CurrentTenant.TenantAOO.UniqueId)
             Dim cont() As String = _xlsContactData(currentStep).Split("|"c)
             Dim stemp As String
 

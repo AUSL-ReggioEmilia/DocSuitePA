@@ -11,6 +11,8 @@
       <column name="Timestamp" not-null="true" sql-type="timestamp" />
     </version>
 
+    <property name="Year" column="Year" not-null="true" />
+    <property name="Number" column="Number" not-null="true" />
     <property name="Note" column="Note" />
     <property name="DistributionType" column="DistributionType"/>
     <property name="Type" column="Type"/>
@@ -21,12 +23,10 @@
     <property name="RegistrationDate" column="RegistrationDate" not-null="true" />
     <property name="LastChangedUser" column="LastChangedUser" not-null="false" />
     <property name="LastChangedDate" column="LastChangedDate" not-null="false" />
-    <property name="UniqueIdProtocol" column="UniqueIdProtocol" not-null="true"/>
 
     <many-to-one class="Role" name="Role" column="idRole"/>
-    <many-to-one name="Protocol" class="Protocol">
-      <column name="Year" />
-      <column name="Number" />
+    <many-to-one name="Protocol" class="Protocol" not-null="true">
+      <column name="UniqueIdProtocol" />
     </many-to-one>
 
   </class>

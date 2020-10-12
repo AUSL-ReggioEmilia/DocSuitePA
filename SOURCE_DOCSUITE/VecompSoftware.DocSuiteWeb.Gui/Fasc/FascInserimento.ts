@@ -33,6 +33,8 @@ import UscFascicleInsert = require('UserControl/uscFascicleInsert');
 import AjaxModel = require('App/Models/AjaxModel');
 import MetadataRepositoryModel = require('App/Models/Commons/MetadataRepositoryModel');
 import FascicolableActionType = require('App/Models/FascicolableActionType');
+import FascicleCustomActionModel = require('App/Models/Commons/FascicleCustomActionModel');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 declare var Page_IsValid: any;
 class FascInserimento extends FascicleBase {
@@ -116,7 +118,7 @@ class FascInserimento extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnInserimento_OnClick = (sender: any, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnInserimento_OnClick = (sender: any, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         if (!Page_IsValid) {
             args.set_cancel(true);
             return;
@@ -180,7 +182,7 @@ class FascInserimento extends FascicleBase {
      * @param contact
      * @param category
      */
-    insertCallback(responsibleContact: number, metadataModel: string): void {
+    insertCallback(responsibleContact: number, metadataDesignerModel: string, metadataValueModel: string): void {
         let uscFascInsert: UscFascicleInsert = <UscFascicleInsert>$("#".concat(this.uscFascInsertId)).data();
         if (!jQuery.isEmptyObject(uscFascInsert)) {
             let fascicleModel: FascicleModel = new FascicleModel();
@@ -192,32 +194,35 @@ class FascInserimento extends FascicleBase {
                 fascicleModel.Contacts.push(contactModel);
             }
 
-            if (!!metadataModel) {
-                fascicleModel.MetadataValues = metadataModel;
-                if (sessionStorage.getItem("MetadataRepository")) {
+            if (!!metadataValueModel) {
+                fascicleModel.MetadataDesigner = metadataDesignerModel;
+                fascicleModel.MetadataValues = metadataValueModel;
+                if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY)) {
                     let metadataRepository: MetadataRepositoryModel = new MetadataRepositoryModel();
-                    metadataRepository.UniqueId = sessionStorage.getItem("MetadataRepository");
+                    metadataRepository.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
                     fascicleModel.MetadataRepository = metadataRepository;
                 }
             }
 
-            this.service.insertFascicle(fascicleModel,
-                (data: FascicleModel) => {
-
-                    if (this.currentUDId && this.environment) {
-                        fascicleModel.UniqueId = data.UniqueId;
-                        this.insertFascicolableUD(fascicleModel);
+            uscFascInsert.getCustomActions().done((customActions: FascicleCustomActionModel) => {
+                fascicleModel.CustomActions = JSON.stringify(customActions);
+                this.service.insertFascicle(fascicleModel, null,
+                    (data: FascicleModel) => {
+                        if (this.currentUDId && this.environment) {
+                            fascicleModel.UniqueId = data.UniqueId;
+                            this.insertFascicolableUD(fascicleModel);
+                        }
+                        else {
+                            window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(data.UniqueId);
+                        }
+                    },
+                    (exception: ExceptionDTO) => {
+                        this._loadingPanel.hide(this.fasciclePageContentId);
+                        this._btnInserimento.set_enabled(true);
+                        this.showNotificationException(this.uscNotificationId, exception);
                     }
-                    else {
-                        window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(data.UniqueId);
-                    }
-                },
-                (exception: ExceptionDTO) => {
-                    this._loadingPanel.hide(this.fasciclePageContentId);
-                    this._btnInserimento.set_enabled(true);
-                    this.showNotificationException(this.uscNotificationId, exception);
-                }
-            );
+                );
+            });
         }
     }
 

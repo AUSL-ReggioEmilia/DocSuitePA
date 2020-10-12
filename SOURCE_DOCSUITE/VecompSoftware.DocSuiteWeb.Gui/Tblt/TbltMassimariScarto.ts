@@ -49,7 +49,7 @@ class TbltMassimariScarto {
      * @param eventArgs
      * @returns
      */
-    btnSave_OnClicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnSave_OnClicking = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonCancelEventArgs) => {
         eventArgs.set_cancel(true);
         this._btnSave.set_enabled(false);
         this.showLoadingPanel();

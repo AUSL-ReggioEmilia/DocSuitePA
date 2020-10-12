@@ -1,4 +1,5 @@
 ﻿Imports System.Collections.Generic
+Imports System.Linq
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
@@ -19,9 +20,9 @@ Partial Public Class PECMoveMails
         Get
             If _mailboxes Is Nothing Then
                 If ProtocolBoxEnabled Then
-                    _mailboxes = Facade.PECMailboxFacade.GetHumanManageable().GetVisibleProtocolMailBoxes()
+                    _mailboxes = Facade.PECMailboxFacade.GetVisibleProtocolMailBoxes().ToList()
                 Else
-                    _mailboxes = Facade.PECMailboxFacade.GetHumanManageable().GetMoveMailBoxes(CurrentPecMailList)
+                    _mailboxes = Facade.PECMailboxFacade.GetMoveMailBoxes(CurrentPecMailList)
                 End If
             End If
 

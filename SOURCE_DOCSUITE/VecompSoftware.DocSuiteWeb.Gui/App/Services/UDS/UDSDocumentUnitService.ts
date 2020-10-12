@@ -19,7 +19,7 @@ class UDSDocumentUnitService extends BaseService {
 
     getUDSByProtocolId(Id: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        let data: string = `$expand=Relation($expand=UDSRepository)&$filter=Relation/Uniqueid eq ${Id} and Relation/Environment eq 1`;
+        let data: string = `$expand=Relation($expand=UDSRepository),SourceUDS($expand=UDSRepository)&$filter=Relation/Uniqueid eq ${Id} and Relation/Environment eq 1`;
         this.getRequest(url, data,
             (response: any) => {
                 if (callback) {
@@ -48,6 +48,21 @@ class UDSDocumentUnitService extends BaseService {
                     callback(response.value);
                 }
             }, error);
+    }
+    getUDSById(IdUDS: string, relationId:string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        let data: string = `$expand=Relation($expand=UDSRepository($select=UniqueId))&$filter=Relation/Environment ge 100 and IdUDS eq ${IdUDS} and Relation/UniqueId eq ${relationId} `;
+        this.getRequest(url, data,
+            (response: any) => {
+                if (callback) {
+                    callback(response.value);
+                }
+            }, error);
+    }
+
+    deleteUDSByid(model: UDSDocumentUnitModel, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.WebAPIUrl;
+        this.deleteRequest(url, JSON.stringify(model), callback, error);
     }
 
     countProtocolsById(IdUDS: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {

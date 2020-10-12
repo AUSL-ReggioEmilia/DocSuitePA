@@ -16,7 +16,7 @@ Public Class NHibernatePosteOnlineContactDao
 
     Public Function GetRecipientWithRequestId(ByVal requestId As Guid) As POLRequestRecipient
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.Eq("RequestId", requestId))
+        criteria.Add(Restrictions.Eq("Request.Id", requestId))
         Dim contacts As IList(Of POLRequestContact) = criteria.List(Of POLRequestContact)()
 
         Return contacts.

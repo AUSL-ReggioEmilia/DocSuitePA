@@ -23,166 +23,22 @@ Partial Public Class FascProcessInserimento
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
 
     '''<summary>
-    '''pnlFascProcessInsert control.
+    '''pnlContent control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents pnlFascProcessInsert As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents pnlContent As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''fasciclePageContent control.
+    '''uscFascicleProcessInsert control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents fasciclePageContent As Global.Telerik.Web.UI.RadPageLayout
-
-    '''<summary>
-    '''ddlProcess control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ddlProcess As Global.Telerik.Web.UI.RadComboBox
-
-    '''<summary>
-    '''rtvProcessFolders control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rtvProcessFolders As Global.Telerik.Web.UI.RadTreeView
-
-    '''<summary>
-    '''ddlTemplate control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ddlTemplate As Global.Telerik.Web.UI.RadComboBox
-
-    '''<summary>
-    '''uscCategory control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscCategory As Global.VecompSoftware.DocSuiteWeb.Gui.uscCategoryRest
-
-    '''<summary>
-    '''uscContact control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscContact As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelRest
-
-    '''<summary>
-    '''uscRoleMaster control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscRoleMaster As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
-
-    '''<summary>
-    '''uscRole control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscRole As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
-
-    '''<summary>
-    '''txtObject control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtObject As Global.Telerik.Web.UI.RadTextBox
-
-    '''<summary>
-    '''rfvObject control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rfvObject As Global.System.Web.UI.WebControls.RequiredFieldValidator
-
-    '''<summary>
-    '''txtNote control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
-
-    '''<summary>
-    '''radStartDate control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents radStartDate As Global.Telerik.Web.UI.RadDatePicker
-
-    '''<summary>
-    '''txtConservation control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtConservation As Global.Telerik.Web.UI.RadNumericTextBox
-
-    '''<summary>
-    '''rfvConservation control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rfvConservation As Global.System.Web.UI.WebControls.RequiredFieldValidator
-
-    '''<summary>
-    '''metadataRepositoryRow control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents metadataRepositoryRow As Global.Telerik.Web.UI.LayoutRow
-
-    '''<summary>
-    '''uscMetadataRepositorySel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscMetadataRepositorySel As Global.VecompSoftware.DocSuiteWeb.Gui.uscMetadataRepositorySel
-
-    '''<summary>
-    '''uscDynamicMetadata control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscDynamicMetadata As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadata
+    Protected WithEvents uscFascicleProcessInsert As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascicleProcessInsert
 
     '''<summary>
     '''uscNotification control.

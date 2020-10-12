@@ -5,8 +5,6 @@ Imports System.Web
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.IP4D
-Imports VecompSoftware.DocSuiteWeb.Model.ExternalModels
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Compress
 Imports VecompSoftware.Helpers.ExtensionMethods
@@ -21,11 +19,9 @@ Namespace MailSenders
         Inherits DocSuite2008BaseControl
         Private _currentOriginalAttachments As IList(Of DocumentInfo) = Nothing
         Private _currentPdfAttachments As IList(Of DocumentInfo) = Nothing
-        Private _currentIP4DFacade As IP4DFacade
         Private _passwordGenerator As PasswordGenerator
         Private _currentContactRecipientPosition As MessageContact.ContactPositionEnum = MessageContact.ContactPositionEnum.Recipient
         Public Event MailSent(ByVal sender As Object, ByVal e As MailSentEventArgs)
-        Public Event IP4DSent(ByVal sender As Object, ByVal e As IP4DSentEventArgs)
         Public Event CancelByUser(ByVal sender As Object, ByVal e As EventArgs)
         Public Event ConfirmByUser(ByVal sender As Object, ByVal e As EventArgs)
         Public Event MailError(ByVal sender As Object, ByVal e As MailErrorEventArgs)
@@ -117,9 +113,7 @@ Namespace MailSenders
                 Return SenderEmail.Text
             End Get
             Set(value As String)
-                If ProtocolEnv.CurrentUserEMailSenderEnabled = True Then
-                    SenderEmail.Text = If(String.IsNullOrEmpty(value), String.Empty, value.Trim())
-                End If
+                SenderEmail.Text = If(String.IsNullOrEmpty(value), String.Empty, value.Trim())
             End Set
         End Property
 
@@ -158,8 +152,6 @@ Namespace MailSenders
         Public Property EnableCheckBoxRecipients As Boolean = False
 
         Public Property AuthorizationsVisibility As Boolean = True
-
-        Public Property IsIP4DEnabled As Boolean
 
         Public Property UDYear As Short?
             Get
@@ -251,15 +243,6 @@ Namespace MailSenders
             End Get
         End Property
 
-        Private ReadOnly Property CurrentIP4DFacade As IP4DFacade
-            Get
-                If _currentIP4DFacade Is Nothing Then
-                    _currentIP4DFacade = New IP4DFacade()
-                End If
-                Return _currentIP4DFacade
-            End Get
-        End Property
-
         Public Property ShowCustomError As Boolean
 
         Public ReadOnly Property PasswordGenerator As PasswordGenerator
@@ -268,6 +251,11 @@ Namespace MailSenders
                     _passwordGenerator = New PasswordGenerator()
                 End If
                 Return _passwordGenerator
+            End Get
+        End Property
+        Private ReadOnly Property InsertSignatureButton As RadToolBarButton
+            Get
+                Return DirectCast(ToolBar.FindItemByValue("MailSender_InsertSignature"), RadToolBarButton)
             End Get
         End Property
 #End Region
@@ -335,12 +323,12 @@ Namespace MailSenders
 
         Private Sub ToolBarButtonClick(sender As Object, e As RadToolBarEventArgs) Handles ToolBar.ButtonClick
             Select Case e.Item.Value
-                Case "MailSender_SendIP4D"
-                    SendIP4D()
                 Case "MailSender_Send"
                     SendMail()
                 Case "MailSender_Cancel"
                     RaiseEvent CancelByUser(Me, New EventArgs())
+                Case "MailSender_InsertSignature"
+                    AppendSignToContent()
             End Select
         End Sub
 
@@ -365,9 +353,9 @@ Namespace MailSenders
         End Sub
 
         Private Sub Initialize()
-            If ProtocolEnv.CurrentUserEMailSenderEnabled = False Then
-                SenderEmail.Text = ProtocolEnv.ProtPecSendSender
-                SenderDescription.Text = ProtocolEnv.ProtPecSendSender
+            InsertSignatureButton.Visible = ProtocolEnv.InsertDefaultBodySignEmailEnabled
+            If Not ProtocolEnv.EmailSenderDescriptionEnabled Then
+                SenderDescription.Text = String.Empty
             End If
             ' abilitazione flag per la visualizzione della sezione di "richiedi conferma per recapito di lettura"
             ChkNeedDisposition.Visible = ProtocolEnv.ShowDispositionNotification
@@ -387,87 +375,15 @@ Namespace MailSenders
 
             'Gestisco la cancellazione multipla dei destinatari di una mail
             MessageRecipients.EnableCheck = EnableCheckBoxRecipients
-
-            If IsIP4DEnabled Then
-                SendButton.Text = "Invia IP4D"
-                SendButton.Value = "MailSender_SendIP4D"
-                MessageRecipients.ButtonAddMyselfVisible = False
-                MessageRecipients.ButtonImportManualVisible = False
-                MessageRecipients.ButtonImportVisible = False
-                MessageRecipients.ButtonIPAVisible = False
-                MessageRecipients.ButtonManualMultiVisible = False
-                MessageRecipients.ButtonManualVisible = False
-                MessageRecipients.ButtonRoleVisible = False
-                MessageRecipients.ButtonSdiContactVisible = False
-                MessageRecipients.ButtonSelectOChartVisible = False
-                MessageRecipients.ButtonSelectVisible = False
-                MessageRecipients.IP4DRestriction = True
-            End If
-
             pnlAttachment.Visible = EnableAttachment
             uscAttachment.ButtonCopyProtocol.Visible = ProtocolEnv.CopyProtocolDocumentsEnabled
             uscAttachment.ButtonCopySeries.Visible = ProtocolEnv.CopyFromSeries
-            If (DocSuiteContext.Current.IsResolutionEnabled) Then
+            uscAttachment.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
+            If DocSuiteContext.Current.IsResolutionEnabled Then
                 uscAttachment.ButtonCopyResl.Visible = ResolutionEnv.CopyReslDocumentsEnabled
             End If
             maxChars.Text = SubjectMaxLength.ToString()
             CheckSenderEmail()
-        End Sub
-
-        Private Sub SendIP4D()
-            Try
-                If String.IsNullOrEmpty(SenderEmailValue) Then
-                    Throw New ApplicationException("Non è presente un indirizzo mail valido per il mittente")
-                End If
-
-                If String.IsNullOrEmpty(ProtocolEnv.ExternalViewerProtocolLink) Then
-                    Throw New ApplicationException("Parametro ExternalViewerProtocolLink non configurato")
-                End If
-
-                If Not UDYear.HasValue OrElse Not UDNumber.HasValue OrElse Not UDId.HasValue Then
-                    Throw New ApplicationException("Non sono stati definiti alcuni parametri del documento")
-                End If
-
-                Dim ip4dModel As ExternalViewerModel = New ExternalViewerModel() With {
-                    .Year = UDYear.Value,
-                    .Number = UDNumber.Value,
-                    .UniqueId = UDId.Value,
-                    .Body = BodyValue,
-                    .Subject = SubjectValue,
-                    .RegistrationUser = UDRegistrationUser,
-                    .RegistrationDate = UDRegistrationDate,
-                    .Url = String.Format(ProtocolEnv.ExternalViewerProtocolLink, UDYear, UDNumber, UDId),
-                    .Sender = New ExternalViewerContactModel() With {.Name = SenderDescriptionValue, .Email = SenderEmailValue}
-                }
-
-                ' Aggiungo i destinatari
-                Dim recipientsSelected As IList(Of ContactDTO) = MessageRecipients.GetContacts(False)
-                If recipientsSelected.Count = 0 Then
-                    Throw New ApplicationException("Selezionare almeno un destinatario.")
-                End If
-
-                ip4dModel.Recipients = New List(Of ExternalViewerContactModel)
-                For Each contact As ContactDTO In recipientsSelected
-                    Dim contactMail As String = RegexHelper.MatchEmail(contact.Contact.EmailAddress)
-                    If String.IsNullOrEmpty(contactMail) Then
-                        Throw New ApplicationException(String.Format("Il destinatario ({0}) non ha un indirizzo email.", contact.Contact.Description))
-                    End If
-                    ip4dModel.Recipients.Add(New ExternalViewerContactModel() With
-                                             {.Name = contact.Contact.Description,
-                                             .Email = contact.Contact.EmailAddress,
-                                             .Account = contact.Contact.SearchCode})
-                Next
-
-                'Invia il comando alle WebAPI
-                CurrentIP4DFacade.SendIP4D(ip4dModel)
-                RaiseEvent IP4DSent(Me, New IP4DSentEventArgs(ip4dModel))
-                RaiseEvent ConfirmByUser(Me, New EventArgs())
-            Catch argEx As ApplicationException
-                BasePage.AjaxAlert("Impossibile invio IP4D: {0}.", argEx.Message)
-            Catch ex As Exception
-                FileLogger.Error(LoggerName, ex.Message, ex)
-                BasePage.AjaxAlert("Errore impossibile invio IP4D. Contattare l'assistenza")
-            End Try
         End Sub
 
         Private Sub SendMail()
@@ -690,6 +606,22 @@ Namespace MailSenders
             Else
                 ChkCompressedDocuments.Checked = False
             End If
+        End Sub
+        Private Sub AppendSignToContent()
+            If Body.Content.Contains(ProtocolEnv.DefaultPECBodyContent) Then
+                Exit Sub
+            End If
+
+            Dim isHtml As Boolean = Body.Content.Contains("</body>")
+            Dim currentEditorContent As String = Body.Content
+            Dim contentWithSignature As String = String.Empty
+            If isHtml Then
+                contentWithSignature = currentEditorContent.Replace("</body>", $"<br /><br />{ProtocolEnv.DefaultPECBodyContent}</body>")
+            Else
+                contentWithSignature = $"{currentEditorContent}<br /><br />{ProtocolEnv.DefaultPECBodyContent}"
+            End If
+
+            Body.Content = contentWithSignature
         End Sub
 
 #End Region

@@ -13,7 +13,7 @@ Public Class WorkflowActivitySummary
     Private ReadOnly Property CurrentUserLog As UserLog
         Get
             If _currentUserLog Is Nothing Then
-                _currentUserLog = Facade.UserLogFacade.GetByUser(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
+                _currentUserLog = Facade.UserLogFacade.GetByUser(DocSuiteContext.Current.User.FullUserName)
             End If
             Return _currentUserLog
         End Get

@@ -95,6 +95,12 @@ module UdsDesigner {
                 if (!isNaN(this.differentCols))
                     $("#itemChanger").val(this.differentCols).trigger('change');//bind layout column to existing value
                 $(e.currentTarget).find("input").first().focus();
+                $(e.currentTarget).find("span").each((i: number, spanElement: Element) => {
+                    let ctrl = CtrlBase.getElementCtrl(this.getElement());
+                    if (spanElement.id === "deleteSelectedItem" && ctrl.getValues().defaultValue === "") {
+                        $(`#${spanElement.id}`).hide();
+                    }
+                });
             });
 
             $("#options_modal").submit(function (e) {
@@ -189,13 +195,19 @@ module UdsDesigner {
             for (let i = 0; i < noOfColumns; i++) {
                 columnTable.append(`<td style=\"background:RGBA(132,121,121,0,51); width:30%; height:100%;\" class=\"component\" id="column${i}">Trascina nella colonna ${i + 1}</td>`);
                 $(`#column${i}`).droppable({
-                    accept: '.component',
                     hoverClass: 'content-hover',
                     drop: (e, ui) => {
-                        var ctrlType = ui.draggable.data('type');
-                        this.addCustomComponent(ctrlType, i);
-                        this.columns = i;
-                        this.rows = $(`#column${i}`).children("div").length;
+                        if (ui.draggable[0].parentElement.id === "") {
+                            var ctrlType = ui.draggable.data('type');
+                            this.addCustomComponent(ctrlType, i);
+                            this.columns = i;
+                            this.rows = $(`#column${i}`).children("div").length;
+                        }
+                        else {
+                            if ($(`#column${i}`).children("div").length === 0) {
+                                $(`#column${i}`).append(ui.draggable);
+                            }
+                        }
                         document.dispatchEvent(this.modelChanged);
                     }
                 });
@@ -223,11 +235,32 @@ module UdsDesigner {
         // the form editor is a droppable area that accepts components,
         // converts them to elements and makes them sortable
 
-        private addCustomComponent(componentType: string, indexColumn: number, elementClass: string = "element", addClose: boolean = true): Element {
-            //debugger;
+        private addCustomComponent(componentType: string, indexColumn: number, elementClass: string = "element", addClose: boolean = true, addDrag: boolean = true): Element {
             var ctrl = $("#component-" + componentType).clone();
             ctrl.addClass(elementClass);
             ctrl.removeAttr('id');
+
+            if (addDrag) {
+                ctrl.draggable({
+                    helper: function (e) {
+                        return $(e.currentTarget).clone().addClass('component-drag');
+                    }
+                });
+                ctrl.droppable({
+                    hoverClass: 'content-hover',
+                    drop: (e, ui) => {
+                        if (ui.draggable[0].parentElement.id !== "") {
+                            if (ui.draggable[0].parentElement.id === ctrl[0].parentElement.id) {
+                                this.swapNodes(ui.draggable[0], ctrl[0]);
+                            }
+                            else {
+                                ui.draggable.insertAfter(ctrl);
+                            }
+                            document.dispatchEvent(this.modelChanged);
+                        }
+                    }
+                });
+            }
 
             if (addClose)
                 ctrl.prepend('<div class="close">&times;</div>');
@@ -240,6 +273,12 @@ module UdsDesigner {
             return ctrl[0];
         }
 
+        private swapNodes(a, b) {
+            var aparent = a.parentNode;
+            var asibling = a.nextSibling === b ? a : a.nextSibling;
+            b.parentNode.insertBefore(a, b);
+            aparent.insertBefore(b, asibling);
+        }
 
         private initControls() {
             // components are useable form elements that can be dragged 
@@ -338,15 +377,35 @@ module UdsDesigner {
                 var ctrl = CtrlBase.getElementCtrl(item);
                 elements.push(ctrl.getValues());
             });
-
+            let allElementsArePositioned: boolean = true;
             $(".element").each((index, item) => {
                 var ctrl = CtrlBase.getElementCtrl(item);
+                if (!ctrl)
+                    return;
                 if (ctrl.columns === undefined && ctrl.rows === undefined) {
+                    allElementsArePositioned = false;
                     ctrl.columns = this.columns;
                     ctrl.rows = this.rows;
                 }
                 elements.push(ctrl.getValues());
             });
+            if (allElementsArePositioned) {
+                let tempCollumns: number = 0;
+                let rowIndex: number = 0;
+                $(".element").each((index, item) => {
+                    var ctrl = CtrlBase.getElementCtrl(item);
+                    if (!ctrl)
+                        return;
+                    rowIndex++;
+                    let currentColumn: number = Number(item.parentElement.id[item.parentElement.id.length - 1]);
+                    ctrl.columns = currentColumn;
+                    if (currentColumn !== tempCollumns) {
+                        tempCollumns = currentColumn;
+                        rowIndex = 1;
+                    }
+                    ctrl.rows = rowIndex;
+                });
+            }
             return elements;
         }
 

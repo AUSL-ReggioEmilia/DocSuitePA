@@ -136,7 +136,7 @@
             }
 
             function validationFailed(sender, eventArgs) {
-                var maxfilesize = "<%=ProtocolEnv.MaxUploadThreshold%>";
+                var maxfilesize = "<%=MaxUploadThreshold%>";
                 var mbSize = maxfilesize/1048576;
                 var fileExtention = eventArgs.get_fileName().substring(eventArgs.get_fileName().lastIndexOf('.') + 1, eventArgs.get_fileName().length);
                 if (eventArgs.get_fileName().lastIndexOf('.') != -1) {

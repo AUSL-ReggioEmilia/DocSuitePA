@@ -21,7 +21,7 @@
         var <%= Me.ClientID %>_uscContattiSelRest;
         require(["UserControl/uscContattiSelRest"], function (uscContattiSelRest) {
             $(function () {
-                <%= Me.ClientID %>_uscContattiSelRest = new uscContattiSelRest(tenantModelConfiguration.serviceConfiguration);
+                <%= Me.ClientID %>_uscContattiSelRest = new uscContattiSelRest(tenantModelConfiguration.serviceConfiguration, "<%= Me.ClientID %>");
                 <%= Me.ClientID %>_uscContattiSelRest.treeContactId = "<%= treeContact.ClientID%>";
                 <%= Me.ClientID %>_uscContattiSelRest.pnlContentId = "<%= pnlContent.ClientID%>";
                 <%= Me.ClientID %>_uscContattiSelRest.tbContactsControlId = "<%= tbContactsControl.ClientID%>";
@@ -32,6 +32,13 @@
                 <%= Me.ClientID %>_uscContattiSelRest.validatorAnyNodeId = "<%= AnyNodeCheck.ClientID%>";
                 <%= Me.ClientID %>_uscContattiSelRest.filterByParentId = "<%= If(FilterByParentId.HasValue, FilterByParentId.Value, "undefined")  %>";
                 <%= Me.ClientID %>_uscContattiSelRest.requiredValidationEnabled = "<%= Required %>";
+                <%= Me.ClientID %>_uscContattiSelRest.multiTenantEnabled = "<%= ProtocolEnv.MultiTenantEnabled %>";
+                <%= Me.ClientID %>_uscContattiSelRest.currentTenantId = "<%= CurrentTenant.UniqueId %>";
+                <%= Me.ClientID %>_uscContattiSelRest.toolbarVisibleId = "<%= ToolbarVisible %>";
+                <%= Me.ClientID %>_uscContattiSelRest.managerId = "<%= BasePage.MasterDocSuite.DefaultWindowManager.ClientID %>";
+                <%= Me.ClientID %>_uscContattiSelRest.addAllDataButtonVisibility = "<%= AddAllDataButtonVisibility %>";
+                <%= Me.ClientID %>_uscContattiSelRest.removeAllDataButtonVisibility = "<%= RemoveAllDataButtonVisibility %>";
+                <%= Me.ClientID %>_uscContattiSelRest.confirmAndNewEnabled = <%= ConfirmAndNewEnabled.ToString().ToLower() %>;
 
                 <%= Me.ClientID %>_uscContattiSelRest.initialize();
             });
@@ -48,7 +55,9 @@
                                     RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" Width="100%">
                     <Items>
                         <telerik:RadToolBarButton runat="server" CommandName="ADD" ImageUrl="~/App_Themes/DocSuite2008/imgset16/account-circle.png" ToolTip="Aggiungi contatti esistente"/>
-                        <telerik:RadToolBarButton runat="server" CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/delete.png" ToolTip="Elimina contatti selezionato"></telerik:RadToolBarButton>
+                        <telerik:RadToolBarButton runat="server" CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/delete.png" ToolTip="Elimina contatti selezionato" />
+                        <telerik:RadToolBarButton runat="server" CommandName="ADDALL" ImageUrl="~/App_Themes/DocSuite2008/imgset16/database_add.png" ToolTip="Aggiungi tutti contatti" Value="ADDALL" style="display: none;" />
+                        <telerik:RadToolBarButton runat="server" CommandName="REMOVEALL" ImageUrl="~/App_Themes/DocSuite2008/imgset16/database_delete.png" ToolTip="Elimina tutti contatti" Value="REMOVEALL" style="display: none;" />
                     </Items>
                 </telerik:RadToolBar>
             </td>
@@ -76,12 +85,12 @@
         </tr>
     </table>
 
-        <telerik:RadWindow  runat="server" ID="rwContactSelector" Title="Seleziona contatti" Width="650" Height="600">
+    <telerik:RadWindow  runat="server" ID="rwContactSelector" Title="Seleziona contatti" Width="650" Height="600">
         <ContentTemplate>
             <asp:UpdatePanel runat="server" ID="UpdatePanelContact" UpdateMode="Conditional">
                 <ContentTemplate>
                     <div style="width:100%; height:95%">
-                        <uc1:uscContactREST runat="server" ID="uscContactREST"/>
+                        <uc1:uscContactREST runat="server" ID="uscContactRest"/>
                     </div>
                     <telerik:RadToolBarButton>
                         <ItemTemplate>

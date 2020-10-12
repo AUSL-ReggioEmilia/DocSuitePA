@@ -95,8 +95,6 @@ Public Class ResolutionDisplayControllerPC
         _uscReslBar.ButtonDuplicate.Visible = False
         _uscReslBar.ButtonCancel.Visible = False
 
-        'Pulsante Richiedi Attestazione
-        '_uscReslBar.ButtonRequestStatement.Visible = DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso DocSuiteContext.IsFullApplication AndAlso CurrentResolutionRights.CanInsertInContainer AndAlso CurrentResolutionRights.IsExecutive
         _uscReslBar.ButtonLog.Visible = ResolutionEnv.IsLogEnabled AndAlso (CommonShared.HasGroupAdministratorRight() OrElse (If(String.IsNullOrEmpty(DocSuiteContext.Current.ProtocolEnv.EnvGroupLogView), False, CommonShared.HasGroupLogViewRight())))
 
         If (currentResolution.Status.Id = ResolutionStatusId.Attivo AndAlso ResolutionEnv.UncomplianceRevokeResolutionEnabled) Then

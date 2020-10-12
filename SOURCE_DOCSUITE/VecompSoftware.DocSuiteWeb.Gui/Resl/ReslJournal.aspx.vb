@@ -35,9 +35,9 @@ Public Class ReslJournal
 
                 Dim doc As BiblosDocumentInfo
                 If resolutionJournal.IDSignedDocument.HasValue Then
-                    doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ConservationServer, resolutionJournal.Template.Location.ConsBiblosDSDB, resolutionJournal.IDSignedDocument.Value).LastOrDefault()
+                    doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ConsBiblosDSDB, resolutionJournal.IDSignedDocument.Value).LastOrDefault()
                 Else
-                    doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.IDDocument).FirstOrDefault()
+                    doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.IDDocument).FirstOrDefault()
                 End If
 
                 ' Creazione oggetto per pagina di firma multipla
@@ -59,6 +59,11 @@ Public Class ReslJournal
     Public ReadOnly Property ReturnUrl() As String Implements ISignMultipleDocuments.ReturnUrl
         Get
             Return String.Format("~/Resl/ReslJournal.aspx?Type={0}&TitleString={1}&Group={2}", Type, TitleString, TemplateGroup)
+        End Get
+    End Property
+    Public ReadOnly Property SignAction As String Implements ISignMultipleDocuments.SignAction
+        Get
+            Return String.Empty
         End Get
     End Property
 

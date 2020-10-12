@@ -16,79 +16,81 @@ import TenantWorkflowRepositoryModel = require('App/Models/Tenants/TenantWorkflo
 import TenantConfigurationModel = require('App/Models/Tenants/TenantConfigurationModel');
 import TenantConfigurationModelMapper = require('App/Mappers/Tenants/TenantConfigurationModelMapper');
 import ODATAResponseModel = require('App/Models/ODATAResponseModel');
-import ContactModel = require('../../Models/Commons/ContactModel');
-import ContactModelMapper = require('../../Mappers/Commons/ContactModelMapper');
+import ContactModel = require('App/Models/Commons/ContactModel');
+import ContactModelMapper = require('App/Mappers/Commons/ContactModelMapper');
+import UpdateActionType = require('App/Models/UpdateActionType');
+import TenantTypologyTypeEnum = require('App/Models/Tenants/TenantTypologyTypeEnum');
 
 class TenantService extends BaseService {
-  _configuration: ServiceConfiguration;
+    _configuration: ServiceConfiguration;
 
-  constructor(configuration: ServiceConfiguration) {
-    super();
-    this._configuration = configuration;
-  }
-
-  getTenants(searchFilter: TenantSearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-    let urlPart: string = this._configuration.ODATAUrl;
-
-    urlPart = urlPart + "?$expand=Configurations($expand=Tenant),Containers,PECMailBoxes,Roles,TenantWorkflowRepositories($expand=WorkflowRepository)";
-    let oDataFilters: string = "";
-
-    if (searchFilter.tenantName) {
-      oDataFilters = oDataFilters.concat(` &$filter=contains(TenantName, '${searchFilter.tenantName}')`);
+    constructor(configuration: ServiceConfiguration) {
+        super();
+        this._configuration = configuration;
     }
-    if (searchFilter.companyName) {
-      oDataFilters = oDataFilters.concat(` and contains(CompanyName, '${searchFilter.companyName}')`);
+
+    getTenants(callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}?$orderby=CompanyName&$filter=TenantTypology eq '${TenantTypologyTypeEnum[TenantTypologyTypeEnum.InternalTenant]}'`;
+
+        this.getRequest(url, null, (response: any) => {
+            if (callback && response) {
+                callback(response.value);
+            };
+        }, error);
     }
-    oDataFilters = oDataFilters.concat(" &$orderby=CompanyName");
 
-    let url: string = urlPart.concat(oDataFilters);
-    this.getRequest(url, null, (response: any) => {
-      if (callback && response) {
-        callback(response.value);
-      };
-    }, error);
-  }
+    getTenantById(tenantId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}?$filter=UniqueId eq ${tenantId} and TenantTypology eq '${TenantTypologyTypeEnum[TenantTypologyTypeEnum.InternalTenant]}'&$expand=TenantAOO($filter=TenantTypology eq '${TenantTypologyTypeEnum[TenantTypologyTypeEnum.InternalTenant]}')`;
+        this.getRequest(url, null, (response: any) => {
+            if (callback && response) {
+                let model: TenantViewModel = new TenantViewModel();
+                let mapper = new TenantViewModelMapper();
+                model = mapper.Map(response.value[0]);
+                callback(model);
+            };
+        }, error);
+    }
 
-  getTenantContainers(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-    let url: string = this._configuration.ODATAUrl.concat(`?$expand=Containers&$filter=UniqueId eq ${uniqueId}`);
-    this.getRequest(url, null, (response: any) => {
-      if (callback && response) {
-        let modelMapper = new ContainerModelMapper();
-        let tenantContainers: ContainerModel[] = [];
-        $.each(response.value[0].Containers, function (i, value) {
-          tenantContainers.push(modelMapper.Map(value));
-        });
-        callback(tenantContainers);
-      };
-    }, error);
-  }
+    getTenantContainers(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`?$expand=Containers&$filter=UniqueId eq ${uniqueId}`);
+        this.getRequest(url, null, (response: any) => {
+            if (callback && response) {
+                let modelMapper = new ContainerModelMapper();
+                let tenantContainers: ContainerModel[] = [];
+                $.each(response.value[0].Containers, function (i, value) {
+                    tenantContainers.push(modelMapper.Map(value));
+                });
+                callback(tenantContainers);
+            };
+        }, error);
+    }
 
-  getTenantPECMailBoxes(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-    let url: string = this._configuration.ODATAUrl.concat(`?$expand=PECMailBoxes&$filter=UniqueId eq ${uniqueId}`);
-    this.getRequest(url, null, (response: any) => {
-      if (callback && response) {
-        let modelMapper = new PECMailBoxModelMapper();
-        let tenantPECMailBoxes: PECMailBoxModel[] = [];
-        $.each(response.value[0].PECMailBoxes, function (i, value) {
-          tenantPECMailBoxes.push(modelMapper.Map(value));
-        });
-        callback(tenantPECMailBoxes);
-      };
-    }, error);
-  }
+    getTenantPECMailBoxes(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`?$expand=PECMailBoxes&$filter=UniqueId eq ${uniqueId}`);
+        this.getRequest(url, null, (response: any) => {
+            if (callback && response) {
+                let modelMapper = new PECMailBoxModelMapper();
+                let tenantPECMailBoxes: PECMailBoxModel[] = [];
+                $.each(response.value[0].PECMailBoxes, function (i, value) {
+                    tenantPECMailBoxes.push(modelMapper.Map(value));
+                });
+                callback(tenantPECMailBoxes);
+            };
+        }, error);
+    }
 
-  getTenantRoles(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-    let url: string = this._configuration.ODATAUrl.concat(`?$expand=Roles&$filter=UniqueId eq ${uniqueId}`);
-    this.getRequest(url, null, (response: any) => {
-      if (callback && response) {
-        let modelMapper = new RoleModelMapper();
-        let tenantRoles: RoleModel[] = [];
-        $.each(response.value[0].Roles, function (i, value) {
-          tenantRoles.push(modelMapper.Map(value));
-        });
-        callback(tenantRoles);
-      };
-    }, error);
+    getTenantRoles(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`?$expand=Roles&$filter=UniqueId eq ${uniqueId}`);
+        this.getRequest(url, null, (response: any) => {
+            if (callback && response) {
+                let modelMapper = new RoleModelMapper();
+                let tenantRoles: RoleModel[] = [];
+                $.each(response.value[0].Roles, function (i, value) {
+                    tenantRoles.push(modelMapper.Map(value));
+                });
+                callback(tenantRoles);
+            };
+        }, error);
     }
 
     getTenantContacts(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
@@ -105,42 +107,46 @@ class TenantService extends BaseService {
         }, error);
     }
 
-  getTenantWorkflowRepositories(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-    let url: string = this._configuration.ODATAUrl.concat(`?$expand=TenantWorkflowRepositories($expand=WorkflowRepository)&$filter=UniqueId eq ${uniqueId}`);
-    this.getRequest(url, null, (response: any) => {
-      if (callback && response) {
-        let tenantWorkflowRepositories: TenantWorkflowRepositoryModel[] = response.value[0].TenantWorkflowRepositories;
-        callback(tenantWorkflowRepositories);
-      };
-    }, error);
-  }
+    getTenantWorkflowRepositories(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`?$expand=TenantWorkflowRepositories($expand=WorkflowRepository)&$filter=UniqueId eq ${uniqueId}`);
+        this.getRequest(url, null, (response: any) => {
+            if (callback && response) {
+                let tenantWorkflowRepositories: TenantWorkflowRepositoryModel[] = response.value[0].TenantWorkflowRepositories;
+                callback(tenantWorkflowRepositories);
+            };
+        }, error);
+    }
 
-  getTenantConfigurations(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-    let url: string = this._configuration.ODATAUrl.concat(`?$expand=Configurations($expand=Tenant)&$filter=UniqueId eq ${uniqueId}`);
-    this.getRequest(url, null, (response: any) => {
-      if (callback && response) {
-        let modelMapper = new TenantConfigurationModelMapper();
-        let tenantConfigurations: TenantConfigurationModel[] = [];
-        $.each(response.value[0].Configurations, function (i, value) {
-          tenantConfigurations.push(modelMapper.Map(value));
-        });
-        callback(tenantConfigurations);
-      };
-    }, error);
-  }
+    getTenantConfigurations(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`?$expand=Configurations($expand=Tenant)&$filter=UniqueId eq ${uniqueId}`);
+        this.getRequest(url, null, (response: any) => {
+            if (callback && response) {
+                let modelMapper = new TenantConfigurationModelMapper();
+                let tenantConfigurations: TenantConfigurationModel[] = [];
+                $.each(response.value[0].Configurations, function (i, value) {
+                    tenantConfigurations.push(modelMapper.Map(value));
+                });
+                callback(tenantConfigurations);
+            };
+        }, error);
+    }
 
-  updateTenant(model: TenantViewModel,
-    callback?: (data: any) => any,
-      error?: (exception: ExceptionDTO) => any): void {
-    let url: string = this._configuration.WebAPIUrl;
-    this.putRequest(url, JSON.stringify(model), callback, error);
-  }
+    updateTenant(model: TenantViewModel, updateActionType: UpdateActionType,
+        callback?: (data: any) => any,
+        error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.WebAPIUrl;
+        if (updateActionType) {
+            url = `${url}?actionType=${updateActionType.toString()}`;
+        }
 
-  insertTenant(model: TenantViewModel,
-    callback?: (data: any) => any,
-    error?: (exception: ExceptionDTO) => any): void {
-    let url: string = this._configuration.WebAPIUrl;
-    this.postRequest(url, JSON.stringify(model), callback, error);
+        this.putRequest(url, JSON.stringify(model), callback, error);
+    }
+
+    insertTenant(model: TenantViewModel,
+        callback?: (data: any) => any,
+        error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.WebAPIUrl;
+        this.postRequest(url, JSON.stringify(model), callback, error);
     }
 
     getAllTenants(name: string, topElement: string,
@@ -148,7 +154,7 @@ class TenantService extends BaseService {
         callback?: (data: any) => any,
         error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        let qs: string = `$filter=contains(CompanyName,'${name}')&$count=true&$top=${topElement}&$skip=${skipElement.toString()}`;
+        let qs: string = `$filter=contains(CompanyName,'${name}') and TenantTypology eq '${TenantTypologyTypeEnum[TenantTypologyTypeEnum.InternalTenant]}'&$count=true&$top=${topElement}&$skip=${skipElement.toString()}`;
 
         this.getRequest(url,
             qs,
@@ -157,7 +163,7 @@ class TenantService extends BaseService {
                     let responseModel: ODATAResponseModel<TenantViewModel> = new ODATAResponseModel<TenantViewModel>(response);
 
                     let mapper = new TenantViewModelMapper();
-                    responseModel.value = mapper.MapCollection(response.value);;
+                    responseModel.value = mapper.MapCollection(response.value);
 
                     callback(responseModel);
                 }
@@ -186,6 +192,7 @@ class TenantService extends BaseService {
             },
             error);
     }
+
 }
 
 export = TenantService;

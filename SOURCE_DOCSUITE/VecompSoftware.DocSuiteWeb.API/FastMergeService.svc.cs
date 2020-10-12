@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.API.Helpers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Facade;
 using VecompSoftware.Helpers;
 using VecompSoftware.NHibernateManager;
+using VecompSoftware.Services.Logging;
 
 namespace VecompSoftware.DocSuiteWeb.API
 {
@@ -13,6 +16,15 @@ namespace VecompSoftware.DocSuiteWeb.API
     public class FastMergeService : IFastMergeService
     {
         #region [ Methods ]
+        public void LogError(Exception ex)
+        {
+            if (ex == null)
+            {
+                return;
+            }
+            FileLogger.Error(LogName.FileLog, ex.Message, ex);
+            LogError(ex.InnerException);
+        }
 
         public bool IsAlive()
         {
@@ -28,6 +40,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<IContainerDTO[]>(ex);
                 return response.Serialize();
             }
@@ -48,6 +61,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<CategoryDTO[]>(ex);
                 return response.Serialize();
             }
@@ -66,6 +80,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<MailboxDTO[]>(ex);
                 return response.Serialize();
             }
@@ -87,6 +102,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<MailboxDTO[]>(ex);
                 return response.Serialize();
             }
@@ -105,7 +121,27 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<TableDocTypeDTO[]>(ex);
+                return response.Serialize();
+            }
+            finally
+            {
+                NHibernateSessionManager.Instance.CloseTransactionAndSessions();
+            }
+        }
+
+        public string GetServiceCategories()
+        {
+            try
+            {
+                var dtos = new ServiceCategoryFacade().GetAll().Select(c => new ServiceCategoryDTO().CopyFrom(c)).ToArray();
+                return dtos.SerializeAsResponse();
+            }
+            catch (Exception ex)
+            {
+                LogError(ex);
+                var response = new APIResponse<ServiceCategoryDTO[]>(ex);
                 return response.Serialize();
             }
             finally
@@ -118,8 +154,10 @@ namespace VecompSoftware.DocSuiteWeb.API
         {
             try
             {
-                var protocol = protocolDTO.Deserialize<ProtocolDTO>();
+                ProtocolDTO protocol = protocolDTO.Deserialize<ProtocolDTO>();
+                protocol.IdTenantAOO = ConfigurationHelper.CurrentTenantAOOId;
                 protocol.Direction = 1; // Sempre in uscita.
+                FileLogger.Debug(LogName.FileLog, string.Concat(JsonConvert.SerializeObject(protocol, DocSuiteContext.DefaultJsonSerializerSettings).Take(1000)));
                 if (protocol.HasSenders())
                 {
                     foreach (var item in protocol.Senders)
@@ -151,6 +189,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<ProtocolDTO>(ex);
                 return response.Serialize();
             }
@@ -215,6 +254,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<MailDTO>(ex);
                 return response.Serialize();
             }
@@ -241,7 +281,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             {
                 MessageEmail savedMessage = FacadeFactory.Instance.MessageEmailFacade.GetById(int.Parse(mailDTO.Id));
                 DSWMessage currentMessage = savedMessage.Message;
-                Protocol protocol = FacadeFactory.Instance.ProtocolFacade.GetById(protocolDTO.Year.Value, protocolDTO.Number.Value);
+                Protocol protocol = FacadeFactory.Instance.ProtocolFacade.GetById(protocolDTO.UniqueId.Value);
                 ProtocolMessage newProtocolMessage = new ProtocolMessage(ref protocol, ref currentMessage);
                 FacadeFactory.Instance.ProtocolMessageFacade.Save(ref newProtocolMessage);
                 return mailDTO;
@@ -259,7 +299,7 @@ namespace VecompSoftware.DocSuiteWeb.API
                 var protocol = protocolDTO.Deserialize<ProtocolDTO>();
                 if (!protocol.HasAnyDocument() && protocol.HasId())
                 {
-                    var domain = FacadeFactory.Instance.ProtocolFacade.GetById(protocol.Year.Value, protocol.Number.Value);
+                    var domain = FacadeFactory.Instance.ProtocolFacade.GetById(protocol.UniqueId.Value);
                     protocol.CopyFrom(domain);
                 }
                 mail.CopyFrom(protocol);
@@ -316,6 +356,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<MailDTO>(ex);
                 return response.Serialize();
             }
@@ -336,6 +377,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<TaskDTO>(ex);
                 return response.Serialize();
             }
@@ -355,6 +397,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<TaskDTO>(ex);
                 return response.Serialize();
             }
@@ -374,6 +417,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<string[]>(ex);
                 return response.Serialize();
             }
@@ -395,13 +439,14 @@ namespace VecompSoftware.DocSuiteWeb.API
                 if (!protocol.HasId())
                     throw new ArgumentNullException("Nessun Id definito per il protocollo");
 
-                Protocol domain = FacadeFactory.Instance.ProtocolFacade.GetById(protocol.Year.Value, protocol.Number.Value);
+                Protocol domain = FacadeFactory.Instance.ProtocolFacade.GetById(protocol.UniqueId.Value);
                 ProtocolDocumentDTO dto = FacadeFactory.Instance.ProtocolFacade.GetProtocolMainDocumentPdfConverted(domain);
                 APIResponse<string> response = new APIResponse<string>(dto.Serialized);
                 return response.Serialize();
             }
             catch (Exception ex)
             {
+                LogError(ex);
                 var response = new APIResponse<TaskDTO>(ex);
                 return response.Serialize();
             }

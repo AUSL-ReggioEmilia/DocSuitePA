@@ -12,6 +12,7 @@ import RoleService = require("App/Services/Commons/RoleService");
 import WorkflowRepositoryService = require("App/Services/Workflows/WorkflowRepositoryService");
 import TenantConfigurationService = require("App/Services/Tenants/TenantConfigurationService");
 import TenantWorkflowRepositoryService = require("App/Services/Tenants/TenantWorkflowRepositoryService");
+import TenantAOOService = require('App/Services/Tenants/TenantAOOService');
 
 
 class TbltTenantBase {
@@ -23,7 +24,9 @@ class TbltTenantBase {
   protected static WorkflowRepository_TYPE_NAME = "WorkflowRepository";
   protected static TenantConfiguration_TYPE_NAME = "TenantConfiguration";
   protected static TenantWorkflowRepository_TYPE_NAME = "TenantWorkflowRepository";
-  
+  protected static TenantAOO_TYPE_NAME = "TenantAOO";
+
+
   private _serviceConfigurations: ServiceConfiguration[];
   protected _tenantService: TenantService;
   protected _containerService: ContainerService;
@@ -32,6 +35,8 @@ class TbltTenantBase {
   protected _workflowRepositoryService: WorkflowRepositoryService;
   protected _tenantConfigurationService: TenantConfigurationService;
   protected _tenantWorkflowRepositoryService: TenantWorkflowRepositoryService;
+  protected _tenantAOOService: TenantAOOService;
+
 
   constructor(serviceConfigurations: ServiceConfiguration[]) {
     this._serviceConfigurations = serviceConfigurations;
@@ -45,6 +50,7 @@ class TbltTenantBase {
     let workflowRepositoryConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, TbltTenantBase.WorkflowRepository_TYPE_NAME);
     let tenantConfigurationConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, TbltTenantBase.TenantConfiguration_TYPE_NAME);
     let tenantWorkflowRepositoryConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, TbltTenantBase.TenantWorkflowRepository_TYPE_NAME);
+    let tenantAOOConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, TbltTenantBase.TenantAOO_TYPE_NAME);
 
     this._tenantService = new TenantService(tenantConfiguration);
     this._containerService = new ContainerService(containerConfiguration);
@@ -53,6 +59,7 @@ class TbltTenantBase {
     this._workflowRepositoryService = new WorkflowRepositoryService(workflowRepositoryConfiguration);
     this._tenantConfigurationService = new TenantConfigurationService(tenantConfigurationConfiguration);
     this._tenantWorkflowRepositoryService = new TenantWorkflowRepositoryService(tenantWorkflowRepositoryConfiguration);
+    this._tenantAOOService = new TenantAOOService(tenantAOOConfiguration);
   }
 
   protected showNotificationException(uscNotificationId: string, exception: ExceptionDTO, customMessage?: string) {

@@ -89,30 +89,30 @@ class uscZenDeskHelp {
         this._btnRules.click();
     }
 
-    btnRules_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnRules_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this.selectedCategoryButtonId = this.btnRulesId;
         let buttonsIds: string[] = [this.btnSolutionsId, this.btnDocSuiteId, this.btnFAQsId];
         this.setButtonsColor(this.btnRulesId, buttonsIds);
         this.sendAjaxRequest("Normativa");
     }
 
-    btnSolutions_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnSolutions_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this.selectedCategoryButtonId = this.btnSolutionsId;
         let buttonsIds: string[] = [this.btnRulesId, this.btnDocSuiteId, this.btnFAQsId];
         this.setButtonsColor(this.btnSolutionsId, buttonsIds);
         this.sendAjaxRequest("Soluzioni");
     }
 
-    btnDocSuite_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnDocSuite_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this.selectedCategoryButtonId = this.btnDocSuiteId;
         let buttonsIds: string[] = [this.btnSolutionsId, this.btnRulesId, this.btnFAQsId];
         this.setButtonsColor(this.btnDocSuiteId, buttonsIds);
-        this.sendAjaxRequest("DocSuite");
+        this.sendAjaxRequest("DocSuite PA");
     }
 
-    btnFAQs_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnFAQs_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this.selectedCategoryButtonId = this.btnFAQsId;
-        let buttonsIds: string[] = [this.btnSolutionsId, this.btnDocSuiteId, this.btnSolutionsId];
+        let buttonsIds: string[] = [this.btnSolutionsId, this.btnDocSuiteId, this.btnRulesId];
         this.setButtonsColor(this.btnFAQsId, buttonsIds);
         this.sendAjaxRequest("FAQs");
     }
@@ -228,7 +228,7 @@ class uscZenDeskHelp {
         }
     }
 
-    btnSearch_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnSearch_Clicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         if (this._rtbSearch.get_textBoxValue() === "Cerca...") {
             return;
         }

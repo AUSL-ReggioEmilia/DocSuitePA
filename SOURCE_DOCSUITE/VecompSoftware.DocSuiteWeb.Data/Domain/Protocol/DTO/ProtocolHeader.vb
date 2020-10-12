@@ -83,14 +83,12 @@
     End Property
 
     Public Property LocationId As Integer
-    Public Property LocationDocumentServer As String
     Public Property LocationProtBiblosDSDB As String
     Public ReadOnly Property ProxiedLocation As Location
         Get
             If Not LocationId.Equals(0) AndAlso _proxiedLocation Is Nothing Then
                 _proxiedLocation = New Location()
                 _proxiedLocation.Id = LocationId
-                _proxiedLocation.DocumentServer = LocationDocumentServer
                 _proxiedLocation.ProtBiblosDSDB = LocationProtBiblosDSDB
             End If
             Return _proxiedLocation

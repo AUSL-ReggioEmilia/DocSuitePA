@@ -85,10 +85,14 @@ Partial Public Class UserSelRoleUser
             Dim results As IList(Of RoleUser) = finder.List()
             Dim results_D As IList(Of RoleUser) = results.Where(Function(f) f.Type = RoleUserType.D.ToString()).OrderBy(Function(f) f.Role.Name).ThenBy(Function(f) f.Account).ToList()
             Dim results_V As IList(Of RoleUser) = results.Where(Function(f) f.Type = RoleUserType.V.ToString()).OrderBy(Function(f) f.Role.Name).ThenBy(Function(f) f.Account).ToList()
-            Dim results_S As IList(Of RoleUser) = results.Where(Function(f) f.Type = RoleUserType.S.ToString()).OrderBy(Function(f) f.Role.Name).ThenBy(Function(f) f.Account).ToList()
+
             PopulateRoleUser(results_D)
             PopulateRoleUser(results_V)
-            PopulateRoleUser(results_S)
+
+            If (Not ProtocolEnv.HideSegreteriaOnDirigSelect) Then
+                Dim results_S As IList(Of RoleUser) = results.Where(Function(f) f.Type = RoleUserType.S.ToString()).OrderBy(Function(f) f.Role.Name).ThenBy(Function(f) f.Account).ToList()
+                PopulateRoleUser(results_S)
+            End If
         Else
             ' Popolo dirigenti
             PopulateRoleUser(Facade.RoleUserFacade.GetByType(RoleUserType.D, True, txtNameFilter.Text))
@@ -151,7 +155,7 @@ Partial Public Class UserSelRoleUser
                     userNode.Text = String.Concat(roleUser.Description, " (", roleUser.Account, ")")
                 End If
                 userNode.Value = roleUser.Id.ToString()
-                roleNode.Attributes.Add("account", roleUser.Account)
+                userNode.Attributes.Add("account", roleUser.Account)
                 userNode.ImageUrl = "../App_Themes/DocSuite2008/imgset16/user.png"
                 userNode.Attributes.Add("Person", "Person")
                 userNode.Style.Add("font-weight", "bold")

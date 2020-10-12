@@ -143,9 +143,9 @@ Public Class ReslElencoProposedDelPrint
         If resl.Number.HasValue Then
             Dim proposerCode As String = String.Empty
             If resl.ResolutionContactProposers IsNot Nothing AndAlso resl.ResolutionContactProposers.Count > 0 Then
-                proposerCode = resl.ResolutionContactProposers.ElementAt(0).Contact.Code
+                proposerCode = String.Join(", ", resl.ResolutionContactProposers.Select(Function(s) s.Contact.Code))
             End If
-            Return String.Format("{0}", proposerCode)
+            Return proposerCode
         Else
             Return String.Empty
         End If
@@ -155,7 +155,7 @@ Public Class ReslElencoProposedDelPrint
         If resl.Number.HasValue Then
             Dim proposerCode As String = String.Empty
             If resl.ResolutionContactProposers IsNot Nothing AndAlso resl.ResolutionContactProposers.Count > 0 Then
-                proposerCode = resl.ResolutionContactProposers.ElementAt(0).Contact.Description
+                proposerCode = String.Join(", ", resl.ResolutionContactProposers.Select(Function(s) s.Contact.Description))
             End If
             Return proposerCode
         Else

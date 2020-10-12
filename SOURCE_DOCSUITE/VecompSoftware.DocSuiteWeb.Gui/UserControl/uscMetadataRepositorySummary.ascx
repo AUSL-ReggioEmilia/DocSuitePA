@@ -9,7 +9,7 @@
 <link href="../UDSDesigner/Content/nprogress.css" rel="stylesheet" />
 <link href="../Content/site.css" rel="stylesheet" />
 <telerik:RadScriptBlock runat="server" EnableViewState="false">
-    <script type="text/javascript">        var uscMetadataRepositorySummary;        require(["UserControl/uscMetadataRepositorySummary"], function (UscMetadataRepositorySummary) {            $(function () {                uscMetadataRepositorySummary = new UscMetadataRepositorySummary(tenantModelConfiguration.serviceConfiguration);                uscMetadataRepositorySummary.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID%>";                uscMetadataRepositorySummary.ajaxLoadingPanelId = "<%= BasePage.MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>";                uscMetadataRepositorySummary.componentTitleId = "<%= componentTitle.ClientID%>"                uscMetadataRepositorySummary.componentTextId = "<%= componentText.ClientID%>";                uscMetadataRepositorySummary.componentDateId = "<%= componentDate.ClientID%>";                uscMetadataRepositorySummary.componentNumberId = "<%= componentNumber.ClientID%>";                uscMetadataRepositorySummary.componentCheckBoxId = "<%= componentCheckbox.ClientID%>";                uscMetadataRepositorySummary.componentCommentId = "<%= componentComment.ClientID%>"                uscMetadataRepositorySummary.componentEnumId = "<%= componentEnum.ClientID%>"                uscMetadataRepositorySummary.pageContentId = "<%= pageContent.ClientID%>";                uscMetadataRepositorySummary.ajaxManagerId = "<%= BasePage.MasterDocSuite.DefaultWindowManager.ClientID %>";                uscMetadataRepositorySummary.initialize();            });        });    </script>
+    <script type="text/javascript">        var uscMetadataRepositorySummary;        require(["UserControl/uscMetadataRepositorySummary"], function (UscMetadataRepositorySummary) {            $(function () {                uscMetadataRepositorySummary = new UscMetadataRepositorySummary(tenantModelConfiguration.serviceConfiguration);                uscMetadataRepositorySummary.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID%>";                uscMetadataRepositorySummary.ajaxLoadingPanelId = "<%= BasePage.MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>";                uscMetadataRepositorySummary.componentTitleId = "<%= componentTitle.ClientID%>"                uscMetadataRepositorySummary.componentTextId = "<%= componentText.ClientID%>";                uscMetadataRepositorySummary.componentDateId = "<%= componentDate.ClientID%>";                uscMetadataRepositorySummary.componentNumberId = "<%= componentNumber.ClientID%>";                uscMetadataRepositorySummary.componentCheckBoxId = "<%= componentCheckbox.ClientID%>";                uscMetadataRepositorySummary.componentCommentId = "<%= componentComment.ClientID%>"                uscMetadataRepositorySummary.componentEnumId = "<%= componentEnum.ClientID%>"                uscMetadataRepositorySummary.pageContentId = "<%= pageContent.ClientID%>";                uscMetadataRepositorySummary.ajaxManagerId = "<%= BasePage.MasterDocSuite.DefaultWindowManager.ClientID %>";                uscMetadataRepositorySummary.setiIntegrationEnabledId = <%=ProtocolEnv.SETIIntegrationEnabled.ToString().ToLower()%>;                uscMetadataRepositorySummary.initialize();            });        });    </script>
     <style>
         .element {
             margin-left: 0px;
@@ -32,6 +32,7 @@
     <div id="componentTitle" data-type="Title" runat="server" style="padding: 6px; margin-left: 0px;" class="element-Title">
         <div class="controls">
             <label class="control-label"></label>
+            <span id="setiFieldId" style="margin-left: 5px;"></span>
         </div>
     </div>
     <div id="componentText" data-type="Text" style="padding: 6px;" runat="server" class="element">
@@ -41,7 +42,13 @@
                 <tr>
                     <td>
                         <label class="control-label">Nome del campo: </label>
-                        <label class="control-label" style="margin-left:65px;" id="labelNameText"></label>
+                        <label class="control-label" style="margin-left: 65px;" id="labelNameText"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label">Codice interno: </label>
+                        <label class="control-label" style="margin-left: 79px;" id="labelKeynameText"></label>
                     </td>
                 </tr>
                 <tr>
@@ -60,7 +67,13 @@
                 <tr>
                     <td>
                         <label class="control-label">Nome del campo: </label>
-                        <label class="control-label" style="margin-left:65px;" id="labelNameComment"></label>
+                        <label class="control-label" style="margin-left: 65px;" id="labelNameComment"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label">Codice interno: </label>
+                        <label class="control-label" style="margin-left: 79px;" id="labelKeynameComment"></label>
                     </td>
                 </tr>
                 <tr>
@@ -79,7 +92,13 @@
                 <tr>
                     <td>
                         <label class="control-label">Nome del campo: </label>
-                        <label class="control-label" style="margin-left:65px;" id="labelNameDate"></label>
+                        <label class="control-label" style="margin-left: 65px;" id="labelNameDate"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label">Codice interno: </label>
+                        <label class="control-label" style="margin-left: 79px;" id="labelKeynameDate"></label>
                     </td>
                 </tr>
                 <tr>
@@ -98,7 +117,13 @@
                 <tr>
                     <td>
                         <label class="control-label">Nome del campo: </label>
-                        <label class="control-label" style="margin-left:65px;" id="labelNameNumber"></label>
+                        <label class="control-label" style="margin-left: 65px;" id="labelNameNumber"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label">Codice interno: </label>
+                        <label class="control-label" style="margin-left: 79px;" id="labelKeynameNumber"></label>
                     </td>
                 </tr>
                 <tr>
@@ -117,7 +142,13 @@
                 <tr>
                     <td>
                         <label class="control-label">Nome del campo: </label>
-                        <label class="control-label" style="margin-left:65px;" id="labelNameCheckBox"></label>
+                        <label class="control-label" style="margin-left: 65px;" id="labelNameCheckBox"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label">Codice interno: </label>
+                        <label class="control-label" style="margin-left: 79px;" id="labelKeynameCheckBox"></label>
                     </td>
                 </tr>
                 <tr>
@@ -136,7 +167,13 @@
                 <tr>
                     <td>
                         <label class="control-label">Nome del campo: </label>
-                        <label class="control-label" style="margin-left:65px;" id="labelNameEnum"></label>
+                        <label class="control-label" style="margin-left: 65px;" id="labelNameEnum"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label">Codice interno: </label>
+                        <label class="control-label" style="margin-left: 79px;" id="labelKeynameEnum"></label>
                     </td>
                 </tr>
                 <tr>
@@ -149,7 +186,7 @@
         </div>
         <div class="controls" id="enumValues">
             <label class="control-label">Valori:</label>
-            <ul id="labelEnum" class="ul" style="margin-left: 180px; margin-top:-20px">
+            <ul id="labelEnum" class="ul" style="margin-left: 180px; margin-top: -20px">
             </ul>
         </div>
     </div>

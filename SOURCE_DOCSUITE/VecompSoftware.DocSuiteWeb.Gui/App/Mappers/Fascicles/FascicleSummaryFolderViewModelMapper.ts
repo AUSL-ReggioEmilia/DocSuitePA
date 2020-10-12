@@ -22,6 +22,7 @@ class FascicleSummaryFolderViewModelMapper extends BaseMapper<FascicleSummaryFol
         toMap.hasChildren = source.HasChildren;
         toMap.hasDocuments = source.HasDocuments;
         toMap.FascicleFolderLevel = source.FascicleFolderLevel;
+        toMap.FascicleDocuments = source.FascicleDocuments;
         return toMap;
     }
 

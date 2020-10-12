@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/BaseMapper"], function (require, exports, BaseMapper) {
+define(["require", "exports", "App/Mappers/BaseMapper", "App/Models/Commons/ConservationStatusType", "App/Models/Commons/ConservationType"], function (require, exports, BaseMapper, ConservationStatusType, ConservationType) {
     var ConservationModelMapper = /** @class */ (function (_super) {
         __extends(ConservationModelMapper, _super);
         function ConservationModelMapper() {
@@ -22,7 +22,13 @@ define(["require", "exports", "App/Mappers/BaseMapper"], function (require, expo
             if (!source) {
                 return null;
             }
-            toMap = source;
+            toMap.EntityType = source.EntityType;
+            toMap.Message = source.Message;
+            toMap.SendDate = source.SendDate;
+            toMap.Status = ConservationStatusType[source.Status];
+            toMap.Type = ConservationType[source.Type];
+            toMap.UniqueId = source.UniqueId;
+            toMap.Uri = source.Uri;
             return toMap;
         };
         return ConservationModelMapper;

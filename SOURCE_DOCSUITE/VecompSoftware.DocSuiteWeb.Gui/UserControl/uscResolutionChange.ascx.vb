@@ -352,6 +352,15 @@ Partial Public Class uscResolutionChange
             uscRoleProposer.Visible = value
         End Set
     End Property
+
+    Public Property ContactProposerMultiSelect As Boolean
+        Get
+            Return uscContactProp.MultiSelect
+        End Get
+        Set(value As Boolean)
+            uscContactProp.MultiSelect = value
+        End Set
+    End Property
 #End Region
 
 #Region "Assegnatario"
@@ -1777,7 +1786,7 @@ Partial Public Class uscResolutionChange
         If uscOCSupervisoryBoardDocument.DocumentInfos.Count > 0 Then
             ' TODO: usare metodi nuovi
             Dim tempFileDocumentInfo As TempFileDocumentInfo = DirectCast(uscOCSupervisoryBoardDocument.DocumentInfos(0), TempFileDocumentInfo)
-            Dim location As New UIDLocation(resl.Container.ReslLocation.DocumentServer, resl.Container.ReslLocation.ReslBiblosDSDB)
+            Dim location As New UIDLocation(resl.Container.ReslLocation.ReslBiblosDSDB)
             Dim uid As UIDDocument = Service.AddFile(location, tempFileDocumentInfo.FileInfo, Service.GetBaseAttributes(tempFileDocumentInfo.Name, String.Empty))
             resl.File.IdSupervisoryBoardFile = uid.Chain.Id
 
@@ -1817,14 +1826,14 @@ Partial Public Class uscResolutionChange
                 If uscOCRegionDocument.DocumentsAddedCount > 0 AndAlso Not String.IsNullOrEmpty(uscOCRegionDocument.GetNodeValue(0)) Then
                     ' TODO: forse c'è da controllare qualcosa qui
                     Dim fileInfo As New FileInfo(Server.MapPath("~/Temp/" & uscOCRegionDocument.GetNodeValue(0)))
-                    Dim location As New UIDLocation(resl.Container.ReslLocation.DocumentServer, resl.Container.ReslLocation.ReslBiblosDSDB)
+                    Dim location As New UIDLocation(resl.Container.ReslLocation.ReslBiblosDSDB)
                     Dim uid As UIDDocument = Service.AddFile(location, fileInfo, Service.GetBaseAttributes(uscOCRegionDocument.GetNodeValue(0), ""))
                     resl.File.IdControllerFile = uid.Chain.Id
 
                 ElseIf uscOCRegionDocument.DocumentInfos.Count > 0 Then
                     ' TODO: usare metodi nuovi
                     Dim tempFileDocumentInfo As TempFileDocumentInfo = DirectCast(uscOCRegionDocument.DocumentInfos(0), TempFileDocumentInfo)
-                    Dim location As New UIDLocation(resl.Container.ReslLocation.DocumentServer, resl.Container.ReslLocation.ReslBiblosDSDB)
+                    Dim location As New UIDLocation(resl.Container.ReslLocation.ReslBiblosDSDB)
                     Dim uid As UIDDocument = Service.AddFile(location, tempFileDocumentInfo.FileInfo, Service.GetBaseAttributes(tempFileDocumentInfo.Name, String.Empty))
                     resl.File.IdControllerFile = uid.Chain.Id
 
@@ -1857,8 +1866,8 @@ Partial Public Class uscResolutionChange
                 resl.ControllerOpinion = txtOCOpinion.Text
                 If uscOCDocument.DocumentsAddedCount > 0 AndAlso uscOCDocument.DocumentInfos IsNot Nothing AndAlso uscOCDocument.DocumentInfos.Item(0) IsNot Nothing Then
 
-                    Dim location As New UIDLocation(resl.Container.ReslLocation.DocumentServer, resl.Container.ReslLocation.ReslBiblosDSDB)
-                    Dim documentUploaded As BiblosDocumentInfo = uscOCDocument.DocumentInfos.Item(0).ArchiveInBiblos(location.Server, location.Archive)
+                    Dim location As New UIDLocation(resl.Container.ReslLocation.ReslBiblosDSDB)
+                    Dim documentUploaded As BiblosDocumentInfo = uscOCDocument.DocumentInfos.Item(0).ArchiveInBiblos(location.Archive)
                     resl.File.IdControllerFile = documentUploaded.BiblosChainId
 
                 End If

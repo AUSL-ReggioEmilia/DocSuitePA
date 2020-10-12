@@ -47,7 +47,6 @@
                 <asp:Button ID="btnMailSettori" PostBackUrl="~/MailSenders/ResolutionMailSender.aspx?selectRoles=true&Type=Resl" runat="server" Text="Invia settori" Width="120px" />
                 <asp:Button ID="btnStampa" runat="server" Text="Stampa" Width="120px" />
                 <asp:Button CausesValidation="false" ID="btnDuplica" OnClientClick="return OpenWindowDuplica();" runat="server" Text="Duplica" value="Duplica" Width="120px" />
-                <asp:Button CausesValidation="false" ID="btnStatement" runat="server" Text="Richiedi attestazione" value="Attestazione" Visible="false" Width="120px" />
                 <asp:Button ID="btnConfirmView" runat="server" Text="Conferma visione" Width="120px"  Visible="False"/>
             </asp:Panel>
         </asp:TableCell>

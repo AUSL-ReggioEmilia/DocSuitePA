@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "App/Mappers/BaseMapper"], function (require, exports, BaseMapper) {
+define(["require", "exports", "App/Mappers/BaseMapper", "App/Mappers/Commons/CategoryFascicleRightViewModelMapper"], function (require, exports, BaseMapper, CategoryFascicleRightViewModelMapper) {
     var CategoryFascicleViewModelMapper = /** @class */ (function (_super) {
         __extends(CategoryFascicleViewModelMapper, _super);
         function CategoryFascicleViewModelMapper() {
@@ -31,6 +31,8 @@ define(["require", "exports", "App/Mappers/BaseMapper"], function (require, expo
             toMap.CategoryId = source.Category ? source.Category.EntityShortId : null;
             toMap.ManagerId = source.Manager ? source.Manager.UniqueId : null;
             toMap.ManagerName = source.Manager ? source.Manager.Description : null;
+            toMap.CustomActions = source.CustomActions;
+            toMap.CategoryFascicleRights = source.CategoryFascicleRights ? new CategoryFascicleRightViewModelMapper().MapCollection(source.CategoryFascicleRights) : null;
             return toMap;
         };
         return CategoryFascicleViewModelMapper;

@@ -4,7 +4,6 @@ Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Formatter
-Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Biblos
@@ -55,6 +54,7 @@ Public Class ProtModifica
             uscAnnexes.SignButtonEnabled = ProtocolEnv.IsFDQEnabled
             ' Copia da protocollo
             uscAnnexes.ButtonCopyProtocol.Visible = ProtocolEnv.CopyProtocolDocumentsEnabled
+            uscAnnexes.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
             ' Copia da atto
             If (DocSuiteContext.Current.IsResolutionEnabled) Then
                 uscAnnexes.ButtonCopyResl.Visible = ResolutionEnv.CopyReslDocumentsEnabled
@@ -214,7 +214,7 @@ Public Class ProtModifica
         Facade.ProtocolFacade.Update(CurrentProtocol)
         Facade.ProtocolFacade.RaiseAfterEdit(CurrentProtocol, uscAllegati.DocumentInfosAdded)
         Facade.ProtocolFacade.SendUpdateProtocolCommand(CurrentProtocol)
-        Response.Redirect("../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck("Year=" & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber))
+        Response.Redirect($"../Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
     Protected Sub uscClassificatore_CategoryAdding(sender As Object, args As EventArgs) Handles uscClassificatore.CategoryAdding
@@ -247,7 +247,7 @@ Public Class ProtModifica
             Dim categories As List(Of Category) = New List(Of Category)
             Dim category As Category = CurrentProtocol.Category
             If Not CommonShared.HasGroupEditCategoryRight Then
-                Do While category.Parent IsNot Nothing
+                Do While category.Parent IsNot Nothing AndAlso category.Parent.Code > 0
                     category = category.Parent
                 Loop
             End If
@@ -259,7 +259,7 @@ Public Class ProtModifica
             If CurrentFascicleDocumentUnits.Count > 0 Then
                 tblEditClassificazione.Visible = False
             Else
-                If CurrentProtocol.Category.Parent IsNot Nothing Then
+                If CurrentProtocol.Category.Parent IsNot Nothing AndAlso CurrentProtocol.Category.Parent.Code > 0 Then
                     uscSottoClassificatore.SubCategory = CurrentProtocol.Category
                 End If
                 ' Verifico se l'operatore è abilitato a modificare la Category
@@ -383,7 +383,7 @@ Public Class ProtModifica
             Dim categories As New List(Of Category)
             Dim category As Category = CurrentProtocol.Category
             If Not CurrentFascicleDocumentUnits.Any(Function(f) f.ReferenceType = ReferenceType.Fascicle) Then
-                Do While category.Parent IsNot Nothing
+                Do While category.Parent IsNot Nothing AndAlso category.Parent.Code > 0
                     category = category.Parent
                 Loop
             End If
@@ -397,7 +397,7 @@ Public Class ProtModifica
                 uscClassificatore.CategoryID = CurrentProtocol.Category.Id
             Else
                 uscSottoClassificatore.CategoryID = CurrentProtocol.Category.Id
-                If CurrentProtocol.Category.Parent IsNot Nothing Then
+                If CurrentProtocol.Category.Parent IsNot Nothing AndAlso CurrentProtocol.Category.Parent.Code > 0 Then
                     uscSottoClassificatore.SubCategory = CurrentProtocol.Category
                 End If
             End If
@@ -418,21 +418,21 @@ Public Class ProtModifica
 
         ' Verifica Protocollo
         If CurrentProtocol Is Nothing Then
-            Throw New DocSuiteException("Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber), "Protocollo inesistente")
+            Throw New DocSuiteException($"Protocollo ID {CurrentProtocol.Id}", "Protocollo inesistente")
         End If
 
         ' Verifica diritti
         If Action.Eq("Repair") Then
             If Not CurrentProtocolRightsStatusCancel.IsErrorEditable.GetValueOrDefault(False) Then
-                Throw New DocSuiteException("Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber), "Mancano diritti di autorizzazione")
+                Throw New DocSuiteException($"Protocollo n. {CurrentProtocol.FullNumber}", "Mancano diritti di autorizzazione")
             End If
         Else
             If Not CurrentProtocolRightsStatusCancel.IsEditable AndAlso Not CurrentProtocolRightsStatusCancel.IsRejected AndAlso Not CurrentProtocolRightsStatusCancel.IsEditableAttachment.GetValueOrDefault(False) Then
-                Throw New DocSuiteException("Protocollo n. " & ProtocolFacade.ProtocolFullNumber(CurrentProtocolYear, CurrentProtocolNumber), "Mancano diritti di autorizzazione")
+                Throw New DocSuiteException($"Protocollo n. {CurrentProtocol.FullNumber}", "Mancano diritti di autorizzazione")
             End If
         End If
 
-        MasterDocSuite.HistoryTitle = String.Format("{0} {1}", Title, CurrentProtocol.Id)
+        MasterDocSuite.HistoryTitle = String.Format("{0} {1}", Title, CurrentProtocol.FullNumber)
     End Sub
 
     ''' <summary> Carica documenti e allegati nei rispettivi usercontrol. </summary>
@@ -576,7 +576,7 @@ Public Class ProtModifica
     End Sub
 
     Private Sub CreateFieldChangeLog(ByVal message As String, ByVal oldValue As String, ByVal newValue As String)
-        If Not DocSuiteContext.Current.ProtocolEnv.IsLogEnabled OrElse oldValue.Eq(newValue) Then
+        If oldValue.Eq(newValue) Then
             Exit Sub
         End If
 
@@ -613,14 +613,14 @@ Public Class ProtModifica
                     For Each idDocument As Guid In uscAnnexes.DocumentsToDelete
                         Dim annexed As BiblosDocumentInfo = annexes.FirstOrDefault(Function(x) x.DocumentId = idDocument)
                         If annexed IsNot Nothing Then
-                            Service.DetachDocument(CurrentProtocol.Location.DocumentServer, idDocument)
+                            Service.DetachDocument(idDocument)
                             FacadeFactory.Instance.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PM, String.Format("Eliminato Annesso {0} con ID {1}", annexed.Name, idDocument))
                         End If
                     Next
                 End If
 
                 If Not CurrentProtocol.IdAnnexed.Equals(Guid.Empty) AndAlso uscAnnexes.DocumentInfos.Count = 0 Then
-                    Service.DetachDocument(CurrentProtocol.Location.DocumentServer, CurrentProtocol.IdAnnexed)
+                    Service.DetachDocument(CurrentProtocol.IdAnnexed)
                     CurrentProtocol.IdAnnexed = Guid.Empty
                     FacadeFactory.Instance.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PM, "Catena annessi svuotata")
                 End If

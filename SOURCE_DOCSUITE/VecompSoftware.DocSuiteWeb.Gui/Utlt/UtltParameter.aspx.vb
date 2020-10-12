@@ -1,13 +1,4 @@
-﻿Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports System.Collections.Generic
-Imports Telerik.Web.UI
-Imports System.Web
-
-''' <summary>
+﻿''' <summary>
 ''' Visualizza tutti i parametri possibili per ogni ambiente,
 ''' segnala i valori presenti nel DB che secondo l'XML non dovrebbero essere presenti
 ''' scrive in corsivo i valori che non sono stati settati nell'applicazione

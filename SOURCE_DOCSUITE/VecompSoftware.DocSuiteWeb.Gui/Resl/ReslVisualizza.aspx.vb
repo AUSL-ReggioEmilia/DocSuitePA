@@ -114,8 +114,6 @@ Partial Public Class ReslVisualizza
                 SelectDocument(arguments(1))
             Case "CANCEL"
                 Response.Redirect("~/Resl/ReslRicerca.aspx?Type=Resl")
-            Case "REQUESTSTATEMENT" 'da rivedere quando è terminata la logica
-                Duplicate(arguments(1))
             Case "LASTPAGE"
                 Controller.ShowButtons()
         End Select
@@ -333,16 +331,6 @@ Partial Public Class ReslVisualizza
     ''' <summary> Metodo per la pubblicazione del frontespizio. </summary>
     Protected Overridable Sub ButtonPublishWebClickDelegate(ByVal sender As Object, ByVal e As EventArgs)
         Try
-            'Dim tw As TabWorkflow = Facade.TabWorkflowFacade.GetByResolution(CurrentResolution.Id)
-            'Dim fileRes As FileResolution = Facade.FileResolutionFacade.GetByResolution(CurrentResolution)(0)
-            'Dim ext As String = String.Empty
-            'Dim sign As String = Facade.ResolutionFacade.SqlResolutionGetNumber(CurrentResolution.Id, , , , True) & ": Inserimento Albo " & String.Format("{0:dd/MM/yyyy}", CurrentResolution.PublishingDate)
-            'Dim biblosDsServer As String = CurrentResolution.Location.DocumentServer
-            'Dim biblosDsArchive As String = CurrentResolution.Location.ReslBiblosDSDB
-            'Dim docChain As String = ReflectionHelper.GetPropertyCase(fileRes, tw.FieldDocument)
-            'Dim doc As New BiblosDocumentInfo(biblosDsServer, biblosDsArchive, docChain, 0)
-            'Dim byteData As Byte() = doc.GetPdfStream(sign)
-
             Dim strXmlDoc As String = String.Empty
             Dim ResWPFacade As ResolutionWPFacade = New ResolutionWPFacade()
             Dim WebPublDate As DateTime = DateTime.Today

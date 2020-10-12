@@ -48,7 +48,7 @@ class ReslTipologia {
     private static DELETE_KIND_COMMAND: string = "deleteKind";    
     private static ISACTIVE_ATTRIBUTE_NODE: string = "isActive";
 
-    private get searchDisabled(): boolean {
+    private searchDisabled(): boolean {
         let toolBarButton: Telerik.Web.UI.RadToolBarButton = this._tlbStatusSearch.findItemByValue("searchDisabled") as Telerik.Web.UI.RadToolBarButton;
         if (toolBarButton) {
             return toolBarButton.get_checked();
@@ -56,7 +56,7 @@ class ReslTipologia {
         return false;
     }
 
-    private get searchActive(): boolean {
+    private searchActive(): boolean {
         let toolBarButton: Telerik.Web.UI.RadToolBarButton = this._tlbStatusSearch.findItemByValue("searchActive") as Telerik.Web.UI.RadToolBarButton;
         if (toolBarButton) {
             return toolBarButton.get_checked();
@@ -64,11 +64,11 @@ class ReslTipologia {
         return false;
     }
 
-    private get rootTreeNode(): Telerik.Web.UI.RadTreeNode {
+    private rootTreeNode(): Telerik.Web.UI.RadTreeNode {
         return this._rtvResolutionKinds.get_nodes().getNode(0);
     }
 
-    private get currentSelectedNode(): Telerik.Web.UI.RadTreeNode {
+    private currentSelectedNode(): Telerik.Web.UI.RadTreeNode {
         return this._rtvResolutionKinds.get_selectedNode();
     }    
 
@@ -79,28 +79,28 @@ class ReslTipologia {
     /**
      *------------------------- Events -----------------------------
      */
-    private btnAdd_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private btnAdd_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._txtKindName.set_value('');
         $("#".concat(this.rcbKindActiveId)).prop("checked", true);
         this._btnConfirm.set_commandArgument(ReslTipologia.ADD_KIND_COMMAND);
         this.openWindow(this.wndResolutionKindId, "Inserimento nuova tipologia di atto");
     }
 
-    private btnEdit_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
-        if (!this.currentSelectedNode || !this.currentSelectedNode.get_value()) {
+    private btnEdit_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
+        if (!this.currentSelectedNode() || !this.currentSelectedNode().get_value()) {
             alert("Selezionare una tipologia di atto per la modifica");
             return;
         }
 
-        this._txtKindName.set_value(this.currentSelectedNode.get_text());
-        let isActive: boolean = this.currentSelectedNode.get_attributes().getAttribute(ReslTipologia.ISACTIVE_ATTRIBUTE_NODE);
+        this._txtKindName.set_value(this.currentSelectedNode().get_text());
+        let isActive: boolean = this.currentSelectedNode().get_attributes().getAttribute(ReslTipologia.ISACTIVE_ATTRIBUTE_NODE);
         $("#".concat(this.rcbKindActiveId)).prop("checked", isActive);
         this._btnConfirm.set_commandArgument(ReslTipologia.EDIT_KIND_COMMAND);
         this.openWindow(this.wndResolutionKindId, "Modifica tipologia di atto");
     }
 
-    private btnCancel_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {        
-        if (!this.currentSelectedNode || !this.currentSelectedNode.get_value()) {
+    private btnCancel_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {        
+        if (!this.currentSelectedNode() || !this.currentSelectedNode().get_value()) {
             alert("Selezionare una tipologia di atto per la cancellazione");
             sender.enableAfterSingleClick();
             return;
@@ -110,7 +110,7 @@ class ReslTipologia {
             if (arg) {
                 try {
                     let model: ResolutionKindModel = {} as ResolutionKindModel;
-                    model.UniqueId = this.currentSelectedNode.get_value();
+                    model.UniqueId = this.currentSelectedNode().get_value();
                     this._loadingManager.show(this.rtvResolutionKindsId);
                     this.saveResolutionKind(model, ReslTipologia.DELETE_KIND_COMMAND)
                         .done(() => {
@@ -131,8 +131,8 @@ class ReslTipologia {
         }, 300, 160);
     }
 
-    private btnRestore_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
-        if (!this.currentSelectedNode || !this.currentSelectedNode.get_value()) {
+    private btnRestore_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
+        if (!this.currentSelectedNode() || !this.currentSelectedNode().get_value()) {
             alert("Selezionare una tipologia di atto per il recupero");
             sender.enableAfterSingleClick();
             return;
@@ -142,8 +142,8 @@ class ReslTipologia {
             if (arg) {
                 try {
                     let model: ResolutionKindModel = {} as ResolutionKindModel;
-                    model.Name = this.currentSelectedNode.get_text();
-                    model.UniqueId = this.currentSelectedNode.get_value();
+                    model.Name = this.currentSelectedNode().get_text();
+                    model.UniqueId = this.currentSelectedNode().get_value();
                     model.IsActive = true;
                     this._loadingManager.show(this.rtvResolutionKindsId);
                     this.saveResolutionKind(model, ReslTipologia.EDIT_KIND_COMMAND)
@@ -180,7 +180,7 @@ class ReslTipologia {
             .always(() => this._loadingManager.hide(this.pnlDetailsId));
     }
 
-    private btnConfirm_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {        
+    private btnConfirm_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {        
         if (!this._txtKindName.get_value()) {
             alert("Nessun nome definito per la tipologia di atto");
             sender.enableAfterSingleClick();
@@ -194,7 +194,7 @@ class ReslTipologia {
             switch (sender.get_commandArgument()) {
                 case ReslTipologia.EDIT_KIND_COMMAND:
                     {
-                        model.UniqueId = this.currentSelectedNode.get_value();
+                        model.UniqueId = this.currentSelectedNode().get_value();
                     }
                     break;
             }
@@ -253,7 +253,7 @@ class ReslTipologia {
 
         $("#".concat(this.pnlDetailsId)).hide();
 
-        this.setButtonsBehaviors(this.rootTreeNode);
+        this.setButtonsBehaviors(this.rootTreeNode());
 
         this._loadingManager.show(this.rtvResolutionKindsId);
         this.loadTipologies()
@@ -263,17 +263,17 @@ class ReslTipologia {
 
     private loadTipologies(): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
-        this.rootTreeNode.get_nodes().clear();
+        this.rootTreeNode().get_nodes().clear();
         let action: Function;
         switch (true) {
-            case this.searchActive && !this.searchDisabled:
+            case this.searchActive() && !this.searchDisabled():
                 action = (c, e) => this._resolutionKindService.findActiveTypologies(c, e);
                 break;
-            case this.searchActive && this.searchDisabled:
-            case !this.searchActive && !this.searchDisabled:
+            case this.searchActive() && this.searchDisabled():
+            case !this.searchActive() && !this.searchDisabled():
                 action = (c, e) => this._resolutionKindService.findAllTypologies(c, e);
                 break;
-            case this.searchDisabled && !this.searchActive:
+            case this.searchDisabled() && !this.searchActive():
                 action = (c, e) => this._resolutionKindService.findDisabledTypologies(c, e);
                 break;
             default:
@@ -295,11 +295,11 @@ class ReslTipologia {
                             node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/type_definition_private.png");
                             node.set_cssClass("node-disabled");
                         }
-                        this.rootTreeNode.get_nodes().add(node);
+                        this.rootTreeNode().get_nodes().add(node);
                     }
-                    this.rootTreeNode.expand();
-                    this.rootTreeNode.select();
-                    this.setButtonsBehaviors(this.rootTreeNode);
+                    this.rootTreeNode().expand();
+                    this.rootTreeNode().select();
+                    this.setButtonsBehaviors(this.rootTreeNode());
                     $("#".concat(this.pnlDetailsId)).hide();
                     promise.resolve();
                 } catch (e) {

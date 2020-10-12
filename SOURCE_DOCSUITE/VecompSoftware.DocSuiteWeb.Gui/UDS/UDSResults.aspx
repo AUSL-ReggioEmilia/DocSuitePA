@@ -19,7 +19,8 @@
         div.RadGrid .rgPager .rgAdvPart {
             display: none;
         }
-        .hiddenButtonClass{
+
+        .hiddenButtonClass {
             display: none;
         }
     </style>
@@ -57,7 +58,10 @@
             Sys.Application.add_load(function () {
                 odataGridSource.grid = $find("<%=dgvUDS.ClientID%>");
                 odataGridSource.loadingPanel = $find("<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>");
-                odataGridSource.webApi = "<%=CurrentController %>";
+                var serviceConfigurations = JSON.parse(tenantModelJson);
+                odataGridSource.webApi = $.grep(serviceConfigurations, function (x) {
+                    return x.Name == "<%=CurrentRepositoryName %>";
+                })[0].WebAPIUrl;
                 odataGridSource.defaultFilters = <%=SerializedDefaultFinder %>;
                 var sortExpression = new Telerik.Web.UI.GridSortExpression();
                 sortExpression.set_fieldName('_year,_number');
@@ -71,9 +75,14 @@
             }
 
             function getDate(date) {
+                //this is wrong: it reverses days with months for some cultures
+                //if (!date) return "";
+                //var mDate = moment(date);
+                //return mDate.format("DD/MM/YYYY");
+
                 if (!date) return "";
-                var mDate = moment(date);
-                return mDate.format("DD/MM/YYYY");
+                var mDate = new Date(date);
+                return mDate.format("dd/MM/yyyy")
             }
 
             function getCategory(category) {
@@ -217,8 +226,14 @@
             function confirmConnection(currentIdUDSRepository, currentIdUDS) {
                 var destinationIdUDS = "<%= CurrentIdUDS %>";
                 var destinationUDSRepositoryId = "<%= CurrentIdUDSRepository %>";
-                var confirm = window.confirm("Vuoi collegare l'archivio selezionato?");
-                if (confirm) {
+                var currentAction = "<%= CurrentAction %>";
+                if (currentAction !== "CopyDocuments") {
+                    var confirm = window.confirm("Vuoi collegare l'archivio selezionato?");
+                    if (confirm) {
+                        closeWindow(currentIdUDS + "|" + currentIdUDSRepository);
+                    }
+                }
+                else {
                     closeWindow(currentIdUDS + "|" + currentIdUDSRepository);
                 }
             }
@@ -228,23 +243,23 @@
                 oWindow.close(argument);
             }
 
-            function exportData(){
+            function exportData() {
                 loadData();
             }
         </script>
-    </telerik:RadCodeBlock>   
+    </telerik:RadCodeBlock>
 
-    <div style="margin-left:auto; margin-right:0; text-align:right">
+    <div style="margin-left: auto; margin-right: 0; text-align: right">
         <div>
             <telerik:RadButton ID="btnEsportaPagina" runat="server" Text="Esporta pagina" ToolTip="Esporta in Excel" CausesValidation="false" />
-            <telerik:RadButton ID="btnEsportaTutto" runat="server" Text="Esporta tutto" AutoPostBack="false" ToolTip="Esporta in Excel" CausesValidation="false" OnClientClicked="exportData"/>
+            <telerik:RadButton ID="btnEsportaTutto" runat="server" Text="Esporta tutto" AutoPostBack="false" ToolTip="Esporta in Excel" CausesValidation="false" OnClientClicked="exportData" />
         </div>
     </div>
 
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="cphContent" runat="server">
-    
+
     <telerik:RadAjaxPanel runat="server" CssClass="radGridWrapper">
         <telerik:RadGrid AutoGenerateColumns="false" Skin="Office2010Blue" ID="dgvUDS" AllowFilteringByColumn="True"
             AllowSorting="True" AllowPaging="True" PageSize="30" Width="100%" Height="100%" runat="server">
@@ -315,13 +330,29 @@
                             <label>#=getDate(RegistrationDate)#</label>
                         </ClientItemTemplate>
                     </telerik:GridTemplateColumn>
+                    <telerik:GridTemplateColumn HeaderText="Data ultima modifica" DataField="LastChangedDate" UniqueName="LastChangedDate" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center"
+                        ItemStyle-HorizontalAlign="Center" SortExpression="LastChangedDate" DataType="System.DateTime" AllowFiltering="false">
+                        <ClientItemTemplate>
+                            <label>#=getDate(LastChangedDate)#</label>
+                        </ClientItemTemplate>
+                    </telerik:GridTemplateColumn>
+                    <telerik:GridTemplateColumn HeaderText="Utente ultima modifica" DataField="LastChangedUser" UniqueName="LastChangedUser" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center"
+                        ItemStyle-HorizontalAlign="Center" SortExpression="LastChangedUser" AllowFiltering="false">
+                        <ClientItemTemplate>
+                            <label>
+                                # if(LastChangedUser){#
+                                    #=LastChangedUser#
+                                #}#
+                            </label>
+                        </ClientItemTemplate>
+                    </telerik:GridTemplateColumn>
                 </Columns>
             </MasterTableView>
             <PagerStyle Mode="NextPrevAndNumeric" Position="Bottom"></PagerStyle>
             <FilterMenu OnClientShowing="menuShowing" />
         </telerik:RadGrid>
     </telerik:RadAjaxPanel>
-   
+
     <telerik:RadGrid Visible="false" runat="server" ID="intermediateGrid" PageSize="30" GridLines="None" Height="100%"
         AllowPaging="True" AllowMultiRowSelection="True" AllowFilteringByColumn="False" ExportSettings-ExportOnlyData="true">
         <ClientSettings>
@@ -344,8 +375,7 @@
     <telerik:RadButton runat="server" ID="btnDocuments" Text="Visualizza documenti" AutoPostBack="false" OnClientClicked="btnDocumentsClick"></telerik:RadButton>
     <telerik:RadButton ID="btnSelectAll" runat="server" AutoPostBack="false" Width="120px" Text="Seleziona tutti" OnClientClicked="btnSelectAll"></telerik:RadButton>
     <telerik:RadButton ID="btnDeselectAll" runat="server" AutoPostBack="false" Width="120px" Text="Annulla selezione" OnClientClicked="btnDeselectAll"></telerik:RadButton>
-    <telerik:RadButton ID="hiddenButton" runat="server" Visible="true" CssClass="hiddenButtonClass"/>
+    <telerik:RadButton ID="hiddenButton" runat="server" Visible="true" CssClass="hiddenButtonClass" />
     <input type="hidden" id="dgvUDSItems" name="dgvUDSItems" value='<%= dgvUDSItems %>' />
-    <input type="hidden" id="dgvColumns" name="dgvColumns" value='<%= dgvColumns %>' />
     <input type="hidden" id="dgvUDSAllItems" name="dgvUDSAllItems" value='<%= dgvUDSAllItems %>' />
 </asp:Content>

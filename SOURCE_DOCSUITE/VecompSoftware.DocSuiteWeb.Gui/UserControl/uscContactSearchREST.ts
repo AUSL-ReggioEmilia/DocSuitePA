@@ -18,6 +18,7 @@ class uscContactSearchRest {
     parentId?: number;
     parentToExclude?: number;
     filterByParentId?: number;
+    tenantId?: string;
 
     private readonly _contactService: ContactService;
     private _rcdsContactsFinder: Telerik.Web.UI.RadClientDataSource;
@@ -26,6 +27,8 @@ class uscContactSearchRest {
 
     static LOADED_EVENT: string = "onLoaded";
     static SELECTED_CONTACT_EVENT: string = "onSelectedContact";
+    private readonly SEARCH_BY_PARENT_COMMAND = "searchByParent";
+    private readonly DOWN_ARROW_ICON = "../App_Themes/DocSuite2008/imgset16/down_arrow.png";
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         let contactServiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "Contact");
@@ -43,7 +46,8 @@ class uscContactSearchRest {
             ApplyAuthorizations: this.applyAuthorizations,
             ExcludeRoleContacts: this.excludeRoleContacts,
             ParentId: this.filterByParentId,
-            ParentToExclude: this.parentToExclude
+            ParentToExclude: this.parentToExclude,
+            IdTenant: this.tenantId !== "" ? this.tenantId : null
         };
 
         (<any>sender)._onRequestStart();
@@ -54,6 +58,8 @@ class uscContactSearchRest {
                 this._rcdsContactsFinder.fetch(() => {
                     let dataItemView = this._rcdsContactsFinder.view();
                     (<any>sender)._loadItemsFromData(dataItemView, true);
+                    let searchBoxButton: Telerik.Web.UI.SearchBoxButton = this._rsbSearchBox.get_buttons().getButton(0);
+                    searchBoxButton.set_imageUrl(this.DOWN_ARROW_ICON);
                 });
             },
             (exception: ExceptionDTO) => {
@@ -65,7 +71,7 @@ class uscContactSearchRest {
     rsbSearchBox_search = (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxSearchEventArgs) => {
         if (args.get_value()) {
             $(`#${this.pnlMainContentId}`).triggerHandler(uscContactSearchRest.SELECTED_CONTACT_EVENT, args.get_value());
-        }        
+        }
     }
 
     /**
@@ -77,7 +83,14 @@ class uscContactSearchRest {
         this._rsbSearchBox = $find(this.rsbSearchBoxId) as Telerik.Web.UI.RadSearchBox;
         this._rsbSearchBox.add_dataRequesting(this.rsbSearchBox_dataRequesting);
         this._rsbSearchBox.add_search(this.rsbSearchBox_search);
+        this._rsbSearchBox.add_buttonCommand(this.rsbSearchBox_buttonCommand);
         this._toolTipManager = $find(this.toolTipManagerId) as Telerik.Web.UI.RadToolTipManager;
+
+        let searchBoxButton: Telerik.Web.UI.SearchBoxButton = this._rsbSearchBox.get_buttons().getButton(0);
+        if (!this.filterByParentId) {
+            searchBoxButton.get_element().style.display = "none";
+        }
+        searchBoxButton.set_cssClass("searchBoxButton");
 
         this.bindLoaded();
     }
@@ -89,7 +102,7 @@ class uscContactSearchRest {
 
     showTooltip(idContact: number): void {
         let targetId: string = `item_${idContact}`;
-        let target: Sys.UI.DomElement = Sys.UI.DomElement.getElementById(targetId);        
+        let target: Sys.UI.DomElement = Sys.UI.DomElement.getElementById(targetId);
         let tooltip: Telerik.Web.UI.RadToolTip = this._toolTipManager.getToolTipByElement(target);
         let createTooltipAction: () => JQueryPromise<void> = () => $.Deferred<void>().resolve().promise();
         if (!tooltip) {
@@ -147,6 +160,33 @@ class uscContactSearchRest {
     clear(): void {
         this._rsbSearchBox.clear();
         (<any>this._rsbSearchBox.get_inputElement()).value = "";
+    }
+
+    rsbSearchBox_buttonCommand = (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxButtonCommandEventArgs) => {1
+        switch (args.get_commandName()) {
+            case this.SEARCH_BY_PARENT_COMMAND: {
+                if (!this.filterByParentId) {
+                    break;
+                }
+                (<any>sender)._onRequestStart();
+                this._contactService.getByParentId(this.filterByParentId, 20,
+                    (data: any) => {
+                        for (let contact of data) {
+                            contact.Description = contact.Description.replace("|", " ");
+                        }
+                        (<any>this._rcdsContactsFinder).set_data(data);
+                        this._rcdsContactsFinder.get_filterExpressions().clear();
+                        this._rcdsContactsFinder.fetch(() => {
+                            let dataItemView = this._rcdsContactsFinder.view();
+                            (<any>sender)._loadItemsFromData(dataItemView, true);
+                        });
+                    },
+                    (exception: ExceptionDTO) => {
+                        console.error(exception.statusText);
+                    });
+                break;
+            }
+        }
     }
 }
 

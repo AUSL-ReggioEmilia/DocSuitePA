@@ -14,6 +14,7 @@ Public Class CommonShared
 
 #Region " Fields "
 
+    Private Shared _workflowLocation As Location = Nothing
     Public Const THIN_CLIENT_X_SMARTCLIENT_VERSION As String = "40"
 
     Protected Const USER_CONNECTED_GROUPS_FIELD As String = "UserConnectedGroups"
@@ -151,40 +152,38 @@ Public Class CommonShared
     Public Shared Property AdvancedViewer() As Integer
         Get
             If Not String.IsNullOrEmpty(DocSuiteContext.Current.ProtocolEnv.ForceViewer) Then
-                Return DocSuiteContext.Current.ProtocolEnv.ForceViewer
+                Return Integer.Parse(DocSuiteContext.Current.ProtocolEnv.ForceViewer)
             End If
-            If DocSuiteContext.Current.ProtocolEnv.IsComputerLogEnabled Then
-                Dim facade As New ComputerLogFacade()
-                Return facade.GetCurrent().AdvancedViewer
+            Dim facade As New ComputerLogFacade()
+            Dim computerLog As ComputerLog = facade.GetCurrent()
+            If computerLog IsNot Nothing Then
+                Return computerLog.AdvancedViewer
+
             End If
 
             Dim finder As NHibernateUserLogFinder = New NHibernateUserLogFinder()
             finder.SystemUser = DocSuiteContext.Current.User.FullUserName
             Dim logs As IList(Of UserLog) = finder.DoSearch()
             If Not logs Is Nothing And logs.Count = 0 Then
-                Return 0 ' Valore di default
+                Return 0
             End If
             Return logs(0).AdvancedViewer
         End Get
         Set(ByVal value As Integer)
-            ' Imposto il valore e salvo
-            If DocSuiteContext.Current.ProtocolEnv.IsComputerLogEnabled Then
-                Dim facade As New ComputerLogFacade()
-                Dim item As ComputerLog = facade.GetCurrent()
-                item.AdvancedViewer = value
-                Dim computerLogFacade As ComputerLogFacade = New ComputerLogFacade()
-                computerLogFacade.Update(item)
-            Else
-                Dim _finder As NHibernateUserLogFinder = New NHibernateUserLogFinder()
-                _finder.SystemUser = DocSuiteContext.Current.User.FullUserName
-                Dim logs As IList = _finder.DoSearch()
-                If (logs Is Nothing) Or logs.Count <> 0 Then
-                    ' Salvo il valore impostato
-                    Dim item As UserLog = CType(logs(0), UserLog)
-                    item.AdvancedViewer = value
-                    Dim userLogFacade As UserLogFacade = New UserLogFacade()
-                    userLogFacade.Update(item)
-                End If
+            Dim facade As New ComputerLogFacade()
+            Dim item As ComputerLog = facade.GetCurrent()
+            item.AdvancedViewer = value
+            Dim computerLogFacade As ComputerLogFacade = New ComputerLogFacade()
+            computerLogFacade.Update(item)
+            Dim _finder As NHibernateUserLogFinder = New NHibernateUserLogFinder()
+            _finder.SystemUser = DocSuiteContext.Current.User.FullUserName
+            Dim logs As IList(Of UserLog) = _finder.DoSearch()
+            If logs Is Nothing OrElse logs.Count <> 0 Then
+                ' Salvo il valore impostato
+                Dim userLog As UserLog = logs.First()
+                userLog.AdvancedViewer = value
+                Dim userLogFacade As UserLogFacade = New UserLogFacade()
+                userLogFacade.Update(userLog)
             End If
         End Set
     End Property
@@ -453,7 +452,7 @@ Public Class CommonShared
 
     Shared ReadOnly Property PosteWebEnabled As Boolean
         Get
-            Return DocSuiteContext.Current.ProtocolEnv.IsLetteraEnabled OrElse DocSuiteContext.Current.ProtocolEnv.IsRaccomandataEnabled OrElse DocSuiteContext.Current.ProtocolEnv.IsTelgrammaEnabled
+            Return DocSuiteContext.Current.ProtocolEnv.IsPosteWebEnabled
         End Get
     End Property
 
@@ -465,23 +464,13 @@ Public Class CommonShared
 
     ''' <summary> Protocolli da stampare in Zebra </summary>
     ''' <remarks> Serializzati ad cazzum </remarks>
-    Public Shared Property ZebraPrintData As IList(Of YearNumberCompositeKey)
+    Public Shared Property ZebraPrintData As ICollection(Of Guid)
         Get
-            Dim temp As String() = CType(GetContextValue(ZebraSessionKeyName), String).Split({"|"c}, StringSplitOptions.RemoveEmptyEntries)
-            Dim splitted As IEnumerable(Of String()) = temp.Select(Function(s) s.Split({";"c}))
-            Return splitted.Select(Function(s) New YearNumberCompositeKey(CType(s.GetValue(0), Short), CType(s.GetValue(1), Integer))).ToList()
+            Dim datas As ICollection(Of Guid) = TryCast(GetContextValue(ZebraSessionKeyName), ICollection(Of Guid))
+            Return datas
         End Get
-        Set(ByVal value As IList(Of YearNumberCompositeKey))
-            Dim tmp As String = ""
-            If Not value.IsNullOrEmpty() Then
-                For Each k As YearNumberCompositeKey In value
-                    If tmp.Length > 0 Then
-                        tmp = String.Concat(tmp, "|")
-                    End If
-                    tmp = String.Concat(tmp, k.Year, ";", k.Number)
-                Next
-            End If
-            SetContextValue(ZebraSessionKeyName, tmp)
+        Set(ByVal value As ICollection(Of Guid))
+            SetContextValue(ZebraSessionKeyName, value)
         End Set
     End Property
 
@@ -598,13 +587,19 @@ Public Class CommonShared
         End Get
     End Property
 
-
-
-
-
     Public Shared ReadOnly Property HasGroupTransparentManagerRight As Boolean
         Get
             Return UserConnectedBelongsTo(DocSuiteContext.Current.ProtocolEnv.TransparentManagerGroups)
+        End Get
+    End Property
+    Public Shared ReadOnly Property HasGroupProcessesViewsReadableRight As Boolean
+        Get
+            Return UserConnectedBelongsTo(DocSuiteContext.Current.ProtocolEnv.ProcessesViewsReadableGroups)
+        End Get
+    End Property
+    Public Shared ReadOnly Property HasGroupProcessesViewsManageableRight As Boolean
+        Get
+            Return UserConnectedBelongsTo(DocSuiteContext.Current.ProtocolEnv.ProcessesViewsManageableGroups)
         End Get
     End Property
 
@@ -614,6 +609,20 @@ Public Class CommonShared
         End Get
     End Property
 
+    Public Shared ReadOnly Property HasGroupPECFisicalDeleteRight As Boolean
+        Get
+            Return UserConnectedBelongsTo(DocSuiteContext.Current.ProtocolEnv.PECFisicalDeleteGroups)
+        End Get
+    End Property
+
+    Public Shared ReadOnly Property CurrentWorkflowLocation As Location
+        Get
+            If _workflowLocation Is Nothing AndAlso DocSuiteContext.Current.ProtocolEnv.WorkflowLocation.HasValue Then
+                _workflowLocation = FacadeFactory.Instance.LocationFacade.GetById(DocSuiteContext.Current.ProtocolEnv.WorkflowLocation.Value)
+            End If
+            Return _workflowLocation
+        End Get
+    End Property
 #End Region
 
 #Region " Methods "
@@ -667,6 +676,7 @@ Public Class CommonShared
     ''' <param name="connectedGroups">Lista di SecurityGroups</param>
     ''' <param name="groupString">Elenco di gruppi da verificare nel formato "1|2|..."</param>
     Public Shared Function SecurityGroupExistsIn(connectedGroups As IList(Of SecurityGroups), groupString As String) As Boolean
+
         If connectedGroups IsNot Nothing Then
             For Each groupId As String In groupString.Split({"|"c, ","c}, StringSplitOptions.RemoveEmptyEntries)
                 Dim id As Integer
@@ -709,7 +719,13 @@ Public Class CommonShared
         If String.IsNullOrEmpty(groupList) Then
             Return defaultOnEmptyGroupList
         End If
-        Return SecurityGroupExistsIn(FacadeFactory.Instance.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName), groupList)
+
+        Dim results As IList(Of SecurityGroups) = Nothing
+        If Not CacheSingleton.Instance.SecurityGroupsByUsers.ContainsKey(DocSuiteContext.Current.User.FullUserName) OrElse Not CacheSingleton.Instance.SecurityGroupsByUsers.TryGetValue(DocSuiteContext.Current.User.FullUserName, results) Then
+            results = FacadeFactory.Instance.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName)
+            CacheSingleton.Instance.SecurityGroupsByUsers.TryAdd(DocSuiteContext.Current.User.FullUserName, results)
+        End If
+        Return SecurityGroupExistsIn(results, groupList)
     End Function
 
     Public Shared Function UserBelongsTo(domain As String, securityGroups As IList(Of SecurityGroups), containerGroupList As IList(Of ContainerGroup)) As Boolean

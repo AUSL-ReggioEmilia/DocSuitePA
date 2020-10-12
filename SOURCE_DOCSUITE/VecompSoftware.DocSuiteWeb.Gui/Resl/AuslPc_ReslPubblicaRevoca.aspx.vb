@@ -253,7 +253,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
             If (FileResolution.IdResolutionFile Is Nothing AndAlso DocSuiteContext.Current.ResolutionEnv.UseSharepointPublication) Then
                 Dim idResolutionFileDocumentInfo As DocumentInfo = uscUploadDocumenti.DocumentInfosAdded(0)
                 idResolutionFileDocumentInfo.Signature = String.Format(" {0} del {1}", CurrentResolution.InclusiveNumber, String.Format("{0:dd/MM/yyyy}", Now))
-                idResolutionFileDocumentInfo = idResolutionFileDocumentInfo.ArchiveInBiblos(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB)
+                idResolutionFileDocumentInfo = idResolutionFileDocumentInfo.ArchiveInBiblos(CurrentResolution.Location.ReslBiblosDSDB)
                 Facade.ResolutionFacade.SqlResolutionDocumentUpdate(CurrentResolution.Id, CType(idResolutionFileDocumentInfo, BiblosDocumentInfo).BiblosChainId, ResolutionFacade.DocType.Disposizione)
             End If
 
@@ -291,7 +291,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
                     If ResolutionEnv.CheckPublishDocumentSigned AndAlso PnlDocumentoVisible And b AndAlso Not Action.Eq("MODIFY") Then
                         If uscUploadDocumenti.HasDocuments() Then
                             If FileResolution.IdProposalFile.HasValue Then
-                                Dim proposta As New BiblosDocumentInfo(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB, FileResolution.IdProposalFile.Value)
+                                Dim proposta As New BiblosDocumentInfo(CurrentResolution.Location.ReslBiblosDSDB, FileResolution.IdProposalFile.Value)
                                 If proposta.IsSigned() Then
                                     Dim resolutionWorkflow As TabWorkflow = Facade.TabWorkflowFacade.GetByResolution(CurrentResolution.Id)
                                     'Carico sullo stesso oggetto lo step successivo
@@ -528,7 +528,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
                 If (FileResolution.IdResolutionFile Is Nothing) Then
                     Dim idResolutionFileDocumentInfo As DocumentInfo = uscUploadDocumenti.DocumentInfosAdded(0)
                     idResolutionFileDocumentInfo.Signature = String.Format(" {0} del {1}", CurrentResolution.InclusiveNumber, String.Format("{0:dd/MM/yyyy}", Now))
-                    idResolutionFileDocumentInfo = idResolutionFileDocumentInfo.ArchiveInBiblos(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB)
+                    idResolutionFileDocumentInfo = idResolutionFileDocumentInfo.ArchiveInBiblos(CurrentResolution.Location.ReslBiblosDSDB)
                     Facade.ResolutionFacade.SqlResolutionDocumentUpdate(CurrentResolution.Id, CType(idResolutionFileDocumentInfo, BiblosDocumentInfo).BiblosChainId, ResolutionFacade.DocType.Disposizione)
                 End If
                 uscPrivacyPanel.GeneratePrivacyDocumentToPrint(CurrentResolution.WorkflowType)
@@ -850,7 +850,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
     End Sub
 
     Private Sub DuplicaDocumento(ByRef idCatena As Integer, documentControl As uscDocumentUpload, ByVal resl As Resolution, ByVal append As Boolean)
-        Dim documents As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idCatena)
+        Dim documents As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(resl.Location.ReslBiblosDSDB, idCatena)
         AddDocumentInfos(documents, documentControl, append)
 
         idCatena = 0
@@ -861,14 +861,14 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
             Throw New DocSuiteException("Attenzione Guid Catena non valorizzato")
         End If
 
-        Dim documents As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, guidCatena)
+        Dim documents As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(guidCatena)
         AddDocumentInfos(documents, documentControl, append)
 
         guidCatena = Guid.Empty
     End Sub
 
     Private Sub DuplicaDocumento(ByRef idCatena As Integer, ByRef tv As RadTreeView, ByVal resl As Resolution, Optional ByVal append As Boolean = True)
-        Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idCatena)
+        Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(resl.Location.ReslBiblosDSDB, idCatena)
 
         Dim index As Integer = 0
         For Each doc As BiblosDocumentInfo In docs
@@ -986,15 +986,13 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
                     'Carico il frontalino
                     Dim docFrontalino As DocumentInfo = uscUploadDocumenti.DocumentInfosAdded(0)
                     docFrontalino.Signature = Facade.ResolutionFacade.ComposeWebPublicationSignature(CurrentResolution)
-                    idCatenaFrontalino = docFrontalino.ArchiveInBiblos(CurrentResolution.Location.DocumentServer,
-                                                              CurrentResolution.Location.ReslBiblosDSDB).BiblosChainId
+                    idCatenaFrontalino = docFrontalino.ArchiveInBiblos(CurrentResolution.Location.ReslBiblosDSDB).BiblosChainId
 
                     'Carico il documento privacy
                     Dim doc As DocumentInfo = documentUploader.DocumentInfosAdded(0)
                     doc.Signature = Facade.ResolutionFacade.ComposeWebPublicationSignature(CurrentResolution)
 
-                    FileResolution.IdPrivacyPublicationDocument = doc.ArchiveInBiblos(CurrentResolution.Location.DocumentServer,
-                                                              CurrentResolution.Location.ReslBiblosDSDB).BiblosChainId
+                    FileResolution.IdPrivacyPublicationDocument = doc.ArchiveInBiblos(CurrentResolution.Location.ReslBiblosDSDB).BiblosChainId
                     Facade.FileResolutionFacade.Save(FileResolution)
 
                     Facade.ResolutionFacade.DoWebPublication(CurrentResolution, True, doc, True)
@@ -1006,7 +1004,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
                 Dim doc As DocumentInfo = uscUploadDocumenti.DocumentInfos(0)
 
                 doc.Signature = Facade.ResolutionFacade.ComposeWebPublicationSignature(CurrentResolution)
-                idCatenaFrontalino = doc.ArchiveInBiblos(CurrentResolution.Location.DocumentServer, CurrentResolution.Location.ReslBiblosDSDB).BiblosChainId
+                idCatenaFrontalino = doc.ArchiveInBiblos(CurrentResolution.Location.ReslBiblosDSDB).BiblosChainId
                 ' documento della resolution
                 Facade.ResolutionFacade.DoWebPublication(CurrentResolution, doc, Action.Eq("REVOKE"))
 
@@ -1127,7 +1125,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
         Dim savedDocument As BiblosDocumentInfo
         For Each doc As DocumentInfo In docs
             doc.Signature = signature
-            savedDocument = doc.ArchiveInBiblos(location.DocumentServer, location.ReslBiblosDSDB, idCatena)
+            savedDocument = doc.ArchiveInBiblos(location.ReslBiblosDSDB, idCatena)
             idCatena = savedDocument.BiblosChainId
 
             If DocSuiteContext.Current.PrivacyLevelsEnabled Then
@@ -1165,7 +1163,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
         Dim savedDocument As BiblosDocumentInfo
         For Each doc As DocumentInfo In docs
             doc.Signature = signature
-            savedDocument = doc.ArchiveInBiblos(location.DocumentServer, location.ReslBiblosDSDB, idCatena)
+            savedDocument = doc.ArchiveInBiblos(location.ReslBiblosDSDB, idCatena)
             idCatena = savedDocument.ChainId
 
             If DocSuiteContext.Current.PrivacyLevelsEnabled Then

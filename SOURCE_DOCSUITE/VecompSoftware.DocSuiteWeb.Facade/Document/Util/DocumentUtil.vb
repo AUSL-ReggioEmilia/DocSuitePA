@@ -79,7 +79,7 @@ Public Class DocumentUtil
 #End Region
 
 #Region "Calcola Cartella"
-    Public Sub FncCalcolaCartella(ByVal Year As Short, ByVal Number As Integer, ByRef Titolo As String, ByRef NewIncremental As Integer)
+    Public Sub FncCalcolaCartella(ByVal Year As Short, ByVal Number As Integer, ByRef Titolo As String, ByRef NewIncremental As Short)
         Dim YearNumberInc As YearNumberIncrCompositeKey = New YearNumberIncrCompositeKey()
 
         With YearNumberInc
@@ -98,7 +98,7 @@ Public Class DocumentUtil
                 Titolo = folder.Role.Name.ToString() & Titolo
             End If
             If folder.IncrementalFather.HasValue Then
-                FncCalcolaCartella(Year, Number, Titolo, folder.IncrementalFather)
+                FncCalcolaCartella(Year, Number, Titolo, folder.IncrementalFather.Value)
             End If
         End If
     End Sub
@@ -405,7 +405,7 @@ Public Class DocumentUtil
 
     End Sub
 
-    Public Shared Sub FncCalcolaCartella(ByVal docFolder As DocumentFolder, ByRef Titolo As String, ByRef NewIncremental As Integer, Optional ByVal SLASH As String = "/")
+    Public Shared Sub FncCalcolaCartella(ByVal docFolder As DocumentFolder, ByRef Titolo As String, ByRef NewIncremental As Short, Optional ByVal SLASH As String = "/")
 
         Dim YearNumberInc As New YearNumberIncrCompositeKey
         Dim folder As DocumentFolder
@@ -427,7 +427,7 @@ Public Class DocumentUtil
                 Titolo = folder.Role.Name.ToString() & Titolo
             End If
             If folder.IncrementalFather.HasValue Then
-                FncCalcolaCartella(folder, Titolo, folder.IncrementalFather)
+                FncCalcolaCartella(folder, Titolo, folder.IncrementalFather.Value)
             End If
         End If
 

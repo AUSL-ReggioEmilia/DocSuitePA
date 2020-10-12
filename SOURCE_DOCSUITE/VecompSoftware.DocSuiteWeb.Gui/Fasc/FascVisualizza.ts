@@ -46,8 +46,14 @@ import WorkflowRepositoryService = require('App/Services/Workflows/WorkflowRepos
 import FascicleRights = require('App/Rules/Rights/Entities/Fascicles/FascicleRights');
 import FascicleDocumentUnitModel = require('App/Models/Fascicles/FascicleDocumentUnitModel');
 import FascicleDocumentUnitService = require('App/Services/Fascicles/FascicleDocumentUnitService');
-import WorkflowReferenceBiblosModel = require('../App/Models/Workflows/WorkflowReferenceBiblosModel');
-import UscStartWorkflow = require('UserControl/uscStartWorkflow');
+import WorkflowReferenceBiblosModel = require('App/Models/Workflows/WorkflowReferenceBiblosModel');
+import uscFascicleSearch = require('UserControl/uscFascicleSearch');
+import WorkflowReferenceDocumentUnitModel = require('App/Models/Workflows/WorkflowReferenceDocumentUnitModel');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import FascicleRoleModel = require('App/Models/Fascicles/FascicleRoleModel');
+import uscStartWorkflow = require('UserControl/uscStartWorkflow');
+import WorkflowRoleModel = require('App/Models/Workflows/WorkflowRoleModel');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 class FascVisualizza extends FascicleBase {
     currentFascicleId: string;
@@ -93,6 +99,20 @@ class FascVisualizza extends FascicleBase {
     btnUndoId: string;
     btnMoveId: string;
     windowMoveItemsId: string;
+    btnCopyToFascicleId: string;
+    idDocumentUnit: string;
+    selectedFascicle: FascicleModel;
+    windowFascicleSearchId: string;
+    currentTenantAOOId: string;
+    isClosed: boolean
+
+    private static UniqueId_ATTRIBUTE_NAME = "UniqueId";
+    private static DocumentUnitName_ATTRIBUTE_NAME = "DocumentUnitName";
+    private static Environment_ATTRIBUTE_NAME = "Environment";
+    private static BiblosChainId_ATTRIBUTE_NAME = "BiblosChainId";
+    private static BiblosDocumentId_ATTRIBUTE_NAME = "BiblosDocumentId";
+    private static BiblosDocumentName_ATTRIBUTE_NAME = "BiblosDocumentName";
+    private static btnUDLink_CONTROL_NAME = "btnUDLink";
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _windowInsertProtocol: Telerik.Web.UI.RadWindow;
@@ -136,6 +156,9 @@ class FascVisualizza extends FascicleBase {
     private _categoryFascicleService: CategoryFascicleService;
     private _workflowRepositoriyService: WorkflowRepositoryService;
     private _currentDocumentToSign: string;
+    private _btnCopyToFascicle: Telerik.Web.UI.RadButton;
+    private _windowFascicleSearch: Telerik.Web.UI.RadWindow;
+
     /**
      * Costruttore
      */
@@ -151,6 +174,8 @@ class FascVisualizza extends FascicleBase {
     /**
      * Initialize
      */
+
+
     initialize() {
         super.initialize();
         this.cleanWorkflowSessionStorage();
@@ -164,6 +189,8 @@ class FascVisualizza extends FascicleBase {
         this._windowWorkflowInstanceLogs = <Telerik.Web.UI.RadWindow>$find(this.windowWorkflowInstanceLogId);
         this._windowMoveItems = <Telerik.Web.UI.RadWindow>$find(this.windowMoveItemsId);
         this._windowMoveItems.add_close(this.onMoveCloseWindow);
+        this._windowFascicleSearch = <Telerik.Web.UI.RadWindow>$find(this.windowFascicleSearchId);
+        this._windowFascicleSearch.add_close(this.onFascicleSearchCloseWindow);
 
 
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
@@ -186,6 +213,7 @@ class FascVisualizza extends FascicleBase {
         this._btnSendToRoles = <Telerik.Web.UI.RadButton>$find(this.btnSendToRolesId);
         this._btnUndo = <Telerik.Web.UI.RadButton>$find(this.btnUndoId);
         this._btnMove = <Telerik.Web.UI.RadButton>$find(this.btnMoveId);
+        this._btnCopyToFascicle = <Telerik.Web.UI.RadButton>$find(this.btnCopyToFascicleId);
 
         this._btnEdit.add_clicking(this.btnEdit_OnClick);
         this._btnDocuments.add_clicking(this.btnDocuments_OnClick);
@@ -202,6 +230,7 @@ class FascVisualizza extends FascicleBase {
         this._btnOpen.add_clicking(this.btnOpen_OnClick);
         this._btnUndo.add_clicking(this.btnUndo_OnClick);
         this._btnMove.add_clicking(this.btnMove_OnClick);
+        this._btnCopyToFascicle.add_clicking(this.btnCopyToFascicle_OnClick);
 
         let documentUnitConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, FascicleBase.DOCUMENT_UNIT_TYPE_NAME);
         this._documentUnitService = new DocumentUnitService(documentUnitConfiguration);
@@ -245,9 +274,14 @@ class FascVisualizza extends FascicleBase {
                 if (data == null) return;
                 this._fascicleModel = data;
 
+                let fascicleRoleModel: FascicleRoleModel = this._fascicleModel.FascicleRoles.filter(x => x.IsMaster == true)[0];
+                if (fascicleRoleModel != undefined) {
+                    let workflowRoleModel: WorkflowRoleModel = <WorkflowRoleModel>{ IdRole: fascicleRoleModel.Role.IdRole, TenantId: fascicleRoleModel.Role.TenantId };
+                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_PROPOSER_ROLES, JSON.stringify(workflowRoleModel));
+                }
                 let wfCheckActivityAction: () => JQueryPromise<string>;
                 if (this.workflowEnabled && this.workflowActivityId) {
-                    wfCheckActivityAction = () => this._handlerManager.manageHandlingWorkflowWithActivity(this.workflowActivityId);
+                    wfCheckActivityAction = () => this._handlerManager.manageHandlingWorkflow(this.workflowActivityId);
                 } else {
                     wfCheckActivityAction = () => this._handlerManager.manageHandlingWorkflow(this.currentFascicleId, Environment.Fascicle);
                 }
@@ -284,12 +318,19 @@ class FascVisualizza extends FascicleBase {
      *------------------------- Events -----------------------------
      */
 
+    private onFascicleSearchCloseWindow = (sender: Telerik.Web.UI.RadWindow, args: Telerik.Web.UI.WindowCloseEventArgs): void => {
+        if (args.get_argument() === true) {
+            this._notificationInfo.set_text("Copiato con successo");
+            this._notificationInfo.show();
+        }
+    }
+
     /**
      * Evento al click del pulsante "Modifica"
      * @param sender
      * @param args
      */
-    btnEdit_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnEdit_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         let editUrl: string = "../Fasc/FascModifica.aspx?Type=Fasc&IdFascicle=".concat(this.currentFascicleId);
         if (this.actionPage != "") {
@@ -303,8 +344,10 @@ class FascVisualizza extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnDocuments_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnDocuments_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
+        this.setWorkflowSessionStorage();
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
         let documentUrl: string = "../Viewers/FascicleViewer.aspx?Type=Fasc&IdFascicle=".concat(this.currentFascicleId);
         if (this.actionPage != "") {
             documentUrl = documentUrl.concat("&Action=", this.actionPage);
@@ -318,7 +361,7 @@ class FascVisualizza extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnInsert_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnInsert_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         let selectedFolder: FascicleSummaryFolderViewModel = this.getSelectedFascicleFolder();
         if (!selectedFolder) {
@@ -353,7 +396,7 @@ class FascVisualizza extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnClose_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnClose_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
 
         this._manager.radconfirm("Sei sicuro di voler chiudere il fascicolo?", (arg) => {
@@ -373,9 +416,11 @@ class FascVisualizza extends FascicleBase {
                         this._btnSign.set_visible(false);
                         this._btnSendToRoles.set_visible(false);
                         this._btnWorkflow.set_visible(false);
+                        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_ISBUTTON_WORKFLOW_VISIBLE, String(false));
                         this._btnCompleteWorkflow.set_visible(false);
                         this.setBtnOpenVisibility();
                         this._btnUndo.set_visible(false);
+                        this._btnCopyToFascicle.set_visible(false);
                         let uscFascicolo: UscFascicolo = <UscFascicolo>$("#".concat(this.uscFascicoloId)).data();
                         if (!jQuery.isEmptyObject(uscFascicolo)) {
                             uscFascicolo.loadData(this._fascicleModel);
@@ -397,7 +442,7 @@ class FascVisualizza extends FascicleBase {
     * @param sender
     * @param args
     */
-    btnLink_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnLink_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         var linkUrl = "../Fasc/FascicleLink.aspx?Type=Fasc&IdFascicle=".concat(this.currentFascicleId);
         window.location.href = linkUrl;
@@ -408,10 +453,10 @@ class FascVisualizza extends FascicleBase {
 * @param sender
 * @param args
 */
-    btnSign_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnSign_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         this.setWorkflowSessionStorage();
-        let varStr: string = sessionStorage.getItem(UscStartWorkflow.SESSION_KEY_REFERENCE_MODEL);
+        let varStr: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL);
         if (!varStr) {
             this.showWarningMessage(this.uscNotificationId, "Nessun documento selezionato");
             return false;
@@ -421,13 +466,19 @@ class FascVisualizza extends FascicleBase {
             this.showWarningMessage(this.uscNotificationId, "Nessun documento selezionato");
             return false;
         }
-        varStr = sessionStorage.getItem(UscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
+        varStr = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
         if (!varStr) {
             this.showWarningMessage(this.uscNotificationId, "Nessun documento selezionato");
             return false;
         }
         this._loadingPanel.show(this.pageContentId);
         let documents: WorkflowReferenceBiblosModel[] = JSON.parse(varStr);
+        if (!documents || documents.length === 0) {
+            this._loadingPanel.hide(this.pageContentId);
+            this._notificationInfo.set_text("Nessun documento selezionato");
+            this._notificationInfo.show();
+            return;
+        }
         let ajaxRequest: AjaxModel = <AjaxModel>{};
         ajaxRequest.ActionName = "InitializeSignDocument";
         ajaxRequest.Value = new Array<string>();
@@ -441,7 +492,7 @@ class FascVisualizza extends FascicleBase {
 * @param sender
 * @param args
 */
-    btnAutorizza_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnAutorizza_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         this._loadingPanel.show(this.pageContentId);
         var linkUrl = "../Fasc/FascAutorizza.aspx?Type=Fasc&IdFascicle=".concat(this.currentFascicleId);
@@ -453,7 +504,7 @@ class FascVisualizza extends FascicleBase {
     * @param sender
     * @param args
     */
-    btnRemove_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnRemove_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         let radGridUD: Telerik.Web.UI.RadGrid = <Telerik.Web.UI.RadGrid>$find(this.radGridUDId);
         let dataItems: Telerik.Web.UI.GridDataItem[] = radGridUD.get_selectedItems();
@@ -465,48 +516,38 @@ class FascVisualizza extends FascicleBase {
             if (arg) {
                 this._loadingPanel.show(this.pageContentId);
                 let documentsToDelete: string[] = [];
-                let counter = 0;
-                for (let i = 0; i < dataItems.length; i++) {
-                    let item: Telerik.Web.UI.GridDataItem = <Telerik.Web.UI.GridDataItem>dataItems[i];
-                    let element: Telerik.Web.UI.RadButton = <Telerik.Web.UI.RadButton>(item.findControl("btnUDLink"));
-                    let uniqueId: string = element.get_element().getAttribute("UniqueId");
-                    let UDName: string = element.get_element().getAttribute("DocumentUnitName");
-                    let environment: string = element.get_element().getAttribute("Environment");
+                let udToDeletePromises: JQueryPromise<void>[] = [$.Deferred<void>().resolve().promise()];
+                for (let item of dataItems) {
+                    let element: Telerik.Web.UI.RadButton = <Telerik.Web.UI.RadButton>(item.findControl(FascVisualizza.btnUDLink_CONTROL_NAME));
+                    let uniqueId: string = element.get_element().getAttribute(FascVisualizza.UniqueId_ATTRIBUTE_NAME);
+                    let environment: string = element.get_element().getAttribute(FascVisualizza.Environment_ATTRIBUTE_NAME);
                     switch (<Environment>Number(environment)) {
                         case Environment.Document:
                             documentsToDelete.push(uniqueId);
                             break;
                         default:
-                            this.getDocumentUnitAndFascicleAsync(uniqueId, this.currentFascicleId).done((data) => {
-                                let fascicleDocumentUnitModel: FascicleDocumentUnitModel = new FascicleDocumentUnitModel(this.currentFascicleId);
-                                fascicleDocumentUnitModel.DocumentUnit = data.DocumentUnit;
-                                fascicleDocumentUnitModel.UniqueId = data.UniqueId;
-                                this.removeFascicleUD(fascicleDocumentUnitModel, this._fascicleDocumentUnitService).done(() => {
-                                    if (dataItems.length - 1 == counter) {
-                                        this.sendRefreshUDRequest();
-                                    }
-                                    counter++;
-                                }).fail((exception: ExceptionDTO) => {
-                                    this._loadingPanel.hide(this.pageContentId);
-                                    $("#".concat(this.pageContentId)).hide();
-                                    this.showNotificationException(this.uscNotificationId, exception);
-                                });
-                            }).fail((exception: ExceptionDTO) => {
-                                this._loadingPanel.hide(this.pageContentId);
-                                $("#".concat(this.pageContentId)).hide();
-                                this.showNotificationException(this.uscNotificationId, exception);
-                            });
+                            udToDeletePromises.push(this.removeDocumentUnitFromFascicle(uniqueId));
                             break;
                     }
                 }
 
-                if (documentsToDelete.length > 0) {
-                    let ajaxRequest: AjaxModel = <AjaxModel>{};
-                    ajaxRequest.ActionName = "Delete_Miscellanea_Document";
-                    ajaxRequest.Value = new Array<string>();
-                    ajaxRequest.Value = documentsToDelete;
-                    this._ajaxManager.ajaxRequest(JSON.stringify(ajaxRequest));
-                }
+                $.when.apply(null, udToDeletePromises)
+                    .done(() => {
+                        if (documentsToDelete.length > 0) {
+                            let ajaxRequest: AjaxModel = {} as AjaxModel;
+                            ajaxRequest.ActionName = "Delete_Miscellanea_Document";
+                            ajaxRequest.Value = new Array<string>();
+                            ajaxRequest.Value = documentsToDelete;
+                            this._ajaxManager.ajaxRequest(JSON.stringify(ajaxRequest));
+                        } else {
+                            this.sendRefreshUDRequest();
+                        }
+                    })
+                    .fail((exception: ExceptionDTO) => {
+                        this._loadingPanel.hide(this.pageContentId);
+                        $("#".concat(this.pageContentId)).hide();
+                        this.showNotificationException(this.uscNotificationId, exception);
+                    });
             }
         }, 300, 160);
     }
@@ -525,7 +566,7 @@ class FascVisualizza extends FascicleBase {
     * @param sender
     * @param args
     */
-    btnCompleteWorkflow_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnCompleteWorkflow_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         var url = `../Workflows/CompleteWorkflow.aspx?Type=Fasc&IdFascicle=${this.currentFascicleId}&IdWorkflowActivity=${this.workflowActivityId}`;
         return this.openWindow(url, "windowCompleteWorkflow", 700, 500);
@@ -536,7 +577,7 @@ class FascVisualizza extends FascicleBase {
     * @param sender
     * @param args
     */
-    btnInserts_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnInserts_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         var url = "../Fasc/FascMiscellanea.aspx?Type=Fasc&IdFascicle=".concat(this.currentFascicleId);
         window.location.href = url;
@@ -547,7 +588,7 @@ class FascVisualizza extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnWorkflowLogs_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnWorkflowLogs_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         var url = "../Fasc/FascInstanceLog.aspx?Type=Fasc&IdFascicle=".concat(this.currentFascicleId, "&ManagerID=", this.radWindowManagerCollegamentiId);
         return this.openWindow(url, "windowWorkflowInstanceLog", 1000, 650);
@@ -558,7 +599,7 @@ class FascVisualizza extends FascicleBase {
      * @param sender
      * @param args
      */
-    btnFascicleLog_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnFascicleLog_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         var url = "../Fasc/FascicleLog.aspx?IdFascicle=".concat(this.currentFascicleId);
         window.location.href = url;
@@ -569,7 +610,7 @@ class FascVisualizza extends FascicleBase {
     * @param sender
     * @param args
     */
-    btnOpen_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnOpen_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         this._loadingPanel.show(this.pageContentId);
         args.set_cancel(true);
         this.openFascicleClosed();
@@ -580,7 +621,7 @@ class FascVisualizza extends FascicleBase {
     * @param sender
     * @param args
     */
-    btnUndo_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnUndo_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         this._loadingPanel.show(this.pageContentId);
         args.set_cancel(true);
         this.undoFascicle();
@@ -626,7 +667,7 @@ class FascVisualizza extends FascicleBase {
         this.getFascicleDocumentUnits(qs, currentIdFascicleFolder)
             .done((data) => {
                 this.refreshUD(data, afterRemove);
-            }).fail((exception: ExceptionDTO) => {
+            }).fail((exception: ExceptionDTO) => {  
                 this._loadingPanel.hide(this.pageContentId);
                 $("#".concat(this.pageContentId)).hide();
                 this.showNotificationException(this.uscNotificationId, exception);
@@ -636,7 +677,7 @@ class FascVisualizza extends FascicleBase {
     private getFascicleDocumentUnits(qs: string, currentIdFascicleFolder: string): JQueryPromise<DocumentUnitModel[]> {
         let promise: JQueryDeferred<DocumentUnitModel[]> = $.Deferred<DocumentUnitModel[]>();
 
-        this._documentUnitService.getFascicleDocumentUnits(this._fascicleModel, qs, currentIdFascicleFolder, (data: DocumentUnitModel[]) => {
+        this._documentUnitService.getFascicleDocumentUnits(this._fascicleModel, qs, this.currentTenantAOOId, currentIdFascicleFolder, (data: DocumentUnitModel[]) => {
             promise.resolve(data);
         }, (exception: ExceptionDTO) => {
             promise.reject(exception);
@@ -650,39 +691,37 @@ class FascVisualizza extends FascicleBase {
      * @param args
      */
     refreshUD = (models: DocumentUnitModel[], updateFascicleDocument: boolean = false) => {
-        let radGridUD: Telerik.Web.UI.RadGrid = <Telerik.Web.UI.RadGrid>$find(this.radGridUDId);
-        let panelUD: JQuery = $("#".concat(this.panelUDId));
+        PageClassHelper.callUserControlFunctionSafe<UscFascicolo>(this.uscFascicoloId)
+            .done((instance) => {
+                let selectedFolderId: string = "";
+                let selectedFolder: FascicleSummaryFolderViewModel = this.getSelectedFascicleFolder();
+                if (selectedFolder) {
+                    selectedFolderId = selectedFolder.UniqueId;
+                }
 
-        let uscFascicolo: UscFascicolo = <UscFascicolo>$("#".concat(this.uscFascicoloId)).data();
-        if (!jQuery.isEmptyObject(uscFascicolo)) {
+                this.getByFolder(selectedFolderId)
+                    .done((data) => {
+                        let insertsArchiveChains: string[] = data.filter((x) => x.ChainType.toString() == ChainType[ChainType.Miscellanea]).map((m) => m.IdArchiveChain);
+                        if (selectedFolderId != "" && updateFascicleDocument) {
+                            this._fascicleDocumentService.updateFascicleDocument(data[0]);
+                        }
 
-            let selectedFolderId: string = "";
-            let selectedFolder: FascicleSummaryFolderViewModel = this.getSelectedFascicleFolder();
-            if (selectedFolder) {
-                selectedFolderId = selectedFolder.UniqueId;
-            }
-
-            this.getByFolder(selectedFolderId)
-                .done((data) => {
-                    let insertsArchiveChains: string[] = data.filter((x) => x.ChainType.toString() == ChainType[ChainType.Miscellanea]).map((m) => m.IdArchiveChain);
-                    if (selectedFolderId != "" && updateFascicleDocument) {
-                        this._fascicleDocumentService.updateFascicleDocument(data[0]);
-                    }
-                    uscFascicolo.refreshGridUD(models, insertsArchiveChains);
-                })
-                .fail((exception: ExceptionDTO) => {
-                    this._loadingPanel.hide(this.pageContentId);
-                    $("#".concat(this.pageContentId)).hide();
-                    this.showNotificationException(this.uscNotificationId, exception);
-                });
-        }
-
-        this._fascicleRights.HasFascicolatedUD = (models.filter(function (e) { return e.ReferenceType.toString() == FascicleReferenceType[FascicleReferenceType.Fascicle] }).length > 0);
-        this.setBtnCloseVisibility();
-        this.setBtnOpenVisibility();
-        this.setButtonEnable(true);
-
-        this._loadingPanel.hide(this.pageContentId);
+                        $("#".concat(this.uscFascicoloId)).unbind(UscFascicolo.GRID_REFRESH_EVENT);
+                        $("#".concat(this.uscFascicoloId)).bind(UscFascicolo.GRID_REFRESH_EVENT, (arg) => {
+                            this._fascicleRights.HasFascicolatedUD = (models.filter(function (e) { return e.ReferenceType.toString() == FascicleReferenceType[FascicleReferenceType.Fascicle] }).length > 0);
+                            this.setBtnCloseVisibility();
+                            this.setBtnOpenVisibility();
+                            this.setButtonEnable(true);
+                            this._loadingPanel.hide(this.pageContentId);
+                        });
+                        instance.refreshGridUD(models, insertsArchiveChains);
+                    })
+                    .fail((exception: ExceptionDTO) => {
+                        this._loadingPanel.hide(this.pageContentId);
+                        $("#".concat(this.pageContentId)).hide();
+                        this.showNotificationException(this.uscNotificationId, exception);
+                    });
+            });
     }
 
     private getByFolder(selectedFolderId: string): JQueryPromise<any> {
@@ -714,7 +753,7 @@ class FascVisualizza extends FascicleBase {
         }
     }
 
-    btnWorkflow_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnWorkflow_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         this.setWorkflowSessionStorage();
 
@@ -722,10 +761,13 @@ class FascVisualizza extends FascicleBase {
         if (this.workflowActivityId && !this.isWorkflowActivityClosed) {
             url = `${url}&ShowOnlyNoInstanceWorkflows=true`
         }
+        if (this.isClosed) {
+            url = `${url}&ShowOnlyHasIsFascicleClosedRequired=true`
+        }
         return this.openWindow(url, "windowStartWorkflow", 730, 550);
     }
 
-    btnMove_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btnMove_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         let radGridUD: Telerik.Web.UI.RadGrid = <Telerik.Web.UI.RadGrid>$find(this.radGridUDId);
         let dataItems: Telerik.Web.UI.GridDataItem[] = radGridUD.get_selectedItems();
@@ -742,10 +784,10 @@ class FascVisualizza extends FascicleBase {
         let UDName: string;
         let dto: FascicleMoveItemViewModel;
         for (let item of dataItems) {
-            element = <Telerik.Web.UI.RadButton>(item.findControl("btnUDLink"));
-            uniqueId = element.get_element().getAttribute("UniqueId");
+            element = <Telerik.Web.UI.RadButton>(item.findControl(FascVisualizza.btnUDLink_CONTROL_NAME));
+            uniqueId = element.get_element().getAttribute(FascVisualizza.UniqueId_ATTRIBUTE_NAME);
             UDName = element.get_text();
-            environment = element.get_element().getAttribute("Environment");
+            environment = element.get_element().getAttribute(FascVisualizza.Environment_ATTRIBUTE_NAME);
             dto = {} as FascicleMoveItemViewModel;
             dto.uniqueId = uniqueId;
             dto.name = UDName;
@@ -753,7 +795,7 @@ class FascVisualizza extends FascicleBase {
             dtos.push(dto);
         }
 
-        sessionStorage.setItem(FascMoveItems.FASC_MOVE_ITEMS_Session_key, JSON.stringify(dtos));
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_FASC_MOVE_ITEMS, JSON.stringify(dtos));
 
         var url = `FascMoveItems.aspx?Type=Fasc&idFascicle=${this.currentFascicleId}&ItemsType=DocumentType&IdFascicleFolder=${selectedFolder.UniqueId}`;
         return this.openWindow(url, "windowMoveItems", 750, 550);
@@ -817,39 +859,49 @@ class FascVisualizza extends FascicleBase {
     }
 
     private cleanWorkflowSessionStorage() {
-        sessionStorage.removeItem(UscStartWorkflow.SESSION_KEY_REFERENCE_MODEL);
-        sessionStorage.removeItem(UscStartWorkflow.SESSION_KEY_REFERENCE_ID);
-        sessionStorage.removeItem(UscStartWorkflow.SESSION_KEY_REFERENCE_TITLE);
-        sessionStorage.removeItem(UscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
-        sessionStorage.removeItem(UscStartWorkflow.SESSION_KEY_DOCUMENT_METADATAS);
-        sessionStorage.removeItem(UscStartWorkflow.SESSION_KEY_UDS_MODEL);
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL);
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID);
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_TITLE);
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENT_METADATAS);
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_UDS_MODEL);
     }
 
     private setWorkflowSessionStorage() {
-        sessionStorage.setItem(UscStartWorkflow.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(this._fascicleModel));
-        sessionStorage.setItem(UscStartWorkflow.SESSION_KEY_REFERENCE_ID, this.currentFascicleId);
-        sessionStorage.setItem(UscStartWorkflow.SESSION_KEY_REFERENCE_TITLE, this._fascicleModel.Title);
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(this._fascicleModel));
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID, this.currentFascicleId);
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_UNIQUEID, this.currentFascicleId);
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_TITLE, this._fascicleModel.Title);
 
         let radGridUD: Telerik.Web.UI.RadGrid = <Telerik.Web.UI.RadGrid>$find(this.radGridUDId);
         let dataItems: Telerik.Web.UI.GridDataItem[] = radGridUD.get_selectedItems();
+
         let element: Telerik.Web.UI.RadButton;
         let archiveChainId: string;
         let archiveDocumentId: string;
         let documentName: string;
         let environment: number;
+        let uniqueId: string;
 
         let dtos: WorkflowReferenceBiblosModel[] = [];
+        let referenceDocumentUnits: WorkflowReferenceDocumentUnitModel[] = [];
         for (let item of dataItems) {
-            element = <Telerik.Web.UI.RadButton>(item.findControl("btnUDLink"));
-            environment = +element.get_element().getAttribute("Environment");
+            element = <Telerik.Web.UI.RadButton>(item.findControl(FascVisualizza.btnUDLink_CONTROL_NAME));
+            environment = +element.get_element().getAttribute(FascVisualizza.Environment_ATTRIBUTE_NAME);
+
+            uniqueId = element.get_element().getAttribute(FascVisualizza.UniqueId_ATTRIBUTE_NAME);
+            referenceDocumentUnits.push(<WorkflowReferenceDocumentUnitModel>{
+                Environment: environment,
+                UniqueId: uniqueId
+            });
 
             if (environment != Environment.Document) {
                 continue;
             }
 
-            archiveChainId = element.get_element().getAttribute("BiblosChainId");
-            archiveDocumentId = element.get_element().getAttribute("BiblosDocumentId");
-            documentName = element.get_element().getAttribute("BiblosDocumentName");
+            archiveChainId = element.get_element().getAttribute(FascVisualizza.BiblosChainId_ATTRIBUTE_NAME);
+            archiveDocumentId = element.get_element().getAttribute(FascVisualizza.BiblosDocumentId_ATTRIBUTE_NAME);
+            documentName = element.get_element().getAttribute(FascVisualizza.BiblosDocumentName_ATTRIBUTE_NAME);
             let dto: WorkflowReferenceBiblosModel = {
                 ArchiveChainId: archiveChainId,
                 ChainType: ChainType.Miscellanea,
@@ -862,7 +914,8 @@ class FascVisualizza extends FascicleBase {
             dtos.push(dto);
         }
 
-        sessionStorage.setItem(UscStartWorkflow.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL, JSON.stringify(dtos));
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL, JSON.stringify(dtos));
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENT_UNITS_REFERENCE_MODEL, JSON.stringify(referenceDocumentUnits));
     }
 
 
@@ -895,14 +948,14 @@ class FascVisualizza extends FascicleBase {
      * Inizializza lo user control del sommario di fascicolo
      */
     private loadFascicoloSummary(): void {
-        let uscFascicolo: UscFascicolo = <UscFascicolo>$("#".concat(this.uscFascicoloId)).data();
-        if (!jQuery.isEmptyObject(uscFascicolo)) {
-            uscFascicolo.workflowActivityId = this.workflowActivityId
-            $("#".concat(this.uscFascicoloId)).bind(UscFascicolo.DATA_LOADED_EVENT, (args) => {
-                this.sendRefreshUDRequest();
+        PageClassHelper.callUserControlFunctionSafe<UscFascicolo>(this.uscFascicoloId)
+            .done((instance) => {
+                instance.workflowActivityId = this.workflowActivityId
+                $("#".concat(this.uscFascicoloId)).bind(UscFascicolo.DATA_LOADED_EVENT, (args) => {
+                    this.sendRefreshUDRequest();
+                });
+                instance.loadData(this._fascicleModel);
             });
-            uscFascicolo.loadData(this._fascicleModel);
-        }
     }
 
     /**
@@ -921,11 +974,10 @@ class FascVisualizza extends FascicleBase {
             return;
         }
 
-        //Bind evento onLoaded dello user control uscFascicolo
-        $("#".concat(this.uscFascicoloId)).bind(UscFascicolo.LOADED_EVENT, (args) => {
-            this.loadFascicoloSummary();
-        });
-        this.loadFascicoloSummary();
+        PageClassHelper.callUserControlFunctionSafe<UscFascicolo>(this.uscFascicoloId)
+            .done((instance) => {
+                this.loadFascicoloSummary();
+            });
 
         let procedureFascicleType: string = FascicleType[FascicleType.Procedure];
         let isProcedureFascicle: boolean = this._fascicleModel.FascicleType.toString() == procedureFascicleType;
@@ -937,27 +989,30 @@ class FascVisualizza extends FascicleBase {
             isPeriodicFascicle = this._fascicleModel.FascicleType.toString() == FascicleType[FascicleType.Period];
         }
 
-        let isClosed: boolean = this._fascicleModel.EndDate != null;
+        this.isClosed = this._fascicleModel.EndDate != null;
         this.setBtnCloseVisibility();
         this.setBtnOpenVisibility();
-        this._btnInsert.set_visible(!isClosed);
-        this._btnMove.set_visible(!isClosed);
-        this._btnRemove.set_visible(!isClosed);
-        this._btnSendToRoles.set_visible(!isClosed);
-        this._btnEdit.set_visible(!isClosed || isPeriodicFascicle);
-        this._btnLink.set_visible(!isClosed);
-        this._btnAutorizza.set_visible(!isClosed);
-        this._btnSign.set_visible(!isClosed);
+        this._btnInsert.set_visible(!this.isClosed);
+        this._btnMove.set_visible(!this.isClosed);
+        this._btnRemove.set_visible(!this.isClosed);
+        this._btnSendToRoles.set_visible(!this.isClosed);
+        this._btnEdit.set_visible(!this.isClosed || isPeriodicFascicle);
+        this._btnLink.set_visible(!this.isClosed);
+        this._btnAutorizza.set_visible(!this.isClosed);
+        this._btnSign.set_visible(!this.isClosed);
+        this._btnCopyToFascicle.set_visible(!this.isClosed);
         this._btnDocuments.set_visible(viewRights.IsViewable || isPeriodicFascicle);
         let isWorkflowEnabled: boolean = this.workflowEnabled && isProcedureFascicle;
-        this._btnWorkflow.set_visible(isWorkflowEnabled && !isClosed && viewRights.HasAuthorizedWorkflows && viewRights.IsManageable);
-        this._btnCompleteWorkflow.set_visible(!isClosed && this.hasActiveWorkflowActivityWorkflow());
+        let workflowButtonVisibility = isWorkflowEnabled && viewRights.HasAuthorizedWorkflows && viewRights.IsManageable;
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_ISBUTTON_WORKFLOW_VISIBLE, String(workflowButtonVisibility));
+        this._btnWorkflow.set_visible(workflowButtonVisibility);
+        this._btnCompleteWorkflow.set_visible(!this.isClosed && this.hasActiveWorkflowActivityWorkflow());
         this._btnWorkflowLogs.set_visible(viewRights.IsManager || viewRights.IsSecretary);
         this._btnFascicleLog.set_visible(viewRights.IsManager || viewRights.IsSecretary);
-        this._btnUndo.set_visible(!isClosed && (viewRights.IsManager || viewRights.IsSecretary))
+        this._btnUndo.set_visible(!this.isClosed && (viewRights.IsManager || viewRights.IsSecretary))
 
 
-        if (!isClosed) {
+        if (!this.isClosed) {
             this._btnEdit.set_visible((viewRights.IsEditable || viewRights.IsManager) && !isPeriodicFascicle);
             this._btnLink.set_visible(viewRights.IsManageable);
             this._btnAutorizza.set_visible((viewRights.IsEditable || viewRights.IsManager) && (isProcedureFascicle || isPeriodicFascicle));
@@ -966,6 +1021,7 @@ class FascVisualizza extends FascicleBase {
             this._btnInsert.set_visible(viewRights.IsManageable || viewRights.IsManager);
             this._btnMove.set_visible(viewRights.IsManageable || viewRights.IsManager);
             this._btnRemove.set_visible(viewRights.IsManageable || viewRights.IsManager);
+            this._btnCopyToFascicle.set_visible(viewRights.IsManageable || viewRights.IsManager);
             let uscFascFolder: UscFascicleFolders = <UscFascicleFolders>$("#".concat(this.uscFascFoldersId)).data();
             if (!jQuery.isEmptyObject(uscFascFolder)) {
                 uscFascFolder.setManageFascicleFolderVisibility(viewRights.IsManageable || viewRights.IsManager);
@@ -999,6 +1055,7 @@ class FascVisualizza extends FascicleBase {
                             this._btnInsert.set_visible(isHandlingDocumentEnabled);
                             this._btnMove.set_visible(isHandlingDocumentEnabled);
                             this._btnRemove.set_visible(isHandlingDocumentEnabled);
+                            this._btnCopyToFascicle.set_visible(isHandlingDocumentEnabled);
 
                             let uscFascFolder: UscFascicleFolders = <UscFascicleFolders>$("#".concat(this.uscFascFoldersId)).data();
                             if (!jQuery.isEmptyObject(uscFascFolder)) {
@@ -1019,6 +1076,11 @@ class FascVisualizza extends FascicleBase {
             if (!jQuery.isEmptyObject(uscFascFolder)) {
                 uscFascFolder.setCloseAttributeFascicleFolder();
             }
+        }
+
+        let uscFascFolder: UscFascicleFolders = <UscFascicleFolders>$("#".concat(this.uscFascFoldersId)).data();
+        if (!jQuery.isEmptyObject(uscFascFolder)) {
+            uscFascFolder.fileManagementButtonsVisibility(viewRights.IsManager || viewRights.IsSecretary);
         }
 
         this._pnlButtons.show();
@@ -1046,6 +1108,21 @@ class FascVisualizza extends FascicleBase {
         wnd.set_modal(true);
         wnd.center();
         return false;
+    }
+
+    private removeDocumentUnitFromFascicle(documentUnitId: string): JQueryPromise<void> {
+        const promise: JQueryDeferred<void> = $.Deferred<void>();
+        this.getDocumentUnitAndFascicleAsync(documentUnitId, this.currentFascicleId)
+            .done((data) => {
+                let fascicleDocumentUnitModel: FascicleDocumentUnitModel = new FascicleDocumentUnitModel(this.currentFascicleId);
+                fascicleDocumentUnitModel.DocumentUnit = data.DocumentUnit;
+                fascicleDocumentUnitModel.UniqueId = data.UniqueId;
+                this.removeFascicleUD(fascicleDocumentUnitModel, this._fascicleDocumentUnitService).done(() => {
+                    promise.resolve();
+                }).fail((exception: ExceptionDTO) => promise.reject(exception));
+            })
+            .fail((exception: ExceptionDTO) => promise.reject(exception));
+        return promise.promise();
     }
 
     removeFascicleUD(model: IFascicolableBaseModel, service: IFascicolableBaseService<IFascicolableBaseModel>): JQueryPromise<void> {
@@ -1083,6 +1160,7 @@ class FascVisualizza extends FascicleBase {
         this._btnCompleteWorkflow.set_enabled(value);
         this._btnWorkflowLogs.set_enabled(value);
         this._btnUndo.set_enabled(value);
+        this._btnCopyToFascicle.set_enabled(value);
     }
 
     workflowCallback = () => {
@@ -1269,5 +1347,36 @@ class FascVisualizza extends FascicleBase {
         }
         this._currentDocumentToSign = undefined;
     }
+    btnCopyToFascicle_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
+        let radGridUD: Telerik.Web.UI.RadGrid = <Telerik.Web.UI.RadGrid>$find(this.radGridUDId);
+        let dataItems: Telerik.Web.UI.GridDataItem[] = radGridUD.get_selectedItems();
+        if (dataItems.length == 0) {
+            this.showWarningMessage(this.uscNotificationId, "Nessun documento selezionato");
+            return;
+        }
+        let selectedFolder: FascicleSummaryFolderViewModel = this.getSelectedFascicleFolder();
+        let dtos: FascicleMoveItemViewModel[] = [];
+        let element: Telerik.Web.UI.RadButton;
+        let uniqueId: string;
+        let environment: string;
+        let UDName: string;
+        let dto: FascicleMoveItemViewModel;
+        for (let item of dataItems) {
+            element = <Telerik.Web.UI.RadButton>(item.findControl(FascVisualizza.btnUDLink_CONTROL_NAME));
+            uniqueId = element.get_element().getAttribute(FascVisualizza.UniqueId_ATTRIBUTE_NAME);
+            UDName = element.get_text();
+            environment = element.get_element().getAttribute(FascVisualizza.Environment_ATTRIBUTE_NAME);
+            dto = {} as FascicleMoveItemViewModel;
+            dto.uniqueId = uniqueId;
+            dto.name = UDName;
+            dto.environment = Number(environment) as Environment;
+            dtos.push(dto);
+        }
+
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_FASC_MOVE_ITEMS, JSON.stringify(dtos));
+        let url: string = `../Fasc/FascRicerca.aspx?Type=Fasc&Action=SearchFascicles&ChoiseFolderEnabled=true&SelectedFascicleFolderId=${selectedFolder.UniqueId}&CurrentFascicleId=${this.currentFascicleId}`;
+        this.openWindow(url, "windowFascicleSearch", 750, 600);
+    }
+
 }
 export = FascVisualizza;

@@ -1,5 +1,6 @@
 ﻿Imports System.Xml.Serialization
 
+<XmlRoot("WorkflowMetadata")>
 Public Class WorkflowMetadataXml
 
     <XmlElement("Key")>

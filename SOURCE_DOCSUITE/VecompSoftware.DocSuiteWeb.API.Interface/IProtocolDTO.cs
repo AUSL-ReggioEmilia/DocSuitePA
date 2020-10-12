@@ -5,7 +5,7 @@ namespace VecompSoftware.DocSuiteWeb.API
     public interface IProtocolDTO : IAPIArgument
     {
         #region [ Properties ]
-
+        Guid? UniqueId { get; set; }
         short? Year { get; set; }
 
         int? Number { get; set; }
@@ -70,6 +70,9 @@ namespace VecompSoftware.DocSuiteWeb.API
 
         DateTime? ProtocolReserveTo { get; set; }
 
+        IWorkflowActionDTO[] WorkflowActions { get; set; }
+
+        int? IdServiceCategory { get; set; }
 
         #endregion
     }

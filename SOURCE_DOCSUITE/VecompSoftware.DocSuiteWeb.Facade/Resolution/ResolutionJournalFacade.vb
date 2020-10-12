@@ -36,9 +36,9 @@ Public Class ResolutionJournalFacade
 #Region " FacadeEntityBase overrides "
 
     Public Sub DetachDocuments(ByRef journal As ResolutionJournal)
-        Service.DetachDocument(journal.Template.Location.DocumentServer, journal.Template.Location.ReslBiblosDSDB, journal.IDDocument)
+        Service.DetachDocument(journal.Template.Location.ReslBiblosDSDB, journal.IDDocument)
         If journal.IDSignedDocument.HasValue Then
-            Service.DetachDocument(journal.Template.Location.ConservationServer, journal.Template.Location.ConsBiblosDSDB, journal.IDSignedDocument)
+            Service.DetachDocument(journal.Template.Location.ConsBiblosDSDB, journal.IDSignedDocument)
         End If
     End Sub
 
@@ -81,20 +81,17 @@ Public Class ResolutionJournalFacade
         If resolutionJournal Is Nothing Then Throw New DocSuiteException("Nessun registro trovato per l'ID passato")
         If resolutionJournal.IDDocument.Equals(0) Then Throw New DocSuiteException("Nessun documento presente per la firma")
 
-        Dim serverName As String = String.Empty
         Dim biblosArchiveName As String = String.Empty
         Dim idChain As Integer = 0
         If resolutionJournal.IDSignedDocument.HasValue Then
-            serverName = resolutionJournal.Template.Location.ConservationServer
             biblosArchiveName = resolutionJournal.Template.Location.ConsBiblosDSDB
             idChain = resolutionJournal.IDSignedDocument.Value
         Else
-            serverName = resolutionJournal.Template.Location.ReslBiblosDSDB
             biblosArchiveName = resolutionJournal.Template.Location.ReslBiblosDSDB
             idChain = resolutionJournal.IDDocument
         End If
 
-        Return New BiblosDocumentInfo(serverName, biblosArchiveName, idChain)
+        Return New BiblosDocumentInfo(biblosArchiveName, idChain)
     End Function
 
     ''' <summary>
@@ -109,9 +106,9 @@ Public Class ResolutionJournalFacade
         ' Selezione file firmato o originale
         Dim doc As BiblosDocumentInfo
         If resolutionJournal.IDSignedDocument.HasValue Then
-            doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ConservationServer, resolutionJournal.Template.Location.ConsBiblosDSDB, resolutionJournal.IDSignedDocument.Value).LastOrDefault()
+            doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ConsBiblosDSDB, resolutionJournal.IDSignedDocument.Value).LastOrDefault()
         Else
-            doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.IDDocument).FirstOrDefault()
+            doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.IDDocument).FirstOrDefault()
         End If
 
         'Dim filename As String = String.Concat(GetDescription(resolutionJournal), doc.Extension)
@@ -127,7 +124,7 @@ Public Class ResolutionJournalFacade
     ''' <param name="resolutionJournal"></param>
     ''' <returns></returns>
     Public Function ExtractNotSignedFileInfo(ByVal resolutionJournal As ResolutionJournal) As FileInfo
-        Dim doc As BiblosDocumentInfo = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.IDDocument).FirstOrDefault()
+        Dim doc As BiblosDocumentInfo = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.IDDocument).FirstOrDefault()
         Return BiblosFacade.SaveUniqueToTemp(doc)
     End Function
 
@@ -179,9 +176,9 @@ Public Class ResolutionJournalFacade
                 ' TODO: reimplementare appena si fa una nuova logica di gestione dei files temporanei
                 Dim doc As BiblosDocumentInfo
                 If resolutionJournal.IDSignedDocument.HasValue Then
-                    doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ConservationServer, resolutionJournal.Template.Location.ConsBiblosDSDB, resolutionJournal.IDSignedDocument.Value).LastOrDefault()
+                    doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ConsBiblosDSDB, resolutionJournal.IDSignedDocument.Value).LastOrDefault()
                 Else
-                    doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.IDDocument).FirstOrDefault()
+                    doc = BiblosDocumentInfo.GetDocuments(resolutionJournal.Template.Location.ReslBiblosDSDB, resolutionJournal.IDDocument).FirstOrDefault()
                 End If
 
                 ' Salvo nella directory temporanea il file rinominandolo nel suo id (per vecchie logiche di GUI)
@@ -247,7 +244,7 @@ Public Class ResolutionJournalFacade
             Dim filename As String = GetDescription(resolutionJournal) & FileHelper.PDF
             Dim segnature As String = GenerateSignature(resolutionJournal, _dao.GetServerDate())
 
-            Dim uid As UIDDocument = Services.Biblos.Service.AddFile(New UIDLocation() With {.Server = location.DocumentServer, .Archive = location.ReslBiblosDSDB}, _
+            Dim uid As UIDDocument = Services.Biblos.Service.AddFile(New UIDLocation() With {.Archive = location.ReslBiblosDSDB},
                                                          physicalFile, Service.GetBaseAttributes(filename, segnature))
 
             newChainId = uid.Chain.Id
@@ -290,7 +287,7 @@ Public Class ResolutionJournalFacade
             attributes.Add("registro", registro)
 
             ' Aggiungo il documento firmato all'archivio di conservazione, se è già stato firmato lo aggiungo in catena agli altri
-            Dim chainId As Long = 0
+            Dim chainId As Integer = 0
             'Aggiungo in coda solo se il parametro apposito è disattivo ovvero
             'se voglio tutta la serie (valore false) passo il precedente valore, altrimenti passo 0
             If resolutionJournal.IDSignedDocument.HasValue Then
@@ -299,11 +296,11 @@ Public Class ResolutionJournalFacade
                 Else
                     ''Se passo chanId = 0 ottengo un nuovo inserimento
                     ''Devo pertanto fare il detach dell'inserimento precedente
-                    Services.Biblos.Service.DetachDocument(location.ConservationServer, location.ConsBiblosDSDB, resolutionJournal.IDSignedDocument.Value)
+                    Services.Biblos.Service.DetachDocument(location.ConsBiblosDSDB, resolutionJournal.IDSignedDocument.Value)
                 End If
             End If
 
-            Dim uid As UIDDocument = Services.Biblos.Service.AddFile(New UIDLocation(location.ConservationServer, location.ConsBiblosDSDB), chainId, physicalFile, attributes)
+            Dim uid As UIDDocument = Service.AddFile(New UIDLocation(location.ConsBiblosDSDB), chainId, physicalFile, attributes)
             Return uid.Chain.Id
         Catch ex As Exception
             Throw New DocSuiteException("ResolutionJournal error", "Errore in salvataggio Registro.", ex)
@@ -346,30 +343,27 @@ Public Class ResolutionJournalFacade
         Return GetDescription(resolutionJournal.Template, resolutionJournal.Month, resolutionJournal.Year)
     End Function
 
-
     Public Function ResolutionJournalViewerUrl(item As ResolutionJournal) As String
-        Dim servername, archive As String
+        Dim archive As String
         Dim chainId, chainEnum As Integer
         If item.Signdate.HasValue Then
             ' Documento firmato
-            servername = item.Template.Location.ConservationServer
             archive = item.Template.Location.ConsBiblosDSDB
             chainId = item.IDSignedDocument.Value
 
-            Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(servername, archive, chainId)
+            Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(archive, chainId)
             chainEnum = docs.Count - 1
         Else
             ' Documento non firmato
-            servername = item.Template.Location.DocumentServer
             archive = item.Template.Location.ReslBiblosDSDB
             chainId = item.IDDocument
             chainEnum = 0
         End If
 
-        Dim doc As New BiblosDocumentInfo(servername, archive, chainId, chainEnum)
+        Dim doc As New BiblosDocumentInfo(archive, chainId, chainEnum)
 
-        Dim parameters As String = String.Format("servername={0}&guid={1}&label={2}", doc.Server, doc.ChainId, item.Template.Description)
-        Return "~/Viewers/BiblosViewer.aspx?" & CommonShared.AppendSecurityCheck(parameters)
+        Dim parameters As String = $"guid={doc.ChainId}&label={item.Template.Description}"
+        Return $"~/Viewers/BiblosViewer.aspx?{CommonShared.AppendSecurityCheck(parameters)}"
     End Function
 
 #End Region

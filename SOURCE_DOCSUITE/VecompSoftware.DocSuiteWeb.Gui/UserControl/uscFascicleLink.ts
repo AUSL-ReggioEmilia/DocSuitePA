@@ -181,7 +181,7 @@ class uscFascicleLink {
 
         if ((otherFascicleCount == undefined || currentOtherFascicleItems < otherFascicleCount) && !updating) {
             sender.get_attributes().setAttribute('updating', 'true');
-            this._fascicleService.getFascicleByCategory(this.selectedCategoryId, args.get_text(),
+            this._fascicleService.getFascicleByCategory(this.selectedCategoryId, args.get_text(), null,
                 (data: ODATAResponseModel<FascicleModel>) => {
                     try {
                         this.refreshFascicles(data.value);
@@ -197,8 +197,7 @@ class uscFascicleLink {
                     catch (error) {
                         console.log(JSON.stringify(error));
                     }
-                }
-            );
+                });
         }
     }
 

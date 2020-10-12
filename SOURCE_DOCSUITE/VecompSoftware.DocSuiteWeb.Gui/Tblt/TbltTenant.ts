@@ -3,10 +3,7 @@
 /// <reference path="../scripts/typings/dsw/dsw.signalr.d.ts" />
 /// <amd-dependency path="../app/core/extensions/string" />
 
-import WindowHelper = require('App/Helpers/WindowHelper');
-import CategoryViewModel = require('App/ViewModels/Tblt/CategoryViewModel');
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
-import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import TbltTenantBase = require("./TbltTenantBase");
 import TenantViewModel = require("App/ViewModels/Tenants/TenantViewModel");
@@ -22,9 +19,13 @@ import ODATAResponseModel = require('App/Models/ODATAResponseModel');
 import TenantConfigurationTypeEnum = require('App/Models/Tenants/TenantConfigurationTypeEnum');
 import TenantWorkflowRepositoryTypeEnum = require('App/Models/Tenants/TenantWorkflowRepositoryTypeEnum');
 import EnumHelper = require("App/Helpers/EnumHelper");
-import ContactModel = require('../App/Models/Commons/ContactModel');
-import uscContattiSelRest = require('../UserControl/uscContattiSelRest');
-import uscRoleRest = require('../UserControl/uscRoleRest');
+import ContactModel = require('App/Models/Commons/ContactModel');
+import uscContattiSelRest = require('UserControl/uscContattiSelRest');
+import uscRoleRest = require('UserControl/uscRoleRest');
+import UpdateActionType = require('App/Models/UpdateActionType');
+import TenantAOOModel = require('App/Models/Tenants/TenantAOOModel');
+import TenantAOOAttribute = require('App/Models/Tenants/TenantAOOAttributeEnum');
+import TenantTypologyTypeEnum = require('App/Models/Tenants/TenantTypologyTypeEnum');
 
 
 class TbltTenant extends TbltTenantBase {
@@ -37,8 +38,10 @@ class TbltTenant extends TbltTenantBase {
     pnlDetailsId: string;
     uscRoleRestId: string;
     uscContattiSelRestId: string;
+    managerId: string;
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
+    private _manager: Telerik.Web.UI.RadWindowManager;
 
     //rad tree views
     rtvTenantsId: string;
@@ -52,6 +55,7 @@ class TbltTenant extends TbltTenantBase {
     tbPECMailBoxesControlId: string;
     tbWorkflowRepositoryControlId: string;
     tbConfigurationControlId: string;
+    rtbCompanyOptionsId: string;
 
     //details right zone
     lblCompanyNameId: string;
@@ -67,7 +71,7 @@ class TbltTenant extends TbltTenantBase {
     rwWorkflowRepositoryId: string;
     rwTenantConfigurationId: string;
     rwTenantSelectorId: string;
- 
+
     //window combos
     cmbContainerId: string;
     cmbPECMailBoxId: string;
@@ -89,8 +93,8 @@ class TbltTenant extends TbltTenantBase {
     btnTenantConfigurationSelectorCancelId: string;
     btnTenantSelectorOkId: string;
     btnTenantSelectorCancelId: string;
-    btnTenantInsertId: string;
-    btnTenantUpdateId: string;
+    btnTenantAOOSelectorOkId: string;
+    btnTenantAOOSelectorCancelId: string;
 
     // window configuration fields
     dpStartDateFromId: string;
@@ -107,9 +111,13 @@ class TbltTenant extends TbltTenantBase {
     txtTenantWorkflowRepositoryJsonValueId: string;
     txtTenantWorkflowRepositoryIntegrationModuleNameId: string;
     txtTenantWorkflowRepositoryConditionsId: string;
+    txtTenantAOONameId: string;
+    txtTenantAOONoteId: string;
+    txtCategorySuffixId: string;
+    txtTenantAOONameInfoId: string;
+    txtTenantAOONoteInfoId: string;
+    txtTenantAOOSuffixInfoId: string;
 
-    rtvResult: TenantViewModel[];
-    selectedTenant: TenantViewModel;
     selectedTenantConfiguration: TenantConfigurationModel;
 
     //dropdown data models
@@ -126,12 +134,13 @@ class TbltTenant extends TbltTenantBase {
     currentTenantConfigurationUniqueId: string;
     currentTenantWorkflowRepositoryUniqueId: string;
     isTenantUpdate: boolean;
+    isTenantAOOUpdate: boolean;
     private _enumHelper: EnumHelper;
     maxNumberElements: string;
     contacts: ContactModel[];
 
     private _currentSelectedTenant: TenantViewModel;
-   
+
     //rad tree views
     private _rtvTenants: Telerik.Web.UI.RadTreeView;
     private _rtvContainers: Telerik.Web.UI.RadTreeView;
@@ -151,6 +160,7 @@ class TbltTenant extends TbltTenantBase {
     private _toolbarItemSearchCompanyName: Telerik.Web.UI.RadToolBarItem;
     private _txtSearchTenantName: Telerik.Web.UI.RadTextBox;
     private _txtSearchCompanyName: Telerik.Web.UI.RadTextBox;
+    private _rtbCompanyOptions: Telerik.Web.UI.RadToolBar;
 
     //details right zone
     private _lblCompanyNameId: HTMLLabelElement;
@@ -158,6 +168,9 @@ class TbltTenant extends TbltTenantBase {
     private _lblTenantNoteId: HTMLLabelElement;
     private _lblTenantDataDiAttivazioneId: HTMLLabelElement;
     private _lblTenantDataDiDisattivazioneId: HTMLLabelElement;
+    private _txtTenantAOONameInfo: HTMLLabelElement;
+    private _txtTenantAOONoteInfo: HTMLLabelElement;
+    private _txtTenantAOOSuffixInfo: HTMLLabelElement;
 
     // windows
     private _rwContainer: Telerik.Web.UI.RadWindow;
@@ -185,8 +198,8 @@ class TbltTenant extends TbltTenantBase {
     private _btnTenantConfigurationSelectorCancel: Telerik.Web.UI.RadButton;
     private _btnTenantSelectorOk: Telerik.Web.UI.RadButton;
     private _btnTenantSelectorCancel: Telerik.Web.UI.RadButton;
-    private _btnTenantInsert: Telerik.Web.UI.RadButton;
-    private _btnTenantUpdate: Telerik.Web.UI.RadButton;
+    private _btnTenantAOOSelectorOk: Telerik.Web.UI.RadButton;
+    private _btnTenantAOOSelectorCancel: Telerik.Web.UI.RadButton;
 
     // window configuration fields
     private _dpStartDateFrom: Telerik.Web.UI.RadDatePicker;
@@ -203,6 +216,9 @@ class TbltTenant extends TbltTenantBase {
     private _txtTenantWorkflowRepositoryJsonValue: Telerik.Web.UI.RadTextBox;
     private _txtTenantWorkflowRepositoryIntegrationModuleName: Telerik.Web.UI.RadTextBox;
     private _txtTenantWorkflowRepositoryConditions: Telerik.Web.UI.RadTextBox;
+    private _txtTenantAOOName: Telerik.Web.UI.RadTextBox;
+    private _txtTenantAOONote: Telerik.Web.UI.RadTextBox;
+    private _txtCategorySuffix: Telerik.Web.UI.RadTextBox;
 
     private _serviceConfiguration: ServiceConfiguration[];
     private _uscRoleRest: uscRoleRest;
@@ -212,7 +228,6 @@ class TbltTenant extends TbltTenantBase {
         super(serviceConfigurations);
         this._serviceConfiguration = serviceConfigurations;
 
-        this.selectedTenant = new TenantViewModel();
         this._currentSelectedTenant = new TenantViewModel();
         this.selectedTenantConfiguration = new TenantConfigurationModel();
 
@@ -222,13 +237,15 @@ class TbltTenant extends TbltTenantBase {
     initialize(): void {
         super.initialize();
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
+        this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.managerId);
 
         this._toolbarSearch = <Telerik.Web.UI.RadToolBar>$find(this.toolBarSearchId);
         this._toolbarSearch.add_buttonClicking(this.toolbarSearch_onClick);
 
         //rad tree views
         this._rtvTenants = <Telerik.Web.UI.RadTreeView>$find(this.rtvTenantsId);
-        this._rtvTenants.add_nodeClicking(this.rtvTenants_onClick);
+        this._rtvTenants.add_nodeExpanded(this.tenantAOO_onExpanded);
+        this._rtvTenants.add_nodeClicked(this.rtvTenants_onClick);
         this._rtvContainers = <Telerik.Web.UI.RadTreeView>$find(this.rtvContainersId);
         this._rtvPECMailBoxes = <Telerik.Web.UI.RadTreeView>$find(this.rtvPECMailBoxesId);
         this._rtvTenantWorkflowRepositories = <Telerik.Web.UI.RadTreeView>$find(this.rtvWorkflowRepositoriesId);
@@ -246,6 +263,9 @@ class TbltTenant extends TbltTenantBase {
         this._lblTenantNoteId = <HTMLLabelElement>document.getElementById(this.lblTenantNoteId);
         this._lblTenantDataDiAttivazioneId = <HTMLLabelElement>document.getElementById(this.lblTenantDataDiAttivazioneId);
         this._lblTenantDataDiDisattivazioneId = <HTMLLabelElement>document.getElementById(this.lblTenantDataDiDisattivazioneId);
+        this._txtTenantAOONameInfo = <HTMLLabelElement>document.getElementById(this.txtTenantAOONameInfoId);
+        this._txtTenantAOONoteInfo = <HTMLLabelElement>document.getElementById(this.txtTenantAOONoteInfoId);
+        this._txtTenantAOOSuffixInfo = <HTMLLabelElement>document.getElementById(this.txtTenantAOOSuffixInfoId);
 
         //Containers, PECMailBoxes, Rules, WorkflowReposiory, TenantConfiguration
         this._toolbarContainer = <Telerik.Web.UI.RadToolBar>$find(this.tbContainersControlId);
@@ -256,6 +276,8 @@ class TbltTenant extends TbltTenantBase {
         this._toolbarWorkflowRepository.add_buttonClicking(this.toolbarWorkflowRepository_onClick);
         this._tbConfigurationControl = <Telerik.Web.UI.RadToolBar>$find(this.tbConfigurationControlId);
         this._tbConfigurationControl.add_buttonClicking(this.toolbarConfiguration_onClick);
+        this._rtbCompanyOptions = <Telerik.Web.UI.RadToolBar>$find(this.rtbCompanyOptionsId);
+        this._rtbCompanyOptions.add_buttonClicked(this.rtbCompanyOptions_onClick);
 
         // windows
         this._rwContainer = <Telerik.Web.UI.RadWindow>$find(this.rwContainerId);
@@ -302,10 +324,10 @@ class TbltTenant extends TbltTenantBase {
         this._btnTenantSelectorOk.add_clicking(this.btnTenantSelectorOk_onClick);
         this._btnTenantSelectorCancel = <Telerik.Web.UI.RadButton>$find(this.btnTenantSelectorCancelId);
         this._btnTenantSelectorCancel.add_clicking(this.btnTenantSelectorCancel_onClick);
-        this._btnTenantInsert = <Telerik.Web.UI.RadButton>$find(this.btnTenantInsertId);
-        this._btnTenantInsert.add_clicking(this.btnTenantInsert_onClick);
-        this._btnTenantUpdate = <Telerik.Web.UI.RadButton>$find(this.btnTenantUpdateId);
-        this._btnTenantUpdate.add_clicking(this.btnTenantUpdate_onClick);
+        this._btnTenantAOOSelectorOk = <Telerik.Web.UI.RadButton>$find(this.btnTenantAOOSelectorOkId);
+        this._btnTenantAOOSelectorOk.add_clicked(this.btnTenantAOOSelectorOk_onClick);
+        this._btnTenantAOOSelectorCancel = <Telerik.Web.UI.RadButton>$find(this.btnTenantAOOSelectorCancelId);
+        this._btnTenantAOOSelectorCancel.add_clicked(this.btnTenantAOOSelectorCancel_onClick);
 
         // window configuration fields
         this._dpStartDateFrom = <Telerik.Web.UI.RadDatePicker>$find(this.dpStartDateFromId);
@@ -322,127 +344,53 @@ class TbltTenant extends TbltTenantBase {
         this._txtTenantWorkflowRepositoryJsonValue = <Telerik.Web.UI.RadTextBox>$find(this.txtTenantWorkflowRepositoryJsonValueId);
         this._txtTenantWorkflowRepositoryIntegrationModuleName = <Telerik.Web.UI.RadTextBox>$find(this.txtTenantWorkflowRepositoryIntegrationModuleNameId);
         this._txtTenantWorkflowRepositoryConditions = <Telerik.Web.UI.RadTextBox>$find(this.txtTenantWorkflowRepositoryConditionsId);
+        this._txtTenantAOOName = <Telerik.Web.UI.RadTextBox>$find(this.txtTenantAOONameId);
+        this._txtTenantAOONote = <Telerik.Web.UI.RadTextBox>$find(this.txtTenantAOONoteId);
+        this._txtCategorySuffix = <Telerik.Web.UI.RadTextBox>$find(this.txtCategorySuffixId);
 
         this._uscRoleRest = <uscRoleRest>$(`#${this.uscRoleRestId}`).data();
 
         this._uscContattiSelRest = <uscContattiSelRest>$(`#${this.uscContattiSelRestId}`).data();
-        let searchDTO: TenantSearchFilterDTO = new TenantSearchFilterDTO();
-        this.loadResults(searchDTO);
+        let searchDTO: TenantSearchFilterDTO = null;
+        $(`#tenantLinkOptions`).hide();
+        $(`#tenantAOOInfo`).hide();
+        this.loadTenantsAOO(searchDTO);
     }
 
     //region [ Tenants ]
     rtvTenants_onClick = (sender: any, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => {
-        this.loadTenantDetails(args.get_node().get_value());
-    }
+        this._rtbCompanyOptions.findItemByValue("create").set_enabled(true);
+        this._rtbCompanyOptions.findItemByValue("modify").set_enabled(true);
 
-    loadTenantDetails(tenantId: string) {
-        let tenant: TenantViewModel = this.rtvResult.filter(function (x) {
-            return x.UniqueId === tenantId
-        })[0];
-        this._currentSelectedTenant = $.extend({}, tenant);
-
-        this._lblCompanyNameId.innerText = tenant !== undefined ? tenant.CompanyName : "";
-        this._lblTenantNameId.innerText = tenant !== undefined ? tenant.TenantName : "";
-        this._lblTenantNoteId.innerText = tenant.Note !== null ? tenant.Note : "";
-        this._lblTenantDataDiAttivazioneId.innerText = tenant !== undefined && moment(tenant.StartDate).isValid() ? moment(tenant.StartDate).format("DD-MM-YYYY") : "";
-        this._lblTenantDataDiDisattivazioneId.innerText = tenant !== undefined && moment(tenant.EndDate).isValid() ? moment(tenant.EndDate).format("DD-MM-YYYY") : "";
-
-        this.populateContainersTreeView(tenant);
-        this.populatePECMailBoxesTreeView(tenant);
-        this.populateTenantWorkflowRepositoriesTreeView(tenant);
-        this.populateTenantConfigurationsTreeView(tenant);
-        this.populateWorkflowRepositoryComboBox();
-        this.populateContactTreeView(tenant);
-        this.registerUscContattiRestEventHandlers();
-
-        this.populateRolesTree(tenant);
-        this.registerUscRoleRestEventHandlers();
-    }
-
-    //region [ Roles tree view ]
-    private populateRolesTree(tenant: TenantViewModel): void {
-        this._loadingPanel.show(this.splitterMainId);
-        this._roleService.getTenantRoles(tenant.UniqueId,
-            (tenantRoles: RoleModel[]) => {
-                this._uscRoleRest.renderRolesTree(tenantRoles);
-                this._currentSelectedTenant.Roles = tenantRoles;
-                this._loadingPanel.hide(this.splitterMainId);
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.splitterMainId);
-                $("#".concat(this.rtvTenantsId)).hide();
-                this.showNotificationException(this.uscNotificationId, exception);
-            });
-    }
-
-    private registerUscRoleRestEventHandlers(): void {
-        let uscRoleRestEvents = this._uscRoleRest.uscRoleRestEvents;
-
-        this._uscRoleRest.registerEventHandler(uscRoleRestEvents.RoleDeleted, this.deleteTenantRolePromise);
-        this._uscRoleRest.registerEventHandler(uscRoleRestEvents.NewRolesAdded, this.updateTenantRolesPromise);
-    }
-
-    private deleteTenantRolePromise = (roleIdToDelete: number, instanceId?: string): JQueryPromise<any> => {
-        let promise: JQueryDeferred<any> = $.Deferred<any>();
-
-        if (!roleIdToDelete)
-            return promise.promise();
-
-        this._currentSelectedTenant.Roles = this._currentSelectedTenant.Roles
-            .filter(role => role.IdRole !== roleIdToDelete && role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) === -1);
-
-        this._loadingPanel.show(this.splitterMainId);
-        this._tenantService.updateTenant(this._currentSelectedTenant,
-            (data: any) => {
-                promise.resolve(data);
-                this._loadingPanel.hide(this.splitterMainId);
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.splitterMainId);
-                $("#".concat(this.rtvTenantsId)).hide();
-                this.showNotificationException(this.uscNotificationId, exception);
-            });
-        return promise.promise();
-    }
-
-    private updateTenantRolesPromise = (newAddedRoles: RoleModel[], instanceId?: string): JQueryPromise<any> => {
-        let promise: JQueryDeferred<any> = $.Deferred<any>();
-
-        if (!newAddedRoles.length)
-            return promise.promise();
-
-        this._currentSelectedTenant.Roles = [...this._currentSelectedTenant.Roles, ...newAddedRoles];
-        this._loadingPanel.show(this.splitterMainId);
-        this._tenantService.updateTenant(this._currentSelectedTenant,
-            (data: any) => {
-                promise.resolve(data);
-                this._loadingPanel.hide(this.splitterMainId);
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.splitterMainId);
-                $("#".concat(this.rtvTenantsId)).hide();
-                this.showNotificationException(this.uscNotificationId, exception);
-            });
-        return promise.promise();
-    }
-
-    // endregion
-
-    toolbarSearch_onClick = (sender: any, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => {
-        let tenantName = this._txtSearchTenantName.get_textBoxValue();
-        let companyName = this._txtSearchCompanyName.get_textBoxValue();
-        let searchDTO: TenantSearchFilterDTO = new TenantSearchFilterDTO();
-        if (tenantName) {
-            searchDTO.tenantName = tenantName;
+        if (args.get_node().get_level() === 0) {
+            $(`#tenantLinkOptions`).hide();
+            $(`#tenantAOOInfo`).hide();
+            this._rtbCompanyOptions.findItemByValue("modify").set_enabled(false);
         }
-        if (companyName) {
-            searchDTO.companyName = companyName;
+
+        if (args.get_node().get_attributes().getAttribute("nodeType") === TenantAOOAttribute.Tenant) {
+            $(`#tenantLinkOptions`).show();
+            $(`#tenantAOOInfo`).hide();
+
+            this.populateTenantConfigurations();
+
+            this._rtbCompanyOptions.findItemByValue("create").set_enabled(false);
+            this.loadTenantDetails(args.get_node());
+            this._currentSelectedTenant.UniqueId = args.get_node().get_value();
+
         }
-        this.loadResults(searchDTO);
+        if (args.get_node().get_attributes().getAttribute("nodeType") === TenantAOOAttribute.AOO) {
+            $(`#tenantLinkOptions`).hide();
+            $(`#tenantAOOInfo`).show();
+            this.loadTenantAOODetails(args.get_node());
+        }
+
     }
 
-    private loadResults(searchDTO: TenantSearchFilterDTO) {
-        this._loadingPanel.show(this.splitterMainId);
+    private populateTenantConfigurations(): void {
+        this._cmbConfigurationType.clearItems();
+        this._cmbTenantWorkflowRepositoryType.clearItems();
+
         let cmbItem: Telerik.Web.UI.RadComboBoxItem = null;
         for (let n in TenantConfigurationTypeEnum) {
             if (typeof TenantConfigurationTypeEnum[n] === 'string') {
@@ -460,36 +408,93 @@ class TbltTenant extends TbltTenantBase {
                 this._cmbTenantWorkflowRepositoryType.get_items().add(cmbItem);
             }
         }
-        this._tenantService.getTenants(searchDTO,
-            (data) => {
-                if (!data) return;
-                this.rtvResult = data;
-                this._rtvTenants.get_nodes().clear();
-                let rtvNode: Telerik.Web.UI.RadTreeNode;
-                rtvNode = new Telerik.Web.UI.RadTreeNode();
-                rtvNode.set_text("AOO");
-                this._rtvTenants.get_nodes().add(rtvNode);
-                if (this.rtvResult.length === 0) {
-                    $(`#${this.pnlDetailsId}`).hide();
-                }
-                else {
-                    $(`#${this.pnlDetailsId}`).show();
-                    var thisObj = this;
-                    $.each(this.rtvResult, function (i, value: TenantViewModel) {
-                        rtvNode = new Telerik.Web.UI.RadTreeNode();
-                        let rtvNodeText: string = `${value.CompanyName} (${value.TenantName})`;
-                        rtvNode.set_text(rtvNodeText);
-                        rtvNode.set_value(value.UniqueId);
-                        thisObj._rtvTenants.get_nodes().getNode(0).get_nodes().add(rtvNode);
-                    });
-                    if (this._rtvTenants.get_nodes().getNode(0).get_nodes().get_count() > 0) {
-                        let node = this._rtvTenants.get_nodes().getNode(0).get_nodes().getNode(0);
-                        node.select();
-                        this.loadTenantDetails(node.get_value());
-                        this.selectedTenant.UniqueId = node.get_value();
-                    }
-                    this._rtvTenants.get_nodes().getNode(0).expand();
-                }
+    }
+
+    tenantAOO_onExpanded = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => {
+        if (args.get_node().get_attributes().getAttribute("nodeType") === TenantAOOAttribute.AOO) {
+            this._loadingPanel.show(this.splitterMainId);
+            this.getTenantsForTenantAOO(args);
+        }
+    }
+
+    private getTenantsForTenantAOO(args: Telerik.Web.UI.RadTreeNodeEventArgs) {
+        this._tenantAOOService.getTenantsByTenantAOOId(args.get_node().get_value(), (data: TenantAOOModel[]) => {
+            let node: Telerik.Web.UI.RadTreeNode;
+            args.get_node().get_nodes().clear();
+            for (let i = 0; i < data[0].Tenants.length; i++) {
+                let tenant: TenantViewModel = data[0].Tenants[i];
+                node = new Telerik.Web.UI.RadTreeNode();
+                let rtvNodeText: string = `${tenant.CompanyName} (${tenant.TenantName})`;
+                node.set_text(rtvNodeText);
+                node.set_value(tenant.UniqueId);
+                node.get_attributes().setAttribute("nodeType", TenantAOOAttribute.Tenant);
+                node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/tenant.png");
+                let nodeIndex: number = args.get_node().get_index();
+                this._rtvTenants.get_nodes().getNode(0).get_nodes().getNode(nodeIndex).get_nodes().add(node);
+            }
+            this._loadingPanel.hide(this.splitterMainId);
+        }, (exception: ExceptionDTO) => {
+            this._loadingPanel.hide(this.splitterMainId);
+            $("#".concat(this.rtvTenantsId)).hide();
+            this.showNotificationException(this.uscNotificationId, exception);
+        });
+    }
+
+    loadTenantAOODetails(node: Telerik.Web.UI.RadTreeNode) {
+        if (node.get_attributes().getAttribute("nodeType") !== TenantAOOAttribute.AOO) {
+            return;
+        }
+        this._tenantAOOService.getTenantAOOById(node.get_value(), (data: TenantAOOModel) => {
+            this._txtTenantAOONameInfo.innerText = data.Name;
+            this._txtTenantAOONoteInfo.innerText = data.Note;
+            this._txtTenantAOOSuffixInfo.innerText = data.CategorySuffix;
+        }, (exception: ExceptionDTO) => {
+            this._loadingPanel.hide(this.splitterMainId);
+            $("#".concat(this.rtvTenantsId)).hide();
+            this.showNotificationException(this.uscNotificationId, exception);
+        });
+    }
+
+    loadTenantDetails(node: Telerik.Web.UI.RadTreeNode) {
+
+        if (node.get_attributes().getAttribute("nodeType") !== TenantAOOAttribute.Tenant) {
+            return;
+        }
+        let tenantId = node.get_value();
+        this._tenantService.getTenantById(tenantId, (data: TenantViewModel) => {
+            this._currentSelectedTenant = $.extend({}, data);
+
+            this._lblCompanyNameId.innerText = data !== undefined ? data.CompanyName : "";
+            this._lblTenantNameId.innerText = data !== undefined ? data.TenantName : "";
+            this._lblTenantNoteId.innerText = data.Note !== null ? data.Note : "";
+            this._lblTenantDataDiAttivazioneId.innerText = data !== undefined && moment(data.StartDate).isValid() ? moment(data.StartDate).format("DD-MM-YYYY") : "";
+            this._lblTenantDataDiDisattivazioneId.innerText = data !== undefined && moment(data.EndDate).isValid() ? moment(data.EndDate).format("DD-MM-YYYY") : "";
+
+            this.populateContainersTreeView();
+            this.populatePECMailBoxesTreeView();
+            this.populateTenantWorkflowRepositoriesTreeView();
+            this.populateTenantConfigurationsTreeView();
+            this.populateWorkflowRepositoryComboBox();
+            this.populateContactTreeView();
+            this.registerUscContattiRestEventHandlers();
+
+            this.populateRolesTree();
+            this.registerUscRoleRestEventHandlers();
+        },
+            (exception: ExceptionDTO) => {
+                this._loadingPanel.hide(this.splitterMainId);
+                $("#".concat(this.rtvTenantsId)).hide();
+                this.showNotificationException(this.uscNotificationId, exception);
+            });
+    }
+
+    //region [ Roles tree view ]
+    private populateRolesTree(): void {
+        this._loadingPanel.show(this.splitterMainId);
+        this._roleService.getTenantRoles(this._currentSelectedTenant.UniqueId,
+            (tenantRoles: RoleModel[]) => {
+                this._uscRoleRest.renderRolesTree(tenantRoles);
+                this._currentSelectedTenant.Roles = tenantRoles;
                 this._loadingPanel.hide(this.splitterMainId);
             },
             (exception: ExceptionDTO) => {
@@ -499,7 +504,290 @@ class TbltTenant extends TbltTenantBase {
             });
     }
 
-    btnTenantSelectorOk_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    rtbCompanyOptions_onClick = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
+        if (this._rtvTenants.get_selectedNode() === null) {
+            return;
+        }
+        switch (args.get_item().get_value()) {
+            case "create": {
+                if (this._rtvTenants.get_selectedNode().get_attributes().getAttribute("nodeType") === TenantAOOAttribute.AOO) {
+                    this.openInsertTenantWindow();
+                } else {
+                    this.openInsertTenantAOOWindow();
+                }
+                break;
+            }
+            case "modify": {
+                if (this._rtvTenants.get_selectedNode().get_attributes().getAttribute("nodeType") === TenantAOOAttribute.AOO) {
+                    this.openEditTenantAOOWindow();
+                }
+                if (this._rtvTenants.get_selectedNode().get_attributes().getAttribute("nodeType") === TenantAOOAttribute.Tenant) {
+                    this.openEditTenantWindow();
+                }
+                break;
+            }
+        }
+    }
+
+    private openEditTenantWindow() {
+        $("#TenantSelectorSelectorWindowTable").show();
+        $("#TenantAOOSelectorWindowTable").hide();
+        if (this._rtvTenants.get_selectedNode() !== null) {
+            this._dpTenantDateFrom.set_selectedDate(moment(this._currentSelectedTenant.StartDate).isValid() ? new Date(this._currentSelectedTenant.StartDate) : null);
+            this._dpTenantDateTo.set_selectedDate(moment(this._currentSelectedTenant.EndDate).isValid() ? new Date(this._currentSelectedTenant.EndDate) : null);
+            this._txtTenantName.set_value(this._currentSelectedTenant.TenantName);
+            this._txtTenantCompany.set_value(this._currentSelectedTenant.CompanyName);
+            this._txtTenantNote.set_value(this._currentSelectedTenant.Note);
+            this.isTenantUpdate = true;
+            this._dpTenantDateTo.get_element().parentElement.style.visibility = "visible";
+            this._rwTenantSelector.set_title("Modifica UO");
+            this._rwTenantSelector.set_height(220);
+            this._rwTenantSelector.show();
+        }
+        else {
+            alert("Selezionare un UP");
+        }
+    }
+
+    private openEditTenantAOOWindow() {
+        $("#TenantSelectorSelectorWindowTable").hide();
+        $("#TenantAOOSelectorWindowTable").show();
+        this.isTenantAOOUpdate = true;
+        let tenantAOOId = this._rtvTenants.get_selectedNode().get_value();
+        this._tenantAOOService.getTenantAOOById(tenantAOOId, (data: TenantAOOModel) => {
+            this._txtTenantAOOName.set_value(data.Name);
+            this._txtTenantAOONote.set_value(data.Note);
+            this._txtCategorySuffix.set_value(data.CategorySuffix);
+            this._rwTenantSelector.set_title("Modifica AOO");
+            this._rwTenantSelector.set_height(180);
+            this._rwTenantSelector.show();
+        });
+    }
+
+    private openInsertTenantAOOWindow() {
+        $("#TenantSelectorSelectorWindowTable").hide();
+        $("#TenantAOOSelectorWindowTable").show();
+        this._txtTenantAOOName.clear();
+        this._txtTenantAOONote.clear();
+        this._txtCategorySuffix.clear();
+        this.isTenantAOOUpdate = false;
+        this._rwTenantSelector.set_title("Aggiungi AOO");
+        this._rwTenantSelector.set_height(180);
+        this._rwTenantSelector.show();
+    }
+
+    private openInsertTenantWindow() {
+        $("#TenantSelectorSelectorWindowTable").show();
+        $("#TenantAOOSelectorWindowTable").hide();
+        this._dpTenantDateFrom.clear();
+        this._txtTenantName.clear();
+        this._txtTenantCompany.clear();
+        this._txtTenantNote.clear();
+        this.isTenantUpdate = false;
+        this._dpTenantDateTo.get_element().parentElement.style.visibility = "hidden";
+        this._dpTenantDateFrom.set_selectedDate(new Date());
+        this._rwTenantSelector.set_title("Aggiungi UO");
+        this._rwTenantSelector.set_height(220);
+        this._rwTenantSelector.show();
+    }
+
+    private registerUscRoleRestEventHandlers(): void {
+        let uscRoleRestEvents = this._uscRoleRest.uscRoleRestEvents;
+
+        this._uscRoleRest.registerEventHandler(uscRoleRestEvents.RoleDeleted, this.deleteTenantRolePromise);
+        this._uscRoleRest.registerEventHandler(uscRoleRestEvents.NewRolesAdded, this.updateTenantRolesPromise);
+        this._uscRoleRest.registerEventHandler(uscRoleRestEvents.AllRolesAdded, this.updateAllTenantRolesPromise);
+        this._uscRoleRest.registerEventHandler(uscRoleRestEvents.AllRolesDeleted, this.deleteAllTenantRolesPromise);
+    }
+
+    private updateAllTenantRolesPromise = (): JQueryPromise<any> => {
+        return this.addAllContactsOrRolesToTenant(UpdateActionType.TenantRoleAddAll);
+    }
+
+    private deleteAllTenantRolesPromise = (): JQueryPromise<any> => {
+        return this.deleteAllContactsOrRolesFromTenant(UpdateActionType.TenantRoleRemoveAll);
+    }
+
+    private deleteTenantRolePromise = (roleIdToDelete: number, instanceId?: string): JQueryPromise<any> => {
+        let promise: JQueryDeferred<any> = $.Deferred<any>();
+        this._manager.radconfirm("Sei sicuro di voler eliminare il settore selezionato?", (arg) => {
+            if (arg) {
+                if (!roleIdToDelete)
+                    return promise.promise();
+
+                let roleToDelete: RoleModel = this._currentSelectedTenant.Roles
+                    .filter(role => role.IdRole === roleIdToDelete && role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) !== -1)[0];
+                this._currentSelectedTenant.Roles = this._currentSelectedTenant.Roles
+                    .filter(role => role.IdRole !== roleIdToDelete && role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) === -1);
+                let tenantToUpdate: TenantViewModel = this.constructTenant();
+                tenantToUpdate.Roles = [roleToDelete];
+
+                this._loadingPanel.show(this.splitterMainId);
+                this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantRoleRemove,
+                    (data: any) => {
+                        promise.resolve(data);
+                        this._loadingPanel.hide(this.splitterMainId);
+                    },
+                    (exception: ExceptionDTO) => {
+                        this._loadingPanel.hide(this.splitterMainId);
+                        $("#".concat(this.rtvTenantsId)).hide();
+                        this.showNotificationException(this.uscNotificationId, exception);
+                    });
+            }
+
+            document.getElementsByTagName("body")[0].setAttribute("class", "comm chrome");
+
+        }, 400, 300);
+
+        return promise.promise();
+    }
+
+    private updateTenantRolesPromise = (newAddedRoles: RoleModel[], instanceId?: string): JQueryPromise<any> => {
+        let promise: JQueryDeferred<any> = $.Deferred<any>();
+
+        if (!newAddedRoles.length)
+            return promise.promise();
+
+        this._currentSelectedTenant.Roles = [...this._currentSelectedTenant.Roles, ...newAddedRoles];
+        this._loadingPanel.show(this.splitterMainId);
+
+        let tenantToUpdate: TenantViewModel = this.constructTenant();
+        tenantToUpdate.Roles = newAddedRoles;
+
+        //multi selection on roles??
+        this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantRoleAdd,
+            (data: any) => {
+                promise.resolve(data);
+                this._loadingPanel.hide(this.splitterMainId);
+            },
+            (exception: ExceptionDTO) => {
+                this._loadingPanel.hide(this.splitterMainId);
+                $("#".concat(this.rtvTenantsId)).hide();
+                this.showNotificationException(this.uscNotificationId, exception);
+            });
+        return promise.promise();
+    }
+
+    // endregion
+
+    toolbarSearch_onClick = (sender: any, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => {
+        switch (args.get_item().get_value()) {
+            case "search": {
+                let tenantName = this._txtSearchTenantName.get_textBoxValue();
+                let companyName = this._txtSearchCompanyName.get_textBoxValue();
+                let searchDTO: TenantSearchFilterDTO = new TenantSearchFilterDTO();
+                if (tenantName) {
+                    searchDTO.tenantName = tenantName;
+                }
+                if (companyName) {
+                    searchDTO.companyName = companyName;
+                }
+                let activeItem: any = this._toolbarSearch.findItemByValue("active");
+                let disabledItem: any = this._toolbarSearch.findItemByValue("disabled");
+                searchDTO.isActive = activeItem.get_checked()
+                    ? disabledItem.get_checked() ? null : true
+                    : disabledItem.get_checked() ? false : null;
+                if (tenantName === "" && companyName === "" && searchDTO.isActive === null) {
+                    searchDTO = null;
+                }
+
+                $(`#tenantLinkOptions`).hide();
+                $(`#tenantAOOInfo`).hide();
+                this._rtbCompanyOptions.findItemByValue("modify").set_enabled(false);
+
+                this.loadTenantsAOO(searchDTO);
+                break;
+            }
+        }
+    }
+
+    private loadTenantsAOO(searchDTO: TenantSearchFilterDTO) {
+        this._loadingPanel.show(this.splitterMainId);
+        if (searchDTO) {
+            this._tenantAOOService.getFilteredTenants(searchDTO, (data: TenantAOOModel[]) => {
+                this.createTenantAOORootNode();
+                let node: Telerik.Web.UI.RadTreeNode;
+                for (let i = 0; i < data.length; i++) {
+                    let tenantAOO: TenantAOOModel = data[i];
+                    if (tenantAOO.Tenants.length == 0) {
+                        continue;
+                    }
+                    node = new Telerik.Web.UI.RadTreeNode();
+                    node.set_text(tenantAOO.Name);
+                    node.set_value(tenantAOO.UniqueId);
+                    node.get_attributes().setAttribute("nodeType", TenantAOOAttribute.AOO);
+                    node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/tenantAOO.png");
+                    node.expand();
+                    this._rtvTenants.get_nodes().getNode(0).get_nodes().add(node);
+                    let nodeIndex: number = node.get_index();
+
+                    for (let j = 0; j < tenantAOO.Tenants.length; j++) {
+                        let tenant: TenantViewModel = tenantAOO.Tenants[j];
+                        node = new Telerik.Web.UI.RadTreeNode();
+                        let rtvNodeText: string = `${tenant.CompanyName} (${tenant.TenantName})`;
+                        node.set_text(rtvNodeText);
+                        node.set_value(tenant.UniqueId);
+                        node.get_attributes().setAttribute("nodeType", TenantAOOAttribute.Tenant);
+                        node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/tenant.png");
+                        this._rtvTenants.get_nodes().getNode(0).get_nodes().getNode(nodeIndex).get_nodes().add(node);
+                        let rtMinusElement: any = node.get_element().parentElement.parentElement.getElementsByClassName("rtMinus").item(0);
+                        rtMinusElement.style.display = "none";
+                    }
+                }
+                this._loadingPanel.hide(this.splitterMainId);
+            }, (exception: ExceptionDTO) => {
+                this._loadingPanel.hide(this.splitterMainId);
+                $("#".concat(this.rtvTenantsId)).hide();
+                this.showNotificationException(this.uscNotificationId, exception);
+            });
+        }
+        else {
+            this._tenantAOOService.getTenantsAOO((data: TenantAOOModel[]) => {
+                this.createTenantAOORootNode();
+                let node: Telerik.Web.UI.RadTreeNode;
+                for (let i = 0; i < data.length; i++) {
+                    let tenantAOO: TenantAOOModel = data[i];
+                    node = new Telerik.Web.UI.RadTreeNode();
+                    node.set_text(tenantAOO.Name);
+                    node.set_value(tenantAOO.UniqueId);
+                    node.get_attributes().setAttribute("nodeType", TenantAOOAttribute.AOO);
+                    node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/tenantAOO.png");
+                    this._rtvTenants.get_nodes().getNode(0).get_nodes().add(node);
+                    node = new Telerik.Web.UI.RadTreeNode();
+                    node.set_text("");
+                    this._rtvTenants.get_nodes().getNode(0).get_nodes().getNode(i).get_nodes().add(node);
+                }
+                this._loadingPanel.hide(this.splitterMainId);
+            }, (exception: ExceptionDTO) => {
+                this._loadingPanel.hide(this.splitterMainId);
+                $("#".concat(this.rtvTenantsId)).hide();
+                this.showNotificationException(this.uscNotificationId, exception);
+            });
+        }
+    }
+
+    private createTenantAOORootNode() {
+        this._rtvTenants.get_nodes().clear();
+        let rtvNode: Telerik.Web.UI.RadTreeNode;
+        rtvNode = new Telerik.Web.UI.RadTreeNode();
+        rtvNode.set_text("AOO");
+        rtvNode.expand();
+        this._rtvTenants.get_nodes().add(rtvNode);
+        rtvNode.select();
+        this._rtbCompanyOptions.findItemByValue("modify").set_enabled(false);
+    }
+
+    btnTenantSelectorOk_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
+        if (this._txtTenantName.get_value() == "") {
+            alert("Il sigla UO e obbligatorio");
+            return;
+        }
+
+        if (this._txtTenantCompany.get_value() == "") {
+            alert("Il nome UO e obbligatorio");
+            return;
+        }
+
         if (this._dpTenantDateFrom && this._dpTenantDateFrom.get_selectedDate() &&
             this._txtTenantName && this._txtTenantName.get_textBoxValue() !== "" &&
             this._txtTenantCompany && this._txtTenantCompany.get_textBoxValue() !== "") {
@@ -522,8 +810,11 @@ class TbltTenant extends TbltTenantBase {
                 LastChangedDate: null,
                 LastChangedUser: null,
                 RegistrationDate: null,
-                RegistrationUser: null
+                RegistrationUser: null,
+                TenantAOO: <TenantAOOModel>{ UniqueId: this._rtvTenants.get_selectedNode().get_value() },
+                TenantTypology: TenantTypologyTypeEnum.InternalTenant
             };
+
             this._rwTenantSelector.close();
             this._loadingPanel.show(this.splitterMainId);
             let nodeValue = tenant.UniqueId;
@@ -537,9 +828,12 @@ class TbltTenant extends TbltTenantBase {
                         rtvNode = new Telerik.Web.UI.RadTreeNode();
                         rtvNode.set_text(nodeText);
                         rtvNode.set_value(data.UniqueId);
+                        rtvNode.get_attributes().setAttribute("nodeType", TenantAOOAttribute.Tenant);
                         tenant.UniqueId = data.UniqueId;
-                        this.rtvResult.push(tenant);
-                        this._rtvTenants.get_nodes().getNode(0).get_nodes().add(rtvNode);
+                        let tenantAOONode: Telerik.Web.UI.RadTreeNode = this._rtvTenants.get_selectedNode();
+                        if (data.TenantTypology == TenantTypologyTypeEnum.InternalTenant) {
+                            this._rtvTenants.get_nodes().getNode(0).get_nodes().getNode(tenantAOONode.get_index()).get_nodes().add(rtvNode);
+                        }
                     },
                     (exception: ExceptionDTO) => {
                         this._loadingPanel.hide(this.splitterMainId);
@@ -549,20 +843,16 @@ class TbltTenant extends TbltTenantBase {
             } else {
                 if (this._rtvTenants.get_selectedNode() !== null) {
                     tenant.UniqueId = this._rtvTenants.get_selectedNode().get_value();
-                    let selectedTenant: TenantViewModel = this.rtvResult.filter(function (x) {
-                        return x.UniqueId === tenant.UniqueId
-                    })[0];
-                    tenant.Configurations = selectedTenant.Configurations;
-                    tenant.Containers = selectedTenant.Containers;
-                    tenant.PECMailBoxes = selectedTenant.PECMailBoxes;
-                    tenant.Roles = selectedTenant.Roles;
-                    tenant.TenantWorkflowRepositories = selectedTenant.TenantWorkflowRepositories;
+                    tenant.Configurations = this._currentSelectedTenant.Configurations;
+                    tenant.Containers = this._currentSelectedTenant.Containers;
+                    tenant.PECMailBoxes = this._currentSelectedTenant.PECMailBoxes;
+                    tenant.Roles = this._currentSelectedTenant.Roles;
+                    tenant.TenantWorkflowRepositories = this._currentSelectedTenant.TenantWorkflowRepositories;
+                    tenant.TenantAOO = <TenantAOOModel>{ UniqueId: this._rtvTenants.get_selectedNode().get_parent().get_value() };
                     nodeValue = tenant.UniqueId;
                 }
-                this._tenantService.updateTenant(tenant,
+                this._tenantService.updateTenant(tenant, null,
                     (data) => {
-                        let index = this.rtvResult.findIndex(x => x.UniqueId === tenant.UniqueId);
-                        this.rtvResult[index] = tenant;
                         this._rtvTenants.get_selectedNode().set_text(nodeText);
                         this._rtvTenants.get_selectedNode().set_value(nodeValue);
                         this._lblCompanyNameId.innerText = tenant.CompanyName;
@@ -581,40 +871,65 @@ class TbltTenant extends TbltTenantBase {
         }
     }
 
-    btnTenantSelectorCancel_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnTenantSelectorCancel_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._rwTenantSelector.close();
     }
 
-    btnTenantInsert_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
-        this._dpTenantDateFrom.clear();
-        this._txtTenantName.clear();
-        this._txtTenantCompany.clear();
-        this._txtTenantNote.clear();
-        this.isTenantUpdate = false;
-        this._dpTenantDateTo.get_element().parentElement.style.visibility = "hidden";
-        this._rwTenantSelector.set_title("Aggiungi AOO");
-        this._rwTenantSelector.show();
+    btnTenantAOOSelectorOk_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
+        if (this._txtTenantAOOName.get_value() == "") {
+            alert("Il campo nome e obbligatorio");
+            return;
+        }
+
+        let tenantAOOModel: TenantAOOModel = <TenantAOOModel>{
+            Name: this._txtTenantAOOName.get_textBoxValue(),
+            Note: this._txtTenantAOONote.get_textBoxValue(),
+            CategorySuffix: this._txtCategorySuffix.get_textBoxValue(),
+            Tenants: [],
+            TenantTypology: TenantTypologyTypeEnum.InternalTenant
+        }
+
+        if (this.isTenantAOOUpdate) {
+            this.updateTenantAOO(tenantAOOModel);
+        } else {
+            this.insertTenantAOO(tenantAOOModel);
+        }
     }
 
-    btnTenantUpdate_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
-        if (this._rtvTenants.get_selectedNode() !== null) {
-            let thisObj = this;
-            let tenant: TenantViewModel =
-                this.rtvResult.filter(function (x) {
-                    return x.UniqueId === thisObj._rtvTenants.get_selectedNode().get_value()
-                })[0];
-            this._dpTenantDateFrom.set_selectedDate(moment(tenant.StartDate).isValid() ? new Date(tenant.StartDate) : null);
-            this._dpTenantDateTo.set_selectedDate(moment(tenant.EndDate).isValid() ? new Date(tenant.EndDate) : null);
-            this._txtTenantName.set_value(tenant.TenantName);
-            this._txtTenantCompany.set_value(tenant.CompanyName);
-            this._txtTenantNote.set_value(tenant.Note);
-            this.isTenantUpdate = true;
-            this._dpTenantDateTo.get_element().parentElement.style.visibility = "visible";
-            this._rwTenantSelector.set_title("Modifica AOO");
-            this._rwTenantSelector.show();
-        } else {
-            alert("Selezionare un aziende");
-        }
+    btnTenantAOOSelectorCancel_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
+        this._rwTenantSelector.close();
+    }
+
+    private insertTenantAOO(tenantAOOModel: TenantAOOModel) {
+        this._tenantAOOService.insertTenantAOO(tenantAOOModel, (data) => {            
+            let node = new Telerik.Web.UI.RadTreeNode();
+            node.set_text(data.Name);
+            node.set_value(data.UniqueId);
+            node.get_attributes().setAttribute("nodeType", TenantAOOAttribute.AOO);
+            if (tenantAOOModel.TenantTypology == TenantTypologyTypeEnum.InternalTenant) {
+                this._rtvTenants.get_nodes().getNode(0).get_nodes().add(node);
+            }
+            this._rwTenantSelector.close();
+        }, (exception: ExceptionDTO) => {
+            this._loadingPanel.hide(this.splitterMainId);
+            $("#".concat(this.rtvTenantsId)).hide();
+            this.showNotificationException(this.uscNotificationId, exception);
+        });
+    }
+
+    private updateTenantAOO(tenantAOOModel: TenantAOOModel) {
+        tenantAOOModel.UniqueId = this._rtvTenants.get_selectedNode().get_value();
+        this._tenantAOOService.updateTenantAOO(tenantAOOModel, (data: TenantAOOModel) => {
+            this._rtvTenants.get_selectedNode().set_text(data.Name);
+            this._rwTenantSelector.close();
+            this._txtTenantAOONameInfo.innerHTML = tenantAOOModel.Name;
+            this._txtTenantAOONoteInfo.innerHTML = tenantAOOModel.Note;
+            this._txtTenantAOOSuffixInfo.innerHTML = tenantAOOModel.CategorySuffix;
+        }, (exception: ExceptionDTO) => {
+            this._loadingPanel.hide(this.splitterMainId);
+            $("#".concat(this.rtvTenantsId)).hide();
+            this.showNotificationException(this.uscNotificationId, exception);
+        });
     }
     //endregion
 
@@ -622,7 +937,7 @@ class TbltTenant extends TbltTenantBase {
     toolbarContainer_onClick = (sender: any, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => {
         var btn = args.get_item();
         switch (btn.get_index()) {
-            case 0:
+            case 0: {
                 this._rwContainer.show();
                 this._containerService.getContainers(null,
                     (data: any) => {
@@ -635,35 +950,48 @@ class TbltTenant extends TbltTenantBase {
                     });
                 args.set_cancel(true);
                 break;
-            case 1:
+            }
+            case 1: {
                 if (this._rtvContainers.get_selectedNode() !== null) {
-                    let thisObj = this;
-                    let tenant: TenantViewModel = this.rtvResult.filter(function (x) {
-                        return x.UniqueId === thisObj._rtvTenants.get_selectedNode().get_value()
-                    })[0];
-                    let removeIndex = tenant.Containers.map(item => item.EntityShortId).indexOf(Number(this._rtvContainers.get_selectedNode().get_value()));
-                    tenant.Containers.splice(removeIndex, 1);
-                    this._tenantService.updateTenant(tenant,
-                        (data) => {
-                            this._rtvContainers.get_nodes().getNode(0).get_nodes().removeAt(this._rtvContainers.get_selectedNode().get_index());
-                            if (this._rtvContainers.get_nodes().getNode(0).get_nodes().getItem(0) === undefined)
-                                this._rtvContainers.get_nodes().clear();
-                        },
-                        (exception: ExceptionDTO) => {
-                            this._loadingPanel.hide(this.splitterMainId);
-                            $("#".concat(this.rtvTenantsId)).hide();
-                            this.showNotificationException(this.uscNotificationId, exception);
-                        });
+                    this._manager.radconfirm("Sei sicuro di voler eliminare il contenitore selezionato?", (arg) => {
+                        if (arg) {
+                            let tenantToUpdate: TenantViewModel = this.constructTenant();
+                            tenantToUpdate.Containers = this._currentSelectedTenant.Containers.filter(x => x.EntityShortId === Number(this._rtvContainers.get_selectedNode().get_value()));
+                            let removeIndex = this._currentSelectedTenant.Containers.map(item => item.EntityShortId).indexOf(Number(this._rtvContainers.get_selectedNode().get_value()));
+                            this._currentSelectedTenant.Containers.splice(removeIndex, 1);
+
+                            this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantContainerRemove,
+                                (data) => {
+                                    this._rtvContainers.get_nodes().getNode(0).get_nodes().removeAt(this._rtvContainers.get_selectedNode().get_index());
+                                    if (this._rtvContainers.get_nodes().getNode(0).get_nodes().getItem(0) === undefined)
+                                        this._rtvContainers.get_nodes().clear();
+                                },
+                                (exception: ExceptionDTO) => {
+                                    this._loadingPanel.hide(this.splitterMainId);
+                                    $("#".concat(this.rtvTenantsId)).hide();
+                                    this.showNotificationException(this.uscNotificationId, exception);
+                                });
+                        }
+                    }, 400, 300);
                 } else {
                     alert("Selezionare un Contentitore");
                 }
                 args.set_cancel(true);
                 break;
+            }
+            case 2: {
+                this.addOrRemoveAllTenantContainers("Sei sicuro di voler aggiungere tutti i contenitori?", UpdateActionType.TenantContainerAddAll);
+                break;
+            }
+            case 3: {
+                this.addOrRemoveAllTenantContainers("Sei sicuro di voler eliminare tutti i contenitori?", UpdateActionType.TenantContainerRemoveAll);
+                break;
+            }
         }
     }
 
-    btnContainerOk_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
-        if (this._cmbContainer && this.selectedContainer && this.selectedTenant.UniqueId !== undefined) {
+    btnContainerOk_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
+        if (this._cmbContainer && this.selectedContainer) {
             this._rwContainer.close();
             this._loadingPanel.show(this.tbContainersControlId);
             let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
@@ -671,12 +999,10 @@ class TbltTenant extends TbltTenantBase {
             let nodeText = this.selectedContainer.Name;
             let alreadySavedInTree: boolean = this.alreadySavedInTree(nodeValue, this._rtvContainers);
             if (!alreadySavedInTree) {
-                let thisObj = this;
-                let tenant: TenantViewModel = this.rtvResult.filter(function (x) {
-                    return x.UniqueId === thisObj._rtvTenants.get_selectedNode().get_value()
-                })[0];
-                tenant.Containers.push(this.selectedContainer);
-                this._tenantService.updateTenant(tenant,
+                this._currentSelectedTenant.Containers.push(this.selectedContainer);
+                let tenantToUpdate: TenantViewModel = this.constructTenant();
+                tenantToUpdate.Containers = [this.selectedContainer];
+                this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantContainerAdd,
                     (data) => {
                         this.addNodesToRadTreeView(nodeValue, nodeText, "Contenitori", nodeImageUrl, this._rtvContainers);
                     },
@@ -690,7 +1016,7 @@ class TbltTenant extends TbltTenantBase {
         }
     }
 
-    btnContainerCancel_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnContainerCancel_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._rwContainer.close();
     }
 
@@ -772,15 +1098,15 @@ class TbltTenant extends TbltTenantBase {
         }
     }
 
-    private populateContainersTreeView(tenant: TenantViewModel) {
-        this._tenantService.getTenantContainers(tenant.UniqueId,
+    private populateContainersTreeView() {
+        this._tenantService.getTenantContainers(this._currentSelectedTenant.UniqueId,
             (data: ContainerModel[]) => {
                 if (data === undefined) {
                     return;
                 } else {
                     this._rtvContainers.get_nodes().clear();
                     let thisObj = this;
-                    tenant.Containers = data;
+                    this._currentSelectedTenant.Containers = data;
                     $.each(data, function (i, value) {
                         let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
                         let nodeValue = value.EntityShortId.toString();
@@ -803,6 +1129,24 @@ class TbltTenant extends TbltTenantBase {
         this._cmbContainer.clearSelection();
         this.selectedContainer = null;
     }
+
+    addOrRemoveAllTenantContainers(message: string, actionType: UpdateActionType): void {
+        this._manager.radconfirm(message, (arg) => {
+            if (arg) {
+                this._loadingPanel.show(this.tbContainersControlId);
+                this._tenantService.updateTenant(this._currentSelectedTenant, actionType, (data) => {
+                    this.populateContainersTreeView();
+                    this._loadingPanel.hide(this.tbContainersControlId);
+                }, (exception: ExceptionDTO) => {
+                    this._loadingPanel.hide(this.tbContainersControlId);
+                    this.showNotificationException(this.uscNotificationId, exception);
+                });
+            }
+
+            document.getElementsByTagName("body")[0].setAttribute("class", "comm chrome");
+
+        }, 400, 300);
+    }
     //endregion
 
     //region [ Add/Delete PECMailBoxes from RadTreeView ]
@@ -824,23 +1168,25 @@ class TbltTenant extends TbltTenantBase {
                 break;
             case 1:
                 if (this._rtvPECMailBoxes.get_selectedNode() !== null) {
-                    let thisObj = this;
-                    let tenant: TenantViewModel = this.rtvResult.filter(function (x) {
-                        return x.UniqueId === thisObj._rtvTenants.get_selectedNode().get_value()
-                    })[0];
-                    let removeIndex = tenant.PECMailBoxes.map(item => item.EntityShortId).indexOf(Number(this._rtvPECMailBoxes.get_selectedNode().get_value()));
-                    tenant.PECMailBoxes.splice(removeIndex, 1);
-                    this._tenantService.updateTenant(tenant,
-                        (data) => {
-                            this._rtvPECMailBoxes.get_nodes().getNode(0).get_nodes().removeAt(this._rtvPECMailBoxes.get_selectedNode().get_index());
-                            if (this._rtvPECMailBoxes.get_nodes().getNode(0).get_nodes().getItem(0) === undefined)
-                                this._rtvPECMailBoxes.get_nodes().clear();
-                        },
-                        (exception: ExceptionDTO) => {
-                            this._loadingPanel.hide(this.splitterMainId);
-                            $("#".concat(this.rtvTenantsId)).hide();
-                            this.showNotificationException(this.uscNotificationId, exception);
-                        });
+                    this._manager.radconfirm("Sei sicuro di voler eliminare il casella PEC selezionato?", (arg) => {
+                        if (arg) {
+                            let tenantToUpdate: TenantViewModel = this.constructTenant();
+                            tenantToUpdate.PECMailBoxes = this._currentSelectedTenant.PECMailBoxes.filter(x => x.EntityShortId === Number(this._rtvPECMailBoxes.get_selectedNode().get_value()));
+                            let removeIndex = this._currentSelectedTenant.PECMailBoxes.map(item => item.EntityShortId).indexOf(Number(this._rtvPECMailBoxes.get_selectedNode().get_value()));
+                            this._currentSelectedTenant.PECMailBoxes.splice(removeIndex, 1);
+                            this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantPECMailBoxRemove,
+                                (data) => {
+                                    this._rtvPECMailBoxes.get_nodes().getNode(0).get_nodes().removeAt(this._rtvPECMailBoxes.get_selectedNode().get_index());
+                                    if (this._rtvPECMailBoxes.get_nodes().getNode(0).get_nodes().getItem(0) === undefined)
+                                        this._rtvPECMailBoxes.get_nodes().clear();
+                                },
+                                (exception: ExceptionDTO) => {
+                                    this._loadingPanel.hide(this.splitterMainId);
+                                    $("#".concat(this.rtvTenantsId)).hide();
+                                    this.showNotificationException(this.uscNotificationId, exception);
+                                });
+                        }
+                    }, 400, 300);
                 } else {
                     alert("Selezionare una caselle PEC");
                 }
@@ -849,8 +1195,8 @@ class TbltTenant extends TbltTenantBase {
         }
     }
 
-    btnPECMailBoxOk_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
-        if (this._cmbPECMailBox && this.selectedPECMailBox && this.selectedTenant.UniqueId !== undefined) {
+    btnPECMailBoxOk_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
+        if (this._cmbPECMailBox && this.selectedPECMailBox) {
             this._rwPECMailBox.close();
             this._loadingPanel.show(this.tbPECMailBoxesControlId);
             let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
@@ -858,12 +1204,10 @@ class TbltTenant extends TbltTenantBase {
             let nodeText = this.selectedPECMailBox.MailBoxRecipient;
             let alreadySavedInTree: boolean = this.alreadySavedInTree(nodeValue, this._rtvPECMailBoxes);
             if (!alreadySavedInTree) {
-                let thisObj = this;
-                let tenant: TenantViewModel = this.rtvResult.filter(function (x) {
-                    return x.UniqueId === thisObj._rtvTenants.get_selectedNode().get_value()
-                })[0];
-                tenant.PECMailBoxes.push(this.selectedPECMailBox);
-                this._tenantService.updateTenant(tenant,
+                this._currentSelectedTenant.PECMailBoxes.push(this.selectedPECMailBox);
+                let tenantToUpdate: TenantViewModel = this.constructTenant();
+                tenantToUpdate.PECMailBoxes = [this.selectedPECMailBox];
+                this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantPECMailBoxAdd,
                     (data) => {
                         this.addNodesToRadTreeView(nodeValue, nodeText, "Caselle PEC", nodeImageUrl, this._rtvPECMailBoxes);
                     },
@@ -877,7 +1221,7 @@ class TbltTenant extends TbltTenantBase {
         }
     }
 
-    btnPECMailBoxCancel_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnPECMailBoxCancel_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._rwPECMailBox.close();
     }
 
@@ -959,15 +1303,15 @@ class TbltTenant extends TbltTenantBase {
         }
     }
 
-    private populatePECMailBoxesTreeView(tenant: TenantViewModel) {
-        this._tenantService.getTenantPECMailBoxes(tenant.UniqueId,
+    private populatePECMailBoxesTreeView() {
+        this._tenantService.getTenantPECMailBoxes(this._currentSelectedTenant.UniqueId,
             (data: PECMailBoxModel[]) => {
                 if (data === undefined) {
                     return;
                 } else {
                     this._rtvPECMailBoxes.get_nodes().clear();
                     let thisObj = this;
-                    tenant.PECMailBoxes = data;
+                    this._currentSelectedTenant.PECMailBoxes = data;
                     $.each(data, function (i, value) {
                         let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
                         let nodeValue = value.EntityShortId.toString();
@@ -1050,14 +1394,10 @@ class TbltTenant extends TbltTenantBase {
                 break;
             case 2:
                 if (this._rtvTenantWorkflowRepositories.get_selectedNode() !== null) {
-                    let thisObj = this;
-                    let tenant: TenantViewModel = this.rtvResult.filter(function (x) {
-                        return x.UniqueId === thisObj._rtvTenants.get_selectedNode().get_value()
-                    })[0];
-                    let removeIndex = tenant.TenantWorkflowRepositories.map(item => item.UniqueId).indexOf(this._rtvTenantWorkflowRepositories.get_selectedNode().get_value());
-                    this._tenantWorkflowRepositoryService.deleteTenantWorkflowRepository(tenant.TenantWorkflowRepositories[removeIndex],
+                    let removeIndex = this._currentSelectedTenant.TenantWorkflowRepositories.map(item => item.UniqueId).indexOf(this._rtvTenantWorkflowRepositories.get_selectedNode().get_value());
+                    this._tenantWorkflowRepositoryService.deleteTenantWorkflowRepository(this._currentSelectedTenant.TenantWorkflowRepositories[removeIndex],
                         (data) => {
-                            tenant.TenantWorkflowRepositories.splice(removeIndex, 1);
+                            this._currentSelectedTenant.TenantWorkflowRepositories.splice(removeIndex, 1);
                             this._rtvTenantWorkflowRepositories.get_nodes().getNode(0).get_nodes().removeAt(this._rtvTenantWorkflowRepositories.get_selectedNode().get_index());
                             if (this._rtvTenantWorkflowRepositories.get_nodes().getNode(0).get_nodes().getItem(0) === undefined)
                                 this._rtvTenantWorkflowRepositories.get_nodes().clear();
@@ -1075,8 +1415,8 @@ class TbltTenant extends TbltTenantBase {
         }
     }
 
-    btnWorkflowRepositoryOk_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
-        if (this._cmbWorkflowRepository && this.selectedWorkflowRepository && this.selectedTenant.UniqueId !== undefined &&
+    btnWorkflowRepositoryOk_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
+        if (this._cmbWorkflowRepository && this.selectedWorkflowRepository &&
             this._txtTenantWorkflowRepositoryJsonValue && this._txtTenantWorkflowRepositoryJsonValue.get_textBoxValue() !== "" &&
             this._cmbTenantWorkflowRepositoryType && this._cmbTenantWorkflowRepositoryType.get_selectedItem().get_text() !== "" &&
             this._dpTenantWorkflowRepositoryDateFrom && this._dpTenantWorkflowRepositoryDateFrom.get_selectedDate()) {
@@ -1088,12 +1428,8 @@ class TbltTenant extends TbltTenantBase {
                 : "";
             let nodeText = this._cmbWorkflowRepository.get_selectedItem().get_text();
             let viewModelMapper = new TenantViewModelMapper();
-            let thisObj = this;
-            let tenant: TenantViewModel = this.rtvResult.filter(function (x) {
-                return x.UniqueId === thisObj._rtvTenants.get_selectedNode().get_value()
-            })[0];
             let tenantWorkflowRepository: TenantWorkflowRepositoryModel = {
-                Tenant: viewModelMapper.Map(tenant),
+                Tenant: viewModelMapper.Map(this._currentSelectedTenant),
                 WorkflowRepository: this.selectedWorkflowRepository,
                 JsonValue: this._txtTenantWorkflowRepositoryJsonValue ? this._txtTenantWorkflowRepositoryJsonValue.get_textBoxValue() : "",
                 IntegrationModuleName: this._txtTenantWorkflowRepositoryIntegrationModuleName ? this._txtTenantWorkflowRepositoryIntegrationModuleName.get_textBoxValue() : "",
@@ -1113,16 +1449,19 @@ class TbltTenant extends TbltTenantBase {
             };
             let alreadySavedInTree: boolean = this.alreadySavedInTree(nodeValue, this._rtvTenantWorkflowRepositories);
             if (!alreadySavedInTree) {
-                if (tenant.TenantWorkflowRepositories.length === 0 ||
-                    tenant.TenantWorkflowRepositories.filter(function (x) {
-                        return x.WorkflowRepository.Name !== this._cmbWorkflowRepository.get_selectedItem().get_text()
+                let asd = this._cmbWorkflowRepository.get_selectedItem().get_text();
+                console.log(this._cmbWorkflowRepository.get_selectedItem().get_text());
+                let thisObj = this;
+                if (this._currentSelectedTenant.TenantWorkflowRepositories.length === 0 ||
+                    this._currentSelectedTenant.TenantWorkflowRepositories.filter(function (x) {
+                        return x.WorkflowRepository.Name !== thisObj._cmbWorkflowRepository.get_selectedItem().get_text()
                     })[0])
                     this._tenantWorkflowRepositoryService.insertTenantWorkflowRepository(tenantWorkflowRepository,
                         (data) => {
                             nodeValue = data.UniqueId;
                             this.addNodesToRadTreeView(nodeValue, nodeText, "Attività", nodeImageUrl, this._rtvTenantWorkflowRepositories);
-                            tenant.TenantWorkflowRepositories.push(data);
-                            tenant.TenantWorkflowRepositories[tenant.TenantWorkflowRepositories.length - 1].ConfigurationType =
+                            this._currentSelectedTenant.TenantWorkflowRepositories.push(data);
+                            this._currentSelectedTenant.TenantWorkflowRepositories[this._currentSelectedTenant.TenantWorkflowRepositories.length - 1].ConfigurationType =
                                 <any>TenantWorkflowRepositoryTypeEnum[data.ConfigurationType];
                             this._rwWorkflowRepository.close();
                         },
@@ -1142,8 +1481,9 @@ class TbltTenant extends TbltTenantBase {
                 if (!existsInTree_cmbSelectedExcluded)
                     this._tenantWorkflowRepositoryService.updateTenantWorkflowRepository(tenantWorkflowRepository,
                         (data) => {
-                            tenant.TenantWorkflowRepositories.filter(function (x) {
-                                return x.UniqueId === this._rtvTenantWorkflowRepositories.get_selectedNode().get_value()
+                            let thisObj = this;
+                            this._currentSelectedTenant.TenantWorkflowRepositories.filter(function (x) {
+                                return x.UniqueId === thisObj._rtvTenantWorkflowRepositories.get_selectedNode().get_value()
                             })[0].WorkflowRepository = data.WorkflowRepository;
                             this._rtvTenantWorkflowRepositories.get_selectedNode().set_text(nodeText);
                             this._rtvTenantWorkflowRepositories.get_selectedNode().set_value(nodeValue);
@@ -1165,7 +1505,7 @@ class TbltTenant extends TbltTenantBase {
         })[0];
     }
 
-    btnWorkflowRepositoryCancel_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnWorkflowRepositoryCancel_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._rwWorkflowRepository.close();
     }
 
@@ -1247,16 +1587,16 @@ class TbltTenant extends TbltTenantBase {
         }
     }
 
-    private populateTenantWorkflowRepositoriesTreeView(tenant: TenantViewModel) {
-        this._tenantService.getTenantWorkflowRepositories(tenant.UniqueId,
+    private populateTenantWorkflowRepositoriesTreeView() {
+        this._tenantService.getTenantWorkflowRepositories(this._currentSelectedTenant.UniqueId,
             (data: TenantWorkflowRepositoryModel[]) => {
                 if (data === undefined) {
                     return;
                 } else {
                     this._rtvTenantWorkflowRepositories.get_nodes().clear();
                     let thisObj = this;
-                    tenant.TenantWorkflowRepositories = data;
-                    this.tenantWorkflowRepositories = tenant.TenantWorkflowRepositories;
+                    this._currentSelectedTenant.TenantWorkflowRepositories = data;
+                    this.tenantWorkflowRepositories = this._currentSelectedTenant.TenantWorkflowRepositories;
                     $.each(data, function (i, value) {
                         let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
                         let nodeValue = value.UniqueId;
@@ -1308,24 +1648,19 @@ class TbltTenant extends TbltTenantBase {
                 break;
             case 1:
                 if (this._rtvTenantConfigurations.get_selectedNode() !== null) {
-                    let thisObj = this;
-                    let tenant: TenantViewModel =
-                        this.rtvResult.filter(function (x) {
-                            return x.UniqueId === thisObj._rtvTenants.get_selectedNode().get_value()
-                        })[0];
-                    let editIndex = tenant.Configurations.map(item => item.UniqueId)
+                    let editIndex = this._currentSelectedTenant.Configurations.map(item => item.UniqueId)
                         .indexOf(this._rtvTenantConfigurations.get_selectedNode().get_value());
-                    this._dpStartDateFrom.set_selectedDate(new Date(tenant.Configurations[editIndex].StartDate));
-                    if (tenant.Configurations[editIndex].EndDate && tenant.Configurations[editIndex].EndDate !== "")
-                        this._dpEndDateFrom.set_selectedDate(new Date(tenant.Configurations[editIndex].EndDate));
+                    this._dpStartDateFrom.set_selectedDate(new Date(this._currentSelectedTenant.Configurations[editIndex].StartDate));
+                    if (this._currentSelectedTenant.Configurations[editIndex].EndDate && this._currentSelectedTenant.Configurations[editIndex].EndDate !== "")
+                        this._dpEndDateFrom.set_selectedDate(new Date(this._currentSelectedTenant.Configurations[editIndex].EndDate));
                     else
                         this._dpEndDateFrom.clear();
-                    this._txtTenantConfigurationNote.set_value(tenant.Configurations[editIndex].Note);
-                    this._txtTenantConfigurationJsonValue.set_value(tenant.Configurations[editIndex].JsonValue);
-                    var item = this._cmbConfigurationType.findItemByValue(tenant.Configurations[editIndex].ConfigurationType);
+                    this._txtTenantConfigurationNote.set_value(this._currentSelectedTenant.Configurations[editIndex].Note);
+                    this._txtTenantConfigurationJsonValue.set_value(this._currentSelectedTenant.Configurations[editIndex].JsonValue);
+                    var item = this._cmbConfigurationType.findItemByValue(this._currentSelectedTenant.Configurations[editIndex].ConfigurationType);
                     item.select();
 
-                    this.currentTenantConfigurationUniqueId = tenant.Configurations[editIndex].UniqueId;
+                    this.currentTenantConfigurationUniqueId = this._currentSelectedTenant.Configurations[editIndex].UniqueId;
                     this._rwTenantConfiguration.show();
                 } else {
                     alert("Selezionare un configurazione");
@@ -1334,23 +1669,25 @@ class TbltTenant extends TbltTenantBase {
                 break;
             case 2:
                 if (this._rtvTenantConfigurations.get_selectedNode() !== null) {
-                    let thisObj = this;
-                    let tenant: TenantViewModel = this.rtvResult.filter(function (x) {
-                        return x.UniqueId === thisObj._rtvTenants.get_selectedNode().get_value()
-                    })[0];
-                    let removeIndex = tenant.Configurations.map(item => item.UniqueId).indexOf(this._rtvTenantConfigurations.get_selectedNode().get_value());
-                    tenant.Configurations.splice(removeIndex, 1);
-                    this._tenantService.updateTenant(tenant,
-                        (data) => {
-                            this._rtvTenantConfigurations.get_nodes().getNode(0).get_nodes().removeAt(this._rtvTenantConfigurations.get_selectedNode().get_index());
-                            if (this._rtvTenantConfigurations.get_nodes().getNode(0).get_nodes().getItem(0) === undefined)
-                                this._rtvTenantConfigurations.get_nodes().clear();
-                        },
-                        (exception: ExceptionDTO) => {
-                            this._loadingPanel.hide(this.splitterMainId);
-                            $("#".concat(this.rtvTenantsId)).hide();
-                            this.showNotificationException(this.uscNotificationId, exception);
-                        });
+                    this._manager.radconfirm("Sei sicuro di voler eliminare il configurazione selezionato?", (arg) => {
+                        if (arg) {
+                            let tenantToUpdate: TenantViewModel = this.constructTenant();
+                            tenantToUpdate.Configurations = this._currentSelectedTenant.Configurations.filter(x => x.UniqueId == this._rtvTenantConfigurations.get_selectedNode().get_value());
+                            let removeIndex = this._currentSelectedTenant.Configurations.map(item => item.UniqueId).indexOf(this._rtvTenantConfigurations.get_selectedNode().get_value());
+                            this._currentSelectedTenant.Configurations.splice(removeIndex, 1);
+                            this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantConfigurationRemove,
+                                (data) => {
+                                    this._rtvTenantConfigurations.get_nodes().getNode(0).get_nodes().removeAt(this._rtvTenantConfigurations.get_selectedNode().get_index());
+                                    if (this._rtvTenantConfigurations.get_nodes().getNode(0).get_nodes().getItem(0) === undefined)
+                                        this._rtvTenantConfigurations.get_nodes().clear();
+                                },
+                                (exception: ExceptionDTO) => {
+                                    this._loadingPanel.hide(this.splitterMainId);
+                                    $("#".concat(this.rtvTenantsId)).hide();
+                                    this.showNotificationException(this.uscNotificationId, exception);
+                                });
+                        }
+                    }, 400, 300);
                 } else {
                     alert("Selezionare un configurazione");
                 }
@@ -1359,17 +1696,13 @@ class TbltTenant extends TbltTenantBase {
         }
     }
 
-    btnTenantConfigurationOk_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnTenantConfigurationOk_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         if (this._dpStartDateFrom && this._dpStartDateFrom.get_selectedDate() &&
             this._txtTenantConfigurationJsonValue && this._txtTenantConfigurationJsonValue.get_textBoxValue() !== "" &&
             this._cmbConfigurationType && this._cmbConfigurationType.get_selectedItem().get_text() !== "") {
             let viewModelMapper = new TenantViewModelMapper();
-            let thisObj = this;
-            let tenant: TenantViewModel = this.rtvResult.filter(function (x) {
-                return x.UniqueId === thisObj._rtvTenants.get_selectedNode().get_value()
-            })[0];
             let tenantConfiguration: TenantConfigurationModel = {
-                Tenant: viewModelMapper.Map(tenant),
+                Tenant: viewModelMapper.Map(this._currentSelectedTenant),
                 ConfigurationType: this._cmbConfigurationType.get_selectedItem().get_value(),
                 EndDate: (this._dpEndDateFrom && this._dpEndDateFrom.get_selectedDate())
                     ? moment(this._dpEndDateFrom.get_selectedDate()).format("MM-DD-YYYY")
@@ -1388,13 +1721,15 @@ class TbltTenant extends TbltTenantBase {
             let nodeText = this._cmbConfigurationType.get_selectedItem().get_text();
             let alreadySavedInTree: boolean = this.alreadySavedInTree(nodeValue, this._rtvTenantConfigurations);
             if (!alreadySavedInTree) {
-                tenant.Configurations.push(tenantConfiguration);
-                this._tenantService.updateTenant(tenant,
+                this._currentSelectedTenant.Configurations.push(tenantConfiguration);
+                let tenantToUpdate: TenantViewModel = this.constructTenant();
+                tenantToUpdate.Configurations = [tenantConfiguration];
+                this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantConfigurationAdd,
                     (data) => {
-                        let selectedIndex = tenant.Configurations.map(item => item.UniqueId)
+                        let selectedIndex = this._currentSelectedTenant.Configurations.map(item => item.UniqueId)
                             .indexOf(tenantConfiguration.UniqueId);
-                        tenant.Configurations[selectedIndex].UniqueId = data.Configurations.$values[selectedIndex].UniqueId;
-                        nodeValue = tenant.Configurations[selectedIndex].UniqueId;
+                        this._currentSelectedTenant.Configurations[selectedIndex].UniqueId = data.Configurations.$values[selectedIndex].UniqueId;
+                        nodeValue = this._currentSelectedTenant.Configurations[selectedIndex].UniqueId;
                         this.addNodesToRadTreeView(nodeValue, nodeText, "Configurazioni", nodeImageUrl, this._rtvTenantConfigurations);
                     },
                     (exception: ExceptionDTO) => {
@@ -1403,9 +1738,9 @@ class TbltTenant extends TbltTenantBase {
                         this.showNotificationException(this.uscNotificationId, exception);
                     });
             } else {
-                let editIndex = tenant.Configurations.map(item => item.UniqueId)
+                let editIndex = this._currentSelectedTenant.Configurations.map(item => item.UniqueId)
                     .indexOf(this._rtvTenantConfigurations.get_selectedNode().get_value());
-                tenant.Configurations[editIndex] = tenantConfiguration;
+                this._currentSelectedTenant.Configurations[editIndex] = tenantConfiguration;
                 this._tenantConfigurationService.updateTenantConfiguration(tenantConfiguration,
                     (data) => {
                         this._rtvTenantConfigurations.get_selectedNode().set_text(nodeText);
@@ -1421,19 +1756,19 @@ class TbltTenant extends TbltTenantBase {
         }
     }
 
-    btnTenantConfigurationCancel_onClick = (sender: any, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnTenantConfigurationCancel_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._rwTenantConfiguration.close();
     }
 
-    private populateTenantConfigurationsTreeView(tenant: TenantViewModel) {
-        this._tenantService.getTenantConfigurations(tenant.UniqueId,
+    private populateTenantConfigurationsTreeView() {
+        this._tenantService.getTenantConfigurations(this._currentSelectedTenant.UniqueId,
             (data: TenantConfigurationModel[]) => {
                 if (data === undefined) {
                     return;
                 } else {
                     this._rtvTenantConfigurations.get_nodes().clear();
                     let thisObj = this;
-                    tenant.Configurations = data;
+                    this._currentSelectedTenant.Configurations = data;
                     $.each(data, function (i, value) {
                         let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
                         let nodeValue = value.UniqueId;
@@ -1461,45 +1796,49 @@ class TbltTenant extends TbltTenantBase {
 
         this._uscContattiSelRest.registerEventHandler(uscContattiSelRestEvents.ContactDeleted, this.deleteTenantContactPromise);
         this._uscContattiSelRest.registerEventHandler(uscContattiSelRestEvents.NewContactsAdded, this.updateTenantContactPromise);
+        this._uscContattiSelRest.registerEventHandler(uscContattiSelRestEvents.AllContactsDeleted, this.deleteAllTenantContactPromise);
+        this._uscContattiSelRest.registerEventHandler(uscContattiSelRestEvents.AllContactsAdded, this.updateAllTenantContactPromise);
     }
 
     private deleteTenantContactPromise = (contactId: number): JQueryPromise<any> => {
         let promise: JQueryDeferred<any> = $.Deferred<any>();
 
         if (contactId) {
-            let tenant: TenantViewModel = this.rtvResult.filter((x) => {
-                return x.UniqueId === this._rtvTenants.get_selectedNode().get_value()
-            })[0];
-            let contactParent = tenant.Contacts.filter(contact => contact.EntityId === contactId)[0];
-            let contactParentId = null;
-            if (contactParent) {
-                contactParentId = contactParent.IncrementalFather;
-            }
-            tenant.Contacts = tenant.Contacts.filter(contact => contact.EntityId !== contactId && contact.IncrementalFather !== contactId);
-            this._tenantService.updateTenant(tenant,
-                (data: any) => {
-                    promise.resolve(contactParentId);
-                    this._loadingPanel.hide(this.splitterMainId);
-                },
-                (exception: ExceptionDTO) => {
-                    this._loadingPanel.hide(this.splitterMainId);
-                    $("#".concat(this.rtvTenantsId)).hide();
-                    this.showNotificationException(this.uscNotificationId, exception);
-                });
-        } 
+            this._manager.radconfirm("Sei sicuro di voler eliminare il contatto selezionato?", (arg) => {
+                if (arg) {
+                    let contactParent = this._currentSelectedTenant.Contacts.filter(contact => contact.EntityId === contactId)[0];
+                    let contactParentId = null;
+                    if (contactParent) {
+                        contactParentId = contactParent.IncrementalFather;
+                    }
+                    let tenantToUpdate: TenantViewModel = this.constructTenant();
+                    tenantToUpdate.Contacts = this._currentSelectedTenant.Contacts.filter(contact => contact.EntityId === contactId && contact.IncrementalFather !== contactId);
+                    this._currentSelectedTenant.Contacts = this._currentSelectedTenant.Contacts.filter(contact => contact.EntityId !== contactId && contact.IncrementalFather !== contactId);
+                    this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantContactRemove,
+                        (data: any) => {
+                            promise.resolve(contactParentId);
+                            this._loadingPanel.hide(this.splitterMainId);
+                        },
+                        (exception: ExceptionDTO) => {
+                            this._loadingPanel.hide(this.splitterMainId);
+                            $("#".concat(this.rtvTenantsId)).hide();
+                            this.showNotificationException(this.uscNotificationId, exception);
+                        });
+                }
+            }, 400, 300);
+        }
         return promise.promise();
     }
 
     private updateTenantContactPromise = (newContactAdded: ContactModel): JQueryPromise<any> => {
         let promise: JQueryDeferred<any> = $.Deferred<any>();
         if (newContactAdded) {
-            let tenant: TenantViewModel = this.rtvResult.filter((x) => {
-                return x.UniqueId === this._rtvTenants.get_selectedNode().get_value()
-            })[0];
-            tenant.Contacts.push(newContactAdded);
+            this._currentSelectedTenant.Contacts.push(newContactAdded);
 
             this._loadingPanel.show(this.splitterMainId);
-            this._tenantService.updateTenant(tenant,
+            let tenantToUpdate: TenantViewModel = this.constructTenant();
+            tenantToUpdate.Contacts = [newContactAdded];
+            this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantContactAdd,
                 (data: any) => {
                     promise.resolve(data);
                     this._loadingPanel.hide(this.splitterMainId);
@@ -1513,15 +1852,22 @@ class TbltTenant extends TbltTenantBase {
         return promise.promise();
     }
 
+    private updateAllTenantContactPromise = (): JQueryPromise<any> => {
+        return this.addAllContactsOrRolesToTenant(UpdateActionType.TenantContactAddAll);
+    }
 
-    private populateContactTreeView(tenant: TenantViewModel) {
+    private deleteAllTenantContactPromise = (): JQueryPromise<any> => {
+        return this.deleteAllContactsOrRolesFromTenant(UpdateActionType.TenantContactRemoveAll);
+    }
+
+    private populateContactTreeView() {
         this._loadingPanel.show(this.splitterMainId);
-        this._tenantService.getTenantContacts(tenant.UniqueId,
+        this._tenantService.getTenantContacts(this._currentSelectedTenant.UniqueId,
             (data: ContactModel[]) => {
                 if (data === undefined) {
                     return;
                 } else {
-                    tenant.Contacts = data;
+                    this._currentSelectedTenant.Contacts = data;
                     this._uscContattiSelRest.renderContactsTree(data);
                     this._loadingPanel.hide(this.splitterMainId);
                 }
@@ -1563,6 +1909,45 @@ class TbltTenant extends TbltTenantBase {
             }
         }
         return alreadySavedInTree;
+    }
+
+    addAllContactsOrRolesToTenant(actionType: UpdateActionType): JQueryPromise<any> {
+        let promise: JQueryDeferred<any> = $.Deferred<any>();
+        this._tenantService.updateTenant(this._currentSelectedTenant, actionType, (data) => {
+            if (actionType === UpdateActionType.TenantContactAddAll) {
+                this.populateContactTreeView();
+            }
+            else {
+                this.populateRolesTree();
+            }
+        }, (exception: ExceptionDTO) => {
+            this.showNotificationException(this.uscNotificationId, exception);
+            promise.reject(exception);
+        });
+        return promise.promise();
+    }
+
+    deleteAllContactsOrRolesFromTenant(actionType: UpdateActionType): JQueryPromise<any> {
+        let promise: JQueryDeferred<any> = $.Deferred<any>();
+        this._tenantService.updateTenant(this._currentSelectedTenant, actionType, (data) => {
+            promise.resolve();
+        }, (exception: ExceptionDTO) => {
+            this.showNotificationException(this.uscNotificationId, exception);
+            promise.reject(exception);
+        });
+        return promise.promise();
+    }
+
+    constructTenant(): TenantViewModel {
+        let newTenant: TenantViewModel = new TenantViewModel();
+        newTenant.UniqueId = this._currentSelectedTenant.UniqueId;
+        newTenant.CompanyName = this._currentSelectedTenant.CompanyName;
+        newTenant.TenantName = this._currentSelectedTenant.TenantName;
+        newTenant.Note = this._currentSelectedTenant.Note;
+        newTenant.StartDate = this._currentSelectedTenant.StartDate;
+        newTenant.EndDate = this._currentSelectedTenant.EndDate;
+        newTenant.TenantAOO = this._currentSelectedTenant.TenantAOO;
+        return newTenant;
     }
 }
 export = TbltTenant;

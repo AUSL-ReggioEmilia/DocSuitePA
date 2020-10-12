@@ -48,7 +48,7 @@ class ReportDesigner {
 
     static TEMPLATE_REPORT_NAME: string = "TemplateReport";
 
-    private get action(): string {
+    private action(): string {
         return (!this.reportUniqueId) ? ReportDesigner.INSERT_ACTION : ReportDesigner.EDIT_ACTION;
     }
 
@@ -70,7 +70,7 @@ class ReportDesigner {
     /**
      *------------------------- Events -----------------------------
      */
-    private BtnDraft_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private BtnDraft_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         if (Page_ClientValidate("ReportData")) {
             this.showLoading();
             $.when(this.saveTemplate(true))
@@ -86,7 +86,7 @@ class ReportDesigner {
         }
     }
 
-    private BtnSave_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonEventArgs) => {
+    private BtnSave_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         if (Page_ClientValidate("ReportData")) {
             this.showLoading();
             $.when(this.saveTemplate(false))
@@ -369,7 +369,7 @@ class ReportDesigner {
                 builderModel.MetadataRepository = metadataRepository;
 
                 let toSave: TemplateReportModel = new TemplateReportModel();
-                if (this.action == ReportDesigner.EDIT_ACTION) {
+                if (this.action() == ReportDesigner.EDIT_ACTION) {
                     toSave.UniqueId = this.reportUniqueId;
                 }
                 toSave.Environment = informationModel.SelectedEnvironment;

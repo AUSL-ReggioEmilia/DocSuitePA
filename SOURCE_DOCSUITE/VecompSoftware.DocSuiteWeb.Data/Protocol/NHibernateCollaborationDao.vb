@@ -80,15 +80,6 @@ Public Class NHibernateCollaborationDao
         Return criteria.List(Of DocumentFDQDTO)()
     End Function
 
-    Public Function GetMaxId() As Integer
-        Const query As String = "SELECT MAX(C.Id) FROM Contact AS C"
-        Try
-            Return NHibernateSession.CreateQuery(query).UniqueResult(Of Integer)()
-        Catch ex As Exception
-            Return 0
-        End Try
-    End Function
-
     ''' <summary> Ritorna la collaborazione più recente legata alla resolution. </summary>
     ''' <value>Nothing se non la trova. </value>
     ''' <remarks> Non dovrebbero esserci collaborazioni legate a più resolution. </remarks>

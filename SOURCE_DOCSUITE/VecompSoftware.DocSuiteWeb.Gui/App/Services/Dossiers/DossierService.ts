@@ -10,7 +10,8 @@ import DossierGridViewModel = require('App/ViewModels/Dossiers/DossierGridViewMo
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import BaseEntityViewModel = require('App/ViewModels/BaseEntityViewModel');
 import DossierSearchFilterDTO = require("App/DTOs/DossierSearchFilterDTO");
-import DossierSummaryViewModel = require('../../ViewModels/Dossiers/DossierSummaryViewModel');
+import DossierSummaryViewModel = require('App/ViewModels/Dossiers/DossierSummaryViewModel');
+import DossierType = require('App/Models/Dossiers/DossierType');
 
 class DossierService extends BaseService {
     _configuration: ServiceConfiguration;
@@ -38,24 +39,11 @@ class DossierService extends BaseService {
         }, error);
     }
 
-    getDossiers(skip: number, top: number, searchFilter: DossierSearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
 
-        let url: string = this._configuration.ODATAUrl.
-            concat("/DossierService.GetAuthorizedDossiers(skip=", skip.toString(), ",top=", top.toString(),
-                ",year=", !!searchFilter.year ? searchFilter.year.toString() : null,
-                ",number=", !!searchFilter.number ? searchFilter.number.toString() : null,
-                ",subject=\'", searchFilter.subject,
-                "\',note=\'", searchFilter.note,
-                "\',idContainer=", !!searchFilter.idContainer ? searchFilter.idContainer.toString() : null,
-                ",startDateFrom=\'", searchFilter.startDateFrom,
-                "\',startDateTo=\'", searchFilter.startDateTo,
-                "\',endDateFrom=\'", searchFilter.endDateFrom,
-                "\',endDateTo=\'", searchFilter.endDateTo,
-                "\',idMetadataRepository=", searchFilter.idMetadataRepository ? searchFilter.idMetadataRepository.toString() : null,
-                "\,metadataValue=\'", searchFilter.metadataValue,
-                "\')");
-
-        this.getRequest(url, null, (response: any) => {
+    getAuthorizedDossiers(searchFilter: DossierSearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataUrl: string = `${this._configuration.ODATAUrl}/DossierService.GetAuthorizedDossiers`;
+        let odataActionParameter: string = JSON.stringify({ finder: searchFilter });
+        this.postRequest(odataUrl, odataActionParameter, (response: any) => {
             if (callback && response) {
                 let viewModelMapper = new DossierGridViewModelMapper();
                 let dossiers: DossierGridViewModel[] = [];
@@ -67,11 +55,10 @@ class DossierService extends BaseService {
         }, error);
     }
 
-    countDossiers(searchFilter: DossierSearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.
-            concat("/DossierService.CountAuthorizedDossiers(year=", !!searchFilter.year ? searchFilter.year.toString() : null, ",number=", !!searchFilter.number ? searchFilter.number.toString() : null, ",subject=\'",
-                searchFilter.subject, "\',idContainer=", !!searchFilter.idContainer ? searchFilter.idContainer.toString() : null, ",idMetadataRepository=", !!searchFilter.idMetadataRepository ? searchFilter.idMetadataRepository.toString() : null, ",metadataValue='", searchFilter.metadataValue, "')");
-        this.getRequest(url, null, (response: any) => {
+    countAuthorizedDossiers(searchFilter: DossierSearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}/DossierService.CountAuthorizedDossiers`;
+        let odataActionParameter: string = JSON.stringify({ finder: searchFilter });
+        this.postRequest(url, odataActionParameter, (response: any) => {
             if (callback && response) {
                 callback(response.value);
             };
@@ -209,25 +196,40 @@ class DossierService extends BaseService {
             }, error);
     }
 
-
-    countDossiersById(uniqueId: string, onlyProcess: boolean, exludeProcess: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl;
-        let data: string = `/$count?$filter=DossierFolders/any(d: d/Fascicle/Uniqueid eq ${uniqueId})`;
-        if (onlyProcess && onlyProcess === true) {
-            data = `${data} and Processes/any()`
-        }
-        if (exludeProcess && exludeProcess === true) {
-            data = `${data} and not Processes/any()`
-        }
-        url = url.concat(data);
-        this.getRequest(url, null,
+    allFasciclesAreClosed(idDossier: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}/DossierService.AllFasciclesAreClosed(idDossier=${idDossier})`;
+        let data: string = "";
+        this.getRequest(url, data,
             (response: any) => {
-                if (callback) {
-                    callback(response);
+                if (callback && response) {
+                    callback(response.value);
                 }
             }, error);
     }
 
+    getDossiersWithTemplatesByFascicleId(idFascicle: string, dossierType: number, onlyFolderHasTemplate: boolean, dossierFolderLevel: number, dossierFolderPath: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        let data: string = `$filter=DossierFolders/any(df: df/Fascicle/UniqueId eq ${idFascicle})`;
+        let dossierChildren: string = `and DossierFolderLevel eq ${dossierFolderLevel} and startswith(DossierFolderPath,'${dossierFolderPath}');$expand=DossierFolderRoles($expand=Role)`;
+        let onlyFolderFilter: string = `($filter=JsonMetadata ne null and Fascicle ne null ${dossierChildren};$expand=Fascicle,DossierFolderRoles($expand=Role);$orderby=Name)`;
+        let expandDossierFolder: string = "$expand=DossierRoles($expand=Role),DossierFolders";
+        if (dossierType != null && onlyFolderHasTemplate) {
+            data = `${data} and DossierType eq '${DossierType[dossierType]}'&${expandDossierFolder}${onlyFolderFilter}`;
+        } else if (dossierType != null) {
+            data = `${data} and DossierType eq '${DossierType[dossierType]}'&${expandDossierFolder}($filter=DossierFolderLevel eq ${dossierFolderLevel} and startswith(DossierFolderPath,'${dossierFolderPath}');$expand=DossierFolderRoles($expand=Role);$orderby=Name)`;
+        } else if (onlyFolderHasTemplate) {
+            data = `${data}&${expandDossierFolder}${onlyFolderFilter}`;
+        } else {
+            data = `${data}&${expandDossierFolder}($filter=Fascicle eq null ${dossierChildren};$orderby=Name)`;
+        }
+
+        this.getRequest(url, data,
+            (response: any) => {
+                if (callback && response) {
+                    callback(response.value);
+                }
+            }, error);
+    }
 }
 
 export = DossierService; 

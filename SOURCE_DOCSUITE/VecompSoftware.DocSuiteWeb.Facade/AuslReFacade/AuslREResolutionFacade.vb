@@ -119,10 +119,7 @@ Public NotInheritable Class AuslREResolutionFacade
                         Throw New DocSuiteException("Passo del WorkFlow", String.Format("Impossibile recuperare il documento di proposta per resolution [{0}] ", resl.Id))
                     End If
 
-                    Dim doc As New BiblosDocumentInfo(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idCatenaDocumento, 0)
-
-                    'OLDDocumentInfo di = bf.GetChainSingleDocumentInfo(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idCatenaDocumento, 0);
-
+                    Dim doc As New BiblosDocumentInfo(resl.Location.ReslBiblosDSDB, idCatenaDocumento, 0)
                     stepDocuments = New DocumentInfo() {doc}
 
                     'PER IL DOCUMENTO DI ADOZIONE SI CREA COMUNQUE UNA SUA CATENA DIVERSA DAL DOCUMENTO DI PROPOSTA 
@@ -135,7 +132,7 @@ Public NotInheritable Class AuslREResolutionFacade
                 '****VALE PER TUTTI I CLIENTI CHE HANNO LA COLLABORATION ( AUSL E ASMN )
             ElseIf tw.Description = WorkflowStep.PUBBLICAZIONE OrElse tw.Description = WorkflowStep.RITIRO Then
                 If stepDocuments.Count = 0 AndAlso resl.File.IdProposalFile.HasValue Then
-                    Dim filename As String = Service.GetDocumentName(New UIDDocument(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, resl.File.IdProposalFile.Value))
+                    Dim filename As String = Service.GetDocumentName(New UIDDocument(resl.Location.ReslBiblosDSDB, resl.File.IdProposalFile.Value))
 
                     If String.IsNullOrEmpty(filename) Then
                         Throw New DocSuiteException("Passo del WorkFlow", [String].Format("Impossibile recuperare il nome del file archiviato nella catena [{0}]", resl.File.IdProposalFile.Value))
@@ -168,8 +165,8 @@ Public NotInheritable Class AuslREResolutionFacade
                     Throw New DocSuiteException("Passo del WorkFlow", String.Format("AssumedProposal non trovato per resolution [{0}]", resl.Id))
                 End If
 
-                Dim frontalino As New BiblosDocumentInfo(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, resl.File.IdResolutionFile.Value, 0)
-                Dim docAdottato As New BiblosDocumentInfo(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, resl.File.IdAssumedProposal.Value, 0)
+                Dim frontalino As New BiblosDocumentInfo(resl.Location.ReslBiblosDSDB, resl.File.IdResolutionFile.Value, 0)
+                Dim docAdottato As New BiblosDocumentInfo(resl.Location.ReslBiblosDSDB, resl.File.IdAssumedProposal.Value, 0)
 
                 Dim newStepDocs As IList(Of DocumentInfo) = New List(Of DocumentInfo)()
                 ' NELLE SOGGETTE FA GIA' PARTE DELLA CATENA
@@ -179,7 +176,7 @@ Public NotInheritable Class AuslREResolutionFacade
                 newStepDocs.Add(docAdottato)
 
                 If resl.File.IdAttachements.HasValue AndAlso resl.File.IdAttachements.Value <> 0 Then
-                    Dim attachs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, resl.File.IdAttachements.Value)
+                    Dim attachs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(resl.Location.ReslBiblosDSDB, resl.File.IdAttachements.Value)
 
                     For Each di As BiblosDocumentInfo In attachs
                         newStepDocs.Add(di)
@@ -200,7 +197,7 @@ Public NotInheritable Class AuslREResolutionFacade
             End If
 
             If stepDocuments.Count > 0 Then
-                idCatenaDocumento = DocumentInfoFactory.ArchiveDocumentsInBiblos(stepDocuments, resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idCatenaDocumento)
+                idCatenaDocumento = DocumentInfoFactory.ArchiveDocumentsInBiblos(stepDocuments, resl.Location.ReslBiblosDSDB, idCatenaDocumento)
 
                 If idCatenaDocumento = 0 Then
                     Throw New DocSuiteException("Passo del WorkFlow", String.Format("Errore nel salvataggio del documento su Biblos per resolution [{0}] ", resl.Id))
@@ -240,7 +237,7 @@ Public NotInheritable Class AuslREResolutionFacade
                 'DI TORNARE INDIETRO IN MODO DA POTER RIPRISTINARE LO STATO DELLO STEP PRECEDENTE
                 'PER ORA MANTENGO LA LOGICA ATTUALE CHE GESTISCE A CODICE QUANDO DUPLICARE LA CATENA OPPURE NO
                 If tw.Description.Eq(WorkflowStep.ADOZIONE) AndAlso idAllegati > 0 Then
-                    Dim attachs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idAllegati)
+                    Dim attachs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(resl.Location.ReslBiblosDSDB, idAllegati)
 
                     For Each di As BiblosDocumentInfo In attachs
                         di.Signature = attachSignature
@@ -264,7 +261,7 @@ Public NotInheritable Class AuslREResolutionFacade
 
 
                 If stepAttachments.Count > 0 Then
-                    idAllegati = DocumentInfoFactory.ArchiveDocumentsInBiblos(stepAttachments, resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idAllegati)
+                    idAllegati = DocumentInfoFactory.ArchiveDocumentsInBiblos(stepAttachments, resl.Location.ReslBiblosDSDB, idAllegati)
                     If idAllegati = 0 Then
                         Throw New DocSuiteException("Passo del WorkFlow", String.Format("Errore nel salvataggio in Biblos degli allegati su resolution [{0}].", resl.Id))
                     End If
@@ -293,7 +290,7 @@ Public NotInheritable Class AuslREResolutionFacade
                 'DI TORNARE INDIETRO IN MODO DA POTER RIPRISTINARE LO STATO DELLO STEP PRECEDENTE
                 'PER ORA MANTENGO LA LOGICA ATTUALE CHE GESTISCE A CODICE QUANDO DUPLICARE LA CATENA OPPURE NO
                 If tw.Description.Eq(WorkflowStep.ADOZIONE) AndAlso idAnnexed <> Guid.Empty Then
-                    Dim annexes As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, idAnnexed)
+                    Dim annexes As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(idAnnexed)
 
                     For Each di As BiblosDocumentInfo In annexes
                         di.Signature = annexedSignature
@@ -317,7 +314,7 @@ Public NotInheritable Class AuslREResolutionFacade
 
 
                 If stepAnnexes.Count > 0 Then
-                    idAnnexed = DocumentInfoFactory.ArchiveDocumentsInBiblos(stepAnnexes, resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, idAnnexed)
+                    idAnnexed = DocumentInfoFactory.ArchiveDocumentsInBiblos(stepAnnexes, resl.Location.ReslBiblosDSDB, idAnnexed)
                     If idAnnexed = Guid.Empty Then
                         Throw New DocSuiteException("Passo del WorkFlow", String.Format("Errore nel salvataggio in Biblos degli allegati su resolution [{0}].", resl.Id))
                     End If
@@ -345,10 +342,10 @@ Public NotInheritable Class AuslREResolutionFacade
                     If reslType = 2S Then
                         frontalino = stepDocuments(0)
                     Else
-                        frontalino = New BiblosDocumentInfo(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, resl.File.IdResolutionFile.Value, 0)
+                        frontalino = New BiblosDocumentInfo(resl.Location.ReslBiblosDSDB, resl.File.IdResolutionFile.Value, 0)
                     End If
 
-                    Dim docAdottato As DocumentInfo = New BiblosDocumentInfo(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, resl.File.IdAssumedProposal.Value, 0)
+                    Dim docAdottato As DocumentInfo = New BiblosDocumentInfo(resl.Location.ReslBiblosDSDB, resl.File.IdAssumedProposal.Value, 0)
 
                     Dim docs As IList(Of DocumentInfo) = New List(Of DocumentInfo)()
                     docs.Add(frontalino)
@@ -356,12 +353,12 @@ Public NotInheritable Class AuslREResolutionFacade
 
                     Dim atchs As List(Of DocumentInfo) = Nothing
                     If resl.File.IdAttachements.HasValue Then
-                        atchs = BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, resl.Location.ReslBiblosDSDB, resl.File.IdAttachements.Value).Cast(Of DocumentInfo)().ToList()
+                        atchs = BiblosDocumentInfo.GetDocuments(resl.Location.ReslBiblosDSDB, resl.File.IdAttachements.Value).Cast(Of DocumentInfo)().ToList()
                     End If
 
                     Dim annexes As List(Of DocumentInfo) = Nothing
                     If resl.File.IdAnnexes <> Guid.Empty Then
-                        annexes = BiblosDocumentInfo.GetDocuments(resl.Location.DocumentServer, resl.File.IdAnnexes).Cast(Of DocumentInfo)().ToList()
+                        annexes = BiblosDocumentInfo.GetDocuments(resl.File.IdAnnexes).Cast(Of DocumentInfo)().ToList()
                     End If
 
                     strXmlDoc = GetSharepointFrontespizioXML(resl, docs, atchs, annexes, frontalino.Signature, attachSignature, tempPath)

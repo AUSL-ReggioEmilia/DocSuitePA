@@ -20,42 +20,58 @@ Public Class PECMailReceiptFacade
 
 #Region " Methods "
 
+    Private Function TryGet(attribute As XmlAttribute, getInnerText As Boolean) As String
+        If attribute Is Nothing Then
+            Return String.Empty
+        End If
+        If getInnerText Then
+            Return attribute.InnerText
+        End If
+        Return attribute.Value
+    End Function
+
+    Private Function TryGet(attribute As XmlNode, getInnerText As Boolean) As String
+        If attribute Is Nothing Then
+            Return String.Empty
+        End If
+        If getInnerText Then
+            Return attribute.InnerText
+        End If
+        Return attribute.Value
+    End Function
+
     Public Function CreateFromDaticert(pec As PECMail, doc As XmlDocument) As PECMailReceipt
-
-        Dim receipt As New PECMailReceipt()
-
-        receipt.Parent = pec
-
-        receipt.ErrorShort = doc.DocumentElement.Attributes("errore").Value
-        receipt.ReceiptType = doc.DocumentElement.Attributes("tipo").Value
+        Dim receipt As New PECMailReceipt With {
+            .Parent = pec,
+            .ErrorShort = TryGet(doc.DocumentElement.Attributes("errore"), False),
+            .ReceiptType = TryGet(doc.DocumentElement.Attributes("tipo"), False)
+        }
 
         Dim intestazione As XmlNode = doc.DocumentElement.SelectSingleNode("./intestazione")
-        receipt.Sender = intestazione.SelectSingleNode("./mittente").InnerText
-        receipt.Receiver = intestazione.SelectSingleNode("./destinatari").InnerText
-        receipt.ReceiverType = intestazione.SelectSingleNode("./destinatari").Attributes("tipo").Value
-        receipt.Subject = intestazione.SelectSingleNode("./oggetto").InnerText
+        receipt.Sender = TryGet(intestazione.SelectSingleNode("./mittente"), True)
+        receipt.Receiver = TryGet(intestazione.SelectSingleNode("./destinatari"), True)
+        receipt.ReceiverType = TryGet(intestazione.SelectSingleNode("./destinatari").Attributes("tipo"), False)
+        receipt.Subject = TryGet(intestazione.SelectSingleNode("./oggetto"), True)
 
         Dim dati As XmlNode = doc.DocumentElement.SelectSingleNode("./dati")
-        receipt.Provider = dati.SelectSingleNode("./gestore-emittente").InnerText
+        receipt.Provider = TryGet(dati.SelectSingleNode("./gestore-emittente"), True)
 
         Dim data As XmlNode = dati.SelectSingleNode("./data")
-        receipt.DateZone = data.Attributes("zona").Value
-        Dim temp As String = data.SelectSingleNode("./giorno").InnerText & " " & data.SelectSingleNode("./ora").InnerText
+        receipt.DateZone = TryGet(data.Attributes("zona"), False)
+        Dim temp As String = $"{TryGet(data.SelectSingleNode("./giorno"), True)} {TryGet(data.SelectSingleNode("./ora"), True)}"
 
-        receipt.ReceiptDate = DateTime.ParseExact(temp, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture)
+        receipt.ReceiptDate = Date.ParseExact(temp, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture)
 
-        receipt.Identification = dati.SelectSingleNode("./identificativo").InnerText
+        receipt.Identification = TryGet(dati.SelectSingleNode("./identificativo"), True)
         If dati.SelectSingleNode("./msgid") IsNot Nothing Then
-            receipt.MSGID = dati.SelectSingleNode("./msgid").InnerText
+            receipt.MSGID = TryGet(dati.SelectSingleNode("./msgid"), True)
         Else
             receipt.MSGID = receipt.Identification
         End If
-
-        Dim esteso As XmlNode = dati.SelectSingleNode("./errore-esteso")
-        If Not IsNothing(esteso) Then
-            receipt.ErrorDescription = esteso.InnerText()
+        receipt.ErrorDescription = TryGet(dati.SelectSingleNode("./errore-esteso"), True)
+        If String.IsNullOrEmpty(receipt.ErrorDescription) Then
+            receipt.ErrorDescription = Nothing
         End If
-
         LinkToPEC(receipt)
 
         Return receipt

@@ -24,14 +24,16 @@ Public Class CollaborationRights
     End Function
 
     Public Shared Function GetCollaborationSeriesEnabled() As Boolean
-        If DocSuiteContext.Current.ProtocolEnv.DocumentSeriesEnabled Then
+        If Not DocSuiteContext.Current.ProtocolEnv.DocumentSeriesEnabled Then
+            Return False
+        ElseIf Not DocSuiteContext.Current.ProtocolEnv.CollaborationRightsEnabled Then
             Return True
         End If
-        Return Not FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.DocumentSeries, ResolutionRoleRightPositions.Enabled, True).IsNullOrEmpty()
+        Return Not FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.DocumentSeries, DocumentSeriesRoleRightPositions.Enabled, True).IsNullOrEmpty()
     End Function
 
     Public Shared Function HasCollaborationRights() As Boolean
-        Return GetCollaborationProtocolEnabled() OrElse GetCollaborationResolutionEnabled() OrElse DocSuiteContext.Current.ProtocolEnv.CollaborationMenuAlwaysVisible
+        Return GetCollaborationProtocolEnabled() OrElse GetCollaborationResolutionEnabled() OrElse GetCollaborationSeriesEnabled() OrElse DocSuiteContext.Current.ProtocolEnv.CollaborationMenuAlwaysVisible
     End Function
 
     Public Shared Function IsManager() As Boolean
@@ -63,8 +65,7 @@ Public Class CollaborationRights
     Public Shared Function GetInserimentoAlProtocolloSegreteriaEnabled() As Boolean
         ' Se sono Dirigente o Vice di collaborazione di almeno un settore aggiungo il punto di menù di inserimento alla segreteria.
         Return DocSuiteContext.Current.ProtocolEnv.InserimentoAlProtocolloSegreteriaEnabled _
-            AndAlso HasCollaborationRights() _
-            AndAlso IsManager()
+            AndAlso HasCollaborationRights() AndAlso (IsManager() OrElse DocSuiteContext.Current.ProtocolEnv.MenuRightEnabled)
     End Function
 
 End Class

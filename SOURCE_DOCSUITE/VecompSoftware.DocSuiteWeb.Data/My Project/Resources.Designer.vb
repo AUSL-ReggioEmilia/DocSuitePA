@@ -301,42 +301,11 @@ Namespace My.Resources
         '''	&quot;rblTextMatchMode&quot;: &quot;Contains&quot;,
         '''	&quot;rblClaim&quot;:  &quot;2&quot;,
         '''	&quot;rblClausola&quot;: &quot;AND&quot;
-        '''}
-        '''.
+        '''}.
         '''</summary>
         Friend ReadOnly Property SearchProtocolRblDefaultValue() As String
             Get
                 Return ResourceManager.GetString("SearchProtocolRblDefaultValue", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to [
-        '''	{
-        '''		&quot;Name&quot;: &quot;Collaboration&quot;,
-        '''		&quot;VisibilityChains&quot;: {
-        '''			&quot;MainChain&quot;: false,
-        '''			&quot;AttachmentsChain&quot;: false,
-        '''			&quot;AnnexedChain&quot;: false
-        '''		}
-        '''	}
-        '''].
-        '''</summary>
-        Friend ReadOnly Property SecureDocumentVisibilities() As String
-            Get
-                Return ResourceManager.GetString("SecureDocumentVisibilities", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to {
-        '''    &quot;DOU&quot;: true,
-        '''	&quot;SecurePaper&quot;: true
-        '''}.
-        '''</summary>
-        Friend ReadOnly Property SecureDocumentWorkflowStatementVisibility() As String
-            Get
-                Return ResourceManager.GetString("SecureDocumentWorkflowStatementVisibility", resourceCulture)
             End Get
         End Property
         
@@ -398,11 +367,10 @@ Namespace My.Resources
         '''          }
         '''        },
         '''        &quot;ToPEC&quot;: {
-        '''          &quot;Page&quot;: &quot;~/PEC/PECInsert.aspx?Type=Pec&amp;SimpleMode=True&amp;Year={0}&amp;Number={1}&quot;,
+        '''          &quot;Page&quot;: &quot;~/PEC/PECInsert.aspx?Type=Pec&amp;SimpleMode=True&amp;UniqueIdProtocol={0}&quot;,
         '''          &quot;Options&quot;: {
         '''            &quot;SecurityCheck&quot;: &quot;False&quot;,
-        '''            &quot;Year&quot;: &quot;True&quot;,
-        '''       [rest of string was truncated]&quot;;.
+        '''            &quot;UniqueIdProtocol&quot;: &quot;T [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property WorkflowOperationConfig() As String
             Get
@@ -443,10 +411,10 @@ Namespace My.Resources
         '''	xmlns:a=&quot;http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2&quot;
         '''	xmlns:d=&quot;http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.0&quot;&gt;
         '''
-        '''  &lt;xsl:output method=&quot;xhtml&quot; /&gt;
+        '''  &lt;xsl:output method=&quot;xhtml&quot;/&gt;
         '''  &lt;xsl:decimal-format name=&quot;euro&quot; decimal-separator=&quot;,&quot; grouping-separator=&quot;.&quot;/&gt;
         '''
-        '''  &lt;xsl:template nam [rest of string was truncated]&quot;;.
+        '''  &lt;xsl:template name [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property XSL_AssoSoftware_1_2() As String
             Get

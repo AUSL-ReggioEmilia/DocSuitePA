@@ -6,6 +6,8 @@ class UDSDocumentUnitModel {
 
     IdUDS: string;
     Relation: Relation;
+    UniqueId: string;
+    SourceUDS: Relation;
 }
 
 export = UDSDocumentUnitModel;

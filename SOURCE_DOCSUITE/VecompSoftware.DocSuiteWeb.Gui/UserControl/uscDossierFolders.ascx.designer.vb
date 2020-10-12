@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscDossierFolders
-    
+
     '''<summary>
     '''manager control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscDossierFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents manager As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''managerCreateFolder control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscDossierFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents managerCreateFolder As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''managerCreateFascicleFolder control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscDossierFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents managerCreateFascicleFolder As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''managerFascicleLink control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscDossierFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents managerFascicleLink As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''managerModifyFolder control.
     '''</summary>
@@ -57,7 +57,16 @@ Partial Public Class uscDossierFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents managerModifyFolder As Global.Telerik.Web.UI.RadWindow
-    
+
+    '''<summary>
+    '''managerModifyFascicle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents managerModifyFascicle As Global.Telerik.Web.UI.RadWindow
+
     '''<summary>
     '''pageContent control.
     '''</summary>
@@ -66,7 +75,7 @@ Partial Public Class uscDossierFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pageContent As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''FolderToolBar control.
     '''</summary>
@@ -75,7 +84,7 @@ Partial Public Class uscDossierFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents FolderToolBar As Global.Telerik.Web.UI.RadToolBar
-    
+
     '''<summary>
     '''StatusToolBar control.
     '''</summary>
@@ -84,7 +93,7 @@ Partial Public Class uscDossierFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents StatusToolBar As Global.Telerik.Web.UI.RadToolBar
-    
+
     '''<summary>
     '''rtvDossierFolders control.
     '''</summary>
@@ -93,7 +102,16 @@ Partial Public Class uscDossierFolders
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtvDossierFolders As Global.Telerik.Web.UI.RadTreeView
-    
+
+    '''<summary>
+    '''btnSelectDossierFolder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSelectDossierFolder As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''uscNotification control.
     '''</summary>

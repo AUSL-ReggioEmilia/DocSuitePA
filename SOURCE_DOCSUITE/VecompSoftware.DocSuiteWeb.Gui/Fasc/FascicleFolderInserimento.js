@@ -127,16 +127,8 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
             if (fascicleFolderToUpdate) {
                 fascicleFolder.ParentInsertId = fascicleFolderToUpdate.UniqueId;
                 fascicleFolder.Fascicle.UniqueId = fascicleFolderToUpdate.Fascicle.UniqueId;
-                fascicleFolder.Typology = fascicleFolderToUpdate.Typology;
-                var typology = FascicleFolderTypology[fascicleFolder.Typology.toString()];
-                if (isNaN(typology)) {
-                    typology = FascicleFolderTypology[typology.toString()];
-                }
-                if (typology == FascicleFolderTypology.Fascicle) {
-                    fascicleFolder.Typology = FascicleFolderTypology.SubFascicle;
-                }
+                fascicleFolder.Typology = FascicleFolderTypology.SubFascicle;
             }
-            ;
             if (this.doNotUpdateDatabase === "False") {
                 this.callInsertFascicleFolderService(fascicleFolder);
             }
@@ -146,10 +138,8 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
                 model.ActionName = "ManageParent";
                 model.Value = [];
                 fascicleFolder.UniqueId = Guid.newGuid();
-                fascicleFolder.Typology = FascicleFolderTypology.Fascicle;
                 model.Value.push(JSON.stringify(fascicleFolder));
-                sessionStorage.setItem("InsertedFascicleFolder", JSON.stringify(model));
-                this.closeWindow();
+                this.closeWindow(model);
             }
         };
         /**

@@ -235,7 +235,7 @@ Public Class TbltOChart
     End Sub
 
     Private Sub CbPecMailBoxSelectorItemsRequested(sender As Object, e As RadComboBoxItemsRequestedEventArgs) Handles cbPECMailBoxSelector.ItemsRequested
-        Dim boxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.GetHumanManageable().GetAll()
+        Dim boxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.GetAll()
 
         If Not String.IsNullOrEmpty(e.Text) Then
             boxes = FilterBoxes(boxes, e.Text)
@@ -662,7 +662,7 @@ Public Class TbltOChart
         End If
 
         ' verifico se devo aggiungere anche le relative PEC e/o contatti
-        Dim mailboxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.GetHumanManageable().GetByRoles(New List(Of Role) From {args.Item})
+        Dim mailboxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.GetByRoles(New List(Of Role) From {args.Item})
         Dim contacts As IList(Of Contact) = Facade.RoleFacade.GetContacts(New List(Of Role) From {args.Item})
 
         SessionOChart = Facade.OChartItemFacade.AddRole(args.Item, SelectedOChartItem, mailboxes, contacts)

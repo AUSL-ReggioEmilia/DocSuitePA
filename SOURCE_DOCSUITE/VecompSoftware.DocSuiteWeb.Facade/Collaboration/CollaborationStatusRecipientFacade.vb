@@ -125,17 +125,37 @@ Public Class CollaborationStatusRecipientFacade
                 If currentSigner IsNot Nothing Then
                     Dim currentRoleUser As RoleUser = Factory.RoleUserFacade.GetByAccountsAndNotType(currentSigner.SignUser, Nothing, True).FirstOrDefault()
                     If currentRoleUser IsNot Nothing Then
-                        contacts.Add(New Contact() With {.Description = currentRoleUser.Role.Name, .EmailAddress = currentRoleUser.Role.EMailAddress})
+                        For Each roleMailAddress As String In currentRoleUser.Role.EMailAddress.Split(";"c)
+                            contacts.Add(New Contact() With {.Description = currentRoleUser.Role.Name, .EmailAddress = roleMailAddress})
+                        Next
                     End If
                 End If
 
             Case Code.AllSignersRole
                 ''I settori di tutti i firmatari
-                contacts.AddRange(From currentSigner In Factory.CollaborationSignsFacade.GetByIdCollaboration(idCollaboration) Select currentRoleUser = Factory.RoleUserFacade.GetByAccountsAndNotType(currentSigner.SignUser, Nothing, True).FirstOrDefault() Where currentRoleUser IsNot Nothing Select New Contact() With {.Description = currentRoleUser.Role.Name, .EmailAddress = currentRoleUser.Role.EMailAddress})
+                Dim currentSigners As IList(Of CollaborationSign) = Factory.CollaborationSignsFacade.GetByIdCollaboration(idCollaboration)
+                If currentSigners IsNot Nothing AndAlso currentSigners.Count > 0 Then
+                    For Each currentSigner As CollaborationSign In currentSigners
+                        Dim currentRoleUser As RoleUser = Factory.RoleUserFacade.GetByAccountsAndNotType(currentSigner.SignUser, Nothing, True).FirstOrDefault()
+                        If currentRoleUser IsNot Nothing Then
+                            For Each roleMailAddress As String In currentRoleUser.Role.EMailAddress.Split(";"c)
+                                contacts.Add(New Contact() With {.Description = currentRoleUser.Role.Name, .EmailAddress = roleMailAddress})
+                            Next
+                        End If
+                    Next
+                End If
 
             Case Code.SecretariesRole
                 ''I settori di tutte le segreterie
-                contacts.AddRange(From collaborationUsers In Factory.CollaborationUsersFacade.GetByCollaboration(idCollaboration, True, DestinatonType.S) Select role = Factory.RoleFacade.GetById(collaborationUsers.IdRole) Select New Contact() With {.Description = role.Name, .EmailAddress = role.EMailAddress})
+                Dim collaborationUsers As IList(Of CollaborationUser) = Factory.CollaborationUsersFacade.GetByCollaboration(idCollaboration, True, DestinatonType.S)
+                If collaborationUsers IsNot Nothing AndAlso collaborationUsers.Count > 0 Then
+                    For Each currentUser As CollaborationUser In collaborationUsers
+                        Dim currentRole As Role = Factory.RoleFacade.GetById(currentUser.IdRole.Value)
+                        For Each roleMailAddress As String In currentRole.EMailAddress.Split(";"c)
+                            contacts.Add(New Contact() With {.Description = currentRole.Name, .EmailAddress = roleMailAddress})
+                        Next
+                    Next
+                End If
 
         End Select
 

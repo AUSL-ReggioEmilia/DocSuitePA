@@ -6,6 +6,14 @@ import UscErrorNotification = require('UserControl/uscErrorNotification');
 abstract class MetadataRepositoryBase {
 
     protected static METADATA_REPOSITORY_NAME = "MetadataRepository";
+    protected static CONTROL_TEXT_FIELD = "TextFields";
+    protected static CONTROL_DATE_FIELD= "DateFields";
+    protected static CONTROL_NUMBER_FIELD= "NumberFields";
+    protected static CONTROL_BOOL_FIELD= "BoolFields";
+    protected static CONTROL_ENUM_FIELD= "EnumFields";
+    protected static CONTROL_DISCUSION_FIELD= "DiscussionFields";
+
+
 
     private _serviceConfiguration: ServiceConfiguration;
     protected _service: MetadataRepositoryService;
@@ -58,9 +66,8 @@ abstract class MetadataRepositoryBase {
         let content: HTMLElement = document.getElementById("menuContent");
         element = document.getElementById(elementId);
         let cln = element.cloneNode(true);
-        cln.setAttribute("id", element.id + incremental)
+        cln.setAttribute("id", element.id + incremental) 
         content.appendChild(cln);
-
         return cln.id;
     }
 

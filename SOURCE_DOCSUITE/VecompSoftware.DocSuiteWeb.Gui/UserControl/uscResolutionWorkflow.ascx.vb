@@ -286,7 +286,7 @@ Namespace UserControl
                 End If
 
                 'Se la resolution è stata annullata non devo poter fare altro
-                If CurrentResolution.Status.Id = ResolutionStatusId.Attivo AndAlso (DocSuiteContext.IsFullApplication AndAlso workflow.IsActive = 1) Then
+                If CurrentResolution.Status.Id = ResolutionStatusId.Attivo AndAlso workflow.IsActive = 1 Then
                     Dim sOp As String = tab.OperationStep
                     If Facade.ResolutionFacade.TestOperationStepProperty(sOp, "M", _resolution) Then
                         Dim params As String = String.Format("{0}Modify&Step={1}", cmdWPar, tab.Id.ResStep)
@@ -309,7 +309,8 @@ Namespace UserControl
                     Dim fp As String = ReflectionHelper.GetPropertyCase(_resolution, tab.FieldProtocol)
                     If Not String.IsNullOrEmpty(fp) Then
                         Dim s() As String = fp.Split("|"c)
-                        Dim params As String = String.Format("Year={0}&Number={1}", s(0), s(1))
+                        Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(Short.Parse(s(0)), Integer.Parse(s(1)))
+                        Dim params As String = String.Format("UniqueId={0}", currentProtocol.Id)
                         values.ProtDesc = ProtocolFacade.ProtocolFullNumber(Short.Parse(s(0)), Integer.Parse(s(1)))
                         values.ProtIco = String.Format("../Comm/Images/DocSuite/Protocollo16.gif§Protocollo§document.location='../Prot/ProtVisualizza.aspx?{0}'", CommonShared.AppendSecurityCheck(params))
                     End If

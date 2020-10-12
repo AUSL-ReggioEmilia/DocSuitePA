@@ -1,14 +1,4 @@
-﻿Imports System.Collections.Generic
-Imports System.Web
-Imports Newtonsoft.Json
-Imports Telerik.Web.UI
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
-Imports VecompSoftware.DocSuiteWeb.DTO.Commons
-Imports VecompSoftware.DocSuiteWeb.Model.Workflow
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.Helpers.WebAPI
-Imports VecompSoftware.Helpers.Workflow
+﻿Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class CompleteWorkflow
     Inherits CommonBasePage

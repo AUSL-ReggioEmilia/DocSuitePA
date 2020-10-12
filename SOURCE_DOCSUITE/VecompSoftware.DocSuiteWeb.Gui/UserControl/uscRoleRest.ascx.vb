@@ -8,6 +8,7 @@ Public Class uscRoleRest
     Public Property ReadOnlyMode As Boolean
     Public Property Expanded As Boolean
     Public Property MultipleRoles As Boolean
+    Public Property OnlyMyRoles As Boolean
     Public Property Required() As Boolean
         Get
             Return AnyNodeCheck.Enabled
@@ -48,8 +49,21 @@ Public Class uscRoleRest
             Return JsonConvert.SerializeObject(New With {.isReadOnlyMode = ReadOnlyMode})
         End Get
     End Property
+
+    Public Property AllDataButtonEnabled As Boolean
+
+    Public Property RemoveAllDataButtonEnabled As Boolean
+
+    Public Property LoadAllRoles As Boolean
+
+    Public Property RACIButtonEnabled As Boolean = False
+
+    Public Property FascicleVisibilityTypeButtonEnabled As Boolean = False
+    Public Property DSWEnvironmentType As DSWEnvironment
+
 #End Region
 
+#Region " Events"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If Not IsPostBack Then
             lblCurrentTenant.Text = DocSuiteContext.Current.CurrentTenant.TenantName
@@ -58,5 +72,10 @@ Public Class uscRoleRest
             End If
         End If
     End Sub
+#End Region
+
+#Region " Methods "
+
+#End Region
 
 End Class

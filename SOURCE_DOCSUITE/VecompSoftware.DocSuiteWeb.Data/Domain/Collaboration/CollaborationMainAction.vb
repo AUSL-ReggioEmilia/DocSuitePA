@@ -52,7 +52,7 @@ Public Class CollaborationMainAction
     Public Const AnnullataRitornoAlTavolo As String = "RT"
 
 #End Region
-    
+
     ''' <summary> Alla Visione/Firma. </summary>
     Public Const AllaVisioneFirma As String = "CI"
 
@@ -71,4 +71,6 @@ Public Class CollaborationMainAction
     ''' <summary> Visualizzatore Offline. </summary>
     Public Const VisualizzatoreOffline As String = "CO"
 
+    ''' <summary> Inoltro Documento per Visione/Firma </summary>
+    Public Const DaFirmareInDelega As String = "DFD"
 End Class

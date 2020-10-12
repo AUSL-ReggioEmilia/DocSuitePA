@@ -21,7 +21,8 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Commons/L
         }
         LocationService.prototype.getLocations = function (callback, error) {
             var url = this._configuration.ODATAUrl;
-            this.getRequest(url, null, function (response) {
+            var data = "$orderby=Name";
+            this.getRequest(url, data, function (response) {
                 if (callback && response) {
                     var viewModelMapper_1 = new LocationViewModelMapper();
                     var locations_1 = [];
@@ -32,6 +33,49 @@ define(["require", "exports", "App/Services/BaseService", "App/Mappers/Commons/L
                 }
                 ;
             }, error);
+        };
+        LocationService.prototype.getLocationDetailsByUniqueId = function (uniqueId, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var data = "$filter=UniqueId eq " + uniqueId.toString();
+            this.getRequest(url, data, function (response) {
+                if (callback)
+                    callback(response.value[0]);
+            }, error);
+        };
+        LocationService.prototype.filterLocationByNameAndArchive = function (name, archive, callback, error) {
+            var url = this._configuration.ODATAUrl;
+            var data = "$orderby=Name&$filter=";
+            if (name != "" && archive != "") {
+                data = data + " contains(Name,'" + name + "') or contains(ProtocolArchive, '" + archive + "') or contains(DossierArchive, '" + archive + "') or contains(ResolutionArchive, '" + archive + "')";
+            }
+            else if (name != "") {
+                data = data + " contains(Name,'" + name + "')";
+            }
+            else if (archive != "") {
+                data = data + " contains(ProtocolArchive, '" + archive + "') or contains(DossierArchive, '" + archive + "') or contains(ResolutionArchive, '" + archive + "')";
+            }
+            else {
+                data = data + " contains(Name,'') or contains(ProtocolArchive, '') or contains(DossierArchive, '') or contains(ResolutionArchive, '')";
+            }
+            this.getRequest(url, data, function (response) {
+                if (callback && response) {
+                    var viewModelMapper_2 = new LocationViewModelMapper();
+                    var locations_2 = [];
+                    $.each(response.value, function (i, value) {
+                        locations_2.push(viewModelMapper_2.Map(value));
+                    });
+                    callback(locations_2);
+                }
+                ;
+            }, error);
+        };
+        LocationService.prototype.insert = function (location, callback, error) {
+            var url = this._configuration.WebAPIUrl;
+            this.postRequest(url, JSON.stringify(location), callback, error);
+        };
+        LocationService.prototype.update = function (location, callback, error) {
+            var url = this._configuration.WebAPIUrl;
+            this.putRequest(url, JSON.stringify(location), callback, error);
         };
         return LocationService;
     }(BaseService));

@@ -15,7 +15,7 @@ Public Class UserLog
     Public Overridable Property SessionId As String
     Public Overridable Property AdvancedScanner As Integer
     Public Overridable Property AdvancedViewer As Integer
-    Public Overridable Property CurrentTenantId As Guid?
+    Public Overridable Property CurrentTenantId As Guid
     Public Overridable Property UserMail As String
     Public Overridable Property MobilePhone As String
     Public Overridable Property DefaultAdaptiveSearchControls As String

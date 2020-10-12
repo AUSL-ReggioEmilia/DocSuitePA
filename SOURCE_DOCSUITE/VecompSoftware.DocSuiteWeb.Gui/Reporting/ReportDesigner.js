@@ -44,13 +44,9 @@ define(["require", "exports", "UserControl/uscReportDesignerInformation", "UserC
             this._conditionMapper = new ReportBuilderConditionModelMapper();
             this._informationViewModelMapper = new ReportInformationViewModelMapper();
         }
-        Object.defineProperty(ReportDesigner.prototype, "action", {
-            get: function () {
-                return (!this.reportUniqueId) ? ReportDesigner.INSERT_ACTION : ReportDesigner.EDIT_ACTION;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        ReportDesigner.prototype.action = function () {
+            return (!this.reportUniqueId) ? ReportDesigner.INSERT_ACTION : ReportDesigner.EDIT_ACTION;
+        };
         /**
          *------------------------- Methods -----------------------------
          */
@@ -291,7 +287,7 @@ define(["require", "exports", "UserControl/uscReportDesignerInformation", "UserC
                 metadataRepository.UniqueId = informationModel.SelectedMetadata;
                 builderModel.MetadataRepository = metadataRepository;
                 var toSave = new TemplateReportModel();
-                if (_this.action == ReportDesigner.EDIT_ACTION) {
+                if (_this.action() == ReportDesigner.EDIT_ACTION) {
                     toSave.UniqueId = _this.reportUniqueId;
                 }
                 toSave.Environment = informationModel.SelectedEnvironment;

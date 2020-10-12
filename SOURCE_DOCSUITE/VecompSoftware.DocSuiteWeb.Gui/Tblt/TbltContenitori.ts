@@ -4,6 +4,7 @@
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 
 class TbltContenitori {
+    active: boolean;
     private _serviceConfigurations: ServiceConfiguration[];
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {

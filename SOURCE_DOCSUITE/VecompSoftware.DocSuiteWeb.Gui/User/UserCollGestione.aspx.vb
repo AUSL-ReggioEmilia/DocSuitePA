@@ -10,13 +10,11 @@ Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.Desks
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Templates
-Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
 Imports VecompSoftware.DocSuiteWeb.DTO.Collaborations
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.DTO.Workflows
-Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.Entity.Templates
 Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.Collaborations
@@ -63,6 +61,7 @@ Partial Public Class UserCollGestione
 
     Private _sourceProtocolYear As Lazy(Of Short?)
     Private _sourceProtocolNumber As Lazy(Of Integer?)
+    Private _sourceProtocol As Lazy(Of Protocol)
     Private _hasSourceProtocol As Lazy(Of Boolean)
     Private _fromDesk As Boolean?
     Private _fromWorkflow As Boolean?
@@ -77,13 +76,9 @@ Partial Public Class UserCollGestione
     Private Const DESK_RESUME_URL As String = "../Desks/DeskSummary.aspx?Type=Desk&Action=Modify&DeskId={0}"
     Private Const DESK_NEW_URL As String = "../Desks/DeskInsert.aspx?Type=Desk&CollaborationId={0}&ContainerId={1}"
     Private _atLeastOneDocumentSigned As Boolean? = Nothing
-    Private _currentWorkflowActivityFacade As WorkflowActivityFacade
-    Private _currentWorkflowPropertyFacade As WorkflowPropertyFacade
     Private _workflowActivity As WorkflowActivity
-    Private _currentWorkflowInstanceFinder As WorkflowInstanceFinder
+
     Private _workflowInstance As WorkflowInstance
-    Private _currentWorkflowActivityFinder As WorkflowActivityFinder
-    Private _currentWorkflowPropertyFinder As WorkflowPropertyFinder
     Private _currentSigner As CollaborationSign
     Private _currentUDSFacade As UDSFacade
     Private Const ODATA_EQUAL_UDSID As String = "$filter=UDSId eq {0}"
@@ -94,9 +89,18 @@ Partial Public Class UserCollGestione
     Private _documentEditEnabled As Boolean?
     Private _checkModifyRight As Boolean?
     Private _signersEditEnabled As Boolean?
+    Private _documentUnitDraftEditorEnabled As Boolean?
     Private _collaborationEnv As CollaborationParameter
     Private _currentWorkflowActivityLogFacade As VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows.WorkflowActivityLogFacade
     Private _isFromResolution As Boolean?
+    Private _protocolXml As ProtocolXML
+    Private _popUpDocumentNotSignedAlertEnabled As Boolean?
+    Private _btnCheckoutEnabled As Boolean?
+    Private _hasViewableRights As Boolean?
+#Region " Messages "
+    Private Const NO_DOCUMENT_TYPE_SELECTED_TOOLTIP As String = "E' necessario selezionare una tipologia di documento"
+    Private Const NO_SPECIFIC_DOCUMENT_TYPE_SELECTED_TOOLTIP As String = "E' necessario selezionare una tipologia specifica di documento"
+#End Region
 #End Region
 
 #Region " Properties "
@@ -128,7 +132,6 @@ Partial Public Class UserCollGestione
             Return _collaborationUoia.Value
         End Get
     End Property
-
     Private ReadOnly Property DefaultTemplateId As String
         Get
             Return HttpContext.Current.Request.QueryString.GetValueOrDefault("DefaultTemplateId", String.Empty)
@@ -179,15 +182,19 @@ Partial Public Class UserCollGestione
     Public ReadOnly Property DocumentsToSign() As IList(Of MultiSignDocumentInfo) Implements ISignMultipleDocuments.DocumentsToSign
         Get
             Dim list As New List(Of MultiSignDocumentInfo)
-
+            Dim effectiveSigner As String = String.Empty
             Dim dictionary As IDictionary(Of Guid, BiblosDocumentInfo) =
                 Facade.CollaborationVersioningFacade.GetLastVersionDocuments(CurrentCollaboration, VersioningDocumentGroup.MainDocument)
 
             Dim collaborationSigns As ICollection(Of String) = Facade.CollaborationSignsFacade.GetEffectiveSigners(CurrentCollaboration.Id).Select(Function(s) s.SignUser).ToList()
+            Dim collaborationSign As CollaborationSign = CurrentCollaboration.CollaborationSigns.Where(Function(x) x.IsActive = 1S).FirstOrDefault()
+            Dim listDelegations As List(Of String) = Facade.UserLogFacade.GetDelegationsSign()
 
+            If listDelegations.Any(Function(x) x.Eq(collaborationSign.SignUser)) Then
+                effectiveSigner = collaborationSign.SignUser
+            End If
             If Not dictionary.IsNullOrEmpty() Then
                 For Each key As Guid In dictionary.Keys
-
                     Dim msdi As New MultiSignDocumentInfo(dictionary(key))
                     msdi.GroupCode = CurrentCollaboration.Id.ToString()
                     msdi.Mandatory = True
@@ -195,6 +202,7 @@ Partial Public Class UserCollGestione
                     msdi.Description = CurrentCollaboration.CollaborationObject
                     msdi.IdOwner = key.ToString().Replace("/"c, "§"c)
                     msdi.Signers = collaborationSigns
+                    msdi.EffectiveSigner = effectiveSigner
                     list.Add(msdi)
                 Next
             End If
@@ -209,10 +217,13 @@ Partial Public Class UserCollGestione
 
                         Dim msdi As New MultiSignDocumentInfo(dictionary(key))
                         msdi.GroupCode = CurrentCollaboration.Id.ToString()
+                        msdi.Mandatory = ProtocolEnv.CollaborationMultiSignDocumentsDefaultFlagged
+                        msdi.MandatorySelectable = True
                         msdi.Description = CurrentCollaboration.CollaborationObject
                         msdi.DocType = "Doc. Omissis"
                         msdi.IdOwner = key.ToString().Replace("/"c, "§"c)
                         msdi.Signers = collaborationSigns
+                        msdi.EffectiveSigner = effectiveSigner
                         list.Add(msdi)
                     Next
                 End If
@@ -225,10 +236,13 @@ Partial Public Class UserCollGestione
 
                     Dim msdi As New MultiSignDocumentInfo(dictionary(key))
                     msdi.GroupCode = CurrentCollaboration.Id.ToString()
+                    msdi.Mandatory = ProtocolEnv.CollaborationMultiSignDocumentsDefaultFlagged
+                    msdi.MandatorySelectable = True
                     msdi.Description = CurrentCollaboration.CollaborationObject
                     msdi.DocType = "Allegato"
                     msdi.IdOwner = key.ToString().Replace("/"c, "§"c)
                     msdi.Signers = collaborationSigns
+                    msdi.EffectiveSigner = effectiveSigner
                     list.Add(msdi)
                 Next
             End If
@@ -241,10 +255,13 @@ Partial Public Class UserCollGestione
 
                         Dim msdi As New MultiSignDocumentInfo(dictionary(key))
                         msdi.GroupCode = CurrentCollaboration.Id.ToString()
+                        msdi.Mandatory = ProtocolEnv.CollaborationMultiSignDocumentsDefaultFlagged
+                        msdi.MandatorySelectable = True
                         msdi.Description = CurrentCollaboration.CollaborationObject
                         msdi.DocType = "Allegato Omissis"
                         msdi.IdOwner = key.ToString().Replace("/"c, "§"c)
                         msdi.Signers = collaborationSigns
+                        msdi.EffectiveSigner = effectiveSigner
                         list.Add(msdi)
                     Next
                 End If
@@ -257,10 +274,13 @@ Partial Public Class UserCollGestione
 
                     Dim msdi As New MultiSignDocumentInfo(dictionary(key))
                     msdi.GroupCode = CurrentCollaboration.Id.ToString()
+                    msdi.Mandatory = ProtocolEnv.CollaborationMultiSignDocumentsDefaultFlagged
+                    msdi.MandatorySelectable = True
                     msdi.Description = CurrentCollaboration.CollaborationObject
                     msdi.DocType = "Annesso"
                     msdi.IdOwner = key.ToString().Replace("/"c, "§"c)
                     msdi.Signers = collaborationSigns
+                    msdi.EffectiveSigner = effectiveSigner
                     list.Add(msdi)
                 Next
             End If
@@ -278,7 +298,11 @@ Partial Public Class UserCollGestione
             Return String.Format(url, Type, Action, CurrentCollaboration.Id, Action2, Title2)
         End Get
     End Property
-
+    Public ReadOnly Property SignAction As String Implements ISignMultipleDocuments.SignAction
+        Get
+            Return String.Format(Action)
+        End Get
+    End Property
     Public ReadOnly Property SenderDescription() As String Implements ISendMail.SenderDescription
         Get
             Return CommonInstance.UserDescription
@@ -371,6 +395,12 @@ Partial Public Class UserCollGestione
         End Get
     End Property
 
+    Private ReadOnly Property SourceProtocol As Protocol
+        Get
+            Return _sourceProtocol.Value
+        End Get
+    End Property
+
     Private ReadOnly Property HasSourceProtocol As Boolean
         Get
             Return _hasSourceProtocol.Value
@@ -426,6 +456,19 @@ Partial Public Class UserCollGestione
                 Session.Remove("collaborationInitializerSource")
             Else
                 Session("collaborationInitializerSource") = value
+            End If
+        End Set
+    End Property
+
+    Public Property ProtocolXMLSource As ProtocolXML
+        Get
+            Return TryCast(Session("ProtocolXMLSource"), ProtocolXML)
+        End Get
+        Set(value As ProtocolXML)
+            If value Is Nothing Then
+                Session.Remove("ProtocolXMLSource")
+            Else
+                Session("ProtocolXMLSource") = value
             End If
         End Set
     End Property
@@ -518,66 +561,26 @@ Partial Public Class UserCollGestione
         End Set
     End Property
 
-    Protected ReadOnly Property CurrentWorkflowActivityFacade As WorkflowActivityFacade
-        Get
-            If _currentWorkflowActivityFacade Is Nothing Then
-                _currentWorkflowActivityFacade = New WorkflowActivityFacade(DocSuiteContext.Current.Tenants)
-            End If
-            Return _currentWorkflowActivityFacade
-        End Get
-    End Property
-
-    Protected ReadOnly Property CurrentWorkflowActivityFinder As WorkflowActivityFinder
-        Get
-            If _currentWorkflowActivityFinder Is Nothing Then
-                _currentWorkflowActivityFinder = New WorkflowActivityFinder(DocSuiteContext.Current.Tenants)
-                _currentWorkflowActivityFinder.EnablePaging = False
-            End If
-            Return _currentWorkflowActivityFinder
-        End Get
-    End Property
-
-    Protected ReadOnly Property CurrentWorkflowPropertyFacade As WorkflowPropertyFacade
-        Get
-            If _currentWorkflowPropertyFacade Is Nothing Then
-                _currentWorkflowPropertyFacade = New WorkflowPropertyFacade(DocSuiteContext.Current.Tenants)
-            End If
-            Return _currentWorkflowPropertyFacade
-        End Get
-    End Property
-
-    Protected ReadOnly Property CurrentWorkflowPropertyFinder As WorkflowPropertyFinder
-        Get
-            If _currentWorkflowPropertyFinder Is Nothing Then
-                _currentWorkflowPropertyFinder = New WorkflowPropertyFinder(DocSuiteContext.Current.Tenants)
-                _currentWorkflowPropertyFinder.EnablePaging = False
-            End If
-            Return _currentWorkflowPropertyFinder
-        End Get
-    End Property
-
-    Protected ReadOnly Property CurrentWorkflowInstanceFinder As WorkflowInstanceFinder
-        Get
-            If _currentWorkflowInstanceFinder Is Nothing Then
-                _currentWorkflowInstanceFinder = New WorkflowInstanceFinder(DocSuiteContext.Current.Tenants)
-                _currentWorkflowInstanceFinder.EnablePaging = False
-            End If
-            Return _currentWorkflowInstanceFinder
-        End Get
-    End Property
-
     Protected ReadOnly Property CurrentWorkflowActivity As WorkflowActivity
         Get
             If _workflowActivity Is Nothing Then
-                CurrentWorkflowActivityFinder.ResetDecoration()
-                If Not CurrentIdWorkflowActivity.IsEmpty() Then
-                    CurrentWorkflowActivityFinder.UniqueId = CurrentIdWorkflowActivity
-                Else
-                    CurrentWorkflowActivityFinder.WorkflowInstanceId = CurrentWorkflowInstance.UniqueId
-                    CurrentWorkflowActivityFinder.Statuses = New List(Of WorkflowStatus) From {WorkflowStatus.Todo, WorkflowStatus.Progress}
-                    CurrentWorkflowActivityFinder.ActivityType = Entity.Workflows.WorkflowActivityType.CollaborationSign
-                End If
-                Dim result As WebAPIDto(Of WorkflowActivity) = CurrentWorkflowActivityFinder.DoSearch().FirstOrDefault()
+                Dim result As WebAPIDto(Of WorkflowActivity) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowActivityFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        If CurrentIdWorkflowActivity.IsEmpty() AndAlso CurrentCollaboration Is Nothing Then
+                            Return Nothing
+                        End If
+
+                        If Not CurrentIdWorkflowActivity.IsEmpty() Then
+                            finder.UniqueId = CurrentIdWorkflowActivity
+                        Else
+                            finder.WorkflowInstanceId = CurrentWorkflowInstance.UniqueId
+                            finder.Statuses = New List(Of WorkflowStatus) From {WorkflowStatus.Todo, WorkflowStatus.Progress}
+                            finder.ActivityType = Entity.Workflows.WorkflowActivityType.CollaborationSign
+                        End If
+                        Return finder.DoSearch().FirstOrDefault()
+                    End Function)
+
                 If result IsNot Nothing Then
                     _workflowActivity = result.Entity
                 End If
@@ -589,11 +592,15 @@ Partial Public Class UserCollGestione
     Protected ReadOnly Property CurrentWorkflowInstance As WorkflowInstance
         Get
             If _workflowInstance Is Nothing AndAlso CurrentCollaboration.IdWorkflowInstance.HasValue Then
-                CurrentWorkflowInstanceFinder.ResetDecoration()
-                CurrentWorkflowInstanceFinder.UniqueId = CurrentCollaboration.IdWorkflowInstance.Value
-                CurrentWorkflowInstanceFinder.ExpandRepository = True
-                CurrentWorkflowInstanceFinder.ExpandProperties = True
-                Dim result As WebAPIDto(Of WorkflowInstance) = CurrentWorkflowInstanceFinder.DoSearch().FirstOrDefault()
+                Dim result As WebAPIDto(Of WorkflowInstance) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowInstanceFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.UniqueId = CurrentCollaboration.IdWorkflowInstance.Value
+                        finder.ExpandRepository = True
+                        finder.ExpandProperties = False
+                        Return finder.DoSearch().FirstOrDefault()
+                    End Function)
+
                 If result IsNot Nothing Then
                     _workflowInstance = result.Entity
                 End If
@@ -617,10 +624,14 @@ Partial Public Class UserCollGestione
                 If CurrentWorkflowActivity Is Nothing Then
                     Return Nothing
                 End If
-                CurrentWorkflowPropertyFinder.ResetDecoration()
-                CurrentWorkflowPropertyFinder.WorkflowActivityId = CurrentWorkflowActivity.UniqueId
-                CurrentWorkflowPropertyFinder.Name = WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID
-                Dim udsRepositoryIdProperty As WebAPIDto(Of WorkflowProperty) = CurrentWorkflowPropertyFinder.DoSearch().FirstOrDefault()
+
+                Dim udsRepositoryIdProperty As WebAPIDto(Of WorkflowProperty) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowPropertyFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.WorkflowActivityId = CurrentWorkflowActivity.UniqueId
+                        finder.Name = WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID
+                        Return finder.DoSearch().FirstOrDefault()
+                    End Function)
 
                 If udsRepositoryIdProperty IsNot Nothing AndAlso udsRepositoryIdProperty.Entity IsNot Nothing Then
                     _currentUDSRepository = CurrentUDSRepositoryFacade.GetById(udsRepositoryIdProperty.Entity.ValueGuid.Value)
@@ -636,10 +647,14 @@ Partial Public Class UserCollGestione
                 If CurrentWorkflowActivity Is Nothing Then
                     Return Nothing
                 End If
-                CurrentWorkflowPropertyFinder.ResetDecoration()
-                CurrentWorkflowPropertyFinder.WorkflowActivityId = CurrentWorkflowActivity.UniqueId
-                CurrentWorkflowPropertyFinder.Name = WorkflowPropertyHelper.DSW_FIELD_UDS_ID
-                Dim udsIdProperty As WebAPIDto(Of WorkflowProperty) = CurrentWorkflowPropertyFinder.DoSearch().FirstOrDefault()
+
+                Dim udsIdProperty As WebAPIDto(Of WorkflowProperty) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentWorkflowPropertyFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.WorkflowActivityId = CurrentWorkflowActivity.UniqueId
+                        finder.Name = WorkflowPropertyHelper.DSW_FIELD_UDS_ID
+                        Return finder.DoSearch().FirstOrDefault()
+                    End Function)
 
                 If udsIdProperty IsNot Nothing AndAlso udsIdProperty.Entity IsNot Nothing AndAlso CurrentUDSRepository IsNot Nothing Then
                     _currentUDS = CurrentUDSFacade.GetUDSSource(CurrentUDSRepository, String.Format(ODATA_EQUAL_UDSID, udsIdProperty.Entity.ValueGuid))
@@ -705,12 +720,19 @@ Partial Public Class UserCollGestione
             Return _signersEditEnabled.Value
         End Get
     End Property
+    Private ReadOnly Property DocumentUnitDraftEditorEnabled As Boolean
+        Get
+            If Not _documentUnitDraftEditorEnabled.HasValue Then
+                _documentUnitDraftEditorEnabled = CollaborationEnv IsNot Nothing AndAlso CollaborationEnv.DocumentUnitDraftEditorEnabled
+            End If
+            Return _documentUnitDraftEditorEnabled.Value
+        End Get
+    End Property
 
-
-    Protected ReadOnly Property CurrentWorkflowActivityLogFacade As VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows.WorkflowActivityLogFacade
+    Protected ReadOnly Property CurrentWorkflowActivityLogFacade As WorkflowActivityLogFacade
         Get
             If _currentWorkflowActivityLogFacade Is Nothing Then
-                _currentWorkflowActivityLogFacade = New VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows.WorkflowActivityLogFacade(DocSuiteContext.Current.Tenants)
+                _currentWorkflowActivityLogFacade = New WorkflowActivityLogFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
             End If
             Return _currentWorkflowActivityLogFacade
         End Get
@@ -722,6 +744,31 @@ Partial Public Class UserCollGestione
                 _isFromResolution = CheckIsFromResolution()
             End If
             Return _isFromResolution.Value
+        End Get
+    End Property
+
+    Private ReadOnly Property PopUpDocumentNotSignedAlertEnabled As Boolean
+        Get
+            If Not _popUpDocumentNotSignedAlertEnabled.HasValue Then
+                _popUpDocumentNotSignedAlertEnabled = CollaborationEnv IsNot Nothing AndAlso CollaborationEnv.PopUpDocumentNotSignedAlertEnabled
+            End If
+            Return _popUpDocumentNotSignedAlertEnabled.Value
+        End Get
+    End Property
+    Private ReadOnly Property BtnCheckoutEnabled As Boolean
+        Get
+            If Not _btnCheckoutEnabled.HasValue Then
+                _btnCheckoutEnabled = CollaborationEnv IsNot Nothing AndAlso CollaborationEnv.BtnCheckoutEnabled
+            End If
+            Return _btnCheckoutEnabled.Value
+        End Get
+    End Property
+    Private ReadOnly Property HasViewableRights As Boolean
+        Get
+            If Not _hasViewableRights.HasValue Then
+                _hasViewableRights = CurrentCollaboration IsNot Nothing AndAlso CurrentODataFacade.HasCollaborationViewableRight(CurrentCollaboration.Id)
+            End If
+            Return _hasViewableRights.Value
         End Get
     End Property
 #End Region
@@ -746,7 +793,8 @@ Partial Public Class UserCollGestione
 
         _sourceProtocolYear = New Lazy(Of Short?)(Function() GetSourceProtocolYear())
         _sourceProtocolNumber = New Lazy(Of Integer?)(Function() GetSourceProtocolNumber())
-        _hasSourceProtocol = New Lazy(Of Boolean)(Function() SourceProtocolYear.HasValue AndAlso SourceProtocolNumber.HasValue)
+        _sourceProtocol = New Lazy(Of Protocol)(Function() GetSourceProtocol())
+        _hasSourceProtocol = New Lazy(Of Boolean)(Function() SourceProtocol IsNot Nothing)
 
         Title = CType(Session("lblTitle"), String)
 
@@ -772,7 +820,7 @@ Partial Public Class UserCollGestione
             Dim sourcePage As MultipleSignBasePage = TryCast(PreviousPage, MultipleSignBasePage)
             If sourcePage IsNot Nothing Then
                 Facade.CollaborationVersioningFacade.CheckSignedDocuments(sourcePage.SignedDocuments)
-                If CurrentCollaboration.DocumentType.Eq(CollaborationDocumentType.W.ToString()) Then
+                If CurrentCollaboration.IdWorkflowInstance.HasValue Then
                     For Each signedDoc As MultiSignDocumentInfo In sourcePage.SignedDocuments
                         Dim currentVersioning As CollaborationVersioning = Facade.CollaborationVersioningFacade.GetById(Guid.Parse(signedDoc.IdOwner))
                         UpdateWorkflowStep(currentVersioning)
@@ -851,8 +899,17 @@ Partial Public Class UserCollGestione
                     End If
                 Case "DELETECOLLABORATION"
                     ForceDeleteCollaboration()
+                Case "DOCUMENTUNITDRAFT"
+                    SessionProtocolTemplate(arguments(1))
+                    AjaxManager.ResponseScripts.Add("HideLoadingPanel();")
             End Select
         End Try
+    End Sub
+
+    Private Sub SessionProtocolTemplate(protocolXML As String)
+        If (protocolXML IsNot Nothing) Then
+            ProtocolXMLSource = JsonConvert.DeserializeObject(Of ProtocolXML)(protocolXML)
+        End If
     End Sub
 
     Private Sub cmdSave_Click(sender As Object, e As EventArgs) Handles cmdSave.Click
@@ -930,22 +987,19 @@ Partial Public Class UserCollGestione
             End If
 
             If InsertFromWorkflow Then
-                Dim workflowActivityLog As WorkflowActivityLog = New WorkflowActivityLog
-                workflowActivityLog.LogDescription = String.Format("Attività generica Collaborazione {0}", CurrentCollaboration.Id)
-                workflowActivityLog.LogType = WorkflowStatus.Progress
-                workflowActivityLog.Entity = New WorkflowActivity(CurrentIdWorkflowActivity)
-                workflowActivityLog.SystemComputer = DocSuiteContext.Current.UserComputer
+                Dim workflowActivityLog As WorkflowActivityLog = New WorkflowActivityLog With {
+                    .LogDescription = String.Format("Attività generica Collaborazione {0}", CurrentCollaboration.Id),
+                    .LogType = WorkflowStatus.Progress,
+                    .Entity = New WorkflowActivity(CurrentIdWorkflowActivity),
+                    .SystemComputer = DocSuiteContext.Current.UserComputer
+                }
                 CurrentWorkflowActivityLogFacade.Save(workflowActivityLog)
             End If
-
-
 
             If success Then
                 ' Vado allo step successivo
                 Response.Redirect(String.Format("UserCollRisultati.aspx?Title={0}&Action={1}", Title2, nextAction), False)
             End If
-
-
 
         Catch ex As Exception
             FileLogger.Warn(LoggerName, "Errore in fase di conferma", ex)
@@ -1094,11 +1148,22 @@ Partial Public Class UserCollGestione
     End Sub
 
     Private Sub BtnApprovaWorkflowClick(sender As Object, e As EventArgs)
-        ApproveRefuseWorkflowCollaboration(True)
+        Try
+            ApproveRefuseWorkflowCollaboration(True)
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, ex.Message, ex)
+            AjaxAlert("Aggiornamento attività non riuscita.")
+        End Try
     End Sub
 
     Private Sub BtnRifiutaWorkflowClick(sender As Object, e As EventArgs)
-        ApproveRefuseWorkflowCollaboration(False)
+        Try
+            ApproveRefuseWorkflowCollaboration(False)
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, ex.Message, ex)
+            AjaxAlert("Aggiornamento attività non riuscita.")
+        End Try
+
     End Sub
 
     Private Sub BtnProtocollaClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnProtocolla.Click
@@ -1108,6 +1173,15 @@ Partial Public Class UserCollGestione
 
         If ProtocolEnv.CheckCollaborationSigns AndAlso Not CheckRequiredSign() Then
             Exit Sub
+        End If
+
+        If DocSuiteContext.Current.ProtocolEnv.ForceCollaborationSignDateEnabled Then
+            Dim activeSigner As CollaborationSign = CurrentCollaboration.GetFirstCollaborationSignActive()
+            If Not activeSigner.SignDate.HasValue Then
+                activeSigner.SignDate = Date.Now
+                Facade.CollaborationSignsFacade.UpdateOnly(activeSigner)
+            End If
+            Facade.CollaborationFacade.UpdateBiblosSignsModel(CurrentCollaboration)
         End If
 
         Dim params As String = String.Format("Action=FromCollaboration&IdCollaboration={0}", CurrentCollaboration.Id)
@@ -1122,7 +1196,8 @@ Partial Public Class UserCollGestione
             Case CollaborationDocumentType.UDS.ToString()
                 url = $"../UDS/CollaborationToUDS.aspx?{params}&Type=UDS"
             Case CollaborationDocumentType.W.ToString()
-                url = CommonInstance.GetWorkflowActionPage(WorkflowActivityArea.Collaboration, WorkflowActivityAction.ToProtocol)
+                'verifica che ci sia format corretto
+                url = $"{String.Format(CommonInstance.GetWorkflowActionPage(WorkflowActivityArea.Collaboration, WorkflowActivityAction.ToProtocol), CurrentCollaboration.Id)}&FromWorkFlow=True&IdWorkflowActivity={CurrentWorkflowActivity.UniqueId}"
         End Select
 
         If Integer.TryParse(CurrentCollaboration.DocumentType, 0) Then
@@ -1130,6 +1205,7 @@ Partial Public Class UserCollGestione
         End If
 
         If ProtocolEnv.CollaborationOpenOnMain Then
+            url = url.Replace("~", "..")
             AjaxManager.ResponseScripts.Add($"location.href='{url}'")
         Else
             Response.Redirect(url)
@@ -1235,18 +1311,31 @@ Partial Public Class UserCollGestione
 
     Private Sub DdlDocumentTypeSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles ddlDocumentType.SelectedIndexChanged
         If String.IsNullOrEmpty(ddlDocumentType.SelectedValue) Then
+            pnlMainPanel.SetDisplay(False)
+            btnConferma.Enabled = False
+            btnConferma.ToolTip = NO_DOCUMENT_TYPE_SELECTED_TOOLTIP
+            ddlSpecificDocumentType.Items.Clear()
+            ddlSpecificDocumentType.ClearSelection()
             Exit Sub
         End If
 
-        pnlMainPanel.SetDisplay(True)
-        btnConferma.Enabled = True
+        pnlMainPanel.SetDisplay(Not ProtocolEnv.CollaborationTemplateRequired)
+        btnConferma.Enabled = Not ProtocolEnv.CollaborationTemplateRequired
+        btnConferma.ToolTip = Nothing
+        If ProtocolEnv.CollaborationTemplateRequired Then
+            btnConferma.ToolTip = NO_SPECIFIC_DOCUMENT_TYPE_SELECTED_TOOLTIP
+        End If
 
         Try
             ' Imposto lo stile della pagina sul tipo selezionato
-            CurrentTemplateCollaborationFinder.ResetDecoration()
-            CurrentTemplateCollaborationFinder.UniqueId = Guid.Parse(ddlDocumentType.SelectedItem.Attributes("TemplateId"))
-            CurrentTemplateCollaborationFinder.ExpandProperties = True
-            Dim currentTemplate As WebAPIDto(Of TemplateCollaboration) = CurrentTemplateCollaborationFinder.DoSearch().FirstOrDefault()
+            Dim currentTemplate As WebAPIDto(Of TemplateCollaboration) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentTemplateCollaborationFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.UniqueId = Guid.Parse(ddlDocumentType.SelectedItem.Attributes("TemplateId"))
+                        finder.ExpandProperties = True
+                        Return finder.DoSearch().FirstOrDefault()
+                    End Function)
+
             If currentTemplate Is Nothing OrElse currentTemplate.Entity Is Nothing Then
                 Throw New DocSuiteException(String.Format("Errore in caricamento Template, nessun Template di collaborazione trovato con ID {0}", ddlDocumentType.SelectedValue))
             End If
@@ -1257,20 +1346,24 @@ Partial Public Class UserCollGestione
             uscVisioneFirma.EnvironmentType = pageType
             uscVisioneFirma.UpdateRoleUserType()
 
-            trSpecificDocumentType.Visible = False
+            trSpecificDocumentType.Visible = ProtocolEnv.CollaborationTemplateRequired
+            ddlSpecificDocumentType.Items.Clear()
+            ddlSpecificDocumentType.ClearSelection()
             Dim results As ICollection(Of TemplateCollaboration) = GetCollaborationTemplates(False, True, currentTemplate.Entity.DocumentType)
             If results IsNot Nothing AndAlso results.Count > 0 Then
                 trSpecificDocumentType.Visible = True
-                ddlSpecificDocumentType.Items.Clear()
                 ddlSpecificDocumentType.Items.Add(New DropDownListItem(String.Empty, String.Empty) With {.Selected = True})
+                Dim item As DropDownListItem
                 For Each template As TemplateCollaboration In results
-                    Dim item As DropDownListItem = New DropDownListItem(template.Name, template.DocumentType)
+                    item = New DropDownListItem(template.Name, template.DocumentType)
                     item.Attributes.Add("TemplateId", template.UniqueId.ToString())
                     ddlSpecificDocumentType.Items.Add(item)
                 Next
             End If
 
-            FillPageFromEntity(currentTemplate.Entity)
+            If Not ProtocolEnv.CollaborationTemplateRequired Then
+                FillPageFromEntity(currentTemplate.Entity)
+            End If
             InitializeDocumentControls()
         Catch ex As Exception
             FileLogger.Error(LoggerName, ex.Message, ex)
@@ -1278,17 +1371,34 @@ Partial Public Class UserCollGestione
         End Try
     End Sub
 
+
     Private Sub ddlSpecificDocumentType_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles ddlSpecificDocumentType.SelectedIndexChanged
         If String.IsNullOrEmpty(ddlSpecificDocumentType.SelectedValue) Then
+            btnConferma.ToolTip = Nothing
+            If ProtocolEnv.CollaborationTemplateRequired Then
+                pnlMainPanel.SetDisplay(False)
+                btnConferma.Enabled = False
+                btnConferma.ToolTip = NO_SPECIFIC_DOCUMENT_TYPE_SELECTED_TOOLTIP
+            End If
             Exit Sub
         End If
 
+        If ProtocolEnv.CollaborationTemplateRequired Then
+            pnlMainPanel.SetDisplay(True)
+            btnConferma.Enabled = True
+        End If
+        btnConferma.ToolTip = Nothing
+
         Try
             ' Imposto lo stile della pagina sul tipo selezionato
-            CurrentTemplateCollaborationFinder.ResetDecoration()
-            CurrentTemplateCollaborationFinder.UniqueId = Guid.Parse(ddlSpecificDocumentType.SelectedItem.Attributes("TemplateId"))
-            CurrentTemplateCollaborationFinder.ExpandProperties = True
-            Dim currentTemplate As WebAPIDto(Of TemplateCollaboration) = CurrentTemplateCollaborationFinder.DoSearch().FirstOrDefault()
+            Dim currentTemplate As WebAPIDto(Of TemplateCollaboration) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentTemplateCollaborationFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.UniqueId = Guid.Parse(ddlSpecificDocumentType.SelectedItem.Attributes("TemplateId"))
+                        finder.ExpandProperties = True
+                        Return finder.DoSearch().FirstOrDefault()
+                    End Function)
+
             If currentTemplate Is Nothing OrElse currentTemplate.Entity Is Nothing Then
                 Throw New DocSuiteException(String.Format("Errore in caricamento Template, nessun Template di collaborazione trovato con ID {0}", ddlSpecificDocumentType.SelectedValue))
             End If
@@ -1452,33 +1562,6 @@ Partial Public Class UserCollGestione
         GetCheckOutCommand(documentUpload).Enabled = CanCheckOut(documentUpload)
     End Sub
 
-    Private Sub UscDocuments_SecuredDocument(sender As Object, e As SecuredDocumentEventArgs) Handles uscDocumento.SecuredDocument, uscDocumentoOmissis.SecuredDocument, uscAllegati.SecuredDocument, uscAllegatiOmissis.SecuredDocument, uscAnnexed.SecuredDocument
-        Dim versioning As CollaborationVersioning = CollaborationVersioningFacade.GetVersioningByDocumentInfo(LastVersionings, e.Document)
-        If versioning IsNot Nothing Then
-            Facade.CollaborationVersioningFacade.CheckOut(versioning, DocSuiteContext.Current.User.FullUserName)
-            Facade.CollaborationVersioningFacade.CheckIn(versioning, DocSuiteContext.Current.User.FullUserName, e.SecureDocument)
-
-            Dim documentControl As uscDocumentUpload = DirectCast(sender, uscDocumentUpload)
-            LastVersionings = Nothing
-            Select Case documentControl.ID
-                Case uscDocumento.ID
-                    BindMainDocuments()
-
-                Case uscDocumentoOmissis.ID
-                    BindMainDocumentsOmissis()
-
-                Case uscAllegati.ID
-                    BindAttachments()
-
-                Case uscAllegatiOmissis.ID
-                    BindAttachmentsOmissis()
-
-                Case uscAnnexed.ID
-                    BindAnnexed()
-            End Select
-        End If
-    End Sub
-
     Private Sub cmdVersioningManagement_Click(sender As Object, e As EventArgs) Handles cmdVersioningManagement.Click
         Dim backurl As New Uri(ConvertRelativeUrlToAbsoluteUrl(Page.Request.Url.OriginalString), UriKind.Absolute)
         Dim url As String = String.Format("CollaborationVersioningManagement.aspx?collaborationid={0}&backurl={1}", CurrentCollaboration.Id, Server.UrlEncode(backurl.PathAndQuery))
@@ -1572,6 +1655,17 @@ Partial Public Class UserCollGestione
         AjaxManager.ResponseScripts.Add(String.Concat("OpenWindow('", url, "','rwAbsentManager',400,300);"))
     End Sub
 
+    Private Sub btnDocumentUnitDraftEditor_Click(sender As Object, e As EventArgs) Handles btnDocumentUnitDraftEditor.Click
+        Dim url As String = String.Empty
+
+        If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.P.ToString()) Then
+            url = String.Format("{0}?{1}", "../Prot/TemplateProtocolInsert.aspx", CommonShared.AppendSecurityCheck("Type=Prot&Action=precompiler"))
+            AjaxManager.ResponseScripts.Add(String.Concat("OpenWindow('", url, "','rwPrecompilerProtocol',800,600);"))
+        End If
+        If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.UDS.ToString()) Then
+            'to do
+        End If
+    End Sub
 #End Region
 
 #Region " Methods "
@@ -1641,7 +1735,7 @@ Partial Public Class UserCollGestione
 
 
     Private Sub InitializeVersioningCommands(showCommands As Boolean)
-        cmdVersioningManagement.Visible = showCommands AndAlso Not DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
+        cmdVersioningManagement.Visible = showCommands AndAlso Not DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
 
         If DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled Then
             cmdDocumentCheckOut.Text = "Estrai"
@@ -1665,25 +1759,25 @@ Partial Public Class UserCollGestione
             cmdAnnexedCheckIn.Text = "Archivia"
         End If
 
-        cmdDocumentCheckOut.Visible = showCommands
-        cmdDocumentUndoCheckOut.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
-        cmdDocumentCheckIn.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
+        cmdDocumentCheckOut.Visible = showCommands AndAlso BtnCheckoutEnabled
+        cmdDocumentUndoCheckOut.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
+        cmdDocumentCheckIn.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
 
-        cmdDocumentOmissisCheckOut.Visible = showCommands
-        cmdDocumentOmissisUndoCheckOut.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
-        cmdDocumentOmissisCheckIn.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
+        cmdDocumentOmissisCheckOut.Visible = showCommands AndAlso BtnCheckoutEnabled
+        cmdDocumentOmissisUndoCheckOut.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
+        cmdDocumentOmissisCheckIn.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
 
-        cmdAttachmentsCheckOut.Visible = showCommands
-        cmdAttachmentsUndoCheckOut.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
-        cmdAttachmentsCheckIn.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
+        cmdAttachmentsCheckOut.Visible = showCommands AndAlso BtnCheckoutEnabled
+        cmdAttachmentsUndoCheckOut.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
+        cmdAttachmentsCheckIn.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
 
-        cmdAttachmentsOmissisCheckOut.Visible = showCommands
-        cmdAttachmentsOmissisUndoCheckOut.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
-        cmdAttachmentsOmissisCheckIn.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
+        cmdAttachmentsOmissisCheckOut.Visible = showCommands AndAlso BtnCheckoutEnabled
+        cmdAttachmentsOmissisUndoCheckOut.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
+        cmdAttachmentsOmissisCheckIn.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
 
-        cmdAnnexedCheckOut.Visible = showCommands
-        cmdAnnexedUndoCheckOut.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
-        cmdAnnexedCheckIn.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled
+        cmdAnnexedCheckOut.Visible = showCommands AndAlso BtnCheckoutEnabled
+        cmdAnnexedUndoCheckOut.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
+        cmdAnnexedCheckIn.Visible = showCommands AndAlso DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso BtnCheckoutEnabled
     End Sub
 
     Private Sub InitializeDocumentsState()
@@ -1735,16 +1829,13 @@ Partial Public Class UserCollGestione
     Private Function GetListItem(template As TemplateCollaboration) As DropDownListItem
         Dim listItem As New DropDownListItem(template.Name.ToString(), template.DocumentType)
         listItem.Attributes.Add("TemplateId", template.UniqueId.ToString())
-        'TODO: Gestire la visibilità di uoia in base al parametro
-        Select Case template.DocumentType
-            Case CollaborationDocumentType.W.ToString()
-                If CurrentWorkflowActivity IsNot Nothing Then
-                    Dim workflowLabelProperty As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_LABEL)
-                    If workflowLabelProperty IsNot Nothing Then
-                        listItem.Text = workflowLabelProperty.ValueString
-                    End If
-                End If
-        End Select
+
+        If CurrentWorkflowActivity IsNot Nothing Then
+            Dim workflowLabelProperty As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_LABEL, CurrentWorkflowActivity.UniqueId)
+            If workflowLabelProperty IsNot Nothing Then
+                listItem.Text = workflowLabelProperty.ValueString
+            End If
+        End If
 
         Return listItem
     End Function
@@ -1813,6 +1904,7 @@ Partial Public Class UserCollGestione
             uscAllegati.ButtonCopyResl.Visible = DocSuiteContext.Current.ResolutionEnv.CopyReslDocumentsEnabled
         End If
         uscAllegati.ButtonCopyProtocol.Visible = ProtocolEnv.CopyProtocolDocumentsEnabled
+        uscAllegati.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
 
         lblAnnexedCaption.Text = ProtocolEnv.DocumentUnitLabels(Model.Entities.DocumentUnits.ChainType.AnnexedChain)
         uscAnnexed.TreeViewCaption = ProtocolEnv.DocumentUnitLabels(Model.Entities.DocumentUnits.ChainType.AnnexedChain)
@@ -1829,6 +1921,7 @@ Partial Public Class UserCollGestione
             uscAnnexed.ButtonCopyResl.Visible = DocSuiteContext.Current.ResolutionEnv.CopyReslDocumentsEnabled
         End If
         uscAnnexed.ButtonCopyProtocol.Visible = ProtocolEnv.CopyProtocolDocumentsEnabled
+        uscAnnexed.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
 
         lblDocumentoOmissisCaption.Text = ProtocolEnv.DocumentUnitLabels(Model.Entities.DocumentUnits.ChainType.MainOmissisChain)
         uscDocumentoOmissis.TreeViewCaption = ProtocolEnv.DocumentUnitLabels(Model.Entities.DocumentUnits.ChainType.MainOmissisChain)
@@ -1836,17 +1929,11 @@ Partial Public Class UserCollGestione
         lblAttachmentOmissisCaption.Text = ProtocolEnv.DocumentUnitLabels(Model.Entities.DocumentUnits.ChainType.AttachmentOmissisChain)
         uscAllegatiOmissis.TreeViewCaption = ProtocolEnv.DocumentUnitLabels(Model.Entities.DocumentUnits.ChainType.AttachmentOmissisChain)
 
-        uscDocumento.ButtonSelectTemplateEnabled = GetControlTemplateDocumentVisibility(ChainType.MainChain)
-        uscDocumentoOmissis.ButtonSelectTemplateEnabled = GetControlTemplateDocumentVisibility(ChainType.MainOmissisChain)
-        uscAllegati.ButtonSelectTemplateEnabled = GetControlTemplateDocumentVisibility(ChainType.AttachmentsChain)
-        uscAllegatiOmissis.ButtonSelectTemplateEnabled = GetControlTemplateDocumentVisibility(ChainType.AttachmentOmissisChain)
-        uscAnnexed.ButtonSelectTemplateEnabled = GetControlTemplateDocumentVisibility(ChainType.AnnexedChain)
-
-        uscDocumento.ButtonSecureDocumentEnabled = GetControlSecureDocumentVisibility(ChainType.MainChain)
-        uscDocumentoOmissis.ButtonSecureDocumentEnabled = GetControlSecureDocumentVisibility(ChainType.MainOmissisChain)
-        uscAllegati.ButtonSecureDocumentEnabled = GetControlSecureDocumentVisibility(ChainType.AttachmentsChain)
-        uscAllegatiOmissis.ButtonSecureDocumentEnabled = GetControlSecureDocumentVisibility(ChainType.AttachmentOmissisChain)
-        uscAnnexed.ButtonSecureDocumentEnabled = GetControlSecureDocumentVisibility(ChainType.AnnexedChain)
+        uscDocumento.ButtonSelectTemplateEnabled = GetControlTemplateDocumentVisibility(Entity.DocumentUnits.ChainType.MainChain)
+        uscDocumentoOmissis.ButtonSelectTemplateEnabled = GetControlTemplateDocumentVisibility(Entity.DocumentUnits.ChainType.MainOmissisChain)
+        uscAllegati.ButtonSelectTemplateEnabled = GetControlTemplateDocumentVisibility(Entity.DocumentUnits.ChainType.AttachmentsChain)
+        uscAllegatiOmissis.ButtonSelectTemplateEnabled = GetControlTemplateDocumentVisibility(Entity.DocumentUnits.ChainType.AttachmentOmissisChain)
+        uscAnnexed.ButtonSelectTemplateEnabled = GetControlTemplateDocumentVisibility(Entity.DocumentUnits.ChainType.AnnexedChain)
 
         ''Definisco se attivare i documenti aggiuntivi (disponibili solo per gli atti)
         Dim ddlType As String = ddlDocumentType.SelectedValue
@@ -1860,6 +1947,7 @@ Partial Public Class UserCollGestione
                     .SignButtonEnabled = ProtocolEnv.IsFDQEnabled
                     .ButtonCopyResl.Visible = DocSuiteContext.Current.ResolutionEnv.CopyReslDocumentsEnabled
                     .ButtonCopyProtocol.Visible = ProtocolEnv.CopyProtocolDocumentsEnabled
+                    .ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
                 End With
                 tblDocumentoOmissis.Style.Remove("display")
             End If
@@ -1870,6 +1958,7 @@ Partial Public Class UserCollGestione
                     .SignButtonEnabled = ProtocolEnv.IsFDQEnabled
                     .ButtonCopyResl.Visible = DocSuiteContext.Current.ResolutionEnv.CopyReslDocumentsEnabled
                     .ButtonCopyProtocol.Visible = ProtocolEnv.CopyProtocolDocumentsEnabled
+                    .ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
                 End With
                 tblAllegatiOmissis.Style.Remove("display")
             End If
@@ -1914,7 +2003,10 @@ Partial Public Class UserCollGestione
         AjaxManager.AjaxSettings.AddAjaxSetting(btnCancella, pnlMainPanel, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlDocumentType, pnlMainPanel, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlSpecificDocumentType, pnlMainPanel, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(ddlDocumentType, pnlDocumentUnitDraftEditor, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(ddlSpecificDocumentType, pnlDocumentUnitDraftEditor, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlDocumentType, buttonPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(ddlSpecificDocumentType, buttonPanel)
 
         AjaxManager.AjaxSettings.AddAjaxSetting(btnNewDesk, pnlMainPanel, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnResumeDesk, pnlMainPanel, MasterDocSuite.AjaxDefaultLoadingPanel)
@@ -2182,7 +2274,7 @@ Partial Public Class UserCollGestione
                     pnlInoltro.Visible = False
                     uscVisioneFirma.ReadOnly = Not CheckModifyRight
                     uscVisioneFirma.ButtonSelectVisible = False
-                    uscVisioneFirma.ButtonSelectDomainVisible = SignersEditEnabled
+                    uscVisioneFirma.ButtonSelectDomainVisible = SignersEditEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
                     uscVisioneFirma.ButtonSelectOChartVisible = False
                     uscVisioneFirma.ButtonDeleteVisible = CheckModifyRight
                     uscVisioneFirma.ButtonRoleVisible = CheckModifyRight
@@ -2198,7 +2290,7 @@ Partial Public Class UserCollGestione
                 Else
                     btnMultiSign.Visible = ProtocolEnv.EnableMultiSign
                     uscVisioneFirma.ReadOnly = Not SignersEditEnabled
-                    uscVisioneFirma.ButtonSelectDomainVisible = SignersEditEnabled AndAlso ProtocolEnv.CollManualContactEnabled
+                    uscVisioneFirma.ButtonSelectDomainVisible = SignersEditEnabled AndAlso ProtocolEnv.CollManualContactEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
                     uscVisioneFirma.ButtonSelectOChartVisible = CurrentCollaboration.SignCount.GetValueOrDefault(0) > 1 AndAlso ProtocolEnv.CollManualContactEnabled
 
                     uscVisioneFirma.ButtonDeleteVisible = CheckModifyRight OrElse SignersEditEnabled
@@ -2340,7 +2432,108 @@ Partial Public Class UserCollGestione
         SetVisioneFirma()
         ValidateExistRecipients()
     End Sub
+    Private Sub InitializeDelegaVisionareFirmare()
+        btnCancella.Visible = IsFirstActiveSigner
+        btnMail.Visible = True
+        Title &= Title2
+        pnlTipoOperazione.Visible = True
 
+        InitializeMainDocument(True, True)
+        InitializeMainDocumentOmissis(True)
+        InitializeAttachments(True)
+        InitializeAttachmentsOmissis(True)
+        InitializeAnnexed(True)
+
+        If Action.Eq(CollaborationSubAction.DaFirmareInDelega) AndAlso ProtocolEnv.CollaborationAttachmentEditable _
+            AndAlso ProtocolEnv.CollDocSignedNotEditable AndAlso AtLeastOneDocumentSigned Then
+            InitializeEditButtonsDocumentUpload()
+        End If
+
+        InitVisioneFirma(False, True)
+        InitRestituzioniTabella(True)
+
+        InitDati(True)
+
+        rblTipoOperazione.SelectedValue = "A"
+
+        If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.U.ToString()) Then
+            btnRestituzione.Visible = False
+        End If
+
+        If Facade.CollaborationSignsFacade.HasNext(CurrentCollaboration.Id) Then
+            rblTipoOperazione.Items.Remove(rblTipoOperazione.Items.FindByValue("P"))
+            rblTipoOperazione.Items.Remove(rblTipoOperazione.Items.FindByValue("A"))
+
+            btnRestituzione.Visible = False
+            btnVisioneProtocolla.Visible = False
+            rblTipoOperazione.SelectedValue = "I" ' Inoltro
+
+            Dim nextSignUsers As IList(Of CollaborationSign) = Facade.CollaborationSignsFacade.GetNext(CurrentCollaboration.Id)
+            Dim nextUser As CollaborationSign = nextSignUsers.OrderBy(Function(o) o.Incremental).First()
+            Dim signName As String = Facade.CollaborationSignsFacade.GetCollaborationSignDescription(nextUser.SignName, nextUser.IsAbsent)
+            uscInoltro.AddCollaborationContact(ContactType.AdAmPerson, signName, nextUser.SignEMail, nextUser.SignUser, String.Empty, String.Empty, False)
+
+            uscInoltro.ButtonSelectVisible = False
+            uscInoltro.ButtonSelectDomainVisible = False
+            uscInoltro.ButtonSelectOChartVisible = False
+            uscInoltro.ButtonRoleVisible = False
+        Else
+            If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.U.ToString()) Then
+                rblTipoOperazione.Items.Remove(rblTipoOperazione.Items.FindByValue("P"))
+                rblTipoOperazione.Items.Remove(rblTipoOperazione.Items.FindByValue("A"))
+                rblTipoOperazione.SelectedValue = "I" ' Inoltro
+            Else
+                rblTipoOperazione.Items.FindByValue("A").Text = CollaborationFacade.GetModuleName(ddlDocumentType.SelectedValue, "2")
+                If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.S.ToString()) Then
+                    rblTipoOperazione.Items.FindByValue("A").Text = ProtocolEnv.DocumentSeriesName
+                End If
+
+                If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.UDS.ToString()) OrElse Integer.TryParse(ddlDocumentType.SelectedValue, 0) Then
+                    rblTipoOperazione.Items.FindByValue("A").Text = "Agli Archivi"
+                End If
+
+                If Facade.ContainerFacade.HasInsertOrProposalRights() Then
+                    rblTipoOperazione.Items.FindByValue("P").Text = CollaborationFacade.GetModuleName(ddlDocumentType.SelectedValue, "3")
+                    If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.S.ToString()) Then
+                        rblTipoOperazione.Items.FindByValue("P").Text = ProtocolEnv.DocumentSeriesName
+                    End If
+
+                    If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.UDS.ToString()) OrElse Integer.TryParse(ddlDocumentType.SelectedValue, 0) Then
+                        rblTipoOperazione.Items.FindByValue("P").Text = "Archivia"
+                    End If
+                Else
+                    rblTipoOperazione.Items.Remove(rblTipoOperazione.Items.FindByValue("P"))
+                End If
+
+                btnRestituzione.Text = CollaborationFacade.GetModuleName(ddlDocumentType.SelectedValue, "2")
+                If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.S.ToString()) Then
+                    btnRestituzione.Text = ProtocolEnv.DocumentSeriesName
+                End If
+                If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.UDS.ToString()) OrElse Integer.TryParse(ddlDocumentType.SelectedValue, 0) Then
+                    btnRestituzione.Text = "Agli Archivi"
+                End If
+
+                btnVisioneProtocolla.Text = CollaborationFacade.GetModuleName(ddlDocumentType.SelectedValue, "3")
+                If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.S.ToString()) Then
+                    btnVisioneProtocolla.Text = ProtocolEnv.DocumentSeriesName
+                End If
+
+                If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.UDS.ToString()) OrElse Integer.TryParse(ddlDocumentType.SelectedValue, 0) Then
+                    btnVisioneProtocolla.Text = "Archivia"
+                End If
+            End If
+        End If
+
+        If ddlDocumentType.SelectedValue.Eq(CollaborationDocumentType.D.ToString()) Then
+            btnRestituzione.Enabled = btnRestituzione.Enabled AndAlso Not IsFromResolution
+            pnlTipoOperazione.Visible = btnRestituzione.Enabled
+            If IsFromResolution Then
+                InitializeAnnexed(True)
+            End If
+        End If
+        SetVisioneFirma()
+        ValidateExistRecipients()
+    End Sub
     Private Sub InitializeCollaborationTasksManager()
 
         Title &= Title2
@@ -2463,7 +2656,7 @@ Partial Public Class UserCollGestione
 
         Dim collvers As CollaborationVersioning = CurrentCollaboration.GetDocumentVersioning()(0)
         Dim signed As BiblosDocumentInfo = Facade.CollaborationVersioningFacade.GetBiblosDocument(collvers)
-        If Not signed.IsSigned Then
+        If PopUpDocumentNotSignedAlertEnabled AndAlso Not signed.IsSigned Then
             AjaxAlert("ATTENZIONE, il Documento non è Firmato Digitalmente")
         End If
 
@@ -2538,7 +2731,7 @@ Partial Public Class UserCollGestione
                 If CurrentCollaboration.Resolution IsNot Nothing AndAlso CurrentCollaboration.Resolution.Id <> Nothing Then
                     Throw New DocSuiteException("Collaborazione n. " & CurrentCollaboration.Id, "Collaborazione (Atto) già protocollata")
 
-                ElseIf CurrentCollaboration.Protocol IsNot Nothing AndAlso CurrentCollaboration.Number IsNot Nothing AndAlso CurrentCollaboration.Year IsNot Nothing Then
+                ElseIf CurrentCollaboration.DocumentType = "P" AndAlso CurrentCollaboration.Number IsNot Nothing AndAlso CurrentCollaboration.Year IsNot Nothing Then
                     Throw New DocSuiteException("Collaborazione n. " & CurrentCollaboration.Id, "Collaborazione (Protocollo) già protocollata")
 
                 ElseIf (Not IsSignatory()) Then 'se nn sono il firmatario lancio un messaggio di errore
@@ -2551,6 +2744,28 @@ Partial Public Class UserCollGestione
                 End If
                 SetDocumentSignPdfManage()
                 InitializeVisionareFirmare()
+
+            Case CollaborationSubAction.DaFirmareInDelega
+                If CurrentCollaboration Is Nothing Then
+                    Throw New DocSuiteException("Errore in Ricerca Registrazione", String.Format("Impossibile trovare la registrazione [{0}].", CollaborationId))
+                End If
+
+                If CurrentCollaboration.Resolution IsNot Nothing AndAlso CurrentCollaboration.Resolution.Id <> Nothing Then
+                    Throw New DocSuiteException("Collaborazione n. " & CurrentCollaboration.Id, "Collaborazione (Atto) già protocollata")
+
+                ElseIf CurrentCollaboration.Number IsNot Nothing AndAlso CurrentCollaboration.Year IsNot Nothing Then
+                    Throw New DocSuiteException("Collaborazione n. " & CurrentCollaboration.Id, "Collaborazione (Protocollo) già protocollata")
+
+                ElseIf (Not IsDelegateSignatory()) Then 'se nn sono il firmatario lancio un messaggio di errore
+                    Throw New DocSuiteException("Collaborazione n. " & CurrentCollaboration.Id, "Non hai la delega per visionare questa collaborazione, potresti non essere il firmatario")
+
+                ElseIf CurrentCollaboration.IdStatus.Eq(CollaborationStatusType.DP.ToString()) Then
+                    'Se sono nello stato Da Protocollare non posso ritornare allo stato Da Visionare/Firmare
+                    Throw New DocSuiteException("Collaborazione n. " & CurrentCollaboration.Id, "Collaborazione è in stato da protocollare")
+
+                End If
+                SetDocumentSignPdfManage()
+                InitializeDelegaVisionareFirmare()
 
             Case CollaborationSubAction.AlProtocolloSegreteria, CollaborationSubAction.AttivitaInCorso
                 If CurrentCollaboration Is Nothing Then
@@ -2568,7 +2783,7 @@ Partial Public Class UserCollGestione
                     Throw New DocSuiteException(message)
                 End If
 
-                If CurrentCollaboration.Protocol IsNot Nothing AndAlso CurrentCollaboration.Number IsNot Nothing AndAlso CurrentCollaboration.Year IsNot Nothing Then
+                If CurrentCollaboration.DocumentType = "P" AndAlso CurrentCollaboration.Number IsNot Nothing AndAlso CurrentCollaboration.Year IsNot Nothing Then
                     Dim message As String = String.Format("Collaborazione n. {0} Collaborazione (Protocollo) già protocollata", CurrentCollaboration.Id)
                     Throw New DocSuiteException(message)
                 End If
@@ -2582,94 +2797,66 @@ Partial Public Class UserCollGestione
         End Select
     End Sub
 
-    Private Sub UpdateWorkflowStep(collaborationVersioning As CollaborationVersioning)
-        If CurrentCollaboration.DocumentType.Eq(CollaborationDocumentType.W.ToString()) Then
-            Dim document As BiblosDocumentInfo = Facade.CollaborationVersioningFacade.GetLastVersionDocumentByIncremental(CurrentCollaboration.Id, collaborationVersioning.CollaborationIncremental)
 
-            Try
-                Dim dsw_p_SignerModel As WorkflowProperty = Nothing
-                Dim dsw_p_SignerPosition As WorkflowProperty = Nothing
-                'Se provengo da workflow gestisco l'ID workflowactivity da query string, altrimenti cerco di recuperare l'activity corrente dell'utente
-                If CurrentWorkflowActivity IsNot Nothing Then
-                    dsw_p_SignerModel = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL)
-                    dsw_p_SignerPosition = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_POSITION)
+    Private Sub UpdateWorkflowStep(collaborationVersioning As CollaborationVersioning)
+        If CurrentWorkflowInstance IsNot Nothing AndAlso CurrentWorkflowActivity IsNot Nothing Then
+
+            Dim document As BiblosDocumentInfo = Facade.CollaborationVersioningFacade.GetLastVersionDocumentByIncremental(CurrentCollaboration.Id, collaborationVersioning.CollaborationIncremental)
+            Dim currentUserSigned As Boolean = Facade.CollaborationSignsFacade.IsCollaborationSignedByActiveSigner(CurrentCollaboration.Id)
+            Dim workflowNotify As WorkflowNotify = New WorkflowNotify(CurrentWorkflowActivity.UniqueId) With {
+                    .WorkflowName = CurrentWorkflowInstance.WorkflowRepository.Name}
+
+            Dim dsw_p_SignerModel As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL, CurrentWorkflowActivity.UniqueId)
+            Dim dsw_p_SignerPosition As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_POSITION, CurrentWorkflowActivity.UniqueId)
+
+            If dsw_p_SignerModel IsNot Nothing AndAlso dsw_p_SignerPosition IsNot Nothing Then
+                Dim collaborationSignerModels As List(Of CollaborationSignerWorkflowModel) = JsonConvert.DeserializeObject(Of List(Of CollaborationSignerWorkflowModel))(dsw_p_SignerModel.ValueString, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
+
+                Dim currentSignPosition As Integer = CurrentCollaboration.CollaborationSigns.Where(Function(x) Convert.ToBoolean(x.IsActive)).Single().Incremental
+
+                If dsw_p_SignerPosition.ValueInt.Value + 1 <> currentSignPosition Then
+                    Throw New Exception($"Errore critico nelle strutture interne del workflow rispetto alla collaborazione [dsw_p_SignerPosition = {dsw_p_SignerPosition.ValueInt.Value}, CollaborationSignsIncremental = {currentSignPosition}]")
                 End If
 
-                If dsw_p_SignerModel IsNot Nothing AndAlso dsw_p_SignerPosition IsNot Nothing Then
-                    Dim collaborationSignerModels As List(Of CollaborationSignerWorkflowModel) = JsonConvert.DeserializeObject(Of List(Of CollaborationSignerWorkflowModel))(dsw_p_SignerModel.ValueString, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
-
-                    Dim currentIncremental As Integer = CurrentCollaboration.CollaborationSigns.Where(Function(x) Convert.ToBoolean(x.IsActive)).Select(Function(s) s.Incremental).First()
-                    If document.IsSigned Then
-                        Dim documentModel As CollaborationDocumentWorkflowModel = New CollaborationDocumentWorkflowModel() With {
+                If document.IsSigned Then
+                    Dim documentModel As CollaborationDocumentWorkflowModel = New CollaborationDocumentWorkflowModel() With {
                             .DocumentName = document.Name,
                             .IdDocument = document.DocumentId,
-                            .SignDate = DateTimeOffset.UtcNow
-                        }
-
-                        'Se non ho mai firmato o se la somma dei firmatari nel modello json è inferiore al valore dell'incrementale del firmatario corrente,
-                        'allora creo un nuovo elemento relativo a chi sta firmando in questo momento, così l'ultimo inserito sarà sempre l'utente corrente.
-                        If Not collaborationSignerModels.Any(Function(x) x.UserName.Eq(DocSuiteContext.Current.User.FullUserName)) _
-                            OrElse collaborationSignerModels.Count < currentIncremental Then
-
-                            collaborationSignerModels.Add(New CollaborationSignerWorkflowModel() With {
-                                .UserName = DocSuiteContext.Current.User.FullUserName,
-                                .SignedDocuments = New List(Of CollaborationDocumentWorkflowModel) From {documentModel},
-                                .HasApproved = True 'TODO: SET ExecuteDate = DateTimeOffset.UtcNow
-                            })
-                        Else
-                            'Sicuramente l'ultimo elemento è relativo al firmatario corrente
-                            Dim currentModel As CollaborationSignerWorkflowModel = collaborationSignerModels.Last(Function(x) x.UserName.Eq(DocSuiteContext.Current.User.FullUserName))
-                            If Not currentModel.SignedDocuments.Any(Function(x) x.IdDocument.Equals(document.DocumentId)) Then
-                                currentModel.SignedDocuments.Add(documentModel)
-                            End If
-                        End If
-                        dsw_p_SignerModel.ValueString = JsonConvert.SerializeObject(collaborationSignerModels, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
-                        dsw_p_SignerPosition.ValueInt = dsw_p_SignerPosition.ValueInt.Value + 1
-                        CurrentWorkflowPropertyFacade.Update(dsw_p_SignerModel)
-                        CurrentWorkflowPropertyFacade.Update(dsw_p_SignerPosition)
+                            .SignDate = DateTimeOffset.UtcNow}
+                    collaborationSignerModels = WorkflowBuildApprovedModel(currentSignPosition, True, collaborationSignerModels)
+                    Dim currentModel As CollaborationSignerWorkflowModel = collaborationSignerModels(CType(dsw_p_SignerPosition.ValueInt.Value, Integer))
+                    If Not currentModel.SignedDocuments.Any(Function(x) x.IdDocument.Equals(document.DocumentId)) Then
+                        currentModel.SignedDocuments.Add(documentModel)
                     End If
                 End If
-            Catch ex As Exception
-                FileLogger.Error(LoggerName, String.Format("UpdateWorkflowStep -> Errore aggiornamento WorkflowProperties per la collaborazione {0}", CurrentCollaboration.Id), ex)
-                'TODO: Non viene sollevata eccezione per non bloccare l'esperienza utente in fase di conferma workflow, ma attenzione che le property non salvate creano un problema
-                'di inconsistenza dati da gestire in un secondo momento.
-            End Try
 
-            Dim currentUserSigned As Boolean = Facade.CollaborationSignsFacade.IsCollaborationSignedByActiveSigner(CurrentCollaboration.Id)
-            If currentUserSigned AndAlso CurrentSigner.IsRequired Then
-                Try
-                    Dim propertySigned As WorkflowProperty = New WorkflowProperty() With {
-                        .Name = WorkflowPropertyHelper.DSW_FIELD_COLLABORATION_SIGNED,
-                        .PropertyType = WorkflowPropertyType.PropertyBoolean,
-                        .WorkflowType = WorkflowType.Activity,
-                        .ValueBoolean = True,
-                        .WorkflowActivity = CurrentWorkflowActivity
-                    }
-                    CurrentWorkflowPropertyFacade.Save(propertySigned)
-                Catch ex As Exception
-                    FileLogger.Error(LoggerName, String.Format("UpdateWorkflowStep -> Errore salvataggio WorkflowProperty _dsw_e_CollaborationSigned per la collaborazione {0}", CurrentCollaboration.Id), ex)
-                    'TODO: Non viene sollevata eccezione per non bloccare l'esperienza utente in fase di conferma workflow, ma attenzione che le property non salvate creano un problema
-                    'di inconsistenza dati da gestire in un secondo momento.
-                End Try
-
-                If IsWorkflowOperation Then
-                    CurrentWorkflowActivity.Status = WorkflowStatus.Progress
-                    CurrentWorkflowActivityFacade.Update(CurrentWorkflowActivity)
+                dsw_p_SignerModel.ValueString = JsonConvert.SerializeObject(collaborationSignerModels, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
+                workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL, New WorkflowArgument() With {
+                                                       .Name = WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL,
+                                                       .PropertyType = ArgumentType.Json,
+                                                       .ValueString = dsw_p_SignerModel.ValueString})
+                If currentUserSigned AndAlso CurrentSigner.IsRequired Then
+                    workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_COLLABORATION_SIGNED, New WorkflowArgument() With {
+                                                      .Name = WorkflowPropertyHelper.DSW_FIELD_COLLABORATION_SIGNED,
+                                                      .PropertyType = ArgumentType.PropertyBoolean,
+                                                      .ValueBoolean = True})
+                    MasterDocSuite.WizardActionColumn.SetDisplay(True)
+                    AjaxManager.ResponseScripts.Add("toCompleteStep();")
                 End If
-                MasterDocSuite.WizardActionColumn.SetDisplay(True)
-                AjaxManager.ResponseScripts.Add("toCompleteStep();")
+                Dim webApiHelper As WebAPIHelper = New WebAPIHelper()
+                If Not WebAPIImpersonatorFacade.ImpersonateSendRequest(webApiHelper, workflowNotify, DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration) Then
+                    Throw New Exception("UpdateWorkflowStep is not correctly evaluated from WebAPI. See specific error in WebAPI logger")
+                End If
             End If
         End If
     End Sub
 
     Private Sub InitializeWorkflowWizard()
-        If CurrentCollaboration IsNot Nothing AndAlso CurrentCollaboration.DocumentType.Eq(CollaborationDocumentType.W.ToString()) _
-            AndAlso Not ProtocolEnv.WorkflowManagerEnabled Then
+        If CurrentCollaboration IsNot Nothing AndAlso CurrentCollaboration.IdWorkflowInstance.HasValue AndAlso Not ProtocolEnv.WorkflowManagerEnabled Then
             Throw New DocSuiteException("Non è possibile gestire una collaborazione di tipo workflow se il parametro WorkflowManagerEnabled è disabilitato")
         End If
 
-        If IsWorkflowOperation AndAlso CurrentCollaboration IsNot Nothing _
-            AndAlso CurrentCollaboration.DocumentType.Eq(CollaborationDocumentType.W.ToString()) AndAlso Action.Eq(CollaborationSubAction.DaVisionareFirmare) Then
+        If IsWorkflowOperation AndAlso CurrentCollaboration IsNot Nothing AndAlso CurrentCollaboration.IdWorkflowInstance.HasValue AndAlso Action.Eq(CollaborationSubAction.DaVisionareFirmare) Then
 
             MasterDocSuite.WorkflowWizardRow.Visible = True
 
@@ -2698,7 +2885,7 @@ Partial Public Class UserCollGestione
     ''' <remarks> Gestisce la logica delle view in base allo stato del workflow </remarks>
     Private Sub Initialize()
         ' Queste inizializzazioni sono controllate nel setter anche dalla ProtocolEnv.
-        uscVisioneFirma.ButtonSelectDomainVisible = ProtocolEnv.CollManualContactEnabled
+        uscVisioneFirma.ButtonSelectDomainVisible = ProtocolEnv.CollManualContactEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
         uscVisioneFirma.ButtonSelectVisible = False
         uscRestituzioni.ButtonSelectVisible = False
 
@@ -2710,7 +2897,8 @@ Partial Public Class UserCollGestione
         InitializeSignButtons()
         Title = String.Format("Collaborazione {0}- ", If(CurrentCollaboration IsNot Nothing, String.Format("n. {0} ", CurrentCollaboration.Id), ""))
 
-        trSpecificDocumentType.Visible = False
+        trSpecificDocumentType.Visible = ProtocolEnv.CollaborationTemplateRequired
+        rfvSpecificDocumentType.Enabled = ProtocolEnv.CollaborationTemplateRequired
         BindDdlDocumentType()
 
         If String.IsNullOrEmpty(uscVisioneFirma.TemplateName) AndAlso Not String.IsNullOrEmpty(DefaultTemplateId) Then
@@ -2793,7 +2981,7 @@ Partial Public Class UserCollGestione
     End Sub
 
     Private Sub InitializeWorkflowCollaboration()
-        If CurrentCollaboration Is Nothing OrElse Not CurrentCollaboration.DocumentType.Eq(CollaborationDocumentType.W.ToString()) Then
+        If CurrentCollaboration Is Nothing OrElse Not CurrentCollaboration.IdWorkflowInstance.HasValue Then
             Exit Sub
         End If
 
@@ -2818,6 +3006,7 @@ Partial Public Class UserCollGestione
         If Not CurrentSigner.IsRequired.GetValueOrDefault(False) Then
             btnInoltra.Text = "Approva"
         End If
+        tNote.Visible = False
         btnRichiamo.Visible = False
         btnMail.Visible = False
         cmdSave.Visible = False
@@ -2844,7 +3033,7 @@ Partial Public Class UserCollGestione
         Dim lastMainDocuments As IDictionary(Of Guid, BiblosDocumentInfo)
         lastMainDocuments = Facade.CollaborationVersioningFacade.GetLastVersionDocuments(CurrentCollaboration, VersioningDocumentGroup.MainDocument)
         If lastMainDocuments IsNot Nothing AndAlso lastMainDocuments.Count > 0 Then
-            uscDocumento.LoadDocumentInfo(New List(Of DocumentInfo)(lastMainDocuments.Values), False, True, False, False)
+            uscDocumento.LoadDocumentInfo(New List(Of DocumentInfo)(lastMainDocuments.Values), False, True, False, False, False, previewable:=HasViewableRights)
             uscDocumento.TreeViewControl.Nodes(0).Nodes(0).Selected = True
         End If
 
@@ -2874,7 +3063,7 @@ Partial Public Class UserCollGestione
         Dim lastMainDocumentsOmissis As IDictionary(Of Guid, BiblosDocumentInfo)
         lastMainDocumentsOmissis = Facade.CollaborationVersioningFacade.GetLastVersionDocuments(CurrentCollaboration, VersioningDocumentGroup.MainDocumentOmissis)
         If lastMainDocumentsOmissis IsNot Nothing AndAlso lastMainDocumentsOmissis.Count > 0 Then
-            uscDocumentoOmissis.LoadDocumentInfo(New List(Of DocumentInfo)(lastMainDocumentsOmissis.Values), False, True, False, False)
+            uscDocumentoOmissis.LoadDocumentInfo(New List(Of DocumentInfo)(lastMainDocumentsOmissis.Values), False, True, False, False, False, previewable:=HasViewableRights)
             uscDocumentoOmissis.TreeViewControl.Nodes(0).Nodes(0).Selected = True
         End If
 
@@ -2907,7 +3096,7 @@ Partial Public Class UserCollGestione
         Dim lastAttachments As IDictionary(Of Guid, BiblosDocumentInfo)
         lastAttachments = Facade.CollaborationVersioningFacade.GetLastVersionDocuments(CurrentCollaboration, VersioningDocumentGroup.Attachment)
         If lastAttachments IsNot Nothing AndAlso lastAttachments.Count > 0 Then
-            uscAllegati.LoadDocumentInfo(New List(Of DocumentInfo)(lastAttachments.Values), False, True, False, False)
+            uscAllegati.LoadDocumentInfo(New List(Of DocumentInfo)(lastAttachments.Values), False, True, False, False, False, previewable:=HasViewableRights)
             uscAllegati.InitializeNodesAsAdded(True)
             uscAllegati.TreeViewControl.Nodes(0).Nodes(0).Selected = True
         End If
@@ -2941,7 +3130,7 @@ Partial Public Class UserCollGestione
         Dim lastAttachmentsOmissis As IDictionary(Of Guid, BiblosDocumentInfo)
         lastAttachmentsOmissis = Facade.CollaborationVersioningFacade.GetLastVersionDocuments(CurrentCollaboration, VersioningDocumentGroup.AttachmentOmissis)
         If lastAttachmentsOmissis IsNot Nothing AndAlso lastAttachmentsOmissis.Count > 0 Then
-            uscAllegatiOmissis.LoadDocumentInfo(New List(Of DocumentInfo)(lastAttachmentsOmissis.Values), False, True, False, False)
+            uscAllegatiOmissis.LoadDocumentInfo(New List(Of DocumentInfo)(lastAttachmentsOmissis.Values), False, True, False, False, False, previewable:=HasViewableRights)
             uscAllegatiOmissis.InitializeNodesAsAdded(True)
             uscAllegatiOmissis.TreeViewControl.Nodes(0).Nodes(0).Selected = True
         End If
@@ -2977,7 +3166,7 @@ Partial Public Class UserCollGestione
         Dim lastAnnexed As IDictionary(Of Guid, BiblosDocumentInfo)
         lastAnnexed = Facade.CollaborationVersioningFacade.GetLastVersionDocuments(CurrentCollaboration, VersioningDocumentGroup.Annexed)
         If lastAnnexed IsNot Nothing AndAlso lastAnnexed.Count > 0 Then
-            uscAnnexed.LoadDocumentInfo(New List(Of DocumentInfo)(lastAnnexed.Values), False, True, False, False)
+            uscAnnexed.LoadDocumentInfo(New List(Of DocumentInfo)(lastAnnexed.Values), False, True, False, False, False, previewable:=HasViewableRights)
             uscAnnexed.InitializeNodesAsAdded(True)
             uscAnnexed.TreeViewControl.Nodes(0).Nodes(0).Selected = True
         End If
@@ -3011,13 +3200,13 @@ Partial Public Class UserCollGestione
 
     Private Sub InitializeMainDocument(ByVal enabled As Boolean, versioningDisabled As Boolean, ByVal daNonProtocollare As Boolean)
         If Not ProtocolEnv.CollaborationDocumentEditable Then
-            enabled = enabled AndAlso Action.Eq(CollaborationSubAction.DaVisionareFirmare)
+            enabled = enabled AndAlso (Action.Eq(CollaborationSubAction.DaVisionareFirmare) OrElse Action.Eq(CollaborationSubAction.DaFirmareInDelega))
         End If
 
         'Mostro i pulsanti di upload documento se se la collaborazione è ancora al primo firmatario, se la pagina è Ins.visione/firma o Attività in corso 
         'e se:  1)l'utente è il proponente o 2)se l'utente è segreteria corrente
         If Not enabled AndAlso DocumentEditEnabled Then
-            enabled = Action.Eq(CollaborationSubAction.AllaVisioneFirma) OrElse Action.Eq(CollaborationSubAction.AttivitaInCorso)
+            enabled = Action.Eq(CollaborationSubAction.AllaVisioneFirma) OrElse Action.Eq(CollaborationSubAction.AttivitaInCorso) OrElse Action.Eq(CollaborationSubAction.DaFirmareInDelega)
         End If
 
         If daNonProtocollare = True Then
@@ -3031,15 +3220,18 @@ Partial Public Class UserCollGestione
         uscDocumento.ButtonFileEnabled = enabled
         uscDocumento.ButtonLibrarySharepointEnabled = enabled AndAlso ProtocolEnv.UploadSharepointDocumentLibrary
         uscDocumento.ButtonRemoveEnabled = False
-        uscDocumento.ButtonSelectTemplateEnabled = enabled AndAlso GetControlTemplateDocumentVisibility(ChainType.MainChain)
-        uscDocumento.ButtonSecureDocumentEnabled = enabled AndAlso GetControlSecureDocumentVisibility(ChainType.MainChain)
+        uscDocumento.ButtonSelectTemplateEnabled = enabled AndAlso GetControlTemplateDocumentVisibility(Entity.DocumentUnits.ChainType.MainChain)
+        uscDocumento.ButtonPreviewEnabled = enabled OrElse (Not enabled AndAlso HasViewableRights)
 
-        If Action.Eq(CollaborationSubAction.DaVisionareFirmare) Then
+        If Action.Eq(CollaborationSubAction.DaVisionareFirmare) OrElse Action.Eq(CollaborationSubAction.DaFirmareInDelega) Then
             uscDocumento.ButtonScannerEnabled = False
             uscDocumento.ButtonFileEnabled = False
             uscDocumento.ButtonLibrarySharepointEnabled = False
             uscDocumento.ButtonSelectTemplateEnabled = False
-            uscDocumento.ButtonSecureDocumentEnabled = False
+        End If
+
+        If Action.Eq(CollaborationSubAction.DaFirmareInDelega) Then
+            uscDocumento.DelegatedUser = CurrentSigner.SignUser
         End If
 
         BindMainDocuments()
@@ -3057,7 +3249,7 @@ Partial Public Class UserCollGestione
 
     Private Sub InitializeMainDocumentOmissis(ByVal enabled As Boolean, versioningDisabled As Boolean)
         If Not ProtocolEnv.CollaborationAttachmentEditable Then
-            enabled = enabled AndAlso Action.Eq(CollaborationSubAction.DaVisionareFirmare)
+            enabled = enabled AndAlso (Action.Eq(CollaborationSubAction.DaVisionareFirmare) OrElse Action.Eq(CollaborationSubAction.DaFirmareInDelega))
         End If
 
         uscDocumentoOmissis.IsDocumentRequired = False
@@ -3066,8 +3258,12 @@ Partial Public Class UserCollGestione
         uscDocumentoOmissis.ButtonFileEnabled = enabled
         uscDocumentoOmissis.ButtonLibrarySharepointEnabled = enabled AndAlso ProtocolEnv.UploadSharepointDocumentLibrary
         uscDocumentoOmissis.ButtonRemoveEnabled = enabled
-        uscDocumentoOmissis.ButtonSelectTemplateEnabled = enabled AndAlso GetControlTemplateDocumentVisibility(ChainType.MainOmissisChain)
-        uscDocumentoOmissis.ButtonSecureDocumentEnabled = enabled AndAlso GetControlSecureDocumentVisibility(ChainType.MainOmissisChain)
+        uscDocumentoOmissis.ButtonSelectTemplateEnabled = enabled AndAlso GetControlTemplateDocumentVisibility(Entity.DocumentUnits.ChainType.MainOmissisChain)
+        uscDocumentoOmissis.ButtonPreviewEnabled = enabled OrElse (Not enabled AndAlso HasViewableRights)
+
+        If Action.Eq(CollaborationSubAction.DaFirmareInDelega) Then
+            uscDocumentoOmissis.DelegatedUser = CurrentSigner.SignUser
+        End If
 
         BindMainDocumentsOmissis()
 
@@ -3102,21 +3298,22 @@ Partial Public Class UserCollGestione
         usc.ButtonLibrarySharepointEnabled = enabled AndAlso ProtocolEnv.UploadSharepointDocumentLibrary
         usc.ButtonCopyProtocol.Visible = enabled
         usc.ButtonCopyResl.Visible = enabled
+        usc.ButtonCopyUDS.Visible = enabled
         usc.EnableImportContactManual = False
+        usc.ButtonPreviewEnabled = enabled OrElse (Not enabled AndAlso HasViewableRights)
 
-        Dim currentChainType As ChainType = ChainType.MainChain
+        Dim currentChainType As Entity.DocumentUnits.ChainType = Entity.DocumentUnits.ChainType.MainChain
         Select Case usc.ID
             Case uscDocumentoOmissis.ID
-                currentChainType = ChainType.MainOmissisChain
+                currentChainType = Entity.DocumentUnits.ChainType.MainOmissisChain
             Case uscAllegati.ID
-                currentChainType = ChainType.AttachmentsChain
+                currentChainType = Entity.DocumentUnits.ChainType.AttachmentsChain
             Case uscAllegatiOmissis.ID
-                currentChainType = ChainType.AttachmentOmissisChain
+                currentChainType = Entity.DocumentUnits.ChainType.AttachmentOmissisChain
             Case uscAnnexed.ID
-                currentChainType = ChainType.AnnexedChain
+                currentChainType = Entity.DocumentUnits.ChainType.AnnexedChain
         End Select
         usc.ButtonSelectTemplateEnabled = enabled AndAlso GetControlTemplateDocumentVisibility(currentChainType)
-        usc.ButtonSecureDocumentEnabled = enabled AndAlso GetControlSecureDocumentVisibility(currentChainType)
     End Sub
     Private Sub InizializeRemoveButtonDocumentUpload(ByVal enabled As Boolean, ByRef usc As uscDocumentUpload)
         usc.ButtonRemoveEnabled = enabled
@@ -3128,10 +3325,14 @@ Partial Public Class UserCollGestione
 
     Private Sub InitializeAttachments(ByVal enabled As Boolean, versioningDisabled As Boolean)
         If Not ProtocolEnv.CollaborationAttachmentEditable Then
-            enabled = enabled AndAlso Action.Eq(CollaborationSubAction.DaVisionareFirmare)
+            enabled = enabled AndAlso (Action.Eq(CollaborationSubAction.DaVisionareFirmare) OrElse Action.Eq(CollaborationSubAction.DaFirmareInDelega))
         End If
 
         InizializeButtonDocumentUpload(enabled, uscAllegati)
+
+        If Action.Eq(CollaborationSubAction.DaFirmareInDelega) Then
+            uscAllegati.DelegatedUser = CurrentSigner.SignUser
+        End If
 
         BindAttachments()
 
@@ -3148,10 +3349,14 @@ Partial Public Class UserCollGestione
 
     Private Sub InitializeAttachmentsOmissis(ByVal enabled As Boolean, versioningDisabled As Boolean)
         If Not ProtocolEnv.CollaborationAttachmentEditable Then
-            enabled = enabled AndAlso Action.Eq(CollaborationSubAction.DaVisionareFirmare)
+            enabled = enabled AndAlso (Action.Eq(CollaborationSubAction.DaVisionareFirmare) OrElse Action.Eq(CollaborationSubAction.DaFirmareInDelega))
         End If
 
         InizializeButtonDocumentUpload(enabled, uscAllegatiOmissis)
+
+        If Action.Eq(CollaborationSubAction.DaFirmareInDelega) Then
+            uscAllegatiOmissis.DelegatedUser = CurrentSigner.SignUser
+        End If
 
         BindAttachmentsOmissis()
 
@@ -3168,10 +3373,14 @@ Partial Public Class UserCollGestione
 
     Private Sub InitializeAnnexed(enabled As Boolean, versioningDisabled As Boolean)
         If Not ProtocolEnv.CollaborationAttachmentEditable Then
-            enabled = enabled AndAlso Action.Eq(CollaborationSubAction.DaVisionareFirmare)
+            enabled = enabled AndAlso (Action.Eq(CollaborationSubAction.DaVisionareFirmare) OrElse Action.Eq(CollaborationSubAction.DaFirmareInDelega))
         End If
 
         InizializeButtonDocumentUpload(enabled, uscAnnexed)
+
+        If Action.Eq(CollaborationSubAction.DaFirmareInDelega) Then
+            uscAnnexed.DelegatedUser = CurrentSigner.SignUser
+        End If
 
         BindAnnexed()
 
@@ -3196,6 +3405,15 @@ Partial Public Class UserCollGestione
         End If
         Return False
     End Function
+    Private Function IsDelegateSignatory() As Boolean
+        ' Verifico l'utente corrente se è il firmatario delegato
+        Dim signs As IList(Of CollaborationSign) = Facade.CollaborationSignsFacade.SearchFull(CurrentCollaboration.Id)
+        If signs IsNot Nothing Then
+            Dim listDelegations As List(Of String) = Facade.UserLogFacade.GetDelegationsSign()
+            Return signs.Any(Function(sign) listDelegations.Any(Function(x) x.Eq(sign.SignUser)) AndAlso sign.IsActive)
+        End If
+        Return False
+    End Function
 
     ''' <summary> Inizializza proponente e campi base. </summary>
     ''' <param name="enabled"> Indica se abilitare la modifica. </param>
@@ -3212,6 +3430,8 @@ Partial Public Class UserCollGestione
 
         ddlDocumentType.SelectedValue = CurrentCollaboration.DocumentType
         ddlDocumentType.Enabled = False
+        trSpecificDocumentType.Visible = False
+        rfvSpecificDocumentType.Enabled = False
 
         txtDate.SelectedDate = CurrentCollaboration.MemorandumDate
         txtDate.DateInput.ReadOnly = Not enabled
@@ -3463,14 +3683,24 @@ Partial Public Class UserCollGestione
 
         ' Utenti firmatari
         Dim destinatariFirma As List(Of CollaborationContact) = GetManualContacts(uscVisioneFirma.TreeViewControl.Nodes(0))
-
-        CurrentTemplateCollaborationFinder.ResetDecoration()
-        If trSpecificDocumentType.Visible AndAlso Not String.IsNullOrEmpty(ddlSpecificDocumentType.SelectedValue) Then
-            CurrentTemplateCollaborationFinder.UniqueId = Guid.Parse(ddlSpecificDocumentType.SelectedItem.Attributes("TemplateId"))
-        Else
-            CurrentTemplateCollaborationFinder.UniqueId = Guid.Parse(ddlDocumentType.SelectedItem.Attributes("TemplateId"))
+        If (ProtocolEnv.CollaborationProposerAsSignerEnabled) Then
+            Dim proposerAsSigner As CollaborationContact = New CollaborationContact()
+            proposerAsSigner.Account = DocSuiteContext.Current.User.FullUserName
+            proposerAsSigner.DestinationName = CommonInstance.UserDescription
+            proposerAsSigner.DestinationEMail = Facade.UserLogFacade.EmailOfUser(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain, ProtocolEnv.EnableUserProfile)
+            destinatariFirma.Insert(0, proposerAsSigner)
         End If
-        Dim template As TemplateCollaboration = CurrentTemplateCollaborationFinder.DoSearch().First().Entity
+
+        Dim template As TemplateCollaboration = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentTemplateCollaborationFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        If trSpecificDocumentType.Visible AndAlso Not String.IsNullOrEmpty(ddlSpecificDocumentType.SelectedValue) Then
+                            finder.UniqueId = Guid.Parse(ddlSpecificDocumentType.SelectedItem.Attributes("TemplateId"))
+                        Else
+                            finder.UniqueId = Guid.Parse(ddlDocumentType.SelectedItem.Attributes("TemplateId"))
+                        End If
+                        Return finder.DoSearch().First().Entity
+                    End Function)
 
         Dim collaboration As Collaboration = FacadeFactory.Instance.CollaborationFacade.CreateCollaboration()
         collaboration.DocumentType = template.DocumentType
@@ -3487,7 +3717,7 @@ Partial Public Class UserCollGestione
         collaboration.CollaborationObject = txtObject.Text
         collaboration.Note = txtNote.Text
         If DocSuiteContext.Current.ProtocolEnv.CollaborationSourceProtocolEnabled Then
-            collaboration.SetSourceProtocol(SourceProtocolYear, SourceProtocolNumber)
+            collaboration.SetSourceProtocol(SourceProtocol)
         End If
 
         FacadeFactory.Instance.CollaborationFacade.Insert(collaboration, destinatariFirma, altriDestinatariProtocollazione, segreterie)
@@ -3523,16 +3753,34 @@ Partial Public Class UserCollGestione
             Throw New DocSuiteException("Errore inserimento", String.Format("Si è verificato un errore nell'inserimento degli Annessi (non parte integrante).{0}Annullare la registrazione", Environment.NewLine))
         End If
 
+        If (ProtocolEnv.CollaborationProposerAsSignerEnabled) AndAlso Action.Eq(CollaborationSubAction.InserimentoAllaVisioneFirma) Then
+            Facade.CollaborationSignsFacade.UpdateForward(collaboration)
+            Facade.CollaborationLogFacade.Insert(collaboration, "Avanzamento automatico al destinatario successivo")
+            Facade.CollaborationFacade.UpdateBiblosSignsModel(collaboration)
+        End If
+
         'Setto il tavolo di riferimento
         If DocSuiteContext.Current.ProtocolEnv.DeskEnable AndAlso InsertFromDesk Then
             CurrentDeskCollaborationFacade.AddDeskCollaboration(CurrentDeskFromInsert, collaboration)
         End If
 
+        If pnlDocumentUnitDraftEditor.Visible Then
+            Dim protocolXML As ProtocolXML = ProtocolXMLSource
+            If Not protocolXML Is Nothing Then
+                Facade.ProtocolDraftFacade.AddProtocolDraft(CurrentCollaboration, "Protocollo Precompilato da Collaborazione", protocolXML)
+            End If
+            Session.Remove("TemplateProtocolPrecopiler")
+        End If
+
         ' Spedisco l'email
         Facade.CollaborationFacade.SendMail(collaboration, mailStatus)
+        If (ProtocolEnv.CollaborationProposerAsSignerEnabled) AndAlso Action.Eq(CollaborationSubAction.InserimentoAllaVisioneFirma) Then
+            Facade.CollaborationFacade.SendMail(collaboration, CollaborationMainAction.DaVisionareFirmare)
+        End If
 
         Return True
     End Function
+
 
     Private Function ValidateObject() As Boolean
         Dim maxLength As Integer
@@ -3645,6 +3893,14 @@ Partial Public Class UserCollGestione
         Dim distributionContacts As List(Of CollaborationContact) = Nothing
         If SignersEditEnabled OrElse CheckModifyRight Then
             distributionContacts = GetManualContacts(uscVisioneFirma.TreeViewControl.Nodes(0))
+            If (ProtocolEnv.CollaborationProposerAsSignerEnabled AndAlso
+                Not distributionContacts.First().Account.Eq(CurrentCollaboration.RegistrationUser)) Then
+                Dim proposerAsSigner As CollaborationContact = New CollaborationContact()
+                proposerAsSigner.Account = CurrentCollaboration.RegistrationUser
+                proposerAsSigner.DestinationName = CommonAD.GetDisplayName(CurrentCollaboration.RegistrationUser)
+                proposerAsSigner.DestinationEMail = Facade.UserLogFacade.EmailOfUser(CurrentCollaboration.RegistrationUser, ProtocolEnv.EnableUserProfile)
+                distributionContacts.Insert(0, proposerAsSigner)
+            End If
             Facade.CollaborationFacade.DeleteSigns(CurrentCollaboration)
             Facade.CollaborationFacade.InsertDistribution(CollaborationId.Value, distributionContacts)
             FileLogger.Info(LoggerName, String.Concat("Modificati firmatari collaborazione n.", CurrentCollaboration.Id))
@@ -3667,6 +3923,13 @@ Partial Public Class UserCollGestione
         Facade.CollaborationLogFacade.Insert(CurrentCollaboration, "Modificata collaborazione")
 
         Facade.CollaborationFacade.SendMail(CurrentCollaboration, CollaborationMainAction.Modifica)
+        If (ProtocolEnv.CollaborationProposerAsSignerEnabled AndAlso (SignersEditEnabled OrElse CheckModifyRight)) AndAlso
+            distributionContacts.First().Account.Eq(CurrentCollaboration.RegistrationUser) Then
+            Facade.CollaborationSignsFacade.UpdateForward(CurrentCollaboration)
+            Facade.CollaborationLogFacade.Insert(CurrentCollaboration, "Avanzamento automatico al destinatario successivo")
+            Facade.CollaborationFacade.UpdateBiblosSignsModel(CurrentCollaboration)
+            Facade.CollaborationFacade.SendMail(CurrentCollaboration, CollaborationMainAction.DaVisionareFirmare)
+        End If
     End Sub
 
     Public Function CheckRequiredSign() As Boolean
@@ -3690,7 +3953,8 @@ Partial Public Class UserCollGestione
     End Function
 
     Public Sub ExistDocumentToSign(ByVal ajaxOperation As String, ByVal e As [Delegate])
-        If Not Facade.CollaborationVersioningFacade.CheckUserDocumentsSign(New Integer() {CollaborationId.Value}) Then
+        If Not Facade.CollaborationVersioningFacade.CheckUserDocumentsSign(New Integer() {CollaborationId.Value}) AndAlso
+            (PopUpDocumentNotSignedAlertEnabled OrElse (Not PopUpDocumentNotSignedAlertEnabled AndAlso CurrentSigner.IsRequired)) Then
             Dim confirmMessage As String = "Documento non firmato. Si desidera proseguire comunque?"
             If DocSuiteContext.Current.ProtocolEnv.ForceProsecutable Then
                 confirmMessage &= "\nQuesta operazione rimuoverà eventuali obbligatorietà di firma."
@@ -3775,6 +4039,10 @@ Partial Public Class UserCollGestione
                 If idDocument <> 0 Then
                     Facade.CollaborationVersioningFacade.InsertDocument(CollaborationId.Value, idDocument, documentName)
                 End If
+            End If
+
+            If DocSuiteContext.Current.ProtocolEnv.ForceCollaborationSignDateEnabled Then
+                Facade.CollaborationFacade.UpdateBiblosSignsModel(CurrentCollaboration)
             End If
 
             ' Notifiche 
@@ -3890,6 +4158,15 @@ Partial Public Class UserCollGestione
         Dim idDocument As Integer = 0
         Dim documentName As String = ""
         Try
+            If DocSuiteContext.Current.ProtocolEnv.ForceCollaborationSignDateEnabled Then
+                Dim activeSigner As CollaborationSign = CurrentCollaboration.GetFirstCollaborationSignActive()
+                If Not activeSigner.SignDate.HasValue Then
+                    activeSigner.SignDate = Date.Now
+                    Facade.CollaborationSignsFacade.UpdateOnly(activeSigner)
+                End If
+                Facade.CollaborationFacade.UpdateBiblosSignsModel(CurrentCollaboration)
+            End If
+
             Facade.CollaborationFacade.Update(CurrentCollaboration, rblPriority.SelectedValue, txtDate.SelectedDate, txtObject.Text, txtNote.Text, CollaborationStatusType.DP, Nothing, restitutionContacts, restitutionRoles, Nothing, Nothing, Nothing, Nothing, "", 0, False)
             FacadeFactory.Instance.CollaborationLogFacade.Insert(CurrentCollaboration, "Avanzamento al protocollo/segreteria")
             If idDocument <> 0 Then
@@ -4098,9 +4375,6 @@ Partial Public Class UserCollGestione
             End If
             Try
                 Dim checkedOut As FileDocumentInfo = FacadeFactory.Instance.CollaborationVersioningFacade.GetLocalCheckedOutDocument(versioning, True)
-                If checkedOut Is Nothing Then
-
-                End If
                 FacadeFactory.Instance.CollaborationVersioningFacade.CheckIn(versioning, DocSuiteContext.Current.User.FullUserName, checkedOut)
                 DeleteLocalFile(checkedOut)
             Catch ex As Exception
@@ -4248,8 +4522,8 @@ Partial Public Class UserCollGestione
             Return CurrentCollaboration.SourceProtocolYear
         End If
 
-        If Request.QueryString.AllKeys.Contains("SPY") Then
-            Return Request.QueryString.GetValue(Of Short?)("SPY")
+        If SourceProtocol IsNot Nothing Then
+            Return SourceProtocol.Year
         End If
 
         Return Nothing
@@ -4260,8 +4534,21 @@ Partial Public Class UserCollGestione
             Return CurrentCollaboration.SourceProtocolNumber
         End If
 
-        If Request.QueryString.AllKeys.Contains("SPN") Then
-            Return Request.QueryString.GetValue(Of Integer?)("SPN")
+        If SourceProtocol IsNot Nothing Then
+            Return SourceProtocol.Number
+        End If
+
+        Return Nothing
+    End Function
+
+    Private Function GetSourceProtocol() As Protocol
+        If CurrentCollaboration IsNot Nothing Then
+            Return CurrentCollaboration.SourceProtocol
+        End If
+
+        If Request.QueryString.AllKeys.Contains("SourceUniqueIdProtocol") Then
+            Dim uniqueIdProtocol As Guid = Request.QueryString.GetValue(Of Guid)("SourceUniqueIdProtocol")
+            Return Facade.ProtocolFacade.GetById(uniqueIdProtocol)
         End If
 
         Return Nothing
@@ -4278,8 +4565,7 @@ Partial Public Class UserCollGestione
         cmdSourceProtocol.Icon.PrimaryIconWidth = Unit.Pixel(16)
         cmdSourceProtocol.Text = FacadeFactory.Instance.ProtocolFacade.GetProtocolNumber(SourceProtocolYear.Value, SourceProtocolNumber.Value)
 
-        Dim queryString As String = String.Format("Year={0}&Number={1}", SourceProtocolYear.Value, SourceProtocolNumber.Value)
-        cmdSourceProtocol.NavigateUrl = "../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(queryString)
+        cmdSourceProtocol.NavigateUrl = $"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={SourceProtocol.Id}&Type=Prot")}"
 
         ddlDocumentType.Enabled = False
     End Sub
@@ -4332,7 +4618,7 @@ Partial Public Class UserCollGestione
             Dim results As List(Of DocumentInfo) = Nothing
 
             If workflowReferenceBiblosModel IsNot Nothing Then
-                doc = New BiblosDocumentInfo(String.Empty, workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
+                doc = New BiblosDocumentInfo(workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
                 tempDoc = New TempFileDocumentInfo(workflowReferenceBiblosModel.DocumentName, BiblosFacade.SaveUniqueToTemp(doc))
                 uscDocumento.LoadDocumentInfo(tempDoc, False, True, False, True)
                 uscDocumento.InitializeNodesAsAdded(False)
@@ -4340,7 +4626,7 @@ Partial Public Class UserCollGestione
 
             results = New List(Of DocumentInfo)()
             For Each workflowReferenceBiblosModel In workflowReferenceModel.Documents.Where(Function(f) f.ChainType = Model.Entities.DocumentUnits.ChainType.AttachmentsChain AndAlso f.ArchiveChainId.HasValue AndAlso f.ArchiveDocumentId.HasValue)
-                doc = New BiblosDocumentInfo(String.Empty, workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
+                doc = New BiblosDocumentInfo(workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
                 results.Add(New TempFileDocumentInfo(workflowReferenceBiblosModel.DocumentName, BiblosFacade.SaveUniqueToTemp(doc)))
             Next
             If results.Any() Then
@@ -4350,7 +4636,7 @@ Partial Public Class UserCollGestione
 
             results = New List(Of DocumentInfo)()
             For Each workflowReferenceBiblosModel In workflowReferenceModel.Documents.Where(Function(f) f.ChainType = Model.Entities.DocumentUnits.ChainType.AnnexedChain AndAlso f.ArchiveChainId.HasValue AndAlso f.ArchiveDocumentId.HasValue)
-                doc = New BiblosDocumentInfo(String.Empty, workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
+                doc = New BiblosDocumentInfo(workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
                 results.Add(New TempFileDocumentInfo(workflowReferenceBiblosModel.DocumentName, BiblosFacade.SaveUniqueToTemp(doc)))
             Next
             If results.Any() Then
@@ -4481,49 +4767,31 @@ Partial Public Class UserCollGestione
             Return
         End If
 
-        'Recupero, se presente, la WF Property relativa al SignerModel
-        Dim dsw_p_SignerModel As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL)
+        Dim dsw_p_SignerModel As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL, CurrentWorkflowActivity.UniqueId)
 
         Dim collaborationSignerModels As List(Of CollaborationSignerWorkflowModel) = New List(Of CollaborationSignerWorkflowModel)
         If dsw_p_SignerModel IsNot Nothing AndAlso Not String.IsNullOrEmpty(dsw_p_SignerModel.ValueString) Then
             collaborationSignerModels = JsonConvert.DeserializeObject(Of List(Of CollaborationSignerWorkflowModel))(dsw_p_SignerModel.ValueString, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
         End If
 
-        Dim currentIncremental As Integer = CurrentCollaboration.CollaborationSigns.Where(Function(x) Convert.ToBoolean(x.IsActive)).Select(Function(s) s.Incremental).First()
-        Dim dsw_p_SignerPosition As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_POSITION)
-        If dsw_p_SignerPosition IsNot Nothing Then
-            dsw_p_SignerPosition.ValueInt = currentIncremental
-            CurrentWorkflowPropertyFacade.Update(dsw_p_SignerPosition)
+        Dim currentSignPosition As Short = CurrentCollaboration.CollaborationSigns.Where(Function(x) Convert.ToBoolean(x.IsActive)).Single().Incremental
+        Dim dsw_p_SignerPosition As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_POSITION, CurrentWorkflowActivity.UniqueId)
+        If dsw_p_SignerPosition.ValueInt.Value + 1 <> currentSignPosition Then
+            Throw New Exception($"Errore critico nelle strutture interne del workflow rispetto alla collaborazione [dsw_p_SignerPosition = {dsw_p_SignerPosition.ValueInt.Value}, CollaborationSignsIncremental = {currentSignPosition}]")
         End If
-        Dim approvedModel As CollaborationSignerWorkflowModel
-        'Se è già presente lo username che stà effettuando l'attività lo modifico
-        'altrimenti lo inserisco
-        If collaborationSignerModels.Any(Function(x) x.UserName.Eq(DocSuiteContext.Current.User.FullUserName)) _
-            AndAlso collaborationSignerModels.Count = currentIncremental Then
 
-            approvedModel = collaborationSignerModels.Last(Function(x) x.UserName.Eq(DocSuiteContext.Current.User.FullUserName))
-            approvedModel.HasApproved = approved
-            dsw_p_SignerModel.ValueString = JsonConvert.SerializeObject(collaborationSignerModels, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
-            CurrentWorkflowPropertyFacade.Update(dsw_p_SignerModel)
-        Else
-            collaborationSignerModels.Add(New CollaborationSignerWorkflowModel() With {
-                .UserName = DocSuiteContext.Current.User.FullUserName,
-                .HasApproved = approved 'TODO: SET ExecuteDate = DateTimeOffset.UtcNow
-            })
+        collaborationSignerModels = WorkflowBuildApprovedModel(currentSignPosition, approved, collaborationSignerModels)
+        dsw_p_SignerModel.ValueString = JsonConvert.SerializeObject(collaborationSignerModels, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
 
-            If dsw_p_SignerModel Is Nothing Then
-                dsw_p_SignerModel = New WorkflowProperty() With {
-                    .Name = WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL,
-                    .PropertyType = WorkflowPropertyType.Json,
-                    .WorkflowType = WorkflowType.Activity,
-                    .ValueString = JsonConvert.SerializeObject(collaborationSignerModels, DocSuiteContext.DefaultWebAPIJsonSerializerSettings),
-                    .WorkflowActivity = CurrentWorkflowActivity
-                }
-                CurrentWorkflowPropertyFacade.Save(dsw_p_SignerModel)
-            Else
-                dsw_p_SignerModel.ValueString = JsonConvert.SerializeObject(collaborationSignerModels, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
-                CurrentWorkflowPropertyFacade.Update(dsw_p_SignerModel)
-            End If
+        Dim workflowNotify As WorkflowNotify = New WorkflowNotify(CurrentWorkflowActivity.UniqueId) With {
+                    .WorkflowName = CurrentWorkflowInstance.WorkflowRepository.Name}
+        workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL,
+                                                   .PropertyType = ArgumentType.Json,
+                                                   .ValueString = dsw_p_SignerModel.ValueString})
+        Dim webApiHelper As WebAPIHelper = New WebAPIHelper()
+        If Not WebAPIImpersonatorFacade.ImpersonateSendRequest(webApiHelper, workflowNotify, DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration) Then
+            Throw New Exception("ApproveRefuseWorkflowCollaboration is not correctly evaluated from WebAPI. See specific error in WebAPI logger")
         End If
 
         'Ad aggiornamento avvenuto disabilito i pulsanti
@@ -4531,16 +4799,12 @@ Partial Public Class UserCollGestione
         btnRifiuta.Enabled = approved
         btnCancella.Enabled = approved
 
-        If IsWorkflowOperation Then
-            CurrentWorkflowActivity.Status = WorkflowStatus.Progress
-            CurrentWorkflowActivityFacade.Update(CurrentWorkflowActivity)
-        End If
         MasterDocSuite.WizardActionColumn.SetDisplay(True)
         AjaxManager.ResponseScripts.Add("toCompleteStep();")
     End Sub
 
     Protected Sub WorkflowConfirmed(sender As Object, e As EventArgs)
-        If CurrentCollaboration.DocumentType.Eq(CollaborationDocumentType.W.ToString()) AndAlso CurrentSigner.IsRequired.GetValueOrDefault(False) Then
+        If CurrentCollaboration.IdWorkflowInstance.HasValue AndAlso CurrentSigner.IsRequired.GetValueOrDefault(False) Then
             If Not CheckAttachmentRequired() Then
                 AjaxAlert("Attenzione! deve essere inserito obbligatoriamente un nuovo allegato prima di completare l'attività")
                 Return
@@ -4552,32 +4816,37 @@ Partial Public Class UserCollGestione
             Dim mapper As MapperCollaborationModel = New MapperCollaborationModel()
             Dim collaborationModel As CollaborationModel = mapper.MappingDTO(CurrentCollaboration)
             Dim serializedCollaborationModel As String = JsonConvert.SerializeObject(collaborationModel, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
-            Dim dsw_p_Model As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_MODEL)
-            dsw_p_Model.ValueString = serializedCollaborationModel
-            CurrentWorkflowPropertyFacade.Update(dsw_p_Model)
-
-            dsw_p_Model = GetInstanceWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_MODEL)
-            If dsw_p_Model IsNot Nothing Then
-                dsw_p_Model.ValueString = serializedCollaborationModel
-                CurrentWorkflowPropertyFacade.Update(dsw_p_Model)
-            End If
 
             If CurrentWorkflowActivity IsNot Nothing AndAlso (CurrentWorkflowActivity.Status = WorkflowStatus.Todo OrElse CurrentWorkflowActivity.Status = WorkflowStatus.Progress) Then
-                Dim dsw_p_SignerModel As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL)
+                Dim dsw_p_SignerModel As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL, CurrentWorkflowActivity.UniqueId)
+                Dim dsw_p_SignerPosition As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_POSITION, CurrentWorkflowActivity.UniqueId)
                 Dim workflowNotify As WorkflowNotify = New WorkflowNotify(CurrentWorkflowActivity.UniqueId) With {
                     .WorkflowName = CurrentWorkflowInstance.WorkflowRepository.Name
                 }
-                workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL, New WorkflowArgument() With
-                                                   {.Name = WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL,
+                workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_MODEL, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_PROPERTY_MODEL,
+                                                   .PropertyType = ArgumentType.Json,
+                                                   .ValueString = serializedCollaborationModel})
+                workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL,
                                                    .PropertyType = ArgumentType.Json,
                                                    .ValueString = dsw_p_SignerModel.ValueString})
+                workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE,
+                                                   .PropertyType = ArgumentType.PropertyBoolean,
+                                                   .ValueBoolean = True})
+                workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_POSITION, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_POSITION,
+                                                   .PropertyType = ArgumentType.PropertyInt,
+                                                   .ValueInt = dsw_p_SignerPosition.ValueInt.Value + 1})
                 Dim webApiHelper As WebAPIHelper = New WebAPIHelper()
-                If Not webApiHelper.SendRequest(DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration, workflowNotify) Then
+                If Not WebAPIImpersonatorFacade.ImpersonateSendRequest(webApiHelper, workflowNotify, DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration) Then
                     Throw New Exception("CollaborationWorkflowConfirmed is not correctly evaluated from WebAPI. See specific error in WebAPI logger")
                 End If
                 Facade.CollaborationFacade.Evict(CurrentCollaboration)
                 Dim reloadedCollaboration As Collaboration = Facade.CollaborationFacade.GetById(CurrentCollaboration.Id)
                 If reloadedCollaboration.IdStatus.Eq("WM") Then
+                    Facade.CollaborationFacade.UpdateBiblosSignsModel(CurrentCollaboration)
                     Response.Redirect("~/User/UserWorkflow.aspx?Type=Comm")
                 End If
 
@@ -4629,30 +4898,11 @@ Partial Public Class UserCollGestione
         End If
     End Sub
 
-    Private Function GetActivityWorkflowProperty(propertyName As String) As WorkflowProperty
-        CurrentWorkflowPropertyFinder.ResetDecoration()
-        CurrentWorkflowPropertyFinder.WorkflowActivityId = CurrentWorkflowActivity.UniqueId
-        CurrentWorkflowPropertyFinder.Name = propertyName
-        Dim workflowProperty As WorkflowProperty = CurrentWorkflowPropertyFinder.DoSearch().Select(Function(s) s.Entity).FirstOrDefault()
-        Return workflowProperty
-    End Function
-
-    Private Function GetInstanceWorkflowProperty(propertyName As String) As WorkflowProperty
-        CurrentWorkflowPropertyFinder.ResetDecoration()
-        CurrentWorkflowPropertyFinder.WorkflowInstanceId = CurrentCollaboration.IdWorkflowInstance
-        CurrentWorkflowPropertyFinder.Name = propertyName
-        Dim dtoProperty As WebAPIDto(Of WorkflowProperty) = CurrentWorkflowPropertyFinder.DoSearch().FirstOrDefault()
-        If dtoProperty IsNot Nothing AndAlso dtoProperty.Entity IsNot Nothing Then
-            Return dtoProperty.Entity
-        End If
-        Return Nothing
-    End Function
-
     Private Function CheckAttachmentRequired() As Boolean
         'Recupero, se presente, la WF Property relativa al'obbligatorietà di inserimento allegato
-        Dim workflowAddAttachmentRequiredProperty As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_ADD_ATTACHMENT_REQUIRED)
+        Dim workflowAddAttachmentRequiredProperty As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_ADD_ATTACHMENT_REQUIRED, CurrentWorkflowActivity.UniqueId)
         If workflowAddAttachmentRequiredProperty IsNot Nothing AndAlso workflowAddAttachmentRequiredProperty.ValueBoolean.HasValue AndAlso workflowAddAttachmentRequiredProperty.ValueBoolean.Value Then
-            Dim workflowCollaborationModelProperty As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_MODEL)
+            Dim workflowCollaborationModelProperty As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_MODEL, CurrentWorkflowActivity.UniqueId)
             If workflowCollaborationModelProperty IsNot Nothing Then
                 Dim collaborationModel As CollaborationModel = JsonConvert.DeserializeObject(Of CollaborationModel)(workflowCollaborationModelProperty.ValueString, DocSuiteContext.DefaultJsonSerializerSettings)
                 Dim modelAttachmentCount As Integer = collaborationModel.CollaborationVersionings.Where(Function(x) x.DocumentGroup.Eq(VersioningDocumentGroup.Attachment)).Count()
@@ -4673,7 +4923,7 @@ Partial Public Class UserCollGestione
         If CurrentWorkflowActivity Is Nothing Then
             Return False
         End If
-        Dim result As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL)
+        Dim result As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL, CurrentWorkflowActivity.UniqueId)
         If result IsNot Nothing Then
             Dim signerModels As List(Of CollaborationSignerWorkflowModel) = JsonConvert.DeserializeObject(Of List(Of CollaborationSignerWorkflowModel))(result.ValueString, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
             If signerModels.Count > 0 Then
@@ -4687,7 +4937,7 @@ Partial Public Class UserCollGestione
         If CurrentWorkflowActivity Is Nothing Then
             Return WorkflowCollaborationSignerStatus.None
         End If
-        Dim result As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL)
+        Dim result As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_SIGNER_MODEL, CurrentWorkflowActivity.UniqueId)
         If result IsNot Nothing Then
             Dim signerModels As List(Of CollaborationSignerWorkflowModel) = JsonConvert.DeserializeObject(Of List(Of CollaborationSignerWorkflowModel))(result.ValueString, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
             If signerModels.Count > 0 Then
@@ -4728,13 +4978,15 @@ Partial Public Class UserCollGestione
 
     Private Sub FillPageFromEntity(template As TemplateCollaboration)
         rblPriority.SelectedValue = template.IdPriority
-        If Not String.IsNullOrEmpty(template.Object) AndAlso String.IsNullOrEmpty(txtObject.Text) Then
+        If (String.IsNullOrEmpty(txtObject.Text) OrElse txtObject.Text.Equals(hdfLastTemplateObject.Value)) Then
             txtObject.Text = template.Object
         End If
+        hdfLastTemplateObject.Value = template.Object
 
-        If Not String.IsNullOrEmpty(template.Note) AndAlso String.IsNullOrEmpty(txtNote.Text) Then
+        If (String.IsNullOrEmpty(txtNote.Text) OrElse txtNote.Text.Equals(hdfLastTemplateNote.Value)) Then
             txtNote.Text = template.Note
         End If
+        hdfLastTemplateNote.Value = template.Note
 
         uscSettoriSegreterie.RemoveAllRoles()
         For Each secretary As TemplateCollaborationUser In template.TemplateCollaborationUsers.Where(Function(x) x.UserType.Equals(TemplateCollaborationUserType.Secretary) AndAlso x.Role IsNot Nothing).OrderBy(Function(o) o.Incremental)
@@ -4791,20 +5043,29 @@ Partial Public Class UserCollGestione
             End If
             uscRestituzioni.AddCollaborationContact(ContactType.AdAmPerson, description, email, contactRestitution.Account, "G", String.Empty, True, contactRestitution.IsRequired, fromTemplate:=True)
         Next
+        pnlDocumentUnitDraftEditor.Visible = False
+        If Not template.JsonParameters Is Nothing Then
+            Dim collaborationParameter As CollaborationParameter = New CollaborationParameter(template.Name)
+            pnlDocumentUnitDraftEditor.Visible = template.DocumentType.Eq(CollaborationDocumentType.P.ToString()) AndAlso collaborationParameter.DocumentUnitDraftEditorEnabled
+        End If
     End Sub
 
     Private Function GetCollaborationTemplates(isLocked As Boolean, onlyAuthorized As Boolean, Optional documentType As String = "") As ICollection(Of TemplateCollaboration)
-        CurrentTemplateCollaborationFinder.ResetDecoration()
-        CurrentTemplateCollaborationFinder.OnlyAuthorized = onlyAuthorized
-        CurrentTemplateCollaborationFinder.Locked = isLocked
-        CurrentTemplateCollaborationFinder.Status = TemplateCollaborationStatus.Active
-        CurrentTemplateCollaborationFinder.UserName = DocSuiteContext.Current.User.UserName
-        CurrentTemplateCollaborationFinder.Domain = DocSuiteContext.Current.User.Domain
-        CurrentTemplateCollaborationFinder.SortExpressions.AddSafe("Entity.Name", "ASC")
-        If Not String.IsNullOrEmpty(documentType) Then
-            CurrentTemplateCollaborationFinder.DocumentType = documentType
-        End If
-        Dim results As ICollection(Of WebAPIDto(Of TemplateCollaboration)) = CurrentTemplateCollaborationFinder.DoSearch()
+        Dim results As ICollection(Of WebAPIDto(Of TemplateCollaboration)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentTemplateCollaborationFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.OnlyAuthorized = onlyAuthorized
+                        finder.Locked = isLocked
+                        finder.Status = TemplateCollaborationStatus.Active
+                        finder.UserName = DocSuiteContext.Current.User.UserName
+                        finder.Domain = DocSuiteContext.Current.User.Domain
+                        finder.SortExpressions.AddSafe("Entity.Name", "ASC")
+                        If Not String.IsNullOrEmpty(documentType) Then
+                            finder.DocumentType = documentType
+                        End If
+                        Return finder.DoSearch()
+                    End Function)
+
         If results IsNot Nothing Then
             Return results.Select(Function(s) s.Entity).ToList()
         End If
@@ -4819,7 +5080,7 @@ Partial Public Class UserCollGestione
         uscAnnexed.CloseAfterSignPdfConversion = True
     End Sub
 
-    Private Function GetControlTemplateDocumentVisibility(chainType As ChainType) As Boolean
+    Private Function GetControlTemplateDocumentVisibility(chainType As Entity.DocumentUnits.ChainType) As Boolean
         If Not ProtocolEnv.TemplateDocumentVisibilities.Any(Function(x) x.Name.Eq(NameOf(Collaboration))) Then
             Return False
         End If
@@ -4828,14 +5089,6 @@ Partial Public Class UserCollGestione
         Return modelVisibility.VisibilityChains.ContainsKey(CType(chainType, Model.Entities.DocumentUnits.ChainType)) AndAlso modelVisibility.VisibilityChains(CType(chainType, Model.Entities.DocumentUnits.ChainType))
     End Function
 
-    Private Function GetControlSecureDocumentVisibility(chainType As ChainType) As Boolean
-        If Not ProtocolEnv.SecureDocumentEnabled OrElse Not ProtocolEnv.SecureDocumentVisibilities.Any(Function(x) x.Name.Eq(NameOf(Collaboration))) Then
-            Return False
-        End If
-
-        Dim modelVisibility As SecureDocumentVisibilityConfiguration = ProtocolEnv.SecureDocumentVisibilities.First(Function(x) x.Name.Eq(NameOf(Collaboration)))
-        Return modelVisibility.VisibilityChains.ContainsKey(chainType) AndAlso modelVisibility.VisibilityChains(chainType)
-    End Function
 #End Region
 
 End Class

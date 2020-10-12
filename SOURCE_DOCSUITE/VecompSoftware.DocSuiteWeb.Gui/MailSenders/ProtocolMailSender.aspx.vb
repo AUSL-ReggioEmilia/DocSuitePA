@@ -2,7 +2,6 @@
 Imports System.Linq
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Model.ExternalModels
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
@@ -14,8 +13,6 @@ Public Class ProtocolMailSender
 
     Private protocol As Protocol = Nothing
     Private Const CURRENT_PAGE_NAME As String = "ProtocolMailSender"
-    Private Const IP4D_SUBJECT As String = "IP4D - Protocollo {0} del {1:dd/MM/yyyy}"
-    Private Const IP4D_ACTION As String = "IP4D"
 #End Region
 
 #Region " Properties "
@@ -44,12 +41,6 @@ Public Class ProtocolMailSender
     Private ReadOnly Property OverridePreviousPageUrl As Boolean
         Get
             Return Request.QueryString.GetValueOrDefault("overridepreviouspageurl", False)
-        End Get
-    End Property
-
-    Private ReadOnly Property IsIP4DAction As Boolean
-        Get
-            Return Action.Eq(IP4D_ACTION)
         End Get
     End Property
 
@@ -109,15 +100,6 @@ Public Class ProtocolMailSender
         End If
 
     End Sub
-    Private Sub MailSenderControl_IP4DSent(sender As Object, e As IP4DSentEventArgs) Handles MailSenderControl.IP4DSent
-        If e.IP4DModel Is Nothing Then
-            Exit Sub
-        End If
-
-        For Each recipient As ExternalViewerContactModel In e.IP4DModel.Recipients
-            Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PO, String.Format("Spedito a IP4D {0}({1}-{2}).", recipient.Name, recipient.Email, recipient.Account))
-        Next
-    End Sub
 
 #End Region
 
@@ -143,11 +125,9 @@ Public Class ProtocolMailSender
                 Next
                 MailSenderControl.Recipients = mailRecipients
             End If
-            If Not IsIP4DAction Then
-                MailSenderControl.SubjectValue = previous.Subject
-                MailSenderControl.BodyValue = previous.Body
-                MailSenderControl.Documents = previous.Documents
-            End If
+            MailSenderControl.SubjectValue = previous.Subject
+            MailSenderControl.BodyValue = previous.Body
+            MailSenderControl.Documents = previous.Documents
 
             ' Imposto il ritorno saltando 1 livello (se richiesto dalla request)
             If OverridePreviousPageUrl Then
@@ -157,7 +137,6 @@ Public Class ProtocolMailSender
                     PreviousPageUrl = previousBasePage.PreviousPageUrl
                 End If
             End If
-
 
             If DocSuiteContext.Current.PrivacyEnabled AndAlso FromViewer AndAlso previous.Documents.Count = 0 Then
                 Dim fullMessage As String = String.Concat("Attenzione: solo i documenti con un livello di ", PRIVACY_LABEL, " adeguato vengono allegati alla mail.\r\nL'utente non risulta avere un livello di ", PRIVACY_LABEL, " coerente con alcun documento.")
@@ -172,24 +151,11 @@ Public Class ProtocolMailSender
             ' Se arriva da una pagina che non implementa ISendMail
             MailSenderControl.SenderDescriptionValue = CommonInstance.UserDescription
             MailSenderControl.SenderEmailValue = CommonInstance.UserMail
-            If Not IsIP4DAction Then
-                MailSenderControl.SubjectValue = MailFacade.GetProtocolSubject(CurrentProtocol)
-                MailSenderControl.BodyValue = MailFacade.GetProtocolBody(CurrentProtocol)
-                MailSenderControl.Documents = ProtocolFacade.GetAllDocuments(CurrentProtocol)
-            End If
+            MailSenderControl.SubjectValue = MailFacade.GetProtocolSubject(CurrentProtocol)
+            MailSenderControl.BodyValue = MailFacade.GetProtocolBody(CurrentProtocol)
+            MailSenderControl.Documents = ProtocolFacade.GetAllDocuments(CurrentProtocol)
         Else
             Throw New DocSuiteException("Errore pagina di invio mail", "Impossibile inizializzare la mail di invio")
-        End If
-
-        If IsIP4DAction Then
-            MailSenderControl.IsIP4DEnabled = IsIP4DAction
-            MailSenderControl.SubjectValue = String.Format(IP4D_SUBJECT, CurrentProtocol.FullNumber, CurrentProtocol.RegistrationDate)
-            MailSenderControl.AuthorizationsVisibility = False
-            MailSenderControl.UDYear = CurrentProtocol.Year
-            MailSenderControl.UDNumber = CurrentProtocol.Number
-            MailSenderControl.UDId = CurrentProtocol.UniqueId
-            MailSenderControl.UDRegistrationUser = CurrentProtocol.RegistrationUser
-            MailSenderControl.UDRegistrationDate = CurrentProtocol.RegistrationDate
         End If
 
         If ProtocolEnv.DeleteMultipleMailRecipientPages.Contains(CURRENT_PAGE_NAME) Then
@@ -198,13 +164,13 @@ Public Class ProtocolMailSender
 
         Dim recipients As IList(Of ContactDTO) = New List(Of ContactDTO)
 
-        If LoadRecipients AndAlso CurrentProtocol IsNot Nothing AndAlso CurrentProtocol.Roles IsNot Nothing AndAlso CurrentProtocol.Roles.Count > 0 AndAlso Not IsIP4DAction AndAlso Not SendToUsers Then
+        If LoadRecipients AndAlso CurrentProtocol IsNot Nothing AndAlso CurrentProtocol.Roles IsNot Nothing AndAlso CurrentProtocol.Roles.Count > 0 AndAlso Not SendToUsers Then
             If ProtocolEnv.MailRecipientsSelectionEnabled Then
                 Dim roleIds As String = String.Join("|", CurrentProtocol.Roles.Select(Function(r) r.Role.Id))
                 Dim parameters As String = String.Concat("&Roles=", roleIds)
-                If Facade.ProtocolLogFacade.CountMailRolesLogs(CurrentProtocol.UniqueId) > 0 Then
+                If Facade.ProtocolLogFacade.CountMailRolesLogs(CurrentProtocol.Id) > 0 Then
                     'preparo gli id dei settori ai quali è già stata inviata un'e-mail
-                    Dim logs As IList(Of ProtocolLog) = Facade.ProtocolLogFacade.GetMailRolesLogs(CurrentProtocol.UniqueId)
+                    Dim logs As IList(Of ProtocolLog) = Facade.ProtocolLogFacade.GetMailRolesLogs(CurrentProtocol.Id)
                     Dim sendingMailRoles As IList(Of Role) = CurrentProtocol.Roles.Where(Function(r) logs.Any(Function(l) l.LogDescription.Contains(String.Concat("Spedito al settore ", r.Role.Name)))).Select(Function(t) t.Role).ToList()
                     Dim sentRoleIDs As String = String.Join("|", sendingMailRoles.Select(Function(r) r.Id))
                     parameters = String.Concat(parameters, "&Sent=", sentRoleIDs)
@@ -256,7 +222,7 @@ Public Class ProtocolMailSender
                 Next
             End If
             MailSenderControl.SubjectValue = String.Format(ProtocolEnv.ProtocolMailAuthExternalViewerSubject, protocol.FullNumber)
-            MailSenderControl.BodyValue = String.Format(ProtocolEnv.ProtocolMailAuthExternalViewerBody, protocol.Container.Name, DocSuiteContext.Current.User.FullUserName, protocol.FullNumber, String.Format(DocSuiteContext.Current.ProtocolEnv.ExternalViewerMyDocuments, CurrentProtocol.UniqueId))
+            MailSenderControl.BodyValue = String.Format(ProtocolEnv.ProtocolMailAuthExternalViewerBody, protocol.Container.Name, DocSuiteContext.Current.User.FullUserName, protocol.FullNumber, String.Format(DocSuiteContext.Current.ProtocolEnv.ExternalViewerMyDocuments, CurrentProtocol.Id))
         End If
 
         MailSenderControl.Recipients = recipients
@@ -265,13 +231,13 @@ Public Class ProtocolMailSender
             MailSenderControl.MailWithPasswordBody = String.Concat("La password per visualizzare i documenti del protocollo ", CurrentProtocol.FullNumber, " è: ")
         End If
 
-        MailSenderControl.EnableAttachment = DocSuiteContext.Current.GetEnableAttachmentByPage("ProtocolMailSender") AndAlso Not IsIP4DAction
+        MailSenderControl.EnableAttachment = DocSuiteContext.Current.GetEnableAttachmentByPage("ProtocolMailSender")
         MailSenderControl.DataBind()
     End Sub
 
     Private Sub MailSenderControlEvent(sender As Object, e As EventArgs) Handles MailSenderControl.CancelByUser, MailSenderControl.ConfirmByUser
         If RedirectToProtocolSummary Then
-            Response.Redirect("~/Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(String.Concat("Type=Prot&Year=", CurrentProtocol.Year, "&Number=", CurrentProtocol.Number)))
+            Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"Type=Prot&UniqueId={CurrentProtocol.Id}")}")
         Else
             Response.Redirect(PreviousPageUrl)
         End If

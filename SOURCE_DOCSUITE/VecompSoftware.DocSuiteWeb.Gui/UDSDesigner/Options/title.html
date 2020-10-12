@@ -53,6 +53,12 @@
             <label for="HideRegistrationIdentifier">
                 <input id="HideRegistrationIdentifier " type="checkbox" rv-checked="ctrl.hideRegistrationIdentifier"> Nascondi numero registrazione
             </label>
+            <label for="StampaConformeEnabled">
+                <input id="StampaConformeEnabled" type="checkbox" rv-checked="ctrl.stampaConformeEnabled"> Abilita funzionalit&agrave; copia conforme
+            </label>
+            <label for="ShowArchiveInProtocolSummaryEnabled">
+                <input id="ShowArchiveInProtocolSummaryEnabled" type="checkbox" rv-checked="ctrl.showArchiveInProtocolSummaryEnabled"> Abilita visualizzazione archivio nel sommario del protocollo
+            </label>
 
         </div>
 
@@ -69,6 +75,12 @@
             <label for="enabledModifySubject">
                 <input id="modifyEnable" type="checkbox" rv-checked="ctrl.modifyEnable"> Abilita modifica oggetto
             </label>
+            <label for="showLastChangedDate">
+                <input id="showLastChangedDate" type="checkbox" rv-checked="ctrl.showLastChangedDate"> Mostra data ultima modifica
+            </label>
+            <label for="showLastChangedUser">
+                <input id="showLastChangedUser" type="checkbox" rv-checked="ctrl.showLastChangedUser"> Mostra utente ultima modifica
+            </label>
 
         </div>
     </div>
@@ -82,10 +94,8 @@
                 <input id="enabledPECButton" type="checkbox" rv-checked="ctrl.enabledPECButton" rv-disabled="true"> Invio PEC
             </label>
 
-
-
             <label for="enabledMailButton">
-                <input id="enabledMailButton" type="checkbox" rv-checked="ctrl.enabledMailButton"> Invio Mail
+                <input id="enabledMailButton" type="checkbox" rv-checked="ctrl.enabledMailButton"> Invio email
             </label>
 
         </div>
@@ -93,9 +103,8 @@
         <div class="controls col-sm-5">
 
             <label for="enabledMailRoleButton">
-                <input id="enabledMailRoleButton" type="checkbox" rv-checked="ctrl.enabledMailRoleButton" rv-enabled="ctrl.visibleMailButton"> Invio Mail Settori
+                <input id="enabledMailRoleButton" type="checkbox" rv-checked="ctrl.enabledMailRoleButton" rv-enabled="ctrl.visibleMailButton"> Invio email settori
             </label>
-
 
             <label for="enabledLinkButton">
                 <input id="enabledLinkButton" type="checkbox" rv-checked="ctrl.enabledLinkButton"> Collegamento
@@ -121,12 +130,12 @@
         </div>
         <div class="controls col-sm-3">
             <label for="categoryDefaultEnabled">
-                <input id="categoryDefaultEnabled" type="checkbox" rv-checked="ctrl.categoryDefaultEnabled"> Imposta Default
+                <input id="categoryDefaultEnabled" type="checkbox" rv-checked="ctrl.categoryDefaultEnabled"> Imposta default
             </label>
         </div>
         <div class="controls col-sm-3">
             <label for="categorySearchable">
-                <input id="categorySearchable" type="checkbox" rv-checked="ctrl.categorySearchable"> Visibile in ricerca
+                <input id="categorySearchable" type="checkbox" rv-checked="ctrl.categorySearchable" checked="checked" disabled="disabled"> Visibile in ricerca
             </label>
         </div>
         <div class="controls col-sm-3">&nbsp;</div>

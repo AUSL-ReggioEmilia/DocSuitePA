@@ -18,6 +18,7 @@ import CategoryFascicleViewModel = require('App/ViewModels/Commons/CategoryFasci
 import FascicleType = require('App/Models/Fascicles/FascicleType');
 import MetadataRepositoryModel = require('App/Models/Commons/MetadataRepositoryModel');
 import AjaxModel = require('App/Models/AjaxModel');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 declare var Page_IsValid: any;
 class FascPeriodInserimento extends FascicleBase {
@@ -75,7 +76,7 @@ class FascPeriodInserimento extends FascicleBase {
 
     }
 
-    btmConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    btmConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonCancelEventArgs) => {
         if (!Page_IsValid) {
             eventArgs.set_cancel(true);
             return;
@@ -100,7 +101,7 @@ class FascPeriodInserimento extends FascicleBase {
                         if (FascicleType[categoryFascicle.FascicleType] == FascicleType.Period) {
                             $(document).queue((next) => {
                                 newFascicle.DSWEnvironment = categoryFascicle.Environment;
-                                this._fascicleService.insertFascicle(newFascicle,
+                                this._fascicleService.insertFascicle(newFascicle, null,
                                     (data: any) => {
                                         next();
                                     },
@@ -127,17 +128,18 @@ class FascPeriodInserimento extends FascicleBase {
     }
 
 
-    insertCallback(metadataModel: string): void {
+    insertCallback(metadataDesignerModel: string, metadataValueModel: string): void {
         let uscFascInsert: UscFascicleInsert = <UscFascicleInsert>$("#".concat(this._uscFascInsertId)).data();
         if (!jQuery.isEmptyObject(uscFascInsert)) {
             let fascicle: FascicleModel = new FascicleModel;
             fascicle = uscFascInsert.getFascicle();
 
-            if (!!metadataModel) {
-                fascicle.MetadataValues = metadataModel;
-                if (sessionStorage.getItem("MetadataRepository")) {
+            if (!!metadataValueModel) {
+                fascicle.MetadataValues = metadataValueModel;
+                fascicle.MetadataDesigner = metadataDesignerModel;
+                if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY)) {
                     let metadataRepository: MetadataRepositoryModel = new MetadataRepositoryModel();
-                    metadataRepository.UniqueId = sessionStorage.getItem("MetadataRepository");
+                    metadataRepository.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
                     fascicle.MetadataRepository = metadataRepository;
                 }
             }
@@ -149,7 +151,7 @@ class FascPeriodInserimento extends FascicleBase {
     insertFascicle(fascicle: FascicleModel): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
         try {
-            this._fascicleService.insertFascicle(fascicle,
+            this._fascicleService.insertFascicle(fascicle, null,
                 (data: any) => {
                     promise.resolve();
                 },

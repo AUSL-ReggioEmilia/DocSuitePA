@@ -59,6 +59,15 @@ Partial Public Class TbltWorkflowPropertyGes
     Protected WithEvents tfvNameWorkflowProperty As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
+    '''rtbPropertyName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rtbPropertyName As Global.Telerik.Web.UI.RadTextBox
+
+    '''<summary>
     '''rntbValueInt control.
     '''</summary>
     '''<remarks>

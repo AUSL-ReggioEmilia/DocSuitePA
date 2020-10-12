@@ -60,6 +60,12 @@ Partial Public Class TbltSettoreGesGruppi
             End If
         End Set
     End Property
+    Protected ReadOnly Property ShowReadonlySecurityGroups As Boolean
+        Get
+            Dim _readOnlyMode As Boolean = Request.QueryString.GetValueOrDefault("ReadonlySecurityGroups", False)
+            Return _readOnlyMode
+        End Get
+    End Property
 
 #End Region
 
@@ -78,6 +84,7 @@ Partial Public Class TbltSettoreGesGruppi
 
     Private Sub btnConfermaDiritti_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnConfermaDiritti.Click
         Save()
+        SessionCheckedRolesDictionary = Nothing
         AjaxManager.ResponseScripts.Add("GetRadWindow().close();")
     End Sub
 
@@ -94,6 +101,11 @@ Partial Public Class TbltSettoreGesGruppi
 
     Private Sub UscGruppiNodeRemove(ByVal sender As Object, ByVal e As Telerik.Web.UI.RadTreeNodeEventArgs) Handles uscGruppi.NodeRemove
         InitializeRightsPanel(e.Node)
+        _NewCheckedRolesDictionary = SessionCheckedRolesDictionary
+        If _NewCheckedRolesDictionary.ContainsKey(e.Node.Value) Then
+            _NewCheckedRolesDictionary.Remove(e.Node.Value)
+        End If
+        SessionCheckedRolesDictionary = _NewCheckedRolesDictionary
         Facade.TableLogFacade.Insert("RoleGroup", LogEvent.DL, String.Format("Eliminato Gruppo {0}", e.Node.Text), CurrentRole.UniqueId)
         AjaxManager.ResponseScripts.Add("UpdateGroups();")
     End Sub
@@ -107,20 +119,14 @@ Partial Public Class TbltSettoreGesGruppi
     End Sub
 
     Private Sub Initialize()
-
         lblSeries.Text = ProtocolEnv.DocumentSeriesName
         chbSeries.Text = ProtocolEnv.DocumentSeriesName
-
-
-        ' Pratiche
-        If CommonInstance.DocmEnabled Then
+        ' Dossier
+        If DocSuiteContext.Current.ProtocolEnv.DossierEnabled Then
             lblDocm.Visible = True
             ckbDocm.Visible = True
             cblDocm.Visible = True
             cblDocm.Items.Clear()
-
-            AddItem(cblDocm, "Gestione Workflow", False)
-            AddItem(cblDocm, "Manager", False)
         End If
 
         ' Protocollo
@@ -162,6 +168,20 @@ Partial Public Class TbltSettoreGesGruppi
         InitializeGroups(CurrentGroupName)
     End Sub
 
+    Private Sub SetReadonlyCheckboxes()
+        ckbDocm.Enabled = False
+        For Each listItem As ListItem In cblDocm.Items
+            listItem.Enabled = False
+        Next
+
+        ckbProt.Enabled = False
+        For Each listItem As ListItem In cblProt.Items
+            listItem.Enabled = False
+        Next
+        ckbResl.Enabled = False
+        chbSeries.Enabled = False
+    End Sub
+
     Private Sub InitializeUserControlGroups()
         uscGruppi.CurrentGroups = CurrentRole.RoleGroups
         uscGruppi.ContainerName = CurrentRole.Name
@@ -172,6 +192,9 @@ Partial Public Class TbltSettoreGesGruppi
         Else
             uscGruppi.ContainerImageURL = ImagePath.SmallSubRole
         End If
+
+        uscGruppi.Visible = Not ShowReadonlySecurityGroups
+        btnConfermaDiritti.Visible = Not ShowReadonlySecurityGroups
     End Sub
 
     Protected Sub onCheck(ByVal sender As Object, ByVal e As EventArgs)
@@ -184,6 +207,10 @@ Partial Public Class TbltSettoreGesGruppi
         GetRoleRights(protRights, docmRights, reslRights, seriesRights)
 
         Dim node As RadTreeNode = uscGruppi.SelectedNode
+        If node Is Nothing Then
+            AjaxAlert("Selezionare un gruppo per l'attività")
+            Return
+        End If
 
         Dim GroupRoleList As List(Of String) = New List(Of String)
 
@@ -207,6 +234,9 @@ Partial Public Class TbltSettoreGesGruppi
     Private Sub InitializeGroups(ByVal groupName As String)
 
         InitializeRightsPanel(uscGruppi.SelectedNode)
+        If uscGruppi.SelectedNode.ParentNode Is Nothing Then
+            Return
+        End If
 
         If String.IsNullOrEmpty(groupName) Then
             ckbDocm.Checked = False
@@ -256,6 +286,10 @@ Partial Public Class TbltSettoreGesGruppi
 
         PopulateRoleRights(roleGroup.Id.ToString())
 
+        If ShowReadonlySecurityGroups Then
+            SetReadonlyCheckboxes()
+        End If
+
     End Sub
 
     Private Sub PopulateRoleRights(ByVal roleGroupUniqueId As String)
@@ -265,9 +299,7 @@ Partial Public Class TbltSettoreGesGruppi
 
         '-- Pratiche
         If ckbDocm.Visible Then
-            ckbDocm.Checked = GetDiritti(roleGroupRights.Item(0), DocumentRoleRightPositions.Enabled)
-            cblDocm.Items(0).Selected = GetDiritti(roleGroupRights.Item(0), DocumentRoleRightPositions.Workflow)
-            cblDocm.Items(1).Selected = GetDiritti(roleGroupRights.Item(0), DocumentRoleRightPositions.Manager)
+            ckbDocm.Checked = GetDiritti(roleGroupRights.Item(0), DossierRoleRightPositions.Enabled)
         End If
 
         '-- Protocollo
@@ -322,9 +354,7 @@ Partial Public Class TbltSettoreGesGruppi
 
         '-- Pratiche
         If ckbDocm.Visible Then
-            CommonUtil.GetInstance.SetGroupRight(docmRights, DocumentRoleRightPositions.Enabled, ckbDocm.Checked)
-            CommonUtil.GetInstance.SetGroupRight(docmRights, DocumentRoleRightPositions.Workflow, cblDocm.Items(0).Selected)
-            CommonUtil.GetInstance.SetGroupRight(docmRights, DocumentRoleRightPositions.Manager, cblDocm.Items(1).Selected)
+            CommonUtil.GetInstance.SetGroupRight(docmRights, DossierRoleRightPositions.Enabled, ckbDocm.Checked)
         End If
 
         '-- Atti
@@ -339,7 +369,7 @@ Partial Public Class TbltSettoreGesGruppi
     End Sub
 
     Private Sub InitializeRightsPanel(ByVal node As RadTreeNode)
-        pnlDiritti.Visible = node IsNot Nothing AndAlso node.ParentNode IsNot Nothing
+        pnlDiritti.Visible = ShowReadonlySecurityGroups OrElse (node IsNot Nothing AndAlso node.ParentNode IsNot Nothing)
     End Sub
 
     Private Sub AddItem(ByVal cbl As CheckBoxList, ByVal testo As String, ByVal selected As Boolean)
@@ -415,8 +445,8 @@ Partial Public Class TbltSettoreGesGruppi
                         rg.DocumentRights = _NewCheckedRolesDictionary.Item(groupId).Item(0)
                         Dim protRigths As String = _NewCheckedRolesDictionary.Item(groupId).Item(1)
                         rg.ProtocolRights = New RoleProtocolRights(protRigths)
-                        rg.ResolutionRights = _NewCheckedRolesDictionary.Item(groupId).Item(3)
-                        rg.DocumentSeriesRights = _NewCheckedRolesDictionary.Item(groupId).Item(2)
+                        rg.ResolutionRights = _NewCheckedRolesDictionary.Item(groupId).Item(2)
+                        rg.DocumentSeriesRights = _NewCheckedRolesDictionary.Item(groupId).Item(3)
                         FacadeFactory.Instance.RoleGroupFacade.UpdateOnly(rg)
                         uscGruppi.Refresh()
                     End If
@@ -428,7 +458,6 @@ Partial Public Class TbltSettoreGesGruppi
         End Try
 
         AjaxManager.ResponseScripts.Add("UpdateGroups();")
-        SessionCheckedRolesDictionary = Nothing
     End Sub
 
 #End Region

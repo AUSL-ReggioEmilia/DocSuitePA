@@ -67,17 +67,6 @@
                 </td>
             </tr>
         </table>
-        <%-- Securizzazione documenti --%>
-        <table class="datatable" id="pnlSecureDocument" runat="server">
-            <tr>
-                <th>Securizzazione documenti</th>
-            </tr>
-            <tr>
-                <td>
-                    <asp:CheckBox ID="chkSecureDocument" runat="server" Text="Abilita securizzazione documenti" />
-                </td>
-            </tr>
-        </table>
         <%--Conservazione Sostitutiva--%>
         <table class="datatable" id="pnlConservation" runat="server">
             <tr>

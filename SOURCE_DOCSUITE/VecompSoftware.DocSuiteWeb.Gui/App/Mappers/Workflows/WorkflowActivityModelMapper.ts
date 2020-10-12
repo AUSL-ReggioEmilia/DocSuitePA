@@ -31,7 +31,7 @@ class WorkflowActivityModelMapper implements IMapper<WorkflowActivityModel>{
         if (toMap.RegistrationDate) {
             toMap.RegistrationDateFormatted = moment(source.RegistrationDate).format("DD/MM/YYYY");
         }
-        
+        toMap.WorkflowActivityLogs = source.WorkflowActivityLogs;
         return toMap;
     }
 }

@@ -280,7 +280,7 @@ Partial Public Class uscSelezioneSettoreUtenti
 
     Private Function GetUsers(group As RoleGroup) As IList(Of AccountModel)
         If group.SecurityGroup IsNot Nothing Then
-            Return Facade.SecurityUsersFacade.GetUsersByGroup(group.SecurityGroup).Select(Function(f) New AccountModel(f.Account, f.Description, f.UserDomain)).ToList()
+            Return Facade.SecurityUsersFacade.GetUsersByGroup(group.SecurityGroup).Select(Function(f) New AccountModel(f.Account, f.Description, domain:=f.UserDomain)).ToList()
         End If
         Return New List(Of AccountModel)()
     End Function

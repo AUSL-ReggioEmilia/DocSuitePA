@@ -1,13 +1,15 @@
 ﻿/// <reference path="../scripts/typings/telerik/telerik.web.ui.d.ts" />
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
 
-import ServiceConfiguration = require("../App/Services/ServiceConfiguration");
-import RoleService = require("../App/Services/Commons/RoleService");
-import ServiceConfigurationHelper = require("../App/Helpers/ServiceConfigurationHelper");
-import RoleModel = require("../App/Models/Commons/RoleModel");
-import ImageHelper = require("../App/Helpers/ImageHelper");
-import UscRoleRestEventType = require("../App/Models/Commons/UscRoleRestEventType");
-import UscRoleRestConfiguration = require("../App/Models/Commons/UscRoleRestConfiguration");
+import ServiceConfiguration = require("App/Services/ServiceConfiguration");
+import RoleService = require("App/Services/Commons/RoleService");
+import ServiceConfigurationHelper = require("App/Helpers/ServiceConfigurationHelper");
+import RoleModel = require("App/Models/Commons/RoleModel");
+import ImageHelper = require("App/Helpers/ImageHelper");
+import UscRoleRestEventType = require("App/Models/Commons/UscRoleRestEventType");
+import UscRoleRestConfiguration = require("App/Models/Commons/UscRoleRestConfiguration");
+import VisibilityType = require("App/Models/Fascicles/VisibilityType");
+import DSWEnvironmentType = require("../App/Models/Workflows/WorkflowDSWEnvironmentType");
 
 declare var ValidatorEnable: any;
 class uscRoleRest {
@@ -20,12 +22,23 @@ class uscRoleRest {
     public btnExpandRolesId: string;
     public contentRowId: string;
     public multipleRoles: string;
+    public onlyMyRoles: string;
     public requiredValidationEnabled: string;
     public expanded: string;
+    public allDataButtonEnabled: string;
+    public removeAllDataButtonEnabled: string;
+    public raciButtonEnabled: boolean;
+    public fascicleVisibilityTypeButtonEnabled: boolean;
+    public entityId: string;
+    public entityType: string;
+    public loadAllRoles: boolean;
+    public dswEnvironmentType: string;
 
     public uscRoleRestEvents = UscRoleRestEventType;
 
-    private readonly _configurationRoleSessionKey: string;
+    private _configurationRoleSessionKey: string;
+    private readonly _roleValidationSessionKey: string;
+    private readonly _uscId: string;
 
     private _actionToolbar: Telerik.Web.UI.RadToolBar;
     private _rolesTree: Telerik.Web.UI.RadTreeView;
@@ -37,20 +50,29 @@ class uscRoleRest {
     private _isContentExpanded: boolean;
     private _rowContent: JQuery;
     private _initialRoleCollection: RoleModel[];
+    private _raciRoleCollection: RoleModel[] = <RoleModel[]>[];
 
     private static DISABLED_CSSCLASS: string = "node-disabled";
     private static BOLD_CSSCLASS: string = "dsw-text-bold";
+    private static RACI_ROLE_ICON: string = "../App_Themes/DocSuite2008/imgset16/Admin.png";
+    private static LOADED_EVENT: string = "onLoaded";
+    private static ADD_TOOLBAR_ACTION_KEYNAME = "add";
+    private static DELETE_TOOLBAR_ACTION_KEYNAME = "delete";
+    private static ADD_ALL_TOOLBAR_ACTION_KEYNAME = "addAll";
+    private static DELETE_ALL_TOOLBAR_ACTION_KEYNAME = "deleteAll";
+    private static SET_RACI_ROLE_TOOLBAR_ACTION_KEYNAME = "setRaciRole";
+    private static SET_FASCICLE_VISIBILITY_TYPE_TOOLBAR_ACTION_KEYNAME = "setFascicleVisibilityType";
+    public static NEED_ROLES_FROM_EXTERNAL_SOURCE: string = "onNeedRolesFromExternalSource";
 
-    private get _multipleRolesEnabled(): boolean
-    {
+    private _multipleRolesEnabled(): boolean {
         return JSON.parse(this.multipleRoles.toLowerCase());
     }
 
-    private get _requiredValidationEnabled(): boolean {
+    private _requiredValidationEnabled(): boolean {
         return JSON.parse(this.requiredValidationEnabled.toLowerCase());
     }
 
-    private get _expanded(): boolean {
+    private _expanded(): boolean {
         return JSON.parse(this.expanded.toLowerCase());
     }
 
@@ -63,25 +85,35 @@ class uscRoleRest {
             promiseCallback: (data: any, instanceId?: string) => JQueryPromise<any>
         };
 
-    private get toolbarActions(): Array<[string, () => void]> {
+    private toolbarActions(): Array<[string, () => void]> {
         let items: Array<[string, () => void]> = [
-            ["add", () => this.addRoles()],
-            ["delete", () => this.removeRole()]
+            [uscRoleRest.ADD_TOOLBAR_ACTION_KEYNAME, () => this.addRoles()],
+            [uscRoleRest.DELETE_TOOLBAR_ACTION_KEYNAME, () => this.removeRole()],
+            [uscRoleRest.ADD_ALL_TOOLBAR_ACTION_KEYNAME, () => this.addAllRoles()],
+            [uscRoleRest.DELETE_ALL_TOOLBAR_ACTION_KEYNAME, () => this.removeAllRoles()],
+            [uscRoleRest.SET_RACI_ROLE_TOOLBAR_ACTION_KEYNAME, () => this.setRaciRole()],
+            [uscRoleRest.SET_FASCICLE_VISIBILITY_TYPE_TOOLBAR_ACTION_KEYNAME, () => this.setFascicleVisibilityType()]
         ];
         return items;
     }
+
+    public static LOCAL_STORAGE_ROLE_REST: string = "uscRoleRest_setInitialRoleCollection";
 
     constructor(serviceConfigurations: ServiceConfiguration[], configuration: UscRoleRestConfiguration, uscId: string) {
         let roleServiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "Role");
         this._roleService = new RoleService(roleServiceConfiguration);
 
-        this._configurationRoleSessionKey = `${uscId}_configuration`;
-        sessionStorage[this._configurationRoleSessionKey] = JSON.stringify(configuration);
+        this._uscId = uscId;
+        this.setConfiguration(configuration);
+
+        this._roleValidationSessionKey = `${uscId}_validationState`;
+        sessionStorage.removeItem(this._roleValidationSessionKey);
     }
 
     public initialize(): void {
         this._actionToolbar = $find(this.actionToolbarId) as Telerik.Web.UI.RadToolBar;
         this._rolesTree = $find(this.rolesTreeId) as Telerik.Web.UI.RadTreeView;
+        this._rolesTree.add_nodeClicked(this.rolesTree_onNodeClick);
         this._windowManager = $find(this.windowManagerId) as Telerik.Web.UI.RadWindowManager;
         this._windowSelRole = $find(this.windowSelRoleId) as Telerik.Web.UI.RadWindow;
         this._rowContent = $("#".concat(this.contentRowId));
@@ -91,6 +123,33 @@ class uscRoleRest {
 
         this.bindControlsEvents();
         $(`#${this.pnlContentId}`).data(this);
+        $(`#${this.pnlContentId}`).triggerHandler(uscRoleRest.LOADED_EVENT);
+
+        let configuration: UscRoleRestConfiguration = this.getConfiguration();
+
+        if (!configuration.isReadOnlyMode && this._actionToolbar) {
+            this._actionToolbar.findItemByValue(uscRoleRest.ADD_ALL_TOOLBAR_ACTION_KEYNAME)
+                .set_visible(this.allDataButtonEnabled.toLowerCase() === "true" ? true : false);
+            this._actionToolbar.findItemByValue(uscRoleRest.DELETE_ALL_TOOLBAR_ACTION_KEYNAME)
+                .set_visible(this.removeAllDataButtonEnabled.toLowerCase() === "true" ? true : false);
+            this._actionToolbar.findItemByValue(uscRoleRest.SET_RACI_ROLE_TOOLBAR_ACTION_KEYNAME)
+                .set_visible(this.raciButtonEnabled);
+        }
+
+        if (this._actionToolbar) {
+            let btnFascicleVisibilityType = <Telerik.Web.UI.RadToolBarButton>this._actionToolbar
+                .findItemByValue(uscRoleRest.SET_FASCICLE_VISIBILITY_TYPE_TOOLBAR_ACTION_KEYNAME);
+            if (btnFascicleVisibilityType) {
+                btnFascicleVisibilityType.set_visible(this.fascicleVisibilityTypeButtonEnabled);
+            }
+        }
+
+        $(`#${this.pnlContentId}`).on(uscRoleRest.NEED_ROLES_FROM_EXTERNAL_SOURCE, (event, entityType: string, entityId: string) => {
+            if (entityType && entityId) {
+                this.addExternalSource(entityType, entityId);
+            }
+        });
+        $(`#${this.pnlContentId}`).triggerHandler(uscRoleRest.NEED_ROLES_FROM_EXTERNAL_SOURCE);
     }
 
     /**
@@ -109,15 +168,20 @@ class uscRoleRest {
      */
     public renderRolesTree = (roleCollection: RoleModel[]): void => {
         this._initialRoleCollection = roleCollection ? [...roleCollection] : [];
-        this.enableValidators(roleCollection.length === 0 && this._requiredValidationEnabled ? true : false);
-        this.populateRolesTreeView(roleCollection, true, this._expanded);
+        this.enableValidators(roleCollection.length === 0 && this._requiredValidationEnabled() ? true : false);
+        this.populateRolesTreeView(roleCollection, true, this._expanded());
     }
 
     /**
      * Displays tree view validation error
      * */
-    private enableValidators = (state: boolean) => {
-        ValidatorEnable($get(this.validatorAnyNodeId), state);
+    public enableValidators = (state: boolean) => {
+        let behaviourValidationConfiguration: string = sessionStorage.getItem(this._roleValidationSessionKey);
+        let behaviourValidationConfigurationValue: boolean = state;
+        if (behaviourValidationConfiguration) {
+            behaviourValidationConfigurationValue = behaviourValidationConfiguration.toLowerCase() == "true";
+        }
+        ValidatorEnable($get(this.validatorAnyNodeId), behaviourValidationConfigurationValue);
     }
 
     /**
@@ -129,6 +193,14 @@ class uscRoleRest {
             configuration = JSON.parse(sessionStorage[this._configurationRoleSessionKey]);
         }
         return configuration;
+    }
+
+    /**
+     * Set the configuration object in session storage
+    */
+    setConfiguration(configuration: UscRoleRestConfiguration): void {
+        this._configurationRoleSessionKey = `${this._uscId}_configuration`;
+        sessionStorage[this._configurationRoleSessionKey] = JSON.stringify(configuration);
     }
 
     /**
@@ -148,6 +220,10 @@ class uscRoleRest {
         });
     }
 
+    public clearRoleTreeView(): void {
+        this._rolesTree.get_nodes().clear();
+    }
+
     /**
      * Creates and returns a RadTreeNode based on the given role model
      * @param roleModel
@@ -156,7 +232,11 @@ class uscRoleRest {
     private createTreeNodeFromRoleModel(roleModel: RoleModel, isReadOnlyMode: boolean, isExpanded: boolean): Telerik.Web.UI.RadTreeNode {
         let treeNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
         let treeNodeDescription: string = isReadOnlyMode && roleModel.ActiveFrom ? `${roleModel.Name} - autorizzato il ${roleModel.ActiveFrom}` : `${roleModel.Name}`;
-        let treeNodeImageUrl: string = roleModel.IdRoleFather === null ? ImageHelper.roleRootNodeImageUrl : ImageHelper.roleChildNodeImageUrl;
+        let treeNodeImageUrl: string = this._raciRoleCollection && this._raciRoleCollection.some(x => x.IdRole === roleModel.IdRole)
+            ? uscRoleRest.RACI_ROLE_ICON
+            : roleModel.IdRoleFather === null || roleModel.IdRoleFather === undefined
+                ? ImageHelper.roleRootNodeImageUrl
+                : ImageHelper.roleChildNodeImageUrl;
 
         treeNode.set_text(treeNodeDescription);
         treeNode.set_value(`${roleModel.IdRole}`);
@@ -226,7 +306,7 @@ class uscRoleRest {
      */
     protected actionToolbar_ButtonClicked = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
         let currentActionButtonItem: Telerik.Web.UI.RadToolBarButton = args.get_item() as Telerik.Web.UI.RadToolBarButton;
-        let currentAction: () => void = this.toolbarActions.filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
+        let currentAction: () => void = this.toolbarActions().filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
             .map((item: [string, () => void]) => item[1])[0];
         currentAction();
     }
@@ -235,13 +315,13 @@ class uscRoleRest {
      * Registers event handlers of UI controls
      * */
     private bindControlsEvents = (): void => {
-        if(this._actionToolbar)
+        if (this._actionToolbar)
             this._actionToolbar.add_buttonClicked(this.actionToolbar_ButtonClicked);
 
         if (this._btnExpandRoles) {
             this._btnExpandRoles.addCssClass("dsw-arrow-down");
             this._btnExpandRoles.add_clicking(this.btnExpandRoles_OnClick);
-        }  
+        }
 
         this._windowSelRole.add_close(this.bindNewRolesToTree);
     }
@@ -263,14 +343,22 @@ class uscRoleRest {
 
         let parentUpdateCallback: JQueryPromise<any> = this._parentPageEventHandlersDictionary[this.uscRoleRestEvents.NewRolesAdded](newRoles, this._instanceId);
 
-        parentUpdateCallback.then((data: any) => {
-            if (this._requiredValidationEnabled)
+        parentUpdateCallback.then((existedRole: RoleModel, keepChanges: boolean = false) => {
+            if (this._requiredValidationEnabled())
                 this.enableValidators(false);
+            if (keepChanges && existedRole) {
+                return;
+            }
+            if (existedRole && this._multipleRolesEnabled()) {
+                newRoles = newRoles.filter(x => x.IdRole !== existedRole.IdRole);
+            }
 
-            this._initialRoleCollection = this._multipleRolesEnabled
-                    ? [...this._initialRoleCollection, ...newRoles]
-                    : [newRoles[0]];
-            this.populateRolesTreeView(newRoles, !this._multipleRolesEnabled, true);
+            this._initialRoleCollection = this._multipleRolesEnabled()
+                ? [...this._initialRoleCollection, ...newRoles]
+                : newRoles.length > 0
+                    ? [newRoles[0]]
+                    : [];
+            this.populateRolesTreeView(newRoles, !this._multipleRolesEnabled(), true);
         });
     }
 
@@ -291,7 +379,7 @@ class uscRoleRest {
                 this.removeNodeFromTree(selectedNodeToDelete, selectedNodeToDelete.get_parent());
                 this._rolesTree.commitChanges();
 
-                if (this._requiredValidationEnabled && this._rolesTree.get_allNodes().length === 0) {
+                if (this._requiredValidationEnabled() && this._rolesTree.get_allNodes().length === 0) {
                     this.enableValidators(true);
                 }
             });
@@ -323,15 +411,28 @@ class uscRoleRest {
     /**
      * Opens roles selection window
      * */
-    private addRoles = () => {
-        let url: string = `../UserControl/CommonSelRoleRest.aspx?Type=Comm&MultipleRoles=${this.multipleRoles}`;
+    private addRoles() {
+        let url: string = `../UserControl/CommonSelRoleRest.aspx?Type=Comm&MultipleRoles=${this.multipleRoles}&OnlyMyRoles=${this.onlyMyRoles}`;
+        if (this.entityType) {
+            url = `${url}&EntityType=${this.entityType}`;
+        }
+        if (this.entityId) {
+            url = `${url}&EntityId=${this.entityId}`;
+        }
+        if (this.loadAllRoles) {
+            url = `${url}&LoadAllRoles=${this.loadAllRoles}`;
+        }
+        if (this.dswEnvironmentType == DSWEnvironmentType[DSWEnvironmentType.Document]) {
+            url = `${url}&DSWEnvironment=${this.dswEnvironmentType}`;
+        }
+        localStorage.setItem(uscRoleRest.LOCAL_STORAGE_ROLE_REST, JSON.stringify(this._initialRoleCollection));
         this._windowManager.open(url, "windowSelRole", undefined);
     }
 
     /*
      * Expands or hides the tree view
      * */
-    private btnExpandRoles_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.RadButtonCancelEventArgs) => {
+    private btnExpandRoles_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         if (this._isContentExpanded) {
             this._rowContent.hide();
@@ -351,6 +452,142 @@ class uscRoleRest {
         this._actionToolbar.get_items().forEach(function (item: Telerik.Web.UI.RadToolBarItem) {
             item.set_enabled(isVisible);
         });
+    }
+
+    /**
+     * Add all roles from the tree view
+     * */
+    private addAllRoles = () => {
+        this._windowManager.radconfirm("Sei sicuro di voler aggiungere tutti i settori?", (arg) => {
+            if (arg) {
+                this._parentPageEventHandlersDictionary[this.uscRoleRestEvents.AllRolesAdded]();
+            }
+        }, 400, 300);
+    }
+
+    /**
+     * Removes all roles from the tree view
+     * */
+    private removeAllRoles = () => {
+        this._windowManager.radconfirm("Sei sicuro di voler eliminare tutti i settori?", (arg) => {
+            if (arg) {
+                let deleteCallback: JQueryPromise<any> = this._parentPageEventHandlersDictionary[this.uscRoleRestEvents.AllRolesDeleted]();
+
+                deleteCallback.then(() => this._rolesTree.get_nodes().clear());
+            }
+        }, 400, 300);
+    }
+
+    /**
+     * Set the selected role from tree view as RACI role
+     * */
+    private setRaciRole = () => {
+        let selectedNode: Telerik.Web.UI.RadTreeNode = this._rolesTree.get_selectedNode();
+        selectedNode.set_imageUrl(uscRoleRest.RACI_ROLE_ICON);
+        this.disableRaciRoleButton();
+        let selectedRole: RoleModel = this._initialRoleCollection.filter(x => x.IdRole === +selectedNode.get_value())[0];
+        this._raciRoleCollection.push(selectedRole);
+    }
+
+    private setFascicleVisibilityType = () => {
+        let btnFascicleVisibilityType = <Telerik.Web.UI.RadToolBarButton>this._actionToolbar
+            .findItemByValue(uscRoleRest.SET_FASCICLE_VISIBILITY_TYPE_TOOLBAR_ACTION_KEYNAME);
+        if (btnFascicleVisibilityType && btnFascicleVisibilityType.get_visible()) {
+            let checked: boolean = <any>btnFascicleVisibilityType.get_checked();
+            let visibilityType: VisibilityType = checked ? VisibilityType.Accessible : VisibilityType.Confidential;
+            this._parentPageEventHandlersDictionary[this.uscRoleRestEvents.SetFascicleVisibilityType](visibilityType);
+        }
+    }
+
+    disableButtons(): void {
+        if (this._actionToolbar) {
+            this._actionToolbar.get_items().forEach(function (item: Telerik.Web.UI.RadToolBarItem) {
+                item.set_enabled(false);
+            });
+        }
+    }
+
+    enableButtons(): void {
+        if (this._actionToolbar) {
+            this._actionToolbar.get_items().forEach(function (item: Telerik.Web.UI.RadToolBarItem) {
+                item.set_enabled(true);
+            });
+        }
+    }
+
+    existsRole(roles: RoleModel[]): RoleModel {
+        for (let role of roles) {
+            if (this.exists(role.IdRole)) {
+                return role;
+            }
+        }
+        return null;
+    }
+
+    private exists(id: number): boolean {
+        return this._rolesTree.get_allNodes()
+            .filter(x => x.get_contentCssClass() !== uscRoleRest.DISABLED_CSSCLASS && +x.get_value() === id).length > 0;
+    }
+
+    addExternalSource(entityType: string, entityId: string) {
+        this.entityType = entityType;
+        this.entityId = entityId;
+    }
+
+    forceBehaviourValidationState(state: boolean): void {
+        sessionStorage[this._roleValidationSessionKey] = state;
+    }
+
+    rolesTree_onNodeClick = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => {
+        if (args.get_node().get_contentCssClass() === uscRoleRest.DISABLED_CSSCLASS) {
+            this.disableRaciRoleButton();
+            this._actionToolbar.findItemByValue(uscRoleRest.DELETE_TOOLBAR_ACTION_KEYNAME).disable();
+        }
+        else if (args.get_node().get_imageUrl() === uscRoleRest.RACI_ROLE_ICON) {
+            this.disableRaciRoleButton();
+        }
+        else {
+            this._actionToolbar.findItemByValue(uscRoleRest.SET_RACI_ROLE_TOOLBAR_ACTION_KEYNAME).enable();
+            this._actionToolbar.findItemByValue(uscRoleRest.DELETE_TOOLBAR_ACTION_KEYNAME).enable();
+        }
+    }
+
+    disableRaciRoleButton = () => {
+        this._actionToolbar.findItemByValue(uscRoleRest.SET_RACI_ROLE_TOOLBAR_ACTION_KEYNAME).disable();
+    }
+
+    setRaciRoles = (raciRoles: RoleModel[]) => {
+        this._raciRoleCollection = raciRoles;
+    }
+
+    getRaciRoles = (): RoleModel[] => {
+        return this._raciRoleCollection;
+    }
+
+    setFascicleVisibilityTypeButtonCheck = (fascicleVisibilityType: string) => {
+        let btnFascicleVisibilityType = <Telerik.Web.UI.RadToolBarButton>this._actionToolbar
+            .findItemByValue(uscRoleRest.SET_FASCICLE_VISIBILITY_TYPE_TOOLBAR_ACTION_KEYNAME);
+        if (btnFascicleVisibilityType && btnFascicleVisibilityType.get_visible()) {
+            btnFascicleVisibilityType.set_checked(fascicleVisibilityType === VisibilityType[VisibilityType.Accessible]);
+        }
+    }
+
+    setVisibilityOnFascicleVisibilityTypeButton = (fascicleVisibilityTypeButtonVisibility: boolean) => {
+        let btnFascicleVisibilityType = <Telerik.Web.UI.RadToolBarButton>this._actionToolbar
+            .findItemByValue(uscRoleRest.SET_FASCICLE_VISIBILITY_TYPE_TOOLBAR_ACTION_KEYNAME);
+        if (btnFascicleVisibilityType) {
+            btnFascicleVisibilityType.set_visible(fascicleVisibilityTypeButtonVisibility);
+        }
+    }
+
+    public setToolbarRoleVisibility(isVisible: boolean): void {
+        if (this._actionToolbar) {
+            if (isVisible) {
+                $(`#${this.actionToolbarId}`).show();}
+            else {
+                $(`#${this.actionToolbarId}`).hide();
+            }
+        }
     }
 }
 

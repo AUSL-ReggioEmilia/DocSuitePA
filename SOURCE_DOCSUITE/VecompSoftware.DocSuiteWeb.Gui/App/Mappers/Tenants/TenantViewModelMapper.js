@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "../BaseMapper"], function (require, exports, BaseMapper) {
+define(["require", "exports", "../BaseMapper", "./TenantAOOModelMapper"], function (require, exports, BaseMapper, TenantAOOModelMapper) {
     var TenantViewModelMapper = /** @class */ (function (_super) {
         __extends(TenantViewModelMapper, _super);
         function TenantViewModelMapper() {
@@ -32,6 +32,8 @@ define(["require", "exports", "../BaseMapper"], function (require, exports, Base
             toMap.RegistrationDate = source.RegistrationDate;
             toMap.LastChangedUser = source.LastChangedUser;
             toMap.LastChangedDate = source.LastChangedDate;
+            toMap.TenantAOO = source.TenantAOO ? new TenantAOOModelMapper().Map(source.TenantAOO) : null;
+            toMap.TenantTypology = source.TenantTypology;
             return toMap;
         };
         return TenantViewModelMapper;

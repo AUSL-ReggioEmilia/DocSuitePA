@@ -99,8 +99,12 @@ module UdsDesigner {
         subjectResultVisibility: boolean;
         categoryResultVisibility: boolean;
         hideRegistrationIdentifier: boolean;
+        stampaConformeEnabled: boolean;
+        showArchiveInProtocolSummaryEnabled: boolean;
         requiredRevisionUDSRepository: boolean;
         modifyEnable: boolean;
+        showLastChangedDate: boolean;
+        showLastChangedUser: boolean;
         selectedItem: number = 1;
 
         constructor() {
@@ -131,9 +135,13 @@ module UdsDesigner {
             this.idContainer = "";
             this.enableWorkflowCheckBox = !($("#workflowManager")[0].getAttribute("value") == 'True');
             this.modifyEnable = true;
+            this.showLastChangedDate = false;
+            this.showLastChangedUser = false;
             this.subjectResultVisibility = true;
             this.categoryResultVisibility = true;
             this.hideRegistrationIdentifier = false;
+            this.stampaConformeEnabled = true;
+            this.showArchiveInProtocolSummaryEnabled = true;
             this.requiredRevisionUDSRepository = false;
 
             this.initializeEvents();
@@ -166,6 +174,8 @@ module UdsDesigner {
             this.containerSearchable = obj.containerSearchable;
             this.createContainer = obj.createContainer;
             this.hideRegistrationIdentifier = obj.hideRegistrationIdentifier;
+            this.stampaConformeEnabled = obj.stampaConformeEnabled;
+            this.showArchiveInProtocolSummaryEnabled = obj.showArchiveInProtocolSummaryEnabled;
             this.requiredRevisionUDSRepository = obj.requiredRevisionUDSRepository;
             if (this.createContainer) {
                 this.idContainer = "";
@@ -179,6 +189,8 @@ module UdsDesigner {
             this.subjectResultVisibility = obj.subjectResultVisibility;
             this.categoryResultVisibility = obj.categoryResultVisibility;
             this.modifyEnable = obj.modifyEnable;
+            this.showLastChangedDate = obj.showLastChangedDate;
+            this.showLastChangedUser = obj.showLastChangedUser;
         }
 
         getValues(): any {
@@ -217,12 +229,16 @@ module UdsDesigner {
                 signatureMetadataEnabled: this.signatureMetadataEnabled,
                 enabledCancelMotivation: this.enabledCancelMotivation,
                 hideRegistrationIdentifier: this.hideRegistrationIdentifier,
+                stampaConformeEnabled: this.stampaConformeEnabled,
+                showArchiveInProtocolSummaryEnabled: this.showArchiveInProtocolSummaryEnabled, 
                 requiredRevisionUDSRepository: this.requiredRevisionUDSRepository,
                 enableAutomaticSignature: this.enableManualSignature,
                 enableWorkflowCheckBox: this.enableWorkflowCheckBox,
                 subjectResultVisibility: this.subjectResultVisibility,
                 categoryResultVisibility: this.categoryResultVisibility,
-                modifyEnable: this.modifyEnable
+                modifyEnable: this.modifyEnable,
+                showLastChangedDate: this.showLastChangedDate,
+                showLastChangedUser: this.showLastChangedUser
             }
         }
 
@@ -535,6 +551,8 @@ module UdsDesigner {
         columns: number;
         rows: number;
         format: string;
+        minValue?: number;
+        maxValue?: number;
 
         constructor() {
             super();
@@ -551,6 +569,8 @@ module UdsDesigner {
             this.resultVisibility = false;
             this.resultPosition = 0;
             this.format = "";
+            this.minValue = null;
+            this.maxValue = null;
         }
 
 
@@ -569,6 +589,8 @@ module UdsDesigner {
             this.columns = obj.columns;
             this.rows = obj.rows;
             this.format = obj.format;
+            this.minValue = obj.minValue;
+            this.maxValue = obj.maxValue;
         }
 
         getValues(): any {
@@ -587,7 +609,9 @@ module UdsDesigner {
                 resultPosition: this.resultPosition,
                 columns: this.columns,
                 rows: this.rows,
-                format: this.format
+                format: this.format,
+                minValue: this.minValue,
+                maxValue: this.maxValue
             }
         }
 
@@ -856,12 +880,11 @@ module UdsDesigner {
         copyProtocol: boolean;
         copyResolution: boolean;
         copySeries: boolean;
+        copyUDS: boolean;
         isLoadingArchives: boolean;
         signRequired: boolean;
         createBiblosArchive: boolean;
         documentDeletable: boolean;
-        dematerialisationEnabled: boolean;
-        enableDematerialisationCheckBox: boolean;
         columns: number;
         rows: number;
 
@@ -876,21 +899,20 @@ module UdsDesigner {
             this.searchable = true;
             this.required = true;
 
-            this.enableMultifile = true;
+            this.enableMultifile = false;
             this.enableUpload = true;
             this.enableScanner = true;
             this.enableSign = true;
             this.copyProtocol = false;
             this.copyResolution = false;
             this.copySeries = false;
+            this.copyUDS = false;
             this.archives = [];
             this.isLoadingArchives = false;
             this.archiveReadOnly = false;
             this.signRequired = false;
             this.createBiblosArchive = true;
             this.documentDeletable = false;
-            this.dematerialisationEnabled = false;
-            this.enableDematerialisationCheckBox = !($("#dematerialisationEnabled")[0].getAttribute("value") == 'True');
         }
 
 
@@ -908,12 +930,12 @@ module UdsDesigner {
             this.copyProtocol = obj.copyProtocol;
             this.copyResolution = obj.copyResolution;
             this.copySeries = obj.copySeries;
+            this.copyUDS = obj.copyUDS;
             this.archiveReadOnly = obj.archiveReadOnly;
             this.signRequired = obj.signRequired;
             this.createBiblosArchive = obj.createBiblosArchive;
             this.required = obj.required;
             this.documentDeletable = obj.documentDeletable;
-            this.dematerialisationEnabled = obj.dematerialisationEnabled;
             this.modifyEnable = obj.modifyEnable;
             this.columns = obj.columns;
             this.rows = obj.rows;
@@ -936,11 +958,11 @@ module UdsDesigner {
                 copyProtocol: this.copyProtocol,
                 copyResolution: this.copyResolution,
                 copySeries: this.copySeries,
+                copyUDS: this.copyUDS,
                 archiveReadOnly: this.archiveReadOnly,
                 signRequired: this.signRequired,
                 createBiblosArchive: this.createBiblosArchive,
                 documentDeletable: this.documentDeletable,
-                dematerialisationEnabled: this.dematerialisationEnabled,
                 modifyEnable: this.modifyEnable,
                 columns: this.columns,
                 rows: this.rows
@@ -1002,7 +1024,7 @@ module UdsDesigner {
             this.ctrlType = "Contact";
             this.label = "Contatti";
             this.enableAD = true;
-            this.enableAddressBook = false;
+            this.enableAddressBook = true;
             this.enableADDistribution = false;
             this.enableManual = true;
             this.enableExcelImport = false;
@@ -1208,7 +1230,7 @@ module UdsDesigner {
             super();
 
             this.ctrlType = "Enum";
-            this.label = "Scelta Multipla";
+            this.label = "Scelta multipla";
             this.defaultValue = "";
             this.defaultSearchValue = "";
             this.readOnly = false;
@@ -1221,6 +1243,7 @@ module UdsDesigner {
             this.resultPosition = 0;
             this.multipleValues = false;
             this.multipleEnabled = true;
+            $("#deleteSelectedItem").hide();
         }
 
         setValues(obj: EnumCtrl) {
@@ -1266,10 +1289,17 @@ module UdsDesigner {
 
 
         deleteItem(e, scope): void {
+            if (scope.ctrl.defaultValue === scope.ctrl.enumOptions[scope.index]) {
+                scope.ctrl.defaultValue = "";
+                $("#deleteSelectedItem").hide();
+            }
             scope.ctrl.enumOptions.splice(scope.index, 1);
         }
 
-
+        deleteSelectedItem(e, scope): void {
+            scope.ctrl.defaultValue = "";
+            $("#deleteSelectedItem").hide();
+        }
 
         selectedValue(e, scope): void {
             scope.ctrl.OpenEnumDetailsModal(e, scope);
@@ -1336,6 +1366,9 @@ module UdsDesigner {
             var elements: EnumCtrl = scope.ctrl.getValues();
             scope.ctrl.defaultValue = e.target.innerText;
             scope.ctrl.binder.bind($("#EnumOption")[0], scope.ctrl);
+            if (scope.ctrl.defaultValue !== "") {
+                $("#deleteSelectedItem").show();
+            }
         }
 
         changeRequired(e, scope): void {
@@ -1468,10 +1501,22 @@ module UdsDesigner {
             var elements: StatusCtrl = scope.ctrl.getValues();
             scope.ctrl.defaultValue = e.target.innerText;
             scope.ctrl.binder.bind($("#StatusOption")[0], scope.ctrl);
+            if (scope.ctrl.defaultValue !== "") {
+                $("#deleteSelectedItem").show();
+            }
         }
 
         deleteItem(e, scope): void {
+            if (scope.ctrl.defaultValue === scope.ctrl.statusValue) {
+                scope.ctrl.defaultValue = "";
+                $("#deleteSelectedItem").hide();
+            }
             scope.ctrl.statusType.splice(scope.index, 1);
+        }
+
+        deleteSelectedItem(e, scope): void {
+            scope.ctrl.defaultValue = "";
+            $("#deleteSelectedItem").hide();
         }
 
         selectedValore(e, scope): void {

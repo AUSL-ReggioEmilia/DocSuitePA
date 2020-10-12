@@ -483,7 +483,7 @@ Namespace Series
             publication.metadata.titolo = txtTitle.Text
             publication.metadata.abstract = txtAbstract.Text
             If publishingDate.SelectedDate.HasValue Then
-                publication.metadata.dataPubbicazioneDataset = publishingDate.SelectedDate.Value
+                publication.metadata.dataPubblicazioneDataset = publishingDate.SelectedDate.Value
             End If
             publication.metadata.entePubblicatore = publisher.Text
             If lastUpdateDate.SelectedDate.HasValue Then
@@ -609,8 +609,8 @@ Namespace Series
                     txtYear.Text = publication.metadata.annoRiferimento.ToString()
                 End If
 
-                If publication.metadata.dataPubbicazioneDataset <> DateTime.MinValue Then
-                    publishingDate.SelectedDate = publication.metadata.dataPubbicazioneDataset
+                If publication.metadata.dataPubblicazioneDataset <> DateTime.MinValue Then
+                    publishingDate.SelectedDate = publication.metadata.dataPubblicazioneDataset
                 End If
 
                 If publication.metadata.dataUltimoAggiornamentoDataset <> DateTime.MinValue Then
@@ -746,7 +746,7 @@ Namespace Series
             ' tenere per test
             Return New pubblicazione With {
                 .metadata = New pubblicazioneMetadata With {
-                    .dataPubbicazioneDataset = DateTime.Now,
+                    .dataPubblicazioneDataset = DateTime.Now,
                     .dataUltimoAggiornamentoDataset = DateTime.Now,
                     .licenza = ""
                     },

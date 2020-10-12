@@ -21,6 +21,8 @@ interface DossierFolderModel {
     ParentInsertId: string;
     DossierFolders: DossierFolderModel[];
     FascicleTemplates: ProcessFascicleTemplateModel[];
+    DossierFolderPath: string;
+    DossierFolderLevel: number;
 }
 
 export = DossierFolderModel;

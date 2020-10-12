@@ -1,6 +1,6 @@
 ﻿class BaseFieldViewModel {
+    KeyName: string;
     Label: string;
-    Value: string;
     DefaultValue: string;
     Required: boolean;
     Position: number;

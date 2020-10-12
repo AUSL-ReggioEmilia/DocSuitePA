@@ -5,7 +5,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("VecompSoftware.DocSuiteWeb.Gui")>
 <Assembly: AssemblyCompany("Dgroove Srl")>
 <Assembly: AssemblyProduct("VecompSoftware.DocSuiteWeb.Gui")>
-<Assembly: AssemblyCopyright("Copyright © Dgroove 2019")>
+<Assembly: AssemblyCopyright("Copyright © Dgroove 2020")>
 <Assembly: AssemblyTrademark("")>
 <Assembly: AssemblyCulture("")>
 
@@ -13,5 +13,5 @@ Imports System.Runtime.InteropServices
 
 <Assembly: Guid("9AA18B64-F4B8-4A96-9EAC-7584AC12A5D3")>
 
-<Assembly: AssemblyVersion("8.88.0.0")>
-<Assembly: AssemblyFileVersion("8.88.0.0")>
+<Assembly: AssemblyVersion("9.09.20286.02")>
+<Assembly: AssemblyFileVersion("9.09.20286.02")>

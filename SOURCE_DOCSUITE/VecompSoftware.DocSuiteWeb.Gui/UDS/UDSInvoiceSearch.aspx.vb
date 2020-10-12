@@ -96,7 +96,7 @@ Public Class UDSInvoiceSearch
     Private ReadOnly Property CurrentUserLog As UserLog
         Get
             If _currentUserLog Is Nothing Then
-                _currentUserLog = Facade.UserLogFacade.GetByUser(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
+                _currentUserLog = Facade.UserLogFacade.GetByUser(DocSuiteContext.Current.User.FullUserName)
             End If
             Return _currentUserLog
         End Get
@@ -105,7 +105,7 @@ Public Class UDSInvoiceSearch
     Public ReadOnly Property TenantCompanyName As String
         Get
             Dim companyname As String = String.Empty
-            If CurrentTenant IsNot Nothing Then
+            If CurrentTenant IsNot Nothing AndAlso ProtocolEnv.InvoiceDashboardFilterByTenantEnabled Then
                 companyname = CurrentTenant.TenantName
             End If
             Return companyname

@@ -606,6 +606,8 @@ Partial Public Class uscContatti
 
     ''' <summary> Impostazioni dei pulsanti che possono cambiare </summary>
     Private Sub SetButtons(ByVal node As RadTreeNode)
+        Dim enableButtons As Boolean = EnableToolbarButtons(node)
+
         For Each btn As RadToolBarButton In ToolBar.GetGroupButtons("selection")
             btn.Visible = MultiSelect
         Next
@@ -677,7 +679,7 @@ Partial Public Class uscContatti
             Dim showHistory As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("showHistory"), RadToolBarButton)
             If Not String.IsNullOrEmpty(node.Value) Then
                 If CheckHistoryDetails(Convert.ToInt32(node.Value)) Then
-                    showHistory.Enabled = CheckHistoryDetails(Convert.ToInt32(node.Value))
+                    showHistory.Enabled = CheckHistoryDetails(Convert.ToInt32(node.Value)) AndAlso enableButtons
                     showHistory.Visible = CheckHistoryDetails(Convert.ToInt32(node.Value))
                 End If
                 showHistory.ImageUrl = ImagePath.SmallInfo
@@ -695,6 +697,7 @@ Partial Public Class uscContatti
             addAmministrazione.ImageUrl = ImagePath.ContactTypeIcon(ContactType.Administration)
             addAmministrazione.CommandArgument = GetWindowParameters("Add", "M")
             menu.Items.Add(New RadMenuItem("Nuova Amministrazione") With {.Value = addAmministrazione.CommandName, .ImageUrl = addAmministrazione.ImageUrl})
+            addAmministrazione.Enabled = enableButtons
         Else
             addAmministrazione.Visible = False
         End If
@@ -705,6 +708,7 @@ Partial Public Class uscContatti
             addGruppo.ImageUrl = ImagePath.ContactTypeIcon(ContactType.Group)
             addGruppo.CommandArgument = GetWindowParameters("Add", "G")
             menu.Items.Add(New RadMenuItem("Nuovo gruppo") With {.Value = addGruppo.CommandName, .ImageUrl = addGruppo.ImageUrl})
+            addGruppo.Enabled = enableButtons
         Else
             addGruppo.Visible = False
         End If
@@ -715,6 +719,7 @@ Partial Public Class uscContatti
             addSettore.ImageUrl = ImagePath.ContactTypeIcon(ContactType.Sector)
             addSettore.CommandArgument = GetWindowParameters("Add", "S")
             menu.Items.Add(New RadMenuItem("Nuovo Settore") With {.Value = addSettore.CommandName, .ImageUrl = addSettore.ImageUrl})
+            addSettore.Enabled = enableButtons
         Else
             addSettore.Visible = False
         End If
@@ -725,6 +730,7 @@ Partial Public Class uscContatti
             addAOO.ImageUrl = ImagePath.ContactTypeIcon(ContactType.Aoo)
             addAOO.CommandArgument = GetWindowParameters("Add", "A")
             menu.Items.Add(New RadMenuItem("Nuova Area Organizzativa Omogenea") With {.Value = addAOO.CommandName, .ImageUrl = addAOO.ImageUrl})
+            addAOO.Enabled = enableButtons
         Else
             addAOO.Visible = False
         End If
@@ -736,6 +742,7 @@ Partial Public Class uscContatti
             addUO.ImageUrl = ImagePath.ContactTypeIcon(ContactType.OrganizationUnit)
             addUO.CommandArgument = GetWindowParameters("Add", "U")
             menu.Items.Add(New RadMenuItem("Nuova Unità Organizzativa") With {.Value = addUO.CommandName, .ImageUrl = addUO.ImageUrl})
+            addUO.Enabled = enableButtons
         Else
             addUO.Visible = False
         End If
@@ -747,6 +754,7 @@ Partial Public Class uscContatti
             addRuolo.ImageUrl = ImagePath.ContactTypeIcon(ContactType.Role)
             addRuolo.CommandArgument = GetWindowParameters("Add", "R")
             menu.Items.Add(New RadMenuItem("Nuovo Ruolo") With {.Value = addRuolo.CommandName, .ImageUrl = addRuolo.ImageUrl})
+            addRuolo.Enabled = enableButtons
         Else
             addRuolo.Visible = False
         End If
@@ -757,6 +765,7 @@ Partial Public Class uscContatti
             addPersona.ImageUrl = ImagePath.ContactTypeIcon(ContactType.Person)
             addPersona.CommandArgument = GetWindowParameters("Add", "P")
             menu.Items.Add(New RadMenuItem("Nuova Persona") With {.Value = addPersona.CommandName, .ImageUrl = addPersona.ImageUrl})
+            addPersona.Enabled = enableButtons
         Else
             addPersona.Visible = False
         End If
@@ -766,11 +775,12 @@ Partial Public Class uscContatti
         addPersoneExcel.Visible = True
         addPersoneExcel.ImageUrl = ImagePath.SmallExcel
         addPersoneExcel.CommandArgument = GetWindowParameters("Add", "P")
+        addPersoneExcel.Enabled = enableButtons
         menu.Items.Add(New RadMenuItem("Nuovi Contatti aziende tramite excel") With {.Value = addPersoneExcel.CommandName, .ImageUrl = addPersoneExcel.ImageUrl})
 
         Dim imgEdit As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("edit"), RadToolBarButton)
         imgEdit.Visible = True
-        If Not isRoot Then
+        If Not isRoot AndAlso enableButtons Then
             imgEdit.Enabled = True
             imgEdit.CommandArgument = GetWindowParameters("Rename", "")
             menu.Items.Add(New RadMenuItem("Modifica") With {.Value = imgEdit.CommandName, .ImageUrl = imgEdit.ImageUrl})
@@ -780,7 +790,7 @@ Partial Public Class uscContatti
 
         Dim imgMove As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("move"), RadToolBarButton)
         imgMove.Visible = True
-        If Not isRoot Then
+        If Not isRoot AndAlso enableButtons Then
             imgMove.Enabled = True
             imgMove.CommandArgument = GetWindowParameters("Move", "")
             menu.Items.Add(New RadMenuItem("Sposta") With {.Value = imgMove.CommandName, .ImageUrl = imgMove.ImageUrl})
@@ -790,7 +800,7 @@ Partial Public Class uscContatti
 
         Dim imgClone As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("clone"), RadToolBarButton)
         imgClone.Visible = True
-        If Not isRoot Then
+        If Not isRoot AndAlso enableButtons Then
             imgClone.Enabled = True
             imgClone.CommandArgument = GetWindowParameters("Clone", String.Empty)
             menu.Items.Add(New RadMenuItem("Clona") With {.Value = imgClone.CommandName, .ImageUrl = imgClone.ImageUrl})
@@ -806,9 +816,9 @@ Partial Public Class uscContatti
         Dim imgDelete As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("delete"), RadToolBarButton)
         Dim imgRecovery As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("recovery"), RadToolBarButton)
         imgDelete.Visible = True
-        imgDelete.Enabled = Not isRoot AndAlso Not recovery
+        imgDelete.Enabled = Not isRoot AndAlso Not recovery AndAlso enableButtons
         imgRecovery.Visible = True
-        imgRecovery.Enabled = Not isRoot AndAlso recovery
+        imgRecovery.Enabled = Not isRoot AndAlso recovery AndAlso enableButtons
         If recovery Then
             imgRecovery.CommandArgument = GetWindowParameters("Recovery", "")
             menu.Items.Add(New RadMenuItem("Ripristina") With {.Value = imgRecovery.CommandName, .ImageUrl = imgRecovery.ImageUrl})
@@ -819,7 +829,7 @@ Partial Public Class uscContatti
 
         Dim imgLog As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("log"), RadToolBarButton)
         imgLog.Visible = True
-        If Not isRoot AndAlso DocSuiteContext.Current.ProtocolEnv.IsTableLogEnabled Then
+        If Not isRoot AndAlso DocSuiteContext.Current.ProtocolEnv.IsTableLogEnabled AndAlso enableButtons Then
             imgLog.Enabled = True
             menu.Items.Add(New RadMenuItem("Log") With {.Value = imgLog.CommandName, .ImageUrl = imgLog.ImageUrl})
         Else
@@ -828,7 +838,7 @@ Partial Public Class uscContatti
 
         Dim imgPrint As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("print"), RadToolBarButton)
         imgPrint.Visible = True
-        If Not isRoot Then
+        If Not isRoot AndAlso enableButtons Then
             imgPrint.Enabled = True
             menu.Items.Add(New RadMenuItem("Stampa") With {.Value = imgPrint.CommandName, .ImageUrl = imgPrint.ImageUrl})
         Else
@@ -964,11 +974,7 @@ Partial Public Class uscContatti
     '''     otherwise returns Nothing
     ''' </summary>
     Private Function GetCurrentTenant() As Tenant
-        Dim currentUserTenant As Tenant = Nothing
-        If DocSuiteContext.Current.ProtocolEnv.MultiTenantEnabled Then
-            currentUserTenant = CType(Session("CurrentTenant"), Tenant)
-        End If
-
+        Dim currentUserTenant As Tenant = CType(Session("CurrentTenant"), Tenant)
         Return currentUserTenant
     End Function
 
@@ -1007,6 +1013,8 @@ Partial Public Class uscContatti
             node.Attributes.Add("Recovery", If(contact.IsActive <> 1, "true", "false"))
         End If
         node.EnableContextMenu = EditMode
+
+        node.Attributes.Add("FullIncrementalPath", $"{contact.FullIncrementalPath}|")
 
         Return node
     End Function
@@ -1246,6 +1254,16 @@ Partial Public Class uscContatti
             End If
         Next
     End Sub
+
+    Private Function EnableToolbarButtons(node As RadTreeNode) As Boolean
+        Dim contactAOOParentNode As RadTreeNode = contactTree.FindNodeByValue(ProtocolEnv.ContactAOOParentId.ToString())
+        If contactAOOParentNode IsNot Nothing Then
+            Dim parentFullIncrementalPath As String = contactAOOParentNode.Attributes("FullIncrementalPath")
+            Dim childFullIncrementalPath As String = node.Attributes("FullIncrementalPath")
+            Return Not (childFullIncrementalPath IsNot Nothing AndAlso childFullIncrementalPath.StartsWith(parentFullIncrementalPath))
+        End If
+        Return True
+    End Function
 #End Region
 
 End Class

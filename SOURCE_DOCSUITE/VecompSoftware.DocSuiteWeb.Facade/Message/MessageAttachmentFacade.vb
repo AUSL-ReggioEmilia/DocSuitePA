@@ -29,11 +29,11 @@ Public Class MessageAttachmentFacade
     Public Function GetByMessageAsDocumentInfoList(message As DSWMessage) As IList(Of DocumentInfo)
         Dim attachments As New List(Of DocumentInfo)
         For Each messageAttachment As MessageAttachment In message.Attachments
-            Dim chainId As Guid = Service.GetChainGuid(New UIDDocument(messageAttachment.Server, messageAttachment.Archive, messageAttachment.ChainId))
-            Dim docs As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentChildren(messageAttachment.Server, chainId, True)
+            Dim chainId As Guid = Service.GetChainGuid(New UIDDocument(messageAttachment.Archive, messageAttachment.ChainId))
+            Dim docs As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentChildren(chainId, True)
             Dim tempAttachment As DocumentInfo = Nothing
             For Each doc As BiblosDocumentInfo In docs
-                tempAttachment = If(doc.IsRemoved, New BiblosDeletedDocumentInfo(doc.Server, doc.DocumentId), GetAttachment(messageAttachment, doc))
+                tempAttachment = If(doc.IsRemoved, New BiblosDeletedDocumentInfo(doc.DocumentId), GetAttachment(messageAttachment, doc))
                 attachments.Add(tempAttachment)
             Next
         Next
@@ -44,7 +44,7 @@ Public Class MessageAttachmentFacade
     Public Function GetByMessageAsDocumentInfoListForceStream(message As DSWMessage) As IList(Of DocumentInfo)
         Dim attachments As New List(Of DocumentInfo)
         For Each messageAttachment As MessageAttachment In message.Attachments
-            Dim doc As BiblosDocumentInfo = New BiblosDocumentInfo(messageAttachment.Server, messageAttachment.Archive, messageAttachment.ChainId, messageAttachment.DocumentEnum.GetValueOrDefault(0))
+            Dim doc As BiblosDocumentInfo = New BiblosDocumentInfo(messageAttachment.Archive, messageAttachment.ChainId, messageAttachment.DocumentEnum.GetValueOrDefault(0))
             Try
                 Dim tempAttachment As BiblosDocumentInfo = GetAttachment(messageAttachment, doc, True)
                 attachments.Add(tempAttachment)

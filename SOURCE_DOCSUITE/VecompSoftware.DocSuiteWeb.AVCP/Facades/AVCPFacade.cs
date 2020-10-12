@@ -6,7 +6,6 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Facade;
 using VecompSoftware.Helpers;
 using VecompSoftware.Helpers.ExtensionMethods;
-using VecompSoftware.Services.Biblos;
 using VecompSoftware.Services.Biblos.Models;
 using VecompSoftware.Services.Logging;
 
@@ -46,19 +45,6 @@ namespace VecompSoftware.DocSuiteWeb.AVCP
         #endregion
 
         #region [ Methods ]
-
-        /// <summary>
-        /// Percorso del XSD di validazione dell'XML di pubblicazione
-        /// </summary>
-        public string XSDFullPath
-        {
-            get { return AppDomain.CurrentDomain.BaseDirectory + XSDPath; }
-        }
-
-        public SetDataSetResult SetDataSetPub(pubblicazione pub, DocumentSeriesItem item, string username)
-        {
-            return SetDataSetPub(pub, item, username, false);
-        }
 
         /// <summary>
         /// Metodo per il salvataggio di un DataSet in Serie AVCP
@@ -159,8 +145,8 @@ namespace VecompSoftware.DocSuiteWeb.AVCP
                 tor.Chain.AddAttribute(AttributeAbstract, pub.metadata.@abstract);
                 tor.Chain.AddAttribute(AttributeAnnoRiferimento, pub.metadata.annoRiferimento.ToString());
                 tor.Chain.AddAttribute(AttributeTitolo, pub.metadata.titolo);
-                if (pub.metadata.dataPubbicazioneDataset != DateTime.MinValue)
-                    tor.Chain.AddAttribute(AttributeDataPubblicazione, pub.metadata.dataPubbicazioneDataset.ToString("s"));
+                if (pub.metadata.dataPubblicazioneDataset != DateTime.MinValue)
+                    tor.Chain.AddAttribute(AttributeDataPubblicazione, pub.metadata.dataPubblicazioneDataset.ToString("s"));
                 tor.Chain.AddAttribute(AttributeEntePubblicatore, pub.metadata.entePubblicatore);
             }
             catch (Exception ex)
@@ -189,105 +175,6 @@ namespace VecompSoftware.DocSuiteWeb.AVCP
 
             return tor;
         }
-
-        public SetDataSetResult SetDataSetPub(pubblicazione pub, DocumentSeriesItem item)
-        {
-            return SetDataSetPub(pub, item, DocSuiteContext.Current.User.FullUserName);
-        }
-
-        /// <summary>
-        /// Crea o aggiorna la serie documentale bandi di gara e contratti associata al provvedimento
-        /// passato per parametro
-        /// </summary>
-        /// <param name="pub"></param>
-        /// <param name="resolution"></param>
-        public void CreateOrUpdateBandiDiGaraSeriesItem(pubblicazione pub, Resolution resolution)
-        {
-            if (pub == null)
-            {
-                FileLogger.Debug(LoggerName, "CreateOrUpdateBandiDiGaraSeries => parametro pub è nullo");
-                return;
-            }
-
-            if (resolution == null)
-            {
-                FileLogger.Debug(LoggerName, "CreateOrUpdateBandiDiGaraSeries => parametro resolution è nullo");
-                return;
-            }
-
-            if (!DocSuiteContext.Current.ProtocolEnv.BandiGaraDocumentSeriesId.HasValue)
-            {
-                FileLogger.Debug(LoggerName, "CreateOrUpdateBandiDiGaraSeries => parametro ProtocolEnv.BandiGaraDocumentSeriesId non definito");
-                return;
-            }
-
-            try
-            {
-                //Recupero le documentseriesitem associate al provvedimento
-                ICollection<DocumentSeriesItem> docSeriesLikedToResl = FacadeFactory.Instance.ResolutionFacade.GetSeriesByResolution(resolution);
-                DocumentSeriesItem bandiGaraDocumentSeriesItem = docSeriesLikedToResl.Where(x => x.DocumentSeries.Id == DocSuiteContext.Current.ProtocolEnv.BandiGaraDocumentSeriesId.Value).FirstOrDefault();
-                if (bandiGaraDocumentSeriesItem == null)
-                {
-                    //Se non esiste nessuna documentseriesitem bandi di gara e contratti associata al provvedimento allora la genero.
-                    bandiGaraDocumentSeriesItem = new DocumentSeriesItem()
-                    {
-                        Status = DocumentSeriesItemStatus.Active,
-                        Subject = resolution.ResolutionObject
-                    };
-
-                    DocumentSeries bandiGaraDocumentSeries = FacadeFactory.Instance.DocumentSeriesFacade.GetById(DocSuiteContext.Current.ProtocolEnv.BandiGaraDocumentSeriesId.Value);
-                    bandiGaraDocumentSeriesItem.DocumentSeries = bandiGaraDocumentSeries;
-
-                    //Se esiste recupero il classificatore di default associato al contenitore
-                    ContainerBehaviour behaviour = FacadeFactory.Instance.ContainerBehaviourFacade.GetBehaviours(bandiGaraDocumentSeries.Container, ContainerBehaviourAction.Insert, "#uscClassificatori").FirstOrDefault();
-                    Category category = null;
-                    if (behaviour != null)
-                    {
-                        category = FacadeFactory.Instance.CategoryFacade.GetById(int.Parse(behaviour.AttributeValue));
-                    }
-
-                    //Se non ho trovato il classificatore di default uso quello del provvedimento
-                    if (category == null)
-                    {
-                        category = resolution.SubCategory != null ? resolution.SubCategory : resolution.Category;
-                    }
-
-                    if (category.Root == category)
-                    {
-                        bandiGaraDocumentSeriesItem.Category = category;
-                    }
-                    else
-                    {
-                        bandiGaraDocumentSeriesItem.Category = category.Root;
-                        bandiGaraDocumentSeriesItem.SubCategory = category;
-                    }
-
-                    BiblosChainInfo newChain = new BiblosChainInfo();
-
-                    //Salvo la documentseriesitem
-                    bandiGaraDocumentSeriesItem = FacadeFactory.Instance.DocumentSeriesItemFacade.SaveDocumentSeriesItem(bandiGaraDocumentSeriesItem, newChain, null, null, DocSuiteContext.Current.User.FullUserName);
-                    //La collego al provvedimento che sto gestendo
-                    LinkToResolution(bandiGaraDocumentSeriesItem, resolution);
-                }
-
-                ArchiveInfo bandiGaraArchiveInfo = DocumentSeriesFacade.GetArchiveInfo(bandiGaraDocumentSeriesItem.DocumentSeries);
-                BiblosChainInfo chain = FacadeFactory.Instance.DocumentSeriesItemFacade.GetMainChainInfo(bandiGaraDocumentSeriesItem);
-                // update campi dinamici DocumentSeriesItem
-                chain = UpdateAttributeBandiDiGara(bandiGaraDocumentSeriesItem, pub, bandiGaraArchiveInfo, chain);
-                // salvo il DocumentSeriesItem e aggiorno gli attributi della serie documentale
-                FacadeFactory.Instance.DocumentSeriesItemFacade.UpdateDocumentSeriesItem(bandiGaraDocumentSeriesItem, chain, $"Aggiornamento metadati della serie bandi di gara e contratti {bandiGaraDocumentSeriesItem.Year:0000}/{bandiGaraDocumentSeriesItem.Number:0000000} da pubblicazione AVCP");
-                FileLogger.Info(LoggerName, string.Format("CreateOrUpdateBandiDiGaraSeries => modificata BandiGaraDocumentSeries con ID {0}", bandiGaraDocumentSeriesItem.Id));
-                if (bandiGaraDocumentSeriesItem.Status == DocumentSeriesItemStatus.Active)
-                {
-                    FacadeFactory.Instance.DocumentSeriesItemFacade.SendUpdateDocumentSeriesItemCommand(bandiGaraDocumentSeriesItem);
-                }
-            }
-            catch (Exception ex)
-            {
-                FileLogger.Error(LoggerName, string.Format("CreateOrUpdateBandiDiGaraSeriesItem => Errore nella generazione della serie Bandi di Gara e Contratti. {0}", ex.StackTrace));
-            }
-        }
-
         /// <summary>
         /// Aggiorna gli attributi della serie documentale per bandi di gara e contratti
         /// </summary>
@@ -373,252 +260,6 @@ namespace VecompSoftware.DocSuiteWeb.AVCP
             return chain;
         }
 
-        /// <summary>
-        /// Metodo per il salvataggio di un DataSet in Serie AVCP
-        /// </summary>
-        /// <param name="xml">Oggetto serializzato da salvare</param>
-        /// <param name="item">DocumentSeriesItem in cui deve essere salvato</param>
-        /// <param name="username">Nome dell'operatore che esegue il savataggio</param>
-        /// <returns>Restituisce l'oggetto contenente tutte le informazioni sull'importazione eseguita</returns>
-        public SetDataSetResult SetDataSetXML(string xml, DocumentSeriesItem item, string username)
-        {
-            pubblicazione pub = XmlUtil.Deserialize<AVCP.pubblicazione>(xml);
-
-            return SetDataSetPub(pub, item, username);
-        }
-
-        public SetDataSetResult SetDataSetXML(string xml, DocumentSeriesItem item)
-        {
-            return SetDataSetXML(xml, item, DocSuiteContext.Current.User.FullUserName);
-        }
-
-        /// <summary>
-        /// Recupera o Crea il DocumentSeriesItem a partire dell'Identificatore
-        /// </summary>
-        /// <param name="identifier">Identificatore della registrazione</param>
-        /// <param name="titolo">Titolo per l'eventuale creazione</param>
-        /// <param name="idCategory">Identificativo della Category per eventuale creazione</param>
-        /// <param name="username">Nome dell'operatore che esegue il savataggio</param>
-        /// <returns></returns>
-        public DocumentSeriesItem GetItemOrCreate(string identifier, string titolo, int idCategory, string username)
-        {
-            FileLogger.Debug(LoggerName, string.Format("GetItemOrCreate {0}, {1}, {2}, {3} ", identifier, titolo, idCategory, username));
-
-            // Recupero il DocumentSeriesItem oppure lo creo
-            var doc = GetDocumentSerieItem(identifier, username);
-            if (doc == null)
-            {
-                FileLogger.Debug(LoggerName, "Documento non trovato.");
-                doc = CreateDataSet(identifier, titolo, idCategory, username);
-            }
-            return doc;
-        }
-
-        public DocumentSeriesItem GetItemOrCreate(Resolution resl, string username)
-        {
-            var item = GetAVCPDocumentSeriesItem(resl);
-            if (item != null)
-                return item;
-
-            return GetItemOrCreate(resl.InclusiveNumber, resl.ResolutionObject, resl.MyCategoryId(), username);
-        }
-
-        public DocumentSeriesItem GetItemOrCreate(Resolution resl)
-        {
-            return GetItemOrCreate(resl.InclusiveNumber, resl.ResolutionObject, resl.MyCategoryId(), DocSuiteContext.Current.User.FullUserName);
-        }
-
-        /// <summary>
-        /// Restituisce l'oggetto serializzato a partire dal suo identificatore
-        /// </summary>
-        /// <param name="identifier">Identificatore della registrazione</param>
-        /// <returns>Restituisce la serializzazione dell'oggetto trovato. Stringa vuota nel caso non lo trovi.</returns>
-        //public string GetDataSetXML(string identifier)
-        //{
-        //    var item = GetDocumentSerieItem(identifier);
-
-        //    if (item == null)
-        //    {
-        //        return String.Empty;
-        //    }
-
-        //    return GetAVCPXml(item);
-        //}
-
-        public string GetIdentifier(DocumentSeriesItem item)
-        {
-            var attributes = FacadeFactory.Instance.DocumentSeriesItemFacade.GetAttributes(item);
-            return attributes[AttributeIdentifier];
-        }
-
-        public bool ParseProvvedimento(string provvedimento, out int anno, out string codiceServizio, out int numeroAtto)
-        {
-            anno = 0;
-            codiceServizio = String.Empty;
-            numeroAtto = 0;
-
-            if (string.IsNullOrEmpty(provvedimento))
-                return false;
-
-            string[] tokens = provvedimento.Split('/');
-            if (tokens.Length != 3)
-                return false;
-
-            if (!Int32.TryParse(tokens[0], out numeroAtto))
-                return false;
-
-            codiceServizio = tokens[1].Trim();
-            if (string.IsNullOrEmpty(codiceServizio))
-                return false;
-
-            if (!Int32.TryParse(tokens[2], out anno))
-                return false;
-
-            return true;
-        }
-
-        /// <summary>
-        /// Restituisce l'oggetto Pubblicazione a partire dal suo Identificatore
-        /// </summary>
-        /// <param name="identifier">Identificatore della registrazione</param>
-        /// <returns>Restituisce l'oggetto trovato. NULL nel caso non lo trovi</returns>
-        //public pubblicazione GetDataSetPub(string identifier)
-        //{
-        //    var temp = GetDataSetXML(identifier);
-
-        //    if (string.IsNullOrEmpty(temp))
-        //    {
-        //        return null;
-        //    }
-
-        //    return XmlUtil.Deserialize<AVCP.pubblicazione>(temp);
-        //}
-
-        /// <summary>
-        /// Restituisce il DocumentSeriesItem a partire dal suo Identificatore
-        /// </summary>
-        /// <param name="identifier">Identificatore della registrazione</param>
-        /// <returns>Restituisce l'oggetto trovato. NULL nel caso non lo trovi.</returns>
-        public DocumentSeriesItem GetDocumentSerieItem(string identifier, string username)
-        {
-            DocumentSeriesItemFinder finder = new DocumentSeriesItemFinder(false, username);
-
-            finder.IdDocumentSeriesIn = new List<int> { DocSuiteContext.Current.ProtocolEnv.AvcpDocumentSeriesId.Value };
-            finder.OnlyActive = true;
-            List<SearchCondition> conditions = new List<SearchCondition>() { new SearchCondition { AttributeName = AttributeIdentifier, AttributeValue = string.Format("'{0}'", identifier), Operator = SearchConditionOperator.IsEqualTo } };
-
-            FacadeFactory.Instance.DocumentSeriesFacade.FillFinder(finder, conditions);
-
-            List<DocumentSeriesItem> list = finder.DoSearch().ToList();
-
-            if (list.Count > 1)
-            {
-                throw new DocSuiteException(string.Format("Ricerca per identifier [{0}] ha restituito {1} risultati.", identifier, list.Count));
-            }
-
-            if (list.Count == 0)
-            {
-                return null;
-            }
-
-            return list[0];
-        }
-
-        /// <summary>
-        /// Esegue il collegamento tra la Resolution e il Tender.
-        /// </summary>
-        /// <param name="pub">Pubblicazione usata per generare il Tender</param>
-        /// <param name="resl">Resolution di riferimento</param>
-        /// <returns>Restituisce il Tender creato.</returns>
-        public TenderHeader LinkToTender(pubblicazione pub, Resolution resl, DocumentSeriesItem item)
-        {
-            TenderHeader tender = null;
-            // Cerco per Resolution
-            if (resl != null)
-                tender = FacadeFactory.Instance.TenderHeaderFacade.GetByResolution(resl);
-            // Cerco per DocumentSeriesItem
-            if (tender == null)
-            {
-                tender = FacadeFactory.Instance.TenderHeaderFacade.GetByDocumentSeriesItem(item.Id);
-            }
-            // Creo nuova registrazione
-            if (tender == null)
-            {
-                tender = new TenderHeader();
-                FileLogger.Debug(LoggerName, "Tender non trovato.");
-            }
-
-            tender.Title = pub.metadata.titolo;
-            tender.Abstract = pub.metadata.@abstract;
-            tender.Year = pub.metadata.annoRiferimento;
-
-            tender.DocumentSeriesItem = item;
-
-            if (resl == null)
-                tender.IdResolution = null;
-            else
-                tender.IdResolution = resl.Id;
-
-            // Aggiungo i lot (solo se non presenti)
-            foreach (var data in pub.data)
-            {
-                var lot = FacadeFactory.Instance.TenderLotFacade.GetByCIG(data.cig);
-                if (lot == null)
-                {
-                    // Lotto non presente
-                    lot = new TenderLot();
-                    lot.Payments = new List<TenderLotPayment>();
-                    lot.CIG = data.cig;
-                    lot.RegistrationUser = DocSuiteContext.Current.User.FullUserName;
-                    lot.RegistrationDate = DateTimeOffset.UtcNow;
-                }
-
-                // Verifico che non sia già associato ad altra Gara
-                if (lot.Tender != null && lot.Tender != tender)
-                {
-                    throw new InvalidOperationException(string.Format("CIG [{0}] associato a GARA [{1}]", data.cig, lot.Tender.Id));
-                }
-
-                // Aggiungo solo se Lotto orfano
-                if (lot.Tender == null)
-                {
-                    // Lotto orfano
-                    tender.AddLot(lot);
-                }
-            }
-
-            FacadeFactory.Instance.TenderHeaderFacade.Update(ref tender);
-
-            return tender;
-        }
-
-        /// <summary>
-        /// Esegue il collegamento tra il DocumentSeriesItem e la Resolution
-        /// </summary>
-        public void LinkToResolution(DocumentSeriesItem item, Resolution resl)
-        {
-            // mette in collegamento la resolution e le serie documentali associate tramite la resolutionKind
-            IList<DocumentSeriesItem> existingItems = FacadeFactory.Instance.ResolutionDocumentSeriesItemFacade.GetDocumentSeriesItems(resl);
-            if (!existingItems.IsNullOrEmpty() && existingItems.Any(x => x.Id == item.Id))
-            {
-                return;
-            }
-
-            // aggiungere collegamento alla resolution
-            FacadeFactory.Instance.ResolutionDocumentSeriesItemFacade.LinkResolutionToDocumentSeriesItem(resl, item);
-            // Aggiungere log in Resolution
-            FacadeFactory.Instance.ResolutionLogFacade.Log(resl, ResolutionLogType.SD, string.Format("Inserimento in Serie Documentale [{0}] da [{3}] : {1}/{2:000000}", item.DocumentSeries.Container.Name, item.Year, item.Number, DocSuiteContext.Current.User.FullUserName));
-        }
-
-        public bool ValidateAVCP(pubblicazione pub, out List<string> errors)
-        {
-            var xml = AVCPHelper.Serialize(pub);
-            XmlValidator validator = new XmlValidator();
-            var valid = validator.ValidateXml(xml, XSDFullPath, AVCPHelper.AvcpNamespace);
-            errors = validator.Errors;
-            return valid;
-        }
-
         public pubblicazione GetAVCPStructure(DocumentSeriesItem item)
         {
             var docs = FacadeFactory.Instance.DocumentSeriesItemFacade.GetMainDocuments(item);
@@ -660,136 +301,6 @@ namespace VecompSoftware.DocSuiteWeb.AVCP
             return item;
         }
 
-        public pubblicazione GetAVCPPub(DocumentSeriesItem item)
-        {
-            return GetAVCPStructure(item);
-        }
-
-        public SetDataSetResult UpdateAVCPPayments(TenderHeader _tenderHeader, string username)
-        {
-            // Recupero Item
-            DocumentSeriesItem item = FacadeFactory.Instance.DocumentSeriesItemFacade.GetById(_tenderHeader.DocumentSeriesItem.Id);
-
-            pubblicazione pub = GetAVCPPub(item);
-
-            pub = SetAVCPPayments(item, pub, _tenderHeader);
-
-            return SetDataSetPub(pub, item, username);
-        }
-
-        public pubblicazione SetAVCPPayments(DocumentSeriesItem item, pubblicazione pub, TenderHeader _tenderHeader)
-        {
-            try
-            {
-                _tenderHeader = FacadeFactory.Instance.TenderHeaderFacade.GetById(_tenderHeader.Id);//.GetByDocumentSeriesItem(item.Id);
-
-                foreach (var lot in _tenderHeader.Lots)
-                {
-                    FileLogger.Debug(LoggerName, String.Concat("lot ", lot.Id));
-                    FileLogger.Debug(LoggerName, String.Concat("lot.Payments is null ", (lot.Payments == null)));
-
-                    // recupero il relativo Lotto in pub
-                    pubblicazioneLotto lotto = pub.data.FirstOrDefault(l => l.cig.Trim().Eq(lot.CIG.Trim()));
-                    FileLogger.Debug(LoggerName, String.Concat("lotto trovato ", (lotto != null), " con valore", (lotto != null) ? lotto.importoSommeLiquidate : 0));
-                    // somma liquidato
-                    if (!lot.Payments.IsNullOrEmpty())
-                    {
-                        double tot = lot.Payments.Sum(p => p.Amount);
-                        FileLogger.Debug(LoggerName, String.Concat("tot ", tot));
-                        lotto.importoSommeLiquidate = Convert.ToDecimal(tot);
-                        FileLogger.Debug(LoggerName, String.Concat("lotto aggiornato ", (lotto != null), " con valore", (lotto != null) ? lotto.importoSommeLiquidate : 0));
-                    }
-                }
-
-                if (_tenderHeader.Lots.Count > 0)
-                {
-                    pub.metadata.dataUltimoAggiornamentoDataset = DateTime.Now;
-                }
-
-                return pub;
-            }
-            catch (Exception ex)
-            {
-                FileLogger.Warn(LoggerName, String.Concat("Errore generico in SetAVCPPayments per item ", item.Id), ex);
-                throw ex;
-            }
-
-
-        }
-
-        public Resolution GetProvvedimento(string identifier, bool enableFilter = true, bool findAllResolutionTypes = false)
-        {
-            var finder = new NHibernateResolutionFinder("ReslDB", enableFilter);
-            //finder.Year = year.ToString();
-            finder.InclusiveNumbers = new List<string>() { identifier };
-            if (!findAllResolutionTypes)
-            {
-                finder.ResolutionType = FacadeFactory.Instance.ResolutionTypeFacade.GetById((short)DocSuiteContext.Current.ProtocolEnv.AVCPResolutionType);
-            }
-            finder.EagerLog = false;
-
-            var res = finder.DoSearch();
-
-            if (res.Count != 1)
-            {
-                throw new DocSuiteException(string.Format("Risultato della ricerca per [{0}] ha restituito {1} righe.", identifier, res.Count));
-            }
-
-            return res[0];
-        }
-
-        public Resolution GetProvvedimento(int year, string codiceServizio, int number, bool enableFilter = true, bool findAllResolutionTypes = false)
-        {
-            string incNum = string.Format(DocSuiteContext.Current.ProtocolEnv.AVCPInclusiveNumberMask, year, codiceServizio, number);
-            FileLogger.Debug(LoggerName, string.Format("Cerco il provvedimento per inclusivenumber = [{0}]", incNum));
-
-            string[] splittedNumbers = incNum.Split('/');
-            if (splittedNumbers.Length == 3 && string.IsNullOrEmpty(splittedNumbers[1]))
-            {
-                incNum = string.Format("{0}/{1}", splittedNumbers[0], splittedNumbers[2]);
-                FileLogger.Debug(LoggerName, string.Format("Codice servizio non presente. Modifico inclusivenumber in [{0}]", incNum));
-            }
-            return GetProvvedimento(incNum, enableFilter, findAllResolutionTypes);
-        }
-
-        private DocumentSeriesItem CreateDataSet(string identifier, string subject, int idCategory, string username)
-        {
-            var ds = FacadeFactory.Instance.DocumentSeriesFacade.GetById(DocSuiteContext.Current.ProtocolEnv.AvcpDocumentSeriesId.Value);
-
-            FileLogger.Info(LoggerName, "DocumentSeries " + ds.Id);
-
-            var chain = new BiblosChainInfo();
-            chain.AddAttribute(AttributeIdentifier, identifier);
-
-            // Chiusa = false = 0 stato impostato da amministrazione trasparente o da altro modulo
-            chain.AddAttribute(AttributeChiusa, "0");
-
-            var item = new DocumentSeriesItem();
-
-            Category selCategory = FacadeFactory.Instance.CategoryFacade.GetById(idCategory);
-            FileLogger.Info(LoggerName, "selCategory " + selCategory.Id);
-
-            // Se la Category è di tipo radice
-            if (selCategory.Root == selCategory)
-            {
-                item.Category = selCategory;
-            }
-            else
-            {
-                item.Category = selCategory.Root;
-                item.SubCategory = selCategory;
-            }
-
-            item.DocumentSeries = ds;
-            item.Subject = subject;
-            FileLogger.Info(LoggerName, "saving item");
-            FacadeFactory.Instance.DocumentSeriesItemFacade.SaveDocumentSeriesItem(item, chain, null, null, DocumentSeriesItemStatus.Active, string.Format("Importato da [{0}].", username));
-            FileLogger.Debug(LoggerName, "item " + item.Id);
-
-            return item;
-
-        }
-
         private void FlushDocuments(DocumentSeriesItem item)
         {
             // Documento presente, lo sostituisco
@@ -797,7 +308,7 @@ namespace VecompSoftware.DocSuiteWeb.AVCP
             var newChain = new BiblosChainInfo();
             newChain.AddAttributes(toSave);
 
-            item.IdMain = newChain.ArchiveInBiblos(item.Location.DocumentServer, item.Location.ProtBiblosDSDB);
+            item.IdMain = newChain.ArchiveInBiblos(item.Location.ProtBiblosDSDB);
         }
 
         public bool CheckCIGExists(string cig)
@@ -937,6 +448,7 @@ namespace VecompSoftware.DocSuiteWeb.AVCP
             }
             return 0;
         }
+       
         /// <summary>
         /// Ritorna gli importi di aggiudicazione suddivisi per lotto nel formato {0:0.00};{0:0.00}
         /// </summary>

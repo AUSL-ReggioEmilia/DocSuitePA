@@ -82,7 +82,7 @@ Public Class NHibernateProtocolHeaderFinderTD
         End If
         If Not IdRoleIn.IsNullOrEmpty() Then
             criteria.CreateAlias("Roles", "PR", JoinType.LeftOuterJoin)
-            disj.Add(Restrictions.In("PR.Id.Id", IdRoleIn.ToArray()))
+            disj.Add(Restrictions.In("PR.Role.Id", IdRoleIn.ToArray()))
         End If
         criteria.Add(disj)
 
@@ -111,7 +111,6 @@ Public Class NHibernateProtocolHeaderFinderTD
         proj.Add(Projections.Property("Category.Name"), "CategoryName")
 
         proj.Add(Projections.Property("Location.Id"), "LocationId")
-        proj.Add(Projections.Property("Location.DocumentServer"), "LocationDocumentServer")
         proj.Add(Projections.Property("Location.ProtBiblosDSDB"), "LocationProtBiblosDSDB")
         proj.Add(Projections.Property("DocumentProtocol"), "DocumentProtocol")
 

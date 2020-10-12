@@ -5,6 +5,7 @@ Imports VecompSoftware.DocSuiteWeb.Data
 Imports System.Web
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports Newtonsoft.Json
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 
 Public Class UserBasePage
     Inherits CommonBasePage
@@ -77,7 +78,7 @@ Public Class UserBasePage
         End Set
     End Property
 
-    Protected ReadOnly Property IsWorkflowOperation() As Boolean
+    Protected Overloads ReadOnly Property IsWorkflowOperation As Boolean
         Get
             If Not _workflowOperation.HasValue Then
                 If ViewState("IsWorkflowOperation") Is Nothing Then
@@ -94,7 +95,7 @@ Public Class UserBasePage
         End Get
     End Property
 
-    Protected ReadOnly Property CurrentIdWorkflowActivity As Guid
+    Protected Overloads ReadOnly Property CurrentIdWorkflowActivity As Guid
         Get
             If Not _idWorkflowActivity.HasValue Then
                 If ViewState("CurrentIdWorkflowActivity") Is Nothing Then
@@ -128,6 +129,21 @@ Public Class UserBasePage
             Return _templateModels
         End Get
     End Property
+#End Region
+
+#Region " Methods "
+    Protected Function WorkflowBuildApprovedModel(currentSignPosition As Integer, isApproved As Boolean, collaborationSignerModels As List(Of CollaborationSignerWorkflowModel)) As List(Of CollaborationSignerWorkflowModel)
+        Dim approvedModel As CollaborationSignerWorkflowModel = New CollaborationSignerWorkflowModel With {
+                        .UserName = DocSuiteContext.Current.User.FullUserName,
+                        .HasApproved = isApproved,
+                        .ExecuteDate = DateTimeOffset.UtcNow}
+
+        If collaborationSignerModels.Count < currentSignPosition Then
+            collaborationSignerModels.Add(approvedModel)
+        End If
+        collaborationSignerModels(currentSignPosition - 1) = approvedModel
+        Return collaborationSignerModels
+    End Function
 #End Region
 
 End Class

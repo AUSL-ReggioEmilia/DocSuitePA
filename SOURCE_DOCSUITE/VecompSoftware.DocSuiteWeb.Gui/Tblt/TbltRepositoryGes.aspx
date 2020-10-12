@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="TbltRepositoryGes.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.TbltRepositoryGes" 
-    MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="Gestione Workflow" %>
+    MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="Gestione flusso di lavoro" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1" EnableViewState="false">
@@ -16,10 +16,12 @@
                     TbltRepositoryGes.rntbVersionValueId = "<%= rntbVersionValue.ClientID%>";
                     TbltRepositoryGes.rdpValueDateId = "<%= rdpValueDate.ClientID%>";
                     TbltRepositoryGes.cmbEnvironmentId = "<%= cbEnvironment.ClientID %>";
+                    TbltRepositoryGes.cmbStatusId = "<%= cbStatus.ClientID%>";
                     TbltRepositoryGes.btnWorkflowSelectorOkId = "<%= btnWorkflowSelectorOk.ClientID %>";
                     TbltRepositoryGes.btnWorkflowSelectorCancelId = "<%= btnWorkflowSelectorCancel.ClientID %>";
                     TbltRepositoryGes.actionPage = "<% = PageAction %>";
                     TbltRepositoryGes.environmentDataSourceId = "<% = environmentDataSource.ClientID %>";
+                    TbltRepositoryGes.statusDataSourceId = "<% = statusDataSource.ClientID%>";
 
                     TbltRepositoryGes.initialize();
                 });
@@ -32,9 +34,9 @@
     <asp:Panel ID="pnlWorkflow" runat="server" Width="100%">
         <table class="dataform" id="WorkflowSelectorTable" style="text-align:center;">
                 <tr>
-                    <td class="label">Nome workflow: </td>
+                    <td class="label">Nome flusso di lavoro: </td>
                     <td>
-                        <telerik:RadTextBox ID="txtWorkflowName" runat="server"></telerik:RadTextBox>
+                        <telerik:RadTextBox ID="txtWorkflowName" runat="server" Width="350"></telerik:RadTextBox>
                     </td>
                 </tr>
                 <tr>
@@ -42,7 +44,7 @@
                     <td>
                         <telerik:RadNumericTextBox runat="server" CausesValidation="false"
                             ID="rntbVersionValue" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true"
-                            ShowSpinButtons="true" Width="300">
+                            ShowSpinButtons="true" Width="150">
                             <IncrementSettings Step="1" />
                             <NumberFormat GroupSeparator="" DecimalDigits="0" />
                         </telerik:RadNumericTextBox>
@@ -52,7 +54,7 @@
                     <td class="label">Data attivazione: </td>
                     <td>
                         <div id="valueDate">
-                            <telerik:RadDatePicker runat="server" ID="rdpValueDate" Width="300">
+                            <telerik:RadDatePicker runat="server" ID="rdpValueDate" Width="150">
                             </telerik:RadDatePicker>
                     </div>
                     </td>
@@ -65,6 +67,17 @@
                                             AutoPostBack="false" EnableLoadOnDemand="true" Filter="Contains"
                                             ItemRequestTimeout="500" Width="550px" ShowMoreResultsBox="true"
                                             ClientDataSourceID="environmentDataSource" DataTextField="Name" DataValueField="Value">
+                        </telerik:RadComboBox>
+                    </td>
+                </tr>
+             <tr>
+                    <td class="label">Stato: </td>
+                    <td>
+                        <telerik:RadClientDataSource runat="server" ID="statusDataSource" />
+                        <telerik:RadComboBox runat="server" CausesValidation="false" ID="cbStatus"
+                                            AutoPostBack="false" EnableLoadOnDemand="true" Filter="Contains"
+                                            ItemRequestTimeout="500" Width="550px" ShowMoreResultsBox="true"
+                                            ClientDataSourceID="statusDataSource" DataTextField="Name" DataValueField="Value">
                         </telerik:RadComboBox>
                     </td>
                 </tr>

@@ -198,3 +198,7 @@
     color: navy;
     background-color: #dae9fe;
 }
+
+.prot .text-label {
+    word-break: break-word;
+}

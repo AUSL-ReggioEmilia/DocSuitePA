@@ -311,7 +311,7 @@
                     ReadOnly="true" Type="Resl" HeaderVisible="false" IsRequired="false" />
             </td>
             <td style="width: 50%;" colspan="2">
-                <usc:uscContactSel runat="server" ID="uscContactProposer" TreeViewCaption="Proponente"
+                <usc:uscContactSel runat="server" ID="uscContactProposer" TreeViewCaption="Proponente" Multiple="true"
                     ReadOnly="true" Type="Resl" HeaderVisible="false" IsRequired="false" />
             </td>
         </tr>

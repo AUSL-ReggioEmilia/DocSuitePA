@@ -1,8 +1,10 @@
 ﻿enum ProcessNodeType {
     Root,
+    Category,
     Process,
     DossierFolder,
-    ProcessFascicleTemplate
+    ProcessFascicleTemplate,
+    TreeRootNode
 }
 
 export = ProcessNodeType;

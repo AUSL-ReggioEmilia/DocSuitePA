@@ -12,16 +12,16 @@ Option Explicit On
 
 
 Partial Public Class UserFascicle
-    
+
     '''<summary>
-    '''RadScriptBlock1 control.
+    '''pnlSearch control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+    Protected WithEvents pnlSearch As Global.System.Web.UI.WebControls.Panel
+
     '''<summary>
     '''rowDate control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class UserFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowDate As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''lblRegistrationDate control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class UserFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRegistrationDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rdpDateFrom control.
     '''</summary>
@@ -48,25 +48,7 @@ Partial Public Class UserFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpDateFrom As Global.Telerik.Web.UI.RadDatePicker
-    
-    '''<summary>
-    '''cfvDateFrom control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cfvDateFrom As Global.System.Web.UI.WebControls.CompareValidator
-    
-    '''<summary>
-    '''rfvDateFrom control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rfvDateFrom As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''rdpDateTo control.
     '''</summary>
@@ -75,85 +57,85 @@ Partial Public Class UserFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpDateTo As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
-    '''cfvDateTo control.
+    '''btnSearch control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents cfvDateTo As Global.System.Web.UI.WebControls.CompareValidator
-    
+    Protected WithEvents btnSearch As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
-    '''rfvDateTo control.
+    '''pageContent control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents rfvDateTo As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+    Protected WithEvents pageContent As Global.Telerik.Web.UI.RadPageLayout
+
     '''<summary>
-    '''chkRedThreshold control.
+    '''uscFascicleGrid control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents chkRedThreshold As Global.System.Web.UI.WebControls.CheckBox
-    
+    Protected WithEvents uscFascicleGrid As Global.VecompSoftware.DocSuiteWeb.Gui.uscFascGrid
+
     '''<summary>
-    '''rowExcludeLinked control.
+    '''uscNotification control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents rowExcludeLinked As Global.Telerik.Web.UI.LayoutRow
-    
+    Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
+
     '''<summary>
-    '''lblExcludeLinked control.
+    '''pnlButtons control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblExcludeLinked As Global.System.Web.UI.WebControls.Label
-    
+    Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
+
     '''<summary>
-    '''chkExcludeLinked control.
+    '''btnDocuments control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents chkExcludeLinked As Global.System.Web.UI.WebControls.CheckBox
-    
+    Protected WithEvents btnDocuments As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
-    '''btnUpdate control.
+    '''btnSelectAll control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnUpdate As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnSelectAll As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
-    '''pnlUD control.
+    '''btnDeselectAll control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents pnlUD As Global.System.Web.UI.WebControls.Panel
-    
+    Protected WithEvents btnDeselectAll As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
-    '''uscUDFascicleGrid control.
+    '''backBtn control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscUDFascicleGrid As Global.VecompSoftware.DocSuiteWeb.Gui.uscUDFascicleGrid
+    Protected WithEvents backBtn As Global.Telerik.Web.UI.RadButton
 End Class

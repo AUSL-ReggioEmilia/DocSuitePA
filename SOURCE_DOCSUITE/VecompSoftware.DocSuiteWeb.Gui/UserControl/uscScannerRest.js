@@ -1,4 +1,4 @@
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, SessionStorageKeysHelper) {
     var UscScannerRest = /** @class */ (function () {
         function UscScannerRest() {
             var _this = this;
@@ -24,8 +24,8 @@ define(["require", "exports"], function (require, exports) {
             return false;
         };
         UscScannerRest.prototype.onScanWindowClosed = function (sender, args) {
-            if (sessionStorage.getItem("component.scanner.upload.scan") !== null) {
-                var encodedScans = JSON.parse(sessionStorage.getItem("component.scanner.upload.scan"));
+            if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_COMPONENT_SCANNER) !== null) {
+                var encodedScans = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_COMPONENT_SCANNER));
                 $("#scan-items").empty();
                 for (var i = 0; i < encodedScans.length; i++) {
                     $("#scan-items").append("\n                   \n                    <li id='" + encodedScans[i].FileName + "' \n                    style='margin: 5px 0 7px 16px;font:normal 11px/10px \"Segoe UI\",Arial,sans-serif;'>\n                    <span >\n                    <img class=\"manImg\" src=\"../App_Themes/DocSuite2008/images/green-dot-document.png\"></img>\n                    </span>\n                    " + encodedScans[i].FileName + " \n                    <span class='removable-span-item' onclick=\"removeScanFromList('" + encodedScans[i].FileName + "')\">\n                    &times;</span><span class='remove-file' onclick=\"removeScanFromList('" + encodedScans[i].FileName + "')\">Rimuovi</span></li>");

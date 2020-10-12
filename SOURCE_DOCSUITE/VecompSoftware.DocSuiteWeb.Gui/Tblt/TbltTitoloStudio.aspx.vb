@@ -10,6 +10,11 @@ Partial Public Class TbltTitoloStudio
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
+
         InitializeAjaxSettings()
         InitializeControls()
         If Not IsPostBack Then
@@ -58,7 +63,7 @@ Partial Public Class TbltTitoloStudio
         LoadTitoliStudio()
 
         'Abilitazione
-        Dim GesTblContact As Boolean = (CommonUtil.HasGroupAdministratorRight() OrElse (DocSuiteContext.IsFullApplication AndAlso CommonUtil.HasGroupTblContactRight))
+        Dim GesTblContact As Boolean = CommonShared.HasGroupAdministratorRight() OrElse CommonShared.HasGroupTblContactRight
         If GesTblContact Then
             pnlButtons.Visible = True
             InitializeButtons()

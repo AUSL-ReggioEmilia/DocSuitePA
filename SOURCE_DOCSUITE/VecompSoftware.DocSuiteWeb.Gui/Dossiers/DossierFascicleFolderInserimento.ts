@@ -25,6 +25,7 @@ import UscSettori = require('UserControl/uscSettori');
 import AuthorizationRoleType = require('App/Models/Commons/AuthorizationRoleType');
 import DossierRoleStatus = require('App/Models/Dossiers/DossierRoleStatus');
 import DossierFolderSummaryModelMapper = require('App/Mappers/Dossiers/DossierFolderSummaryModelMapper');
+import UscFascicleProcessInsert = require('UserControl/uscFascicleProcessInsert');
 import UscFascicleInsert = require('UserControl/uscFascicleInsert');
 import ContactModel = require('App/Models/Commons/ContactModel');
 import FascicleType = require('App/Models/Fascicles/FascicleType');
@@ -39,6 +40,9 @@ import FascicleLocalService = require('App/Services/Fascicles/FascicleLocalServi
 import IFascicleService = require('App/Services/Fascicles/IFascicleService');
 import IRoleService = require('App/Services/Commons/IRoleService');
 import RoleLocalService = require('App/Services/Commons/RoleLocalService');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
+import GenericHelper = require('App/Helpers/GenericHelper');
+import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 declare var Page_IsValid: any;
 class DossierFascicleFolderInserimento extends DossierBase {
@@ -55,8 +59,11 @@ class DossierFascicleFolderInserimento extends DossierBase {
     uscNotificationId: string;
     fascicleTypeRow: string;
     rdlFascicleType: string;
-    uscFascInsertId: string;
+    fascicleInsertControlId: string;
     persistanceDisabled: boolean;
+    processEnabled: boolean;
+    actionType: string;
+    fascicleId: string;
 
     private _manager: Telerik.Web.UI.RadWindowManager;
     private _serviceConfigurations: ServiceConfiguration[];
@@ -68,9 +75,20 @@ class DossierFascicleFolderInserimento extends DossierBase {
     private _rcbOtherFascicles: Telerik.Web.UI.RadComboBox;
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
     private _domainUserService: DomainUserService;
-    private _uscFascInsertId: string;
     private _fascicleService: IFascicleService;
     private _dossierParentFolderRoles: DossierFolderRoleModel[];
+
+    static updateActionType: string = "Update";
+
+
+    get currentFascicleInsertInstanceFactory(): (JQueryPromise<UscFascicleInsert> | JQueryPromise<UscFascicleProcessInsert>) {
+        //TODO UscFascicleInsert prepopulate in the future
+        if (this.processEnabled) {
+            return PageClassHelper.callUserControlFunctionSafe<UscFascicleProcessInsert>(this.fascicleInsertControlId);
+        } else {
+            return PageClassHelper.callUserControlFunctionSafe<UscFascicleInsert>(this.fascicleInsertControlId);
+        }
+    }
 
     /**
 * Costruttore
@@ -95,33 +113,40 @@ class DossierFascicleFolderInserimento extends DossierBase {
    * @param eventArgs
    * @returns
    */
-    btmConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
-        let selectedFascicleType: string;
-
-        let isFascValid: boolean = false;
-        let uscFascInsert: UscFascicleInsert = <UscFascicleInsert>$("#".concat(this._uscFascInsertId)).data();
-        if (!jQuery.isEmptyObject(uscFascInsert)) {
-            isFascValid = uscFascInsert.isPageValid();
-            selectedFascicleType = uscFascInsert.getSelectedFascicleType();
-            if (String.isNullOrEmpty(selectedFascicleType)) {
-                this.showNotificationMessage(this.uscNotificationId, 'Selezionare una tipologia di fascicolo');
-            }
-        }
-        if (!isFascValid || String.isNullOrEmpty(selectedFascicleType)) {
-            return;
+    btmConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
+        let externalValidation: () => JQueryPromise<boolean> = () => $.Deferred<boolean>().resolve(true).promise();
+        if (!this.processEnabled) {
+            externalValidation = () => this.fascicleExternalValidation();
         }
 
-        if (!Page_IsValid) {
-            return;
-        }
+        externalValidation()
+            .done((isValid) => {
+                if (!isValid || !Page_IsValid) {
+                    return;
+                }
 
-        this._loadingPanel.show(this.currentPageId);
-        this._btnConferma.set_enabled(false);
-
-        let ajaxModel: AjaxModel = <AjaxModel>{};
-        ajaxModel.Value = new Array<string>();
-        ajaxModel.ActionName = "Insert";
-        this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+                this._loadingPanel.show(this.currentPageId);
+                this._btnConferma.set_enabled(false);
+                if (this.processEnabled) {
+                    PageClassHelper.callUserControlFunctionSafe<UscFascicleProcessInsert>(this.fascicleInsertControlId).done(instance => {
+                        instance.fillMetadataModel().done((metadatas: [string, string]) => {
+                            if (!metadatas) {
+                                this._btnConferma.set_enabled(true);
+                                return;
+                            }
+                            this.insertDossierFolder(0, metadatas[0], metadatas[1]);
+                        });
+                    });
+                }
+                else {
+                    PageClassHelper.callUserControlFunctionSafe<UscFascicleInsert>(this.fascicleInsertControlId).done(instance => {
+                        let ajaxModel: AjaxModel = <AjaxModel>{};
+                        ajaxModel.Value = new Array<string>();
+                        ajaxModel.ActionName = "Insert";
+                        this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+                    });
+                }
+            });
     }
 
 
@@ -136,34 +161,41 @@ class DossierFascicleFolderInserimento extends DossierBase {
         this._btnConferma.add_clicked(this.btmConferma_ButtonClicked);
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.managerId);
-        this._uscFascInsertId = this.uscFascInsertId;
 
         if (this.persistanceDisabled) {
             this._dossierFolderService = new DossierFolderLocalService();
         } else {
             let dossierFolderConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, DossierBase.DOSSIERFOLDER_TYPE_NAME);
             this._dossierFolderService = new DossierFolderService(dossierFolderConfiguration);
-        }        
+        }
 
         let roleConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, DossierBase.ROLE_TYPE_NAME);
         if (this.persistanceDisabled) {
             this._roleService = new RoleLocalService(roleConfiguration);
-        } else {            
+        } else {
             this._roleService = new RoleService(roleConfiguration);
-        }        
+        }
 
         if (this.persistanceDisabled) {
             this._fascicleService = new FascicleLocalService();
         } else {
             let fascicleConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, DossierBase.FASCICLE_TYPE_NAME);
             this._fascicleService = new FascicleService(fascicleConfiguration);
-        }        
+        }
 
-        $("#".concat(this._uscFascInsertId)).bind(UscFascicleInsert.LOADED_EVENT, (args) => {
-            $("#".concat(this.fascicleTypeRow)).show();
-        });
+        this.currentFascicleInsertInstanceFactory
+            .done((instance) => {
+                $("#".concat(this.fascicleTypeRow)).show();
+            });
 
         $.when(this.getFolderParentRoles()).done(() => {
+            this.fascicleId = GenericHelper.getUrlParams(window.location.href, "idFascicle");
+            this.actionType = GenericHelper.getUrlParams(window.location.href, "ActionType");
+            if (this.fascicleId && this.actionType == DossierFascicleFolderInserimento.updateActionType) {
+                let sessionModel: DossierFolderModel[] = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIERFOLDERS_SESSIONNAME));
+                let fascicle: FascicleModel = sessionModel.filter(x => x.Fascicle && x.Fascicle.UniqueId == this.fascicleId)[0].Fascicle;
+                this.populateFascicleFields(fascicle);
+            }
         }).fail((exception) => {
             this.showNotificationException(this.uscNotificationId, exception, "Errore nel caricamento dei settori autorizzati alla cartella madre.");
         });
@@ -176,63 +208,89 @@ class DossierFascicleFolderInserimento extends DossierBase {
     *---------------------------- Methods ---------------------------
     */
 
-    insertDossierFolder(responsibleContact: number, metadataModel: string) {
+    insertDossierFolder(responsibleContact: number, metadataDesignerModel: string, metadataValueModels: string) {
+        this.currentFascicleInsertInstanceFactory
+            .done((instance) => {
+                let dossierFolder = <DossierFolderModel>{};
+                let dossier = <DossierModel>{};
+                dossier.UniqueId = this.currentDossierId;
+                dossierFolder.Status = DossierFolderStatus.InProgress;
 
-        let uscFascInsert: UscFascicleInsert = <UscFascicleInsert>$("#".concat(this._uscFascInsertId)).data();
+                dossierFolder.Dossier = dossier;
 
-        let dossierFolder = <DossierFolderModel>{};
-        let dossier = <DossierModel>{};
-        dossier.UniqueId = this.currentDossierId;
-        dossierFolder.Status = DossierFolderStatus.InProgress;
+                let dossierFolderToUpdate: DossierFolderModel = this.getFolderParent(this.currentDossierId);
+                if (dossierFolderToUpdate) {
+                    dossierFolder.ParentInsertId = dossierFolderToUpdate.UniqueId;
+                };
 
-        dossierFolder.Dossier = dossier;
-
-        let dossierFolderToUpdate: DossierFolderModel = this.getFolderParent(this.currentDossierId);
-        if (dossierFolderToUpdate) {
-            dossierFolder.ParentInsertId = dossierFolderToUpdate.UniqueId;
-        };
-
-        if (!jQuery.isEmptyObject(uscFascInsert)) {
-            let fascicle: FascicleModel = new FascicleModel;
-            fascicle = uscFascInsert.getFascicle();
-
-            if (!!metadataModel) {
-                fascicle.MetadataValues = metadataModel;
-                if (sessionStorage.getItem("MetadataRepository")) {
-                    let metadataRepository: MetadataRepositoryModel = new MetadataRepositoryModel();
-                    metadataRepository.UniqueId = sessionStorage.getItem("MetadataRepository");
-                    fascicle.MetadataRepository = metadataRepository;
+                let deferredAction: JQueryPromise<FascicleModel> = $.Deferred<FascicleModel>().resolve(instance.getFascicle()).promise();
+                if (this.processEnabled) {
+                    deferredAction = instance.getFascicle();
                 }
-            }
 
-            if (fascicle.FascicleType != FascicleType.Activity) {
-                let contactModel: ContactModel = <ContactModel>{};
-                contactModel.EntityId = responsibleContact;
-                fascicle.Contacts.push(contactModel);
-            }
+                deferredAction.done((fascicle: FascicleModel) => {
+                    if (!!metadataValueModels) {
+                        fascicle.MetadataDesigner = metadataDesignerModel;
+                        fascicle.MetadataValues = metadataValueModels;
+                        if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY)) {
+                            let metadataRepository: MetadataRepositoryModel = new MetadataRepositoryModel();
+                            metadataRepository.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
+                            fascicle.MetadataRepository = metadataRepository;
+                        }
+                    }
 
-            //imprimo il settore della cartella madre
-            dossierFolder.DossierFolderRoles = this._dossierParentFolderRoles;
+                    if (responsibleContact > 0 && fascicle.FascicleType != FascicleType.Activity) {
+                        let contactModel: ContactModel = <ContactModel>{};
+                        contactModel.EntityId = responsibleContact;
+                        fascicle.Contacts.push(contactModel);
+                    }
 
-            this._fascicleService.insertFascicle(fascicle,
-                (data: FascicleModel) => {
+                    //imprimo il settore della cartella madre
+                    dossierFolder.DossierFolderRoles = this._dossierParentFolderRoles;
 
-                    let savedFascicle: FascicleModel = data;
-                    dossierFolder.Status = DossierFolderStatus.Fascicle;
-                    dossierFolder.Fascicle = savedFascicle;
-                    let category = new CategoryModel();
-                    category.EntityShortId = savedFascicle.Category.EntityShortId;
-                    dossierFolder.Category = category;
-                    this.callInsertDossierFolderService(dossierFolder, savedFascicle.Title);
-                },
-                (exception: ExceptionDTO) => {
-                    this._loadingPanel.hide(this.currentPageId);
-                    this.showNotificationException(this.uscNotificationId, exception);
-                    this._btnConferma.set_enabled(true);
-                }
-            );
-        }
+                    let fascicleUniqueId: string;
+                    let dossierParentId: string;
 
+                    this._fascicleService.insertFascicle(fascicle, null,
+                        (data: FascicleModel) => {
+
+                            let savedFascicle: FascicleModel = data;
+                            dossierFolder.Status = DossierFolderStatus.Fascicle;
+                            dossierFolder.Fascicle = savedFascicle;
+                            let category = new CategoryModel();
+                            category.EntityShortId = savedFascicle.Category.EntityShortId;
+                            dossierFolder.Category = category;
+
+                            if (this.actionType == DossierFascicleFolderInserimento.updateActionType) {
+                                let sessionModel: DossierFolderModel[] = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIERFOLDERS_SESSIONNAME));
+                                if (sessionModel.filter(x => x.Fascicle && x.Fascicle.UniqueId == this.fascicleId)[0] &&
+                                    sessionModel.filter(x => x.Fascicle && x.Fascicle.UniqueId == this.fascicleId)[0].Fascicle) {
+                                    fascicleUniqueId = sessionModel.filter(x => x.Fascicle && x.Fascicle.UniqueId == this.fascicleId)[0].Fascicle.UniqueId;
+
+                                    dossierParentId = sessionModel.filter(x => x.Fascicle && x.Fascicle.UniqueId == this.fascicleId)[0].ParentInsertId;
+                                    dossierFolder.ParentInsertId = dossierParentId;
+
+                                    let arr: DossierFolderModel[] = [];
+                                    for (let i = 0; i <= sessionModel.length - 1; i++) {
+                                        if (!sessionModel[i].Fascicle || (sessionModel[i].Fascicle && sessionModel[i].Fascicle.UniqueId != fascicleUniqueId)) {
+                                            arr.push(sessionModel[i]);
+                                        }
+                                    }
+
+                                    sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIERFOLDERS_SESSIONNAME, JSON.stringify(arr));
+                                }
+                            }
+
+                            this.callInsertDossierFolderService(dossierFolder, savedFascicle.FascicleObject);
+                        },
+                        (exception: ExceptionDTO) => {
+                            this._loadingPanel.hide(this.currentPageId);
+                            this.showNotificationException(this.uscNotificationId, exception);
+                            this._btnConferma.set_enabled(true);
+                        }
+                    );
+                });
+            });
     }
 
     callInsertDossierFolderService = (dossierFolder: DossierFolderModel, fascicleTitle: string) => {
@@ -333,6 +391,26 @@ class DossierFascicleFolderInserimento extends DossierBase {
             promise.reject(error);
         }
         return promise.promise();
+    }
+
+    private fascicleExternalValidation(): JQueryPromise<boolean> {
+        let promise: JQueryDeferred<boolean> = $.Deferred<boolean>();
+        PageClassHelper.callUserControlFunctionSafe<UscFascicleInsert>(this.fascicleInsertControlId)
+            .done((instance) => {
+                let isFascValid: boolean = instance.isPageValid();
+                let selectedFascicleType: string = instance.getSelectedFascicleType();
+                if (!selectedFascicleType) {
+                    this.showNotificationMessage(this.uscNotificationId, 'Selezionare una tipologia di fascicolo');
+                }
+                return promise.resolve((isFascValid && !!selectedFascicleType));
+            });
+        return promise.promise();
+    }
+
+    private populateFascicleFields(fascicle: FascicleModel) {
+        PageClassHelper.callUserControlFunctionSafe<UscFascicleProcessInsert>(this.fascicleInsertControlId).done(instance => {
+            instance.populateInputs(fascicle);
+        });
     }
 }
 

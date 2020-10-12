@@ -2,133 +2,136 @@
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
 
 
-  <class name="POLRequest" table="PosteOnLineRequest" discriminator-value="-1">
-    <id name="Id" type="System.Guid">
-      <column name="Id" />
-      <generator class="guid.comb" />
-    </id>
-    <discriminator column="Type" type="integer"></discriminator>
+    <class name="POLRequest" table="PosteOnLineRequest" discriminator-value="-1">
+        <id name="Id" type="System.Guid">
+            <column name="Id" />
+            <generator class="guid.comb" />
+        </id>
+        <discriminator column="Type" type="integer"></discriminator>
 
-    <property name="Type" column="Type" insert="false" update="false" />
-    <property name="CostoTotale" type="System.Double">
-      <column name="CostoTotale" />
-    </property>
-    <property name="ErrorMsg" type="System.String">
-      <column name="ErrorMsg" />
-    </property>
-    <property name="GuidPoste" type="System.String">
-      <column name="GuidPoste" />
-    </property>
-    <property name="IdOrdine" type="System.String">
-      <column name="IdOrdine" />
-    </property>
-    <property name="IdRichiesta" type="System.String">
-      <column name="IdRichiesta" />
-    </property>
-    <property name="ProtocolNumber" type="System.Int32">
-      <column name="ProtocolNumber" not-null="false"/>
-    </property>
-    <property name="ProtocolYear" type="System.Int16">
-      <column name="ProtocolYear" not-null="false"/>
-    </property>
-    <property name="Status" type="POLRequestStatusEnum">
-      <column name="Status" />
-    </property>
-    <property name="StatusDescrition" type="System.String">
-      <column name="StatusDescrition" />
-    </property>
-    <property name="RegistrationDate" type="System.Nullable`1[[System.DateTime]]">
-      <column name="RegistrationDate" not-null="false" />
-    </property>
-    <property name="RegistrationUser" type="System.String">
-      <column name="RegistrationUser" />
-    </property>
-    <property name="LastChangedDate" type="System.Nullable`1[[System.DateTime]]">
-      <column name="LastChangedDate" not-null="false" />
-    </property>
-    <property name="LastChangedUser" type="System.String">
-      <column name="LastChangedUser" />
-    </property>
+        <property name="Type" column="Type" insert="false" update="false" />
 
-    <many-to-one name="Account" column="IdPosteOnLineAccount" class="POLAccount" />
+        <!--TODO : I cannot make this work. Will have to recheck-->
+        <!--<version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+            <column name="Timestamp" not-null="true" sql-type="timestamp" />
+        </version>-->
 
-    <bag inverse="true" name="Contacts" mutable="true" cascade="all-delete-orphan">
-      <key>
-        <column name="RequestId" />
-      </key>
-      <one-to-many class="POLRequestContact" />
-    </bag>
-    
-    <subclass name="LOLRequest" discriminator-value="1">
-      <property name="DocumentName" type="System.String">
-        <column name="DocumentName" />
-      </property>
-      <property name="DocumentMD5" type="System.String">
-        <column name="DocumentMD5" />
-      </property>
-      <property name="DocumentPosteFileType" type="System.String">
-        <column name="DocumentPosteFileType" />
-      </property>
-      <property name="DocumentPosteMD5" type="System.String">
-        <column name="DocumentPosteMD5" />
-      </property>
-      <property name="IdArchiveChain" type="System.Guid">
-        <column name="IdArchiveChain" />
-      </property>
-      <property name="IdArchiveChainPoste" type="System.Guid">
-        <column name="IdArchiveChainPoste" />
-      </property>
-    </subclass>
-    
-    <subclass name="ROLRequest" discriminator-value="2">
-      <property name="DocumentName" type="System.String">
-        <column name="DocumentName" />
-      </property>
-      <property name="DocumentMD5" type="System.String">
-        <column name="DocumentMD5" />
-      </property>
-      <property name="DocumentPosteFileType" type="System.String">
-        <column name="DocumentPosteFileType" />
-      </property>
-      <property name="DocumentPosteMD5" type="System.String">
-        <column name="DocumentPosteMD5" />
-      </property>
-      <property name="IdArchiveChain" type="System.Guid">
-        <column name="IdArchiveChain" />
-      </property>
-      <property name="IdArchiveChainPoste" type="System.Guid">
-        <column name="IdArchiveChainPoste" />
-      </property>
-    </subclass>
-    
-    <subclass name="TOLRequest" discriminator-value="3">
-      <property name="Testo" type="System.String">
-        <column name="Testo" />
-      </property>
-    </subclass>
+        <property name="CostoTotale" type="System.Double">
+            <column name="CostoTotale" />
+        </property>
+        <property name="ErrorMsg" type="System.String">
+            <column name="ErrorMsg" />
+        </property>
+        <property name="GuidPoste" type="System.String">
+            <column name="GuidPoste" />
+        </property>
+        <property name="IdOrdine" type="System.String">
+            <column name="IdOrdine" />
+        </property>
+        <property name="IdRichiesta" type="System.String">
+            <column name="IdRichiesta" />
+        </property>
+        <property name="Status" type="POLRequestStatusEnum">
+            <column name="Status" />
+        </property>
+        <property name="StatusDescrition" type="System.String">
+            <column name="StatusDescrition" />
+        </property>
+        <property name="RegistrationDate" type="System.DateTimeOffset">
+            <column name="RegistrationDate" not-null="true" />
+        </property>
+        <property name="RegistrationUser" type="System.String">
+            <column name="RegistrationUser" />
+        </property>
+        <property name="LastChangedDate" type="System.Nullable`1[[System.DateTimeOffset]]">
+            <column name="LastChangedDate" not-null="false" />
+        </property>
+        <property name="LastChangedUser" type="System.String">
+            <column name="LastChangedUser" />
+        </property>
+        <property name="ExtendedProperties" type="System.String">
+            <column name="ExtendedProperties" />
+        </property>
+        <many-to-one name="Account" column="IdPosteOnLineAccount" class="POLAccount" />
+        <many-to-one name="DocumentUnit" class="DocumentUnit" column="IdDocumentUnit" />
+        
+        <bag inverse="true" name="Contacts" mutable="true" cascade="all-delete-orphan">
+            <key>
+                <column name="RequestId" />
+            </key>
+            <one-to-many class="POLRequestContact" />
+        </bag>
 
-      <subclass name="SOLRequest" discriminator-value="4">
-          <property name="DocumentName" type="System.String">
-              <column name="DocumentName" />
-          </property>
-          <property name="DocumentMD5" type="System.String">
-              <column name="DocumentMD5" />
-          </property>
-          <property name="DocumentPosteFileType" type="System.String">
-              <column name="DocumentPosteFileType" />
-          </property>
-          <property name="DocumentPosteMD5" type="System.String">
-              <column name="DocumentPosteMD5" />
-          </property>
-          <property name="IdArchiveChain" type="System.Guid">
-              <column name="IdArchiveChain" />
-          </property>
-          <property name="IdArchiveChainPoste" type="System.Guid">
-              <column name="IdArchiveChainPoste" />
-          </property>
-      </subclass>
-      
-  </class>
+        <subclass name="LOLRequest" discriminator-value="1">
+            <property name="DocumentName" type="System.String">
+                <column name="DocumentName" />
+            </property>
+            <property name="DocumentMD5" type="System.String">
+                <column name="DocumentMD5" />
+            </property>
+            <property name="DocumentPosteFileType" type="System.String">
+                <column name="DocumentPosteFileType" />
+            </property>
+            <property name="DocumentPosteMD5" type="System.String">
+                <column name="DocumentPosteMD5" />
+            </property>
+            <property name="IdArchiveChain" type="System.Guid">
+                <column name="IdArchiveChain" />
+            </property>
+            <property name="IdArchiveChainPoste" type="System.Guid">
+                <column name="IdArchiveChainPoste" />
+            </property>
+        </subclass>
+
+        <subclass name="ROLRequest" discriminator-value="2">
+            <property name="DocumentName" type="System.String">
+                <column name="DocumentName" />
+            </property>
+            <property name="DocumentMD5" type="System.String">
+                <column name="DocumentMD5" />
+            </property>
+            <property name="DocumentPosteFileType" type="System.String">
+                <column name="DocumentPosteFileType" />
+            </property>
+            <property name="DocumentPosteMD5" type="System.String">
+                <column name="DocumentPosteMD5" />
+            </property>
+            <property name="IdArchiveChain" type="System.Guid">
+                <column name="IdArchiveChain" />
+            </property>
+            <property name="IdArchiveChainPoste" type="System.Guid">
+                <column name="IdArchiveChainPoste" />
+            </property>
+        </subclass>
+
+        <subclass name="TOLRequest" discriminator-value="3">
+            <property name="Testo" type="System.String">
+                <column name="Testo" />
+            </property>
+        </subclass>
+
+        <subclass name="SOLRequest" discriminator-value="4">
+            <property name="DocumentName" type="System.String">
+                <column name="DocumentName" />
+            </property>
+            <property name="DocumentMD5" type="System.String">
+                <column name="DocumentMD5" />
+            </property>
+            <property name="DocumentPosteFileType" type="System.String">
+                <column name="DocumentPosteFileType" />
+            </property>
+            <property name="DocumentPosteMD5" type="System.String">
+                <column name="DocumentPosteMD5" />
+            </property>
+            <property name="IdArchiveChain" type="System.Guid">
+                <column name="IdArchiveChain" />
+            </property>
+            <property name="IdArchiveChainPoste" type="System.Guid">
+                <column name="IdArchiveChainPoste" />
+            </property>
+        </subclass>
+
+    </class>
 
 
 </hibernate-mapping>

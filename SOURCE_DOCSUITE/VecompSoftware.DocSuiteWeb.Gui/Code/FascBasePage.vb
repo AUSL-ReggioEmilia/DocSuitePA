@@ -2,11 +2,9 @@ Imports System.Collections.Generic
 Imports System.Linq
 Imports Newtonsoft.Json
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.Extensions
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Workflows
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class FascBasePage
@@ -16,13 +14,7 @@ Public Class FascBasePage
     Private _idFascicle As Guid?
     Private _currentFascicle As Fascicle
     Private _currentFascicleWebAPI As Entity.Fascicles.Fascicle
-
-    Private _currentFascicleWebAPIRole As IList(Of Entity.Commons.Role)
-    Private _workflowAuthorizationFacade As WorkflowAuthorizationFacade
     Private _categoryFascicleFacade As CategoryFascicleFacade
-    Private _year As Short?
-    Private _idCategory As Integer?
-    Private _incremental As Integer?
     Private _currentFascicleFinder As Data.WebAPI.Finder.Fascicles.FascicleFinder = Nothing
 
 #End Region
@@ -54,7 +46,6 @@ Public Class FascBasePage
         End Get
     End Property
 
-
     Public ReadOnly Property CurrentFascicleFinder() As Data.WebAPI.Finder.Fascicles.FascicleFinder
         Get
             If _currentFascicleFinder Is Nothing Then
@@ -70,26 +61,24 @@ Public Class FascBasePage
     Public ReadOnly Property CurrentFascicleWebAPI As Entity.Fascicles.Fascicle
         Get
             If _currentFascicleWebAPI Is Nothing AndAlso Not IdFascicle = Guid.Empty Then
-                CurrentFascicleFinder.ResetDecoration()
-                CurrentFascicleFinder.UniqueId = IdFascicle
-                CurrentFascicleFinder.ExpandRoles = True
-                Dim result As WebAPIDto(Of Entity.Fascicles.Fascicle) = CurrentFascicleFinder.DoSearch().FirstOrDefault()
+                Dim result As ICollection(Of WebAPIDto(Of Entity.Fascicles.Fascicle)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentFascicleFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.UniqueId = IdFascicle
+                        finder.ExpandRoles = True
+                        Return finder.DoSearch()
+                    End Function)
+
+                Dim fascicleDto As WebAPIDto(Of Entity.Fascicles.Fascicle) = result.FirstOrDefault()
                 If result IsNot Nothing Then
-                    _currentFascicleWebAPI = result.Entity
+                    _currentFascicleWebAPI = fascicleDto.Entity
                 End If
             End If
 
             Return _currentFascicleWebAPI
         End Get
     End Property
-    Public ReadOnly Property CurrentWorkflowAuthorizationFacade As WorkflowAuthorizationFacade
-        Get
-            If _workflowAuthorizationFacade Is Nothing Then
-                _workflowAuthorizationFacade = New WorkflowAuthorizationFacade(DocSuiteContext.Current.User.FullUserName)
-            End If
-            Return _workflowAuthorizationFacade
-        End Get
-    End Property
+
     Public ReadOnly Property CurrentCategoryFascicleFacade As CategoryFascicleFacade
         Get
             If _categoryFascicleFacade Is Nothing Then
@@ -98,21 +87,25 @@ Public Class FascBasePage
             Return _categoryFascicleFacade
         End Get
     End Property
+
     Protected ReadOnly Property CurrentUser As String
         Get
             Return JsonConvert.SerializeObject(DocSuiteContext.Current.User.FullUserName)
         End Get
     End Property
+
     Protected ReadOnly Property Year As Short?
         Get
             Return GetKeyValueOrDefault(Of Short?)("Year", Nothing)
         End Get
     End Property
+
     Protected ReadOnly Property IdCategory As Integer?
         Get
             Return GetKeyValueOrDefault(Of Integer?)("IdCategory", Nothing)
         End Get
     End Property
+
     Protected ReadOnly Property Incremental As Integer?
         Get
             Return GetKeyValueOrDefault(Of Integer?)("Incremental", Nothing)

@@ -17,7 +17,11 @@
     CancelDocumentUnit = 15,
     ToApprove = 16,
     ToShare = 17,
-    UpdateArchive = 18
+    UpdateArchive = 18,
+    UpdateFascicle = 19,
+    ToIntegration = 20,
+    GenerateReport = 21,
+    CopyFascicleContents = 22
 }
 
 export = ActivityAction;

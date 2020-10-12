@@ -1,5 +1,5 @@
 ﻿import BaseMapper = require('App/Mappers/BaseMapper');
-import DocumentSeriesItemLinksModel = require('../../Models/Series/DocumentSeriesItemLinksModel');
+import DocumentSeriesItemLinksModel = require('App/Models/Series/DocumentSeriesItemLinksModel');
 
 class DocumentSeriesItemLinksModelMapper extends BaseMapper<DocumentSeriesItemLinksModel>{
     constructor() {

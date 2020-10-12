@@ -114,10 +114,11 @@ Partial Public Class ProtPecEmailAddress
                     Return False
                 End Try
             Case ContactTypeEnum.Manual
-                Dim manualId As YearNumberIdCompositeKey = YearNumberIdCompositeKey.TryParse(idContact)
-                If manualId IsNot Nothing Then
+                Dim manualId As Guid = Nothing
+                Guid.TryParse(idContact, manualId)
+                If Not manualId.Equals(Guid.Empty) Then
                     Try
-                        Dim manualCnt As ProtocolContactManual = Facade.ProtocolContactManualFacade.GetById(manualId, True)
+                        Dim manualCnt As ProtocolContactManual = Facade.ProtocolContactManualFacade.GetById(manualId)
                         manualCnt.Contact.CertifiedMail = emailAddress
                         Facade.ProtocolContactManualFacade.UpdateOnly(manualCnt)
                         Return True

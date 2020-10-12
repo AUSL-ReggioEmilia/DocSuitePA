@@ -8,7 +8,7 @@
     <telerik:RadCodeBlock ID="RadCodeBlock1" runat="server">
         <script type="text/javascript">
             function OpenPecMailAddressWindow(id, contactType, contactName, message) {
-                var wnd = window.radopen("<%= PecEMailInsertUrl %>?id=" + id + "&type=" + contactType + "&name=" + contactName + "&Message=" + message, "windowViewMail");
+                var wnd = window.radopen("<%= PecEMailInsertUrl %>?Type=Prot&id=" + id + "&type=" + contactType + "&name=" + contactName + "&Message=" + message, "windowViewMail");
                 wnd.setSize(700, 500);
                 wnd.set_visibleStatusbar(false);
                 wnd.set_modal = true;

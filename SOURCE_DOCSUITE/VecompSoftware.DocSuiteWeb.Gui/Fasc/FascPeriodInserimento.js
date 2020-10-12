@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfigurationHelper", "App/Services/Fascicles/FascicleService", "App/Models/Fascicles/FascicleModel", "App/Services/Commons/CategoryFascicleService", "App/Models/Fascicles/FascicleType", "App/Models/Commons/MetadataRepositoryModel"], function (require, exports, FascicleBase, ServiceConfigurationHelper, FascicleService, FascicleModel, CategoryFascicleService, FascicleType, MetadataRepositoryModel) {
+define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfigurationHelper", "App/Services/Fascicles/FascicleService", "App/Models/Fascicles/FascicleModel", "App/Services/Commons/CategoryFascicleService", "App/Models/Fascicles/FascicleType", "App/Models/Commons/MetadataRepositoryModel", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, FascicleBase, ServiceConfigurationHelper, FascicleService, FascicleModel, CategoryFascicleService, FascicleType, MetadataRepositoryModel, SessionStorageKeysHelper) {
     var FascPeriodInserimento = /** @class */ (function (_super) {
         __extends(FascPeriodInserimento, _super);
         /**
@@ -70,7 +70,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
                         if (FascicleType[categoryFascicle.FascicleType] == FascicleType.Period) {
                             $(document).queue(function (next) {
                                 newFascicle.DSWEnvironment = categoryFascicle.Environment;
-                                _this._fascicleService.insertFascicle(newFascicle, function (data) {
+                                _this._fascicleService.insertFascicle(newFascicle, null, function (data) {
                                     next();
                                 }, function (exception) {
                                     _this.showNotificationException(_this.uscNotificationId, exception);
@@ -90,16 +90,17 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
                 _this._btnConferma.set_enabled(true);
             });
         };
-        FascPeriodInserimento.prototype.insertCallback = function (metadataModel) {
+        FascPeriodInserimento.prototype.insertCallback = function (metadataDesignerModel, metadataValueModel) {
             var uscFascInsert = $("#".concat(this._uscFascInsertId)).data();
             if (!jQuery.isEmptyObject(uscFascInsert)) {
                 var fascicle = new FascicleModel;
                 fascicle = uscFascInsert.getFascicle();
-                if (!!metadataModel) {
-                    fascicle.MetadataValues = metadataModel;
-                    if (sessionStorage.getItem("MetadataRepository")) {
+                if (!!metadataValueModel) {
+                    fascicle.MetadataValues = metadataValueModel;
+                    fascicle.MetadataDesigner = metadataDesignerModel;
+                    if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY)) {
                         var metadataRepository = new MetadataRepositoryModel();
-                        metadataRepository.UniqueId = sessionStorage.getItem("MetadataRepository");
+                        metadataRepository.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
                         fascicle.MetadataRepository = metadataRepository;
                     }
                 }
@@ -110,7 +111,7 @@ define(["require", "exports", "Fasc/FascBase", "App/Helpers/ServiceConfiguration
             var _this = this;
             var promise = $.Deferred();
             try {
-                this._fascicleService.insertFascicle(fascicle, function (data) {
+                this._fascicleService.insertFascicle(fascicle, null, function (data) {
                     promise.resolve();
                 }, function (exception) {
                     _this.showNotificationException(_this.uscNotificationId, exception);

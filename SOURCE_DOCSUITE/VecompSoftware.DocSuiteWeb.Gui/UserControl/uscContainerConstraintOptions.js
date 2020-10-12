@@ -1,6 +1,6 @@
 /// <reference path="../scripts/typings/telerik/telerik.web.ui.d.ts" />
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
-define(["require", "exports", "App/Services/DocumentArchives/DocumentSeriesConstraintService", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO"], function (require, exports, DocumentSeriesConstraintService, ServiceConfigurationHelper, ExceptionDTO) {
+define(["require", "exports", "App/Services/DocumentArchives/DocumentSeriesConstraintService", "App/Helpers/ServiceConfigurationHelper", "App/DTOs/ExceptionDTO", "App/Helpers/SessionStorageKeysHelper"], function (require, exports, DocumentSeriesConstraintService, ServiceConfigurationHelper, ExceptionDTO, SessionStorageKeysHelper) {
     var UscContainerConstraintOptions = /** @class */ (function () {
         function UscContainerConstraintOptions(serviceConfigurations) {
             var _this = this;
@@ -25,10 +25,10 @@ define(["require", "exports", "App/Services/DocumentArchives/DocumentSeriesConst
                             }
                             case UscContainerConstraintOptions.EDIT_CONSTRAINT_ACTION: {
                                 {
-                                    if (!_this.currentSelectedNode.get_value()) {
+                                    if (!_this.currentSelectedNode().get_value()) {
                                         return;
                                     }
-                                    _this._txtConstraintName.set_value(_this.currentSelectedNode.get_text());
+                                    _this._txtConstraintName.set_value(_this.currentSelectedNode().get_text());
                                     _this._btnConfirm.set_commandArgument(UscContainerConstraintOptions.EDIT_CONSTRAINT_ACTION);
                                     _this.openWindow(_this.windowManageConstraintId, "Modifica obbligo di trasparenza");
                                 }
@@ -36,13 +36,13 @@ define(["require", "exports", "App/Services/DocumentArchives/DocumentSeriesConst
                             }
                             case UscContainerConstraintOptions.REMOVE_CONSTRAINT_ACTION: {
                                 {
-                                    if (!_this.currentSelectedNode.get_value()) {
+                                    if (!_this.currentSelectedNode().get_value()) {
                                         return;
                                     }
                                     _this._windowManager.radconfirm("Sei sicuro di voler rimuovere l'obbligo selezionato?", function (arg) {
                                         if (arg) {
                                             var constraintModel = {};
-                                            constraintModel.UniqueId = _this.currentSelectedNode.get_value();
+                                            constraintModel.UniqueId = _this.currentSelectedNode().get_value();
                                             _this.saveConstraint(UscContainerConstraintOptions.REMOVE_CONSTRAINT_ACTION, constraintModel);
                                         }
                                     }, 300, 160);
@@ -82,7 +82,7 @@ define(["require", "exports", "App/Services/DocumentArchives/DocumentSeriesConst
                             {
                                 constraintModel = {};
                                 constraintModel.Name = constraintName;
-                                constraintModel.UniqueId = _this.currentSelectedNode.get_value();
+                                constraintModel.UniqueId = _this.currentSelectedNode().get_value();
                                 _this.saveConstraint(UscContainerConstraintOptions.EDIT_CONSTRAINT_ACTION, constraintModel);
                             }
                             break;
@@ -95,13 +95,9 @@ define(["require", "exports", "App/Services/DocumentArchives/DocumentSeriesConst
             };
             this._serviceConfigurations = serviceConfigurations;
         }
-        Object.defineProperty(UscContainerConstraintOptions.prototype, "currentSelectedNode", {
-            get: function () {
-                return this._rtvConstraints.get_selectedNode();
-            },
-            enumerable: true,
-            configurable: true
-        });
+        UscContainerConstraintOptions.prototype.currentSelectedNode = function () {
+            return this._rtvConstraints.get_selectedNode();
+        };
         /**
          *------------------------- Methods -----------------------------
          */
@@ -126,7 +122,7 @@ define(["require", "exports", "App/Services/DocumentArchives/DocumentSeriesConst
         UscContainerConstraintOptions.prototype.loadConstraints = function (idSeries) {
             var _this = this;
             var promise = $.Deferred();
-            sessionStorage.removeItem(UscContainerConstraintOptions.TO_DELETE_STORAGE_KEY);
+            sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_TO_DELETE_STORAGE);
             this._rtvConstraints.get_nodes().getNode(0).get_nodes().clear();
             this.seriesId = idSeries;
             this._loadingPanel.show(this.splPageContentId);
@@ -236,7 +232,6 @@ define(["require", "exports", "App/Services/DocumentArchives/DocumentSeriesConst
         UscContainerConstraintOptions.REMOVE_CONSTRAINT_ACTION = "removeConstraint";
         UscContainerConstraintOptions.NODE_COMMAND_ATTRIBUTE = "NodeCommandType";
         UscContainerConstraintOptions.PERSISTED_ATTRIBUTE = "IsAlreadyPersisted";
-        UscContainerConstraintOptions.TO_DELETE_STORAGE_KEY = "ConstraintsToDelete";
         return UscContainerConstraintOptions;
     }());
     return UscContainerConstraintOptions;

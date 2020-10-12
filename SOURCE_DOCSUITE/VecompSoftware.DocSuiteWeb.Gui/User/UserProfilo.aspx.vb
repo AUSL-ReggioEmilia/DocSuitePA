@@ -105,7 +105,7 @@ Public Class UserProfilo
         End If
         'pratiche
         If CommonInstance.DocmEnabled Then
-            RolesAdd(tvwSettoriDocm, DSWEnvironment.Document, DocumentRoleRightPositions.Enabled, CommonShared.GroupPaperworkSelected)
+            RolesAdd(tvwSettoriDocm, DSWEnvironment.Document, DossierRoleRightPositions.Enabled, CommonShared.GroupPaperworkSelected)
             RadTabStrip1.FindTabByText("Pratiche").Visible = True
             RadPageView2.Visible = True
             RadTabStrip1.SelectedIndex = 1

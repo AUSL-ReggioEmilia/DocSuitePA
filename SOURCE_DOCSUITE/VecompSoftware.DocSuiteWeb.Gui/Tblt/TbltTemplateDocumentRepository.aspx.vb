@@ -1,12 +1,9 @@
-﻿Imports System.Collections.Generic
-Imports System.Linq
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports Newtonsoft.Json
-Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.Extensions
+﻿Imports Newtonsoft.Json
 Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Services.Logging
+Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.DTO.Commons
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Partial Class TbltTemplateDocumentRepository
     Inherits CommonBasePage
@@ -16,7 +13,7 @@ Partial Class TbltTemplateDocumentRepository
     Private Const HIDE_LOADING_FUNCTION As String = "tbltTemplateDocumentRepository.hideLoadingPanel('{0}')"
     Private Const RESET_BUTTONS_STATE_FUNCTION As String = "tbltTemplateDocumentRepository.resetButtonsState()"
     Private Const DELETE_CALLBACK_FUNCTION As String = "tbltTemplateDocumentRepository.deleteCallback()"
-    Private _argument As String = String.Empty
+    Private Shared DELETE_OPTION As String = "delete"
 #End Region
 
 #Region "Properties"
@@ -24,20 +21,20 @@ Partial Class TbltTemplateDocumentRepository
 #End Region
 
 #Region "Events"
-    Protected Sub btnElimina_Click(sender As Object, e As EventArgs) Handles btnElimina.Click
-        If Not String.IsNullOrEmpty(_argument) Then
+    Protected Sub DeleteTemplate(idArchiveChain As String)
+        If Not String.IsNullOrEmpty(idArchiveChain) Then
             Try
                 Dim idChain As Guid = Nothing
-                If Not Guid.TryParse(_argument, idChain) Then
-                    AjaxAlert(String.Format("Il valore '{0}' non è un identificativo del documento valido", _argument))
+                If Not Guid.TryParse(idArchiveChain, idChain) Then
+                    AjaxAlert(String.Format("Il valore '{0}' non è un identificativo del documento valido", idArchiveChain))
                 End If
 
-                Service.DetachDocument(String.Empty, idChain)
+                Service.DetachDocument(idChain)
                 AjaxManager.ResponseScripts.Add(DELETE_CALLBACK_FUNCTION)
             Catch ex As Exception
                 FileLogger.Error(LoggerName, ex.Message, ex)
                 AjaxAlert("Errore in fase Detach del Documento, impossibile eseguire.")
-                btnElimina.Enabled = True
+                uscTemplateDocumentRepository.FolderToolBar_Grid.FindItemByValue(DELETE_OPTION).Enabled = True
                 AjaxManager.ResponseScripts.Add(String.Format(HIDE_LOADING_FUNCTION, splContent.ClientID))
             Finally
                 AjaxManager.ResponseScripts.Add(RESET_BUTTONS_STATE_FUNCTION)
@@ -45,19 +42,30 @@ Partial Class TbltTemplateDocumentRepository
         End If
     End Sub
 
-    Protected Overrides Sub RaisePostBackEvent(sourceControl As IPostBackEventHandler, eventArgument As String)
-        If (sourceControl.Equals(btnElimina)) Then
-            _argument = eventArgument
+    Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
         End If
 
-        MyBase.RaisePostBackEvent(sourceControl, eventArgument)
-    End Sub
-
-    Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
         InitializeAjax()
         If Not Page.IsPostBack Then
             Initialize()
         End If
+    End Sub
+
+    Protected Sub DeleteTemplate_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
+        Dim ajaxModel As AjaxModel = Nothing
+        ajaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument)
+        If ajaxModel Is Nothing Then
+            Return
+        End If
+        Select Case ajaxModel.ActionName
+            Case "DeleteTemplate"
+                Dim idArchiveChain As String = ajaxModel.Value(0)
+                DeleteTemplate(idArchiveChain)
+                Exit Select
+        End Select
     End Sub
 #End Region
 
@@ -67,7 +75,7 @@ Partial Class TbltTemplateDocumentRepository
     End Sub
 
     Private Sub InitializeAjax()
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnElimina, btnElimina)
+        AddHandler AjaxManager.AjaxRequest, AddressOf DeleteTemplate_AjaxRequest
     End Sub
 #End Region
 

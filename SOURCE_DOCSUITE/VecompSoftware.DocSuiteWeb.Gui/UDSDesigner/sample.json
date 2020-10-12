@@ -18,7 +18,8 @@
       "copyProtocol": false,
       "copyResolution": false,
       "copySeries": false,
-      "documentDeletable":  false
+      "copyUDS": false,
+      "documentDeletable": false
     },
     {
       "ctrlType": "Contact",

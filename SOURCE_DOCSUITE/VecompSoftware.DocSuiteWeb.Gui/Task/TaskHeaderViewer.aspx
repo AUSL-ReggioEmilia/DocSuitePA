@@ -123,7 +123,7 @@
                         <Selecting AllowRowSelect="false" CellSelectionMode="None" UseClientSelectColumnOnly="false"
                             EnableDragToSelectRows="False" />
                     </ClientSettings>
-                    <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente"
+                    <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente"
                         SortToolTip="Ordina" />
 
                     <GroupingSettings ShowUnGroupButton="true" UnGroupButtonTooltip="Rimuovi" />

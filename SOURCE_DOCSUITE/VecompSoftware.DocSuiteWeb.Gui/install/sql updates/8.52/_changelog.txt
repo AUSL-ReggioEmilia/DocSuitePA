@@ -33,7 +33,7 @@ User Story 4990: [DSW] - Funzione SQL per "UD da fascicolare" in assenza di Secu
 User Story 4991: [BCOM] - Distribuzione protocolli senza vincoli di gerarchia
 User Story 4992: [BCOM] - Distribuzione di protocollo a persona
 User Story 5002: [DSW] Logiche validazione chiusura fascicolo
-User Story 5003: [DSW] Bonifica FieldSet gestione fascicolo
+User Story 5003: [DSW] Bonifica FieldSet Gestione fascicolo
 User Story 5006: [DSW] Modifiche sommario fascicolo
 User Story 5007: [DSW] Validazione fascicoli legacy
 User Story 5058: [DSW] Ricerca di fascicoli: introdurre la sicurezza automatica sui gruppi del classificatore

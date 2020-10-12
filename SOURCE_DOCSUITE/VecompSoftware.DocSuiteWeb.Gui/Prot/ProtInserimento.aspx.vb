@@ -12,19 +12,15 @@ Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.PEC
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.Desks
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Data.Formatter
-Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.DTO.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
-Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Protocols
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Workflows
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
 Imports VecompSoftware.DocSuiteWeb.Model.Integrations.GenericProcesses
@@ -74,14 +70,12 @@ Partial Public Class ProtInserimento
     Private _currentUDSRepositoryId As Guid?
     Private _currentUDSRepositoryFacade As UDSRepositoryFacade
     Private _currentUDSFacade As UDSFacade
-    Private _workflowPropertyFacade As WorkflowPropertyFacade
-    Private _webAPIHelper As IWebAPIHelper
     Private _fascicleId As Guid?
     Private _currentUDSModel As Helpers.UDS.UDSModel
     Private _toSendProtocolType As SendDocumentUnitType?
     Private _protocolsKeys As IList(Of Guid)
-    Private _currentWorkflowPropertyFinder As WorkflowPropertyFinder
-    Private _currentWorkflowActivityLogFacade As VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows.WorkflowActivityLogFacade
+    Private _currentWorkflowActivityLogFacade As WebAPIFacade.Workflows.WorkflowActivityLogFacade
+    Private _duplicateCheckedFields As String
 
 #End Region
 
@@ -186,20 +180,15 @@ Partial Public Class ProtInserimento
     ''' Elenco dei protocolli collegati che han passato i documenti al protocollo in inserimento.
     ''' </summary>
     ''' <remarks>Stringa di ID separata da virgole.</remarks>
-    Public Property SessionProtInserimentoLinks As String
+    Public Property SessionProtInserimentoLinks As IList(Of Guid)
         Get
-            If Not Session.Item("ProtInserimento-Link") Is Nothing Then
-                Return Session.Item("ProtInserimento-Link").ToString()
-            Else
-                Return String.Empty
+            If Session("ProtInserimento-Link") IsNot Nothing Then
+                Return DirectCast(Session("ProtInserimento-Link"), IList(Of Guid))
             End If
+            Return Nothing
         End Get
-        Set(value As String)
-            If String.IsNullOrEmpty(value) Then
-                Session.Remove("ProtInserimento-Link")
-            Else
-                Session.Item("ProtInserimento-Link") = value
-            End If
+        Set(value As IList(Of Guid))
+            Session("ProtInserimento-Link") = value
         End Set
     End Property
 
@@ -294,29 +283,6 @@ Partial Public Class ProtInserimento
         End Get
     End Property
 
-    Private ReadOnly Property InsertFromDesk As Boolean
-        Get
-            If Not _fromDesk.HasValue Then
-                _fromDesk = HttpContext.Current.Request.QueryString.GetValueOrDefault(Of Boolean)("FromDesk", False)
-            End If
-            Return _fromDesk.Value
-        End Get
-    End Property
-
-    Private ReadOnly Property CurrentDeskFromInsert As Desk
-        Get
-            If _currentDesk Is Nothing Then
-                Dim idDesk As Guid = HttpContext.Current.Request.QueryString.GetValueOrDefault("IdDesk", Guid.Empty)
-                If Not idDesk.Equals(Guid.Empty) Then
-                    _currentDesk = New DeskFacade(DocSuiteContext.Current.User.FullUserName).GetById(idDesk)
-                    Return _currentDesk
-                End If
-                Return Nothing
-            End If
-            Return _currentDesk
-        End Get
-    End Property
-
     Private ReadOnly Property FromUDS As Boolean
         Get
             If Not _fromUDS.HasValue Then
@@ -355,24 +321,6 @@ Partial Public Class ProtInserimento
         End Get
     End Property
 
-    Public ReadOnly Property CurrentWorkflowPropertyFacade As WorkflowPropertyFacade
-        Get
-            If _workflowPropertyFacade Is Nothing Then
-                _workflowPropertyFacade = New WorkflowPropertyFacade(DocSuiteContext.Current.User.FullUserName)
-            End If
-            Return _workflowPropertyFacade
-        End Get
-    End Property
-
-    Public ReadOnly Property CurrentWorkflowPropertyFinder As WorkflowPropertyFinder
-        Get
-            If _currentWorkflowPropertyFinder Is Nothing Then
-                _currentWorkflowPropertyFinder = New WorkflowPropertyFinder(DocSuiteContext.Current.Tenants)
-            End If
-            Return _currentWorkflowPropertyFinder
-        End Get
-    End Property
-
     Private ReadOnly Property ToSendProtocolType As SendDocumentUnitType?
         Get
             If Not _toSendProtocolType.HasValue Then
@@ -405,9 +353,18 @@ Partial Public Class ProtInserimento
     Protected ReadOnly Property CurrentWorkflowActivityLogFacade As VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows.WorkflowActivityLogFacade
         Get
             If _currentWorkflowActivityLogFacade Is Nothing Then
-                _currentWorkflowActivityLogFacade = New VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows.WorkflowActivityLogFacade(DocSuiteContext.Current.Tenants)
+                _currentWorkflowActivityLogFacade = New VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows.WorkflowActivityLogFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
             End If
             Return _currentWorkflowActivityLogFacade
+        End Get
+    End Property
+
+    Private ReadOnly Property DuplicateCheckedFields As String
+        Get
+            If _duplicateCheckedFields Is Nothing Then
+                _duplicateCheckedFields = GetKeyValueOrDefault(Of String)("Check", String.Empty)
+            End If
+            Return _duplicateCheckedFields
         End Get
     End Property
 
@@ -426,11 +383,6 @@ Partial Public Class ProtInserimento
         If Action.Eq("Insert") Then
             uscMittenti.EnableFlagGroupChild = True
             uscDestinatari.EnableFlagGroupChild = True
-            If ProtocolEnv.DematerialisationEnabled Then
-                uscUploadDocumenti.CheckDematerialisationCompliance = True
-                uscUploadAllegati.CheckDematerialisationCompliance = True
-                uscUploadAnnexes.CheckDematerialisationCompliance = False
-            End If
         End If
 
         InitializeAjax()
@@ -516,20 +468,15 @@ Partial Public Class ProtInserimento
             Dim arguments As String() = Split(e.Argument, "|", 2)
             Select Case arguments(0)
                 Case "Recovery"
-                    txtProtRecovery.Text = arguments(1)
-
-                    Dim args As String() = arguments(1).Split("|"c)
-                    If args.Length < 2 Then
-                        AjaxAlert("Numero di protocollo non corretto")
-                        Return
-                    End If
-
+                    Dim uniqueIdProtocol As Guid = Guid.Parse(arguments(1))
                     Try
-                        Dim p As Protocol = Facade.ProtocolFacade.GetById(Short.Parse(args(0)), Integer.Parse(args(1)))
+                        Dim p As Protocol = Facade.ProtocolFacade.GetById(uniqueIdProtocol)
+                        txtProtRecovery.Text = p.FullNumber
+                        txtProtRecovery.AddAttribute("UniqueId", p.Id.ToString())
                         If p.IdDocument.HasValue AndAlso p.IdDocument.Value > 0 Then
                             ' TODO: verificare a cosa serve salvare il file in temp
                             uscUploadDocumenti.SendSourceDocument = True
-                            uscUploadDocumenti.LoadBiblosDocuments(p.Location.DocumentServer, p.Location.ProtBiblosDSDB, p.IdDocument, False, True)
+                            uscUploadDocumenti.LoadBiblosDocuments(p.Location.ProtBiblosDSDB, p.IdDocument.Value, False, True)
                         End If
                         BindForm(p)
 
@@ -612,7 +559,12 @@ Partial Public Class ProtInserimento
         ' Contenitori legati all'utente
         Dim right As ProtocolContainerRightPositions = CType(If(Action.Eq("interop"), ProtocolContainerRightPositions.PECIn, ProtocolContainerRightPositions.Insert), ProtocolContainerRightPositions)
         Dim availableContainers As IList(Of Container) = Facade.ContainerFacade.GetContainers(DSWEnvironment.Protocol, right, True)
-
+        If CurrentTenant IsNot Nothing Then
+            Dim tenantContainers As ICollection(Of Entity.Commons.Container) = CurrentTenant.Containers
+            availableContainers = availableContainers.Where(Function(x) tenantContainers.Any(Function(xx) xx.EntityShortId = x.Id)).ToList()
+        Else
+            availableContainers = New List(Of Container)
+        End If
         ' Filtro per testo
         If Not String.IsNullOrEmpty(e.Text) Then
             availableContainers = Facade.ContainerFacade.FilterContainers(availableContainers, e.Text)
@@ -649,7 +601,7 @@ Partial Public Class ProtInserimento
         Dim accountingYear As Short?
         Dim accountingNumber As Integer?
         Dim accountingSectionalNumber As Integer?
-        Dim fascicleDocumentUnitFacade As WebAPIFacade.Fascicles.FascicleDocumentUnitFacade = New WebAPIFacade.Fascicles.FascicleDocumentUnitFacade(DocSuiteContext.Current.Tenants)
+        Dim fascicleDocumentUnitFacade As WebAPIFacade.Fascicles.FascicleDocumentUnitFacade = New WebAPIFacade.Fascicles.FascicleDocumentUnitFacade(DocSuiteContext.Current.Tenants.ToList(), CurrentTenant)
         Dim fascicleReference As Action(Of Guid, Guid) = AddressOf fascicleDocumentUnitFacade.LinkFascicleReference
 
         If ProtocolEnv.IsInvoiceEnabled Then
@@ -711,10 +663,6 @@ Partial Public Class ProtInserimento
             Facade.ProtocolFacade.AddProtocolInvoice(protocol, txtInvoiceNumber.Text, dtpInvoiceDate.SelectedDate, vAccountingSectional, accountingYear, rdpAccountingDate.SelectedDate, accountingNumber, accountingSectionalNumber)
         End If
 
-        If Action.Eq("FromCollaboration") And ProtocolEnv.SecureDocumentEnabled Then
-            Facade.CollaborationFacade.FinalizeSecureDocument(CurrentCollaboration)
-        End If
-
         'Salvataggio nuovo protocollo
         Try
             ' Nel caso di recupero da sospensione (Recovery) e di ripristino da Errore (Recover) il protocollo esiste ed è correttamente numerato, è solo da aggiornare.
@@ -739,20 +687,16 @@ Partial Public Class ProtInserimento
         BindRolesFromPage(protocol)
 
         Try
-            If Not String.IsNullOrEmpty(SessionProtInserimentoLinks) Then
-                Dim sLinks As String() = SessionProtInserimentoLinks.Split(","c)
-                For Each sLink As String In sLinks
-                    If Not String.IsNullOrEmpty(sLink.Trim()) Then
-                        Dim sId As String() = sLink.Split("/"c)
-                        Dim prot As Protocol = Facade.ProtocolFacade.GetById(Short.Parse(sId(0)), Integer.Parse(sId(1)), False)
-                        Facade.ProtocolFacade.AddProtocolLink(protocol, prot, ProtocolFacade.ProtocolLinkType.Normale, fascicleReference)
-                    End If
+            If Not SessionProtInserimentoLinks.IsNullOrEmpty() Then
+                For Each sLink As Guid In SessionProtInserimentoLinks
+                    Dim prot As Protocol = Facade.ProtocolFacade.GetById(sLink, False)
+                    Facade.ProtocolFacade.AddProtocolLink(protocol, prot, ProtocolFacade.ProtocolLinkType.Normale, fascicleReference)
                 Next
             End If
         Catch ex As Exception
             AjaxAlert($"Errore in inserimento Protocollo: {ex.Message}")
         Finally
-            SessionProtInserimentoLinks = String.Empty
+            SessionProtInserimentoLinks = Nothing
         End Try
 
         If ProtocolEnv.IsIssueEnabled Then
@@ -769,7 +713,6 @@ Partial Public Class ProtInserimento
         'Inserimento documento, allegato e dati fattura in biblos
         Try
             Dim info As New ProtocolSignatureInfo(uscUploadAllegati.DocumentInfosAdded.Count)
-            Dim dematerialisationRequestModel As New DocumentManagementRequestModel()
 
             If Not uscUploadDocumenti.DocumentInfosAdded.IsNullOrEmpty() Then
                 Dim attributes As Dictionary(Of String, String) = Facade.ProtocolFacade.GetDocumentAttributes(protocol, pnlInvoice.Visible)
@@ -777,21 +720,6 @@ Partial Public Class ProtInserimento
                 If protocol.IdDocument.GetValueOrDefault(0) = 0 Then
                     Facade.ProtocolFacade.AddDocument(protocol, uscUploadDocumenti.DocumentInfosAdded(0), info, attributes)
 
-                    Dim documentId As Guid
-                    Dim chainId As Guid
-                    If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso uscUploadDocumenti.DocumentInfosDematerialisationAdded IsNot Nothing AndAlso uscUploadDocumenti.DocumentInfosDematerialisationAdded.Count > 0 _
-                        AndAlso Not uscUploadDocumenti.DocumentInfosDematerialisationAdded(0).Name.IsNullOrEmpty AndAlso uscUploadDocumenti.DocumentInfosAdded(0).Attributes.Keys.Contains("documentId") _
-                        AndAlso Guid.TryParse(uscUploadDocumenti.DocumentInfosAdded(0).Attributes("documentId"), documentId) AndAlso Not documentId = Guid.Empty AndAlso uscUploadDocumenti.DocumentInfosAdded(0).Attributes.Keys.Contains("chainId") _
-                        AndAlso Guid.TryParse(uscUploadDocumenti.DocumentInfosAdded(0).Attributes("chainId"), chainId) AndAlso Not chainId = Guid.Empty AndAlso uscUploadDocumenti.DocumentInfosAdded(0).Attributes.Keys.Contains("archiveName") AndAlso Not String.IsNullOrEmpty(uscUploadDocumenti.DocumentInfosAdded(0).Attributes("archiveName")) Then
-
-                        Dim workflowReferenceBiblosModel As New WorkflowReferenceBiblosModel()
-                        workflowReferenceBiblosModel.DocumentName = uscUploadDocumenti.DocumentInfosDematerialisationAdded(0).Name
-                        workflowReferenceBiblosModel.ChainType = Model.Entities.DocumentUnits.ChainType.MainChain
-                        workflowReferenceBiblosModel.ArchiveChainId = chainId
-                        workflowReferenceBiblosModel.ArchiveDocumentId = documentId
-                        workflowReferenceBiblosModel.ArchiveName = uscUploadDocumenti.DocumentInfosAdded(0).Attributes("archiveName")
-                        dematerialisationRequestModel.Documents.Add(workflowReferenceBiblosModel)
-                    End If
                     If ProtocolEnv.ProtParzialeRecoveryEnabled Then
                         protocol.IdStatus = ProtocolStatusId.Errato 'Messo per far partire il controllo di attivazione. Non deve essere persistito
                     End If
@@ -817,42 +745,6 @@ Partial Public Class ProtInserimento
             ' Add Allegati
             If uscUploadAllegati.DocumentsAddedCount > 0 Then
                 Facade.ProtocolFacade.AddAttachments(protocol, uscUploadAllegati.DocumentInfosAdded, info)
-                If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso uscUploadAllegati.DocumentInfosDematerialisationAdded IsNot Nothing AndAlso uscUploadAllegati.DocumentInfosDematerialisationAdded.Count > 0 Then
-                    For Each attachment As DocumentInfo In uscUploadAllegati.DocumentInfosDematerialisationAdded
-                        attachment = uscUploadAllegati.DocumentInfosAdded.Where(Function(x) x.Serialized = attachment.Serialized).SingleOrDefault()
-
-                        Dim attachmentWorkflowReferenceBiblosModel As New WorkflowReferenceBiblosModel()
-                        Dim attachmentId As Guid = Nothing
-                        Dim attachmentChainId As Guid = Nothing
-
-                        If attachment IsNot Nothing AndAlso Not String.IsNullOrEmpty(attachment.Name) AndAlso attachment.Attributes.Keys.Contains("documentId") AndAlso Guid.TryParse(attachment.Attributes("documentId"), attachmentId) AndAlso Not attachmentId = Guid.Empty _
-                             AndAlso attachment.Attributes.Keys.Contains("chainId") AndAlso Guid.TryParse(attachment.Attributes("chainId"), attachmentChainId) AndAlso Not attachmentChainId = Guid.Empty _
-                             AndAlso attachment.Attributes.Keys.Contains("archiveName") AndAlso Not String.IsNullOrEmpty(attachment.Attributes("archiveName")) Then
-                            attachmentWorkflowReferenceBiblosModel.DocumentName = attachment.Name
-                            attachmentWorkflowReferenceBiblosModel.ChainType = Model.Entities.DocumentUnits.ChainType.AttachmentsChain
-                            attachmentWorkflowReferenceBiblosModel.ArchiveChainId = attachmentChainId
-                            attachmentWorkflowReferenceBiblosModel.ArchiveDocumentId = attachmentId
-                            attachmentWorkflowReferenceBiblosModel.ArchiveName = attachment.Attributes("archiveName")
-                            dematerialisationRequestModel.Documents.Add(attachmentWorkflowReferenceBiblosModel)
-                        End If
-                    Next
-                End If
-            End If
-
-            'Log di Serializzazione comando 'SB' per attestazione conformità
-            If DocSuiteContext.Current.ProtocolEnv.DematerialisationEnabled AndAlso dematerialisationRequestModel.Documents IsNot Nothing AndAlso dematerialisationRequestModel.Documents.Count > 0 Then
-                Dim documentUnit As New WorkflowReferenceModel()
-                documentUnit.ReferenceId = protocol.UniqueId
-                documentUnit.ReferenceType = DSWEnvironmentType.Protocol
-
-                Dim refModel As New DocumentUnit()
-                refModel.DocumentUnitName = "Protocollo"
-                refModel.Subject = protocol.ProtocolObject
-                refModel.Title = String.Concat(protocol.Year, "/", protocol.Number.ToString("0000000"))
-                documentUnit.ReferenceModel = JsonConvert.SerializeObject(refModel)
-                dematerialisationRequestModel.DocumentUnit = documentUnit
-                dematerialisationRequestModel.RegistrationUser = DocSuiteContext.Current.User.FullUserName
-                Facade.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.SB, JsonConvert.SerializeObject(dematerialisationRequestModel))
             End If
 
             ' Add Allegati non parte integrante (Annessi)
@@ -862,7 +754,6 @@ Partial Public Class ProtInserimento
 
         Catch ex As Exception
             Facade.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.PE, ex.Message)
-
             Throw New DocSuiteException("Inserimento di protocollo", "Errore in inserimento del documento.", ex)
         End Try
 
@@ -881,14 +772,16 @@ Partial Public Class ProtInserimento
             Dim source As UDSDto = CurrentUDSFacade.GetUDSSource(repository, String.Format(ODATA_EQUAL_UDSID, CurrentUDSId.Value))
             If source IsNot Nothing Then
                 Dim udsModel As UDS.UDSModel = source.UDSModel
-                udsModel.FillProtocols(New List(Of UDS.ReferenceModel) From {New UDS.ReferenceModel() With {.UniqueId = protocol.UniqueId}})
+                udsModel.FillProtocols(New List(Of UDS.ReferenceModel) From {New UDS.ReferenceModel() With {.UniqueId = protocol.Id}})
                 CurrentUDSRepositoryFacade.SendCommandUpdateData(CurrentUDSRepositoryId.Value, CurrentUDSId.Value, Guid.Empty, udsModel)
             End If
         End If
 
         'Workflow
-        AddWorkflowProperties(protocol)
+        PushWorkflowNotify(protocol)
 
+        Dim toFinalizeCollaborations As ICollection(Of Collaboration) = New List(Of Collaboration)
+        Dim toFinalizePec As PECMail = Nothing
         'Collaborazione 
         Select Case True
             Case Action.Eq("Redo")
@@ -904,6 +797,8 @@ Partial Public Class ProtInserimento
             Case Action.Eq("FromCollaboration")
                 Try
                     FinalizeCollaboration(protocol, CurrentCollaboration)
+                    toFinalizeCollaborations.Add(CurrentCollaboration)
+                    CurrentCollaboration.CollaborationAggregates.ToList().ForEach(Sub(f) toFinalizeCollaborations.Add(f.CollaborationChild))
                 Catch ex As Exception
                     Throw New DocSuiteException("Errore in aggiornamento Collaborazione.", String.Format("Impossibile collegare il protocollo alla Collaborazione numero [{0}].", CurrentIdCollaboration), ex)
                 End Try
@@ -917,10 +812,9 @@ Partial Public Class ProtInserimento
 
             Case Action.Eq("interop") AndAlso CurrentMail IsNot Nothing
                 Try
-                    Facade.PECMailFacade.FinalizeToProtocol(CurrentMail.Id, protocol)
-                    Facade.PECMailLogFacade.InsertLog(CurrentMail, String.Format("Pec protocollata con protocollo {0}", protocol.Id.ToString()), PECMailLogType.Linked)
-                    Facade.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.PM, String.Format("Collegata PEC n.{0} del {1:dd/MM/yyyy} con oggetto [{2}]", CurrentMail.Id, CurrentMail.RegistrationDate.ToLocalTime(), CurrentMail.MailSubject))
-                    If "1".Equals(hfNeedClone.Value) Then
+                    toFinalizePec = CurrentMail
+                    Dim result As Integer
+                    If Integer.TryParse(hfNeedClone.Value, result) AndAlso result = 1 Then
                         Facade.PECMailFacade.Duplicate(CurrentMail, True)
                     End If
                 Catch ex As Exception
@@ -951,8 +845,7 @@ Partial Public Class ProtInserimento
             End If
         End If
         'Invio un comando di inserimento protocollo alle web api
-        Facade.ProtocolFacade.SendInsertProtocolCommand(protocol, CurrentCollaboration, toFascicle)
-
+        Facade.ProtocolFacade.SendInsertProtocolCommand(protocol, CurrentCollaboration, toFascicle, toFinalizeCollaborations, toFinalizePec, Nothing)
 
         Dim impersonator As Impersonator = CommonAD.ImpersonateSuperUser()
         Dim sharedFile As FileInfo = CommonShared.SelectedSharedFile
@@ -970,37 +863,9 @@ Partial Public Class ProtInserimento
             Dim spage As String = String.Concat(DocSuiteContext.Current.CurrentTenant.DSWUrl, "/frameset.aspx?", params)
             ClientScript.RegisterClientScriptBlock(Me.GetType(), "redirect", "window.top.location='" & spage & "'", True)
         Else
-            Dim vParams As String = String.Concat("Type=Prot&Year=", protocol.Year, "&Number=", protocol.Number)
+            Dim vParams As String = $"Type=Prot&UniqueId={protocol.Id}"
             If IsWorkflowOperation.Equals(True) AndAlso CurrentIdWorkflowActivity.HasValue Then
                 vParams &= String.Format("&IsWorkflowOperation=True&IdWorkflowActivity={0}", CurrentIdWorkflowActivity.Value)
-                Dim wfActivity As WorkflowActivity = CurrentWorkflowActivityFacade.GetById(CurrentIdWorkflowActivity.Value)
-                Dim modelWorkflowProperty As WorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByActivityAndName(CurrentIdWorkflowActivity.Value, WorkflowPropertyHelper.DSW_PROPERTY_MODEL)
-                If modelWorkflowProperty IsNot Nothing AndAlso modelWorkflowProperty.PropertyType = WorkflowPropertyType.Json AndAlso Not String.IsNullOrEmpty(modelWorkflowProperty.ValueString) Then
-                    Dim model As ProtocolModel = Nothing
-                    Try
-                        model = JsonConvert.DeserializeObject(Of ProtocolModel)(modelWorkflowProperty.ValueString, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
-                    Catch
-                    End Try
-
-                    If model IsNot Nothing Then
-                        model.MainDocument.ContentStream = Nothing
-                        For Each item As Model.Entities.Commons.DocumentModel In model.Annexes
-                            item.ContentStream = Nothing
-                        Next
-                        For Each item As Model.Entities.Commons.DocumentModel In model.Attachments
-                            item.ContentStream = Nothing
-                        Next
-                        modelWorkflowProperty.ValueString = JsonConvert.SerializeObject(model, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
-                        CurrentWorkflowPropertyFacade.Update(modelWorkflowProperty)
-                        modelWorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByInstanceAndName(wfActivity.WorkflowInstance.Id, WorkflowPropertyHelper.DSW_PROPERTY_MODEL)
-                        If modelWorkflowProperty IsNot Nothing Then
-                            modelWorkflowProperty.ValueString = JsonConvert.SerializeObject(model, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
-                            CurrentWorkflowPropertyFacade.Update(modelWorkflowProperty)
-                        End If
-                    End If
-
-                End If
-
             End If
             If FromUDS Then
                 vParams &= "&Action=FromUDS"
@@ -1018,16 +883,16 @@ Partial Public Class ProtInserimento
 
             If Action.Eq("ToSendProtocol") Then
                 For Each uniqueId As Guid In ProtocolsKeys
-                    Dim childProtocol As Protocol = Facade.ProtocolFacade.GetByUniqueId(uniqueId)
+                    Dim childProtocol As Protocol = Facade.ProtocolFacade.GetById(uniqueId)
                     Facade.ProtocolFacade.AddProtocolLink(protocol, childProtocol, ProtocolFacade.ProtocolLinkType.Normale, Nothing)
                 Next
                 If ToSendProtocolType.Equals(SendDocumentUnitType.ToMail) Then
-                    Response.Redirect(String.Format("~/MailSenders/ProtocolMailSender.aspx?RedirectToProtocolSummary=true&recipients=false&Year={0}&Number={1}&Type=Prot", protocol.Year, protocol.Number))
+                    Response.Redirect($"~/MailSenders/ProtocolMailSender.aspx?RedirectToProtocolSummary=true&recipients=false&UniqueId={protocol.Id}&Type=Prot")
                 Else
-                    Response.Redirect(String.Format("~/PEC/PECInsert.aspx?RedirectToProtocolSummary=true&Type=Pec&SimpleMode={0}&Year={1}&Number={2}", DocSuiteContext.Current.ProtocolEnv.PECSimpleMode.ToString(), protocol.Year, protocol.Number))
+                    Response.Redirect($"~/PEC/PECInsert.aspx?RedirectToProtocolSummary=true&Type=Pec&SimpleMode={DocSuiteContext.Current.ProtocolEnv.PECSimpleMode}&UniqueIdProtocol={protocol.Id}")
                 End If
             Else
-                Response.Redirect("ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(vParams))
+                Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck(vParams)}")
             End If
         End If
 
@@ -1038,8 +903,9 @@ Partial Public Class ProtInserimento
     ''' </summary>
     ''' <param name="protocol">Oggetto corrente del protocollo</param>
     Private Sub FinalizeCollaboration(ByVal protocol As Protocol, ByVal collaboration As Collaboration)
-
-        FacadeFactory.Instance.CollaborationFacade.FinalizeToProtocol(collaboration, protocol)
+        collaboration.Year = protocol.Year
+        collaboration.Number = protocol.Number
+        FacadeFactory.Instance.CollaborationFacade.FinalizeToProtocol(collaboration)
         Dim draft As CollaborationXmlData = FacadeFactory.Instance.ProtocolDraftFacade.GetDataFromCollaboration(collaboration)
         If draft IsNot Nothing AndAlso draft.GetType() = GetType(ResolutionXML) Then
             Dim resolutionXml As ResolutionXML = CType(draft, ResolutionXML)
@@ -1111,6 +977,13 @@ Partial Public Class ProtInserimento
     Private Sub BindContainerControl()
         Dim right As ProtocolContainerRightPositions = If(Action.Eq("interop"), ProtocolContainerRightPositions.PECIn, ProtocolContainerRightPositions.Insert)
         Dim availableContainers As IList(Of Container) = Facade.ContainerFacade.GetContainers(DSWEnvironment.Protocol, right, True)
+
+        If CurrentTenant IsNot Nothing Then
+            Dim tenantContainers As ICollection(Of Entity.Commons.Container) = CurrentTenant.Containers
+            availableContainers = availableContainers.Where(Function(x) tenantContainers.Any(Function(xx) xx.EntityShortId = x.Id)).ToList()
+        Else
+            availableContainers = New List(Of Container)
+        End If
 
         If availableContainers.IsNullOrEmpty() Then
             Throw New DocSuiteException("Inserimento Protocollo", "Utente senza diritti di Inserimento.")
@@ -1220,7 +1093,7 @@ Partial Public Class ProtInserimento
     End Sub
 
     Private Sub Initialize()
-        If IsWorkflowOperation Then
+        If IsWorkflowOperation AndAlso IsCurrentWorkflowActivityManualComplete Then
             MasterDocSuite.WorkflowWizardRow.Visible = True
             InitializeWorkflowWizard()
         End If
@@ -1233,7 +1106,7 @@ Partial Public Class ProtInserimento
         WebUtils.ObjAttDisplayNone(txtProtDate)
         WebUtils.ObjAttDisplayNone(btnInserimento)
 
-        SessionProtInserimentoLinks = String.Empty
+        SessionProtInserimentoLinks = Nothing
 
         'Abilitazione Tipologia Documento
         pnlIdDocType.Visible = ProtocolEnv.IsTableDocTypeEnabled
@@ -1294,9 +1167,8 @@ Partial Public Class ProtInserimento
         hfNeedClone.Value = Request.QueryString("needClone")
         txtProtDate.Text = String.Format("{0:dd/MM/yyyy}", DateTime.Now)
 
-        Dim bIPA As Boolean = Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa)
-        uscMittenti.ButtonIPAVisible = bIPA
-        uscDestinatari.ButtonIPAVisible = bIPA
+        uscMittenti.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
+        uscDestinatari.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
         If DocSuiteContext.Current.IsResolutionEnabled AndAlso DocSuiteContext.Current.ResolutionEnv.ProposerContact.HasValue Then
             uscMittenti.AddExcludeContact(DocSuiteContext.Current.ResolutionEnv.ProposerContact.Value)
             uscDestinatari.AddExcludeContact(DocSuiteContext.Current.ResolutionEnv.ProposerContact.Value)
@@ -1319,9 +1191,8 @@ Partial Public Class ProtInserimento
 
         'Copia da protocollo
         uscUploadAllegati.ButtonCopyProtocol.Visible = ProtocolEnv.CopyProtocolDocumentsEnabled
-
         uscUploadAllegati.ButtonCopySeries.Visible = ProtocolEnv.CopyFromSeries
-
+        uscUploadAllegati.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
         uscUploadAnnexes.SignButtonEnabled = ProtocolEnv.IsFDQEnabled
 
         'Copia da atto
@@ -1334,6 +1205,7 @@ Partial Public Class ProtInserimento
 
         'Copia da protocollo
         uscUploadAnnexes.ButtonCopySeries.Visible = ProtocolEnv.CopyFromSeries
+        uscUploadAnnexes.ButtonCopyUDS.Visible = ProtocolEnv.UDSEnabled
 
         uscDestinatari.ButtonImportVisible = ProtocolEnv.IsImportContactEnabled
         uscMittenti.ButtonImportVisible = ProtocolEnv.IsImportContactEnabled
@@ -1346,22 +1218,22 @@ Partial Public Class ProtInserimento
             Case "Insert", "Duplicate", "RispondiDaPEC"
                 Title = "Protocollo - Inserimento"
             Case "InsertMail"
-                Title = "Protocollo - Inserimento da Mail"
+                Title = "Protocollo - Inserimento da mail"
             Case "IC"
-                Title = "Protocollo - Inserimento con Parametri"
+                Title = "Protocollo - Inserimento con parametri"
             Case "Interop"
                 Title = "Protocollo -  Interoperabilità"
             Case "FromCollaboration"
-                Title = "Protocollo - Inserimento da Collaborazione"
+                Title = "Protocollo - Inserimento da collaborazione"
             Case "Recovery"
                 Title = "Protocollo - Recupero"
                 If Not Facade.ProtocolFacade.HasProtSuspended Then
-                    Throw New DocSuiteException("Protocollo Recupero", "Nessun Protocollo da recuperare.")
+                    Throw New DocSuiteException("Protocollo recupero", "Nessun protocollo da recuperare.")
                 End If
             Case "Recover"
 
                 If CurrentProtocol Is Nothing Then
-                    AjaxAlert("Errore in Lettura Protocollo per il Recupero. Ripetere l\'operazione di Inserimento")
+                    AjaxAlert("Errore in Lettura protocollo per il recupero. Ripetere l\'operazione di Inserimento")
                     Exit Sub
                 Else
                     tblProtocollo.Visible = True
@@ -1456,11 +1328,10 @@ Partial Public Class ProtInserimento
                     End If
                 Case "Redo"
                     Try
-                        Dim vProtocol As Protocol = Facade.ProtocolFacade.GetById(CurrentProtocolYear, CurrentProtocolNumber)
-                        BindForm(vProtocol)
+                        BindForm(CurrentProtocol)
                     Catch ex As Exception
-                        FileLogger.Warn(LoggerName, "Errore in Lettura Protocollo per il Reinserimento. Ripetere l'operazione di Inserimento.", ex)
-                        AjaxAlert("Errore in Lettura Protocollo per il Reinserimento. Ripetere l\'operazione di Inserimento")
+                        FileLogger.Warn(LoggerName, "Errore in lettura orotocollo per il reinserimento. Ripetere l'operazione di Inserimento.", ex)
+                        AjaxAlert("Errore in lettura protocollo per il reinserimento. Ripetere l\'operazione di Inserimento")
                         Exit Sub
                     End Try
                 Case "RispondiDaPEC"
@@ -1469,7 +1340,7 @@ Partial Public Class ProtInserimento
                     If (Not String.IsNullOrEmpty(PrevSelectedIdContainer) AndAlso CurrentContainerControl.HasItemWithValue(PrevSelectedIdContainer)) AndAlso Not Action.Eq("FromUDS") Then
                         CurrentContainerControl.SelectedValue = PrevSelectedIdContainer
                         ContainerControlSelectionChanged()
-                        UpdateTipoProtocollo()
+                        UpdateTipoProtocollo(needSwap:=Not CurrentIdWorkflowActivity.HasValue)
                     End If
             End Select
 
@@ -1484,6 +1355,10 @@ Partial Public Class ProtInserimento
 
         If Not String.IsNullOrEmpty(item.Notes) Then
             txtNote.Text = item.Notes
+        End If
+
+        If item.DocumentDate.HasValue AndAlso Not item.DocumentDate.Value.Equals(DateTime.MinValue) Then
+            txtDocumentDate.DbSelectedDate = item.DocumentDate
         End If
 
         If item.ProtocolType.HasValue Then
@@ -1517,6 +1392,10 @@ Partial Public Class ProtInserimento
         End If
 
         txtDocumentProtocol.Text = item.SenderProtocolNumber
+
+        If Not String.IsNullOrEmpty(item.DocumentProtocol) AndAlso rblTipoProtocollo.SelectedValue = "-1" Then
+            txtDocumentProtocol.Text = item.DocumentProtocol
+        End If
 
         If item.SenderProtocolDate.HasValue Then
             txtDocumentDate.SelectedDate = item.SenderProtocolDate.Value
@@ -1568,11 +1447,11 @@ Partial Public Class ProtInserimento
         If idContainer.HasValue Then
             availableDocTypes = Facade.ContainerDocTypeFacade.ContainerDocTypeSearch(idContainer.Value, True)
         Else
-            availableDocTypes = Facade.DocumentTypeFacade.DocTypeSearch(0, True, ProtocolEnv.IsPackageEnabled, "")
+            availableDocTypes = Facade.DocumentTypeFacade.DocTypeSearch(0, True, ProtocolEnv.IsPackageEnabled, String.Empty)
         End If
         cboIdDocType.Items.Clear()
         For Each dt As DocumentType In availableDocTypes
-            Dim currentItem As New ListItem(dt.Description, dt.Id)
+            Dim currentItem As New ListItem(dt.Description, dt.Id.ToString())
             If ProtocolEnv.IsPackageEnabled AndAlso dt.NeedPackage Then
                 If String.IsNullOrEmpty(dt.CommonUser) Then
                     currentItem.Text &= " (*)"
@@ -1813,7 +1692,7 @@ Partial Public Class ProtInserimento
 
     Private Sub RispondiDaPEC()
         Dim hasDisabledElements As Boolean = False
-        Dim replyProtocol As Protocol = Facade.ProtocolFacade.Duplicate(CurrentProtocolYear, CurrentProtocolNumber, hasDisabledElements, True, True, True, True, True, False, False, True)
+        Dim replyProtocol As Protocol = Facade.ProtocolFacade.Duplicate(CurrentProtocol.Id, hasDisabledElements, True, True, True, True, True, False, False, True)
 
         uscOggetto.Text = StringHelper.Clean(replyProtocol.ProtocolObject, DocSuiteContext.Current.ProtocolEnv.RegexOnPasteString)
         If replyProtocol.Container IsNot Nothing AndAlso CurrentContainerControl.HasItemWithValue(replyProtocol.Container.Id.ToString()) Then
@@ -2298,7 +2177,7 @@ Partial Public Class ProtInserimento
 
     Private Sub InitializeFromWorkflow(Optional collaboration As Collaboration = Nothing)
         If CurrentIdWorkflowActivity.HasValue Then
-            Dim dsw_p_Model As WorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByActivityAndName(CurrentIdWorkflowActivity.Value, WorkflowPropertyHelper.DSW_PROPERTY_MODEL)
+            Dim dsw_p_Model As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_MODEL, CurrentIdWorkflowActivity.Value)
             If dsw_p_Model IsNot Nothing AndAlso dsw_p_Model.PropertyType = WorkflowPropertyType.Json AndAlso Not String.IsNullOrEmpty(dsw_p_Model.ValueString) Then
                 Dim protocolModel As ProtocolModel = Nothing
                 Try
@@ -2306,11 +2185,11 @@ Partial Public Class ProtInserimento
                 Catch ex As Exception
                 End Try
                 If protocolModel IsNot Nothing Then
-                    Dim dsw_a_CollaborationSignSummaryTemplateId As WorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByActivityAndName(CurrentIdWorkflowActivity.Value, "_dsw_a_CollaborationSignSummaryTemplateId")
-                    Dim dsw_a_Collaboration_GenerateSignSummary As WorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByActivityAndName(CurrentIdWorkflowActivity.Value, "_dsw_a_Collaboration_GenerateSignSummary")
-                    Dim dsw_e_UDSId As WorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByActivityAndName(CurrentIdWorkflowActivity.Value, WorkflowPropertyHelper.DSW_FIELD_UDS_ID)
-                    Dim dsw_e_UDSRepositoryId As WorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByActivityAndName(CurrentIdWorkflowActivity.Value, WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID)
-                    Dim dsw_p_ProposerRole As WorkflowProperty = CurrentWorkflowPropertyFacade.GetWorkflowPropertyByActivityAndName(CurrentIdWorkflowActivity.Value, WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_ROLE)
+                    Dim _dsw_p_CollaborationSignSummaryTemplateId As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_COLLABORATION_SIGN_SUMMARY_TEMPLATE_ID, CurrentIdWorkflowActivity.Value)
+                    Dim dsw_a_Collaboration_GenerateSignSummary As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_ACTION_COLLABORATION_GENERATE_SIGN_SUMMARY, CurrentIdWorkflowActivity.Value)
+                    Dim dsw_e_UDSId As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_FIELD_UDS_ID, CurrentIdWorkflowActivity.Value)
+                    Dim dsw_e_UDSRepositoryId As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_FIELD_UDS_REPOSITORY_ID, CurrentIdWorkflowActivity.Value)
+                    Dim dsw_p_ProposerRole As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_ROLE, CurrentIdWorkflowActivity.Value)
                     Dim udsDto As UDSDto = Nothing
                     If dsw_e_UDSId IsNot Nothing AndAlso dsw_e_UDSRepositoryId IsNot Nothing AndAlso dsw_e_UDSId.ValueGuid.HasValue AndAlso dsw_e_UDSRepositoryId.ValueGuid.HasValue Then
                         Dim repository As UDSRepository = CurrentUDSRepositoryFacade.GetById(dsw_e_UDSRepositoryId.ValueGuid.Value)
@@ -2318,10 +2197,38 @@ Partial Public Class ProtInserimento
                     End If
 
                     Dim protocolInitializer As ProtocolInitializer = New ProtocolModelInitializer().GetProtocolInitializer(DocSuiteContext.Current.Tenants, protocolModel, collaboration,
-                                dsw_a_CollaborationSignSummaryTemplateId, dsw_a_Collaboration_GenerateSignSummary, dsw_p_ProposerRole, udsDto)
+                                _dsw_p_CollaborationSignSummaryTemplateId, dsw_a_Collaboration_GenerateSignSummary, dsw_p_ProposerRole, udsDto)
                     UseProtocolInitializer(protocolInitializer)
-                    End If
                 End If
+            End If
+
+            Dim dsw_a_DocumentUnitSetRolesFromCollaboration As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_ACTION_DOCUMENTUNIT_SET_ROLES_FROM_COLLABORATION, CurrentIdWorkflowActivity.Value)
+            If dsw_a_DocumentUnitSetRolesFromCollaboration IsNot Nothing AndAlso dsw_a_DocumentUnitSetRolesFromCollaboration.ValueBoolean.HasValue AndAlso dsw_a_DocumentUnitSetRolesFromCollaboration.ValueBoolean.Value Then
+                Dim secretaries As IList(Of CollaborationUser) = Facade.CollaborationUsersFacade.GetByCollaboration(collaboration.Id, Nothing, DestinatonType.S)
+                Dim role As Role
+                For Each secretary As CollaborationUser In secretaries
+                    role = Facade.RoleFacade.GetById(secretary.IdRole.Value)
+                    uscAutorizzazioni.SourceRoles.Add(role)
+                Next
+                uscAutorizzazioni.DataBind()
+            End If
+
+            Dim dsw_a_DocumentUnitSetRecipientContactFromProposerRole As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_ACTION_DOCUMENTUNIT_SET_RECIPIENT_CONTACT_FROM_PROPOSER_ROLE, CurrentIdWorkflowActivity.Value)
+            If dsw_a_DocumentUnitSetRecipientContactFromProposerRole IsNot Nothing AndAlso dsw_a_DocumentUnitSetRecipientContactFromProposerRole.ValueBoolean.HasValue AndAlso dsw_a_DocumentUnitSetRecipientContactFromProposerRole.ValueBoolean.Value Then
+                Dim dsw_p_ProposerRole As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_ROLE, CurrentIdWorkflowActivity.Value)
+                Dim workflowRole As WorkflowRole = JsonConvert.DeserializeObject(Of WorkflowRole)(dsw_p_ProposerRole.ValueString, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
+                Dim role As Role = Facade.RoleFacade.GetById(workflowRole.IdRole)
+                Dim roleContact As Contact = Facade.ContactFacade.GetByIdRole(workflowRole.IdRole)
+                Dim roleContactDto As ContactDTO
+                If roleContact IsNot Nothing Then
+                    roleContactDto = New ContactDTO(roleContact, ContactDTO.ContactType.Address)
+                Else
+                    Dim dto As New Contact() With {.ContactType = New Data.ContactType(Data.ContactType.Aoo), .Description = role.Name}
+                    roleContactDto = New ContactDTO(dto, ContactDTO.ContactType.Manual)
+                End If
+                uscMittenti.DataSource.Add(roleContactDto)
+                uscMittenti.DataBind()
+            End If
         End If
     End Sub
 
@@ -2351,7 +2258,7 @@ Partial Public Class ProtInserimento
             Dim results As List(Of DocumentInfo) = Nothing
 
             If workflowReferenceBiblosModel IsNot Nothing Then
-                doc = New BiblosDocumentInfo(String.Empty, workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
+                doc = New BiblosDocumentInfo(workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
                 tempDoc = New TempFileDocumentInfo(workflowReferenceBiblosModel.DocumentName, BiblosFacade.SaveUniqueToTemp(doc))
                 uscUploadDocumenti.LoadDocumentInfo(tempDoc, False, True, False, True)
                 uscUploadDocumenti.InitializeNodesAsAdded(False)
@@ -2359,7 +2266,7 @@ Partial Public Class ProtInserimento
 
             results = New List(Of DocumentInfo)()
             For Each workflowReferenceBiblosModel In workflowReferenceModel.Documents.Where(Function(f) f.ChainType = Model.Entities.DocumentUnits.ChainType.AttachmentsChain AndAlso f.ArchiveChainId.HasValue AndAlso f.ArchiveDocumentId.HasValue)
-                doc = New BiblosDocumentInfo(String.Empty, workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
+                doc = New BiblosDocumentInfo(workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
                 results.Add(New TempFileDocumentInfo(workflowReferenceBiblosModel.DocumentName, BiblosFacade.SaveUniqueToTemp(doc)))
             Next
             If results.Any() Then
@@ -2369,7 +2276,7 @@ Partial Public Class ProtInserimento
 
             results = New List(Of DocumentInfo)()
             For Each workflowReferenceBiblosModel In workflowReferenceModel.Documents.Where(Function(f) f.ChainType = Model.Entities.DocumentUnits.ChainType.AnnexedChain AndAlso f.ArchiveChainId.HasValue AndAlso f.ArchiveDocumentId.HasValue)
-                doc = New BiblosDocumentInfo(String.Empty, workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
+                doc = New BiblosDocumentInfo(workflowReferenceBiblosModel.ArchiveDocumentId.Value, workflowReferenceBiblosModel.ArchiveChainId.Value)
                 results.Add(New TempFileDocumentInfo(workflowReferenceBiblosModel.DocumentName, BiblosFacade.SaveUniqueToTemp(doc)))
             Next
             If results.Any() Then
@@ -2390,16 +2297,20 @@ Partial Public Class ProtInserimento
             Return
         End If
 
-        CurrentContainerControl.SelectedValue = CurrentCollaboration.SourceProtocol.Container.Id
-        ContainerControlSelectionChanged()
+        If CurrentCollaboration.SourceProtocol.Container IsNot Nothing Then
+            CurrentContainerControl.SelectedValue = CurrentCollaboration.SourceProtocol.Container.Id.ToString()
+            ContainerControlSelectionChanged()
+        End If
 
         rblTipoProtocollo.SelectedValue = "1" ' Uscita
         rblTipoProtocollo.Enabled = False
 
-        uscClassificatori.DataSource.Add(Me.CurrentCollaboration.SourceProtocol.Category)
-        uscClassificatori.DataBind()
+        If CurrentCollaboration.SourceProtocol.Category IsNot Nothing Then
+            uscClassificatori.DataSource.Add(CurrentCollaboration.SourceProtocol.Category)
+            uscClassificatori.DataBind()
+        End If
 
-        uscDestinatari.DataSource = FacadeFactory.Instance.ProtocolFacade.GetSenders(Me.CurrentCollaboration.SourceProtocol)
+        uscDestinatari.DataSource = FacadeFactory.Instance.ProtocolFacade.GetSenders(CurrentCollaboration.SourceProtocol)
         uscDestinatari.DataBind()
 
         If DocSuiteContext.Current.ProtocolEnv.IsIssueEnabled Then
@@ -2888,6 +2799,13 @@ Partial Public Class ProtInserimento
                     uscDestinatari.DataBind()
 
                     cboIdDocType.SelectedValue = protocolDraft.DocumentType.ToString()
+
+                    If Not protocolDraft.WorkflowMetadatas.IsNullOrEmpty() Then
+                        Dim dsw_a_toFascicle As WorkflowMetadataXml = protocolDraft.WorkflowMetadatas.SingleOrDefault(Function(x) x.Key.Eq(WorkflowPropertyHelper.DSW_ACTION_TO_FASCICLE))
+                        If dsw_a_toFascicle IsNot Nothing AndAlso Not String.IsNullOrEmpty(dsw_a_toFascicle.Value) Then
+                            hf_workflowAction_toFascicle.Value = dsw_a_toFascicle.Value
+                        End If
+                    End If
                 Case GetType(ResolutionXML)
                     'Dim resolutionDraft As ResolutionXML = CType(draft, ResolutionXML)
                     'If resolutionDraft.ResolutionsToUpdate IsNot Nothing Then
@@ -2999,18 +2917,15 @@ Partial Public Class ProtInserimento
 
     Private Function DuplicateProtocol() As Boolean
         Dim hasDisabledElements As Boolean = False
-        Dim Year As Short = Request.QueryString("Year")
-        Dim Number As Integer = Request.QueryString("Number")
-        Dim Check As String = Request.QueryString("Check")
-        Dim vProtocol As Protocol = Facade.ProtocolFacade.Duplicate(Year, Number, hasDisabledElements,
-            GetCheck(Check, ProtocolDuplicaOption.Container),
-            GetCheck(Check, ProtocolDuplicaOption.Senders),
-            GetCheck(Check, ProtocolDuplicaOption.Recipients),
-            GetCheck(Check, ProtocolDuplicaOption.Object),
-            GetCheck(Check, ProtocolDuplicaOption.Category),
-            GetCheck(Check, ProtocolDuplicaOption.Other),
-            GetCheck(Check, ProtocolDuplicaOption.DocType),
-            GetCheck(Check, ProtocolDuplicaOption.Roles))
+        Dim vProtocol As Protocol = Facade.ProtocolFacade.Duplicate(CurrentProtocol.Id, hasDisabledElements,
+            GetCheck(DuplicateCheckedFields, ProtocolDuplicaOption.Container),
+            GetCheck(DuplicateCheckedFields, ProtocolDuplicaOption.Senders),
+            GetCheck(DuplicateCheckedFields, ProtocolDuplicaOption.Recipients),
+            GetCheck(DuplicateCheckedFields, ProtocolDuplicaOption.Object),
+            GetCheck(DuplicateCheckedFields, ProtocolDuplicaOption.Category),
+            GetCheck(DuplicateCheckedFields, ProtocolDuplicaOption.Other),
+            GetCheck(DuplicateCheckedFields, ProtocolDuplicaOption.DocType),
+            GetCheck(DuplicateCheckedFields, ProtocolDuplicaOption.Roles))
         vProtocol.ProtocolObject = StringHelper.Clean(vProtocol.ProtocolObject, DocSuiteContext.Current.ProtocolEnv.RegexOnPasteString)
         BindForm(vProtocol)
         Return hasDisabledElements
@@ -3109,10 +3024,10 @@ Partial Public Class ProtInserimento
 
         'verifica collaborazione se già protocollato
         If Action.Eq("FromCollaboration") Then
-            Dim coll As Collaboration = Facade.CollaborationFacade.GetById(Request.QueryString("IdCollaboration"))
+            Dim coll As Collaboration = Facade.CollaborationFacade.GetById(Integer.Parse(Request.QueryString("IdCollaboration")))
             If coll IsNot Nothing Then
                 'forzatura per valori a 0
-                If (coll.Year.GetValueOrDefault(0) <> 0) And (coll.Number.GetValueOrDefault(0) <> 0) Then
+                If (coll.Year.GetValueOrDefault(0) <> 0) AndAlso (coll.Number.GetValueOrDefault(0) <> 0) Then
                     AjaxAlert("Il documento della Collaborazione è già stato Protocollato. Numero di Protocollo " & coll.ProtocolString)
                     Return False
                 End If
@@ -3121,7 +3036,7 @@ Partial Public Class ProtInserimento
 
         ' Verifica data protocollo mittente
         If GetSelectedProtocolTypeId().HasThisValue(-1) Then
-            If txtDocumentDate.SelectedDate.GetValueOrDefault(DateTime.Today) > DateTime.Today Then
+            If txtDocumentDate.SelectedDate.GetValueOrDefault(Date.Today) > Date.Today Then
                 AjaxAlert("Impossibile salvare. La data del protocollo mittente deve essere antecedente a quella odierna.")
                 Return False
             End If
@@ -3129,12 +3044,12 @@ Partial Public Class ProtInserimento
 
         'Verifica oggetto
         If uscOggetto.Text.Length > uscOggetto.MaxLength Then
-            AjaxAlert("Impossibile salvare. Il campo Oggetto ha superato i caratteri disponibili. (Caratteri {0} Disponibili {1})", uscOggetto.Text.Length, uscOggetto.MaxLength)
+            AjaxAlert("Impossibile salvare. Il campo oggetto ha superato i caratteri disponibili. (Caratteri {0} Disponibili {1})", uscOggetto.Text.Length, uscOggetto.MaxLength)
             Return False
         End If
 
         If ProtocolEnv.ObjectMinLength <> 0 AndAlso uscOggetto.Text.Length < ProtocolEnv.ObjectMinLength Then
-            AjaxAlert("Impossibile salvare. Il campo Oggetto non ha raggiunto i caratteri minimi ({0} caratteri).", ProtocolEnv.EnvObjectMinLength)
+            AjaxAlert("Impossibile salvare. Il campo oggetto non ha raggiunto i caratteri minimi ({0} caratteri).", ProtocolEnv.EnvObjectMinLength)
             Return False
         End If
 
@@ -3146,7 +3061,7 @@ Partial Public Class ProtInserimento
         End If
 
         If CurrentContainerControl.SelectedContainer("ProtDB") Is Nothing Then
-            AjaxAlert("Impossibile salvare. Nessun Contenitore Selezionato.")
+            AjaxAlert("Impossibile salvare. Nessun contenitore Selezionato.")
             Return False
         End If
 
@@ -3158,7 +3073,7 @@ Partial Public Class ProtInserimento
         End If
 
         If ProtocolEnv.EnvTableDocTypeRequired AndAlso (SelectedDocumentType Is Nothing) Then
-            AjaxAlert("Impossibile salvare. Il Campo Tipologia spedizione non è valorizzato o non è numerico. Valore Attuale: " & cboIdDocType.SelectedValue)
+            AjaxAlert("Impossibile salvare. Il campo tipologia spedizione non è valorizzato o non è numerico. Valore Attuale: " & cboIdDocType.SelectedValue)
             Return False
         End If
 
@@ -3172,7 +3087,6 @@ Partial Public Class ProtInserimento
             AjaxAlert("Impossibile salvare. Il Campo TIPO PROTOCOLLO non è valorizzato o non è numerico. Valore Attuale: " & rblTipoProtocollo.SelectedValue)
             Return False
         End If
-
 
         If ProtocolEnv.AuthorizContainer <> 0 Then
 
@@ -3232,16 +3146,13 @@ Partial Public Class ProtInserimento
         Dim protocol As Protocol
         Select Case Action
             Case "Recovery"
-                Dim vRecovery As IList(Of String) = StringHelper.ConvertStringToList(Of String)(txtProtRecovery.Text, "|"c)
-                If vRecovery.Count < 2 Then
+                Dim recoveryId As String = txtProtRecovery.Attributes("UniqueId")
+                If String.IsNullOrEmpty(recoveryId) Then
                     Throw New DocSuiteException("Recupero protocollo", String.Format("Errore in Lettura Protocollo per il Recupero: [{0}].", txtProtRecovery.Text))
                 End If
-                protocol = Facade.ProtocolFacade.GetById(Short.Parse(vRecovery(0)), Integer.Parse(vRecovery(1)))
+                protocol = Facade.ProtocolFacade.GetById(Guid.Parse(recoveryId))
             Case "Recover"
-
-                Dim year As Short = Request.QueryString.GetValue(Of Short)("Year")
-                Dim number As Integer = Request.QueryString.GetValue(Of Integer)("Number")
-                protocol = Facade.ProtocolFacade.RecoverProtocol(New YearNumberCompositeKey(year, number))
+                protocol = Facade.ProtocolFacade.RecoverProtocol(CurrentProtocolId)
             Case Else
                 If Action = "InsertMail" OrElse Action = "Interop" Then
                     If Not CurrentMail Is Nothing AndAlso CurrentMail.HasDocumentUnit() Then
@@ -3249,7 +3160,7 @@ Partial Public Class ProtInserimento
                     End If
                 End If
                 Try
-                    protocol = Facade.ProtocolFacade.CreateProtocol()
+                    protocol = Facade.ProtocolFacade.CreateProtocol(CurrentTenant.TenantAOO.UniqueId)
                 Catch ex As Exception
                     Throw New DocSuiteException("Creazione nuovo protocollo", "Il Server non ha assegnato correttamente il numero di Protocollo progressivo.", ex)
                 End Try
@@ -3339,7 +3250,7 @@ Partial Public Class ProtInserimento
                 accountingYear = If(rdpAccountingDate.SelectedDate.HasValue, Convert.ToInt16(rdpAccountingDate.SelectedDate.Value.Year), Nothing)
         End Select
 
-        Dim invoices As IList(Of Protocol.AdvancedProtocol) = Facade.ProtocolFacade.SerachInvoiceAccountingDouble(containerId, vAccountingSectional, accountingYear.Value, Integer.Parse(txtAccountingNumber.Text))
+        Dim invoices As IList(Of AdvancedProtocol) = Facade.ProtocolFacade.SerachInvoiceAccountingDouble(containerId, vAccountingSectional, accountingYear.Value, Integer.Parse(txtAccountingNumber.Text))
         If invoices.Count > 0 Then
             AjaxAlert(String.Concat("Documento già Inserito ", ProtocolFacade.ProtocolFullNumber(invoices(0).Year, invoices(0).Number)))
             Return False
@@ -3534,7 +3445,7 @@ Partial Public Class ProtInserimento
         'Aggiorno le autorizzazioni privacy
         If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso protocol.Roles IsNot Nothing AndAlso protocol.Roles.Count > 0 Then
             Dim privacyRoles As IList(Of String) = uscAutorizzazioni.GetPrivacyRoles()
-            Dim proles As IList(Of ProtocolRole) = protocol.Roles.Where(Function(x) privacyRoles.Any(Function(p) p.Eq(x.Id.Id.ToString()))).ToList()
+            Dim proles As IList(Of ProtocolRole) = protocol.Roles.Where(Function(x) privacyRoles.Any(Function(p) p.Eq(x.Role.Id.ToString()))).ToList()
             For Each item As ProtocolRole In proles
                 item.Type = ProtocolRoleTypes.Privacy
             Next
@@ -3938,50 +3849,68 @@ Partial Public Class ProtInserimento
         End If
     End Sub
 
-    'Aggiunta proprietà workflow
-    'todo: da rivedere la logica per una gestione astratta dei salvataggi
-    Private Sub AddWorkflowProperties(protocol As Protocol)
+    Private Sub PushWorkflowNotify(protocol As Protocol)
         If IsWorkflowOperation AndAlso CurrentIdWorkflowActivity.HasValue Then
-            Dim workflowActivityFacade As WorkflowActivityFacade = New WorkflowActivityFacade(DocSuiteContext.Current.User.FullUserName)
-            Dim activity As WorkflowActivity = workflowActivityFacade.GetById(CurrentIdWorkflowActivity.Value)
+
             Dim documentChainInfo As BiblosDocumentInfo = ProtocolFacade.GetDocument(protocol)
+            Dim worklowAcyivity As WorkflowActivity = GetWorkflowActivity(CurrentIdWorkflowActivity.Value)
+            Dim dsw_p_Model As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_MODEL, CurrentIdWorkflowActivity.Value)
 
-            Dim propertyYear As WorkflowProperty = New WorkflowProperty(DocSuiteContext.Current.User.FullUserName) With {
-                .Name = WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_YEAR,
-                .PropertyType = WorkflowPropertyType.PropertyInt,
-                .WorkflowType = WorkflowType.Activity,
-                .ValueInt = protocol.Year
-            }
-
-            Dim propertyNumber As WorkflowProperty = New WorkflowProperty(DocSuiteContext.Current.User.FullUserName) With {
-                .Name = WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_NUMBER,
-                .PropertyType = WorkflowPropertyType.PropertyInt,
-                .WorkflowType = WorkflowType.Activity,
-                .ValueInt = protocol.Number
-            }
-
-            Dim propertyDocument As WorkflowProperty = New WorkflowProperty(DocSuiteContext.Current.User.FullUserName) With {
-                .Name = WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_CHAINID_MAIN,
-                .PropertyType = WorkflowPropertyType.PropertyGuid,
-                .WorkflowType = WorkflowType.Activity,
-                .ValueGuid = documentChainInfo.ChainId
-            }
-
-            If Not String.IsNullOrEmpty(ProtocolEnv.ExternalViewerProtocolLink) Then
-                Dim propertyExternalViewer As WorkflowProperty = New WorkflowProperty(DocSuiteContext.Current.User.FullUserName) With {
-                    .Name = WorkflowPropertyHelper.DSW_FIELD_EXTERNALVIEWER_URL,
-                    .PropertyType = WorkflowPropertyType.PropertyString,
-                    .WorkflowType = WorkflowType.Activity,
-                    .ValueString = String.Format(ProtocolEnv.ExternalViewerProtocolLink, protocol.Year, protocol.Number)
-                }
-                activity.WorkflowProperties.Add(propertyExternalViewer)
+            If dsw_p_Model IsNot Nothing AndAlso dsw_p_Model.PropertyType = WorkflowPropertyType.Json AndAlso Not String.IsNullOrEmpty(dsw_p_Model.ValueString) Then
+                Dim model As ProtocolModel = Nothing
+                Try
+                    model = JsonConvert.DeserializeObject(Of ProtocolModel)(dsw_p_Model.ValueString, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
+                Catch
+                End Try
+                If model IsNot Nothing Then
+                    If model.MainDocument IsNot Nothing Then
+                        model.MainDocument.ContentStream = Nothing
+                    End If
+                    For Each item As Model.Entities.Commons.DocumentModel In model.Annexes
+                        item.ContentStream = Nothing
+                    Next
+                    For Each item As Model.Entities.Commons.DocumentModel In model.Attachments
+                        item.ContentStream = Nothing
+                    Next
+                    dsw_p_Model.ValueString = JsonConvert.SerializeObject(model, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
+                End If
             End If
 
-            activity.WorkflowProperties.Add(propertyYear)
-            activity.WorkflowProperties.Add(propertyNumber)
-            activity.WorkflowProperties.Add(propertyDocument)
-            activity.Status = WorkflowStatus.Progress
-            workflowActivityFacade.Save(activity)
+            Dim workflowNotify As WorkflowNotify = New WorkflowNotify(CurrentIdWorkflowActivity.Value) With {
+                    .WorkflowName = worklowAcyivity?.WorkflowInstance?.WorkflowRepository?.Name}
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_YEAR, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_YEAR,
+                                                   .PropertyType = ArgumentType.PropertyInt,
+                                                   .ValueInt = protocol.Year})
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_NUMBER, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_NUMBER,
+                                                   .PropertyType = ArgumentType.PropertyInt,
+                                                   .ValueInt = protocol.Number})
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_UNIQUEID, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_FIELD_PROTOCOL_UNIQUEID,
+                                                   .PropertyType = ArgumentType.PropertyGuid,
+                                                   .ValueGuid = protocol.Id})
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE,
+                                                   .PropertyType = ArgumentType.PropertyBoolean,
+                                                   .ValueBoolean = IsCurrentWorkflowActivityManualComplete})
+            If Not String.IsNullOrEmpty(ProtocolEnv.ExternalViewerProtocolLink) Then
+                workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_EXTERNALVIEWER_URL, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_FIELD_EXTERNALVIEWER_URL,
+                                                   .PropertyType = ArgumentType.PropertyString,
+                                                   .ValueString = String.Format(ProtocolEnv.ExternalViewerProtocolLink, protocol.Year, protocol.Number)})
+            End If
+            If dsw_p_Model IsNot Nothing Then
+                workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_MODEL, New WorkflowArgument() With {
+                                                   .Name = WorkflowPropertyHelper.DSW_PROPERTY_MODEL,
+                                                   .PropertyType = ArgumentType.Json,
+                                                   .ValueString = dsw_p_Model.ValueString})
+            End If
+
+            Dim webApiHelper As WebAPIHelper = New WebAPIHelper()
+            If Not WebAPIImpersonatorFacade.ImpersonateSendRequest(webApiHelper, workflowNotify, DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration) Then
+                Throw New Exception("Settaggio proprietà workflow non riuscita.")
+            End If
         End If
     End Sub
 

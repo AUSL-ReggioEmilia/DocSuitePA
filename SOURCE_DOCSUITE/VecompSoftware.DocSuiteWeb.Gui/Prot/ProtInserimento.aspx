@@ -274,7 +274,7 @@
                     <td>
                         <telerik:RadComboBox runat="server" CausesValidation="false"
                             ID="rcbContainer" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true"
-                            ItemRequestTimeout="500" Visible="false" Style="margin-left: 150px;" Width="300px">
+                            ItemRequestTimeout="500" Visible="false" Style="margin-left: 150px;" Width="500px">
                         </telerik:RadComboBox>
                         <asp:DropDownList ID="cboIdContainer" runat="server" Style="margin-left: 150px;" AutoPostBack="false" />
                         &nbsp;

@@ -3,6 +3,7 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports Telerik.Web.UI
+Imports System.Linq
 
 Partial Public Class uscProtocolSelTree
     Inherits DocSuite2008BaseControl
@@ -206,13 +207,13 @@ Partial Public Class uscProtocolSelTree
         Return nodeToAdd
     End Function
 
-    Public Function GetProtocols() As IList(Of Protocol)
-        Dim keys As New List(Of YearNumberCompositeKey)
+    Public Function GetProtocols() As ICollection(Of Protocol)
+        Dim keys As New List(Of Guid)
 
+        Dim uniqueIdProtocol As Guid
         For Each node As RadTreeNode In RadTreeProtocollo.Nodes(0).Nodes
-            Dim v As String() = node.Value.Split("/"c)
-            Dim k As New YearNumberCompositeKey(Short.Parse(v(0)), Integer.Parse(v(1)))
-            keys.Add(k)
+            uniqueIdProtocol = Guid.Parse(node.Value)
+            keys.Add(uniqueIdProtocol)
         Next
 
         Return Facade.ProtocolFacade.GetProtocols(keys)
@@ -235,9 +236,9 @@ Partial Public Class uscProtocolSelTree
     End Sub
 
     Public Function GetFirstProtocolLink() As String
-        Dim protocols As IList(Of Protocol) = GetProtocols()
+        Dim protocols As ICollection(Of Protocol) = GetProtocols()
         If Not protocols.IsNullOrEmpty() Then
-            Return ProtocolFacade.GetCalculatedLink(protocols(0))
+            Return ProtocolFacade.GetCalculatedLink(protocols.First())
         End If
         Return Nothing
     End Function

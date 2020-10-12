@@ -42,6 +42,10 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Report
                 row.Resolution_AdoptionDate = resolution.AdoptionDate.HasValue ? resolution.AdoptionDate.Value.ToString("dd/MM/yyyy") : string.Empty;
                 row.Resolution_FullNumber = ResolutionJournalPrinter.GetDetermina(resolution);
                 row.Resolution_Controllo = ResolutionJournalPrinter.GetControllo(resolution);
+                if (resolution.ImmediatelyExecutive.HasValue)
+                {
+                    row.Resolution_ImmediatelyExecutive = resolution.ImmediatelyExecutive.ToString();
+                }
 
                 row.Resolution_Object = resolution.ResolutionObject;
                 if (resolution.ProposeDate.HasValue)

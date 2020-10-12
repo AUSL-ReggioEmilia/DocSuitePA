@@ -87,6 +87,24 @@ Namespace Prot.PosteWeb
         Protected WithEvents Table1 As Global.System.Web.UI.HtmlControls.HtmlTable
 
         '''<summary>
+        '''lblAccountName control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblAccountName As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblTNoticeSender control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblTNoticeSender As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+        '''<summary>
         '''ddlPolAccount control.
         '''</summary>
         '''<remarks>
@@ -96,13 +114,22 @@ Namespace Prot.PosteWeb
         Protected WithEvents ddlPolAccount As Global.System.Web.UI.WebControls.DropDownList
 
         '''<summary>
-        '''rfvPolAccount control.
+        '''lblTNoticeSenderDescription control.
         '''</summary>
         '''<remarks>
         '''Auto-generated field.
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
-        Protected WithEvents rfvPolAccount As Global.System.Web.UI.WebControls.RequiredFieldValidator
+        Protected WithEvents lblTNoticeSenderDescription As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+        '''<summary>
+        '''_sender_denominazioni control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents _sender_denominazioni As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
         '''tblMessagge control.

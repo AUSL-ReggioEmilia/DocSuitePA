@@ -33,6 +33,9 @@ namespace VecompSoftware.DocSuiteWeb.API.Connector.FastMergeService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFastMergeService/GetDocumentTypes", ReplyAction="http://tempuri.org/IFastMergeService/GetDocumentTypesResponse")]
         string GetDocumentTypes();
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFastMergeService/GetServiceCategories", ReplyAction="http://tempuri.org/IFastMergeService/GetServiceCategoriesResponse")]
+        string GetServiceCategories();
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFastMergeService/InsertProtocol", ReplyAction="http://tempuri.org/IFastMergeService/InsertProtocolResponse")]
         string InsertProtocol(string protocolDTO, string taskDTO);
         
@@ -104,6 +107,10 @@ namespace VecompSoftware.DocSuiteWeb.API.Connector.FastMergeService {
         
         public string GetDocumentTypes() {
             return base.Channel.GetDocumentTypes();
+        }
+        
+        public string GetServiceCategories() {
+            return base.Channel.GetServiceCategories();
         }
         
         public string InsertProtocol(string protocolDTO, string taskDTO) {

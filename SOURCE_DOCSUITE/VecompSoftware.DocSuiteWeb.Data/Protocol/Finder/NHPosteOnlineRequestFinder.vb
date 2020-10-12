@@ -71,6 +71,7 @@ Public Class NHPosteOnlineRequestFinder
     Protected Overrides Function CreateCriteria() As ICriteria
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of POLRequestRecipient)("PRR")
         criteria.CreateCriteria("PRR.Request", "R", JoinType.InnerJoin)
+        criteria.CreateAlias("R.DocumentUnit", "DU")
 
         If Sent.HasValue Then
             If Sent Then
@@ -162,8 +163,9 @@ Public Class NHPosteOnlineRequestFinder
         proj.Add(Projections.Property("R.RegistrationDate"), "RegistrationDate")
         proj.Add(Projections.Property("R.StatusDescrition"), "RequestStatusDescrition")
         proj.Add(Projections.Property("R.Type"), "RequestType")
-        proj.Add(Projections.Property("R.ProtocolYear"), "ProtocolYear")
-        proj.Add(Projections.Property("R.ProtocolNumber"), "ProtocolNumber")
+        proj.Add(Projections.Property("DU.Year"), "ProtocolYear")
+        proj.Add(Projections.Property("DU.Number"), "ProtocolNumber")
+        proj.Add(Projections.Property("DU.Id"), "ProtocolId")
         proj.Add(Projections.Property("R.IdRichiesta"), "IdRichiesta")
         proj.Add(Projections.Property("R.IdOrdine"), "IdOrdine")
 

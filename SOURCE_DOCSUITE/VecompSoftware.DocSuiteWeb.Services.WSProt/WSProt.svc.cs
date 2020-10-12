@@ -1,11 +1,16 @@
-﻿using System;
+﻿using NHibernate;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.ServiceModel;
 using VecompSoftware.DocSuiteWeb.Data;
+using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Tenants;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Facade;
 using VecompSoftware.DocSuiteWeb.Services.WSProt.DTO;
 using VecompSoftware.DocSuiteWeb.Services.WSProt.ErrorHandler;
+using VecompSoftware.DocSuiteWeb.Services.WSProt.Helpers;
 using VecompSoftware.Helpers;
 using VecompSoftware.Helpers.ExtensionMethods;
 using VecompSoftware.NHibernateManager;
@@ -16,6 +21,11 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
     [GlobalExceptionHandlerBehaviourAttribute(typeof(GlobalExceptionHandler))]
     public class WSProt : IWSProt
     {
+        public WSProt()
+        {
+
+        }
+
         private const string LoggerName = "WSProtLog";
 
         private FacadeFactory _facade;
@@ -36,11 +46,13 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
             }
             
         }
+        
         public string Insert(string xmlProt)
         {
             try
             {
                 ValidateWindowsSecurity();
+                bool createLogToRead = "true".Equals(ConfigurationManager.AppSettings["DocSuite.WSProt.CreateLogToRead"], StringComparison.InvariantCultureIgnoreCase);
                 ProtocolXML protocolXml;
                 try
                 {
@@ -48,10 +60,10 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
                 }
                 catch (Exception ex)
                 {
-                    throw new ArgumentException("Errore in lettura XML.", "xmlColl", ex);
+                    throw new ArgumentException("Errore in lettura XML.", "xmlProt", ex);
                 }
 
-                FileLogger.Debug(LoggerName, string.Format("Insert - xmlProt: {0}", xmlProt));
+                FileLogger.Debug(LoggerName, $"Insert - xmlProt: {xmlProt}");
 
                 // Verifico se sono corretti e completi i dati
                 Facade.ProtocolFacade.CheckDataForInsert(protocolXml);
@@ -60,9 +72,9 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
                 string username = ServiceSecurityContext.Current.WindowsIdentity.Name;
 
                 // Inserisco il protocollo
-                var protocol = Facade.ProtocolFacade.InsertProtocol(protocolXml, username);
+                Protocol protocol = Facade.ProtocolFacade.InsertProtocol(protocolXml, username, ConfigurationHelper.CurrentTenantAOOId, createLogToRead);
 
-                return string.Format("{0}/{1}", protocol.Year, protocol.Number);
+                return $"{protocol.Year}/{protocol.Number}";
             }
             finally
             {
@@ -75,11 +87,13 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
             try
             {
                 ValidateWindowsSecurity();
-                FileLogger.Debug(LoggerName, string.Format("AddDocument - year: {0} number: {1} base64DocumentStream: {2} documentName: {3} isMain: {4}", year, number, base64DocumentStream, documentName, isMain));
+                FileLogger.Debug(LoggerName, $"AddDocument - year: {year} number: {number} base64DocumentStream: {base64DocumentStream.Count()} documentName: {documentName} isMain: {isMain}");
 
                 Protocol protocol = Facade.ProtocolFacade.GetById((short)year, number);
                 if (protocol == null)
+                {
                     throw new ArgumentException("Protocollo non presente. Verificare year e number", "year number");
+                }
 
                 byte[] document = Convert.FromBase64String(base64DocumentStream);
 
@@ -91,8 +105,8 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
                 if (isMain && protocol.IdDocument.HasValue && protocol.IdStatus.HasValue  && protocol.IdStatus.Value == (int)ProtocolStatusId.Attivo)
                 {
                     throw new ArgumentException(
-                        string.Format("Il Protocollo {0}/{1} risulta attivo. Non è possibile aggiungere documenti allegato o sostituire il documento principale.", year, number),
-                        "year number isMain" );
+                        $"Il Protocollo {year}/{number} risulta attivo. Non è possibile aggiungere documenti allegato o sostituire il documento principale.",
+                        "year number isMain");
                 }
 
                 //Utente che stà utilizzando il WCF
@@ -126,7 +140,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
             try
             {
                 ValidateWindowsSecurity();
-                FileLogger.Debug(LoggerName, string.Format("InsertCommit - year: {0} number: {1}", year, number));
+                FileLogger.Debug(LoggerName, $"InsertCommit - year: {year} number: {number}");
 
                 Protocol protocol = Facade.ProtocolFacade.GetById((short)year, number);
                 if (protocol == null)
@@ -146,7 +160,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
 
                 if (protocol.IdDocument.HasValue && protocol.IdStatus.HasValue && protocol.IdStatus.Value == (int)ProtocolStatusId.Attivo)
                 {
-                    throw new ArgumentException(string.Format("Il Protocollo {0}/{1} risulta già attivo.", year, number), "year number");
+                    throw new ArgumentException($"Il Protocollo {year}/{number} risulta già attivo.", "year number");
                 }
                 //Prima attivazione del Protocollo
                 Facade.ProtocolFacade.Activation(protocol);
@@ -163,7 +177,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
             try
             {
                 ValidateWindowsSecurity();
-                FileLogger.Debug(LoggerName, string.Format("GetProtocolLink - year: {0} number: {1}", year, number));
+                FileLogger.Debug(LoggerName, $"GetProtocolLink - year: {year} number: {number}");
 
                 Protocol protocol = Facade.ProtocolFacade.GetById((short)year, number);
 
@@ -175,7 +189,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
                 if (!protocol.IdDocument.HasValue)
                     throw new InvalidOperationException("Attenzione il protocollo non dispone del documento principale");
 
-                return string.Format("Tipo=Prot&Azione=Apri&Anno={0}&Numero={1}", year, number);
+                return $"Tipo=Prot&Azione=Apri&Anno={year}&Numero={number}";
             }
             finally
             {
@@ -188,7 +202,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
             try
             {
                 ValidateWindowsSecurity();
-                FileLogger.Debug(LoggerName, string.Format("GetDocumentsViewerLink - year: {0} number: {1}", year, number));
+                FileLogger.Debug(LoggerName, $"GetDocumentsViewerLink - year: {year} number: {number}");
 
                 Protocol protocol = Facade.ProtocolFacade.GetById((short)year, number);
                 if (protocol == null)
@@ -212,7 +226,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
             try
             {
                 ValidateWindowsSecurity();
-                FileLogger.Debug(LoggerName, string.Format("GetPecs - year: {0} number: {1}", year, number));
+                FileLogger.Debug(LoggerName, $"GetPecs - year: {year} number: {number}");
 
                 Protocol protocol = Facade.ProtocolFacade.GetById((short)year, number);
                 if (protocol == null)
@@ -248,7 +262,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
             try
             {
                 ValidateWindowsSecurity();
-                FileLogger.Debug(LoggerName, string.Format("GetProtocolInfo - year: {0} number: {1}", year, number));
+                FileLogger.Debug(LoggerName, $"GetProtocolInfo - year: {year} number: {number}");
 
                 Protocol protocol = Facade.ProtocolFacade.GetById((short)year, number);
                 if (protocol == null)
@@ -322,7 +336,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSProt
                 return contact.Id;
             }
 
-            throw new Exception(string.Format("Contatto con codice '{0}' non trovato.", contactMailOrCode));
+            throw new Exception($"Contatto con codice '{contactMailOrCode}' non trovato.");
         }
     }
 }

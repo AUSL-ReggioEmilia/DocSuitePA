@@ -73,7 +73,14 @@ Public Class MultipleSignBasePage
             ViewState("PostBackUrl") = value
         End Set
     End Property
-
+    Protected Property SignAction As String
+        Get
+            Return ViewState("SignAction").ToString()
+        End Get
+        Set(value As String)
+            ViewState("SignAction") = value
+        End Set
+    End Property
     Protected Property SignedComplete As Boolean
         Get
             Dim sessionParam As Object = Session("signedComplete")

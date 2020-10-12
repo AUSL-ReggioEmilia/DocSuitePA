@@ -122,7 +122,7 @@ Public Class ProtReassignment
         Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PR, String.Format("Protocollo riattivato da {0} e spostato in [{1}]", DocSuiteContext.Current.User.FullUserName, CurrentProtocol.Container.Name))
 
         Facade.ProtocolFacade.Update(CurrentProtocol)
-        Response.Redirect("../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck("Year=" & CurrentProtocolYear & "&Number=" & CurrentProtocolNumber))
+        Response.Redirect($"../Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
 
     End Sub
 
@@ -181,13 +181,13 @@ Public Class ProtReassignment
         uscDestinatari.EnableCompression = False
         uscDestinatari.MultiSelect = True
         uscDestinatari.ButtonSelectVisible = True
-        uscDestinatari.ButtonSelectDomainVisible = True
+        uscDestinatari.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
         uscDestinatari.ButtonSelectOChartVisible = True
         uscDestinatari.ButtonDeleteVisible = True
         uscDestinatari.ButtonManualVisible = True
         uscDestinatari.ButtonPropertiesVisible = True
         uscDestinatari.ButtonImportVisible = ProtocolEnv.IsImportContactEnabled
-        uscDestinatari.ButtonIPAVisible = Not String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa)
+        uscDestinatari.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
 
         uscDestinatari.DataSource = Facade.ProtocolFacade.GetRecipients(CurrentProtocol)
         uscDestinatari.DataBind()

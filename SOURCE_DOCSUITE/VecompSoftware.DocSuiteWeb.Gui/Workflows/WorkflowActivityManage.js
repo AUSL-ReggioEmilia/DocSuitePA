@@ -1,6 +1,6 @@
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
 /// <reference path="../scripts/typings/telerik/telerik.web.ui.d.ts" />
-define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", "App/Helpers/ServiceConfigurationHelper", "App/Models/Workflows/WorkflowPropertyHelper", "App/Models/Fascicles/FascicleModel", "App/DTOs/ExceptionDTO", "App/Models/DocumentUnits/ChainType", "App/Services/Fascicles/FascicleDocumentService", "App/Services/Workflows/WorkflowAuthorizationService", "App/Services/UDS/UDSRepositoryService", "App/Services/Fascicles/FascicleFolderService"], function (require, exports, WorkflowActivityService, ServiceConfigurationHelper, WorkflowPropertyHelper, FascicleModel, ExceptionDTO, ChainType, FascicleDocumentService, WorkflowAuthorizationService, UDSRepositoryService, FascicleFolderService) {
+define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", "App/Helpers/ServiceConfigurationHelper", "App/Models/Workflows/WorkflowPropertyHelper", "App/Models/Fascicles/FascicleModel", "App/DTOs/ExceptionDTO", "App/Models/DocumentUnits/ChainType", "App/Services/Fascicles/FascicleDocumentService", "App/Services/Workflows/WorkflowAuthorizationService", "App/Services/UDS/UDSRepositoryService", "App/Services/Fascicles/FascicleFolderService", "App/Models/Environment"], function (require, exports, WorkflowActivityService, ServiceConfigurationHelper, WorkflowPropertyHelper, FascicleModel, ExceptionDTO, ChainType, FascicleDocumentService, WorkflowAuthorizationService, UDSRepositoryService, FascicleFolderService, Environment) {
     var WorkflowActivityManage = /** @class */ (function () {
         function WorkflowActivityManage(serviceConfigurations) {
             var _this = this;
@@ -9,30 +9,30 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
              *------------------------- Events -----------------------------
              */
             this.radioListButtonChanged = function () {
-                var checkedChoice = _this.rblDocumentUnit.find('input:checked').val();
-                _this.rfvUDSArchives.hide();
-                _this.pnlArchives.hide();
-                _this.pnlFascicleSelect.hide();
-                _this.panelManage.hide();
-                _this.panelDocumentUnitSelect.addClass(" t-col-12");
-                _this.panelDocumentUnitSelect.removeClass(" t-col-4");
+                var checkedChoice = _this.rblDocumentUnit().find('input:checked').val();
+                _this.rfvUDSArchives().hide();
+                _this.pnlArchives().hide();
+                _this.pnlFascicleSelect().hide();
+                _this.panelManage().hide();
+                _this.panelDocumentUnitSelect().addClass(" t-col-12");
+                _this.panelDocumentUnitSelect().removeClass(" t-col-4");
                 _this._gridUD.get_masterTableView().showColumn(3);
                 ValidatorEnable(document.getElementById(_this.rfvUDSArchivesId), false);
                 switch (checkedChoice) {
                     case "Archivi": {
-                        _this.panelManage.show();
-                        _this.pnlArchives.show();
-                        _this.rfvUDSArchives.show();
-                        _this.panelDocumentUnitSelect.addClass(" t-col-4");
-                        _this.panelDocumentUnitSelect.removeClass(" t-col-12");
+                        _this.panelManage().show();
+                        _this.pnlArchives().show();
+                        _this.rfvUDSArchives().show();
+                        _this.panelDocumentUnitSelect().addClass(" t-col-4");
+                        _this.panelDocumentUnitSelect().removeClass(" t-col-12");
                         ValidatorEnable(document.getElementById(_this.rfvUDSArchivesId), true);
                         break;
                     }
                     case "Fascicolo": {
-                        _this.pnlFascicleSelect.show();
-                        _this.panelManage.show();
-                        _this.panelDocumentUnitSelect.addClass(" t-col-4");
-                        _this.panelDocumentUnitSelect.removeClass(" t-col-12");
+                        _this.pnlFascicleSelect().show();
+                        _this.panelManage().show();
+                        _this.panelDocumentUnitSelect().addClass(" t-col-4");
+                        _this.panelDocumentUnitSelect().removeClass(" t-col-12");
                         _this._gridUD.get_masterTableView().hideColumn(3);
                         break;
                     }
@@ -58,10 +58,16 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
                 if (!jQuery.isEmptyObject(uscFascicleSearch)) {
                     var selectedFascicle = uscFascicleSearch.getSelectedFascicle();
                     if (selectedFascicle) {
+                        var selectedFascicleFolder = uscFascicleSearch.getSelectedFascicleFolder();
                         var ajaxModel = {};
                         ajaxModel.Value = new Array();
                         ajaxModel.Value.push(selectedFascicle.UniqueId);
+                        ajaxModel.Value.push(selectedFascicleFolder.UniqueId);
                         ajaxModel.ActionName = WorkflowActivityManage.INSERT_MISCELLANEA;
+                        if (!selectedFascicleFolder) {
+                            _this.showNotificationException(_this.uscNotificationId, "Nessuna cartella fascicolo selezionata");
+                            return;
+                        }
                         $find(_this.ajaxManagerId).ajaxRequest(JSON.stringify(ajaxModel));
                     }
                     else {
@@ -72,76 +78,36 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
             };
             this._serviceConfigurations = serviceConfigurations;
         }
-        Object.defineProperty(WorkflowActivityManage.prototype, "pnlFascicleSelect", {
-            get: function () {
-                return $("#" + this.pnlFascicleSelectId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WorkflowActivityManage.prototype, "pnlArchives", {
-            get: function () {
-                return $("#" + this.pnlUDSID);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WorkflowActivityManage.prototype, "lblProponente", {
-            get: function () {
-                return $("#" + this.lblProponenteId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WorkflowActivityManage.prototype, "lblDestinatario", {
-            get: function () {
-                return $("#" + this.lblDestinatarioId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WorkflowActivityManage.prototype, "lblRegistrationDate", {
-            get: function () {
-                return $("#" + this.lblRegistrationDateId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WorkflowActivityManage.prototype, "lblSubject", {
-            get: function () {
-                return $("#" + this.lblSubjectId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WorkflowActivityManage.prototype, "rblDocumentUnit", {
-            get: function () {
-                return $("#" + this.rblDocumentUnitId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WorkflowActivityManage.prototype, "rfvUDSArchives", {
-            get: function () {
-                return $("#" + this.rfvUDSArchivesId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WorkflowActivityManage.prototype, "panelDocumentUnitSelect", {
-            get: function () {
-                return $("#" + this.panelDocumentUnitSelectId);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WorkflowActivityManage.prototype, "panelManage", {
-            get: function () {
-                return $("#" + this.panelManageId);
-            },
-            enumerable: true,
-            configurable: true
-        });
+        WorkflowActivityManage.prototype.pnlFascicleSelect = function () {
+            return $("#" + this.pnlFascicleSelectId);
+        };
+        WorkflowActivityManage.prototype.pnlArchives = function () {
+            return $("#" + this.pnlUDSID);
+        };
+        WorkflowActivityManage.prototype.lblProponente = function () {
+            return $("#" + this.lblProponenteId);
+        };
+        WorkflowActivityManage.prototype.lblDestinatario = function () {
+            return $("#" + this.lblDestinatarioId);
+        };
+        WorkflowActivityManage.prototype.lblRegistrationDate = function () {
+            return $("#" + this.lblRegistrationDateId);
+        };
+        WorkflowActivityManage.prototype.lblSubject = function () {
+            return $("#" + this.lblSubjectId);
+        };
+        WorkflowActivityManage.prototype.rblDocumentUnit = function () {
+            return $("#" + this.rblDocumentUnitId);
+        };
+        WorkflowActivityManage.prototype.rfvUDSArchives = function () {
+            return $("#" + this.rfvUDSArchivesId);
+        };
+        WorkflowActivityManage.prototype.panelDocumentUnitSelect = function () {
+            return $("#" + this.panelDocumentUnitSelectId);
+        };
+        WorkflowActivityManage.prototype.panelManage = function () {
+            return $("#" + this.panelManageId);
+        };
         /**
          *------------------------- Methods -----------------------------
          */
@@ -163,8 +129,8 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
             this._ddlUDSArchives.add_selectedIndexChanged(this.ddlUDSArchives_selectedIndexChanged);
             this._btnConfirm = $find(this.btnConfirmId);
             this._gridUD = $find(this.grdUDId);
-            this.rblDocumentUnit.find("input:first").prop("checked", true);
-            this.rblDocumentUnit.on('change', this.radioListButtonChanged);
+            this.rblDocumentUnit().find("input:first").prop("checked", true);
+            this.rblDocumentUnit().on('change', this.radioListButtonChanged);
             this._loadingPanel.show(this.currentPageId);
             this.checkUserRights()
                 .done(function (isValid) {
@@ -189,8 +155,8 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
         WorkflowActivityManage.prototype.initializeArchivePanel = function () {
             var _this = this;
             var promise = $.Deferred();
-            this.pnlArchives.hide();
-            this.rfvUDSArchives.hide();
+            this.pnlArchives().hide();
+            this.rfvUDSArchives().hide();
             ValidatorEnable(document.getElementById(this.rfvUDSArchivesId), false);
             this._udsRepositoryService.getInsertableRepositoriesByTypology(this.currentUser.split("\\")[1], this.currentUser.split("\\")[0], null, false, function (data) {
                 if (!data) {
@@ -239,14 +205,32 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
                 try {
                     var workflowActivity = data;
                     var workflowProponenteJson = workflowActivity.WorkflowProperties.filter(function (x) { return x.Name === WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER; })[0];
-                    var workflowProponente = JSON.parse(workflowProponenteJson.ValueString);
-                    _this.lblProponente.html(workflowProponente.DisplayName);
+                    if (workflowProponenteJson && workflowProponenteJson.ValueString) {
+                        var workflowProponente = JSON.parse(workflowProponenteJson.ValueString);
+                        _this.lblProponente().html(workflowProponente.DisplayName);
+                    }
                     var workflowNoteJson = workflowActivity.WorkflowProperties.filter(function (x) { return x.Name === WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION; })[0];
                     if (workflowNoteJson) {
-                        _this.lblSubject.html(workflowNoteJson.ValueString);
+                        _this.lblSubject().html(workflowNoteJson.ValueString);
                     }
-                    _this.lblDestinatario.html(_this.currentUser);
-                    _this.lblRegistrationDate.html(moment(workflowActivity.RegistrationDate).format("DD/MM/YYYY"));
+                    _this.lblDestinatario().html(_this.currentUser);
+                    _this.lblRegistrationDate().html(moment(workflowActivity.RegistrationDate).format("DD/MM/YYYY"));
+                    var defaultProperty = workflowActivity.WorkflowProperties.filter(function (x) { return x.Name === WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_ACTIVITY_MANAGE_DEFAULT_TYPE; })[0];
+                    if (defaultProperty) {
+                        _this.rblDocumentUnit().find("[value=" + defaultProperty.ValueString + "]").prop("checked", true);
+                        _this.radioListButtonChanged();
+                        var referenceModel = workflowActivity.WorkflowProperties.filter(function (x) { return x.Name === WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL; })[0];
+                        if (defaultProperty.ValueString === "Fascicolo" && referenceModel) {
+                            var fascicleReferenceModel = JSON.parse(referenceModel.ValueString);
+                            if (fascicleReferenceModel.ReferenceType === Environment.Fascicle) {
+                                var fascicleModel = JSON.parse(fascicleReferenceModel.ReferenceModel);
+                                var uscFascicleSearch_1 = $("#" + _this.uscFascicleSearchId).data();
+                                uscFascicleSearch_1.loadFascicle(fascicleModel.UniqueId, true);
+                                uscFascicleSearch_1._loadFascFoldersData(fascicleModel.UniqueId);
+                                uscFascicleSearch_1.showContentPanel();
+                            }
+                        }
+                    }
                     var ajaxModel = {};
                     ajaxModel.Value = new Array();
                     ajaxModel.Value.push(JSON.stringify(workflowActivity.IdArchiveChain));
@@ -259,7 +243,7 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
                     console.error(JSON.stringify(error));
                     promise.reject("E' avvenuto un errore durante il caricamento delle informazioni dell'attività");
                 }
-            }, function (exception) { return promise.reject(exception); });
+            }, function (exception) { return promise.reject(exception); }, WorkflowActivityManage.WORKFLOW_ACTIVITY_EXPAND_PROPERTIES);
             return promise.promise();
         };
         WorkflowActivityManage.prototype.loadCallback = function (errorMessage) {
@@ -291,7 +275,7 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
                 return selectedFascicle != null;
             }
         };
-        WorkflowActivityManage.prototype.confirmCallback = function (idChain, idFascicle, isNewArchiveChain, errorMessage) {
+        WorkflowActivityManage.prototype.confirmCallback = function (idChain, idFascicle, isNewArchiveChain, idFasciclefolder, errorMessage) {
             var _this = this;
             if (errorMessage) {
                 this.showNotificationException(this.uscNotificationId, errorMessage);
@@ -306,7 +290,7 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
                 fascicleDocumentModel_1.IdArchiveChain = idChain;
                 fascicleDocumentModel_1.Fascicle = new FascicleModel();
                 fascicleDocumentModel_1.Fascicle.UniqueId = idFascicle;
-                this._fascicleFolderService.getDefaultFascicleFolder(idFascicle, function (data) {
+                this._fascicleFolderService.getById(idFasciclefolder, function (data) {
                     if (!data) {
                         _this._loadingPanel.hide(_this.currentPageId);
                         _this.showNotificationException(_this.uscNotificationId, "E' avvenuto un errore durante il processo di fascicolazione");
@@ -327,6 +311,9 @@ define(["require", "exports", "App/Services/Workflows/WorkflowActivityService", 
             }
         };
         WorkflowActivityManage.INSERT_MISCELLANEA = "InsertMiscellanea";
+        WorkflowActivityManage.WORKFLOW_ACTIVITY_EXPAND_PROPERTIES = [
+            "WorkflowProperties"
+        ];
         return WorkflowActivityManage;
     }());
     return WorkflowActivityManage;

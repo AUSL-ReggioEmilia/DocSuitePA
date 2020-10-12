@@ -2,23 +2,9 @@
     Inherits FascBasePage
 
 #Region " Fields "
-    Private _idFascicleFolder As Guid?
 #End Region
 
 #Region " Properties "
-    Protected ReadOnly Property IdFascicleFolder As Guid
-        Get
-            If _idFascicleFolder Is Nothing Then
-                _idFascicleFolder = GetKeyValueOrDefault(Of Guid?)("IdFascicleFolder", Nothing)
-            End If
-            If _idFascicleFolder.HasValue Then
-                Return _idFascicleFolder.Value
-            Else
-                Return Guid.Empty
-            End If
-        End Get
-    End Property
-
     Protected ReadOnly Property SessionUniqueKey As String
         Get
             Return GetKeyValueOrDefault(Of String)("SessionUniqueKey", String.Empty)

@@ -1,5 +1,4 @@
-﻿Imports AutoMapper
-Imports VecompSoftware.DocSuiteWeb.API
+﻿Imports VecompSoftware.DocSuiteWeb.API
 
 Public Class APIProvider
     Inherits DomainObject(Of Guid)
@@ -18,8 +17,8 @@ Public Class APIProvider
         Main = source.Main
     End Sub
     Public Sub New(source As IAPIProviderDTO)
-        Mapper.Initialize(Function(cfg) cfg.CreateMap(Of IAPIProviderDTO, APIProvider)())
-        Mapper.Map(source, Me)
+        'Mapper.Initialize(Function(cfg) cfg.CreateMap(Of IAPIProviderDTO, APIProvider)())
+        'Mapper.Map(source, Me)
     End Sub
 
 #End Region

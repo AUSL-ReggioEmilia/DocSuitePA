@@ -3,7 +3,7 @@ define(["require", "exports"], function (require, exports) {
     (function (DocumentUnitReferenceTypeEnum) {
         DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["Fascicle"] = 0] = "Fascicle";
         DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["FascicleProtocol"] = 1] = "FascicleProtocol";
-        DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["SerieRepertorio"] = 2] = "SerieRepertorio";
+        DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["Dossier"] = 2] = "Dossier";
         DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["Atti"] = 3] = "Atti";
         DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["PECIngresso"] = 4] = "PECIngresso";
         DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["PECUscita"] = 5] = "PECUscita";
@@ -17,6 +17,10 @@ define(["require", "exports"], function (require, exports) {
         DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["MessageSeries"] = 13] = "MessageSeries";
         DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["SeriesProtocol"] = 14] = "SeriesProtocol";
         DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["Series"] = 15] = "Series";
+        DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["ActiveWorkflows"] = 16] = "ActiveWorkflows";
+        DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["Process"] = 17] = "Process";
+        DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["TNotice"] = 18] = "TNotice";
+        DocumentUnitReferenceTypeEnum[DocumentUnitReferenceTypeEnum["DoneWorkflows"] = 19] = "DoneWorkflows";
     })(DocumentUnitReferenceTypeEnum || (DocumentUnitReferenceTypeEnum = {}));
     return DocumentUnitReferenceTypeEnum;
 });

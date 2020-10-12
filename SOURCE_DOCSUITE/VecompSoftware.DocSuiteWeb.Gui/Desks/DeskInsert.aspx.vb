@@ -109,7 +109,7 @@ Public Class DeskInsert
 
         'Inizializzo lo user control dei documenti
         uscDeskDocument.InitializeUserControlSource()
-        uscDeskDocument.BtnSelectTemplateVisible = GetControlTemplateDocumentVisibility(ChainType.MainChain)
+        uscDeskDocument.BtnSelectTemplateVisible = GetControlTemplateDocumentVisibility(Entity.DocumentUnits.ChainType.MainChain)
 
         'Inizializzo lo user control dei documenti provenienti da collaboration
         InitializeDocumentFromCollaboration()
@@ -189,7 +189,7 @@ Public Class DeskInsert
 
         Dim documentDtos As IList(Of DeskDocumentResult) = New List(Of DeskDocumentResult)
         For Each deskDocument As DeskDocument In desk.DeskDocuments.Where(Function(x) x.IsActive = 0)
-            Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(CurrentDeskLocation.DocumentServer, deskDocument.IdDocument.Value)
+            Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(deskDocument.IdDocument.Value)
             If Not docInfos.Any() Then
                 Exit Sub
             End If

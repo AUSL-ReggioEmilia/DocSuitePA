@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscProtGrid
-    
+
     '''<summary>
     '''rsbContent control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscProtGrid
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rsbContent As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''grdProtocols control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscProtGrid
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents grdProtocols As Global.VecompSoftware.DocSuiteWeb.Presentation.BindGrid
-    
+
     '''<summary>
     '''rwmRoles control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscProtGrid
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rwmRoles As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowToEvaluateRoles control.
     '''</summary>

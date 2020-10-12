@@ -104,7 +104,7 @@
                 }, 500)
             }
 
-            function signTypeDropdown_SelectedIndexChanged(sender, eventArgs) {           
+            function signTypeDropdown_SelectedIndexChanged(sender, eventArgs) {
                 document.getElementById("<%= PinTextbox.ClientID %>").value = "";
                 showAjaxLoadingPanel("<%= ToolBar.ClientID %>");
                 var selectedValue = sender._selectedValue;
@@ -130,7 +130,7 @@
                         case "4": //INFOCERT AUTO
                             {
                                 toolBar.findItemByValue("pinContainer2").set_visible(true);
-                                toolBar.findItemByValue("pinContainer").set_visible(true);                                
+                                toolBar.findItemByValue("pinContainer").set_visible(true);
                                 break;
                             }
                     }
@@ -196,7 +196,7 @@
             </telerik:RadToolBarButton>
             <telerik:RadToolBarButton Value="pinContainer">
                 <ItemTemplate>
-                    <telerik:RadTextBox ID="pin" runat="server" TextMode="Password" Width="50px" />
+                    <telerik:RadTextBox ID="pin" runat="server" TextMode="Password" Width="60px" />
                 </ItemTemplate>
             </telerik:RadToolBarButton>
             <telerik:RadToolBarButton IsSeparator="true" Value="pinSeparator" />
@@ -266,7 +266,7 @@
                 <ClientEvents OnRowDeselecting="RowDeselecting"></ClientEvents>
             </ClientSettings>
 
-            <SortingSettings SortedAscToolTip="Ordine Crescente" SortedDescToolTip="Ordine Descrescente" SortToolTip="Ordina" />
+            <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente" SortToolTip="Ordina" />
             <GroupingSettings ShowUnGroupButton="true" UnGroupButtonTooltip="Rimuovi"></GroupingSettings>
         </telerik:RadGrid>
     </div>

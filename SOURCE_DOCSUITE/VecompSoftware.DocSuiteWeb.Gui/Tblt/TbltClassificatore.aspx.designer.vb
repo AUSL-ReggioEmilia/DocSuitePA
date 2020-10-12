@@ -149,24 +149,6 @@ Partial Public Class TbltClassificatore
     Protected WithEvents btnElimina As Global.Telerik.Web.UI.RadToolBarButton
 
     '''<summary>
-    '''btnRecovery control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnRecovery As Global.Telerik.Web.UI.RadToolBarButton
-
-    '''<summary>
-    '''btnLog control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnLog As Global.Telerik.Web.UI.RadToolBarButton
-
-    '''<summary>
     '''btnMassimari control.
     '''</summary>
     '''<remarks>
@@ -176,6 +158,15 @@ Partial Public Class TbltClassificatore
     Protected WithEvents btnMassimari As Global.Telerik.Web.UI.RadToolBarButton
 
     '''<summary>
+    '''btnRecovery control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnRecovery As Global.Telerik.Web.UI.RadToolBarButton
+
+    '''<summary>
     '''btnMetadata control.
     '''</summary>
     '''<remarks>
@@ -183,6 +174,15 @@ Partial Public Class TbltClassificatore
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnMetadata As Global.Telerik.Web.UI.RadToolBarButton
+
+    '''<summary>
+    '''btnLog control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnLog As Global.Telerik.Web.UI.RadToolBarButton
 
     '''<summary>
     '''btnRunFasciclePlan control.
@@ -363,6 +363,33 @@ Partial Public Class TbltClassificatore
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscFascPlan As Global.VecompSoftware.DocSuiteWeb.Gui.uscFasciclePlan
+
+    '''<summary>
+    '''pnlCustomActions control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlCustomActions As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''uscCustomActionsRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscCustomActionsRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscCustomActionsRest
+
+    '''<summary>
+    '''btnUpdateCustomActions control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnUpdateCustomActions As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''pnlDetails control.

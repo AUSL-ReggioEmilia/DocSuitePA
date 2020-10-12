@@ -17,19 +17,16 @@ Public Class NHibernateProtocolContactDao
     End Sub
 
     ''' <summary> Restituisce una lista di ProtocolContact filtrati per Year, Number e ComunicationType </summary>
-    ''' <param name="year">Anno Protocollo</param>
-    ''' <param name="number">Numero Protocollo</param>
-    ''' <param name="comunicationType">ComunicationType</param>
-    Public Function GetByComunicationType(ByVal year As Short, ByVal number As Integer, ByVal comunicationType As String) As IList(Of ProtocolContact)
+    Public Function GetByComunicationType(uniqueIdProtocol As Guid, ByVal comunicationType As String) As IList(Of ProtocolContact)
         criteria = NHibernateSession.CreateCriteria(persitentType)
 
         criteria.CreateAlias("Contact", "Contact")
+        criteria.CreateAlias("Protocol", "Protocol")
 
-        criteria.Add(Restrictions.Eq("Id.Year", year))
-        criteria.Add(Restrictions.Eq("Id.Number", number))
+        criteria.Add(Restrictions.Eq("Protocol.Id", uniqueIdProtocol))
 
         If (Not String.IsNullOrEmpty(comunicationType)) Then
-            criteria.Add(Restrictions.Eq("Id.ComunicationType", comunicationType))
+            criteria.Add(Restrictions.Eq("ComunicationType", comunicationType))
         End If
 
         criteria.AddOrder(Order.Asc("Contact.Description"))
@@ -37,12 +34,12 @@ Public Class NHibernateProtocolContactDao
         Return criteria.List(Of ProtocolContact)()
     End Function
 
-    Public Function GetCountByProtocol(ByVal year As Short, ByVal number As Integer, ByVal comunicationType As String) As Integer
+    Public Function GetCountByProtocol(uniqueIdProtocol As Guid, ByVal comunicationType As String) As Integer
         criteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.Eq("Id.Year", Year))
-        criteria.Add(Restrictions.Eq("Id.Number", Number))
+        criteria.CreateAlias("Protocol", "Protocol")
+        criteria.Add(Restrictions.Eq("Protocol.Id", uniqueIdProtocol))
         If (Not String.IsNullOrEmpty(comunicationType)) Then
-            criteria.Add(Restrictions.Eq("Id.ComunicationType", comunicationType))
+            criteria.Add(Restrictions.Eq("ComunicationType", comunicationType))
         End If
         criteria.SetProjection(Projections.RowCount())
         Return criteria.UniqueResult(Of Integer)()

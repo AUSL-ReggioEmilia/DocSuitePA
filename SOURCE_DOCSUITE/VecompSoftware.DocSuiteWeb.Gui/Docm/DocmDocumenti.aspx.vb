@@ -218,17 +218,16 @@ Public Class DocmDocumenti
                         Facade.DocumentLogFacade.Insert(Document.Year, Document.Number, "DD", documentDescription)
 
                         Dim location As Location = Document.Location
-                        Dim doc As New BiblosDocumentInfo(location.DocumentServer, location.DocmBiblosDSDB, docObject.idBiblos)
+                        Dim doc As New BiblosDocumentInfo(location.DocmBiblosDSDB, docObject.idBiblos)
 
-                        Dim parameters As String = String.Format("servername={0}&guid={1}&label={2}&prefixFileName={3}", doc.Server, doc.ChainId, "Documenti", _
-                                                                  String.Concat("PR_", Document.Year, "_", Document.Number.ToString("0000000")))
+                        Dim parameters As String = $"guid={doc.ChainId}&label=Documenti&prefixFileName=PR_{Document.Year}_{Document.Number:0000000}"
 
-                        Dim viewerUrl As String = "~/Viewers/BiblosViewer.aspx?" & CommonShared.AppendSecurityCheck(parameters)
+                        Dim viewerUrl As String = $"~/Viewers/BiblosViewer.aspx?{CommonShared.AppendSecurityCheck(parameters)}"
                         Response.Redirect(viewerUrl)
                     Case "LP"
                         Dim a As String() = Split(docObject.Link, "|")
-                        Dim s As String = "Year=" & a(0) & "&Number=" & a(1)
-                        Response.Redirect("../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(s))
+                        Dim currentProtocol As Protocol = Facade.ProtocolFacade.GetById(Short.Parse(a(0)), Integer.Parse(a(1)))
+                        Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={currentProtocol.Id}&Type=Prot")}")
                     Case "LF"
                         Dim a As String() = Split(docObject.Link, "|")
                         Dim s As String = "Year=" & a(0) & "&idSubCategory=" & a(1) & "&Incremental=" & a(2)
@@ -236,7 +235,7 @@ Public Class DocmDocumenti
                     Case "LR"
                         Dim a As String() = Split(docObject.Link, "|")
                         Dim s As String = "Type=Resl&idResolution=" & a(0)
-                        Response.Redirect(String.Format("../Resl/{0}?{1}", ReslBasePage.GetViewPageName(a(0)), CommonShared.AppendSecurityCheck(s)))
+                        Response.Redirect($"../Resl/{ReslBasePage.GetViewPageName(a(0))}?{CommonShared.AppendSecurityCheck(s)}")
 
                 End Select
 
@@ -366,7 +365,7 @@ Public Class DocmDocumenti
             Page.ClientScript.RegisterStartupScript(Me.GetType(), "OpenDocmProtocollo", String.Format("OpenWindow('../Docm/DocmProtocollo.aspx','windowDocmProt','Titolo=Aggiungi Collegamento Protocollo&{0}');", s), True)
         End If
 
-        If DocSuiteContext.IsFullApplication AndAlso Add.Eq("ON") Then
+        If Add.Eq("ON") Then
 
             Dim s As String = CommonShared.AppendSecurityCheck(String.Format("Type=Docm&Year={0}&Number={1}&Incremental={2}&Action=Insert&Refresh={3}", CurrentDocumentYear(), CurrentDocumentNumber, Incremental, btnRefresh.ClientID))
             AddFile.OnClientClick = String.Format("return OpenWindowFullScreen('../Docm/DocmFile.aspx','windowDocmFile','Titolo=Aggiungi File&{0}&ManagerID={1}')", s, alertManager.ClientID)

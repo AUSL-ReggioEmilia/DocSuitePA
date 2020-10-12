@@ -1,19 +1,18 @@
 ﻿Imports System.Collections.Generic
 Imports System.Linq
-Imports System.Web
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports Telerik.Web.UI
 Imports System.Text
+Imports System.Web
 Imports Newtonsoft.Json
+Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.PEC
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Parameters
-Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.PEC
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class PECBasePage
     Inherits CommonBasePage
@@ -37,13 +36,10 @@ Public Class PECBasePage
 
     Private Const SessionUnhandleCommand As String = "PecUnhandled_{0}_User_{1}"
     Private _currentJeepServiceHostFacade As JeepServiceHostFacade
-    Private _workflowOperation As Boolean?
-    Private _idWorkflowActivity As Guid?
 
     Protected Const SHOW_PROT_COMMAND_NAME As String = "ShowProt"
     Protected Const SHOW_UDS_COMMAND_NAME As String = "ShowUDS"
 
-    Private _currentUDSRepositoryFacade As UDSRepositoryFacade
     Private _currentUDSFacade As UDSFacade
 
     Private _currentUserHasProtocolContainersRights As Boolean?
@@ -52,24 +48,6 @@ Public Class PECBasePage
 #End Region
 
 #Region " Properties "
-
-    Protected ReadOnly Property CurrentIdWorkflowActivity As Guid
-        Get
-            If Not _idWorkflowActivity.HasValue Then
-                _idWorkflowActivity = GetKeyValue(Of Guid)("IdWorkflowActivity")
-            End If
-            Return _idWorkflowActivity.Value
-        End Get
-    End Property
-
-    Protected ReadOnly Property IsWorkflowOperation() As Boolean
-        Get
-            If Not _workflowOperation.HasValue Then
-                _workflowOperation = Request.QueryString.GetValueOrDefault("IsWorkflowOperation", False)
-            End If
-            Return _workflowOperation.Value
-        End Get
-    End Property
 
     Public Overrides ReadOnly Property Facade As FacadeFactory
         Get
@@ -192,15 +170,6 @@ Public Class PECBasePage
                 _currentJeepServiceHostFacade = New JeepServiceHostFacade()
             End If
             Return _currentJeepServiceHostFacade
-        End Get
-    End Property
-
-    Public ReadOnly Property CurrentUDSRepositoryFacade As UDSRepositoryFacade
-        Get
-            If _currentUDSRepositoryFacade Is Nothing Then
-                _currentUDSRepositoryFacade = New UDSRepositoryFacade(DocSuiteContext.Current.User.FullUserName)
-            End If
-            Return _currentUDSRepositoryFacade
         End Get
     End Property
 
@@ -355,7 +324,7 @@ Public Class PECBasePage
         Select Case DocumentUnitType
             Case DSWEnvironment.Protocol
                 primaryIconUrl = "../Comm/Images/DocSuite/Protocollo16.gif"
-            Case DSWEnvironment.UDS
+            Case Else
                 primaryIconUrl = ImagePath.SmallDocumentSeries
         End Select
 
@@ -367,8 +336,10 @@ Public Class PECBasePage
         Select Case DocumentUnitType
             Case DSWEnvironment.Protocol
                 commandName = SHOW_PROT_COMMAND_NAME
-            Case DSWEnvironment.UDS
-                commandName = SHOW_UDS_COMMAND_NAME
+            Case Else
+                If DocumentUnitType >= 100 Then
+                    commandName = SHOW_UDS_COMMAND_NAME
+                End If
         End Select
         Return commandName
     End Function
@@ -377,10 +348,11 @@ Public Class PECBasePage
         Dim commandArgument As String = String.Empty
         Select Case item.DocumentUnitType
             Case DSWEnvironment.Protocol
-                commandArgument = String.Format("{0}|{1}", item.Year, item.Number)
-            Case DSWEnvironment.UDS
-                Dim repository As UDSRepository = CurrentUDSRepositoryFacade.GetById(item.IdUDSRepository.Value)
-                commandArgument = String.Format("{0}|{1}", item.IdUDS, item.IdUDSRepository)
+                commandArgument = String.Format("{0}|{1}|{2}", item.IdDocumentUnit, item.Year, item.Number)
+            Case Else
+                If item.DocumentUnitType >= 100 Then
+                    commandArgument = String.Format("{0}|{1}", item.IdDocumentUnit, item.IdUDSRepository)
+                End If
         End Select
         Return commandArgument
     End Function
@@ -390,9 +362,11 @@ Public Class PECBasePage
         Select Case item.DocumentUnitType
             Case DSWEnvironment.Protocol
                 toolTip = String.Format("Protocollo {0}/{1:0000000}", item.Year, item.Number)
-            Case DSWEnvironment.UDS
-                Dim repository As UDSRepository = CurrentUDSRepositoryFacade.GetById(item.IdUDSRepository.Value)
-                toolTip = String.Format("{0} {1}/{2:0000000}", repository.Name, item.Year, item.Number)
+            Case Else
+                If item.DocumentUnitType >= 100 Then
+                    Dim repository As UDSRepository = CurrentUDSRepositoryFacade.GetById(item.IdUDSRepository.Value)
+                    toolTip = String.Format("{0} {1}/{2:0000000}", repository.Name, item.Year, item.Number)
+                End If
         End Select
         Return toolTip
     End Function

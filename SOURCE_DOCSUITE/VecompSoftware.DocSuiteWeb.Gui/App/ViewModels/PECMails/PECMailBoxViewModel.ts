@@ -39,7 +39,7 @@ class PECMailBoxViewModel {
   RegistrationDate?: Date;
   LastChangedUser: string;
   LastChangedDate?: Date;
-  HumanEnabled: boolean;
+  LoginError: boolean;
   Location: LocationViewModel;
   InvoiceType: string;
 }

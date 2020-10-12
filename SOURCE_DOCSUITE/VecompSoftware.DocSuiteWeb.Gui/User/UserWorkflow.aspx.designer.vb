@@ -86,6 +86,24 @@ Partial Public Class UserWorkflow
     Protected WithEvents txtWfSubject As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''rdpDateFilterFrom control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rdpDateFilterFrom As Global.Telerik.Web.UI.RadDatePicker
+
+    '''<summary>
+    '''rdpDateFilterTo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rdpDateFilterTo As Global.Telerik.Web.UI.RadDatePicker
+
+    '''<summary>
     '''tblFilterState control.
     '''</summary>
     '''<remarks>
@@ -104,13 +122,31 @@ Partial Public Class UserWorkflow
     Protected WithEvents rdbWfStatus As Global.System.Web.UI.WebControls.RadioButtonList
 
     '''<summary>
+    '''Table1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents Table1 As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''rdbViewer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rdbViewer As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
     '''btnSearch control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnSearch As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnSearch As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''btnClearFilters control.
@@ -119,7 +155,7 @@ Partial Public Class UserWorkflow
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnClearFilters As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnClearFilters As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''wfGrid control.

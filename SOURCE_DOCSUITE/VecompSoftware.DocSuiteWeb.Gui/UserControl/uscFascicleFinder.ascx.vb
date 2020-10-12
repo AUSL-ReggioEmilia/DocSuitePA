@@ -4,6 +4,7 @@ Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders
 
 Partial Public Class uscFascicleFinder
     Inherits DocSuite2008BaseControl
@@ -23,7 +24,6 @@ Partial Public Class uscFascicleFinder
         End Get
     End Property
 
-
     Public Property VisibleInteropSearch() As Boolean
         Get
             Return _hasInteropSearch
@@ -33,7 +33,6 @@ Partial Public Class uscFascicleFinder
             rowInterop.Visible = value
         End Set
     End Property
-
 
     Public Property VisibleCategorySearch() As Boolean
         Get
@@ -98,15 +97,31 @@ Partial Public Class uscFascicleFinder
         End Get
     End Property
 
+    Public Property DefaultCategoryId As Integer?
+
+    Public ReadOnly Property UscMetadataRepositorySelId As String
+        Get
+            Return uscMetadataRepositorySel.PageContentDiv.ClientID
+        End Get
+    End Property
+
+    Public Property CurrentMetadataValue As String
+    Public Property CurrentMetadataValues As ICollection(Of MetadataFinderModel)
 #End Region
 
 #Region "Events"
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
-        ' SS: Initialize year
         If Not Page.IsPostBack Then
-            txtYear.Text = DateTime.Now.Year.ToString()
+            txtYear.Text = Date.Now.Year.ToString()
             rowContainer.Visible = False
+
+            If DefaultCategoryId.HasValue Then
+                Dim currentCategory As Category = Facade.CategoryFacade.GetById(DefaultCategoryId.Value)
+                UscClassificatore1.DataSource = New List(Of Category) From {currentCategory}
+                UscClassificatore1.DataBind()
+            End If
+
             If ProtocolEnv.FascicleContainerEnabled Then
                 rowContainer.Visible = True
                 InitializeContainers()
@@ -118,6 +133,7 @@ Partial Public Class uscFascicleFinder
         rowCategorySearch.Attributes.Add("style", "display:none")
         uscSettori.RoleRestictions = RoleRestrictions.OnlyMine
         lblRP.Text = DocSuiteContext.Current.ProtocolEnv.FascicleRoleRPLabel
+        uscMetadataRepositorySel.SetiContactVisibilityButton = False
     End Sub
 
     Protected Sub OnCategoryAdded(ByVal sender As Object, ByVal e As EventArgs) Handles UscClassificatore1.CategoryAdded
@@ -176,6 +192,10 @@ Partial Public Class uscFascicleFinder
             finderModel.Year = Convert.ToInt16(txtYear.Text.Trim())
         End If
 
+        If Not String.IsNullOrEmpty(txtNumber.Text) Then
+            finderModel.Title = txtNumber.Text.Trim
+        End If
+
         'Data Apertura
         finderModel.StartDateFrom = txtStartDateFrom.SelectedDate
         finderModel.StartDateTo = txtStartDateTo.SelectedDate
@@ -232,12 +252,14 @@ Partial Public Class uscFascicleFinder
         'Metadati
         If VisibleMetadataSearch Then
             finderModel.IdMetadataRepository = uscMetadataRepositorySel.CurrentMetadataRepository
-            finderModel.MetadataValue = txtMetadataValue.Text
+            finderModel.MetadataValue = CurrentMetadataValue
+            finderModel.MetadataValues = CurrentMetadataValues
         End If
 
         finderModel.ApplySecurity = ProtocolEnv.IsSecurityEnabled OrElse ProtocolEnv.SearchOnlyAuthorizedFasciclesEnabled
         _finder.EnablePaging = False
         _finder.FascicleFinderModel = finderModel
+        _finder.FromPostMethod = True
     End Sub
 
 #End Region

@@ -215,6 +215,9 @@ define(["require", "exports", "App/Mappers/Dossiers/DossierFolderSummaryModelMap
                 error(exception);
             }
         };
+        DossierFolderLocalService.prototype.getAllParentsOfFascicle = function (idDossier, idFascicle, callback, error) {
+            throw new Error("Method not implemented.");
+        };
         DossierFolderLocalService.DOSSIERFOLDERS_SESSIONNAME = "dossierfoldersessionname";
         return DossierFolderLocalService;
     }());

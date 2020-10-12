@@ -5,14 +5,29 @@ Public Class CommonSelRoleRest
     Inherits CommBasePage
 
 #Region " Properties "
-    Protected ReadOnly Property MultiTenantEnabled As Boolean
+    Protected ReadOnly Property OnlyMyRoles As Boolean
         Get
-            Return DocSuiteContext.Current.ProtocolEnv.MultiTenantEnabled
+            Return Request.QueryString.GetValueOrDefault(Of Boolean)("OnlyMyRoles", False)
         End Get
     End Property
     Protected ReadOnly Property MultipleRolesEnabled As Boolean
         Get
             Return Request.QueryString.GetValueOrDefault(Of Boolean)("MultipleRoles", True)
+        End Get
+    End Property
+    Protected ReadOnly Property EntityType As String
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of String)("EntityType", String.Empty)
+        End Get
+    End Property
+    Protected ReadOnly Property EntityId As String
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of String)("EntityId", String.Empty)
+        End Get
+    End Property
+    Protected ReadOnly Property LoadAllRoles As Boolean
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of Boolean)("LoadAllRoles", False)
         End Get
     End Property
 #End Region

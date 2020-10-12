@@ -67,10 +67,10 @@ Public Class MessageEmailFacade
         If msg.EmlDocumentId.HasValue AndAlso msg.Message.Location IsNot Nothing Then
             Dim mainMessage As New FolderInfo() With {.Name = "Messaggio"}
             Dim docInfo As DocumentInfo
-            Dim mainDocument As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentInfo(msg.Message.Location.DocumentServer, msg.EmlDocumentId.Value, Nothing, True, True).FirstOrDefault()
+            Dim mainDocument As BiblosDocumentInfo = BiblosDocumentInfo.GetDocumentInfo(msg.EmlDocumentId.Value, Nothing, True, True).FirstOrDefault()
             docInfo = mainDocument
             If mainDocument.IsRemoved Then
-                docInfo = New BiblosDeletedDocumentInfo(mainDocument.Server, mainDocument.DocumentId)
+                docInfo = New BiblosDeletedDocumentInfo(mainDocument.DocumentId)
             End If
             mainMessage.AddChild(docInfo)
             mainFolder.AddChild(mainMessage)
@@ -112,12 +112,10 @@ Public Class MessageEmailFacade
                 attachments = attachments.Select(Function(d) Me.GetBiblosPdfOrDefault(d)).ToList()
             End If
 
-            Dim index As Integer = 0
             For Each attachment As DocumentInfo In attachments
-                savedDocument = attachment.ArchiveInBiblos(location.DocumentServer, location.ProtBiblosDSDB)
-                document = New MessageAttachment(savedDocument.Server, savedDocument.ArchiveName, savedDocument.BiblosChainId, index, Nothing)
+                savedDocument = attachment.ArchiveInBiblos(location.ProtBiblosDSDB)
+                document = New MessageAttachment(savedDocument.ArchiveName, savedDocument.BiblosChainId, 0, Nothing)
                 listAttachments.Add(document)
-                index += 1
             Next
         End If
 

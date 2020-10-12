@@ -7,12 +7,14 @@ class TbltSecurityUsers {
     uscNotificationId: string;
     ajaxManagerId: string;
     actionsToolbarId: string;
+    toolbarSpecialActionId: string;
 
     private _wndManager: Telerik.Web.UI.RadWindowManager;
     private _rtvUsers: Telerik.Web.UI.RadTreeView;
     private _rtvGroups: Telerik.Web.UI.RadTreeView;
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
     private _actionToolbar: Telerik.Web.UI.RadToolBar;
+    private _toolbarSpecialAction: Telerik.Web.UI.RadToolBar;
 
     private static ADD_COMMANDNAME = "AddUser";
     private static DELETEUSER_COMMANDNAME = "DeleteUser";
@@ -21,10 +23,16 @@ class TbltSecurityUsers {
     private static GUIDEDGROUPSADD_COMMANDNAME = "GuidedGroupsAdd";
     private static DELETE_COMMANDNAME = "Delete";
 
-    private get toolbarActions(): Array<[string, () => void]> {
+    private toolbarActions(): Array<[string, () => void]> {
         let items: Array<[string, () => void]> = [
             [TbltSecurityUsers.ADD_COMMANDNAME, () => this.btnAddUser_OnClick()],
-            [TbltSecurityUsers.DELETEUSER_COMMANDNAME, () => this.btnDeleteUser_OnClick()], 
+            [TbltSecurityUsers.DELETEUSER_COMMANDNAME, () => this.btnDeleteUser_OnClick()]
+        ];
+        return items;
+    }
+
+    private specialToolbarActions(): Array<[string, () => void]> {
+        let items: Array<[string, () => void]> = [
             [TbltSecurityUsers.COPYFROMUSER_COMMANDNAME, () => this.btnCopyFromUser_OnClick()],
             [TbltSecurityUsers.GROUPSADD_COMMANDNAME, () => this.btnGroupsAdd_OnClick()],
             [TbltSecurityUsers.GUIDEDGROUPSADD_COMMANDNAME, () => this.btnGuidedGroupsAdd_OnClick()],
@@ -65,11 +73,19 @@ class TbltSecurityUsers {
    */
 
     initializeDetailsCallback = (nodeType: string) => {
+        this.initializeSpecialToolbarAction();
         if (nodeType && nodeType == 'Root') {
             this._updateActionButtonsVisibility(false);
             return;
         }
         this._updateActionButtonsVisibility(true);
+    }
+
+    initializeSpecialToolbarAction() {
+        this._toolbarSpecialAction = $find(this.toolbarSpecialActionId) as Telerik.Web.UI.RadToolBar;
+        if (this._toolbarSpecialAction) {
+            this._toolbarSpecialAction.add_buttonClicked(this.specialToolbarActions_ButtonClicked);
+        }
     }
 
     /**
@@ -242,7 +258,7 @@ class TbltSecurityUsers {
 
     private _updateActionButtonsVisibility(isVisible: boolean): void {
         let toolbarBtnDisplayMode: string = isVisible ? "inline-block" : "none";
-        this._actionToolbar.get_items().forEach((item: Telerik.Web.UI.RadToolBarButton) => {
+        this._toolbarSpecialAction.get_items().forEach((item: Telerik.Web.UI.RadToolBarButton) => {
             let btnCommandName: string = item.get_commandName();
 
             if (btnCommandName === TbltSecurityUsers.ADD_COMMANDNAME || btnCommandName === TbltSecurityUsers.DELETEUSER_COMMANDNAME) {
@@ -255,10 +271,17 @@ class TbltSecurityUsers {
 
     protected actionToolbar_ButtonClicked = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
         let currentActionButtonItem: Telerik.Web.UI.RadToolBarButton = args.get_item() as Telerik.Web.UI.RadToolBarButton;
-        let currentAction: () => void = this.toolbarActions.filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
+        let currentAction: () => void = this.toolbarActions().filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
             .map((item: [string, () => void]) => item[1])[0];
         currentAction();
     }
+
+    protected specialToolbarActions_ButtonClicked = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
+        let currentActionButtonItem: Telerik.Web.UI.RadToolBarButton = args.get_item() as Telerik.Web.UI.RadToolBarButton;
+        let currentAction: () => void = this.specialToolbarActions().filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
+            .map((item: [string, () => void]) => item[1])[0];
+        currentAction();
+    } 
 
     protected showWarningMessage(uscNotificationId: string, customMessage: string) {
         let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(uscNotificationId)).data();

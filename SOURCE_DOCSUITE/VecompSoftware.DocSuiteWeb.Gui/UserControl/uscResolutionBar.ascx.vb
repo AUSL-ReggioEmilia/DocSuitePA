@@ -177,11 +177,6 @@ Partial Public Class uscResolutionBar
             Return btnDuplica
         End Get
     End Property
-    Public ReadOnly Property ButtonRequestStatement() As Button
-        Get
-            Return btnStatement
-        End Get
-    End Property
 
     Public ReadOnly Property PanelExtraButtons() As Panel
         Get
@@ -195,7 +190,6 @@ Partial Public Class uscResolutionBar
         End Get
     End Property
 
-
     Public ReadOnly Property ButtonAddToPratica() As Button
         Get
             Return btnAddToPratica
@@ -207,9 +201,6 @@ Partial Public Class uscResolutionBar
             Return btnToSeries
         End Get
     End Property
-
-
-
 
     Public ReadOnly Property ButtonChange() As Button
         Get
@@ -253,7 +244,6 @@ Partial Public Class uscResolutionBar
         End Get
     End Property
 
-
     Public ReadOnly Property PanelPreviewButtons() As Panel
         Get
             Return pnlToolbarPreView
@@ -278,7 +268,6 @@ Partial Public Class uscResolutionBar
         End Get
     End Property
 
-
     Public ReadOnly Property CurrentODataFacade As ODataFacade
         Get
             If _currentODataFacade Is Nothing Then
@@ -288,6 +277,7 @@ Partial Public Class uscResolutionBar
             Return _currentODataFacade
         End Get
     End Property
+
     Public ReadOnly Property ButtonConfirmView() As Button
         Get
             Return btnConfirmView

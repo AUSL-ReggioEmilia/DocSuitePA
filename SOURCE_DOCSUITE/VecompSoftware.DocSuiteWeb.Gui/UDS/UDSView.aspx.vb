@@ -1,10 +1,10 @@
 ﻿Imports System.Collections.Generic
 Imports System.Text
 Imports System.Web
+Imports System.Linq
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.DocSuiteWeb.Facade
@@ -16,6 +16,7 @@ Imports VecompSoftware.Helpers.Workflow
 Imports VecompSoftware.Services.Logging
 Imports WebApientity = VecompSoftware.DocSuiteWeb.Entity.UDS
 Imports WebApiFacade = VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
+Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 
 Public Class UDSView
     Inherits UDSBasePage
@@ -33,9 +34,9 @@ Public Class UDSView
     Public Const NOTIFICATION_SUCCESS_ICON As String = "ok"
     Public Const CANCEL_COMMAND_ARGUMENT As String = "Attenzione! Confermi la procedura di annullamento dell'archivio corrente?"
     Private _udsLogFacade As WebApiFacade.UDSLogFacade
-    Private _udsUserFinder As UDSUserFinder
-    Private _isCurrentUserAuthorized As Boolean?
-    Private _authorizedUsers As ICollection(Of WebApientity.UDSUser)
+    Private ReadOnly _udsUserFinder As UDSUserFinder
+    Private ReadOnly _isCurrentUserAuthorized As Boolean?
+    Private ReadOnly _authorizedUsers As ICollection(Of WebApientity.UDSUser)
 #End Region
 
 #Region "Properties"
@@ -59,8 +60,6 @@ Public Class UDSView
         End Get
     End Property
 
-    Public Property CurrentProtocol As Protocol
-
     Public ReadOnly Property IsWorkflowEnabled As Boolean
         Get
             Return CurrentRepositoryRights.IsWorkflowEnabled AndAlso CurrentRepositoryRights.IsDocumentsViewable
@@ -76,7 +75,7 @@ Public Class UDSView
     Public ReadOnly Property UDSLogFacade As WebApiFacade.UDSLogFacade
         Get
             If _udsLogFacade Is Nothing Then
-                _udsLogFacade = New WebApiFacade.UDSLogFacade(DocSuiteContext.Current.Tenants)
+                _udsLogFacade = New WebApiFacade.UDSLogFacade(DocSuiteContext.Current.Tenants.ToList(), CurrentTenant)
             End If
             Return _udsLogFacade
         End Get
@@ -98,13 +97,15 @@ Public Class UDSView
         uscUDS.UDSSubject = UDSSource.Subject
         uscUDS.UDSAuthorizations = UDSSource.Authorizations
         uscUDS.UDSMessages = UDSSource.Messages
-        uscUDS.UDSPecMails = UDSSource.PecMails
         uscUDS.UDSId = UDSSource.Id
         uscUDS.RepositoryBind()
     End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         InitializeAjax()
+        uscUDS.HasEditableRight = CurrentRepositoryRights.IsEditable
+        uscUDS.HasActiveWorkflowActivity = CurrentRepositoryRights.CurrentUserWorkflowActivity.HasValue
+
         AddHandler MasterDocSuite.OnWorkflowConfirmed, AddressOf WorkflowConfirmed
         If Not IsPostBack Then
             Initialize()
@@ -119,25 +120,28 @@ Public Class UDSView
     End Sub
 
     Protected Sub WorkflowConfirmed(sender As Object, e As EventArgs)
-        Dim wfActivity As WorkflowActivity = CurrentWorkflowActivityFacade.GetById(CurrentIdWorkflowActivity)
-        If wfActivity IsNot Nothing AndAlso (wfActivity.Status = WorkflowStatus.Active OrElse wfActivity.Status = WorkflowStatus.Progress) Then
-            Dim model As WorkflowNotify = New WorkflowNotify(wfActivity.Id) With {
-            .WorkflowName = wfActivity.WorkflowInstance.WorkflowRepository.Name
+        If CurrentWorkflowActivity IsNot Nothing AndAlso (CurrentWorkflowActivity.Status = WorkflowStatus.Todo OrElse CurrentWorkflowActivity.Status = WorkflowStatus.Progress) Then
+            Dim workflowNotify As WorkflowNotify = New WorkflowNotify(CurrentWorkflowActivity.UniqueId) With {
+                .WorkflowName = CurrentWorkflowActivity?.WorkflowInstance?.WorkflowRepository?.Name
             }
-            model.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_UDS_NUMBER, New WorkflowArgument() With {
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_UDS_NUMBER, New WorkflowArgument() With {
                                       .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_NUMBER,
                                       .PropertyType = ArgumentType.PropertyInt,
                                       .ValueInt = UDSSource.Number})
-            model.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_UDS_YEAR, New WorkflowArgument() With {
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_UDS_YEAR, New WorkflowArgument() With {
                                       .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_YEAR,
                                       .PropertyType = ArgumentType.PropertyInt,
                                       .ValueInt = UDSSource.Year})
-            model.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_UDS_ID, New WorkflowArgument() With {
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_FIELD_UDS_ID, New WorkflowArgument() With {
                                       .Name = WorkflowPropertyHelper.DSW_FIELD_UDS_ID,
                                       .PropertyType = ArgumentType.PropertyGuid,
                                       .ValueGuid = CurrentIdUDS})
+            workflowNotify.OutputArguments.Add(WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE, New WorkflowArgument() With {
+                                      .Name = WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE,
+                                      .PropertyType = ArgumentType.PropertyBoolean,
+                                      .ValueBoolean = True})
             Dim webApiHelper As WebAPIHelper = New WebAPIHelper()
-            If Not webApiHelper.SendRequest(DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration, model) Then
+            If Not WebAPIImpersonatorFacade.ImpersonateSendRequest(webApiHelper, workflowNotify, DocSuiteContext.Current.CurrentTenant.WebApiClientConfig, DocSuiteContext.Current.CurrentTenant.OriginalConfiguration) Then
                 FileLogger.Warn(LoggerName, "UDSWorkflowConfirmed is not correctly evaluated from WebAPI. See specific error in WebAPI logger")
             End If
         End If
@@ -188,8 +192,8 @@ Public Class UDSView
     End Sub
 
     Private Sub BtnFascicle_Click(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnFascicle.Click
-        Dim params As String = CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&UDSRepositoryName={1}&CategoryId={2}&UDType={3}&Type=Fasc", UDSSource.Id, UDSSource.UDSRepository.Name,
-                                             UDSSource.Category.EntityShortId, Convert.ToInt32(DSWEnvironment.UDS)))
+        Dim params As String = CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&UDSRepositoryName={1}&CategoryId={2}&UDType={3}&CategoryFullIncrementalPath={4}&FascicleObject={5}&FolderSelectionEnabled=True&Type=Fasc",
+            UDSSource.Id, UDSSource.UDSRepository.Name, UDSSource.Category.EntityShortId, Convert.ToInt32(DSWEnvironment.UDS), UDSSource.Category.FullIncrementalPath, UDSSource.Subject))
         If CurrentIdUDSRepository.HasValue Then
             params = String.Concat(params, "&IdUDSRepository=", CurrentIdUDSRepository.Value)
         End If
@@ -242,8 +246,9 @@ Public Class UDSView
         uscUDS.UDSId = CurrentIdUDS
         uscUDS.UDSYear = UDSSource.Year
         uscUDS.UDSNumber = UDSSource.Number
-        uscUDS.InitializeElementiCollegati()
+        uscUDS.InitializeUscDocumentUnitReferences()
         uscUDS.InitializeMulticlassification()
+        uscUDS.VisibleParer = ProtocolEnv.ParerEnabled AndAlso UDSSource.UDSModel.Model.ConservationEnabled
 
         btnEdit.PostBackUrl = String.Format(EDIT_PAGE_URL, CurrentIdUDS, CurrentIdUDSRepository, String.Empty)
 
@@ -275,13 +280,10 @@ Public Class UDSView
         btnCancel.Visible = CurrentRepositoryRights.IsDeletable
         btnEdit.Visible = CurrentRepositoryRights.IsEditable
         btnDuplica.Visible = CurrentRepositoryRights.IsClonable
-        btnLink.Visible = UDSSource.UDSModel.Model.LinkButtonEnabled AndAlso _currentRepositoryRigths.IsEditable
-
-        'Per il momento negli archivi il pulsante Richiesta attestazione non è visibile 
-        'btnRequestStatement.Visible = ProtocolEnv.DematerialisationEnabled AndAlso udsIsActive AndAlso ((CurrentRepositoryRigths.IsInsertable AndAlso CurrentRepositoryRigths.IsEditable) OrElse CurrentRepositoryRigths.IsAuthorizable)
+        btnLink.Visible = UDSSource.UDSModel.Model.LinkButtonEnabled AndAlso CurrentRepositoryRights.IsEditable
 
         btnLog.Visible = False
-        If ProtocolEnv.IsLogEnabled AndAlso CurrentRepositoryRights.IsActive Then
+        If CurrentRepositoryRights.IsActive Then
             btnLog.Visible = CurrentRepositoryRights.EnableViewLog
         End If
 
@@ -319,8 +321,7 @@ Public Class UDSView
         MasterDocSuite.WorkflowWizardControl.WizardSteps.Add(sendCompleteStep)
 
         MasterDocSuite.CompleteWorkflowActivityButton.Enabled = False
-        Dim wfActivity As WorkflowActivity = CurrentWorkflowActivityFacade.GetById(CurrentIdWorkflowActivity)
-        If wfActivity IsNot Nothing AndAlso (wfActivity.Status = WorkflowStatus.Active OrElse wfActivity.Status = WorkflowStatus.Progress) Then
+        If CurrentWorkflowActivity IsNot Nothing AndAlso (CurrentWorkflowActivity.Status = WorkflowStatus.Todo OrElse CurrentWorkflowActivity.Status = WorkflowStatus.Progress) Then
             MasterDocSuite.CompleteWorkflowActivityButton.Enabled = True
         End If
     End Sub

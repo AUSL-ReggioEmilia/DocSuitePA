@@ -2,7 +2,7 @@
 import CategoryModelMapper = require('App/Mappers/Commons/CategoryModelMapper');
 import DossierModelMapper = require('App/Mappers/Dossiers/DossierModelMapper');
 import BaseMapper = require('App/Mappers/BaseMapper');
-import RoleModelMapper = require('../Commons/RoleModelMapper');
+import RoleModelMapper = require('App/Mappers/Commons/RoleModelMapper');
 
 class ProcessModelMapper extends BaseMapper<ProcessModel>{
     constructor() {
@@ -19,7 +19,6 @@ class ProcessModelMapper extends BaseMapper<ProcessModel>{
         toMap.Category = source.Category ? new CategoryModelMapper().Map(source.Category) : null;
         toMap.Dossier = source.Dossier ? new DossierModelMapper().Map(source.Dossier) : null;
         toMap.Name = source.Name;
-        toMap.FascicleType = source.FascicleType;
         toMap.StartDate = source.StartDate;
         toMap.EndDate = source.EndDate;
         toMap.Note = source.Note;

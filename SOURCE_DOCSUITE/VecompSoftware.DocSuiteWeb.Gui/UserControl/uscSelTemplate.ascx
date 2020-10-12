@@ -35,7 +35,7 @@
                 </nodes>
             </telerik:RadTreeView>
             <asp:RequiredFieldValidator ID="rfvTemplate" runat="server" ControlToValidate="txtTemplate"
-                ErrorMessage="Documento Obbligatorio" Display="Dynamic"></asp:RequiredFieldValidator>
+                ErrorMessage="Documento obbligatorio" Display="Dynamic"></asp:RequiredFieldValidator>
         </td>
         <td align="right" style="width: 120px">
             <asp:Panel runat="server" ID="panelButtons" HorizontalAlign="Right">

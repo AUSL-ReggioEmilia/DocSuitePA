@@ -119,10 +119,10 @@ Public Class ReslRitiraAtti
         Dim resolution As Resolution = Facade.ResolutionFacade.GetById(item.Id)
 
         ' Compongo il link del documento  da firmare
-        Dim doc As New BiblosDocumentInfo(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, item.IdFrontalinoRitiro.Value)
+        Dim doc As New BiblosDocumentInfo(resolution.Location.ReslBiblosDSDB, item.IdFrontalinoRitiro.Value)
 
-        Dim parameters As String = String.Format("servername={0}&guid={1}&label={2}", doc.Server, doc.ChainId, "Ritira Atti")
-        Return "~/Viewers/BiblosViewer.aspx?" & CommonShared.AppendSecurityCheck(parameters)
+        Dim parameters As String = $"guid={doc.ChainId}&label=Ritira Atti"
+        Return $"~/Viewers/BiblosViewer.aspx?{CommonShared.AppendSecurityCheck(parameters)}"
     End Function
 
 #End Region
@@ -246,9 +246,9 @@ Public Class ReslRitiraAtti
                 ' Estraggo il nome del file su biblos
 
                 Dim doc As New FileDocumentInfo(file)
-                doc.Name = Service.GetDocumentName(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, resolution.File.IdFrontalinoRitiro, 0)
+                doc.Name = Service.GetDocumentName(resolution.Location.ReslBiblosDSDB, resolution.File.IdFrontalinoRitiro.Value, 0)
                 doc.Signature = signature
-                doc.ArchiveInBiblos(resolution.Location.DocumentServer, resolution.Location.ReslBiblosDSDB, resolution.File.IdResolutionFile.GetValueOrDefault(0))
+                doc.ArchiveInBiblos(resolution.Location.ReslBiblosDSDB, resolution.File.IdResolutionFile.GetValueOrDefault(0))
 
                 resolution.File.IdFrontalinoRitiro = Nothing
 

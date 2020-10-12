@@ -194,24 +194,6 @@ Partial Public Class TbltContenitori
     Protected WithEvents lblContainerNote As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''pnlSecureDocument control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlSecureDocument As Global.System.Web.UI.WebControls.Panel
-
-    '''<summary>
-    '''lblSecureDocumentEnabled control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblSecureDocumentEnabled As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''pnlPrivacy control.
     '''</summary>
     '''<remarks>

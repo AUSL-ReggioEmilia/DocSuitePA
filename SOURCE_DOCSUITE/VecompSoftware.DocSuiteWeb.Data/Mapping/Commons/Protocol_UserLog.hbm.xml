@@ -24,7 +24,7 @@
     <property name="AdaptiveSearchStatistics" column="AdaptiveSearchStatistics"/>
     <property name="AdaptiveSearchEvaluated" column="AdaptiveSearchEvaluated"/>
     <property name="PrivacyLevel" column="PrivacyLevel"/>
-    <property name="CurrentTenantId" column="CurrentTenantId"/>
+    <property name="CurrentTenantId" column="CurrentTenantId" not-null="true" />
 
     <property name="UniqueId">
       <column name="IdUserLog" not-null="true" unique="true" />

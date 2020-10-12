@@ -1,10 +1,14 @@
 <%@ Control Language="vb" AutoEventWireup="false" CodeBehind="uscStartWorkflow.ascx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.uscStartWorkflow" %>
 
+<%@ Register Src="~/UserControl/uscRoleRest.ascx" TagName="uscRoleRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscSettori.ascx" TagName="settori" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscOggetto.ascx" TagName="oggetto" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="uscContattiSel" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscDomainUserSelRest.ascx" TagName="uscDomainUserSelRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscUploadDocumentRest.ascx" TagName="uscUploadDocumentRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscTenantsSelRest.ascx" TagName="uscTenantsSelRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscWorkflowFolderSelRest.ascx" TagName="uscWorkflowFolderSelRest" TagPrefix="usc" %>
 
 <telerik:RadScriptBlock runat="server" EnableViewState="false">
     <script type="text/javascript">
@@ -25,15 +29,14 @@
                 uscStartWorkflow.ctrlTxtWfId = "<%=ctrlTxtWf.ClientID%>";
                 uscStartWorkflow.rblPriorityId = "<%=rblPriority.UniqueID%>";
                 uscStartWorkflow.dueDateId = "<%= dueDate.ClientID %>"
+                uscStartWorkflow.rdlCCDocumentId = "<%=rdlCCDocument.UniqueID%>";
+                uscStartWorkflow.copiaConformeRowId = "<%=copiaConformeRow.ClientID%>";
 
-                uscStartWorkflow.uscProposerRoleId = "<%= uscProposerRole.TableContentControl.ClientID%>";
-                uscStartWorkflow.uscProposerContactId = "<%=uscProposerContact.TableContent.ClientID%>";
                 uscStartWorkflow.proposerRoleRowId = "<%=proposerRoleRow.ClientID%>";
                 uscStartWorkflow.proposerContactRowId = "<%=proposerContactRow.ClientID%>";
                 uscStartWorkflow.proposerContactRowLabelId = "<%=proposerContactRowLabel.ClientID%>";
+                uscStartWorkflow.tenantRowId = "<%=tenantRow.ClientID%>";
 
-                uscStartWorkflow.uscRecipientRoleId = "<%= uscRecipientRole.TableContentControl.ClientID%>";
-                uscStartWorkflow.uscRecipientContactId = "<%=uscRecipientContact.TableContent.ClientID%>";
                 uscStartWorkflow.recipientRoleRowId = "<%= recipientRoleRow.ClientID%>";
                 uscStartWorkflow.recipientContactRowId = "<%=recipientContactRow.ClientID%>";
                 uscStartWorkflow.recipientContactRowLabelId = "<%=recipientContactRowLabel.ClientID%>";
@@ -52,12 +55,38 @@
 
                 uscStartWorkflow.docSuiteVersion = "<%=DSWVersion%>";
                 uscStartWorkflow.showOnlyNoInstanceWorkflows = <%=ShowOnlyNoInstanceWorkflows.ToString().ToLower()%>;
+                uscStartWorkflow.showOnlyHasIsFascicleClosedRequired = <%=ShowOnlyHasIsFascicleClosedRequired.ToString().ToLower()%>;
 
+                uscStartWorkflow.tenantAOOId = "<%= BasePage.CurrentTenant.TenantAOO.UniqueId %>";
+                uscStartWorkflow.uscTenantsSelRestId = "<%=uscTenantsSelRest.PageContent.ClientID%>";
+
+                uscStartWorkflow.uscWorkflowFolderSelRestId = "<%=uscWorkflowFolderSelRest.TableContentControl.ClientID%>";
+                uscStartWorkflow.lrUscWorkflowFolderSelRestId = "<%=lrUscWorkflowFolderSelRest.ClientID%>";
+                uscStartWorkflow.lblDossierTitleId = "<%=lblDossierTitle.ClientID%>";
+
+                uscStartWorkflow.uscRoleProposerRestId = "<%=uscRoleProposerRest.TableContentControl.ClientID%>";
+                uscStartWorkflow.uscRoleRecipientRestId = "<%=uscRoleRecipientRest.TableContentControl.ClientID%>";
+                uscStartWorkflow.uscRecipientContactRestId = "<%=uscRecipientContactRest.PageContent.ClientID%>";
+                uscStartWorkflow.uscProposerContactRestId = "<%=uscProposerContactRest.PageContent.ClientID%>";
                 uscStartWorkflow.initialize();
             });
         });
 
     </script>
+    <style>
+        .RadTreeView_Office2007 .rtPlus, .RadTreeView_Office2007 .rtMinus,
+        .RadTreeView .rtLines .rtLI, .RadTreeView .rtLines .rtLI div {
+            background: none !important;
+        }
+
+        .RadTreeView .rtPlus, .RadTreeView .rtMinus {
+            left: 20px;
+        }
+
+        div.RadTreeView_Office2007 .rtSelected .rtIn {
+            color: black !important;
+        }
+    </style>
 </telerik:RadScriptBlock>
 
 
@@ -102,12 +131,21 @@
                         </telerik:RadComboBox>
                     </telerik:LayoutColumn>
                 </Columns>
-            </telerik:LayoutRow>          
+            </telerik:LayoutRow>
             <telerik:LayoutRow Style="margin-bottom: 2px;" CssClass="ts-initialize" ID="proposerRoleRow">
                 <Columns>
                     <telerik:LayoutColumn HtmlTag="None" Span="12" CssClass="content-wrapper" Style="margin-bottom: 10px;">
                         <asp:Panel runat="server" CssClass="content-wrapper">
-                            <usc:settori Caption="Settore richiedente" ID="uscProposerRole" RoleRestictions="OnlyMine" MultipleRoles="False" MultiSelect="False" runat="server" Required="False" UseSessionStorage="true" />
+                            <usc:uscRoleRest runat="server" ID="uscRoleProposerRest" Expanded="true" Caption="Settore richiedente" Required="false" OnlyMyRoles="true" MultipleRoles="false" UseSessionStorage="true" />
+                        </asp:Panel>
+                    </telerik:LayoutColumn>
+                </Columns>
+            </telerik:LayoutRow>
+            <telerik:LayoutRow Style="margin-bottom: 2px; margin-left: 0.3em;" CssClass="ts-initialize" ID="tenantRow">
+                <Columns>
+                    <telerik:LayoutColumn HtmlTag="None" CssClass="content-wrapper" Span="12" Style="margin-bottom: 10px;">
+                        <asp:Panel runat="server">
+                            <usc:uscTenantsSelRest runat="server" ID="uscTenantsSelRest" MultiselectionEnabled="false" />
                         </asp:Panel>
                     </telerik:LayoutColumn>
                 </Columns>
@@ -121,17 +159,14 @@
             </telerik:LayoutRow>
             <telerik:LayoutRow Style="margin-bottom: 2px;" HtmlTag="Div" CssClass="ts-initialize" ID="proposerContactRow" runat="server">
                 <Content>
-                    <usc:uscContattiSel ID="uscProposerContact" ButtonDeleteVisible="true" ButtonImportVisible="false" ButtonIPAVisible="false"
-                        ButtonManualVisible="false" ButtonPropertiesVisible="false" ButtonRoleVisible="false" ButtonSelectOChartVisible="false"
-                        ButtonSelectVisible="false" EnableCheck="True" EnableViewState="true" HeaderVisible="false" IsRequired="false"
-                        TreeViewCaption="Utente proponente" UseAD="true" runat="server" UseSessionStorage="true" />
+                    <usc:uscDomainUserSelRest ID="uscProposerContactRest" runat="server" TreeViewCaption="Utente proponente" />
                 </Content>
             </telerik:LayoutRow>
             <telerik:LayoutRow Style="margin-bottom: 2px;" CssClass="ts-initialize" ID="recipientRoleRow">
                 <Columns>
                     <telerik:LayoutColumn HtmlTag="None" Span="12" CssClass="content-wrapper" Style="margin-bottom: 10px;">
                         <asp:Panel runat="server" CssClass="content-wrapper">
-                            <usc:settori Caption="Settore destinatario" ID="uscRecipientRole" MultipleRoles="False" MultiSelect="False" runat="server" Required="False" UseSessionStorage="true" />
+                            <usc:uscRoleRest runat="server" ID="uscRoleRecipientRest" Caption="Settore destinatario" Required="false" MultipleRoles="false" UseSessionStorage="true" />
                         </asp:Panel>
                     </telerik:LayoutColumn>
                 </Columns>
@@ -143,12 +178,9 @@
                     </telerik:LayoutColumn>
                 </Columns>
             </telerik:LayoutRow>
-            <telerik:LayoutRow ID="recipientContactRow" Style="margin-bottom: 2px;" HtmlTag="Div" CssClass="ts-initialize"  runat="server">
+            <telerik:LayoutRow ID="recipientContactRow" Style="margin-bottom: 2px;" HtmlTag="Div" CssClass="ts-initialize" runat="server">
                 <Content>
-                    <usc:uscContattiSel ID="uscRecipientContact" ButtonDeleteVisible="true" ButtonImportVisible="false" ButtonIPAVisible="false"
-                        ButtonManualVisible="false" ButtonPropertiesVisible="false" ButtonRoleVisible="false" ButtonSelectOChartVisible="false"
-                        ButtonSelectVisible="false" EnableCheck="True" EnableViewState="true" HeaderVisible="false" IsRequired="false"
-                        TreeViewCaption="Utente destinatario" UseAD="true" runat="server" UseSessionStorage="true" />
+                    <usc:uscDomainUserSelRest ID="uscRecipientContactRest" runat="server" TreeViewCaption="Utente destinatario" />
                 </Content>
             </telerik:LayoutRow>
             <telerik:LayoutRow CssClass="dsw-panel-title ts-initialize" Style="margin-bottom: 2px;" ID="lblUploadDocumentId">
@@ -160,27 +192,27 @@
             </telerik:LayoutRow>
             <telerik:LayoutRow Style="margin-bottom: 2px;" HtmlTag="Div" CssClass="ts-initialize" ID="lrUploadDocument" runat="server">
                 <Content>
-                      <usc:uscUploadDocumentRest MultipleUploadEnabled="false" ID="uscUploadDocumentRest" runat="server" UseSessionStorage="true" />
+                    <usc:uscUploadDocumentRest MultipleUploadEnabled="false" ID="uscUploadDocumentRest" runat="server" UseSessionStorage="true" />
                 </Content>
             </telerik:LayoutRow>
-            <telerik:LayoutRow ID="lblChainTypeRow" CssClass="dsw-panel-title ts-initialize" Style="margin-bottom: 2px;display:none">
+            <telerik:LayoutRow ID="lblChainTypeRow" CssClass="dsw-panel-title ts-initialize" Style="margin-bottom: 2px; display: none">
                 <Columns>
                     <telerik:LayoutColumn Span="12" Style="margin-bottom: 10px;">
                         <asp:Label ID="lblChainType" runat="server" Font-Bold="True">Elenco degli inserti selezionati, specificare come gestire il tipo documento</asp:Label>
                     </telerik:LayoutColumn>
                 </Columns>
             </telerik:LayoutRow>
-            <telerik:LayoutRow ID="chainTypeRow" CssClass="ts-initialize"  Style="margin-bottom: 2px;display:none">
+            <telerik:LayoutRow ID="chainTypeRow" CssClass="ts-initialize" Style="margin-bottom: 2px; display: none">
                 <Columns>
                     <telerik:LayoutColumn HtmlTag="None" Span="12" Style="margin-bottom: 10px;">
                         <telerik:RadGrid ID="rgvDocumentLists" runat="server" AutoGenerateColumns="false" AllowMultiRowSelection="false" GridLines="Both">
                             <MasterTableView TableLayout="Auto" ClientDataKeyNames="ArchiveDocumentId" AllowFilteringByColumn="false" GridLines="Both">
                                 <Columns>
                                     <telerik:GridBoundColumn DataField="DocumentName" UniqueName="DocumentName" HeaderText="Nome documento">
-                                        <HeaderStyle HorizontalAlign="Left" Width="60%"  />
+                                        <HeaderStyle HorizontalAlign="Left" Width="60%" />
                                         <ItemStyle HorizontalAlign="Left" />
-                                      </telerik:GridBoundColumn>
-                                    <telerik:GridTemplateColumn HeaderText="Tipologia di documento"  Visible="true" DataField="ChainType" UniqueName="ChainType">
+                                    </telerik:GridBoundColumn>
+                                    <telerik:GridTemplateColumn HeaderText="Tipologia di documento" Visible="true" DataField="ChainType" UniqueName="ChainType">
                                         <HeaderStyle HorizontalAlign="Left" Width="40%" />
                                         <ItemStyle HorizontalAlign="Left" />
                                         <ClientItemTemplate>
@@ -198,6 +230,19 @@
                     </telerik:LayoutColumn>
                 </Columns>
             </telerik:LayoutRow>
+            
+                        <telerik:LayoutRow CssClass="dsw-panel-title ts-initialize" Style="margin-bottom: 2px;" ID="lblDossierTitle" runat="server">
+                <Columns>
+                    <telerik:LayoutColumn Span="12" Style="margin-bottom: 10px;">
+                        <asp:Label ID="lblDossier" runat="server" Font-Bold="True">Dossier</asp:Label>
+                    </telerik:LayoutColumn>
+                </Columns>
+            </telerik:LayoutRow>
+            <telerik:LayoutRow Style="margin-bottom: 2px;" HtmlTag="Div" CssClass="ts-initialize" ID="lrUscWorkflowFolderSelRest" runat="server">
+                <Content>
+                    <usc:uscWorkflowFolderSelRest ID="uscWorkflowFolderSelRest" runat="server" UseSessionStorage="true" Required="false" />
+                </Content>
+            </telerik:LayoutRow>
             <telerik:LayoutRow ID="dataRow" CssClass="dsw-panel-title" Style="margin-bottom: 2px;">
                 <Columns>
                     <telerik:LayoutColumn Span="12" Style="margin-bottom: 10px;">
@@ -205,10 +250,25 @@
                     </telerik:LayoutColumn>
                 </Columns>
             </telerik:LayoutRow>
+            <telerik:LayoutRow ID="copiaConformeRow" Style="margin-bottom: 2px; display: none;">
+                <Columns>
+                    <telerik:LayoutColumn Span="7">
+                        <asp:Label runat="server" Font-Bold="True">Inviare il file in originale o in copia conforme?</asp:Label>
+                    </telerik:LayoutColumn>
+                    <telerik:LayoutColumn HtmlTag="None" Span="12" CssClass="content-wrapper" Style="margin-bottom: 10px;">
+                        <asp:Panel runat="server" CssClass="content-wrapper">
+                            <asp:RadioButtonList runat="server" RepeatDirection="Horizontal" ID="rdlCCDocument">
+                                <asp:ListItem Text="Copia conforme" Value="0" Selected="True" />
+                                <asp:ListItem Text="Originale" Value="1" />
+                            </asp:RadioButtonList>
+                        </asp:Panel>
+                    </telerik:LayoutColumn>
+                </Columns>
+            </telerik:LayoutRow>
             <telerik:LayoutRow Style="margin-bottom: 2px">
                 <Columns>
                     <telerik:LayoutColumn Span="3">
-                            <asp:Label ID="lblPriority" runat="server" Font-Bold="True">Priorità:</asp:Label>
+                        <asp:Label ID="lblPriority" runat="server" Font-Bold="True">Priorità:</asp:Label>
                     </telerik:LayoutColumn>
                     <telerik:LayoutColumn HtmlTag="None" Span="12" CssClass="content-wrapper" Style="margin-bottom: 10px;">
                         <asp:Panel runat="server" CssClass="content-wrapper">
@@ -228,7 +288,7 @@
                     <telerik:LayoutColumn Span="12">
                         <asp:Label ID="lblSubject" runat="server" Font-Bold="True">Oggetto:</asp:Label>
                     </telerik:LayoutColumn>
-                    <telerik:LayoutColumn Span="12" Style="margin-bottom: 2px;margin-top: 2px">
+                    <telerik:LayoutColumn Span="12" Style="margin-bottom: 2px; margin-top: 2px">
                         <telerik:RadTextBox ID="txtObject" MaxLength="256" TextMode="MultiLine" onBlur="javascript:ChangeStrWithValidCharacter(this);" Rows="3" runat="server" Width="100%" />
                     </telerik:LayoutColumn>
                     <telerik:LayoutColumn Span="12" Style="margin-bottom: 10px;">

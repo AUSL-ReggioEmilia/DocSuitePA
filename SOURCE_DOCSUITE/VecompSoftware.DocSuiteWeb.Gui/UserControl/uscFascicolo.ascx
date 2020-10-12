@@ -1,12 +1,13 @@
 ﻿<%@ Control Language="vb" AutoEventWireup="false" CodeBehind="uscFascicolo.ascx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.uscFascicolo" %>
 <%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="uscContatti" TagPrefix="uc" %>
-<%@ Register Src="~/UserControl/uscSettori.ascx" TagName="uscSettori" TagPrefix="uc" %>
+<%@ Register Src="~/UserControl/uscRoleRest.ascx" TagName="uscRoleRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
-<%@ Register Src="~/UserControl/uscDynamicMetadata.ascx" TagName="uscDynamicMetadata" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscDynamicMetadataSummaryRest.ascx" TagName="uscDynamicMetadataSummaryRest" TagPrefix="uc" %>
 <%@ Register Src="~/UserControl/uscFascSummary.ascx" TagName="uscFascSummary" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscAuthorizations.ascx" TagName="uscAuthorizations" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscFascicleFolders.ascx" TagName="uscFascicleFolders" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscDocumentUnitReferences.ascx" TagName="uscDocumentUnitReferences" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscCustomActionsRest.ascx" TagName="uscCustomActionsRest" TagPrefix="usc" %>
 
 <telerik:RadScriptBlock runat="server" EnableViewState="false">
     <script type="text/javascript">        
@@ -15,6 +16,7 @@
             $(function () {
                 uscFascicolo = new UscFascicolo(tenantModelConfiguration.serviceConfiguration);
 
+                uscFascicolo.clientId = "<%= ClientID %>";
                 uscFascicolo.pageId = "<%= pageContent.ClientID %>";
                 uscFascicolo.isEditPage = JSON.parse("<%= IsEditPage %>".toLowerCase());
                 uscFascicolo.isAuthorizePage = JSON.parse("<%= IsAuthorizePage %>".toLowerCase());
@@ -24,7 +26,6 @@
                 uscFascicolo.rowManagerId = "<%= rowManager.ClientID %>";
                 uscFascicolo.rcbUDId = "<%= rcbUD.ClientID %>";
                 uscFascicolo.rowRolesId = "<%= rowRoles.ClientID %>";
-                uscFascicolo.rowAccountedRolesId = "<%= rowAccountedRoles.ClientID %>";
                 uscFascicolo.pnlUDId = "<%= pnlFoldersAndUD.ClientID %>";
                 uscFascicolo.rcbReferenceTypeId = "<%= rcbReferenceType.ClientID %>";
                 uscFascicolo.txtTitleId = "<%= txtTitle.ClientID %>";
@@ -48,8 +49,14 @@
                 uscFascicolo.rsPnlFoldersId = "<%=rsPnlFolders.ClientID%>";
                 uscFascicolo.rszFolderId = "<%=rszFolder.ClientID%>";
                 uscFascicolo.splitterId = "<%=rdSplitter.ClientID%>";
-                uscFascicolo.uscSettoriAccountedId = "<%=uscSettoriAccounted.TableContentControl.ClientID %>";
+                uscFascicolo.uscRoleId = "<%= uscRole.TableContentControl.ClientID %>";
                 uscFascicolo.racUDDataSourceId = "<%= racUDDataSource.ClientID %>";
+                uscFascicolo.uscCustomActionsRestId = "<%= uscCustomActionsRest.PageContent.ClientID %>";
+                uscFascicolo.fascicleAutoCloseThresholdDays = <%= ProtocolEnv.FascicleAutoCloseThresholdDays %>;
+                uscFascicolo.fascicleAutoCloseWarningThresholdDays = <%= ProtocolEnv.FascicleAutoCloseWarningThresholdDays %>;
+                uscFascicolo.fascSummaryColumnId = "<%= fascSummaryColumn.ClientID %>";
+                uscFascicolo.customActionsColumnId = "<%= customActionsColumn.ClientID %>";
+                uscFascicolo.uscDynamicMetadataSummaryRestId = "<%= uscDynamicMetadataSummaryRest.PageContent.ClientID%>";
                 uscFascicolo.initialize();
 
                 new ResizeSensor($("#<%= pageContent.ClientID %>")[0], function () {
@@ -68,6 +75,7 @@
                     resizeUDDetails();
                 });
 
+                //$("#divContent").css('overflow', 'hidden');
                 $("#divContent").scroll(function () {
                     var panelPosition = $("#RAD_SLIDING_PANE_CONTENT_<%= rsPnlFolders.ClientID %>").offset();
                     uscFascicleFolders_refreshStickifyPosition(panelPosition);
@@ -143,7 +151,31 @@
     <Rows>
         <telerik:LayoutRow HtmlTag="Div">
             <Content>
-                <usc:uscFascSummary ID="uscFascSummary" runat="server" />
+                <asp:Panel runat="server" ID="fascDetails" CssClass="dsw-panel" Style="margin: 0px;">
+                    <div class="dsw-panel-content" style="padding: 0px;">
+                        <telerik:RadPageLayout runat="server" ID="fascDetailsPane">
+                            <telerik:LayoutRow HtmlTag="Div">
+                                <Columns>
+                                    <telerik:LayoutColumn Span="12" ID="fascSummaryColumn" Style="padding: 0px;">
+                                        <asp:Panel runat="server" ID="summaryContent">
+                                            <usc:uscFascSummary ID="uscFascSummary" runat="server" />
+                                        </asp:Panel>
+                                    </telerik:LayoutColumn>
+                                    <telerik:LayoutColumn Height="100%" Span="4" ID="customActionsColumn" Style="padding: 0px 0px 0px 5px; display: none;">
+                                        <div class="dsw-panel">
+                                            <div class="dsw-panel-title">
+                                                Avvisi
+                                            </div>
+                                            <div class="dsw-panel-content">
+                                                <usc:uscCustomActionsRest runat="server" ID="uscCustomActionsRest" IsSummary="true" />
+                                            </div>
+                                        </div>
+                                    </telerik:LayoutColumn>
+                                </Columns>
+                            </telerik:LayoutRow>
+                        </telerik:RadPageLayout>
+                    </div>
+                </asp:Panel>
             </Content>
         </telerik:LayoutRow>
         <telerik:LayoutRow ID="rowManager">
@@ -159,19 +191,14 @@
                 <usc:uscAuthorizations ID="uscAuthorizations" runat="server" />
             </Content>
         </telerik:LayoutRow>
-        <telerik:LayoutRow ID="rowRoles" runat="server">
-            <Content>
-                <uc:uscSettori ID="uscSettori" ReadOnly="true" runat="server" Caption="Autorizzazioni" Visible="false" />
-            </Content>
-        </telerik:LayoutRow>
         <telerik:LayoutRow ID="rowDocumentUnitReference" runat="server">
             <Content>
                 <usc:uscDocumentUnitReferences Visible="true" ID="uscDocumentUnitReferences" runat="server" ShowFasciclesLinks="true" ShowDossierLinks="true" />
             </Content>
         </telerik:LayoutRow>
-        <telerik:LayoutRow ID="rowAccountedRoles" runat="server">
+        <telerik:LayoutRow ID="rowRoles" runat="server">
             <Content>
-                <uc:uscSettori ID="uscSettoriAccounted" ReadOnly="false" runat="server" MultipleRoles="true" MultiSelect="true" Caption="Settori con Autorizzazione" Visible="false" />
+                <usc:uscRoleRest runat="server" ID="uscRole" ReadOnlyMode="false" Expanded="true" MultipleRoles="true" Caption="Settori con autorizzazione" Collapsable="true" RACIButtonEnabled="true" FascicleVisibilityTypeButtonEnabled="true" Visible-="false" />
             </Content>
         </telerik:LayoutRow>
         <telerik:LayoutRow ID="rowDynamicMetadata">
@@ -184,7 +211,7 @@
                         </telerik:RadButton>
                     </div>
                     <div class="dsw-panel-content" runat="server" id="dynamicMetadataContent">
-                        <usc:uscDynamicMetadata runat="server" ID="uscDynamicMetadata" Required="False" UseSessionStorage="true" />
+                        <uc:uscDynamicMetadataSummaryRest runat="server" ID="uscDynamicMetadataSummaryRest" UseSessionStorage="true"></uc:uscDynamicMetadataSummaryRest>
                     </div>
                 </div>
             </Content>
@@ -238,8 +265,7 @@
                                                 </div>
                                                 <telerik:RadGrid AllowSorting="True" Skin="Office2010Blue" AllowFilteringByColumn="true" AllowPaging="False"
                                                     AutoGenerateColumns="False" GridLines="none" ID="grdUD" runat="server" Width="100%" AllowMultiRowSelection="True">
-                                                    <GroupingSettings ShowUnGroupButton="true">
-                                                    </GroupingSettings>
+                                                    <GroupingSettings ShowUnGroupButton="true"></GroupingSettings>
                                                     <MasterTableView EnableGroupsExpandAll="True" NoDetailRecordsText="Nessuna documenti presente"
                                                         NoMasterRecordsText="Nessun documento presente" AllowFilteringByColumn="true" GroupLoadMode="Client" AllowMultiColumnSorting="true" AllowSorting="true">
                                                         <GroupByExpressions>
@@ -313,8 +339,7 @@
                                                             </telerik:GridTemplateColumn>
                                                         </Columns>
                                                     </MasterTableView>
-                                                    <ClientSettings AllowGroupExpandCollapse="true" Selecting-AllowRowSelect="true" ClientEvents-OnCommand="GridOnCommand">
-                                                    </ClientSettings>
+                                                    <ClientSettings AllowGroupExpandCollapse="true" Selecting-AllowRowSelect="true" ClientEvents-OnCommand="GridOnCommand" />
                                                     <GroupingSettings ShowUnGroupButton="true"></GroupingSettings>
                                                 </telerik:RadGrid>
                                             </div>

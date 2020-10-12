@@ -24,6 +24,9 @@ Partial Public Class PECIncomingMails
 
     ''' <summary> Numero di giorni da sottrarre alla data odierna nella preimpostazione del filtro </summary>
     Const DaysToAddInitialized As Double = -15
+    Private Const VALID_MAILBOX_IMGURL As String = "../App_Themes/DocSuite2008/images/green-dot-document.png"
+    Private Const INTEROP_IMGURL As String = "../App_Themes/DocSuite2008/imgset16/user.png"
+
 #End Region
 
 #Region " Properties "
@@ -92,9 +95,9 @@ Partial Public Class PECIncomingMails
             If _mailboxes Is Nothing Then
                 _mailboxes = New List(Of PECMailBox)
                 If ProtocolBoxEnabled Then
-                    _mailboxes = Facade.PECMailboxFacade.GetHumanManageable().GetVisibleProtocolMailBoxes()
+                    _mailboxes = Facade.PECMailboxFacade.GetVisibleProtocolMailBoxes()
                 Else
-                    _mailboxes = Facade.PECMailboxFacade.GetHumanManageable().GetVisibleMailBoxes()
+                    _mailboxes = Facade.PECMailboxFacade.GetVisibleMailBoxes()
                 End If
             End If
             Return _mailboxes
@@ -222,10 +225,16 @@ Partial Public Class PECIncomingMails
             SetCestinoButtons()
             InitializeCollapsedSection()
             InitializeHandling()
+            UpdatePECMailBoxInputColor()
         End If
     End Sub
 
     Protected Sub ddlMailbox_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles ddlMailbox.SelectedIndexChanged
+
+        If CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError Then
+            AjaxAlert("La casella PEC ha un problema di configurazione. Avvisare il responsabile per la corretta configurazione")
+        End If
+
         Dim selectedId As Short
         If Short.TryParse(ddlMailbox.SelectedValue, selectedId) Then
             CommonShared.SelectedPecMailBoxId = selectedId
@@ -237,6 +246,7 @@ Partial Public Class PECIncomingMails
         chkDaDestinare.Checked = False
         chkDestinati.Style.Add("display", "none")
         chkDestinati.Checked = False
+        ddlMailbox.InputCssClass = If(CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError, "text-red", "text-black")
 
         InitializeCurrentMailBox()
         InitializeHandling()
@@ -244,6 +254,23 @@ Partial Public Class PECIncomingMails
 
         dgMail.DiscardFinder()
         DataBindMailGrid()
+    End Sub
+
+    Private Sub UpdatePECMailBoxInputColor()
+        Dim selectedItem As RadComboBoxItem = ddlMailbox.SelectedItem
+
+        If selectedItem.ForeColor = Drawing.Color.Red Then
+            ddlMailbox.InputCssClass = "text-red"
+        End If
+    End Sub
+
+    Private Sub dgMail_Init(sender As Object, e As EventArgs) Handles dgMail.Init
+        For Each column As GridColumn In dgMail.Columns
+            Select Case column.UniqueName
+                Case "cProtocol"
+                    DirectCast(column, CompositeTemplateExportableColumn).CustomExportDelegate = New CompositeTemplateExportableColumn.ExportExpressionDelegate(AddressOf dgMail_LinkProtocolCustomExportDelegate)
+            End Select
+        Next
     End Sub
 
     Private Sub dgMail_ItemCommand(ByVal source As Object, ByVal e As GridCommandEventArgs) Handles dgMail.ItemCommand
@@ -316,10 +343,10 @@ Partial Public Class PECIncomingMails
                 End If
 
             Case SHOW_PROT_COMMAND_NAME
-                Dim arguments As String() = e.CommandArgument.ToString().Split({"|"c}, 2)
-                s = "Year=" & arguments(0) & "&Number=" & arguments(1)
+                Dim arguments As String() = e.CommandArgument.ToString().Split({"|"c}, 3)
+                s = $"UniqueId={arguments(0)}"
                 Response.RedirectLocation = "parent"
-                Response.Redirect("../Prot/ProtVisualizza.aspx?" & CommonShared.AppendSecurityCheck(s))
+                Response.Redirect($"~/Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck(s)}&Type=Prot")
             Case SHOW_UDS_COMMAND_NAME
                 Dim arguments As String() = e.CommandArgument.ToString().Split({"|"c}, 2)
                 Response.RedirectLocation = "parent"
@@ -358,7 +385,7 @@ Partial Public Class PECIncomingMails
         With DirectCast(e.Item.FindControl("cmdViewDocs"), RadButton)
             .CommandArgument = item.Id.ToString()
             If ProtocolEnv.PECGridCheckActiveDocumentsEnabled Then
-                Dim chain As BiblosChainInfo = New BiblosChainInfo(entityItem.Location.DocumentServer, entityItem.IDAttachments)
+                Dim chain As BiblosChainInfo = New BiblosChainInfo(entityItem.IDAttachments)
                 .Enabled = chain.HasActiveDocuments()
             End If
             If item.HasAttachments Then
@@ -784,6 +811,14 @@ Partial Public Class PECIncomingMails
 
     End Sub
 
+    Public Function dgMail_LinkProtocolCustomExportDelegate(dataItem As GridDataItem) As String
+        Dim btn As RadButton = DirectCast(dataItem.FindControl("cmdProtocol"), RadButton)
+        If btn IsNot Nothing Then
+            Return btn.ToolTip
+        End If
+        Return String.Empty
+    End Function
+
 #End Region
 
 #Region " Methods "
@@ -870,10 +905,18 @@ Partial Public Class PECIncomingMails
     Private Sub InitializeMailboxes()
         ddlMailbox.Items.Clear()
         Dim realMailBoxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.FillRealPecMailBoxes(MailBoxes)
+
         For Each mailbox As PECMailBox In realMailBoxes
-            ddlMailbox.Items.Add(New ListItem(Facade.PECMailboxFacade.MailBoxRecipientLabel(mailbox), mailbox.Id.ToString()))
+            Dim comboboxItem As RadComboBoxItem = New RadComboBoxItem()
+            comboboxItem.Text = mailbox.MailBoxName
+            comboboxItem.Value = mailbox.Id.ToString()
+            comboboxItem.ImageUrl = If(mailbox.IsForInterop, INTEROP_IMGURL, VALID_MAILBOX_IMGURL)
+            If mailbox.LoginError Then
+                comboboxItem.ForeColor = Drawing.Color.Red
+            End If
+            ddlMailbox.Items.Add(comboboxItem)
         Next
-        ddlMailbox.Items.Add(New ListItem("Tutte", "ALL"))
+        ddlMailbox.Items.Add(New RadComboBoxItem("Tutte", "ALL"))
 
         'Definisco il titolo in modo personalizzato
         ddlMailBoxLabel.InnerText = String.Format("Casella {0}", If(ProtocolBoxEnabled, "e-mail:", "PEC:"))
@@ -912,7 +955,7 @@ Partial Public Class PECIncomingMails
         chkVisCestino.Style.Remove("display")
     End Sub
 
-    Private Function GetSelectedValueOrDefault(dropdown As DropDownList) As String
+    Private Function GetSelectedValueOrDefault(dropdown As RadComboBox) As String
         If dropdown.Items.Count = 0 _
             OrElse String.IsNullOrEmpty(dropdown.SelectedValue) _
             OrElse dropdown.SelectedValue.Eq("--") Then
@@ -1034,6 +1077,10 @@ Partial Public Class PECIncomingMails
                 ddlMailbox.SelectedValue = defaultMailBox.Id.ToString()
             End If
 
+        End If
+
+        If CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError Then
+            AjaxAlert("La casella PEC ha un problema di configurazione. Avvisare il responsabile per la corretta configurazione")
         End If
 
         'Se ancora non c'è un valore di default significa che non è stata mai fatta una ricerca
@@ -1182,7 +1229,6 @@ Partial Public Class PECIncomingMails
         ' Salvo in sessione l'ora di registrazione
         Session.Add("DSW_PECINFinderType", DateTime.Now)
 
-        Facade.PECMailboxFacade.GetHumanManageable()
         dgMail.DataBindFinder()
     End Sub
 
@@ -1218,7 +1264,7 @@ Partial Public Class PECIncomingMails
     End Sub
 
     Private Function UserCanSend() As Boolean
-        Dim visibleMSendingailBoxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.GetHumanManageable().GetVisibleSendingMailBoxes()
+        Dim visibleMSendingailBoxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.GetVisibleSendingMailBoxes()
         Dim realMailBoxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.FillRealPecMailBoxes(visibleMSendingailBoxes)
         Return realMailBoxes.Count > 0
     End Function

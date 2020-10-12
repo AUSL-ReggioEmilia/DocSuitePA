@@ -1,62 +1,59 @@
-<Serializable()> _
+Imports VecompSoftware.DocSuiteWeb.Data
+
+<Serializable()>
 Public Class ProtocolLink
-    Inherits AuditableDomainObject(Of ProtocolLinkCompositeKey)
+    Inherits AuditableDomainObject(Of Guid)
 
-#Region "private data"
-
+#Region " Fields "
     Private _protocol As Protocol
-    Private _linkType As Integer
-    Private _protocolLinked As Protocol
-    Private _registrationUser As String
-    Private _registrationDate As Date?
-
+    Private _protocolSon As Protocol
 #End Region
 
 #Region "Properties"
+    Public Overridable Property Year As Short
 
-    Public Overridable Property Protocol() As Protocol
+    Public Overridable Property Number As Integer
+
+    Public Overridable Property YearSon As Short
+
+    Public Overridable Property NumberSon As Integer
+
+    Public Overridable Property LinkType As Integer
+
+    Public Overridable Property Protocol As Protocol
         Get
             Return _protocol
         End Get
         Set(ByVal value As Protocol)
             _protocol = value
-            Id.Year = value.Year
-            Id.Number = value.Number
+            Year = value.Year
+            Number = value.Number
         End Set
     End Property
 
-    Public Overridable Property LinkType() As Integer
+    Public Overridable Property ProtocolLinked As Protocol
         Get
-            Return _linkType
-        End Get
-        Set(ByVal value As Integer)
-            _linkType = value
-        End Set
-    End Property
-
-    Public Overridable Property ProtocolLinked() As Protocol
-        Get
-            Return _protocolLinked
+            Return _protocolSon
         End Get
         Set(ByVal value As Protocol)
-            _protocolLinked = value
-            Id.YearSon = value.Year
-            Id.NumberSon = value.Number
+            _protocolSon = value
+            YearSon = value.Year
+            NumberSon = value.Number
         End Set
     End Property
-
-    Public Overridable Property UniqueIdProtocolParent As Guid
-
-    Public Overridable Property UniqueIdProtocolSon As Guid
 
 #End Region
 
-#Region "Ctor/init"
+#Region " Constructor "
     Public Sub New()
-        UniqueId = Guid.NewGuid()
-        RegistrationDate = DateTimeOffset.UtcNow
-        RegistrationUser = DocSuiteContext.Current.User.FullUserName
+
     End Sub
+#End Region
+
+#Region " Methods "
+    Public Overrides Function ToString() As String
+        Return $"{Year}/{Number:0000000}-{YearSon}/{NumberSon:0000000}"
+    End Function
 #End Region
 
 End Class

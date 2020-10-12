@@ -93,15 +93,15 @@
                                 </ItemTemplate>
                             </telerik:RadToolBarButton>
                             <telerik:RadToolBarButton IsSeparator="true" />
-                            <telerik:RadToolBarButton Value="btnListSearch" Text="Aggiorna" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
+                            <telerik:RadToolBarButton Value="btnListSearch" Text="Cerca" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
                         </Items>
                     </telerik:RadToolBar>
 
                     <telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%">
                         <Items>
-                            <telerik:RadToolBarButton ToolTip="Aggiungi" Value="create" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
-                            <telerik:RadToolBarButton ToolTip="Modifica" Value="modify" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
-                            <telerik:RadToolBarButton ToolTip="Elimina" Value="delete" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />                            
+                            <telerik:RadToolBarButton ToolTip="Aggiungi" Value="create" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+                            <telerik:RadToolBarButton ToolTip="Modifica" Value="modify" Text="Modifica" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+                            <telerik:RadToolBarButton ToolTip="Elimina" Value="delete" Text="Elimina" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />                            
                         </Items>
                     </telerik:RadToolBar>
                 </telerik:RadPane>

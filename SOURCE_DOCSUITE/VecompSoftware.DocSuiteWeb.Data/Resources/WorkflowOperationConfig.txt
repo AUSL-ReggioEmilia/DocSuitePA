@@ -11,11 +11,10 @@
           }
         },
         "ToPEC": {
-          "Page": "~/PEC/PECInsert.aspx?Type=Pec&SimpleMode=True&Year={0}&Number={1}",
+          "Page": "~/PEC/PECInsert.aspx?Type=Pec&SimpleMode=True&UniqueIdProtocol={0}",
           "Options": {
             "SecurityCheck": "False",
-            "Year": "True",
-            "Number": "True"
+            "UniqueIdProtocol": "True"
           }
         }
       }
@@ -39,11 +38,10 @@
           }
         },
         "ToPEC": {
-          "Page": "~/PEC/PECInsert.aspx?Type=Pec&SimpleMode=True&Year={0}&Number={1}",
+          "Page": "~/PEC/PECInsert.aspx?Type=Pec&SimpleMode=True&UniqueIdProtocol={0}",
           "Options": {
             "SecurityCheck": "False",
-            "Year": "True",
-            "Number": "True"
+            "UniqueIdProtocol": "True"
           }
         }
       }

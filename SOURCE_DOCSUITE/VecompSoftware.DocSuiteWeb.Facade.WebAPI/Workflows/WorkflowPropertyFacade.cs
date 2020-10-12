@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao.Workflows;
 using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.EntityMapper.WebAPI;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
@@ -21,8 +22,8 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows
         #endregion
 
         #region [ Constructor ]
-        public WorkflowPropertyFacade(ICollection<TenantModel> model)
-            : base(model.Select(s => new WebAPITenantConfiguration<WorkflowProperty, WorkflowPropertyDao>(s)).ToList())
+        public WorkflowPropertyFacade(ICollection<TenantModel> model, Tenant currentTenant)
+            : base(model.Select(s => new WebAPITenantConfiguration<WorkflowProperty, WorkflowPropertyDao>(s)).ToList(), currentTenant)
         {
             this._mapper = new WebAPIDtoMapper<WorkflowProperty>();
         }

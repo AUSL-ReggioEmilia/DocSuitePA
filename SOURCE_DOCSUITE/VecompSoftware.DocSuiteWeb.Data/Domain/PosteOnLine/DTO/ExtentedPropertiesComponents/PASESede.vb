@@ -1,4 +1,7 @@
-﻿Public Class PASESede
+﻿''' <summary>
+''' PASE = Pol Account Serc Extended properties
+''' </summary>
+Public Class PASESede
     Public Property Indirizzo As String
     Public Property NumeroCivico As String
     Public Property CAP As String

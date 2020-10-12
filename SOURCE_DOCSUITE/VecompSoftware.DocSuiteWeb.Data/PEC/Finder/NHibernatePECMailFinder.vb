@@ -291,6 +291,7 @@ Public Class NHibernatePECMailFinder
     End Sub
     Protected Overrides Function CreateCriteria() As ICriteria
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persistentType, "PM")
+        criteria.CreateAlias("PM.DocumentUnit", "DU", JoinType.LeftOuterJoin)
         Dim dis As Disjunction = New Disjunction()
         Dim con As Conjunction = New Conjunction()
 
@@ -657,7 +658,7 @@ Public Class NHibernatePECMailFinder
         With detachedSendRolesLogCount
             .Add(Restrictions.EqProperty("pl_Log.Year", "PM.Year"))
             .Add(Restrictions.EqProperty("pl_Log.Number", "PM.Number"))
-            .Add(Restrictions.Eq("PM.DocumentUnitType", DSWEnvironment.Protocol))
+            .Add(Restrictions.Eq("DU.Environment", DirectCast(DSWEnvironment.Protocol, Integer)))
             .Add(Restrictions.GeProperty("pl_Log.LogDate", "PM.RegistrationDate"))
             .Add(Restrictions.Eq("pl_Log.LogType", "PW"))
             .SetProjection(Projections.RowCount)
@@ -693,9 +694,9 @@ Public Class NHibernatePECMailFinder
             .Add(Projections.Property("PM.IsActive"), "IsActive") _
             .Add(Projections.Property("PM.Handler"), "Handler") _
             .Add(Projections.Property("PM.RegistrationDate"), "RegistrationDate") _
-            .Add(Projections.Property("PM.IdUDSRepository"), "IdUDSRepository") _
-            .Add(Projections.Property("PM.IdUDS"), "IdUDS") _
-            .Add(Projections.Property("PM.DocumentUnitType"), "DocumentUnitType") _
+            .Add(Projections.Property("DU.IdUDSRepository"), "IdUDSRepository") _
+            .Add(Projections.Property("DU.Id"), "IdDocumentUnit") _
+            .Add(Projections.Property("DU.Environment"), "DocumentUnitType") _
             .Add(Projections.Conditional(Restrictions.IsNull("PM.Number"), Projections.Constant(False), Projections.Constant(True)), "HasProtocol") _
             .Add(Projections.Property("PM.Size"), "Size") _
             .Add(Projections.Property("PM.PECType"), "PECType")

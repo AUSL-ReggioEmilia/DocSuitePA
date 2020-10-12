@@ -3,8 +3,9 @@ Imports VecompSoftware.Helpers.NHibernate
 Imports NHibernate.Criterion
 Imports VecompSoftware.NHibernateManager
 Imports System.ComponentModel
+Imports VecompSoftware.Helpers.ExtensionMethods
 
-<Serializable(), DataObject()> _
+<Serializable(), DataObject()>
 Public Class NHibernateUserLogFinder
     Inherits NHibernateBaseFinder(Of UserLog, UserLog)
 
@@ -55,23 +56,23 @@ Public Class NHibernateUserLogFinder
 
         'Filtro Data di Registrazione a partire da
         If LastOperationDateFrom.HasValue Then
-            criteria.Add(Expression.Sql(NHibernateHelper.GreaterThanOrEqualToDateIsoFormat("LastOperationDate", LastOperationDateFrom.Value.Date)))
+            criteria.Add(Restrictions.Ge("LastOperationDate", New DateTimeOffset(LastOperationDateFrom.Value.Date.BeginOfTheDay())))
         End If
 
         'Filtro Data di Registrazione fino a
         If LastOperationDateTo.HasValue Then
-            criteria.Add(Expression.Sql(NHibernateHelper.LessThanOrEqualToDateIsoFormat("LastOperationDate", LastOperationDateTo.Value.Date)))
+            criteria.Add(Restrictions.Le("LastOperationDate", New DateTimeOffset(LastOperationDateTo.Value.Date.EndOfTheDay())))
         End If
 
         'Server
         If Not String.IsNullOrEmpty(SystemServer) Then
-            criteria.Add(Expression.Like("SystemServer", _systemServer, MatchMode.Anywhere))
+            criteria.Add(Expression.Like("SystemServer", SystemServer, MatchMode.Anywhere))
         End If
 
         'Utente
         If Not String.IsNullOrEmpty(SystemUser) Then
             'criteria.Add(Expression.Like("SystemUser", _systemUser, MatchMode.Anywhere))
-            criteria.Add(Restrictions.Eq("Id", _systemUser))
+            criteria.Add(Restrictions.Eq("Id", SystemUser))
         End If
 
         If Not String.IsNullOrEmpty(SystemUserContains) Then

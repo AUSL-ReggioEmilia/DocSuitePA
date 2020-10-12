@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscGroupDetails
-    
+
     '''<summary>
     '''RadWindowManagerGroups control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscGroupDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerGroups As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowAddUsers control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscGroupDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowAddUsers As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowImportFrom control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscGroupDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowImportFrom As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''pnlDetail control.
     '''</summary>
@@ -48,7 +48,43 @@ Partial Public Class uscGroupDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDetail As Global.System.Web.UI.WebControls.Panel
-    
+
+    '''<summary>
+    '''ActionsToolbar control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ActionsToolbar As Global.Telerik.Web.UI.RadToolBar
+
+    '''<summary>
+    '''btnAddUser control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnAddUser As Global.Telerik.Web.UI.RadToolBarButton
+
+    '''<summary>
+    '''btnDeleteUser control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnDeleteUser As Global.Telerik.Web.UI.RadToolBarButton
+
+    '''<summary>
+    '''btnImportFrom control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnImportFrom As Global.Telerik.Web.UI.RadToolBarButton
+
     '''<summary>
     '''rpbGroups control.
     '''</summary>
@@ -57,7 +93,7 @@ Partial Public Class uscGroupDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rpbGroups As Global.Telerik.Web.UI.RadPanelBar
-    
+
     '''<summary>
     '''RadTreeViewUsers control.
     '''</summary>
@@ -66,7 +102,7 @@ Partial Public Class uscGroupDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadTreeViewUsers As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''RadTreeViewContextUsers control.
     '''</summary>
@@ -75,7 +111,7 @@ Partial Public Class uscGroupDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadTreeViewContextUsers As Global.Telerik.Web.UI.RadTreeViewContextMenu
-    
+
     '''<summary>
     '''grdContainers control.
     '''</summary>
@@ -84,7 +120,7 @@ Partial Public Class uscGroupDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents grdContainers As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''grdRoles control.
     '''</summary>

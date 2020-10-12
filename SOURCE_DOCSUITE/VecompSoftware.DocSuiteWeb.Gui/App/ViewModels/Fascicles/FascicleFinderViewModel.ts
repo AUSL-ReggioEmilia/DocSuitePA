@@ -8,6 +8,7 @@ interface FascicleFinderViewModel {
     UdType?: string;
     ContainerId?: number;
     IncludeChildClassification: boolean;
+    IdTenantAOO: string;
 }
 
 export = FascicleFinderViewModel;   

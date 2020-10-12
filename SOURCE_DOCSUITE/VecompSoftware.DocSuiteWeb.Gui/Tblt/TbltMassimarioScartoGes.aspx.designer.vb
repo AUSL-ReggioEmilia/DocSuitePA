@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class TbltMassimarioScartoGes
-    
+
     '''<summary>
     '''rwEditMassimario control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rwEditMassimario As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''pnlMetadata control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlMetadata As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtName control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtName As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''rfvName control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvName As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''txtCode control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtCode As Global.Telerik.Web.UI.RadNumericTextBox
-    
+
     '''<summary>
     '''rfvCode control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvCode As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''txtNote control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''txtPeriod control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtPeriod As Global.Telerik.Web.UI.RadNumericTextBox
-    
+
     '''<summary>
     '''btnInfinite control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnInfinite As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''rdpStartDate control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpStartDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''rdpEndDate control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpEndDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''rfvEndDate control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvEndDate As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''btnSaveMassimario control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSaveMassimario As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''splPage control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents splPage As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''splContent control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents splContent As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''uscMassimarioScarto control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscMassimarioScarto As Global.VecompSoftware.DocSuiteWeb.Gui.uscMassimarioScarto
-    
+
     '''<summary>
     '''pnlDetails control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDetails As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblConservationPeriod control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblConservationPeriod As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblNote control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNote As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblStartDate control.
     '''</summary>
@@ -192,7 +192,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStartDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblEndDate control.
     '''</summary>
@@ -201,7 +201,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblEndDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rgvCategories control.
     '''</summary>
@@ -210,7 +210,7 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rgvCategories As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -219,40 +219,4 @@ Partial Public Class TbltMassimarioScartoGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
-    '''<summary>
-    '''btnAggiungi control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnAggiungi As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''btnModifica control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnModifica As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''btnAnnulla control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnAnnulla As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''btnRecover control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnRecover As Global.Telerik.Web.UI.RadButton
 End Class

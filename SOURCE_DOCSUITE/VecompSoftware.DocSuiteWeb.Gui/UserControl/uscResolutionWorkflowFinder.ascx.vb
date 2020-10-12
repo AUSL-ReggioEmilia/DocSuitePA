@@ -266,7 +266,10 @@ Partial Public Class uscResolutionWorkflowFinder
         Select Case svalue
             Case TOWorkflow.RicercaFlussoAdozione
                 pnlProposta.Visible = True
-                ClearLinkedContainers()
+                pnlContenitore.Visible = False
+                pnlContainerMultiSelect.Visible = True
+                rcbContainerMultiSelectValidator.Enabled = True
+                InitializeContainer()
             Case TOWorkflow.RicercaFlussoInvioAvvenutaAdozione
                 pnlAdottataIntervallo.Visible = True
                 cvContainer.Enabled = False
@@ -353,7 +356,7 @@ Partial Public Class uscResolutionWorkflowFinder
         _finder.StepAttivo = True
 
         'Container
-        If _finder.WorkflowStepTo.Equals(TOWorkflow.RicercaFlussoUltimaPagina) OrElse _finder.WorkflowStepTo.Equals(TOWorkflow.RicercaRaccoltaFirmeAdozione) Then
+        If _finder.WorkflowStepTo.Equals(TOWorkflow.RicercaFlussoUltimaPagina) OrElse _finder.WorkflowStepTo.Equals(TOWorkflow.RicercaRaccoltaFirmeAdozione) OrElse _finder.WorkflowStepTo.Equals(TOWorkflow.RicercaFlussoAdozione) Then
             _finder.ContainerIds = String.Join(",", rcbContainerMultiSelect.CheckedItems.Cast(Of RadComboBoxItem)().Select(Function(s) s.Value))
         Else
             If (pnlContenitore.Visible) Then

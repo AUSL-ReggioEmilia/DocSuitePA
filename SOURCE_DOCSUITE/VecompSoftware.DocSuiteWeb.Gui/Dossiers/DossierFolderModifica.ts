@@ -76,7 +76,7 @@ class DossierFolderModifica extends DossierBase {
     * @param eventArgs
     * @returns 
     */
-    btnConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.RadButtonEventArgs) => {
+    btnConferma_ButtonClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         this._loadingPanel.show(this.currentPageId);
         this._btnConferma.set_enabled(false);
         this.modifyDossierFolder();
